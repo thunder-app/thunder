@@ -1,15 +1,14 @@
-import 'package:lemmy_api_client/v3.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:thunder/core/singletons/database.dart';
 
-class Community {
+class LocalCommunity {
   final int id;
   final String name;
   final String title;
   final String actorId;
   final String? icon;
 
-  const Community({required this.id, required this.name, required this.title, required this.actorId, this.icon});
+  const LocalCommunity({required this.id, required this.name, required this.title, required this.actorId, this.icon});
 
   Map<String, dynamic> toMap() {
     return {
@@ -26,7 +25,7 @@ class AnonymousSubscriptions {
   AnonymousSubscriptions();
 
   // To insert multiple communities to database
-  static Future<void> insertCommunities(Set<Community> communities) async {
+  static Future<void> insertCommunities(Set<LocalCommunity> communities) async {
     Database? database = await DB.instance.database;
     if (database == null) return;
 
@@ -48,14 +47,14 @@ class AnonymousSubscriptions {
     batch.commit();
   }
 
-  static Future<List<Community>> getSubscribedCommunities() async {
+  static Future<List<LocalCommunity>> getSubscribedCommunities() async {
     Database? database = await DB.instance.database;
     if (database == null) return [];
 
     final List<Map<String, dynamic>> maps = await database.query('anonymous_subscriptions');
 
     return List.generate(maps.length, (i) {
-      return Community(
+      return LocalCommunity(
         id: maps[i]["id"],
         name: maps[i]["name"],
         title: maps[i]["title"],

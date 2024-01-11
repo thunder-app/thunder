@@ -1,12 +1,15 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/utils/image.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImagePreview extends StatefulWidget {
-  final String url;
+  final String? url;
+  final Uint8List? bytes;
   final bool nsfw;
   final double? height;
   final double? width;
@@ -20,7 +23,8 @@ class ImagePreview extends StatefulWidget {
 
   const ImagePreview({
     super.key,
-    required this.url,
+    this.url,
+    this.bytes,
     this.height,
     this.width,
     this.nsfw = false,
@@ -31,7 +35,7 @@ class ImagePreview extends StatefulWidget {
     this.navigateToPost,
     this.isComment,
     this.read,
-  });
+  }) : assert(url != null || bytes != null);
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
@@ -48,31 +52,6 @@ class _ImagePreviewState extends State<ImagePreview> {
     setState(() => blur = widget.nsfw);
   }
 
-  void onImageTap(BuildContext context) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        opaque: false,
-        transitionDuration: const Duration(milliseconds: 100),
-        reverseTransitionDuration: const Duration(milliseconds: 50),
-        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-          return ImageViewer(
-            url: widget.url,
-            postId: widget.postId,
-            navigateToPost: widget.navigateToPost,
-          );
-        },
-        transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-          return Align(
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -83,7 +62,13 @@ class _ImagePreviewState extends State<ImagePreview> {
                 if (widget.nsfw && blur) {
                   setState(() => blur = false);
                 } else {
-                  onImageTap(context);
+                  showImageViewer(
+                    context,
+                    url: widget.url,
+                    bytes: widget.bytes,
+                    postId: widget.postId,
+                    navigateToPost: widget.navigateToPost,
+                  );
                 }
               },
             )
@@ -92,6 +77,9 @@ class _ImagePreviewState extends State<ImagePreview> {
   }
 
   Widget imagePreview(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -99,29 +87,73 @@ class _ImagePreviewState extends State<ImagePreview> {
         children: [
           // This is used for link posts where the preview comes from Lemmy
           // in both compact and comfortable view
-          ExtendedImage.network(
-            color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-            colorBlendMode: widget.read == true ? BlendMode.modulate : null,
-            constraints: widget.isComment == true
-                ? BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.width * 0.55,
-                    maxWidth: MediaQuery.of(context).size.width * 0.60,
-                  )
-                : null,
-            alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
-            widget.url,
-            height: widget.height,
-            width: widget.width ?? MediaQuery.of(context).size.width - 24,
-            fit: BoxFit.cover,
-            cache: true,
-            clearMemoryCacheWhenDispose: true,
-            cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.loading) {
-                return Container();
-              }
-            },
-          ),
+          widget.url != null
+              ? ExtendedImage.network(
+                  color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+                  colorBlendMode: widget.read == true ? BlendMode.modulate : null,
+                  constraints: widget.isComment == true
+                      ? BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.width * 0.55,
+                          maxWidth: MediaQuery.of(context).size.width * 0.60,
+                        )
+                      : BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 24,
+                        ),
+                  alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
+                  widget.url!,
+                  height: widget.height,
+                  width: widget.width,
+                  fit: BoxFit.cover,
+                  cache: true,
+                  clearMemoryCacheWhenDispose: false,
+                  cacheMaxAge: const Duration(minutes: 1),
+                  cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+                  loadStateChanged: (state) {
+                    if (state.extendedImageLoadState == LoadState.loading) {
+                      return Container();
+                    }
+                    if (state.extendedImageLoadState == LoadState.failed) {
+                      return Text(
+                        l10n.unableToLoadImageFrom(Uri.parse(widget.url!).host),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                        ),
+                      );
+                    }
+                  },
+                )
+              : ExtendedImage.memory(
+                  color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+                  colorBlendMode: widget.read == true ? BlendMode.modulate : null,
+                  constraints: widget.isComment == true
+                      ? BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.width * 0.55,
+                          maxWidth: MediaQuery.of(context).size.width * 0.60,
+                        )
+                      : BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 24,
+                        ),
+                  alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
+                  widget.bytes!,
+                  height: widget.height,
+                  width: widget.width,
+                  fit: BoxFit.cover,
+                  clearMemoryCacheWhenDispose: true,
+                  cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+                  loadStateChanged: (state) {
+                    if (state.extendedImageLoadState == LoadState.loading) {
+                      return Container();
+                    }
+                    if (state.extendedImageLoadState == LoadState.failed) {
+                      return Text(
+                        l10n.unableToLoadImage,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                        ),
+                      );
+                    }
+                  },
+                ),
           TweenAnimationBuilder<double>(
             tween: Tween<double>(begin: blur ? startBlur : endBlur, end: blur ? endBlur : startBlur),
             duration: Duration(milliseconds: widget.nsfw ? 250 : 0),

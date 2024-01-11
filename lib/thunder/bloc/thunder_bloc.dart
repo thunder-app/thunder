@@ -5,15 +5,18 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/models/version.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/utils/constants.dart';
@@ -38,20 +41,24 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       _userPreferencesChangeEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<OnScrollToTopEvent>(
-      _onScrollToTopEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
-    on<OnDismissEvent>(
-      _onDismissEvent,
-      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on dismiss read
-    );
     on<OnFabToggle>(
       _onFabToggle,
       transformer: throttleDroppable(throttleDuration),
     );
     on<OnFabSummonToggle>(
       _onFabSummonToggle,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<OnAddAnonymousInstance>(
+      _onAddAnonymousInstance,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<OnRemoveAnonymousInstance>(
+      _onRemoveAnonymousInstance,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<OnSetCurrentAnonymousInstance>(
+      _onSetCurrentAnonymousInstance,
       transformer: throttleDroppable(throttleDuration),
     );
   }
@@ -79,13 +86,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       /// -------------------------- Feed Related Settings --------------------------
       // Default Listing/Sort Settings
-      PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
+      ListingType defaultListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
       try {
-        defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
@@ -99,9 +106,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // General Settings
       bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
       bool openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
+      bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
+      String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name);
+      FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
+      FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -121,12 +132,18 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
+      bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
+      bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+
+      List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
       bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      bool commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
+      bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
           NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
@@ -163,6 +180,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightPrimary.name) ?? SwipeAction.reply.name);
       SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
 
+      bool enableFullScreenSwipeNavigationGesture = prefs.getBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name) ?? true;
+
       /// -------------------------- FAB Related Settings --------------------------
       bool enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? true;
       bool enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? true;
@@ -178,8 +197,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       bool postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
       bool postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
+      bool postFabEnableSearch = prefs.getBool(LocalSettings.postFabEnableSearch.name) ?? true;
 
-      FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
+      FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.newPost.name);
       FeedFabAction feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
       PostFabAction postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
       PostFabAction postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
@@ -190,12 +210,17 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       /// -------------------------- Accessibility Related Settings --------------------------
       bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
 
+      List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ??
+          // If the user already has some accouts (i.e., an upgrade), we don't want to just throw an anonymous instance at them
+          ((await Account.accounts()).isNotEmpty ? [] : ['lemmy.ml']);
+      String currentAnonymousInstance = prefs.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
+
       return emit(state.copyWith(
         status: ThunderStatus.success,
 
         /// -------------------------- Feed Related Settings --------------------------
         // Default Listing/Sort Settings
-        defaultPostListingType: defaultPostListingType,
+        defaultListingType: defaultListingType,
         defaultSortType: defaultSortType,
 
         // NSFW Settings
@@ -208,9 +233,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         // General Settings
         scrapeMissingPreviews: scrapeMissingPreviews,
         openInExternalBrowser: openInExternalBrowser,
+        openInReaderMode: openInReaderMode,
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
         showInAppUpdateNotification: showInAppUpdateNotification,
+        appLanguageCode: appLanguageCode,
+        userSeparator: userSeparator,
+        communitySeparator: communitySeparator,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings
@@ -230,12 +259,17 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showPostAuthor: showPostAuthor,
         scoreCounters: scoreCounters,
         dimReadPosts: dimReadPosts,
+        useAdvancedShareSheet: useAdvancedShareSheet,
+        showCrossPosts: showCrossPosts,
+        keywordFilters: keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings
         defaultCommentSortType: defaultCommentSortType,
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
         showCommentButtonActions: showCommentButtonActions,
+        commentShowUserInstance: commentShowUserInstance,
+        combineCommentScores: combineCommentScores,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,
 
@@ -270,6 +304,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         rightPrimaryCommentGesture: rightPrimaryCommentGesture,
         rightSecondaryCommentGesture: rightSecondaryCommentGesture,
 
+        enableFullScreenSwipeNavigationGesture: enableFullScreenSwipeNavigationGesture,
+
         /// -------------------------- FAB Related Settings --------------------------
         enablePostsFab: enablePostsFab,
         enableFeedsFab: enableFeedsFab,
@@ -285,6 +321,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         postFabEnableChangeSort: postFabEnableChangeSort,
         postFabEnableReplyToPost: postFabEnableReplyToPost,
         postFabEnableRefresh: postFabEnableRefresh,
+        postFabEnableSearch: postFabEnableSearch,
 
         feedFabSinglePressAction: feedFabSinglePressAction,
         feedFabLongPressAction: feedFabLongPressAction,
@@ -296,18 +333,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations: reduceAnimations,
+
+        anonymousInstances: anonymousInstances,
+        currentAnonymousInstance: currentAnonymousInstance,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
-  }
-
-  void _onScrollToTopEvent(OnScrollToTopEvent event, Emitter<ThunderState> emit) {
-    emit(state.copyWith(scrollToTopId: state.scrollToTopId + 1));
-  }
-
-  void _onDismissEvent(OnDismissEvent event, Emitter<ThunderState> emit) {
-    emit(state.copyWith(dismissEvent: !state.dismissEvent));
   }
 
   void _onFabToggle(OnFabToggle event, Emitter<ThunderState> emit) {
@@ -316,5 +348,32 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
   void _onFabSummonToggle(OnFabSummonToggle event, Emitter<ThunderState> emit) {
     emit(state.copyWith(isFabSummoned: !state.isFabSummoned));
+  }
+
+  void _onAddAnonymousInstance(OnAddAnonymousInstance event, Emitter<ThunderState> emit) async {
+    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+
+    prefs.setStringList(LocalSettings.anonymousInstances.name, [...state.anonymousInstances, event.instance]);
+
+    emit(state.copyWith(anonymousInstances: [...state.anonymousInstances, event.instance]));
+  }
+
+  void _onRemoveAnonymousInstance(OnRemoveAnonymousInstance event, Emitter<ThunderState> emit) async {
+    final List<String> instances = state.anonymousInstances;
+    instances.remove(event.instance);
+
+    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    prefs.setStringList(LocalSettings.anonymousInstances.name, instances);
+
+    emit(state.copyWith(anonymousInstances: instances));
+  }
+
+  void _onSetCurrentAnonymousInstance(OnSetCurrentAnonymousInstance event, Emitter<ThunderState> emit) async {
+    LemmyClient.instance.changeBaseUrl(event.instance);
+
+    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    prefs.setString(LocalSettings.currentAnonymousInstance.name, event.instance);
+
+    emit(state.copyWith(currentAnonymousInstance: event.instance));
   }
 }

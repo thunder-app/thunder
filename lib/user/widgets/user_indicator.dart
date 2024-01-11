@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -16,12 +17,14 @@ class UserIndicator extends StatefulWidget {
 
 class _UserIndicatorState extends State<UserIndicator> {
   bool accountError = false;
-  PersonSafe? person;
+  Person? person;
 
   @override
   void initState() {
     super.initState();
-    context.read<AccountBloc>().add(GetAccountInformation());
+
+    person = context.read<AccountBloc>().state.personView?.person;
+    if (person == null) context.read<AccountBloc>().add(GetAccountInformation());
   }
 
   @override
@@ -72,7 +75,7 @@ class _UserIndicatorState extends State<UserIndicator> {
                         children: [
                           Text(person!.displayName ?? person!.name),
                           Text(
-                            '${person!.name}@${fetchInstanceNameFromUrl(person!.actorId) ?? '-'}',
+                            generateUserFullName(context, person!.name, fetchInstanceNameFromUrl(person!.actorId) ?? '-'),
                             style: theme.textTheme.bodySmall,
                             overflow: TextOverflow.ellipsis,
                           ),

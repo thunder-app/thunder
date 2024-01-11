@@ -1,37 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
-
-List<ListPickerItem<SortType>> defaultSortTypeItems = [
-  ListPickerItem(
-    payload: SortType.hot,
-    icon: Icons.local_fire_department_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.hot,
-  ),
-  ListPickerItem(
-    payload: SortType.active,
-    icon: Icons.rocket_launch_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.active,
-  ),
-  ListPickerItem(
-    payload: SortType.new_,
-    icon: Icons.auto_awesome_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.new_,
-  ),
-  ListPickerItem(
-    payload: SortType.mostComments,
-    icon: Icons.comment_bank_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.mostComments,
-  ),
-  ListPickerItem(
-    payload: SortType.newComments,
-    icon: Icons.add_comment_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.newComments,
-  ),
-];
 
 List<ListPickerItem<SortType>> topSortTypeItems = [
   ListPickerItem(
@@ -65,6 +38,21 @@ List<ListPickerItem<SortType>> topSortTypeItems = [
     label: AppLocalizations.of(GlobalContext.context)!.topMonth,
   ),
   ListPickerItem(
+    payload: SortType.topThreeMonths,
+    icon: Icons.calendar_month_outlined,
+    label: AppLocalizations.of(GlobalContext.context)!.topThreeMonths,
+  ),
+  ListPickerItem(
+    payload: SortType.topSixMonths,
+    icon: Icons.calendar_today_outlined,
+    label: AppLocalizations.of(GlobalContext.context)!.topSixMonths,
+  ),
+  ListPickerItem(
+    payload: SortType.topNineMonths,
+    icon: Icons.calendar_view_day_outlined,
+    label: AppLocalizations.of(GlobalContext.context)!.topNineMonths,
+  ),
+  ListPickerItem(
     payload: SortType.topYear,
     icon: Icons.calendar_today,
     label: AppLocalizations.of(GlobalContext.context)!.topYear,
@@ -76,10 +64,66 @@ List<ListPickerItem<SortType>> topSortTypeItems = [
   ),
 ];
 
-List<ListPickerItem<SortType>> allSortTypeItems = [...defaultSortTypeItems, ...topSortTypeItems];
+List<ListPickerItem<SortType>> allSortTypeItems = [...SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always), ...topSortTypeItems];
 
 class SortPicker extends BottomSheetListPicker<SortType> {
-  SortPicker({super.key, required super.onSelect, required super.title, List<ListPickerItem<SortType>>? items, super.previouslySelected}) : super(items: items ?? defaultSortTypeItems);
+  final IncludeVersionSpecificFeature includeVersionSpecificFeature;
+
+  static List<ListPickerItem<SortType>> getDefaultSortTypeItems({IncludeVersionSpecificFeature includeVersionSpecificFeature = IncludeVersionSpecificFeature.ifSupported}) => [
+        ListPickerItem(
+          payload: SortType.hot,
+          icon: Icons.local_fire_department_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.hot,
+        ),
+        ListPickerItem(
+          payload: SortType.active,
+          icon: Icons.rocket_launch_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.active,
+        ),
+        if (includeVersionSpecificFeature == IncludeVersionSpecificFeature.always ||
+            (includeVersionSpecificFeature == IncludeVersionSpecificFeature.ifSupported && LemmyClient.instance.supportsFeature(LemmyFeature.sortTypeScaled)))
+          ListPickerItem(
+            payload: SortType.scaled,
+            icon: Icons.line_weight_rounded,
+            label: AppLocalizations.of(GlobalContext.context)!.scaled,
+          ),
+        if (includeVersionSpecificFeature == IncludeVersionSpecificFeature.always ||
+            (includeVersionSpecificFeature == IncludeVersionSpecificFeature.ifSupported && LemmyClient.instance.supportsFeature(LemmyFeature.sortTypeControversial)))
+          ListPickerItem(
+            payload: SortType.controversial,
+            icon: Icons.warning_rounded,
+            label: AppLocalizations.of(GlobalContext.context)!.controversial,
+          ),
+        ListPickerItem(
+          payload: SortType.new_,
+          icon: Icons.auto_awesome_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.new_,
+        ),
+        ListPickerItem(
+          payload: SortType.old,
+          icon: Icons.access_time_outlined,
+          label: AppLocalizations.of(GlobalContext.context)!.old,
+        ),
+        ListPickerItem(
+          payload: SortType.mostComments,
+          icon: Icons.comment_bank_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.mostComments,
+        ),
+        ListPickerItem(
+          payload: SortType.newComments,
+          icon: Icons.add_comment_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.newComments,
+        ),
+      ];
+
+  SortPicker(
+      {super.key,
+      required super.onSelect,
+      required super.title,
+      List<ListPickerItem<SortType>>? items,
+      super.previouslySelected,
+      this.includeVersionSpecificFeature = IncludeVersionSpecificFeature.ifSupported})
+      : super(items: items ?? getDefaultSortTypeItems(includeVersionSpecificFeature: includeVersionSpecificFeature));
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -96,12 +140,12 @@ class _SortPickerState extends State<SortPicker> {
         transitionBuilder: (Widget child, Animation<double> animation) {
           return FadeTransition(opacity: animation, child: child);
         },
-        child: topSelected ? topSortPicker() : defaultSortPicker(),
+        child: topSelected ? topSortPicker() : defaultSortPicker(widget.includeVersionSpecificFeature),
       ),
     );
   }
 
-  Widget defaultSortPicker() {
+  Widget defaultSortPicker(IncludeVersionSpecificFeature includeVersionSpecificFeature) {
     final theme = Theme.of(context);
 
     return Column(
@@ -123,7 +167,7 @@ class _SortPickerState extends State<SortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(defaultSortTypeItems, theme),
+            ..._generateList(SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: widget.includeVersionSpecificFeature), theme),
             PickerItem(
               label: AppLocalizations.of(GlobalContext.context)!.top,
               icon: Icons.military_tech,

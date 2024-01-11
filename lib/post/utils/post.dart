@@ -17,40 +17,45 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 
+extension on MarkPostAsReadResponse {
+  bool isSuccess() {
+    return postView != null || success == true;
+  }
+}
+
 /// Logic to mark post as read
-Future<PostView> markPostAsRead(int postId, bool read) async {
+Future<bool> markPostAsRead(int postId, bool read) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostView postResponse = await lemmy.run(MarkPostAsRead(
+  MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
     auth: account!.jwt!,
     postId: postId,
     read: read,
   ));
 
-  PostView updatedPostView = postResponse;
-  return updatedPostView;
+  return markPostAsReadResponse.isSuccess();
 }
 
-// Optimistically updates a post
-PostView optimisticallyVotePost(PostViewMedia postViewMedia, VoteType voteType) {
+// Optimistically updates a post. This changes the value of the post locally, without sending the network request
+PostView optimisticallyVotePost(PostViewMedia postViewMedia, int voteType) {
   int newScore = postViewMedia.postView.counts.score;
-  VoteType? existingVoteType = postViewMedia.postView.myVote;
+  int? existingint = postViewMedia.postView.myVote;
 
   switch (voteType) {
-    case VoteType.down:
-      newScore--;
+    case -1:
+      existingint == 1 ? newScore -= 2 : newScore--;
       break;
-    case VoteType.up:
-      newScore++;
+    case 1:
+      existingint == -1 ? newScore += 2 : newScore++;
       break;
-    case VoteType.none:
+    case 0:
       // Determine score from existing
-      if (existingVoteType == VoteType.down) {
+      if (existingint == -1) {
         newScore++;
-      } else if (existingVoteType == VoteType.up) {
+      } else if (existingint == 1) {
         newScore--;
       }
       break;
@@ -59,20 +64,30 @@ PostView optimisticallyVotePost(PostViewMedia postViewMedia, VoteType voteType) 
   return postViewMedia.postView.copyWith(myVote: voteType, counts: postViewMedia.postView.counts.copyWith(score: newScore));
 }
 
+// Optimistically saves a post. This changes the value of the post locally, without sending the network request
+PostView optimisticallySavePost(PostViewMedia postViewMedia, bool saved) {
+  return postViewMedia.postView.copyWith(saved: saved);
+}
+
+// Optimistically marks a post as read/unread. This changes the value of the post locally, without sending the network request
+PostView optimisticallyReadPost(PostViewMedia postViewMedia, bool read) {
+  return postViewMedia.postView.copyWith(read: read);
+}
+
 /// Logic to vote on a post
-Future<PostView> votePost(int postId, VoteType score) async {
+Future<PostView> votePost(int postId, int score) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostView postResponse = await lemmy.run(CreatePostLike(
+  PostResponse postResponse = await lemmy.run(CreatePostLike(
     auth: account!.jwt!,
     postId: postId,
     score: score,
   ));
 
-  PostView updatedPostView = postResponse;
+  PostView updatedPostView = postResponse.postView;
   return updatedPostView;
 }
 
@@ -83,13 +98,13 @@ Future<PostView> savePost(int postId, bool save) async {
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostView postResponse = await lemmy.run(SavePost(
+  PostResponse postResponse = await lemmy.run(SavePost(
     auth: account!.jwt!,
     postId: postId,
     save: save,
   ));
 
-  PostView updatedPostView = postResponse;
+  PostView updatedPostView = postResponse.postView;
   return updatedPostView;
 }
 
@@ -97,7 +112,7 @@ Future<PostView> savePost(int postId, bool save) async {
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+  bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) == true && prefs.getBool(LocalSettings.useCompactView.name) != true;
   bool edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
   bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
@@ -131,20 +146,25 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   } else if (url != null) {
     if (fetchImageDimensions) {
       if (postView.post.thumbnailUrl?.isNotEmpty == true) {
-        Size result = await retrieveImageDimensions(postView.post.thumbnailUrl!);
-        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
-        media.add(Media(
-          mediaUrl: postView.post.thumbnailUrl!,
-          mediaType: MediaType.link,
-          originalUrl: url,
-          width: size.width,
-          height: size.height,
-        ));
-      } else {
-        // For external links, attempt to fetch any media associated with it (image, title)
-        LinkInfo linkInfo = await getLinkInfo(url);
-
         try {
+          Size result = await retrieveImageDimensions(postView.post.thumbnailUrl!);
+          Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+          media.add(Media(
+            mediaUrl: postView.post.thumbnailUrl!,
+            mediaType: MediaType.link,
+            originalUrl: url,
+            width: size.width,
+            height: size.height,
+          ));
+        } catch (e) {
+          // If it fails, fall back to a media type of link
+          media.add(Media(originalUrl: url, mediaType: MediaType.link));
+        }
+      } else {
+        try {
+          // For external links, attempt to fetch any media associated with it (image, title)
+          LinkInfo linkInfo = await getLinkInfo(url);
+
           if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
             Size result = await retrieveImageDimensions(linkInfo.imageURL!);
 
@@ -182,7 +202,6 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
       saved: postView.saved,
       subscribed: postView.subscribed,
       unreadComments: postView.unreadComments,
-      instanceHost: postView.instanceHost,
     ),
     media: media,
   );

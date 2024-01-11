@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
-import 'package:thunder/community/bloc/community_bloc.dart' as community;
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/user/utils/logout_dialog.dart';
 
 class UserPage extends StatefulWidget {
   final int? userId;
   final bool isAccountUser;
   final String? username;
+  final List<bool>? selectedUserOption;
+  final PrimitiveWrapper<bool>? savedToggle;
 
-  const UserPage({super.key, this.userId, this.isAccountUser = false, this.username});
+  const UserPage({
+    super.key,
+    this.userId,
+    this.isAccountUser = false,
+    this.username,
+    this.selectedUserOption,
+    this.savedToggle,
+  });
 
   @override
   State<UserPage> createState() => _UserPageState();
@@ -41,37 +47,7 @@ class _UserPageState extends State<UserPage> {
         scrolledUnderElevation: 0,
         leading: widget.isAccountUser
             ? IconButton(
-                onPressed: () {
-                  showDialog<void>(
-                      context: context,
-                      builder: (context) => BlocProvider<AuthBloc>.value(
-                            value: context.read<AuthBloc>(),
-                            child: AlertDialog(
-                              title: Text(
-                                'Are you sure you want to log out?',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      context.pop();
-                                    },
-                                    child: const Text('Cancel')),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                FilledButton(
-                                    onPressed: () {
-                                      context.read<AuthBloc>().add(RemoveAccount(
-                                            accountId: context.read<AuthBloc>().state.account!.id,
-                                          ));
-                                      context.pop();
-                                    },
-                                    child: const Text('Log out'))
-                              ],
-                            ),
-                          ));
-                },
+                onPressed: () => showLogOutDialog(context),
                 icon: Icon(
                   Icons.logout,
                   semanticLabel: AppLocalizations.of(context)!.logOut,
@@ -101,12 +77,13 @@ class _UserPageState extends State<UserPage> {
                   Navigator.of(context).push(
                     SwipeablePageRoute(
                       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                      canOnlySwipeFromEdge: !state.enableFullScreenSwipeNavigationGesture,
                       builder: (context) => MultiBlocProvider(
                         providers: [
                           BlocProvider.value(value: accountBloc),
                           BlocProvider.value(value: thunderBloc),
                         ],
-                        child: UserSettingsPage(widget.userId),
+                        child: const UserSettingsPage(),
                       ),
                     ),
                   );
@@ -133,10 +110,7 @@ class _UserPageState extends State<UserPage> {
         ],
       ),
       body: MultiBlocProvider(
-        providers: [
-          BlocProvider<UserBloc>(create: (BuildContext context) => UserBloc()),
-          BlocProvider(create: (context) => community.CommunityBloc()),
-        ],
+        providers: [BlocProvider<UserBloc>(create: (BuildContext context) => UserBloc())],
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
           userBloc = context.read<UserBloc>();
 
@@ -166,16 +140,16 @@ class _UserPageState extends State<UserPage> {
                 hasReachedPostEnd: state.hasReachedPostEnd,
                 hasReachedSavedPostEnd: state.hasReachedSavedPostEnd,
                 blockedPerson: state.blockedPerson,
+                selectedUserOption: widget.selectedUserOption,
+                savedToggle: widget.savedToggle,
               );
             case UserStatus.empty:
               return Container();
             case UserStatus.failure:
               return ErrorMessage(
                 message: state.errorMessage,
-                action: () {
-                  context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true));
-                },
-                actionText: 'Refresh Content',
+                action: () => context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true)),
+                actionText: AppLocalizations.of(context)!.refreshContent,
               );
           }
         }),

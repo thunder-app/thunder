@@ -27,3 +27,18 @@ class OnFabSummonToggle extends ThunderEvent {
   final bool isFabSummoned;
   const OnFabSummonToggle(this.isFabSummoned);
 }
+
+class OnAddAnonymousInstance extends ThunderEvent {
+  final String instance;
+  const OnAddAnonymousInstance(this.instance);
+}
+
+class OnRemoveAnonymousInstance extends ThunderEvent {
+  final String instance;
+  const OnRemoveAnonymousInstance(this.instance);
+}
+
+class OnSetCurrentAnonymousInstance extends ThunderEvent {
+  final String instance;
+  const OnSetCurrentAnonymousInstance(this.instance);
+}

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/navigate_community.dart';
 
 class AboutSettingsPage extends StatelessWidget {
   const AboutSettingsPage({super.key});
@@ -15,7 +16,6 @@ class AboutSettingsPage extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
 
     final ThunderState state = context.read<ThunderBloc>().state;
-    final openInExternalBrowser = state.openInExternalBrowser;
 
     return Scaffold(
       appBar: AppBar(centerTitle: false),
@@ -49,7 +49,7 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('github.com/thunder-app/thunder'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    openLink(context, url: 'https://github.com/thunder-app/thunder', openInExternalBrowser: openInExternalBrowser);
+                    handleLink(context, url: 'https://github.com/thunder-app/thunder');
                   },
                 ),
                 ListTile(
@@ -60,7 +60,7 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('lemmy.world/c/thunder_app'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    navigateToCommunityPage(context, communityName: 'thunder_app@lemmy.world');
+                    navigateToFeedPage(context, feedType: FeedType.community, communityName: 'thunder_app@lemmy.world');
                   },
                 ),
                 ListTile(
@@ -71,7 +71,7 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('matrix.to/#/#thunderapp:matrix.org'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    openLink(context, url: 'https://matrix.to/#/#thunderapp:matrix.org', openInExternalBrowser: openInExternalBrowser);
+                    handleLink(context, url: 'https://matrix.to/#/#thunderapp:matrix.org');
                   },
                 ),
                 ListTile(

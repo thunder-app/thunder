@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
@@ -13,21 +14,24 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:thunder/shared/dialogs.dart';
 
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImageViewer extends StatefulWidget {
-  final String url;
+  final String? url;
+  final Uint8List? bytes;
   final int? postId;
   final void Function()? navigateToPost;
 
   const ImageViewer({
     super.key,
-    required this.url,
+    this.url,
+    this.bytes,
     this.postId,
     this.navigateToPost,
-  });
+  }) : assert(url != null || bytes != null);
 
   get postViewMedia => null;
 
@@ -54,21 +58,23 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   bool isDownloadingMedia = false;
 
-  void _maybeSlide() {
+  void _maybeSlide(BuildContext context) {
     setState(() {
       maybeSlideZooming = true;
     });
     Timer(const Duration(milliseconds: 300), () {
-      setState(() {
-        maybeSlideZooming = false;
-      });
+      if (context.mounted) {
+        setState(() {
+          maybeSlideZooming = false;
+        });
+      }
     });
   }
 
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
 
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
@@ -84,28 +90,22 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
       hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
     }
 
-    if (Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
+    if (!kIsWeb && Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
     return hasPhotosPermission;
   }
 
   /// Shows a dialog indicating that permissions have been denied, and must be granted in order to save image.
   void showPermissionDeniedDialog(BuildContext context) {
-    showDialog(
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    showThunderDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Permission Denied'),
-          content: const Text('Thunder requires some permissions in order to save this image which has been denied.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                openAppSettings();
-              },
-              child: const Text('Open Settings'),
-            )
-          ],
-        );
+      title: l10n.permissionDenied,
+      contentText: l10n.permissionDeniedMessage,
+      onPrimaryButtonPressed: (_, __) {
+        openAppSettings();
       },
+      primaryButtonText: l10n.openSettings,
     );
   }
 
@@ -185,7 +185,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                       onPointerUp: (details) {
                         downCoord = details.position;
                         if (!slideZooming) {
-                          _maybeSlide();
+                          _maybeSlide(context);
                         }
                       },
                       child: ExtendedImageSlidePage(
@@ -222,56 +222,107 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                           }
                           return true;
                         },
-                        child: ExtendedImage.network(
-                          widget.url,
-                          color: Colors.white.withOpacity(imageTransparency),
-                          colorBlendMode: BlendMode.dstIn,
-                          enableSlideOutPage: true,
-                          mode: ExtendedImageMode.gesture,
-                          extendedImageGestureKey: gestureKey,
-                          cache: true,
-                          clearMemoryCacheWhenDispose: true,
-                          initGestureConfigHandler: (ExtendedImageState state) {
-                            return GestureConfig(
-                              minScale: 0.8,
-                              animationMinScale: 0.8,
-                              maxScale: 4.0,
-                              animationMaxScale: 4.0,
-                              speed: 1.0,
-                              inertialSpeed: 250.0,
-                              initialScale: 1.0,
-                              inPageView: false,
-                              initialAlignment: InitialAlignment.center,
-                              reverseMousePointerScrollDirection: true,
-                              gestureDetailsIsChanged: (GestureDetails? details) {},
-                            );
-                          },
-                          onDoubleTap: (ExtendedImageGestureState state) {
-                            var pointerDownPosition = state.pointerDownPosition;
-                            double begin = state.gestureDetails!.totalScale!;
-                            double end;
+                        child: widget.url != null
+                            ? ExtendedImage.network(
+                                widget.url!,
+                                color: Colors.white.withOpacity(imageTransparency),
+                                colorBlendMode: BlendMode.dstIn,
+                                enableSlideOutPage: true,
+                                mode: ExtendedImageMode.gesture,
+                                extendedImageGestureKey: gestureKey,
+                                cache: true,
+                                clearMemoryCacheWhenDispose: false,
+                                cacheMaxAge: const Duration(minutes: 1),
+                                initGestureConfigHandler: (ExtendedImageState state) {
+                                  return GestureConfig(
+                                    minScale: 0.8,
+                                    animationMinScale: 0.8,
+                                    maxScale: 4.0,
+                                    animationMaxScale: 4.0,
+                                    speed: 1.0,
+                                    inertialSpeed: 250.0,
+                                    initialScale: 1.0,
+                                    inPageView: false,
+                                    initialAlignment: InitialAlignment.center,
+                                    reverseMousePointerScrollDirection: true,
+                                    gestureDetailsIsChanged: (GestureDetails? details) {},
+                                  );
+                                },
+                                onDoubleTap: (ExtendedImageGestureState state) {
+                                  var pointerDownPosition = state.pointerDownPosition;
+                                  double begin = state.gestureDetails!.totalScale!;
+                                  double end;
 
-                            animation?.removeListener(animationListener);
-                            animationController.stop();
-                            animationController.reset();
+                                  animation?.removeListener(animationListener);
+                                  animationController.stop();
+                                  animationController.reset();
 
-                            if (begin == 1) {
-                              end = 2;
-                            } else if (begin > 1.99 && begin < 2.01) {
-                              end = 4;
-                            } else {
-                              end = 1;
-                            }
-                            animationListener = () {
-                              state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
-                            };
-                            animation = animationController.drive(Tween<double>(begin: begin, end: end));
+                                  if (begin == 1) {
+                                    end = 2;
+                                  } else if (begin > 1.99 && begin < 2.01) {
+                                    end = 4;
+                                  } else {
+                                    end = 1;
+                                  }
+                                  animationListener = () {
+                                    state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                                  };
+                                  animation = animationController.drive(Tween<double>(begin: begin, end: end));
 
-                            animation!.addListener(animationListener);
+                                  animation!.addListener(animationListener);
 
-                            animationController.forward();
-                          },
-                        ),
+                                  animationController.forward();
+                                },
+                              )
+                            : ExtendedImage.memory(
+                                widget.bytes!,
+                                color: Colors.white.withOpacity(imageTransparency),
+                                colorBlendMode: BlendMode.dstIn,
+                                enableSlideOutPage: true,
+                                mode: ExtendedImageMode.gesture,
+                                extendedImageGestureKey: gestureKey,
+                                clearMemoryCacheWhenDispose: true,
+                                initGestureConfigHandler: (ExtendedImageState state) {
+                                  return GestureConfig(
+                                    minScale: 0.8,
+                                    animationMinScale: 0.8,
+                                    maxScale: 4.0,
+                                    animationMaxScale: 4.0,
+                                    speed: 1.0,
+                                    inertialSpeed: 250.0,
+                                    initialScale: 1.0,
+                                    inPageView: false,
+                                    initialAlignment: InitialAlignment.center,
+                                    reverseMousePointerScrollDirection: true,
+                                    gestureDetailsIsChanged: (GestureDetails? details) {},
+                                  );
+                                },
+                                onDoubleTap: (ExtendedImageGestureState state) {
+                                  var pointerDownPosition = state.pointerDownPosition;
+                                  double begin = state.gestureDetails!.totalScale!;
+                                  double end;
+
+                                  animation?.removeListener(animationListener);
+                                  animationController.stop();
+                                  animationController.reset();
+
+                                  if (begin == 1) {
+                                    end = 2;
+                                  } else if (begin > 1.99 && begin < 2.01) {
+                                    end = 4;
+                                  } else {
+                                    end = 1;
+                                  }
+                                  animationListener = () {
+                                    state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                                  };
+                                  animation = animationController.drive(Tween<double>(begin: begin, end: end));
+
+                                  animation!.addListener(animationListener);
+
+                                  animationController.forward();
+                                },
+                              ),
                       ),
                     ),
                   ),
@@ -285,103 +336,105 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: IconButton(
-                            onPressed: fullscreen
-                                ? null
-                                : () async {
-                                    try {
-                                      // Try to get the cached image first
-                                      var media = await DefaultCacheManager().getFileFromCache(widget.url);
-                                      File? mediaFile = media?.file;
+                        if (widget.url != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: fullscreen
+                                  ? null
+                                  : () async {
+                                      try {
+                                        // Try to get the cached image first
+                                        var media = await DefaultCacheManager().getFileFromCache(widget.url!);
+                                        File? mediaFile = media?.file;
 
-                                      if (media == null) {
-                                        setState(() => isDownloadingMedia = true);
+                                        if (media == null) {
+                                          setState(() => isDownloadingMedia = true);
 
-                                        // Download
-                                        mediaFile = await DefaultCacheManager().getSingleFile(widget.url);
+                                          // Download
+                                          mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
+                                        }
+
+                                        // Share
+                                        await Share.shareXFiles([XFile(mediaFile!.path)]);
+                                      } catch (e) {
+                                        // Tell the user that the download failed
+                                        showSnackbar(context, AppLocalizations.of(context)!.errorDownloadingMedia(e), customState: _imageViewer.currentState);
+                                      } finally {
+                                        setState(() => isDownloadingMedia = false);
                                       }
-
-                                      // Share
-                                      await Share.shareXFiles([XFile(mediaFile!.path)]);
-                                    } catch (e) {
-                                      // Tell the user that the download failed
-                                      showSnackbar(context, AppLocalizations.of(context)!.errorDownloadingMedia(e), customState: _imageViewer.currentState);
-                                    } finally {
-                                      setState(() => isDownloadingMedia = false);
-                                    }
-                                  },
-                            icon: isDownloadingMedia
-                                ? SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
+                                    },
+                              icon: isDownloadingMedia
+                                  ? SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white.withOpacity(0.90),
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.share_rounded,
+                                      semanticLabel: "Share",
                                       color: Colors.white.withOpacity(0.90),
+                                      shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
                                     ),
-                                  )
-                                : Icon(
-                                    Icons.share_rounded,
-                                    semanticLabel: "Share",
-                                    color: Colors.white.withOpacity(0.90),
-                                    shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
-                                  ),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: IconButton(
-                            onPressed: fullscreen
-                                ? null
-                                : () async {
-                                    File file = await DefaultCacheManager().getSingleFile(widget.url);
-                                    bool hasPermission = await _requestPermission();
+                        if (widget.url != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: fullscreen || widget.url == null
+                                  ? null
+                                  : () async {
+                                      File file = await DefaultCacheManager().getSingleFile(widget.url!);
+                                      bool hasPermission = await _requestPermission();
 
-                                    if (!hasPermission) {
-                                      if (context.mounted) showPermissionDeniedDialog(context);
-                                    }
-
-                                    if ((Platform.isAndroid || Platform.isIOS) && hasPermission) {
-                                      if (Platform.isAndroid) {
-                                        // Save image to [internal storage]/Pictures/Thunder
-                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
-                                          setState(() => downloaded = value as bool);
-                                        });
-                                      } else if (Platform.isIOS) {
-                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((bool? value) {
-                                          if (value == null || value == false) {
-                                            // If the image cannot be saved to the Thunder album, then just save it to Photos
-                                            GallerySaver.saveImage(file.path).then((value) => setState(() => downloaded = value as bool));
-                                          }
-
-                                          setState(() => downloaded = value ?? false);
-                                        });
+                                      if (!hasPermission) {
+                                        if (context.mounted) showPermissionDeniedDialog(context);
                                       }
-                                    } else if (Platform.isLinux || Platform.isWindows) {
-                                      final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
 
-                                      File(filePath)
-                                        ..createSync(recursive: true)
-                                        ..writeAsBytesSync(file.readAsBytesSync());
+                                      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS) && hasPermission) {
+                                        if (!kIsWeb && Platform.isAndroid) {
+                                          // Save image to [internal storage]/Pictures/Thunder
+                                          GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
+                                            setState(() => downloaded = value as bool);
+                                          });
+                                        } else if (!kIsWeb && Platform.isIOS) {
+                                          GallerySaver.saveImage(file.path, albumName: "Thunder").then((bool? value) {
+                                            if (value == null || value == false) {
+                                              // If the image cannot be saved to the Thunder album, then just save it to Photos
+                                              GallerySaver.saveImage(file.path).then((value) => setState(() => downloaded = value as bool));
+                                            }
 
-                                      setState(() => downloaded = true);
-                                    }
-                                  },
-                            icon: downloaded
-                                ? const Icon(
-                                    Icons.check_circle,
-                                    semanticLabel: 'Downloaded',
-                                    color: Colors.white,
-                                    shadows: <Shadow>[Shadow(color: Colors.black45, blurRadius: 50.0)],
-                                  )
-                                : Icon(
-                                    Icons.download,
-                                    semanticLabel: "Download",
-                                    color: Colors.white.withOpacity(0.90),
-                                    shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
-                                  ),
+                                            setState(() => downloaded = value ?? false);
+                                          });
+                                        }
+                                      } else if (!kIsWeb && Platform.isLinux || Platform.isWindows) {
+                                        final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
+
+                                        File(filePath)
+                                          ..createSync(recursive: true)
+                                          ..writeAsBytesSync(file.readAsBytesSync());
+
+                                        setState(() => downloaded = true);
+                                      }
+                                    },
+                              icon: downloaded
+                                  ? const Icon(
+                                      Icons.check_circle,
+                                      semanticLabel: 'Downloaded',
+                                      color: Colors.white,
+                                      shadows: <Shadow>[Shadow(color: Colors.black45, blurRadius: 50.0)],
+                                    )
+                                  : Icon(
+                                      Icons.download,
+                                      semanticLabel: "Download",
+                                      color: Colors.white.withOpacity(0.90),
+                                      shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                    ),
+                            ),
                           ),
-                        ),
                         if (widget.navigateToPost != null)
                           Padding(
                             padding: const EdgeInsets.all(4.0),

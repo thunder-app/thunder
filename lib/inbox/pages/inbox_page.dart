@@ -5,39 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 
+import 'package:thunder/inbox/widgets/inbox_categories_widget.dart';
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
 import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum InboxType { replies, mentions, messages }
-
-class InboxCategory {
-  final InboxType type;
-  final String title;
-  final IconData icon;
-
-  InboxCategory({required this.type, required this.title, required this.icon});
-}
-
-List<InboxCategory> inboxCategories = [
-  InboxCategory(
-    type: InboxType.replies,
-    title: 'Replies',
-    icon: Icons.comment_bank_rounded,
-  ),
-  InboxCategory(
-    type: InboxType.mentions,
-    title: 'Mentions',
-    icon: Icons.comment_bank_rounded,
-  ),
-  InboxCategory(
-    type: InboxType.messages,
-    title: 'Messages',
-    icon: Icons.message_rounded,
-  ),
-];
 
 class InboxPage extends StatefulWidget {
   const InboxPage({super.key});
@@ -47,10 +24,8 @@ class InboxPage extends StatefulWidget {
 }
 
 class _InboxPageState extends State<InboxPage> {
-  InboxType? _inboxType = inboxCategories[0].type;
-
   bool showAll = false;
-
+  InboxType? inboxType = InboxType.replies;
   final _scrollController = ScrollController(initialScrollOffset: 0);
 
   @override
@@ -74,17 +49,40 @@ class _InboxPageState extends State<InboxPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80.0,
         centerTitle: false,
-        title: AutoSizeText('Inbox', style: theme.textTheme.titleLarge),
+        title: AutoSizeText(l10n.inbox, style: theme.textTheme.titleLarge),
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
+              Icons.checklist,
+              semanticLabel: l10n.readAll,
+            ),
+            onPressed: () async {
+              await showThunderDialog<bool>(
+                context: context,
+                title: l10n.confirmMarkAllAsReadTitle,
+                contentText: l10n.confirmMarkAllAsReadBody,
+                onSecondaryButtonPressed: (dialogContext) {
+                  Navigator.of(dialogContext).pop();
+                },
+                secondaryButtonText: l10n.cancel,
+                onPrimaryButtonPressed: (dialogContext, _) {
+                  Navigator.of(dialogContext).pop();
+                  context.read<InboxBloc>().add(MarkAllAsReadEvent());
+                },
+                primaryButtonText: l10n.markAllAsRead,
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(
               Icons.refresh_rounded,
-              semanticLabel: 'Refresh',
+              semanticLabel: l10n.refresh,
             ),
             onPressed: () {
               context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll));
@@ -93,7 +91,7 @@ class _InboxPageState extends State<InboxPage> {
           FilterChip(
             shape: const StadiumBorder(),
             visualDensity: VisualDensity.compact,
-            label: const Text('Show All'),
+            label: Text(l10n.showAll),
             selected: showAll,
             onSelected: (bool selected) {
               setState(() => showAll = !showAll);
@@ -107,20 +105,14 @@ class _InboxPageState extends State<InboxPage> {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Center(
-              child: Wrap(
-                spacing: 5.0,
-                children: inboxCategories.map((InboxCategory inboxCategory) {
-                  return ChoiceChip(
-                    label: Text(inboxCategory.title),
-                    selected: _inboxType == inboxCategory.type,
-                    onSelected: (bool selected) {
-                      _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
-                      setState(() {
-                        _inboxType = selected ? inboxCategory.type : null;
-                      });
-                    },
-                  );
-                }).toList(),
+              child: InboxCategoryWidget(
+                inboxType: inboxType,
+                onSelected: (InboxType? selected) {
+                  _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
+                  setState(() {
+                    inboxType = selected;
+                  });
+                },
               ),
             ),
           ),
@@ -141,7 +133,7 @@ class _InboxPageState extends State<InboxPage> {
                 BlocBuilder<InboxBloc, InboxState>(
                   builder: (context, InboxState state) {
                     if (context.read<AuthBloc>().state.isLoggedIn == false) {
-                      return Align(alignment: Alignment.topCenter, child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
+                      return Align(alignment: Alignment.topCenter, child: Text(l10n.loginToSeeInbox, style: theme.textTheme.titleMedium));
                     }
 
                     switch (state.status) {
@@ -161,15 +153,15 @@ class _InboxPageState extends State<InboxPage> {
                         );
                       case InboxStatus.refreshing:
                       case InboxStatus.success:
-                        if (_inboxType == InboxType.mentions) return InboxMentionsView(mentions: state.mentions);
-                        if (_inboxType == InboxType.messages) return InboxPrivateMessagesView(privateMessages: state.privateMessages);
-                        if (_inboxType == InboxType.replies) return InboxRepliesView(replies: state.replies);
+                        if (inboxType == InboxType.mentions) return InboxMentionsView(mentions: state.mentions);
+                        if (inboxType == InboxType.messages) return InboxPrivateMessagesView(privateMessages: state.privateMessages);
+                        if (inboxType == InboxType.replies) return InboxRepliesView(replies: state.replies, showAll: showAll);
                       case InboxStatus.empty:
-                        return const Center(child: Text('Empty Inbox'));
+                        return Center(child: Text(l10n.emptyInbox));
                       case InboxStatus.failure:
                         return ErrorMessage(
                           message: state.errorMessage,
-                          actionText: 'Refresh Content',
+                          actionText: l10n.refreshContent,
                           action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
                         );
                     }

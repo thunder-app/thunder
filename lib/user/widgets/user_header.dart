@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/user_avatar.dart';
@@ -10,7 +11,7 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class UserHeader extends StatelessWidget {
-  final PersonViewSafe? userInfo;
+  final PersonView? userInfo;
 
   const UserHeader({
     super.key,
@@ -90,7 +91,7 @@ class UserHeader extends StatelessWidget {
                           overflow: TextOverflow.fade,
                         ),
                         Text(
-                          '${userInfo?.person.name ?? '-'}@${fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-'}',
+                          generateUserFullName(context, userInfo?.person.name ?? '-', fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-'),
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8.0),

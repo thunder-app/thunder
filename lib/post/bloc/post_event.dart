@@ -30,7 +30,7 @@ class GetPostCommentsEvent extends PostEvent {
 
 class VotePostEvent extends PostEvent {
   final int postId;
-  final VoteType score;
+  final int score;
 
   const VotePostEvent({required this.postId, required this.score});
 }
@@ -44,7 +44,7 @@ class SavePostEvent extends PostEvent {
 
 class VoteCommentEvent extends PostEvent {
   final int commentId;
-  final VoteType score;
+  final int score;
 
   const VoteCommentEvent({required this.commentId, required this.score});
 }
@@ -86,4 +86,28 @@ class NavigateCommentEvent extends PostEvent {
   final int targetIndex;
 
   const NavigateCommentEvent({required this.targetIndex, required this.direction});
+}
+
+class StartCommentSearchEvent extends PostEvent {
+  final List<Comment> commentMatches;
+
+  const StartCommentSearchEvent({required this.commentMatches});
+}
+
+class ContinueCommentSearchEvent extends PostEvent {
+  const ContinueCommentSearchEvent();
+}
+
+class EndCommentSearchEvent extends PostEvent {
+  const EndCommentSearchEvent();
+}
+
+class ReportCommentEvent extends PostEvent {
+  final int commentId;
+  final String message;
+
+  const ReportCommentEvent({
+    required this.commentId,
+    required this.message,
+  });
 }

@@ -35,6 +35,7 @@
   <a href="#features">Features</a> •
   <a href="#roadmap">Roadmap</a> •
   <a href="#contributing">Contributing</a> •
+  <a href="#translations">Translations</a> •
   <a href="#building-from-source">Building From Source</a> •
   <a href="#conventions">Conventions</a>
 </p>
@@ -50,7 +51,7 @@
 
 <hr />
 <p>
-Hey there! Just wanted to let you know that this repo is currently my personal side project to build something cool while learning about Dart and Flutter.  
+Hey there! Just wanted to let you know that this repo is currently my personal side project to build something cool while learning about Dart and Flutter.
 </p>
 <p>
 Contributions to this project are always welcomed, and in fact, even strongly encouraged here! Since I am only able to work on this during my spare time, any contributions from the community is valuable. If you are a developer, feel free to tackle any issues present.
@@ -132,6 +133,9 @@ Contributions are always welcome! To contribute potential features or bug-fixes:
 3. Apply any changes and/or additions based off an existing issue (or create a new issue for the feature/fix you are working on)
 4. Create a pull request to have your changes reviewed and merged
 
+## Translations
+Interested in translating Thunder? We use [Weblate](https://hosted.weblate.org/engage/thunder/) to crowdsource translations, so anyone can create an account and contribute!
+
 ## Building From Source
 
 ### Installing Flutter and Related Dependencies
@@ -141,9 +145,8 @@ Thunder is developed with Flutter, and is built to support both iOS and Android.
 To build the app from source, a few steps are required.
 
 1. Set up and install Flutter. For more information, visit https://docs.flutter.dev/get-started/install.
-2. Ensure that you are on Flutter's `beta` channel using `flutter channel beta`. 
+2. Ensure that you are on Flutter's `beta` channel using `flutter channel beta`.
 2. Clone this repository and fetch the dependencies using `flutter pub get`
-3. Generate an empty `.env` file. The `.env` file holds any credentials. At the time of writing, en empty `.env` file with a comment is all that is required.
 4. Run `flutter gen-l10n` to generate the localization files.
 5. Optional: Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions. This step is only required if you want to build a release version of the app.
 

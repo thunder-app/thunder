@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/swipe_picker.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GestureSettingsPage extends StatefulWidget {
   const GestureSettingsPage({super.key});
@@ -39,6 +38,8 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   SwipeAction leftSecondaryCommentGesture = SwipeAction.downvote;
   SwipeAction rightPrimaryCommentGesture = SwipeAction.reply;
   SwipeAction rightSecondaryCommentGesture = SwipeAction.save;
+
+  bool enableFullScreenSwipeNavigationGesture = true;
 
   /// Loading
   bool isLoading = true;
@@ -118,6 +119,9 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
         await prefs.setString(LocalSettings.commentGestureRightSecondary.name, (value as SwipeAction).name);
         setState(() => rightSecondaryCommentGesture = value);
         break;
+      case LocalSettings.enableFullScreenSwipeNavigationGesture:
+        await prefs.setBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name, value);
+        setState(() => enableFullScreenSwipeNavigationGesture = value);
     }
 
     if (context.mounted) {
@@ -148,6 +152,8 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
       rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightPrimary.name) ?? SwipeAction.reply.name);
       rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
 
+      enableFullScreenSwipeNavigationGesture = prefs.getBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name) ?? true;
+
       isLoading = false;
     });
   }
@@ -175,9 +181,10 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Gestures'), centerTitle: false),
+      appBar: AppBar(title: Text(l10n.gestures), centerTitle: false),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -192,13 +199,37 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Sidebar',
+                            l10n.navigation,
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: LocalSettings.enableFullScreenSwipeNavigationGesture.label,
+                          subtitle: l10n.fullScreenNavigationSwipeDescription,
+                          value: enableFullScreenSwipeNavigationGesture,
+                          iconEnabled: Icons.swipe_left_rounded,
+                          iconDisabled: Icons.swipe_left_outlined,
+                          onToggle: (bool value) => setPreferences(LocalSettings.enableFullScreenSwipeNavigationGesture, value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          child: Text(
+                            l10n.sidebar,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
                         ToggleOption(
                           description: LocalSettings.sidebarBottomNavBarSwipeGesture.label,
-                          subtitle: 'Swipe bottom nav to open sidebar',
+                          subtitle: l10n.sidebarBottomNavSwipeDescription,
                           value: bottomNavBarSwipeGestures,
                           iconEnabled: Icons.swipe_right_rounded,
                           iconDisabled: Icons.swipe_right_outlined,
@@ -206,7 +237,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                         ),
                         ToggleOption(
                           description: LocalSettings.sidebarBottomNavBarDoubleTapGesture.label,
-                          subtitle: 'Double-tap bottom nav to open sidebar',
+                          subtitle: l10n.sidebarBottomNavDoubleTapDescription,
                           value: bottomNavBarDoubleTapGestures,
                           iconEnabled: Icons.touch_app_rounded,
                           iconDisabled: Icons.touch_app_outlined,
@@ -224,14 +255,14 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Posts',
+                            l10n.posts,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(6.0),
                           child: Text(
-                            'Looking to use buttons instead? Change what buttons appear on post cards in general settings.',
+                            l10n.postSwipeGesturesHint,
                             style: TextStyle(
                               color: theme.colorScheme.onBackground.withOpacity(0.75),
                             ),
@@ -322,14 +353,14 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Comments',
+                            l10n.comments,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(6.0),
                           child: Text(
-                            'Looking to use buttons instead? Enable them in the comments section in general settings.',
+                            l10n.commentSwipeGesturesHint,
                             style: TextStyle(
                               color: theme.colorScheme.onBackground.withOpacity(0.75),
                             ),

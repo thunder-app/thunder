@@ -4,24 +4,25 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import '../../shared/comment_content.dart';
 import '../utils/comment_action_helpers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentCard extends StatefulWidget {
-  final Function(int, VoteType) onVoteAction;
+  final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onCollapseCommentChange;
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
+  final Function(int) onReportAction;
 
   final Set collapsedCommentSet;
   final int? selectCommentId;
@@ -42,6 +43,7 @@ class CommentCard extends StatefulWidget {
     required this.onSaveAction,
     required this.onCollapseCommentChange,
     required this.onReplyEditAction,
+    required this.onReportAction,
     required this.now,
     this.collapsedCommentSet = const {},
     this.selectCommentId,
@@ -132,7 +134,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    VoteType? myVote = widget.commentViewTree.commentView?.myVote;
+    int? myVote = widget.commentViewTree.commentView?.myVote;
     bool? saved = widget.commentViewTree.commentView?.saved;
 
     final theme = Theme.of(context);
@@ -199,8 +201,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       context: context,
                       swipeAction: swipeAction,
                       onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
-                      onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                      voteType: myVote ?? VoteType.none,
+                      onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
+                      voteType: myVote ?? 0,
                       saved: saved,
                       commentView: widget.commentViewTree.commentView!,
                       selectedCommentId: widget.selectCommentId,
@@ -345,7 +347,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             InkWell(
                               onLongPress: () {
                                 HapticFeedback.mediumImpact();
-                                showCommentActionBottomModalSheet(context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction);
+                                showCommentActionBottomModalSheet(
+                                    context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction, widget.onVoteAction, widget.onReplyEditAction, widget.onReportAction);
                               },
                               onTap: () {
                                 widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
@@ -356,8 +359,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 isUserLoggedIn: isUserLoggedIn,
                                 now: widget.now,
                                 onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                                onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                                onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
                                 onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                                onReportAction: (int commentId) => widget.onReportAction(commentId),
                                 onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,
@@ -382,62 +386,67 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 child: isHidden
                     ? Container()
                     : widget.commentViewTree.replies.isEmpty && widget.commentViewTree.commentView!.counts.childCount > 0
-                        ? Container(
-                            margin: EdgeInsets.only(
-                              left: switch (nestedCommentIndicatorStyle) {
-                                NestedCommentIndicatorStyle.thin => 7,
-                                NestedCommentIndicatorStyle.thick => 4,
-                              },
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: widget.commentViewTree.commentView!.comment.id));
-                                setState(() {
-                                  isFetchingMoreComments = true;
-                                });
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Divider(height: 1),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ? Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(
+                                  left: switch (nestedCommentIndicatorStyle) {
+                                    NestedCommentIndicatorStyle.thin => 7,
+                                    NestedCommentIndicatorStyle.thick => 4,
+                                  },
+                                ),
+                                child: InkWell(
+                                  onTap: () {
+                                    context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: widget.commentViewTree.commentView!.comment.id));
+                                    setState(() {
+                                      isFetchingMoreComments = true;
+                                    });
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            left: BorderSide(
-                                              width: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? 4.0 : 1,
-                                              // This is the color of the nested comment indicator for deferred load
-                                              color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? getColor(theme, (widget.level % 6).toInt()) : theme.hintColor,
+                                      const Divider(height: 1),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                left: BorderSide(
+                                                  width: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? 4.0 : 1,
+                                                  // This is the color of the nested comment indicator for deferred load
+                                                  color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? getColor(theme, (widget.level % 6).toInt()) : theme.hintColor,
+                                                ),
+                                              ),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                                            child: ScalableText(
+                                              widget.commentViewTree.commentView!.counts.childCount == 1
+                                                  ? AppLocalizations.of(context)!.loadMoreSingular(widget.commentViewTree.commentView!.counts.childCount)
+                                                  : AppLocalizations.of(context)!.loadMorePlural(widget.commentViewTree.commentView!.counts.childCount),
+                                              fontScale: state.commentFontSizeScale,
+                                              style: theme.textTheme.bodyMedium?.copyWith(
+                                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                                        child: Text(
-                                          widget.commentViewTree.commentView!.counts.childCount == 1
-                                              ? AppLocalizations.of(context)!.loadMoreSingular(widget.commentViewTree.commentView!.counts.childCount)
-                                              : AppLocalizations.of(context)!.loadMorePlural(widget.commentViewTree.commentView!.counts.childCount),
-                                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.commentFontSizeScale.textScaleFactor,
-                                          style: theme.textTheme.bodyMedium?.copyWith(
-                                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
-                                          ),
-                                        ),
-                                      ),
-                                      isFetchingMoreComments
-                                          ? const Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                              child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                                            )
-                                          : Container(),
+                                          isFetchingMoreComments
+                                              ? const Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                                  child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                                                )
+                                              : Container(),
+                                        ],
+                                      )
                                     ],
-                                  )
-                                ],
-                              ),
-                            ),
+                                  ),
+                                ),
+                              )
+                            ],
                           )
                         : ListView.builder(
                             // addSemanticIndexes: false,
+                            padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) => CommentCard(
@@ -451,6 +460,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].commentView!.comment.id),
                               level: widget.level + 1,
                               onVoteAction: widget.onVoteAction,
+                              onReportAction: widget.onReportAction,
                               onSaveAction: widget.onSaveAction,
                               onCollapseCommentChange: widget.onCollapseCommentChange,
                               onDeleteAction: widget.onDeleteAction,

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,8 +17,11 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/error_messages.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/network_errors.dart';
-import 'package:thunder/utils/post.dart';
+import 'package:thunder/post/utils/post.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../utils/constants.dart';
 
@@ -74,6 +78,19 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<NavigateCommentEvent>(
       _navigateCommentEvent,
     );
+    on<StartCommentSearchEvent>(
+      _startCommentSearchEvent,
+    );
+    on<ContinueCommentSearchEvent>(
+      _continueCommentSearchEvent,
+    );
+    on<EndCommentSearchEvent>(
+      _endCommentSearchEvent,
+    );
+    on<ReportCommentEvent>(
+      _reportCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   /// Fetches the post, along with the initial set of comments
@@ -95,16 +112,19 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          FullPostView? getPostResponse;
+          GetPostResponse? getPostResponse;
 
-          if (event.postId != null) {
-            getPostResponse = await lemmy.run(GetPost(id: event.postId!, auth: account?.jwt)).timeout(timeout, onTimeout: () {
-              throw Exception('Error: Timeout when attempting to fetch post');
+          // Retrieve the full post for moderators and cross-posts
+          int? postId = event.postId ?? event.postView?.postView.post.id;
+          if (postId != null) {
+            getPostResponse = await lemmy.run(GetPost(id: postId, auth: account?.jwt)).timeout(timeout, onTimeout: () {
+              throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
             });
           }
 
           PostViewMedia? postView = event.postView;
           List<CommunityModeratorView>? moderators;
+          List<PostView>? crossPosts;
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app
@@ -113,6 +133,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postView = posts.first;
 
             moderators = getPostResponse.moderators;
+            crossPosts = getPostResponse.crossPosts;
           }
 
           // If we can't get mods from the post response, fallback to getting the whole community.
@@ -133,6 +154,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               postView: postView,
               communityId: postView?.postView.post.communityId,
               moderators: moderators,
+              crossPosts: crossPosts,
               selectedCommentPath: event.selectedCommentPath,
               selectedCommentId: event.selectedCommentId,
               newlyCreatedCommentId: event.newlyCreatedCommentId));
@@ -147,7 +169,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             parentId = int.parse(event.selectedCommentPath!.split('.')[1]);
           }
 
-          List<CommentView> getCommentsResponse = await lemmy
+          GetCommentsResponse getCommentsResponse = await lemmy
               .run(GetComments(
             page: event.selectedCommentId == null ? 1 : null,
             auth: account?.jwt,
@@ -156,18 +178,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postId: postView?.postView.post.id,
             sort: sortType,
             limit: commentLimit,
-            type: CommentListingType.all,
+            type: ListingType.all,
             parentId: parentId,
           ))
               .timeout(timeout, onTimeout: () {
-            throw Exception('Error: Timeout when attempting to fetch comments');
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
           });
 
           // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
+          List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
 
           Map<int, CommentView> responseMap = {};
-          for (CommentView comment in getCommentsResponse) {
+          for (CommentView comment in getCommentsResponse.comments) {
             responseMap[comment.comment.id] = comment;
           }
 
@@ -179,8 +201,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 comments: commentTree,
                 commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
                 commentResponseMap: responseMap,
-                commentCount: getCommentsResponse.length,
-                hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+                commentCount: getCommentsResponse.comments.length,
+                hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < commentLimit,
                 communityId: postView?.postView.post.communityId,
                 sortType: sortType,
                 selectedCommentId: event.selectedCommentId,
@@ -200,6 +222,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(GetPostCommentsEvent event, emit) async {
+    bool searchWasInProgress = state.status == PostStatus.searchInProgress;
+
     int attemptCount = 0;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -223,7 +247,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               emit(state.copyWith(status: PostStatus.loading, sortType: sortType));
             }
 
-            List<CommentView> getCommentsResponse = await lemmy
+            GetCommentsResponse getCommentsResponse = await lemmy
                 .run(GetComments(
               auth: account?.jwt,
               communityId: state.communityId,
@@ -233,17 +257,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               limit: commentLimit,
               maxDepth: COMMENT_MAX_DEPTH,
               page: 1,
-              type: CommentListingType.all,
+              type: ListingType.all,
             ))
                 .timeout(timeout, onTimeout: () {
-              throw Exception('Error: Timeout when attempting to fetch comments');
+              throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
             });
 
             // Build the tree view from the flattened comments
-            List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
+            List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
 
             Map<int, CommentView> responseMap = {};
-            for (CommentView comment in getCommentsResponse) {
+            for (CommentView comment in getCommentsResponse.comments) {
               responseMap[comment.comment.id] = comment;
             }
 
@@ -251,12 +275,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               state.copyWith(
                   selectedCommentId: null,
                   selectedCommentPath: null,
-                  status: PostStatus.success,
+                  newlyCreatedCommentId: state.newlyCreatedCommentId,
+                  status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
                   comments: commentTree,
                   commentResponseMap: responseMap,
                   commentPage: 1,
                   commentCount: responseMap.length,
-                  hasReachedCommentEnd: getCommentsResponse.isEmpty || commentTree.length < commentLimit,
+                  hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || commentTree.length < commentLimit,
                   sortType: sortType),
             );
           }
@@ -270,13 +295,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               // If we come here, we've determined that we've already loaded all of the comments.
               // But we're currently being asked to load some children.
               // Therefore we will treat this as an error.
-              throw Exception('Unable to load more replies.');
+              throw Exception(AppLocalizations.of(GlobalContext.context)!.unableToLoadReplies);
             }
             return;
           }
-          emit(state.copyWith(status: PostStatus.refreshing));
+          emit(state.copyWith(status: PostStatus.refreshing, newlyCreatedCommentId: state.newlyCreatedCommentId));
 
-          List<CommentView> getCommentsResponse = await lemmy
+          GetCommentsResponse getCommentsResponse = await lemmy
               .run(GetComments(
             auth: account?.jwt,
             communityId: state.communityId,
@@ -287,25 +312,25 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             maxDepth: COMMENT_MAX_DEPTH,
             page: state.commentPage,
             //event.commentParentId != null ? 1 : state.commentPage,
-            type: CommentListingType.all,
+            type: ListingType.all,
           ))
               .timeout(timeout, onTimeout: () {
-            throw Exception('Error: Timeout when attempting to fetch more comments');
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
           });
 
           // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
           // so we should display an error
           if (event.commentParentId != null) {
-            final bool anyDirectChildren = getCommentsResponse.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
+            final bool anyDirectChildren = getCommentsResponse.comments.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
             if (!anyDirectChildren) {
-              throw Exception('Unable to load more replies.');
+              throw Exception(AppLocalizations.of(GlobalContext.context)!.unableToLoadReplies);
             }
           }
 
           // Combine all of the previous comments list
-          List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse);
+          List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse.comments);
 
-          for (CommentView comment in getCommentsResponse) {
+          for (CommentView comment in getCommentsResponse.comments) {
             state.commentResponseMap[comment.comment.id] = comment;
           }
           // Build the tree view from the flattened comments
@@ -314,14 +339,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
           return emit(state.copyWith(
             sortType: sortType,
-            status: PostStatus.success,
+            status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
             selectedCommentPath: null,
             selectedCommentId: null,
+            newlyCreatedCommentId: state.newlyCreatedCommentId,
             comments: commentViewTree,
             commentResponseMap: state.commentResponseMap,
             commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
             commentCount: state.commentResponseMap.length,
-            hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.isEmpty || state.commentCount == state.commentResponseMap.length),
+            hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.comments.isEmpty || state.commentCount == state.commentResponseMap.length),
           ));
         } catch (e) {
           exception = e;
@@ -330,7 +356,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       }
 
       if (is50xError(exception.toString()) != null) {
-        emit(state.copyWith(status: PostStatus.failure, errorMessage: 'A server error was encountered when fetching more comments: ${is50xError(exception.toString())}'));
+        emit(state.copyWith(status: PostStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.serverErrorComments('${is50xError(exception.toString())}')));
       } else {
         // In case there are two errors in a row without the status changing,
         // emit a blank error then the real error so that the widget detects a change and rebuilds.
@@ -358,7 +384,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
         state.postView?.postView = originalPostView;
-        throw Exception('Error: Timeout when attempting to vote post');
+        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutVotingPost);
       });
 
       state.postView?.postView = postView;
@@ -374,7 +400,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing));
 
       PostView postView = await savePost(event.postId, event.save).timeout(timeout, onTimeout: () {
-        throw Exception('Error: Timeout when attempting to save post');
+        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutSavingPost);
       });
 
       state.postView?.postView = postView;
@@ -412,7 +438,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
         currentTree.commentView = originalCommentView; // Reset this on exception
-        throw Exception('Error: Timeout when attempting to vote on comment');
+        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutUpvoteComment);
       });
 
       currentTree.commentView = commentView;
@@ -428,7 +454,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
 
       CommentView commentView = await saveComment(event.commentId, event.save).timeout(timeout, onTimeout: () {
-        throw Exception('Error: Timeout when attempting save a comment');
+        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutSaveComment);
       });
 
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
@@ -454,14 +480,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot create a post.'));
+        return emit(state.copyWith(
+          status: PostStatus.failure,
+          errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
+        ));
       }
 
       if (state.postView?.postView.post.id == null) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Could not determine post to comment to.'));
+        return emit(state.copyWith(
+          status: PostStatus.failure,
+          errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDeterminePostComment,
+        ));
       }
 
-      FullCommentView createComment = await lemmy.run(CreateComment(
+      CommentResponse createComment = await lemmy.run(CreateComment(
         auth: account!.jwt!,
         content: event.content,
         postId: state.postView!.postView.post.id,
@@ -498,7 +530,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       if (account?.jwt == null) {
         return emit(state.copyWith(
             status: PostStatus.failure,
-            errorMessage: 'You are not logged in. Cannot create a post.',
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
             moddingCommentId: event.commentId,
             selectedCommentId: state.selectedCommentId,
             selectedCommentPath: state.selectedCommentPath));
@@ -507,13 +539,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       if (state.postView?.postView.post.id == null) {
         return emit(state.copyWith(
             status: PostStatus.failure,
-            errorMessage: 'Could not determine post to comment to.',
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDeterminePostComment,
             moddingCommentId: event.commentId,
             selectedCommentId: state.selectedCommentId,
             selectedCommentPath: state.selectedCommentPath));
       }
 
-      FullCommentView editComment = await lemmy.run(EditComment(
+      CommentResponse editComment = await lemmy.run(EditComment(
         auth: account!.jwt!,
         content: event.content,
         commentId: event.commentId,
@@ -536,19 +568,54 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       if (account?.jwt == null) {
         return emit(state.copyWith(
-            status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot delete a comment.', selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+            status: PostStatus.failure,
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
+            selectedCommentId: state.selectedCommentId,
+            selectedCommentPath: state.selectedCommentPath));
       }
 
       if (state.postView?.postView.post.id == null) {
         return emit(state.copyWith(
-            status: PostStatus.failure, errorMessage: 'Could not determine post to delete the comment.', selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+            status: PostStatus.failure,
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDetermineCommentDelete,
+            selectedCommentId: state.selectedCommentId,
+            selectedCommentPath: state.selectedCommentPath));
       }
 
-      FullCommentView deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
+      CommentResponse deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
       updateModifiedComment(state.comments, deletedComment);
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+    } catch (e) {
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+    }
+  }
+
+  Future<void> _reportCommentEvent(ReportCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(
+            status: PostStatus.failure,
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
+            selectedCommentId: state.selectedCommentId,
+            selectedCommentPath: state.selectedCommentPath));
+      }
+      await lemmy.run(CreateCommentReport(commentId: event.commentId, reason: event.message, auth: account!.jwt!));
+
+      return emit(
+          state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+    } on LemmyApiException catch (e) {
+      return emit(state.copyWith(
+        status: PostStatus.failure,
+        errorMessage: getErrorMessage(GlobalContext.context, e.message),
+        moddingCommentId: -1,
+      ));
     } catch (e, s) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
     }
@@ -560,5 +627,88 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } else {
       return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: event.targetIndex, navigateCommentId: state.navigateCommentId + 1));
     }
+  }
+
+  Future<void> _startCommentSearchEvent(StartCommentSearchEvent event, Emitter<PostState> emit) async {
+    if (event.commentMatches.isEmpty) {
+      return;
+    }
+
+    // Find the parent comment of the match
+    Comment? parentComment = findParent(event.commentMatches.first);
+
+    return emit(state.copyWith(
+      status: PostStatus.searchInProgress,
+      postView: null,
+      newlyCreatedCommentId: event.commentMatches.first.id,
+      commentMatches: event.commentMatches,
+      navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment.id)) + 1,
+      navigateCommentId: state.navigateCommentId + 1,
+    ));
+  }
+
+  Future<void> _continueCommentSearchEvent(ContinueCommentSearchEvent event, Emitter<PostState> emit) async {
+    if (state.commentMatches?.isNotEmpty != true) {
+      return;
+    }
+
+    int newSelectedCommentId = state.commentMatches!.first.id;
+    Comment? parentComment = findParent(state.commentMatches!.first);
+
+    // Try to select and navigate to the next match
+    Comment? existingSelectedComment = state.commentMatches!.firstWhereOrNull((c) => c.id == state.newlyCreatedCommentId);
+    if (state.newlyCreatedCommentId != null && existingSelectedComment != null) {
+      int index = state.commentMatches!.indexOf(existingSelectedComment);
+      if (index + 1 < state.commentMatches!.length && index + 1 >= 0) {
+        newSelectedCommentId = state.commentMatches![index + 1].id;
+
+        // Find the parent comment of the match
+        parentComment = findParent(state.commentMatches![index + 1]);
+      }
+    }
+
+    return emit(state.copyWith(
+      status: PostStatus.searchInProgress,
+      postView: null,
+      newlyCreatedCommentId: newSelectedCommentId,
+      navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment!.id)) + 1,
+      navigateCommentId: state.navigateCommentId + 1,
+    ));
+  }
+
+  Future<void> _endCommentSearchEvent(EndCommentSearchEvent event, Emitter<PostState> emit) async {
+    return emit(state.copyWith(
+      status: PostStatus.success,
+      newlyCreatedCommentId: null,
+      commentMatches: null,
+    ));
+  }
+
+  /// Finds the parent [CommentViewTree] from the current [state]
+  /// which contains the given [comment] anywhere in its descendents.
+  Comment? findParent(Comment comment) {
+    /// Recursive function which checks if any child has the given [comment].
+    bool childrenContains(CommentViewTree commentViewTree, Comment comment) {
+      if (commentViewTree.replies.firstWhereOrNull((cvt) => cvt.commentView?.comment.id == comment.id) != null) {
+        return true;
+      } else {
+        for (CommentViewTree child in commentViewTree.replies) {
+          if (childrenContains(child, comment)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    // Only iterate through top-level comments.
+    for (CommentViewTree commentViewTree in state.comments) {
+      if (commentViewTree.commentView!.comment.id == comment.id || childrenContains(commentViewTree, comment)) {
+        return commentViewTree.commentView!.comment;
+      }
+    }
+
+    return null;
   }
 }

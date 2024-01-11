@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/post/enums/post_action.dart';
 
-import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -29,7 +29,7 @@ class MediaView extends StatefulWidget {
   final bool isUserLoggedIn;
   final bool? scrapeMissingPreviews;
   final ViewMode viewMode;
-  final void Function()? navigateToPost;
+  final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool? read;
 
   const MediaView({
@@ -149,7 +149,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               child: Column(
                 children: [
                   Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                  if (widget.viewMode != ViewMode.compact) Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
+                  if (widget.viewMode != ViewMode.compact)
+                    const Text(
+                      "NSFW - Tap to reveal",
+                      textScaler: TextScaler.linear(1.5),
+                    ),
                 ],
               ),
             ),
@@ -162,14 +166,20 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 onTap: () {
                   if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
                     int postId = widget.postView!.postView.post.id;
+
+                    // Mark post as read when on the feed page
+                    try {
+                      FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
+                      feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
+                    } catch (e) {}
+
+                    // Mark post as read when on the user page
                     try {
                       UserBloc userBloc = BlocProvider.of<UserBloc>(context);
                       userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-                    } catch (e) {
-                      CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-                      communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
-                    }
+                    } catch (e) {}
                   }
+                  // TODO: This could be refactored eventually
                   Navigator.of(context).push(
                     PageRouteBuilder(
                       opaque: false,
@@ -203,9 +213,6 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   Widget previewImage(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState state = context.read<ThunderBloc>().state;
-
-    final openInExternalBrowser = state.openInExternalBrowser;
 
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
@@ -218,7 +225,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
-      clearMemoryCacheWhenDispose: true,
+      clearMemoryCacheWhenDispose: false,
+      cacheMaxAge: const Duration(minutes: 1),
       cacheWidth: widget.viewMode == ViewMode.compact
           ? (75 * View.of(context).devicePixelRatio.ceil())
           : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
@@ -278,7 +286,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                       InkWell(
                         onTap: () {
                           if (widget.post?.url != null) {
-                            openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
+                            handleLink(context, url: widget.post!.url!);
                           }
                         },
                       ),

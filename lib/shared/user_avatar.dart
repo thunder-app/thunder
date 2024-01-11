@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 class UserAvatar extends StatelessWidget {
-  final PersonSafe? person;
+  final Person? person;
   final double radius;
 
   const UserAvatar({super.key, required this.person, this.radius = 16.0});
@@ -16,13 +16,19 @@ class UserAvatar extends StatelessWidget {
         backgroundColor: theme.colorScheme.secondaryContainer,
         maxRadius: radius,
         child: Text(
-          (person?.displayName ?? person?.name)?[0].toUpperCase() ?? '',
+          person?.displayName?.isNotEmpty == true
+              ? person!.displayName![0].toUpperCase()
+              : person?.name.isNotEmpty == true
+                  ? person!.name[0].toUpperCase()
+                  : '',
           semanticsLabel: '',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: radius,
           ),
         ));
+
+    if (person?.avatar?.isNotEmpty != true) return placeholderIcon;
 
     return CachedNetworkImage(
       imageUrl: person?.avatar ?? '',

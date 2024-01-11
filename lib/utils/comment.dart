@@ -8,22 +8,22 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'date_time.dart';
 
 // Optimistically updates a comment
-CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, VoteType voteType) {
+CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, int voteType) {
   int newScore = commentViewTree.commentView!.counts.score;
-  VoteType? existingVoteType = commentViewTree.commentView!.myVote;
+  int? existingVoteType = commentViewTree.commentView!.myVote;
 
   switch (voteType) {
-    case VoteType.down:
+    case -1:
       newScore--;
       break;
-    case VoteType.up:
+    case 1:
       newScore++;
       break;
-    case VoteType.none:
+    case 0:
       // Determine score from existing
-      if (existingVoteType == VoteType.down) {
+      if (existingVoteType == -1) {
         newScore++;
-      } else if (existingVoteType == VoteType.up) {
+      } else if (existingVoteType == 1) {
         newScore--;
       }
       break;
@@ -33,13 +33,13 @@ CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, VoteType 
 }
 
 /// Logic to vote on a comment
-Future<CommentView> voteComment(int commentId, VoteType score) async {
+Future<CommentView> voteComment(int commentId, int score) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  FullCommentView commentResponse = await lemmy.run(CreateCommentLike(
+  CommentResponse commentResponse = await lemmy.run(CreateCommentLike(
     auth: account!.jwt!,
     commentId: commentId,
     score: score,
@@ -56,7 +56,7 @@ Future<CommentView> saveComment(int commentId, bool save) async {
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  FullCommentView commentResponse = await lemmy.run(SaveComment(
+  CommentResponse commentResponse = await lemmy.run(SaveComment(
     auth: account!.jwt!,
     commentId: commentId,
     save: save,
@@ -169,7 +169,7 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
 }
 
 // Used for modifying the comment current comment tree so we don't have to refresh the whole thing
-bool updateModifiedComment(List<CommentViewTree> commentTrees, FullCommentView moddedComment) {
+bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentResponse moddedComment) {
   for (int i = 0; i < commentTrees.length; i++) {
     if (commentTrees[i].commentView!.comment.id == moddedComment.commentView.comment.id) {
       commentTrees[i].commentView = moddedComment.commentView;
@@ -193,31 +193,121 @@ CommentView cleanDeletedCommentView(CommentView commentView) {
   Comment deletedComment = convertToDeletedComment(commentView.comment);
 
   return CommentView(
-      comment: deletedComment,
-      creator: commentView.creator,
-      post: commentView.post,
-      community: commentView.community,
-      counts: commentView.counts,
-      creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
-      saved: commentView.saved,
-      creatorBlocked: commentView.creatorBlocked,
-      instanceHost: commentView.instanceHost,
-      commentReply: commentView.commentReply);
+    comment: deletedComment,
+    creator: commentView.creator,
+    post: commentView.post,
+    community: commentView.community,
+    counts: commentView.counts,
+    creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
+    saved: commentView.saved,
+    creatorBlocked: commentView.creatorBlocked,
+    subscribed: commentView.subscribed,
+  );
 }
 
 Comment convertToDeletedComment(Comment comment) {
   return Comment(
-      id: comment.id,
-      creatorId: comment.creatorId,
-      postId: comment.postId,
-      content: "_deleted by creator_",
-      removed: comment.removed,
-      distinguished: comment.distinguished,
-      published: comment.published,
-      deleted: comment.deleted,
-      apId: comment.apId,
-      local: comment.local,
-      languageId: comment.languageId,
-      instanceHost: comment.instanceHost,
-      path: comment.path);
+    id: comment.id,
+    creatorId: comment.creatorId,
+    postId: comment.postId,
+    content: "_deleted by creator_",
+    removed: comment.removed,
+    distinguished: comment.distinguished,
+    published: comment.published,
+    deleted: comment.deleted,
+    apId: comment.apId,
+    local: comment.local,
+    languageId: comment.languageId,
+    path: comment.path,
+  );
+}
+
+/// Creates a placeholder comment from the given parameters. This is mainly used to display a preview of the comment
+/// with the applied settings on Settings -> Appearance -> Comments page.
+CommentView createExampleComment({
+  int? id,
+  String? path,
+  String? commentContent,
+  int? commentCreatorId,
+  int? commentScore,
+  int? commentUpvotes,
+  int? commentDownvotes,
+  DateTime? commentPublished,
+  int? commentChildCount,
+  String? personName,
+  bool? isPersonAdmin,
+  bool? isBotAccount,
+  bool? saved,
+}) {
+  return CommentView(
+    comment: Comment(
+      id: id ?? 1,
+      creatorId: commentCreatorId ?? 1,
+      postId: 1,
+      content: commentContent ?? 'This is an example comment',
+      removed: false,
+      published: commentPublished ?? DateTime.now(),
+      deleted: false,
+      apId: '',
+      local: false,
+      path: path ?? '0.1',
+      distinguished: false,
+      languageId: 1,
+    ),
+    creator: Person(
+      id: 1,
+      name: personName ?? 'Example Username',
+      banned: false,
+      published: DateTime.now(),
+      actorId: 'https://lemmy.world/u/testuser',
+      local: false,
+      deleted: false,
+      botAccount: isBotAccount ?? false,
+      instanceId: 1,
+      admin: isPersonAdmin ?? false,
+    ),
+    post: Post(
+      id: 1,
+      name: 'Example Title',
+      creatorId: 1,
+      communityId: 1,
+      removed: false,
+      locked: false,
+      published: DateTime.now(),
+      deleted: false,
+      nsfw: false,
+      apId: '',
+      local: false,
+      languageId: 1,
+      featuredCommunity: false,
+      featuredLocal: false,
+    ),
+    community: Community(
+      id: 1,
+      name: 'Example Community',
+      removed: false,
+      published: DateTime.now(),
+      deleted: false,
+      nsfw: false,
+      local: false,
+      title: '',
+      actorId: '',
+      hidden: false,
+      postingRestrictedToMods: false,
+      instanceId: 1,
+    ),
+    counts: CommentAggregates(
+      id: 1,
+      commentId: 1,
+      score: commentScore ?? 1,
+      upvotes: commentUpvotes ?? 1,
+      downvotes: commentDownvotes ?? 1,
+      published: DateTime.now(),
+      childCount: commentChildCount ?? 0,
+    ),
+    creatorBannedFromCommunity: false,
+    subscribed: SubscribedType.notSubscribed,
+    saved: saved ?? false,
+    creatorBlocked: false,
+  );
 }

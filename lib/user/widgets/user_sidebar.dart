@@ -4,29 +4,28 @@ import 'package:intl/intl.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_sidebar_activity.dart';
 import 'package:thunder/user/widgets/user_sidebar_stats.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_community.dart';
 
-import '../../community/pages/community_page.dart';
 import '../../shared/common_markdown_body.dart';
 import '../../thunder/bloc/thunder_bloc.dart';
 import '../../utils/date_time.dart';
 import '../bloc/user_bloc.dart';
 
 class UserSidebar extends StatefulWidget {
-  final PersonViewSafe? userInfo;
+  final PersonView? userInfo;
   final List<CommunityModeratorView>? moderates;
   final bool isAccountUser;
   final List<PersonBlockView>? personBlocks;
-  final BlockedPerson? blockedPerson;
+  final BlockPersonResponse? blockedPerson;
 
   const UserSidebar({
     super.key,
@@ -62,7 +61,7 @@ class _UserSidebarState extends State<UserSidebar> {
 
     //custom stats
     final totalContributions = (widget.userInfo!.counts.postCount + widget.userInfo!.counts.commentCount);
-    final totalScore = (widget.userInfo!.counts.postScore + widget.userInfo!.counts.commentScore);
+    final totalScore = ((widget.userInfo!.counts.postScore?.toInt() ?? 0) + (widget.userInfo!.counts.commentScore?.toInt() ?? 0));
     Duration accountAge = DateTime.now().difference(widget.userInfo!.person.published);
     final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
     final num postsPerMonth;
@@ -155,32 +154,6 @@ class _UserSidebarState extends State<UserSidebar> {
                                 ),
                                 child: Row(
                                   children: [
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: null,
-                                        style: TextButton.styleFrom(
-                                          fixedSize: const Size.fromHeight(40),
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        child: const Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.mail_outline_rounded,
-                                              semanticLabel: 'Message User',
-                                            ),
-                                            SizedBox(width: 4.0),
-                                            Text(
-                                              'Message User',
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                      height: 8,
-                                    ),
                                     Expanded(
                                       child: ElevatedButton(
                                         onPressed: isLoggedIn
@@ -301,24 +274,24 @@ class _UserSidebarState extends State<UserSidebar> {
                                     icon: Icons.wysiwyg_rounded,
                                     label: ' Posts',
                                     metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount),
-                                    scoreLabel: ' Score',
-                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore),
+                                    scoreLabel: widget.userInfo!.counts.postScore == null ? 'No score available' : ' Score',
+                                    scoreMetric: widget.userInfo!.counts.postScore == null ? '' : NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore),
                                   ),
                                   const SizedBox(height: 3.0),
                                   UserSidebarStats(
                                     icon: Icons.chat_rounded,
                                     label: ' Comments',
                                     metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount),
-                                    scoreLabel: ' Score',
-                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore),
+                                    scoreLabel: widget.userInfo!.counts.commentScore == null ? 'No score available' : ' Score',
+                                    scoreMetric: widget.userInfo!.counts.commentScore == null ? '' : NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore),
                                   ),
                                   const SizedBox(height: 3.0),
                                   Visibility(
                                       visible: scoreCounters,
                                       child: UserSidebarActivity(
                                         icon: Icons.celebration_rounded,
-                                        scoreLabel: ' Total Score',
-                                        scoreMetric: NumberFormat("#,###,###,###").format(totalScore),
+                                        scoreLabel: totalScore == 0 ? 'Score not available' : ' Total Score',
+                                        scoreMetric: totalScore == 0 ? '' : NumberFormat("#,###,###,###").format(totalScore),
                                       )),
                                 ],
                               ),
@@ -372,17 +345,15 @@ class _UserSidebarState extends State<UserSidebar> {
                                               ),
                                             ]),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                            child: Column(
-                                              children: [
-                                                for (var mods in widget.moderates!)
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      navigateToCommunityPage(context, communityId: mods.community.id);
-                                                    },
+                                          Column(
+                                            children: [
+                                              for (var mods in widget.moderates!)
+                                                Material(
+                                                  child: InkWell(
+                                                    borderRadius: BorderRadius.circular(50),
+                                                    onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: mods.community.id),
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                                      padding: const EdgeInsets.all(8.0),
                                                       child: Row(
                                                         children: [
                                                           CommunityIcon(community: mods.community, radius: 20.0),
@@ -402,7 +373,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                                                   ),
                                                                 ),
                                                                 Text(
-                                                                  '${mods.community.name} · ${fetchInstanceNameFromUrl(mods.community.actorId)}',
+                                                                  generateCommunityFullName(context, mods.community.name, fetchInstanceNameFromUrl(mods.community.actorId)),
                                                                   overflow: TextOverflow.ellipsis,
                                                                   style: TextStyle(
                                                                     color: theme.colorScheme.onBackground.withOpacity(0.6),
@@ -416,8 +387,8 @@ class _UserSidebarState extends State<UserSidebar> {
                                                       ),
                                                     ),
                                                   ),
-                                              ],
-                                            ),
+                                                ),
+                                            ],
                                           ),
                                         ],
                                       )

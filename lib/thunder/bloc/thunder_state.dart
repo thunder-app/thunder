@@ -12,7 +12,7 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
-    this.defaultPostListingType = DEFAULT_LISTING_TYPE,
+    this.defaultListingType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
 
     // NSFW Settings
@@ -25,11 +25,14 @@ class ThunderState extends Equatable {
     // General Settings
     this.scrapeMissingPreviews = false,
     this.openInExternalBrowser = false,
+    this.openInReaderMode = false,
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
     this.scoreCounters = false,
+    this.userSeparator = FullNameSeparator.at,
+    this.communitySeparator = FullNameSeparator.dot,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -48,6 +51,10 @@ class ThunderState extends Equatable {
     this.showTextContent = false,
     this.showPostAuthor = false,
     this.dimReadPosts = true,
+    this.useAdvancedShareSheet = true,
+    this.showCrossPosts = true,
+    this.keywordFilters = const [],
+    this.appLanguageCode,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -56,6 +63,8 @@ class ThunderState extends Equatable {
     this.defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE,
     this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
+    this.commentShowUserInstance = false,
+    this.combineCommentScores = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
@@ -76,6 +85,7 @@ class ThunderState extends Equatable {
     this.leftSecondaryCommentGesture = SwipeAction.downvote,
     this.rightPrimaryCommentGesture = SwipeAction.reply,
     this.rightSecondaryCommentGesture = SwipeAction.save,
+    this.enableFullScreenSwipeNavigationGesture = true,
 
     // Theme Settings
     this.themeType = ThemeType.system,
@@ -101,7 +111,8 @@ class ThunderState extends Equatable {
     this.postFabEnableChangeSort = true,
     this.postFabEnableReplyToPost = true,
     this.postFabEnableRefresh = true,
-    this.feedFabSinglePressAction = FeedFabAction.dismissRead,
+    this.postFabEnableSearch = true,
+    this.feedFabSinglePressAction = FeedFabAction.newPost,
     this.feedFabLongPressAction = FeedFabAction.openFab,
     this.postFabSinglePressAction = PostFabAction.replyToPost,
     this.postFabLongPressAction = PostFabAction.openFab,
@@ -110,12 +121,10 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Accessibility Related Settings --------------------------
     this.reduceAnimations = false,
+    this.anonymousInstances = const ['lemmy.ml'],
+    this.currentAnonymousInstance = 'lemmy.ml',
 
     /// --------------------------------- UI Events ---------------------------------
-    // Scroll to top event
-    this.scrollToTopId = 0,
-    // Dismiss posts from loaded view event
-    this.dismissEvent = false,
     // Expand/Close FAB event
     this.isFabOpen = false,
     // Summon/Unsummon FAB event
@@ -128,7 +137,7 @@ class ThunderState extends Equatable {
 
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
-  final PostListingType defaultPostListingType;
+  final ListingType defaultListingType;
   final SortType defaultSortType;
 
   // NSFW Settings
@@ -141,10 +150,14 @@ class ThunderState extends Equatable {
   // General Settings
   final bool scrapeMissingPreviews;
   final bool openInExternalBrowser;
+  final bool openInReaderMode;
   final bool useDisplayNames;
   final bool markPostReadOnMediaView;
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
+  final String? appLanguageCode;
+  final FullNameSeparator userSeparator;
+  final FullNameSeparator communitySeparator;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -164,6 +177,9 @@ class ThunderState extends Equatable {
   final bool showPostAuthor;
   final bool scoreCounters;
   final bool dimReadPosts;
+  final bool useAdvancedShareSheet;
+  final bool showCrossPosts;
+  final List<String> keywordFilters;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -172,6 +188,8 @@ class ThunderState extends Equatable {
   final CommentSortType defaultCommentSortType;
   final bool collapseParentCommentOnGesture;
   final bool showCommentButtonActions;
+  final bool commentShowUserInstance;
+  final bool combineCommentScores;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
@@ -206,6 +224,8 @@ class ThunderState extends Equatable {
   final SwipeAction rightPrimaryCommentGesture;
   final SwipeAction rightSecondaryCommentGesture;
 
+  final bool enableFullScreenSwipeNavigationGesture;
+
   /// -------------------------- FAB Related Settings --------------------------
   final bool enableFeedsFab;
   final bool enablePostsFab;
@@ -221,6 +241,7 @@ class ThunderState extends Equatable {
   final bool postFabEnableChangeSort;
   final bool postFabEnableReplyToPost;
   final bool postFabEnableRefresh;
+  final bool postFabEnableSearch;
 
   final FeedFabAction feedFabSinglePressAction;
   final FeedFabAction feedFabLongPressAction;
@@ -233,13 +254,10 @@ class ThunderState extends Equatable {
   /// -------------------------- Accessibility Related Settings --------------------------
   final bool reduceAnimations;
 
+  final List<String> anonymousInstances;
+  final String currentAnonymousInstance;
+
   /// --------------------------------- UI Events ---------------------------------
-  // Scroll to top event
-  final int scrollToTopId;
-
-  // Dismiss posts from loaded view event
-  final bool dismissEvent;
-
   // Expand/Close FAB event
   final bool isFabOpen;
 
@@ -253,7 +271,7 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
-    PostListingType? defaultPostListingType,
+    ListingType? defaultListingType,
     SortType? defaultSortType,
 
     // NSFW Settings
@@ -266,10 +284,13 @@ class ThunderState extends Equatable {
     // General Settings
     bool? scrapeMissingPreviews,
     bool? openInExternalBrowser,
+    bool? openInReaderMode,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
     bool? showInAppUpdateNotification,
     bool? scoreCounters,
+    FullNameSeparator? userSeparator,
+    FullNameSeparator? communitySeparator,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -288,12 +309,18 @@ class ThunderState extends Equatable {
     bool? showTextContent,
     bool? showPostAuthor,
     bool? dimReadPosts,
+    bool? useAdvancedShareSheet,
+    bool? showCrossPosts,
+    String? appLanguageCode,
+    List<String>? keywordFilters,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
     CommentSortType? defaultCommentSortType,
     bool? collapseParentCommentOnGesture,
     bool? showCommentButtonActions,
+    bool? commentShowUserInstance,
+    bool? combineCommentScores,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
@@ -327,6 +354,7 @@ class ThunderState extends Equatable {
     SwipeAction? leftSecondaryCommentGesture,
     SwipeAction? rightPrimaryCommentGesture,
     SwipeAction? rightSecondaryCommentGesture,
+    bool? enableFullScreenSwipeNavigationGesture,
 
     /// -------------------------- FAB Related Settings --------------------------
     bool? enableFeedsFab,
@@ -341,6 +369,7 @@ class ThunderState extends Equatable {
     bool? postFabEnableChangeSort,
     bool? postFabEnableReplyToPost,
     bool? postFabEnableRefresh,
+    bool? postFabEnableSearch,
     FeedFabAction? feedFabSinglePressAction,
     FeedFabAction? feedFabLongPressAction,
     PostFabAction? postFabSinglePressAction,
@@ -350,12 +379,10 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Accessibility Related Settings --------------------------
     bool? reduceAnimations,
+    List<String>? anonymousInstances,
+    String? currentAnonymousInstance,
 
     /// --------------------------------- UI Events ---------------------------------
-    // Scroll to top event
-    int? scrollToTopId,
-    // Dismiss posts from loaded view event
-    bool? dismissEvent,
     // Expand/Close FAB event
     bool? isFabOpen,
     // Summon/Unsummon FAB event
@@ -368,7 +395,7 @@ class ThunderState extends Equatable {
 
       /// -------------------------- Feed Related Settings --------------------------
       /// Default Listing/Sort Settings
-      defaultPostListingType: defaultPostListingType ?? this.defaultPostListingType,
+      defaultListingType: defaultListingType ?? this.defaultListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
 
       // NSFW Settings
@@ -381,11 +408,15 @@ class ThunderState extends Equatable {
       // General Settings
       scrapeMissingPreviews: scrapeMissingPreviews ?? this.scrapeMissingPreviews,
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
+      openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       scoreCounters: scoreCounters ?? this.scoreCounters,
+      appLanguageCode: appLanguageCode ?? this.appLanguageCode,
+      userSeparator: userSeparator ?? this.userSeparator,
+      communitySeparator: communitySeparator ?? this.communitySeparator,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -404,6 +435,9 @@ class ThunderState extends Equatable {
       showTextContent: showTextContent ?? this.showTextContent,
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
+      useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
+      showCrossPosts: showCrossPosts ?? this.showCrossPosts,
+      keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
@@ -412,6 +446,8 @@ class ThunderState extends Equatable {
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
+      commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
+      combineCommentScores: combineCommentScores ?? this.combineCommentScores,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
@@ -439,6 +475,8 @@ class ThunderState extends Equatable {
       rightPrimaryPostGesture: rightPrimaryPostGesture ?? this.rightPrimaryPostGesture,
       rightSecondaryPostGesture: rightSecondaryPostGesture ?? this.rightSecondaryPostGesture,
 
+      enableFullScreenSwipeNavigationGesture: enableFullScreenSwipeNavigationGesture ?? this.enableFullScreenSwipeNavigationGesture,
+
       // Comment Gestures
       enableCommentGestures: enableCommentGestures ?? this.enableCommentGestures,
       leftPrimaryCommentGesture: leftPrimaryCommentGesture ?? this.leftPrimaryCommentGesture,
@@ -460,6 +498,7 @@ class ThunderState extends Equatable {
       postFabEnableChangeSort: postFabEnableChangeSort ?? this.postFabEnableChangeSort,
       postFabEnableReplyToPost: postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
       postFabEnableRefresh: postFabEnableRefresh ?? this.postFabEnableRefresh,
+      postFabEnableSearch: postFabEnableSearch ?? this.postFabEnableSearch,
       feedFabSinglePressAction: feedFabSinglePressAction ?? this.feedFabSinglePressAction,
       feedFabLongPressAction: feedFabLongPressAction ?? this.feedFabLongPressAction,
       postFabSinglePressAction: postFabSinglePressAction ?? this.postFabSinglePressAction,
@@ -471,11 +510,10 @@ class ThunderState extends Equatable {
       /// -------------------------- Accessibility Related Settings --------------------------
       reduceAnimations: reduceAnimations ?? this.reduceAnimations,
 
+      anonymousInstances: anonymousInstances ?? this.anonymousInstances,
+      currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
+
       /// --------------------------------- UI Events ---------------------------------
-      // Scroll to top event
-      scrollToTopId: scrollToTopId ?? this.scrollToTopId,
-      // Dismiss posts from loaded view event
-      dismissEvent: dismissEvent ?? this.dismissEvent,
       // Expand/Close FAB event
       isFabOpen: isFabOpen ?? this.isFabOpen,
       // Summon/Unsummon FAB event
@@ -491,7 +529,7 @@ class ThunderState extends Equatable {
 
         /// -------------------------- Feed Related Settings --------------------------
         /// Default Listing/Sort Settings
-        defaultPostListingType,
+        defaultListingType,
         defaultSortType,
 
         // NSFW Settings
@@ -508,6 +546,8 @@ class ThunderState extends Equatable {
         markPostReadOnMediaView,
         disableFeedFab,
         showInAppUpdateNotification,
+        userSeparator,
+        communitySeparator,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings
@@ -526,6 +566,10 @@ class ThunderState extends Equatable {
         showTextContent,
         showPostAuthor,
         dimReadPosts,
+        useAdvancedShareSheet,
+        showCrossPosts,
+        appLanguageCode,
+        keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,
@@ -534,6 +578,9 @@ class ThunderState extends Equatable {
         defaultCommentSortType,
         collapseParentCommentOnGesture,
         showCommentButtonActions,
+        commentShowUserInstance,
+        combineCommentScores,
+
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,
 
@@ -568,6 +615,8 @@ class ThunderState extends Equatable {
         rightPrimaryCommentGesture,
         rightSecondaryCommentGesture,
 
+        enableFullScreenSwipeNavigationGesture,
+
         /// -------------------------- FAB Related Settings --------------------------
         enableFeedsFab,
         enablePostsFab,
@@ -580,6 +629,7 @@ class ThunderState extends Equatable {
         postFabEnableChangeSort,
         postFabEnableReplyToPost,
         postFabEnableRefresh,
+        postFabEnableSearch,
         feedFabSinglePressAction,
         feedFabLongPressAction,
         postFabSinglePressAction,
@@ -591,11 +641,10 @@ class ThunderState extends Equatable {
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations,
 
+        anonymousInstances,
+        currentAnonymousInstance,
+
         /// --------------------------------- UI Events ---------------------------------
-        // Scroll to top event
-        scrollToTopId,
-        // Dismiss posts from loaded view event
-        dismissEvent,
         // Expand/Close FAB event
         isFabOpen,
         // Expand/Close FAB event

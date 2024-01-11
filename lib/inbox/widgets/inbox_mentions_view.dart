@@ -9,10 +9,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
@@ -22,7 +25,6 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -61,7 +63,7 @@ class InboxMentionsView extends StatelessWidget {
                   transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                   backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
                   backGestureDetectionWidth: 45,
-                  canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
+                  canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
                   builder: (context) => MultiBlocProvider(
                     providers: [
                       BlocProvider.value(value: accountBloc),
@@ -69,7 +71,11 @@ class InboxMentionsView extends StatelessWidget {
                       BlocProvider.value(value: thunderBloc),
                       BlocProvider(create: (context) => PostBloc()),
                     ],
-                    child: PostPage(selectedCommentPath: mentions[index].comment.path, selectedCommentId: mentions[index].comment.id, postId: mentions[index].post.id, onPostUpdated: () => {}),
+                    child: PostPage(
+                        selectedCommentPath: mentions[index].comment.path,
+                        selectedCommentId: mentions[index].comment.id,
+                        postId: mentions[index].post.id,
+                        onPostUpdated: (PostViewMedia postViewMedia) => {}),
                   ),
                 ),
               );
@@ -91,7 +97,7 @@ class InboxMentionsView extends StatelessWidget {
                   ),
                   GestureDetector(
                     child: Text(
-                      '${mentions[index].community.name}${' · ${fetchInstanceNameFromUrl(mentions[index].community.actorId)}'}',
+                      generateCommunityFullName(context, mentions[index].community.name, fetchInstanceNameFromUrl(mentions[index].community.actorId)),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
@@ -192,6 +198,6 @@ class InboxMentionsView extends StatelessWidget {
   }
 
   void onTapCommunityName(BuildContext context, int communityId) {
-    navigateToCommunityPage(context, communityId: communityId);
+    navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId);
   }
 }

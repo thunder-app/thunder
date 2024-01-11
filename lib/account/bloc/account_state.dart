@@ -6,6 +6,7 @@ class AccountState extends Equatable {
   const AccountState({
     this.status = AccountStatus.initial,
     this.subsciptions = const [],
+    this.favorites = const [],
     this.personView,
     this.errorMessage,
   });
@@ -16,23 +17,28 @@ class AccountState extends Equatable {
   /// The user's subscriptions if logged in
   final List<CommunityView> subsciptions;
 
+  /// The user's favorites if logged in
+  final List<CommunityView> favorites;
+
   /// The user's information
-  final PersonViewSafe? personView;
+  final PersonView? personView;
 
   AccountState copyWith({
     AccountStatus? status,
     List<CommunityView>? subsciptions,
-    PersonViewSafe? personView,
+    List<CommunityView>? favorites,
+    PersonView? personView,
     String? errorMessage,
   }) {
     return AccountState(
       status: status ?? this.status,
       subsciptions: subsciptions ?? this.subsciptions,
+      favorites: favorites ?? this.favorites,
       personView: personView ?? this.personView,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, subsciptions, errorMessage];
+  List<Object?> get props => [status, subsciptions, favorites, errorMessage];
 }

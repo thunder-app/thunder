@@ -1,5 +1,82 @@
 ## Unreleased
 
+## Added
+
+- Added ability to collapse post in post page
+- Added ability to change app language in settings
+- Added ability to show/hide read posts in user settings
+- Added post and comment previews to settings, and reorganized settings page
+- Added setting to show comment score instead of upvote/downvote counts
+- Added setting to show/hide post and comment scores
+- Added setting to show/hide bot content
+- Added the ability to render SVGs in markdown bodies - contribution from @micahmo
+- Added Safari extension to open Lemmy links in Thunder
+- Added support for displaying comment origin instance - contribution from @ggichure.
+- Added ability to favorite communities on the drawer
+- Added ability to set keywords for filtering post titles/body
+
+## Changed
+- Added new items to the Post and Comment actions sheet - contribution from @micahmo
+- Added ability to block instance from instance page - contribution from @micahmo
+
+### Fixed
+
+- Fixed issue where custom tabs would not respect default browser when opening links
+- Fixed issue where initial app startup takes a long time to load (503 errors)
+- Fixed issue where image dimensions were being fetched regardless of post view types (card/compact)
+
+## 0.2.6 - 2023-11-22
+
+### Fixed
+
+- Fixed rendering issues with markdown link parsing
+- Fixed issue where TOTP token was not sent properly
+
+## 0.2.5 - 2023-11-15
+
+### Added
+
+- Improved account switching logic - contribution from @micahmo
+- Added anonymous browsing mode for any instance - contribution from @micahmo
+- Instance autocomplete when logging in - contribution from @micahmo
+- Show trending communities on search page - contribution from @micahmo
+- Added new post sharing options - contribution from @micahmo
+- Added Read All in inbox. - contribution from @ggichure
+- Open links to posts and comments in the app instead of browser - contribution from @micahmo
+- Added support for lemmy 0.19.x authentication - contribution from @micahmo
+- Added support for accessibility profiles in settings - contribution from @micahmo
+- Added option to enable/disable full screen navigation swipe gesture to go back (applies when LTR gestures are disabled)
+- Introduced support for reporting comments. - contribution from @ggichure
+- Added ability to create post from home feed - contribution from @micahmo
+- Added option to enter reader mode when tapping on a link in iOS
+- Support new scaled and controversial sort types - contribution from @micahmo
+- Added support to open Lemmy links in app. Android only. - contribution from @ggichure
+- Added support for receiving share intents. Android only. - contribution from @ggichure
+- Added ability to block instances from long-press menu and user settings
+- Add more search options - contribution from @micahmo
+- Added support for display cross-posts - contribution from @micahmo
+
+### Changed
+
+- Collapsed comments are easier to expand - contribution from @micahmo
+- Show up to 99 before adding + in the unread count - contribution from @micahmo
+- Migrate from old BottomNavigationBar to NavigationBar - contribution from @ggichure
+- Adjusted logic to allow for instant switching of sort types, refreshing feed, and switching communities/pages in drawer
+- Removed overscroll effect on Android when reduce animation setting is enabled
+
+### Fixed
+
+- Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
+- Show additional posts loading indicator on instances with taglines - contribution from @micahmo
+- Fix interactions with saved comments - contribution from @micahmo
+- Improve haptic feedback when interacting with FAB - contribution from @micahmo
+- Fix issue with search page occasionally clearing results and query - contribution from @micahmo
+- Remove non-functional message user action on use sidebar
+- Fixed issue where post titles were not properly escaped in feed and post page
+- Fixed issue where replying from the inbox was not working properly
+
+## 0.2.4 - 2023-09-20
+
 ### Added
 
 - Show OP identification first before self/mod/admin - contribution from @micahmo
@@ -23,6 +100,8 @@
 - Automatically save drafts for posts and comments - contribution from @micahmo
 - Highlight the currently selected page in the navigation drawer - contribution from @micahmo
 - Newly created comments get inserted into comment list correctly without losing your scroll position. If comment is top level, the list scrolls to your comment. The comment also gets highlighted - contribution from @ajsosa
+- Add new actions to the post and comment bottom sheets - contribution from @micahmo
+- Added buttons to quickly insert user or community mention in post or comment - contribution from @micahmo
 
 ### Changed
 
@@ -138,7 +217,6 @@
 - Fixed issue where external link thumbnails weren't being displayed due to show external link previews option being off which was only intended to prevent html scraping - contribution from @ajsosa
 - Fixed community/user link handling from posts - contribution from @micahmo
 - Fixed double tap zoom sometimes triggering again if attempting to pan immediately after - contribution from @CTalvio
-
 
 ## 0.2.1+13 - 2023-07-25
 

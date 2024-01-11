@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/instances.dart';
 
 String? fetchInstanceNameFromUrl(String? url) {
   if (url == null) {
@@ -65,41 +67,98 @@ final RegExp username = RegExp(r'^@?(https?:\/\/)?((?:(?!\/u\/u).)*)@(.*)$');
 /// Otherwise, returns null.
 Future<String?> getLemmyUser(String text) async {
   final RegExpMatch? fullUsernameUrlMatch = fullUsernameUrl.firstMatch(text);
-  if (fullUsernameUrlMatch != null && fullUsernameUrlMatch.groupCount >= 4 && await isLemmyInstance(fullUsernameUrlMatch.group(4))) {
+  if (fullUsernameUrlMatch != null && fullUsernameUrlMatch.groupCount >= 4) {
     return '${fullUsernameUrlMatch.group(3)}@${fullUsernameUrlMatch.group(4)}';
   }
 
   final RegExpMatch? shortUsernameUrlMatch = shortUsernameUrl.firstMatch(text);
-  if (shortUsernameUrlMatch != null && shortUsernameUrlMatch.groupCount >= 3 && await isLemmyInstance(shortUsernameUrlMatch.group(2))) {
+  if (shortUsernameUrlMatch != null && shortUsernameUrlMatch.groupCount >= 3) {
     return '${shortUsernameUrlMatch.group(3)}@${shortUsernameUrlMatch.group(2)}';
   }
 
   final RegExpMatch? usernameMatch = username.firstMatch(text);
-  if (usernameMatch != null && usernameMatch.groupCount >= 3 && await isLemmyInstance(usernameMatch.group(3))) {
+  if (usernameMatch != null && usernameMatch.groupCount >= 3) {
     return '${usernameMatch.group(2)}@${usernameMatch.group(3)}';
   }
 
   return null;
 }
 
-class GetInstanceIconResponse {
-  final String? icon;
-  final bool success;
+final RegExp _post = RegExp(r'^(https?:\/\/)(.*)\/post\/([0-9]*).*$');
+Future<int?> getLemmyPostId(String text) async {
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  const GetInstanceIconResponse({required this.success, this.icon});
+  final RegExpMatch? postMatch = _post.firstMatch(text);
+  if (postMatch != null) {
+    final String? instance = postMatch.group(2);
+    final int? postId = int.tryParse(postMatch.group(3)!);
+    if (postId != null) {
+      if (instance == lemmy.host) {
+        return postId;
+      } else {
+        // This is a post on another instance. Try to resolve it
+        try {
+          final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
+          return resolveObjectResponse.post?.post.id;
+        } catch (e) {
+          return null;
+        }
+      }
+    }
+  }
+
+  return null;
 }
 
-Future<GetInstanceIconResponse> getInstanceIcon(String? url) async {
+final RegExp _comment = RegExp(r'^(https?:\/\/)(.*)\/comment\/([0-9]*).*$');
+Future<int?> getLemmyCommentId(String text) async {
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  final RegExpMatch? commentMatch = _comment.firstMatch(text);
+  if (commentMatch != null) {
+    final String? instance = commentMatch.group(2);
+    final int? commentId = int.tryParse(commentMatch.group(3)!);
+    if (commentId != null) {
+      if (instance == lemmy.host) {
+        return commentId;
+      } else {
+        // This is a comment on another instance. Try to resolve it
+        try {
+          final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
+          return resolveObjectResponse.comment?.comment.id;
+        } catch (e) {
+          return null;
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+class GetInstanceInfoResponse {
+  final bool success;
+  final String? icon;
+  final String? version;
+
+  const GetInstanceInfoResponse({required this.success, this.icon, this.version});
+}
+
+Future<GetInstanceInfoResponse> getInstanceInfo(String? url) async {
   if (url?.isEmpty ?? true) {
-    return const GetInstanceIconResponse(success: false);
+    return const GetInstanceInfoResponse(success: false);
   }
 
   try {
     final site = await LemmyApiV3(url!).run(const GetSite()).timeout(const Duration(seconds: 5));
-    return GetInstanceIconResponse(success: true, icon: site.siteView?.site.icon);
+    return GetInstanceInfoResponse(
+      success: true,
+      icon: site.siteView.site.icon,
+      version: site.version,
+    );
   } catch (e) {
     // Bad instances will throw an exception, so no icon
-    return const GetInstanceIconResponse(success: false);
+    return const GetInstanceInfoResponse(success: false);
   }
 }
 
@@ -108,6 +167,10 @@ final validInstances = HashSet<String>();
 Future<bool> isLemmyInstance(String? url) async {
   if (url?.isEmpty ?? true) {
     return false;
+  }
+
+  if (instances.contains(url)) {
+    return true;
   }
 
   if (validInstances.contains(url)) {

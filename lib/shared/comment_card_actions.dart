@@ -3,13 +3,8 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/models/comment_view_tree.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
-import 'package:thunder/post/pages/create_comment_page.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -18,10 +13,11 @@ class CommentCardActions extends StatelessWidget {
   final bool isEdit;
   final double iconSize = 22;
 
-  final Function(int, VoteType) onVoteAction;
+  final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
+  final Function(int) onReportAction;
 
   const CommentCardActions({
     super.key,
@@ -31,6 +27,7 @@ class CommentCardActions extends StatelessWidget {
     required this.onSaveAction,
     required this.onDeleteAction,
     required this.onReplyEditAction,
+    required this.onReportAction,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -38,7 +35,7 @@ class CommentCardActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final VoteType voteType = commentView.myVote ?? VoteType.none;
+    final int voteType = commentView.myVote ?? 0;
     bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
 
     return BlocBuilder<ThunderBloc, ThunderState>(
@@ -58,7 +55,15 @@ class CommentCardActions extends StatelessWidget {
                   ),
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
-                    showCommentActionBottomModalSheet(context, commentView, onSaveAction, onDeleteAction);
+                    showCommentActionBottomModalSheet(
+                      context,
+                      commentView,
+                      onSaveAction,
+                      onDeleteAction,
+                      onVoteAction,
+                      onReplyEditAction,
+                      onReportAction,
+                    );
                     HapticFeedback.mediumImpact();
                   }),
             ),
@@ -80,14 +85,14 @@ class CommentCardActions extends StatelessWidget {
               child: IconButton(
                   icon: Icon(
                     Icons.arrow_upward,
-                    semanticLabel: voteType == VoteType.up ? 'Upvoted' : 'Upvote',
+                    semanticLabel: voteType == 1 ? 'Upvoted' : 'Upvote',
                     size: iconSize,
                   ),
-                  color: voteType == VoteType.up ? upVoteColor : null,
+                  color: voteType == 1 ? upVoteColor : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
-                    onVoteAction(commentView.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+                    onVoteAction(commentView.comment.id, voteType == 1 ? 0 : 1);
                   }),
             ),
             if (downvotesEnabled)
@@ -97,14 +102,14 @@ class CommentCardActions extends StatelessWidget {
                 child: IconButton(
                   icon: Icon(
                     Icons.arrow_downward,
-                    semanticLabel: voteType == VoteType.down ? 'Downvoted' : 'Downvote',
+                    semanticLabel: voteType == -1 ? 'Downvoted' : 'Downvote',
                     size: iconSize,
                   ),
-                  color: voteType == VoteType.down ? downVoteColor : null,
+                  color: voteType == -1 ? downVoteColor : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
-                    onVoteAction(commentView.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+                    onVoteAction(commentView.comment.id, voteType == -1 ? 0 : -1);
                   },
                 ),
               ),

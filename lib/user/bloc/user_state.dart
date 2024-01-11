@@ -26,7 +26,7 @@ class UserState extends Equatable {
   final UserStatus status;
 
   final int? userId;
-  final PersonViewSafe? personView;
+  final PersonView? personView;
 
   final List<CommentViewTree> comments;
   final List<CommentViewTree> savedComments;
@@ -47,12 +47,12 @@ class UserState extends Equatable {
   final int savedContentPage;
 
   final String? errorMessage;
-  final BlockedPerson? blockedPerson;
+  final BlockPersonResponse? blockedPerson;
 
   UserState copyWith({
     required UserStatus status,
     int? userId,
-    PersonViewSafe? personView,
+    PersonView? personView,
     List<CommentViewTree>? comments,
     List<CommentViewTree>? savedComments,
     List<PostViewMedia>? posts,
@@ -66,7 +66,7 @@ class UserState extends Equatable {
     bool? hasReachedCommentEnd,
     bool? hasReachedSavedCommentEnd,
     String? errorMessage,
-    BlockedPerson? blockedPerson,
+    BlockPersonResponse? blockedPerson,
   }) {
     return UserState(
       status: status,

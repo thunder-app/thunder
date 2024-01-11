@@ -5,19 +5,17 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/enums/post_action.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
 class LinkPreviewCard extends StatelessWidget {
@@ -63,6 +61,7 @@ class LinkPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     if ((mediaURL != null || originURL != null) && viewMode == ViewMode.comfortable) {
       return Semantics(
@@ -77,13 +76,24 @@ class LinkPreviewCard extends StatelessWidget {
             fit: StackFit.passthrough,
             children: [
               if (mediaURL != null) ...[
-                ImagePreview(
-                  read: read,
-                  url: mediaURL ?? originURL!,
-                  height: showFullHeightImages ? mediaHeight : 150,
-                  width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
-                  isExpandable: false,
-                )
+                hideNsfw
+                    ? ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                        child: ImagePreview(
+                          read: read,
+                          url: mediaURL ?? originURL!,
+                          height: showFullHeightImages ? mediaHeight : 150,
+                          width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                          isExpandable: false,
+                        ),
+                      )
+                    : ImagePreview(
+                        read: read,
+                        url: mediaURL ?? originURL!,
+                        height: showFullHeightImages ? mediaHeight : 150,
+                        width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                        isExpandable: false,
+                      )
               ] else if (scrapeMissingPreviews)
                 SizedBox(
                   height: 150,
@@ -111,12 +121,14 @@ class LinkPreviewCard extends StatelessWidget {
               if (hideNsfw)
                 Container(
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
+                  child: const Column(
                     children: [
-                      const Icon(Icons.warning_rounded, size: 55),
-                      // This won't show but it does cause the icon above to center
-                      Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
+                      Icon(Icons.warning_rounded, size: 55),
+                      Text(
+                        "NSFW - Tap to reveal",
+                        textScaler: TextScaler.linear(1.5),
+                      ),
                     ],
                   ),
                 ),
@@ -127,6 +139,7 @@ class LinkPreviewCard extends StatelessWidget {
                   child: InkWell(
                     splashColor: theme.colorScheme.primary.withOpacity(0.4),
                     onTap: () => triggerOnTap(context),
+                    onLongPress: originURL != null ? () => handleLinkLongPress(context, thunderState, originURL!, originURL) : null,
                     borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
                   ),
                 ),
@@ -144,13 +157,24 @@ class LinkPreviewCard extends StatelessWidget {
           fit: StackFit.passthrough,
           children: [
             mediaURL != null
-                ? ImagePreview(
-                    read: read,
-                    url: mediaURL!,
-                    height: 75,
-                    width: 75,
-                    isExpandable: false,
-                  )
+                ? hideNsfw
+                    ? ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                        child: ImagePreview(
+                          read: read,
+                          url: mediaURL!,
+                          height: 75,
+                          width: 75,
+                          isExpandable: false,
+                        ),
+                      )
+                    : ImagePreview(
+                        read: read,
+                        url: mediaURL!,
+                        height: 75,
+                        width: 75,
+                        isExpandable: false,
+                      )
                 : scrapeMissingPreviews
                     ? SizedBox(
                         height: 75,
@@ -183,7 +207,7 @@ class LinkPreviewCard extends StatelessWidget {
                         width: 75,
                         color: theme.cardColor.darken(5),
                         child: Icon(
-                          Icons.language,
+                          hideNsfw ? null : Icons.language,
                           color: theme.colorScheme.onSecondaryContainer.withOpacity(read == true ? 0.55 : 1.0),
                         ),
                       ),
@@ -236,17 +260,18 @@ class LinkPreviewCard extends StatelessWidget {
   }
 
   void triggerOnTap(BuildContext context) async {
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final openInExternalBrowser = state.openInExternalBrowser;
-
     if (isUserLoggedIn && markPostReadOnMediaView) {
+      // Mark post as read when on the feed page
+      try {
+        FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
+        feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
+      } catch (e) {}
+
+      // Mark post as read when on the user page
       try {
         UserBloc userBloc = BlocProvider.of<UserBloc>(context);
         userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
-      } catch (e) {
-        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-        communityBloc.add(MarkPostAsReadEvent(postId: postId!, read: true));
-      }
+      } catch (e) {}
     }
 
     if (originURL != null) {
@@ -254,7 +279,7 @@ class LinkPreviewCard extends StatelessWidget {
 
       if (communityName != null) {
         try {
-          await navigateToCommunityPage(context, communityName: communityName);
+          await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
           return;
         } catch (e) {
           // Ignore exception, if it's not a valid community we'll perform the next fallback
@@ -272,7 +297,9 @@ class LinkPreviewCard extends StatelessWidget {
         }
       }
 
-      openLink(context, url: originURL!, openInExternalBrowser: openInExternalBrowser);
+      if (context.mounted) {
+        handleLink(context, url: originURL!);
+      }
     }
   }
 
