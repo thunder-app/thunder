@@ -1036,5 +1036,13 @@
   "trySearchingFor": "Intentando buscar por...",
   "@trySearchingFor": {
     "description": "Suggestion for the user to try searching for a different type"
+  },
+  "subscribeToCommunity": "Suscribirse a la comunidad",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
+  "unsubscribeFromCommunity": "Darse de baja de la comunidad",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
   }
 }
