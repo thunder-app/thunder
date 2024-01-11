@@ -5,6 +5,7 @@
 
 ## Changed
 - Small UI adjustments for account switcher
+- Dynamic Maximum Zoom Level Based on Image Resolution - contribution from @Niranjan-Dorage
 
 ### Fixed
 - Fixed issue where Thunder was being locked to 60Hz on 120Hz displays on Android
@@ -63,7 +64,6 @@
 - Added support for display cross-posts - contribution from @micahmo
 
 ### Changed
-- Dynamic Maximum Zoom Level Based on Image Resolution - contribution from @Niranjan-Dorage
 - Collapsed comments are easier to expand - contribution from @micahmo
 - Show up to 99 before adding + in the unread count - contribution from @micahmo
 - Migrate from old BottomNavigationBar to NavigationBar - contribution from @ggichure
