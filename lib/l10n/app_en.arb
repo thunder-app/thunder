@@ -249,6 +249,10 @@
   "@creator": {
     "description": "The creator filter for searches."
   },
+  "crossPostedFrom": "cross-posted from:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
+  },
   "crossPostedTo": "Cross-posted to",
   "@crossPostedTo": {},
   "currentLongPress": "Currently set as long press",
