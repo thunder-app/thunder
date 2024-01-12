@@ -3,7 +3,7 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Los perfiles de accesibilidad permiten aplicar varios ajustes a la vez para adaptarse a un requisito de accesibilidad concreto.",
   "@accessibilityProfilesDescription": {},
-  "account": "Cuenta",
+  "account": "{count, plural, zero {Cuentas} one {Cuenta} other {Cuentas} } ",
   "@account": {},
   "accountSettings": "Ajustes de la cuenta",
   "@accountSettings": {},
@@ -1044,5 +1044,9 @@
   "unsubscribeFromCommunity": "Darse de baja de la comunidad",
   "@unsubscribeFromCommunity": {
     "description": "Action for unsubscribing from a community"
+  },
+  "crossPostedFrom": "publicación cruzada desde:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
   }
 }
