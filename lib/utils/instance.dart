@@ -32,9 +32,9 @@ final RegExp instanceName = RegExp(r'^!?(https?:\/\/)?((?:(?!\/c\/c).)*)@(.*)$')
 /// If so, returns the community name in the format community@instance.tld.
 /// Otherwise, returns null.
 Future<String?> getLemmyCommunity(String text) async {
-  // Do an initial check for usernames in the format /u/user@instance.tld.
+  // Do an initial check for usernames in the format /u/user@instance.tld or @user@instance.tld.
   // These can accidentally trip our community name detection.
-  if (text.toLowerCase().startsWith('/u/')) {
+  if (text.toLowerCase().startsWith('/u/') || text.toLowerCase().startsWith('@')) {
     return null;
   }
 
@@ -72,6 +72,12 @@ final RegExp username = RegExp(r'^@?(https?:\/\/)?((?:(?!\/u\/u).)*)@(.*)$');
 /// If so, returns the username name in the format username@instance.tld.
 /// Otherwise, returns null.
 Future<String?> getLemmyUser(String text) async {
+  // Do an initial check for communities in the format /c/community@instance.tld or !community@instance.tld.
+  // These can accidentally trip our user name detection.
+  if (text.toLowerCase().startsWith('/c/') || text.toLowerCase().startsWith('!')) {
+    return null;
+  }
+
   final RegExpMatch? fullUsernameUrlMatch = fullUsernameUrl.firstMatch(text);
   if (fullUsernameUrlMatch != null && fullUsernameUrlMatch.groupCount >= 4) {
     return '${fullUsernameUrlMatch.group(3)}@${fullUsernameUrlMatch.group(4)}';
