@@ -7,8 +7,10 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
   "@accessibilityProfilesDescription": {},
-  "account": "Account",
-  "@account": {},
+  "account": "{count, plural, zero {Account} one {Account} other {Accounts} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "actions": "Actions",
@@ -250,6 +252,10 @@
   "creator": "Creator",
   "@creator": {
     "description": "The creator filter for searches."
+  },
+  "crossPostedFrom": "cross-posted from:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
   },
   "crossPostedTo": "Cross-posted to",
   "@crossPostedTo": {},
@@ -885,6 +891,10 @@
   "@submit": {},
   "subscribe": "Subscribe",
   "@subscribe": {},
+  "subscribeToCommunity": "Subscribe to Community",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
   "subscribed": "Subscribed",
   "@subscribed": {},
   "subscriptions": "Subscriptions",
@@ -1005,6 +1015,10 @@
   "@unexpectedError": {},
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
+  "unsubscribeFromCommunity": "Unsubscribe from Community",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
   "unsubscribePending": "Unsubscribe (subscription pending)",
   "@unsubscribePending": {},
   "unsubscribed": "Unsubscribed",

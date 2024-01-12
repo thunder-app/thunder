@@ -233,6 +233,7 @@ class _PostCardState extends State<PostCard> {
                   PostCardAction.blockUser,
                   PostCardAction.blockInstance,
                   PostCardAction.visitCommunity,
+                  widget.postViewMedia.postView.subscribed == SubscribedType.notSubscribed ? PostCardAction.subscribeToCommunity : PostCardAction.unsubscribeFromCommunity,
                   PostCardAction.blockCommunity,
                 ],
                 multiActionsToInclude: [
