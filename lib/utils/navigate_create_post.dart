@@ -19,6 +19,7 @@ Future<void> navigateToCreatePostPage(
   File? image,
   String? url,
   bool? prePopulated,
+  GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey,
 }) async {
   try {
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
@@ -47,6 +48,7 @@ Future<void> navigateToCreatePostPage(
                 context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
               } catch (e) {}
             },
+            scaffoldMessengerKey: scaffoldMessengerKey,
           ),
         );
       },

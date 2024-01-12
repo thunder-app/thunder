@@ -126,14 +126,24 @@ class _ThunderState extends State<Thunder> {
     // For sharing images from outside the app while the app is closed
     final initialMedia = await ReceiveSharingIntent.getInitialMedia();
     if (initialMedia.isNotEmpty && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
-      navigateToCreatePostPage(context, image: File(initialMedia.first.path), prePopulated: true);
+      navigateToCreatePostPage(
+        context,
+        image: File(initialMedia.first.path),
+        prePopulated: true,
+        scaffoldMessengerKey: scaffoldMessengerKey,
+      );
     }
     // For sharing images while the app is in the memory
     mediaIntentDataStreamSubscription = ReceiveSharingIntent.getMediaStream().listen((
       List<SharedMediaFile> value,
     ) {
       if (context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
-        navigateToCreatePostPage(context, image: File(value.first.path), prePopulated: true);
+        navigateToCreatePostPage(
+          context,
+          image: File(value.first.path),
+          prePopulated: true,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+        );
       }
     });
   }
@@ -144,9 +154,19 @@ class _ThunderState extends State<Thunder> {
     if ((initialText?.isNotEmpty ?? false) && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
       final uri = Uri.tryParse(initialText!);
       if (uri?.isAbsolute == true) {
-        navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+        navigateToCreatePostPage(
+          context,
+          url: uri.toString(),
+          prePopulated: true,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+        );
       } else {
-        navigateToCreatePostPage(context, text: initialText, prePopulated: true);
+        navigateToCreatePostPage(
+          context,
+          text: initialText,
+          prePopulated: true,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+        );
       }
     }
 
@@ -157,9 +177,19 @@ class _ThunderState extends State<Thunder> {
       if ((value?.isNotEmpty ?? false) && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
         final uri = Uri.tryParse(value!);
         if (uri?.isAbsolute == true) {
-          navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+          navigateToCreatePostPage(
+            context,
+            url: uri.toString(),
+            prePopulated: true,
+            scaffoldMessengerKey: scaffoldMessengerKey,
+          );
         } else {
-          navigateToCreatePostPage(context, text: value, prePopulated: true);
+          navigateToCreatePostPage(
+            context,
+            text: value,
+            prePopulated: true,
+            scaffoldMessengerKey: scaffoldMessengerKey,
+          );
         }
       }
     });
@@ -428,7 +458,7 @@ class _ThunderState extends State<Thunder> {
                               opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
                               duration: const Duration(milliseconds: 150),
                               curve: Curves.easeIn,
-                              child: const FeedFAB(),
+                              child: FeedFAB(scaffoldMessengerKey: scaffoldMessengerKey),
                             )
                           : null,
                       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,

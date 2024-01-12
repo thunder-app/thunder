@@ -657,6 +657,10 @@
   "@postBodyViewType": {
     "description": "Setting name for the post body view type setting"
   },
+  "postCreatedSuccessfully" :"Post created successfully!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
+  },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
   "postNSFW": "Mark as NSFW",
