@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WebView extends StatefulWidget {
   final String url;
@@ -37,7 +38,10 @@ class _WebViewState extends State<WebView> {
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate())
-      ..loadRequest(Uri.parse(widget.url));
+      ..loadRequest(Uri.parse(widget.url))
+      ..setNavigationDelegate(NavigationDelegate(
+        onUrlChange: (_) => setState(() {}),
+      ));
 
     if (controller.platform is AndroidWebViewController) {
       (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
@@ -47,14 +51,25 @@ class _WebViewState extends State<WebView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 70.0, actions: <Widget>[
-        NavigationControls(
-          webViewController: _controller,
-          url: widget.url,
-        )
-      ]),
-      body: WebViewWidget(controller: _controller),
+    return FutureBuilder(
+      future: Future.wait([_controller.getTitle(), _controller.currentUrl()]),
+      builder: (context, snapshot) => Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 70.0,
+          titleSpacing: 0,
+          title: ListTile(
+            title: Text(snapshot.data?[0] ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
+            subtitle: Text(snapshot.data?[1]?.replaceFirst('https://', '').replaceFirst('www.', '') ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
+          ),
+          actions: <Widget>[
+            NavigationControls(
+              webViewController: _controller,
+              url: widget.url,
+            )
+          ],
+        ),
+        body: WebViewWidget(controller: _controller),
+      ),
     );
   }
 }
@@ -67,31 +82,62 @@ class NavigationControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        IconButton(
-          icon: const Icon(
-            Icons.replay_rounded,
-            semanticLabel: 'Refresh',
-          ),
-          onPressed: () async => await webViewController.reload(),
-        ),
-        IconButton(
-          icon: const Icon(
-            Icons.open_in_browser_rounded,
-            semanticLabel: 'Open in Browser',
-          ),
-          onPressed: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
-        ),
-        IconButton(
-          icon: const Icon(
-            Icons.share_rounded,
-            semanticLabel: 'Share',
-          ),
-          onPressed: () => Share.share(url),
-        ),
-        const SizedBox(width: 8.0),
-      ],
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    return FutureBuilder(
+      future: Future.wait([webViewController.canGoBack(), webViewController.canGoForward()]),
+      builder: (context, snapshot) {
+        return Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.arrow_back_rounded,
+                semanticLabel: l10n.back,
+              ),
+              onPressed: snapshot.hasData && snapshot.data![0] == true ? () async => await webViewController.goBack() : null,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.arrow_forward_rounded,
+                semanticLabel: l10n.forward,
+              ),
+              onPressed: snapshot.hasData && snapshot.data![1] == true ? () async => await webViewController.goForward() : null,
+            ),
+            PopupMenuButton(
+              itemBuilder: (BuildContext context) => [
+                PopupMenuItem(
+                  onTap: () async => await webViewController.reload(),
+                  child: ListTile(
+                    dense: true,
+                    horizontalTitleGap: 5,
+                    leading: const Icon(Icons.replay_rounded, size: 20),
+                    title: Text(l10n.refresh),
+                  ),
+                ),
+                PopupMenuItem(
+                  onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+                  child: ListTile(
+                    dense: true,
+                    horizontalTitleGap: 5,
+                    leading: const Icon(Icons.open_in_browser_rounded, size: 20),
+                    title: Text(l10n.openInBrowser),
+                  ),
+                ),
+                PopupMenuItem(
+                  onTap: () => Share.share(url),
+                  child: ListTile(
+                    dense: true,
+                    horizontalTitleGap: 5,
+                    leading: const Icon(Icons.share_rounded, size: 20),
+                    title: Text(l10n.share),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(width: 8.0),
+          ],
+        );
+      },
     );
   }
 }

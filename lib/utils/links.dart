@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/core/enums/browser_mode.dart';
+import 'package:thunder/shared/webview.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
@@ -68,9 +70,9 @@ Future<LinkInfo> getLinkInfo(String url) async {
 void _openLink(BuildContext context, {required String url}) async {
   ThunderState state = context.read<ThunderBloc>().state;
 
-  if (state.openInExternalBrowser || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
+  if (state.browserMode == BrowserMode.external || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
     url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
-  } else {
+  } else if (state.browserMode == BrowserMode.customTabs) {
     await launchUrl(
       Uri.parse(url),
       customTabsOptions: CustomTabsOptions(
@@ -92,6 +94,12 @@ void _openLink(BuildContext context, {required String url}) async {
         preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
         barCollapsingEnabled: true,
         entersReaderIfAvailable: state.openInReaderMode,
+      ),
+    );
+  } else if (state.browserMode == BrowserMode.inApp) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => WebView(url: url),
       ),
     );
   }

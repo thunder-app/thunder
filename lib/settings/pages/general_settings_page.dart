@@ -7,6 +7,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
@@ -51,8 +52,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, missing link previews will be scraped
   bool scrapeMissingPreviews = false;
 
-  /// When enabled, links will be opened in the external browser
-  bool openInExternalBrowser = false;
+  /// Determines how links are handled
+  BrowserMode browserMode = BrowserMode.customTabs;
 
   /// When enabled, links will be opened in the reader mode. This is only available on iOS
   bool openInReaderMode = false;
@@ -152,9 +153,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => combineNavAndFab = value);
         break;
 
-      case LocalSettings.openLinksInExternalBrowser:
-        await prefs.setBool(LocalSettings.openLinksInExternalBrowser.name, value);
-        setState(() => openInExternalBrowser = value);
+      case LocalSettings.browserMode:
+        await prefs.setString(LocalSettings.browserMode.name, value);
+        setState(() => browserMode = BrowserMode.values.byName(value ?? BrowserMode.customTabs));
         break;
       case LocalSettings.openLinksInReaderMode:
         await prefs.setBool(LocalSettings.openLinksInReaderMode.name, value);
@@ -213,7 +214,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
       combineNavAndFab = prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
 
-      openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
+      browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
+      // Migrate the openInExternalBrowser setting, if found.
+      bool? legacyOpenInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name);
+      if (legacyOpenInExternalBrowser != null) {
+        browserMode = legacyOpenInExternalBrowser ? BrowserMode.external : BrowserMode.customTabs;
+        prefs.remove(LocalSettings.openLinksInExternalBrowser.name);
+        prefs.setString(LocalSettings.browserMode.name, browserMode.toString());
+      }
+
       openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
@@ -499,12 +508,24 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: LocalSettings.openLinksInExternalBrowser.label,
-                value: openInExternalBrowser,
-                iconEnabled: Icons.add_link_rounded,
-                iconDisabled: Icons.link_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.openLinksInExternalBrowser, value),
+              child: ListOption(
+                description: l10n.linkHandling,
+                value: ListPickerItem(
+                  label: switch (browserMode) {
+                    BrowserMode.inApp => l10n.linkHandlingInAppShort,
+                    BrowserMode.customTabs => l10n.linkHandlingCustomTabsShort,
+                    BrowserMode.external => l10n.linkHandlingExternalShort,
+                  },
+                  payload: browserMode,
+                  capitalizeLabel: false,
+                ),
+                options: [
+                  ListPickerItem(label: l10n.linkHandlingInApp, icon: Icons.dataset_linked_rounded, payload: BrowserMode.inApp),
+                  ListPickerItem(label: l10n.linkHandlingCustomTabs, icon: Icons.language_rounded, payload: BrowserMode.customTabs),
+                  ListPickerItem(label: l10n.linkHandlingExternal, icon: Icons.open_in_browser_rounded, payload: BrowserMode.external),
+                ],
+                icon: Icons.link_rounded,
+                onChanged: (value) => setPreferences(LocalSettings.browserMode, value.payload.name),
               ),
             ),
           ),
