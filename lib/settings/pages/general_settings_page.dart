@@ -480,7 +480,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
                 description: l10n.combineNavAndFab,
-                subtitle: l10n.combineNavAndFab,
+                subtitle: l10n.combineNavAndFabDescription,
                 value: combineNavAndFab,
                 iconEnabled: Icons.join_full_rounded,
                 iconDisabled: Icons.join_inner_rounded,

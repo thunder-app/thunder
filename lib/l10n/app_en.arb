@@ -157,6 +157,8 @@
   },
   "combineNavAndFab": "Combine FAB and Navigation Buttons",
   "@combineNavAndFab": {},
+  "combineNavAndFabDescription": "Floating Action Button will be shown between navigation buttons.",
+  "@combineNavAndFabDescription": {},
   "comment": "Comment",
   "@comment": {},
   "commentBehaviourSettings": "Comments",
@@ -887,7 +889,7 @@
   "@scrapeMissingLinkPreviews": {
     "description": "Toggle to scrape missing external link previews."
   },
-  "scrapeMissingPreviews": "Scrape Missing Link Previews",
+  "scrapeMissingPreviews": "Enabling will have a performance hit.",
   "@scrapeMissingPreviews": {
     "description": "Notice regarding potential performance impact when enabling link scrapping."
   },
