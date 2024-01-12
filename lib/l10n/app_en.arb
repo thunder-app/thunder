@@ -133,7 +133,7 @@
   "@collapseInformation": {
     "description": "Describes the action to collapse information - used in FAB settings"
   },
-  "collapseParentCommentBodyOnGesture": "Collapse Parent Comment Body On Gesture",
+  "collapseParentCommentBodyOnGesture": "Hide Parent Comment when Collapsed",
   "@collapseParentCommentBodyOnGesture": {
     "description": "Toggle to collapse parent comment body on gesture."
   },
@@ -155,7 +155,7 @@
   "@combineCommentScoresLabel": {
     "description": "Label for setting to combine comment scores"
   },
-  "combineNavAndFab": "Floating Action Button will be shown between navigation buttons.",
+  "combineNavAndFab": "Combine FAB and Navigation Buttons",
   "@combineNavAndFab": {},
   "comment": "Comment",
   "@comment": {},
@@ -163,7 +163,7 @@
   "@commentBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
   },
-  "commentFontScale": "Comment Font Scale",
+  "commentFontScale": "Comment Content Font Scale",
   "@commentFontScale": {
     "description": "Setting for comment font scale"
   },
@@ -319,7 +319,7 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
-  "dimReadPosts": "Read posts will be grayed out",
+  "dimReadPosts": "Dim Read Posts",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
   },
@@ -707,7 +707,7 @@
   "@openLinksInExternalBrowser": {
     "description": "Toggle to open links in an external browser."
   },
-  "openLinksInReaderMode": "Open Links in Reader Mode when available",
+  "openLinksInReaderMode": "Open Links in Reader Mode",
   "@openLinksInReaderMode": {
     "description": "Toggle to open links in reader mode when available."
   },
@@ -887,7 +887,7 @@
   "@scrapeMissingLinkPreviews": {
     "description": "Toggle to scrape missing external link previews."
   },
-  "scrapeMissingPreviews": "Enabling will have a performance hit.",
+  "scrapeMissingPreviews": "Scrape Missing Link Previews",
   "@scrapeMissingPreviews": {
     "description": "Notice regarding potential performance impact when enabling link scrapping."
   },
@@ -975,7 +975,7 @@
   "@showFullHeightImages": {
     "description": "Toggle to view full height images."
   },
-  "showInAppUpdateNotifications": "Get notified of new GitHub releases",
+  "showInAppUpdateNotifications": "Get Notified of new GitHub Releases",
   "@showInAppUpdateNotifications": {
     "description": "Toggle to get notified of new GitHub releases."
   },
@@ -997,9 +997,9 @@
   "@showPostSaveAction": {
     "description": "Toggle to show save button."
   },
-  "showPostTextContentPreview": "Show Text Content",
+  "showPostTextContentPreview": "Show Text Preview",
   "@showPostTextContentPreview": {
-    "description": "Toggle to show text content."
+    "description": "Toggle to show text previews."
   },
   "showPostTitleFirst": "Show Title First",
   "@showPostTitleFirst": {
@@ -1079,7 +1079,7 @@
   "@suggestedTitle": {
     "description": "Suggested title for the post."
   },
-  "tabletMode": "Tablet Mode",
+  "tabletMode": "Tablet Mode (2-column view)",
   "@tabletMode": {
     "description": "Toggle to enable 2-column tablet mode."
   },
@@ -1095,7 +1095,7 @@
   "@theme": {
     "description": "Setting for theme"
   },
-  "themeAccentColor": "Theme Accent Color",
+  "themeAccentColor": "Accent Colors",
   "@themeAccentColor": {
     "description": "Setting for theme accent color"
   },
