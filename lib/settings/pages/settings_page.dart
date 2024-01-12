@@ -30,15 +30,17 @@ class SettingsPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final List<SettingTopic> topics = [
+
       SettingTopic(title: l10n.general, icon: Icons.settings, path: SETTINGS_GENERAL_PAGE),
       SettingTopic(title: l10n.filters, icon: Icons.filter_alt_rounded, path: SETTINGS_FILTERS_PAGE),
       SettingTopic(title: l10n.appearance, icon: Icons.color_lens_rounded, path: SETTINGS_APPEARANCE_PAGE),
       SettingTopic(title: l10n.gestures, icon: Icons.swipe, path: SETTINGS_GESTURES_PAGE),
       SettingTopic(title: l10n.floatingActionButton, icon: Icons.settings_applications_rounded, path: SETTINGS_FAB_PAGE),
       SettingTopic(title: l10n.accessibility, icon: Icons.accessibility, path: SETTINGS_ACCESSIBILITY_PAGE),
-      SettingTopic(title: l10n.account, icon: Icons.person_rounded, path: SETTINGS_ACCOUNT_PAGE),
+      SettingTopic(title: l10n.account(0), icon: Icons.person_rounded, path: SETTINGS_ACCOUNT_PAGE),
       SettingTopic(title: l10n.about, icon: Icons.info_rounded, path: SETTINGS_ABOUT_PAGE),
       SettingTopic(title: l10n.debug, icon: Icons.developer_mode_rounded, path: SETTINGS_DEBUG_PAGE),
+
     ];
 
     return Scaffold(

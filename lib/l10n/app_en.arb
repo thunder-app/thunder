@@ -7,8 +7,10 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
   "@accessibilityProfilesDescription": {},
-  "account": "Account",
-  "@account": {},
+  "account": "{count, plural, zero {Account} one {Account} other {Accounts} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "actions": "Actions",
@@ -247,6 +249,10 @@
   "@creator": {
     "description": "The creator filter for searches."
   },
+  "crossPostedFrom": "cross-posted from:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
+  },
   "crossPostedTo": "Cross-posted to",
   "@crossPostedTo": {},
   "currentLongPress": "Currently set as long press",
@@ -411,6 +417,10 @@
   "@gettingStarted": {},
   "hidePassword": "Hide Password",
   "@hidePassword": {},
+  "hideTopBarOnScroll": "Hide Top Bar on Scroll",
+  "@hideTopBarOnScroll": {
+    "description": "Settings toggle to hide the top bar on scroll"
+  },
   "hot": "Hot",
   "@hot": {},
   "image": "Image",
@@ -539,9 +549,9 @@
   "@new_": {},
   "noComments": "Oh. There are no comments.",
   "@noComments": {},
-  "noCommentsFound": "No comments found",
+  "noCommentsFound": "No comments found.",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No communities found",
+  "noCommunitiesFound": "No communities found.",
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
@@ -559,7 +569,7 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "No posts found",
+  "noPosts": "No posts found.",
   "@noPosts": {},
   "noPostsFound": "No posts found",
   "@noPostsFound": {},
@@ -571,7 +581,7 @@
   },
   "noUserBlocks": "No blocked users.",
   "@noUserBlocks": {},
-  "noUsersFound": "No users found",
+  "noUsersFound": "No users found.",
   "@noUsersFound": {},
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
@@ -861,6 +871,10 @@
   "@submit": {},
   "subscribe": "Subscribe",
   "@subscribe": {},
+  "subscribeToCommunity": "Subscribe to Community",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
   "subscribed": "Subscribed",
   "@subscribed": {},
   "subscriptions": "Subscriptions",
@@ -937,6 +951,10 @@
   },
   "trendingCommunities": "Trending Communities",
   "@trendingCommunities": {},
+  "trySearchingFor": "Try searching for...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
   "unableToFindCommunity": "Unable to find community",
   "@unableToFindCommunity": {},
   "unableToFindCommunityName": "Unable to find community '{communityName}'",
@@ -973,6 +991,10 @@
   "@unexpectedError": {},
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
+  "unsubscribeFromCommunity": "Unsubscribe from Community",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
   "unsubscribePending": "Unsubscribe (subscription pending)",
   "@unsubscribePending": {},
   "unsubscribed": "Unsubscribed",
