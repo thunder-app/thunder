@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:collection';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -30,7 +32,6 @@ class SettingsPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final List<SettingTopic> topics = [
-
       SettingTopic(title: l10n.general, icon: Icons.settings, path: SETTINGS_GENERAL_PAGE),
       SettingTopic(title: l10n.filters, icon: Icons.filter_alt_rounded, path: SETTINGS_FILTERS_PAGE),
       SettingTopic(title: l10n.appearance, icon: Icons.color_lens_rounded, path: SETTINGS_APPEARANCE_PAGE),
@@ -40,7 +41,6 @@ class SettingsPage extends StatelessWidget {
       SettingTopic(title: l10n.account(0), icon: Icons.person_rounded, path: SETTINGS_ACCOUNT_PAGE),
       SettingTopic(title: l10n.about, icon: Icons.info_rounded, path: SETTINGS_ABOUT_PAGE),
       SettingTopic(title: l10n.debug, icon: Icons.developer_mode_rounded, path: SETTINGS_DEBUG_PAGE),
-
     ];
 
     return Scaffold(
@@ -54,7 +54,7 @@ class SettingsPage extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 18),
               child: SearchAnchor(
                 builder: (BuildContext context, SearchController controller) {
                   if (Platform.isIOS) {
@@ -79,10 +79,19 @@ class SettingsPage extends StatelessWidget {
                   }
                 },
                 suggestionsBuilder: (BuildContext context, SearchController controller) {
-                  final List<LocalSettings> localSettings = LocalSettings.values.where((item) => item.label.toLowerCase().contains(controller.text.toLowerCase())).toList();
+                  final List<LocalSettings> localSettings = LocalSettings.values
+                      .where((item) => item.label.toLowerCase().contains(
+                            controller.text.toLowerCase(),
+                          ))
+                      .toSet()
+                      .toList();
+                  localSettings.removeWhere((setting) => setting.label.isEmpty);
+                  localSettings.sortBy((setting) => setting.label);
+
                   return List<ListTile>.generate(
                       localSettings.length,
                       (index) => ListTile(
+                            subtitle: Text(localSettings[index].name.replaceFirst('_', '').replaceAll(RegExp(r'setting|general|gesture'), '').replaceAll('_', ' ')),
                             onTap: () => GoRouter.of(context).push(
                               localSettings[index].page ?? SETTINGS_GENERAL_PAGE,
                               extra: localSettings[index].page == SETTINGS_ABOUT_PAGE
@@ -93,7 +102,10 @@ class SettingsPage extends StatelessWidget {
                                     ]
                                   : context.read<ThunderBloc>(),
                             ),
-                            title: Text(localSettings[index].label),
+                            title: Text(
+                              localSettings[index].label,
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                            ),
                           ));
                 },
               ),

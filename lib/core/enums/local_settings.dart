@@ -44,8 +44,7 @@ enum LocalSettings {
   useAdvancedShareSheet(name: 'setting_use_advanced_share_sheet', label: 'Use Advanced Share Sheet', page: SETTINGS_GENERAL_PAGE),
   showCrossPosts(name: 'setting_show_cross_posts', label: 'Show Cross-Posts', page: SETTINGS_APPEARANCE_POSTS_PAGE),
   keywordFilters(name: 'setting_general_keyword_filters', label: '', page: SETTINGS_FILTERS_PAGE),
-  hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', label: ''),
-
+  hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', label: '', page: SETTINGS_GENERAL_PAGE),
 
   // Advanced Settings
   userFormat(name: 'user_format', label: '', page: SETTINGS_GENERAL_PAGE),
