@@ -1,9 +1,9 @@
 {
-  "accessibility": "Accessibility",
+  "accessibility": "Accesibilidad",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Los perfiles de accesibilidad permiten aplicar varios ajustes a la vez para adaptarse a un requisito de accesibilidad concreto.",
   "@accessibilityProfilesDescription": {},
-  "account": "Cuenta",
+  "account": "{count, plural, zero {Cuentas} one {Cuenta} other {Cuentas} } ",
   "@account": {},
   "accountSettings": "Ajustes de la cuenta",
   "@accountSettings": {},
@@ -17,9 +17,9 @@
   "@addAccount": {},
   "addAccountToSeeProfile": "Inicia sesión para ver tu cuenta.",
   "@addAccountToSeeProfile": {},
-  "addAnonymousInstance": "Add Anonymous Instance",
+  "addAnonymousInstance": "Añadir una instancia anónima",
   "@addAnonymousInstance": {},
-  "addedCommunityToSubscriptions": "Comunidad añadida a suscripciones",
+  "addedCommunityToSubscriptions": "Suscrito a la comunidad",
   "@addedCommunityToSubscriptions": {},
   "allPosts": "Todos los mensajes",
   "@allPosts": {},
@@ -31,17 +31,17 @@
   "@alreadyPostedTo": {},
   "andXMore": "y {count} más",
   "@andXMore": {},
-  "animations": "Animations",
+  "animations": "Animaciones",
   "@animations": {},
-  "anonymous": "Anonymous",
+  "anonymous": "Anónimo",
   "@anonymous": {},
-  "applied": "Applied",
+  "applied": "Aplicada",
   "@applied": {},
-  "apply": "Apply",
+  "apply": "Aplicar",
   "@apply": {},
   "back": "Atrás",
   "@back": {},
-  "backButton": "Back button",
+  "backButton": "Botón de retroceso",
   "@backButton": {},
   "backToTop": "Volver arriba",
   "@backToTop": {},
@@ -57,11 +57,11 @@
   "@blockedInstances": {},
   "blockedUsers": "Usuarios bloqueados",
   "@blockedUsers": {},
-  "browsingAnonymously": "You are currently browsing {instance} anonymously.",
+  "browsingAnonymously": "Está navegando por {instance} de forma anónima.",
   "@browsingAnonymously": {},
   "cancel": "Cancelar",
   "@cancel": {},
-  "cannotReportOwnComment": "You can't submit a report for your own comment.",
+  "cannotReportOwnComment": "No puede presentar un informe para su propio comentario.",
   "@cannotReportOwnComment": {},
   "cantBlockAdmin": "No se puede bloquear un administrador de instancia.",
   "@cantBlockAdmin": {},
@@ -71,7 +71,7 @@
   "@changeSort": {},
   "clearSearch": "Borrar la búsqueda",
   "@clearSearch": {},
-  "clearedDatabase": "Base de datos local borrada. Reinicia Thunder para utilizar los nuevos cambios.",
+  "clearedDatabase": "Base de datos local borrada. Reinicie Thunder para que los nuevos cambios surtan efecto.",
   "@clearedDatabase": {},
   "clearedUserPreferences": "Preferencias del usuario borradas",
   "@clearedUserPreferences": {},
@@ -83,15 +83,15 @@
   "@combineNavAndFab": {},
   "comment": "Comentario",
   "@comment": {},
-  "commentReported": "The comment has been marked for review.",
+  "commentReported": "El comentario ha sido marcado para su revisión.",
   "@commentReported": {},
-  "commentSavedAsDraft": "Comment saved as draft",
+  "commentSavedAsDraft": "Comentario guardado como borrador",
   "@commentSavedAsDraft": {},
   "commentSortType": "Tipo de clasificación de los comentarios",
   "@commentSortType": {},
   "commentSwipeGesturesHint": "¿Quieres utilizar los botones? Habilítalos en la sección de comentarios de los ajustes generales.",
   "@commentSwipeGesturesHint": {},
-  "comments": "Comments",
+  "comments": "Comentarios",
   "@comments": {},
   "communities": "Comunidades",
   "@communities": {},
@@ -103,17 +103,17 @@
   "@copiedToClipboard": {},
   "copy": "Copiar",
   "@copy": {},
-  "copyText": "Copy Text",
+  "copyText": "Copiar el texto",
   "@copyText": {},
-  "couldNotDetermineCommentDelete": "Could not determine post to delete the comment.",
+  "couldNotDetermineCommentDelete": "Error: No se pudo determinar el puesto para eliminar el comentario.",
   "@couldNotDetermineCommentDelete": {},
-  "couldNotDeterminePostComment": "Could not determine post to comment to.",
+  "couldNotDeterminePostComment": "Error: No se pudo determinar el post para comentar.",
   "@couldNotDeterminePostComment": {},
-  "couldntCreateReport": "Your comment report could not be submitted at this time. Please try again later",
+  "couldntCreateReport": "Su comentario no ha podido ser enviado en este momento. Vuelva a intentarlo más tarde",
   "@couldntCreateReport": {},
   "countSubscribers": "{count} suscriptores",
   "@countSubscribers": {},
-  "createAccount": "Create Account",
+  "createAccount": "Crear una cuenta",
   "@createAccount": {},
   "createComment": "Crear comentario",
   "@createComment": {},
@@ -143,17 +143,17 @@
   },
   "downloadingMedia": "Descargando los medios para compartir…",
   "@downloadingMedia": {},
-  "downvote": "Downvote",
+  "downvote": "Voto negativo",
   "@downvote": {},
   "downvotesDisabled": "Los votos negativos están desactivados en esta instancia.",
   "@downvotesDisabled": {},
-  "edit": "Edit",
+  "edit": "Editar",
   "@edit": {},
   "editComment": "Editar comentario",
   "@editComment": {},
   "empty": "Vacío",
   "@empty": {},
-  "emptyInbox": "Empty Inbox",
+  "emptyInbox": "Buzón vacío",
   "@emptyInbox": {},
   "emptyUri": "El enlace está vacío. Por favor, proporcione un enlace dinámico válido para continuar.",
   "@emptyUri": {
@@ -187,13 +187,13 @@
   },
   "gestures": "Gestos",
   "@gestures": {},
-  "gettingStarted": "Getting Started",
+  "gettingStarted": "Primeros pasos",
   "@gettingStarted": {},
-  "hidePassword": "Hide Password",
+  "hidePassword": "Ocultar la contraseña",
   "@hidePassword": {},
-  "hot": "Hot",
+  "hot": "Caliente",
   "@hot": {},
-  "image": "Image",
+  "image": "Imagen",
   "@image": {},
   "importExportSettings": "Ajustes para la importación/exportación",
   "@importExportSettings": {
@@ -203,25 +203,25 @@
   "@importSettings": {
     "description": "Action to import application settings."
   },
-  "inReplyTo": "In reply to {post} in {community}",
+  "inReplyTo": "En respuesta a {post} en {community}",
   "@inReplyTo": {},
   "inbox": "Buzón",
   "@inbox": {},
-  "includeCommunity": "Include Community",
+  "includeCommunity": "Incluir a la comunidad",
   "@includeCommunity": {},
-  "includeExternalLink": "Include External Link",
+  "includeExternalLink": "Incluir enlace externo",
   "@includeExternalLink": {},
-  "includeImage": "Include Image",
+  "includeImage": "Incluir la imagen",
   "@includeImage": {},
-  "includePostLink": "Include Post Link",
+  "includePostLink": "Incluir enlace a la entrada",
   "@includePostLink": {},
-  "includeText": "Include Text",
+  "includeText": "Incluir el texto",
   "@includeText": {},
-  "includeTitle": "Include Title",
+  "includeTitle": "Incluir el título",
   "@includeTitle": {},
-  "instance": "Instance",
+  "instance": "Instancia",
   "@instance": {},
-  "instanceHasAlreadyBenAdded": "{instance} has already been added.",
+  "instanceHasAlreadyBenAdded": "{instance} ya ha sido añadido.",
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "Es posible que no esté conectado a Internet o que tu instancia no esté disponible actualmente.",
   "@internetOrInstanceIssues": {},
@@ -229,7 +229,7 @@
   "@link": {},
   "linkActions": "Acciones del enlace",
   "@linkActions": {},
-  "loadMorePlural": "Cargando {count} respuesta(s) más…",
+  "loadMorePlural": "Cargar {count} más respuestas…",
   "@loadMorePlural": {},
   "loadMoreSingular": "Cargando {count} respuesta(s) más…",
   "@loadMoreSingular": {},
@@ -243,55 +243,55 @@
   "@loginFailed": {},
   "loginSucceeded": "Conectado.",
   "@loginSucceeded": {},
-  "loginToPerformAction": "You need to be logged in to carry out this task.",
+  "loginToPerformAction": "Para realizar esta tarea, debe iniciar sesión.",
   "@loginToPerformAction": {},
-  "loginToSeeInbox": "Log in to see your inbox",
+  "loginToSeeInbox": "Conéctate para ver tu bandeja de entrada",
   "@loginToSeeInbox": {},
   "malformedUri": "El enlace que has proporcionado tiene un formato no válido. Por favor, asegúrese de que es un enlace válido.",
   "@malformedUri": {
     "description": "Error related to unsupported link format."
   },
-  "manageAccounts": "Manage Accounts",
+  "manageAccounts": "Administrar cuentas",
   "@manageAccounts": {},
   "mention": "{count, plural, zero {Mención} one {Mención} other {Menciones} }",
   "@mention": {},
-  "message": "{count, plural, zero {Message} one {Message} other {Messages} }",
+  "message": "{count, plural, zero {Mensaje} one {Mensaje} other {Mensajes} }",
   "@message": {},
   "missingErrorMessage": "Mensaje de error no disponible",
   "@missingErrorMessage": {},
-  "mostComments": "Most Comments",
+  "mostComments": "La mayoría de los comentarios",
   "@mostComments": {},
   "mustBeLoggedInComment": "Hay que iniciar sesión para crear un comentario",
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "Hay que iniciar sesión para crear un post",
   "@mustBeLoggedInPost": {},
-  "navigateDown": "Ir al comentario siguiente",
+  "navigateDown": "Siguiente comentario",
   "@navigateDown": {},
   "navigateUp": "Comentario anterior",
   "@navigateUp": {},
   "navigation": "Navegación",
   "@navigation": {},
-  "newComments": "New Comments",
+  "newComments": "Nuevos comentarios",
   "@newComments": {},
-  "new_": "New",
+  "new_": "Nuevo",
   "@new_": {},
-  "noComments": "Oh. There are no comments.",
+  "noComments": "Oh. No hay comentarios.",
   "@noComments": {},
-  "noCommentsFound": "No hay comentarios",
+  "noCommentsFound": "No hay comentarios.",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No se han encontrado comunidades",
+  "noCommunitiesFound": "No se han encontrado comunidades.",
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "Ninguna comunidad bloqueada.",
   "@noCommunityBlocks": {},
   "noInstanceBlocks": "Ninguna instancia bloqueada.",
   "@noInstanceBlocks": {},
-  "noPosts": "No hay ninguna publicación",
+  "noPosts": "No hay ninguna publicación.",
   "@noPosts": {},
   "noPostsFound": "No se ha encontrado ningún tema",
   "@noPostsFound": {},
   "noUserBlocks": "Ningún usuario bloqueado.",
   "@noUserBlocks": {},
-  "noUsersFound": "No se encontraron usuarios",
+  "noUsersFound": "No se encontraron usuarios.",
   "@noUsersFound": {},
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
@@ -407,7 +407,7 @@
   "@scrapeMissingPreviews": {
     "description": "Notice regarding potential performance impact when enabling link scrapping."
   },
-  "screenReaderProfile": "Screen Reader Profile",
+  "screenReaderProfile": "Perfil del lector de pantalla",
   "@screenReaderProfile": {},
   "screenReaderProfileDescription": "Optimiza Thunder para los lectores de pantalla reduciendo los elementos generales y eliminando los gestos potencialmente conflictivos.",
   "@screenReaderProfileDescription": {},
@@ -495,7 +495,7 @@
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "{communityName} desbloqueado",
   "@successfullyUnblockedCommunity": {},
-  "tapToExit": "Pulsa atrás dos veces para salir",
+  "tapToExit": "Retroceder dos veces para salir",
   "@tapToExit": {},
   "text": "Texto",
   "@text": {},
@@ -717,7 +717,7 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
-  "deleteLocalDatabaseDescription": "Esta acción eliminará la base de datos local y lo desconectará de todas sus cuentas.\n\n¿Quieres continuar?",
+  "deleteLocalDatabaseDescription": "Esta acción eliminará la base de datos local y te desconectará de todas tus cuentas.\n\n¿Está seguro de que desea continuar?",
   "@deleteLocalDatabaseDescription": {
     "description": "Description for confirmation action to delete local database"
   },
@@ -900,5 +900,153 @@
   "commentShowUserInstance": "Mostrar instancia de usuario",
   "@commentShowUserInstance": {
     "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "confirmMarkAllAsReadTitle": "¿Marcar todo como leído?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "communityFormat": "Formato de la comunidad",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "addToFavorites": "Añadir a favoritos",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "noKeywordFilters": "No se han añadido filtros de palabras clave",
+  "@noKeywordFilters": {
+    "description": "Message for no keywords added"
+  },
+  "noSubscriptions": "Sin suscripciones",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "keywordFilterDescription": "Filtra los mensajes que contienen palabras clave en el título o en el cuerpo",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "confirmLogOutTitle": "¿Cerrar sesión?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "advanced": "Avanzado",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "addKeywordFilter": "Añadir palabra clave",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "keywordFilters": "Filtros por palabra clave",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "removeFromFavorites": "Eliminar de favoritos",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "noFavoritedCommunities": "Ninguna comunidad favorita",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
+  "removeKeywordFilter": "Eliminar palabra clave",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
+  "confirmLogOutBody": "¿Seguro que quieres cerrar la sesión?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "favorites": "Favoritos",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "permissionDeniedMessage": "Thunder requiere algunos permisos para guardar esta imagen que han sido denegados.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "permissionDenied": "Permiso denegado",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "openSettings": "Abrir la configuración",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "removeKeyword": "¿Quitar \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "userFormat": "Formato del usuario",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "markAllAsRead": "Marcar todo como leído",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "confirmMarkAllAsReadBody": "¿Estás seguro de que quieres marcar todos los mensajes como leídos?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "postBodySettingsDescription": "Estos ajustes afectan a la visualización del cuerpo del mensaje",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
+  "expanded": "Ampliado",
+  "@expanded": {
+    "description": "Expanded post body view type"
+  },
+  "condensed": "Condensado",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "postBodyViewType": "Tipo de vista del cuerpo de la publicación",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
+  },
+  "postBodySettings": "Configuración del cuerpo del mensaje",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "countUsers": "{count} usuarios",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "expandSpoiler": "Ampliar spoiler",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "collapseSpoiler": "Contraer el spoiler",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "unableToFindCommunityName": "No se ha podido encontrar la comunidad '{communityName}'",
+  "@unableToFindCommunityName": {
+    "description": "Error message for when we are unable to find a community, including the name"
+  },
+  "hideTopBarOnScroll": "Ocultar la barra superior al desplazarse",
+  "@hideTopBarOnScroll": {
+    "description": "Settings toggle to hide the top bar on scroll"
+  },
+  "trySearchingFor": "Intentando buscar por...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
+  "subscribeToCommunity": "Suscribirse a la comunidad",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
+  "unsubscribeFromCommunity": "Darse de baja de la comunidad",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
+  "crossPostedFrom": "publicación cruzada desde:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
   }
 }

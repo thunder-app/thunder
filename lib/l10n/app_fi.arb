@@ -564,5 +564,65 @@
   "shareMedia": "Jaa media",
   "@shareMedia": {},
   "searchComments": "Hae kommentteja",
-  "@searchComments": {}
+  "@searchComments": {},
+  "confirmMarkAllAsReadTitle": "Merkitse kaikki luetuiksi?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "addToFavorites": "Lisää suosikkeihin",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "commentShowUserInstance": "Näytä käyttäjän instanssi",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "confirmLogOutTitle": "Kirjaudu ulos?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "advanced": "Lisäasetukset",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "removeFromFavorites": "Poista suosikeista",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "confirmLogOutBody": "Oletko varma, että haluat kirjautua ulos?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "favorites": "Suosikit",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "confirmMarkAllAsReadBody": "Oletko varma, että haluat merkitä kaikki viestit luetuiksi?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "apply": "Käytä",
+  "@apply": {},
+  "addKeywordFilter": "Lisää avainsana",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "applied": "Käytössä",
+  "@applied": {},
+  "communityFormat": "Yhteisön formaatti",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "combineCommentScoresLabel": "Yhdistä kommenttipisteet",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "commentSwipeGesturesHint": "Haluatko käyttää mielummin painikkeita? Ota ne käyttöön yleisten asetusten kommenttiosiossa.",
+  "@commentSwipeGesturesHint": {},
+  "commentPreview": "Näytä kommenttien esikatselu määritetyillä asetuksilla",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "combineNavAndFab": "Kelluva toimintopainike näytetään navigointipainikkeiden välissä.",
+  "@combineNavAndFab": {}
 }

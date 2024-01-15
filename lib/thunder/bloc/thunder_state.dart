@@ -56,7 +56,7 @@ class ThunderState extends Equatable {
     this.useAdvancedShareSheet = true,
     this.showCrossPosts = true,
     this.keywordFilters = const [],
-    this.appLanguageCode,
+    this.appLanguageCode = 'en',
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -317,7 +317,7 @@ class ThunderState extends Equatable {
     bool? dimReadPosts,
     bool? useAdvancedShareSheet,
     bool? showCrossPosts,
-    String? appLanguageCode,
+    String? appLanguageCode = 'en',
     List<String>? keywordFilters,
 
     /// -------------------------- Post Page Related Settings --------------------------
