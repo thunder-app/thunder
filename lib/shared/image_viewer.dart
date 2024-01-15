@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/services.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:gal/gal.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
@@ -408,7 +408,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: IconButton(
-                              onPressed: fullscreen || widget.url == null
+                              onPressed: (fullscreen || widget.url == null || kIsWeb)
                                   ? null
                                   : () async {
                                       File file = await DefaultCacheManager().getSingleFile(widget.url!);
@@ -416,32 +416,27 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
                                       if (!hasPermission) {
                                         if (context.mounted) showPermissionDeniedDialog(context);
+                                        return;
                                       }
 
-                                      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS) && hasPermission) {
-                                        if (!kIsWeb && Platform.isAndroid) {
-                                          // Save image to [internal storage]/Pictures/Thunder
-                                          GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
-                                            setState(() => downloaded = value as bool);
-                                          });
-                                        } else if (!kIsWeb && Platform.isIOS) {
-                                          GallerySaver.saveImage(file.path, albumName: "Thunder").then((bool? value) {
-                                            if (value == null || value == false) {
-                                              // If the image cannot be saved to the Thunder album, then just save it to Photos
-                                              GallerySaver.saveImage(file.path).then((value) => setState(() => downloaded = value as bool));
-                                            }
-
-                                            setState(() => downloaded = value ?? false);
-                                          });
-                                        }
-                                      } else if (!kIsWeb && Platform.isLinux || Platform.isWindows) {
+                                      // Save image on Linux platform
+                                      if (Platform.isLinux) {
                                         final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
 
                                         File(filePath)
                                           ..createSync(recursive: true)
                                           ..writeAsBytesSync(file.readAsBytesSync());
 
+                                        return setState(() => downloaded = true);
+                                      }
+
+                                      // Save image on all other supported platforms (Android, iOS, macOS, Windows)
+                                      try {
+                                        await Gal.putImage(file.path, album: "Thunder");
                                         setState(() => downloaded = true);
+                                      } on GalException catch (e) {
+                                        if (context.mounted) showSnackbar(context, e.type.message, customState: _imageViewer.currentState);
+                                        setState(() => downloaded = false);
                                       }
                                     },
                               icon: downloaded

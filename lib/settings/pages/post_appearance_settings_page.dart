@@ -426,7 +426,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.hideNsfwPreviews.label,
+                description: l10n.hideNsfwPreviews,
                 value: hideNsfwPreviews,
                 iconEnabled: Icons.no_adult_content,
                 iconDisabled: Icons.no_adult_content,
@@ -438,7 +438,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showPostAuthor.label,
+                description: l10n.showPostAuthor,
                 value: showPostAuthor,
                 iconEnabled: Icons.person_rounded,
                 iconDisabled: Icons.person_off_rounded,
@@ -450,7 +450,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.useDisplayNamesForUsers.label,
+                description: l10n.showUserDisplayNames,
                 value: useDisplayNames,
                 iconEnabled: Icons.person_rounded,
                 iconDisabled: Icons.person_off_rounded,
@@ -462,7 +462,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.dimReadPosts.label,
+                description: l10n.dimReadPosts,
                 subtitle: l10n.dimReadPosts,
                 value: dimReadPosts,
                 iconEnabled: Icons.chrome_reader_mode,
@@ -493,7 +493,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showThumbnailPreviewOnRight.label,
+                description: l10n.showThumbnailPreviewOnRight,
                 value: showThumbnailPreviewOnRight,
                 iconEnabled: Icons.switch_left_rounded,
                 iconDisabled: Icons.switch_right_rounded,
@@ -505,7 +505,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showTextPostIndicator.label,
+                description: l10n.showTextPostIndicator,
                 value: showTextPostIndicator,
                 iconEnabled: Icons.article,
                 iconDisabled: Icons.article_outlined,
@@ -535,7 +535,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showPostTitleFirst.label,
+                description: l10n.showPostTitleFirst,
                 value: showTitleFirst,
                 iconEnabled: Icons.vertical_align_top_rounded,
                 iconDisabled: Icons.vertical_align_bottom_rounded,
@@ -547,7 +547,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showPostFullHeightImages.label,
+                description: l10n.showFullHeightImages,
                 value: showFullHeightImages,
                 iconEnabled: Icons.image_rounded,
                 iconDisabled: Icons.image_outlined,
@@ -559,7 +559,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showPostEdgeToEdgeImages.label,
+                description: l10n.showEdgeToEdgeImages,
                 value: showEdgeToEdgeImages,
                 iconEnabled: Icons.fit_screen_rounded,
                 iconDisabled: Icons.fit_screen_outlined,
@@ -571,7 +571,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showPostTextContentPreview.label,
+                description: l10n.showPostTextContentPreview,
                 value: showTextContent,
                 iconEnabled: Icons.notes_rounded,
                 iconDisabled: Icons.notes_rounded,
@@ -583,7 +583,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showPostVoteActions.label,
+                description: l10n.showPostVoteActions,
                 value: showVoteActions,
                 iconEnabled: Icons.import_export_rounded,
                 iconDisabled: Icons.import_export_rounded,
@@ -595,7 +595,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showPostSaveAction.label,
+                description: l10n.showPostSaveAction,
                 value: showSaveAction,
                 iconEnabled: Icons.star_rounded,
                 iconDisabled: Icons.star_border_rounded,
@@ -607,7 +607,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showPostCommunityIcons.label,
+                description: l10n.showPostCommunityIcons,
                 value: showCommunityIcons,
                 iconEnabled: Icons.groups,
                 iconDisabled: Icons.groups,
@@ -637,7 +637,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showCrossPosts.label,
+                description: l10n.showCrossPosts,
                 value: showCrossPosts,
                 iconEnabled: Icons.repeat_on_rounded,
                 iconDisabled: Icons.repeat_rounded,

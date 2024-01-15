@@ -709,15 +709,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
-  gallery_saver:
+  gal:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "1e902f066778756b36d709cd611e62e0abdf7767"
-      resolved-ref: "1e902f066778756b36d709cd611e62e0abdf7767"
-      url: "https://github.com/thunder-app/gallery_saver.git"
-    source: git
-    version: "2.3.2"
+      name: gal
+      sha256: "88f8e87074c7935c49b30910f4afabf1fa9e42a5a1f9b2f6d295c7ef55be29e5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   glob:
     dependency: transitive
     description:

@@ -25,6 +25,7 @@ class SettingProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final ThemeData theme = Theme.of(context);
     bool recentSuccess = false;
 
@@ -38,7 +39,7 @@ class SettingProfile extends StatelessWidget {
             (entry) {
               return Row(
                 children: [
-                  Text('• ${entry.key.label}'),
+                  Text('• ${l10n.getLocalSettingLocalization(entry.key.key)}'),
                   const Icon(Icons.arrow_right_rounded, size: 20),
                   Text(_humanizeValue(context, entry.value)),
                 ],

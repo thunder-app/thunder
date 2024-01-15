@@ -1,7 +1,7 @@
 name: thunder
 description: An open-source cross-platform Lemmy client for iOS and Android built with Flutter
 publish_to: "none"
-version: 0.2.7+35
+version: 0.2.9-1+38
 
 environment:
   sdk: "^3.0.0"
@@ -20,10 +20,6 @@ dependencies:
     sdk: flutter
   sqflite: ^2.2.8+4
   path: ^1.8.3
-  gallery_saver:
-    git:
-      url: https://github.com/thunder-app/gallery_saver.git
-      ref: 1e902f066778756b36d709cd611e62e0abdf7767
   markdown_editable_textinput:
     git:
       url: https://github.com/thunder-app/markdown-editor.git
@@ -108,6 +104,7 @@ dependencies:
   sqflite_common_ffi_web: ^0.4.2
   jovial_svg: ^1.1.19
   flutter_displaymode: ^0.6.0
+  gal: ^2.2.0
 
 dev_dependencies:
   build_runner: ^2.4.6

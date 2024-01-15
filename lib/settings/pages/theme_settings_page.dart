@@ -172,6 +172,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
@@ -198,7 +199,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             icon: Icons.wallpaper_rounded,
                             onChanged: (value) => setPreferences(LocalSettings.appTheme, value.payload.index)),
                         ListOption(
-                          description: l10n.accentColors,
+                          description: l10n.themeAccentColor,
                           value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
                           valueDisplay: Stack(
                             children: [
@@ -268,28 +269,28 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           child: Text(l10n.fonts, style: theme.textTheme.titleLarge),
                         ),
                         ListOption(
-                          description: l10n.titleFontSizeScale,
+                          description: l10n.postTitleFontScale,
                           value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
                         ),
                         ListOption(
-                          description: l10n.contentFontSizeScale,
+                          description: l10n.postContentFontScale,
                           value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
                         ),
                         ListOption(
-                          description: l10n.commentFontSizeScale,
+                          description: l10n.commentFontScale,
                           value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
                         ),
                         ListOption(
-                          description: l10n.metadataFontSizeScale,
+                          description: l10n.metadataFontScale,
                           value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
