@@ -85,6 +85,10 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "browserMode": "Link handling",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
   "browsingAnonymously": "You are currently browsing {instance} anonymously.",
   "@browsingAnonymously": {},
   "cancel": "Cancel",
@@ -569,10 +573,6 @@
   "@link": {},
   "linkActions": "Link Actions",
   "@linkActions": {},
-  "linkHandling": "Link handling",
-  "@linkHandling": {
-    "description": "Title for link handling setting"
-  },
   "linkHandlingCustomTabs": "Open in system browser embedded in-app",
   "@linkHandlingCustomTabs": {
     "description": "Description for custom tabs link handling"

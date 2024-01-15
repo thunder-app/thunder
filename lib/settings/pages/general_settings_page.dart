@@ -509,7 +509,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListOption(
-                description: l10n.linkHandling,
+                description: l10n.browserMode,
                 value: ListPickerItem(
                   label: switch (browserMode) {
                     BrowserMode.inApp => l10n.linkHandlingInAppShort,
