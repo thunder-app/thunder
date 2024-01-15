@@ -17,12 +17,15 @@
                 "content.js"
             ],
             "matches": [
+                "*://ani.social/*",
                 "*://aussie.zone/*",
+                "*://awful.systems/*",
                 "*://bakchodi.org/*",
                 "*://beehaw.org/*",
                 "*://burggit.moe/*",
                 "*://dataterm.digital/*",
                 "*://delraymisfitsboard.com/*",
+                "*://discuss.online/*",
                 "*://discuss.tchncs.de/*",
                 "*://exploding-heads.com/*",
                 "*://feddit.ch/*",
@@ -53,14 +56,16 @@
                 "*://lemmy.one/*",
                 "*://lemmy.sdf.org/*",
                 "*://lemmy.today/*",
+                "*://lemmy.whynotdrs.org/*",
                 "*://lemmy.world/*",
+                "*://lemmy.wtf/*",
                 "*://lemmy.zip/*",
                 "*://lemmygrad.ml/*",
                 "*://lemmynsfw.com/*",
+                "*://lemy.lol/*",
                 "*://mander.xyz/*",
                 "*://midwest.social/*",
                 "*://monero.town/*",
-                "*://monyet.cc/*",
                 "*://pawb.social/*",
                 "*://programming.dev/*",
                 "*://reddthat.com/*",
@@ -70,11 +75,11 @@
                 "*://sopuli.xyz/*",
                 "*://startrek.website/*",
                 "*://szmer.info/*",
+                "*://thelemmy.club/*",
                 "*://ttrpg.network/*",
                 "*://vlemmy.net/*",
                 "*://waveform.social/*",
-                "*://www.hexbear.net/*",
-                "*://yiffit.net/*"
+                "*://www.hexbear.net/*"
             ]
         }
     ],

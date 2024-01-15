@@ -20,6 +20,8 @@ import '../../thunder/bloc/thunder_bloc.dart';
 import '../../utils/date_time.dart';
 import '../bloc/user_bloc.dart';
 
+const kSidebarWidthFactor = 0.8;
+
 class UserSidebar extends StatefulWidget {
   final PersonView? userInfo;
   final List<CommunityModeratorView>? moderates;
@@ -99,7 +101,7 @@ class _UserSidebarState extends State<UserSidebar> {
     return Container(
       alignment: Alignment.topRight,
       child: FractionallySizedBox(
-        widthFactor: 0.8,
+        widthFactor: kSidebarWidthFactor,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: Stack(
@@ -230,8 +232,12 @@ class _UserSidebarState extends State<UserSidebar> {
                                   right: 8,
                                   bottom: 8,
                                 ),
-                                child: CommonMarkdownBody(
-                                  body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
+                                child: Material(
+                                  child: CommonMarkdownBody(
+                                    body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
+                                    imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                                    allowHorizontalTranslation: false,
+                                  ),
                                 ),
                               ),
                               const Padding(
@@ -345,17 +351,15 @@ class _UserSidebarState extends State<UserSidebar> {
                                               ),
                                             ]),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                            child: Column(
-                                              children: [
-                                                for (var mods in widget.moderates!)
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      navigateToFeedPage(context, feedType: FeedType.community, communityId: mods.community.id);
-                                                    },
+                                          Column(
+                                            children: [
+                                              for (var mods in widget.moderates!)
+                                                Material(
+                                                  child: InkWell(
+                                                    borderRadius: BorderRadius.circular(50),
+                                                    onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: mods.community.id),
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                                      padding: const EdgeInsets.all(8.0),
                                                       child: Row(
                                                         children: [
                                                           CommunityIcon(community: mods.community, radius: 20.0),
@@ -389,8 +393,8 @@ class _UserSidebarState extends State<UserSidebar> {
                                                       ),
                                                     ),
                                                   ),
-                                              ],
-                                            ),
+                                                ),
+                                            ],
                                           ),
                                         ],
                                       )

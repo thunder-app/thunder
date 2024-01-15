@@ -31,7 +31,7 @@ class SettingsPage extends StatelessWidget {
       SettingTopic(title: l10n.gestures, icon: Icons.swipe, path: '/settings/gestures'),
       SettingTopic(title: l10n.floatingActionButton, icon: Icons.settings_applications_rounded, path: '/settings/fab'),
       SettingTopic(title: l10n.accessibility, icon: Icons.accessibility, path: '/settings/accessibility'),
-      SettingTopic(title: l10n.account, icon: Icons.person_rounded, path: '/settings/account'),
+      SettingTopic(title: l10n.account(0), icon: Icons.person_rounded, path: '/settings/account'),
       SettingTopic(title: l10n.about, icon: Icons.info_rounded, path: '/settings/about'),
       SettingTopic(title: l10n.debug, icon: Icons.developer_mode_rounded, path: '/settings/debug'),
     ];

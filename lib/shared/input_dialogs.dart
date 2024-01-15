@@ -7,12 +7,14 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:text_scroll/text_scroll.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/user_avatar.dart';
@@ -103,6 +105,14 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
 
 /// Shows a dialog which allows typing/search for a community
 void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, Iterable<CommunityView>? emptySuggestions}) async {
+  try {
+    final AccountState accountState = context.read<AccountBloc>().state;
+    emptySuggestions ??= accountState.subsciptions;
+    emptySuggestions = prioritizeFavorites(emptySuggestions.toList(), accountState.favorites);
+  } catch (e) {
+    // If we can't read the AccountBloc here, for whatever reason, it's ok. No need for subscriptions.
+  }
+
   Future<String?> onSubmitted({CommunityView? payload, String? value}) async {
     if (payload != null) {
       onCommunitySelected(payload);
@@ -136,12 +146,12 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
     title: title,
     inputLabel: AppLocalizations.of(context)!.community,
     onSubmitted: onSubmitted,
-    getSuggestions: (query) => getCommunitySuggestions(query, emptySuggestions),
+    getSuggestions: (query) => getCommunitySuggestions(context, query, emptySuggestions),
     suggestionBuilder: (communityView) => buildCommunitySuggestionWidget(context, communityView),
   );
 }
 
-Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<CommunityView>? emptySuggestions) async {
+Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, String query, Iterable<CommunityView>? emptySuggestions) async {
   if (query.isNotEmpty != true) {
     return emptySuggestions ?? const Iterable.empty();
   }
@@ -153,7 +163,17 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<C
     limit: 20,
     sort: SortType.topAll,
   ));
-  return searchResponse.communities;
+
+  List<CommunityView>? favorites;
+  if (context.mounted) {
+    try {
+      favorites = context.read<AccountBloc>().state.favorites;
+    } catch (e) {
+      // Don't worry if we can't fetch favorites
+    }
+  }
+
+  return prioritizeFavorites(searchResponse.communities.toList(), favorites) ?? const Iterable.empty();
 }
 
 Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payload, {void Function(CommunityView)? onSelected}) {
@@ -194,6 +214,10 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
                       _ => '',
                     }}'),
                   ],
+                  if (_getFavoriteStatus(context, payload.community)) ...const [
+                    Text(' · '),
+                    Icon(Icons.star_rounded, size: 15),
+                  ],
                 ],
               )
             ],
@@ -202,6 +226,12 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
       ),
     ),
   );
+}
+
+/// Checks whether the current community is a favorite of the current user
+bool _getFavoriteStatus(BuildContext context, Community community) {
+  final AccountState accountState = context.read<AccountBloc>().state;
+  return accountState.favorites.any((communityView) => communityView.community.id == community.id);
 }
 
 /// Shows a dialog which allows typing/search for an instance
@@ -320,13 +350,22 @@ void showLanguageInputDialog(BuildContext context, {required String title, requi
       title: title,
       inputLabel: AppLocalizations.of(context)!.language,
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => getLanguageSuggestions(query, languages),
+      getSuggestions: (query) => getLanguageSuggestions(context, query, languages),
       suggestionBuilder: (payload) => buildLanguageSuggestionWidget(payload, context: context),
     );
   }
 }
 
-Future<Iterable<Language>> getLanguageSuggestions(String query, Iterable<Language>? emptySuggestions) async {
+Future<Iterable<Language>> getLanguageSuggestions(BuildContext context, String query, Iterable<Language>? emptySuggestions) async {
+  final Locale currentLocale = Localizations.localeOf(context);
+
+  final Language? currentLanguage = emptySuggestions?.firstWhereOrNull((Language l) => l.code == currentLocale.languageCode);
+  if (currentLanguage != null && (emptySuggestions?.length ?? 0) >= 2) {
+    emptySuggestions = emptySuggestions?.toList()
+      ?..remove(currentLanguage)
+      ..insert(2, currentLanguage);
+  }
+
   if (query.isEmpty) {
     return emptySuggestions ?? [];
   }

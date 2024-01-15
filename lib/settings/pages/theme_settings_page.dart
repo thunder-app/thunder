@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -155,6 +156,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
@@ -174,18 +176,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Theme',
+                            l10n.theme,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
                         ListOption(
-                            description: LocalSettings.appTheme.label,
+                            description: l10n.theme,
                             value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
                             options: themeOptions,
                             icon: Icons.wallpaper_rounded,
                             onChanged: (value) => setPreferences(LocalSettings.appTheme, value.payload.index)),
                         ListOption(
-                          description: LocalSettings.appThemeAccentColor.label,
+                          description: l10n.themeAccentColor,
                           value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
                           valueDisplay: Stack(
                             children: [
@@ -233,7 +235,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ),
                         if (!kIsWeb && Platform.isAndroid) ...[
                           ToggleOption(
-                            description: LocalSettings.useMaterialYouTheme.label,
+                            description: l10n.useMaterialYouTheme,
                             subtitle: 'Overrides the selected custom theme',
                             value: useMaterialYouTheme,
                             iconEnabled: Icons.color_lens_rounded,
@@ -258,7 +260,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ),
                         ),
                         ListOption(
-                          description: l10n.appFont,
+                          description: l10n.appFontFamily,
                           value: ListPickerItem(label: appFontFamily.isEmpty ? l10n.system : appFontFamily, icon: Icons.font_download_rounded, payload: appFontFamily),
                           options: [
                             ListPickerItem(
@@ -321,28 +323,91 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           closeOnSelect: false,
                         ),
                         ListOption(
-                          description: LocalSettings.titleFontSizeScale.label,
+                          description: l10n.appFontFamily,
+                          value: ListPickerItem(label: appFontFamily.isEmpty ? l10n.system : appFontFamily, icon: Icons.font_download_rounded, payload: appFontFamily),
+                          options: [
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: l10n.system,
+                              payload: '',
+                              textTheme: theme.textTheme.apply(fontFamily: ''),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Poppins',
+                              payload: 'Poppins',
+                              textTheme: theme.textTheme.apply(fontFamily: 'Poppins'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Roboto Slab',
+                              payload: 'RobotoSlab',
+                              textTheme: theme.textTheme.apply(fontFamily: 'RobotoSlab'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Montserrat',
+                              payload: 'Montserrat',
+                              textTheme: theme.textTheme.apply(fontFamily: 'Montserrat'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Roboto Condensed',
+                              payload: 'RobotoCondensed',
+                              textTheme: theme.textTheme.apply(fontFamily: 'RobotoCondensed'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Raleway',
+                              payload: 'Raleway',
+                              textTheme: theme.textTheme.apply(fontFamily: 'Raleway'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Noto Sans',
+                              payload: 'NotoSans',
+                              textTheme: theme.textTheme.apply(fontFamily: 'NotoSans'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Noto Serif',
+                              payload: 'NotoSerif',
+                              textTheme: theme.textTheme.apply(fontFamily: 'NotoSerif'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Noto Sans Mono',
+                              payload: 'NotoSansMono',
+                              textTheme: theme.textTheme.apply(fontFamily: 'NotoSansMono'),
+                            ),
+                          ],
+                          icon: Icons.font_download_rounded,
+                          onChanged: (value) => setPreferences(LocalSettings.appFontFamily, value.payload),
+                          closeOnSelect: false,
+                        ),
+                        ListOption(
+                          description: l10n.postTitleFontScale,
                           value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
                         ),
                         ListOption(
-                          description: LocalSettings.contentFontSizeScale.label,
+                          description: l10n.postContentFontScale,
                           value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
                         ),
                         ListOption(
-                          description: LocalSettings.commentFontSizeScale.label,
+                          description: l10n.commentFontScale,
                           value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
                         ),
                         ListOption(
-                          description: LocalSettings.metadataFontSizeScale.label,
+                          description: l10n.metadataFontScale,
                           value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,

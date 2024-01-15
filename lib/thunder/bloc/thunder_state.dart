@@ -33,6 +33,7 @@ class ThunderState extends Equatable {
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
     this.communitySeparator = FullNameSeparator.dot,
+    this.hideTopBarOnScroll = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -41,6 +42,7 @@ class ThunderState extends Equatable {
     this.showThumbnailPreviewOnRight = false,
     this.showTextPostIndicator = false,
     this.tappableAuthorCommunity = false,
+    this.postBodyViewType = PostBodyViewType.expanded,
 
     // General Settings
     this.showVoteActions = true,
@@ -54,7 +56,7 @@ class ThunderState extends Equatable {
     this.useAdvancedShareSheet = true,
     this.showCrossPosts = true,
     this.keywordFilters = const [],
-    this.appLanguageCode,
+    this.appLanguageCode = 'en',
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -158,6 +160,7 @@ class ThunderState extends Equatable {
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
   final FullNameSeparator communitySeparator;
+  final bool hideTopBarOnScroll;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -166,6 +169,7 @@ class ThunderState extends Equatable {
   final bool showThumbnailPreviewOnRight;
   final bool showTextPostIndicator;
   final bool tappableAuthorCommunity;
+  final PostBodyViewType postBodyViewType;
 
   // General Settings
   final bool showVoteActions;
@@ -291,6 +295,7 @@ class ThunderState extends Equatable {
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
     FullNameSeparator? communitySeparator,
+    bool? hideTopBarOnScroll,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -299,6 +304,7 @@ class ThunderState extends Equatable {
     bool? showThumbnailPreviewOnRight,
     bool? showTextPostIndicator,
     bool? tappableAuthorCommunity,
+    PostBodyViewType? postBodyViewType,
 
     // General Settings
     bool? showVoteActions,
@@ -311,7 +317,7 @@ class ThunderState extends Equatable {
     bool? dimReadPosts,
     bool? useAdvancedShareSheet,
     bool? showCrossPosts,
-    String? appLanguageCode,
+    String? appLanguageCode = 'en',
     List<String>? keywordFilters,
 
     /// -------------------------- Post Page Related Settings --------------------------
@@ -411,12 +417,13 @@ class ThunderState extends Equatable {
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
-      disableFeedFab: disableFeedFab ?? this.disableFeedFab,
+      disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
       communitySeparator: communitySeparator ?? this.communitySeparator,
+      hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -425,6 +432,7 @@ class ThunderState extends Equatable {
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
       showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
       tappableAuthorCommunity: tappableAuthorCommunity ?? this.tappableAuthorCommunity,
+      postBodyViewType: postBodyViewType ?? this.postBodyViewType,
 
       // General Settings
       showVoteActions: showVoteActions ?? this.showVoteActions,
@@ -440,7 +448,7 @@ class ThunderState extends Equatable {
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
-      disablePostFabs: disablePostFabs ?? this.disablePostFabs,
+      disablePostFabs: disablePostFabs,
 
       // Comment Related Settings
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
@@ -556,6 +564,7 @@ class ThunderState extends Equatable {
         showThumbnailPreviewOnRight,
         showTextPostIndicator,
         tappableAuthorCommunity,
+        postBodyViewType,
 
         // General Settings
         showVoteActions,

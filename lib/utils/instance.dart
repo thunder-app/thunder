@@ -32,6 +32,12 @@ final RegExp instanceName = RegExp(r'^!?(https?:\/\/)?((?:(?!\/c\/c).)*)@(.*)$')
 /// If so, returns the community name in the format community@instance.tld.
 /// Otherwise, returns null.
 Future<String?> getLemmyCommunity(String text) async {
+  // Do an initial check for usernames in the format /u/user@instance.tld or @user@instance.tld.
+  // These can accidentally trip our community name detection.
+  if (text.toLowerCase().startsWith('/u/') || text.toLowerCase().startsWith('@')) {
+    return null;
+  }
+
   final RegExpMatch? fullCommunityUrlMatch = fullCommunityUrl.firstMatch(text);
   if (fullCommunityUrlMatch != null && fullCommunityUrlMatch.groupCount >= 4 && await isLemmyInstance(fullCommunityUrlMatch.group(4))) {
     return '${fullCommunityUrlMatch.group(3)}@${fullCommunityUrlMatch.group(4)}';
@@ -66,18 +72,24 @@ final RegExp username = RegExp(r'^@?(https?:\/\/)?((?:(?!\/u\/u).)*)@(.*)$');
 /// If so, returns the username name in the format username@instance.tld.
 /// Otherwise, returns null.
 Future<String?> getLemmyUser(String text) async {
+  // Do an initial check for communities in the format /c/community@instance.tld or !community@instance.tld.
+  // These can accidentally trip our user name detection.
+  if (text.toLowerCase().startsWith('/c/') || text.toLowerCase().startsWith('!')) {
+    return null;
+  }
+
   final RegExpMatch? fullUsernameUrlMatch = fullUsernameUrl.firstMatch(text);
-  if (fullUsernameUrlMatch != null && fullUsernameUrlMatch.groupCount >= 4 && await isLemmyInstance(fullUsernameUrlMatch.group(4))) {
+  if (fullUsernameUrlMatch != null && fullUsernameUrlMatch.groupCount >= 4) {
     return '${fullUsernameUrlMatch.group(3)}@${fullUsernameUrlMatch.group(4)}';
   }
 
   final RegExpMatch? shortUsernameUrlMatch = shortUsernameUrl.firstMatch(text);
-  if (shortUsernameUrlMatch != null && shortUsernameUrlMatch.groupCount >= 3 && await isLemmyInstance(shortUsernameUrlMatch.group(2))) {
+  if (shortUsernameUrlMatch != null && shortUsernameUrlMatch.groupCount >= 3) {
     return '${shortUsernameUrlMatch.group(3)}@${shortUsernameUrlMatch.group(2)}';
   }
 
   final RegExpMatch? usernameMatch = username.firstMatch(text);
-  if (usernameMatch != null && usernameMatch.groupCount >= 3 && await isLemmyInstance(usernameMatch.group(3))) {
+  if (usernameMatch != null && usernameMatch.groupCount >= 3) {
     return '${usernameMatch.group(2)}@${usernameMatch.group(3)}';
   }
 

@@ -1,14 +1,15 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
+
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
-
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -17,16 +18,13 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/network_errors.dart';
 import 'package:thunder/post/utils/post.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../utils/constants.dart';
 
 part 'post_event.dart';
-
 part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
@@ -616,7 +614,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         errorMessage: getErrorMessage(GlobalContext.context, e.message),
         moddingCommentId: -1,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
     }
   }

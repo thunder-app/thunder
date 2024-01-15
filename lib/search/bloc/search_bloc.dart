@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-
 import 'package:stream_transform/stream_transform.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:collection/collection.dart';
@@ -10,8 +9,8 @@ import 'package:collection/collection.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/utils/search_utils.dart';
 import 'package:thunder/utils/comment.dart';
@@ -135,7 +134,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: searchResponse.communities,
+        communities: prioritizeFavorites(searchResponse.communities.toList(), event.favoriteCommunities),
         users: searchResponse.users,
         comments: searchResponse.comments,
         posts: await parsePostViews(searchResponse.posts),
@@ -150,8 +149,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     int attemptCount = 0;
 
     try {
-      Object exception;
-
       while (attemptCount < 2) {
         try {
           emit(state.copyWith(
@@ -196,7 +193,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             page: state.page + 1,
           ));
         } catch (e) {
-          exception = e;
           attemptCount++;
         }
       }
@@ -220,7 +216,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       if (account?.jwt == null) return;
 
-      CommunityResponse communityResponse = await lemmy.run(FollowCommunity(
+      await lemmy.run(FollowCommunity(
         auth: account!.jwt!,
         communityId: event.communityId,
         follow: event.follow,

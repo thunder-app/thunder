@@ -6,12 +6,14 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- requestLegacyExternalStorage is required for saving media to an album in API 29 -->
     <application
         android:label="Thunder"
         android:name="${applicationName}"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/launcher_icon"
+        android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true" 
         >
         <activity
             android:name=".MainActivity"
@@ -57,18 +59,22 @@
               <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
               <data android:host="ani.social" />
               <data android:host="aussie.zone" />
+              <data android:host="awful.systems" />
               <data android:host="bakchodi.org" />
               <data android:host="beehaw.org" />
               <data android:host="burggit.moe" />
               <data android:host="dataterm.digital" />
               <data android:host="delraymisfitsboard.com" />
+              <data android:host="discuss.online" />
               <data android:host="discuss.tchncs.de" />
               <data android:host="exploding-heads.com" />
               <data android:host="feddit.ch" />
+              <data android:host="feddit.cl" />
               <data android:host="feddit.de" />
               <data android:host="feddit.dk" />
               <data android:host="feddit.it" />
               <data android:host="feddit.nl" />
+              <data android:host="feddit.nu" />
               <data android:host="feddit.uk" />
               <data android:host="geddit.social" />
               <data android:host="hexbear.net" />
@@ -90,14 +96,16 @@
               <data android:host="lemmy.one" />
               <data android:host="lemmy.sdf.org" />
               <data android:host="lemmy.today" />
+              <data android:host="lemmy.whynotdrs.org" />
               <data android:host="lemmy.world" />
+              <data android:host="lemmy.wtf" />
               <data android:host="lemmy.zip" />
               <data android:host="lemmygrad.ml" />
               <data android:host="lemmynsfw.com" />
+              <data android:host="lemy.lol" />
               <data android:host="mander.xyz" />
               <data android:host="midwest.social" />
               <data android:host="monero.town" />
-              <data android:host="monyet.cc" />
               <data android:host="pawb.social" />
               <data android:host="programming.dev" />
               <data android:host="reddthat.com" />
@@ -107,11 +115,11 @@
               <data android:host="sopuli.xyz" />
               <data android:host="startrek.website" />
               <data android:host="szmer.info" />
+              <data android:host="thelemmy.club" />
               <data android:host="ttrpg.network" />
               <data android:host="vlemmy.net" />
               <data android:host="waveform.social" />
               <data android:host="www.hexbear.net" />
-              <data android:host="yiffit.net" />
               <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity>
