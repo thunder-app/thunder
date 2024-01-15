@@ -277,7 +277,7 @@
   "@new_": {},
   "noComments": "Oh. Non ci sono commenti.",
   "@noComments": {},
-  "noCommentsFound": "Nessun commento trovato",
+  "noCommentsFound": "Nessun commento trovato.",
   "@noCommentsFound": {},
   "noCommunitiesFound": "Nessuna comunità trovata",
   "@noCommunitiesFound": {},
@@ -594,5 +594,13 @@
   "xDownvotes": "{x} voti in giù",
   "@xDownvotes": {},
   "xUpvotes": "{x} voti in su",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "about": "Riguardo",
+  "@about": {
+    "description": "About settings category."
+  },
+  "addToFavorites": "Aggiungi ai preferiti",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  }
 }
