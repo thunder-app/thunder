@@ -277,7 +277,7 @@
   "@new_": {},
   "noComments": "Oh. Non ci sono commenti.",
   "@noComments": {},
-  "noCommentsFound": "Nessun commento trovato",
+  "noCommentsFound": "Nessun commento trovato.",
   "@noCommentsFound": {},
   "noCommunitiesFound": "Nessuna comunità trovata",
   "@noCommunitiesFound": {},
@@ -598,5 +598,9 @@
   "about": "Riguardo",
   "@about": {
     "description": "About settings category."
+  },
+  "addToFavorites": "Aggiungi ai preferiti",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
   }
 }
