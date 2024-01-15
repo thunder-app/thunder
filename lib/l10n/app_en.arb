@@ -211,13 +211,13 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
-  "confirm": "Confirm",
-  "@confirm": {
-    "description": "Label for the confirm action in the dialog"
-  },
   "condensed": "Condensed",
   "@condensed": {
     "description": "Condensed post body view type"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
   },
   "confirmLogOutBody": "Are you sure you want to log out?",
   "@confirmLogOutBody": {
