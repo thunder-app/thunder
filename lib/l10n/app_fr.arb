@@ -339,7 +339,7 @@
   "@local": {},
   "logOut": "Déconnexion",
   "@logOut": {},
-  "loginFailed": "Impossible de se connecter. Veuillez réessayer :({message d'erreur})",
+  "loginFailed": "Impossible de se connecter. Veuillez réessayer :({errorMessage})",
   "@loginFailed": {},
   "loginToPerformAction": "Vous devez être connecté pour accomplir cette tâche.",
   "@loginToPerformAction": {},
