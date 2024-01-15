@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -18,10 +19,13 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
+import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/post_body_view_type.dart';
+import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -41,7 +45,6 @@ import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/snackbar.dart';
 
 class PostSubview extends StatefulWidget {
@@ -113,6 +116,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 children: [
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                    _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
                   Expanded(
                     child: ScalableText(
                       HtmlUnescape().convert(post.name),
@@ -120,32 +125,36 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
-                  IconButton(
-                    visualDensity: VisualDensity.compact,
-                    icon: Icon(
-                      expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                      semanticLabel: expandableController.expanded ? l10n.collapsePost : l10n.expandPost,
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                    _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
+                  if (thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.isEmpty)
+                    IconButton(
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(
+                        expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                        semanticLabel: expandableController.expanded ? l10n.collapsePost : l10n.expandPost,
+                      ),
+                      onPressed: () {
+                        expandableController.toggle();
+                        setState(() {}); // Update the state to trigger the collapse/expand
+                      },
                     ),
-                    onPressed: () {
-                      expandableController.toggle();
-                      setState(() {}); // Update the state to trigger the collapse/expand
-                    },
-                  ),
                 ],
               ),
             ),
-            Expandable(
-              controller: expandableController,
-              collapsed: Container(),
-              expanded: MediaView(
-                scrapeMissingPreviews: scrapeMissingPreviews,
-                post: post,
-                postView: widget.postViewMedia,
-                hideNsfwPreviews: hideNsfwPreviews,
-                markPostReadOnMediaView: markPostReadOnMediaView,
-                isUserLoggedIn: isUserLoggedIn,
+            if (thunderState.postBodyViewType != PostBodyViewType.condensed)
+              Expandable(
+                controller: expandableController,
+                collapsed: Container(),
+                expanded: MediaView(
+                  scrapeMissingPreviews: scrapeMissingPreviews,
+                  post: post,
+                  postView: widget.postViewMedia,
+                  hideNsfwPreviews: hideNsfwPreviews,
+                  markPostReadOnMediaView: markPostReadOnMediaView,
+                  isUserLoggedIn: isUserLoggedIn,
+                ),
               ),
-            ),
             if (widget.postViewMedia.postView.post.body != null)
               Expandable(
                 controller: expandableController,
@@ -397,7 +406,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               final Account? account = await fetchActiveProfileAccount();
                               final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
                                 auth: account?.jwt,
-                                id: postViewMedia!.postView.community.id,
+                                id: postViewMedia.postView.community.id,
                               ));
 
                               if (context.mounted) {
@@ -413,9 +422,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                           BlocProvider<AccountBloc>.value(value: accountBloc),
                                         ],
                                         child: CreatePostPage(
-                                          communityId: postViewMedia!.postView.community.id,
+                                          communityId: postViewMedia.postView.community.id,
                                           communityView: getCommunityResponse.communityView,
-                                          postView: postViewMedia!.postView,
+                                          postView: postViewMedia.postView,
                                           onPostSuccess: (PostViewMedia pvm) {
                                             setState(() => postViewMedia = pvm);
                                           },
@@ -515,6 +524,36 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
           ],
         ),
       ),
+    );
+  }
+
+  Widget _getMediaPreview(ThunderState thunderState, bool hideNsfwPreviews, bool markPostReadOnMediaView, bool isUserLoggedIn) {
+    return Stack(
+      alignment: AlignmentDirectional.bottomEnd,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 4,
+          ),
+          child: MediaView(
+            scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
+            postView: postViewMedia,
+            showFullHeightImages: false,
+            hideNsfwPreviews: hideNsfwPreviews,
+            markPostReadOnMediaView: markPostReadOnMediaView,
+            viewMode: ViewMode.compact,
+            isUserLoggedIn: isUserLoggedIn,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 6, bottom: 0),
+          child: TypeBadge(
+            postViewMedia: postViewMedia,
+            read: false,
+          ),
+        ),
+      ],
     );
   }
 }
