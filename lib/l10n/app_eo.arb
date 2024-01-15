@@ -1,4 +1,8 @@
 {
+  "about": "Pri",
+  "@about": {
+    "description": "About settings category."
+  },
   "accessibility": "Alirebleco",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Alireblaj profiloj permesas apliki plurajn agordojn samtempe por alĝustigi apartan alireblecon.",
@@ -19,8 +23,22 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Aldoni Anonima Instancon",
   "@addAnonymousInstance": {},
+  "addKeywordFilter": "Aldoni Ŝlosilvorton",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "Aldoni al favoratoj",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
   "addedCommunityToSubscriptions": "Abonis al komunumo",
   "@addedCommunityToSubscriptions": {},
+  "advanced": "Altnivela",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "all": "Ĉiuj",
+  "@all": {},
   "allPosts": "Ĉiuj Afiŝoj",
   "@allPosts": {},
   "allowOpenSupportedLinks": "Permesi al aplikaĵo malfermi subtenatajn ligilojn.",
@@ -35,6 +53,14 @@
   "@animations": {},
   "anonymous": "Anonima",
   "@anonymous": {},
+  "appLanguage": "Lingvo de la Aplikaĵo",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "appearance": "Aspekto",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
   "applied": "Aplikita",
   "@applied": {},
   "apply": "Apliki",
@@ -67,8 +93,28 @@
   "@cantBlockAdmin": {},
   "cantBlockYourself": "Vi eble ne blokas vin mem.",
   "@cantBlockYourself": {},
+  "cardView": "Karta Rigardo",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "cardViewDescription": "Ebligu kartan rigardon por ĝustigi agordojn",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "cardViewSettings": "Agordoj de Karta Rigardo",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
   "changeSort": "Ŝanĝi Ordigon",
   "@changeSort": {},
+  "clearDatabase": "Viŝi datenbazon",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearPreferences": "Viŝi Preferojn",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
   "clearSearch": "Viŝi Serĉon",
   "@clearSearch": {},
   "clearedDatabase": "Loka datenbazo viŝita. Rekomencu Thunder por ke novaj ŝanĝoj efektiviĝu.",
@@ -77,14 +123,44 @@
   "@clearedUserPreferences": {},
   "close": "Fermi",
   "@close": {},
+  "collapseCommentPreview": "Maletendi Komentan Antaŭrigardon",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "collapseInformation": "Maletendi Informojn",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "collapsePost": "Maletendi Afiŝon",
+  "@collapsePost": {},
+  "collapsePostPreview": "Maletendi Afiŝan Antaŭrigardon",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "combineCommentScoresLabel": "Kombini Komentajn Poentojn",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
   "combineNavAndFab": "Flosanta Ago-Butono estos montrita inter navigaj butonoj.",
   "@combineNavAndFab": {},
   "comment": "Komento",
   "@comment": {},
+  "commentBehaviourSettings": "Komentoj",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "commentPreview": "Montri antaŭrigardon de la komentoj kun la donitaj agordoj",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
   "commentReported": "La komento estis markita por revizio.",
   "@commentReported": {},
   "commentSavedAsDraft": "Komento konservita kiel malneto",
   "@commentSavedAsDraft": {},
+  "commentShowUserInstance": "Montri uzantan instancon",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
   "commentSortType": "Komenta Ordigi Tipon",
   "@commentSortType": {},
   "commentSwipeGesturesHint": "Ĉu vi volas uzi butonojn anstataŭe? Ebligu ilin en la sekcio de komentoj en ĝeneralaj agordoj.",
@@ -95,6 +171,46 @@
   "@communities": {},
   "community": "Komunumo",
   "@community": {},
+  "communityFormat": "Komunuma Formato",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "compactView": "Kompakta Rigardo",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "compactViewDescription": "Ebligu kompaktan rigardon por ĝustigi agordojn",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "compactViewSettings": "Agordoj de Kompakta Rigardo",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "confirmLogOutBody": "Ĉu vi certas, ke vi volas elsaluti?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "confirmLogOutTitle": "Ĉu elsaluti?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "confirmMarkAllAsReadBody": "Ĉu vi certas, ke vi volas marki ĉiujn mesaĝojn kiel legitajn?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "confirmMarkAllAsReadTitle": "Ĉu marki ĉion kiel legita?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "confirmResetCommentPreferences": "Ĉi tio restarigos ĉiujn defaŭltajn komentajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "confirmResetPostPreferences": "Ĉi tio restarigos ĉiujn defaŭltajn afiŝajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
   "controversial": "Polemika",
   "@controversial": {},
   "copiedToClipboard": "Kopiita al tondujo",
@@ -119,6 +235,10 @@
   "@createNewCrossPost": {},
   "createPost": "Krei Afiŝon",
   "@createPost": {},
+  "creator": "Kreinto",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
   "crossPostedTo": "Transafiŝita al",
   "@crossPostedTo": {},
   "currentLongPress": "Nuntempe agordita kiel longa premo",
@@ -127,8 +247,32 @@
   "@currentSinglePress": {},
   "customizeSwipeActions": "Agordi glitajn agojn (Premu por ŝanĝi)",
   "@customizeSwipeActions": {},
+  "debug": "Sencimigi",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "debugDescription": "La sekvaj sencimigaj agordoj devas esti uzataj nur por problemsolvi.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
   "delete": "Viŝi",
   "@delete": {},
+  "deleteLocalDatabase": "Viŝi Lokan Datenbazon",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "deleteLocalDatabaseDescription": "Ĉi tiu ago viŝos la lokan datenbazon kaj elsalutos vin el ĉiuj viaj kontoj.\n\nĈu vi certas, ke vi volas daŭrigi?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "deleteLocalPreferences": "Viŝi Lokajn Preferojn",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "deleteLocalPreferencesDescription": "Ĉi tio viŝos ĉiujn viajn uzantpreferojn kaj agordojn en Thunder.\n\nĈu vi volas daŭrigi?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
   "dimReadPosts": "Legitaj afiŝoj estos grizitaj",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
@@ -149,6 +293,10 @@
   "@edit": {},
   "editComment": "Redakti Komenton",
   "@editComment": {},
+  "editPost": "Redakti Afiŝon",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
   "empty": "Malplena",
   "@empty": {},
   "emptyInbox": "Malplena Ricevujo",
@@ -157,29 +305,93 @@
   "@emptyUri": {
     "description": "Error message for empty link."
   },
+  "enableFeedFab": "Ebligi Flosantan Butonon sur Fluoj",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "enablePostFab": "Ebligi Flosantan Butonon sur Afiŝoj",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "endSearch": "Fini Serĉon",
+  "@endSearch": {},
   "errorDownloadingMedia": "Ne eblis elŝuti la amaskomunikilaron por kunhavigi: {errorMessage}",
   "@errorDownloadingMedia": {},
   "exceptionProcessingUri": "Okazis eraro dum prilaborado de la ligo. Ĝi eble ne estas disponebla en via instanco.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
   },
+  "expandCommentPreview": "Etendi Komentan Antaŭrigardon",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "expandInformation": "Etendi Informojn",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
   "expandOptions": "Etendi opciojn",
   "@expandOptions": {},
+  "expandPost": "Etendi afiŝon",
+  "@expandPost": {},
+  "expandPostPreview": "Etendi Afiŝan Antaŭrigardon",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
   "failedToBlock": "Malsukcesis bloki: {errorMessage}",
   "@failedToBlock": {},
   "failedToLoadBlocks": "Ne eblis ŝargi blokojn: {errorMessage}",
   "@failedToLoadBlocks": {},
   "failedToUnblock": "Ne eblis malbloki: {errorMessage}",
   "@failedToUnblock": {},
+  "favorites": "Favoratoj",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
   "feed": "Abonflua",
   "@feed": {},
+  "feedBehaviourSettings": "Fluo",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "feedTypeAndSorts": "Defaŭlta Flua Tipo kaj Ordigo",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
   "fetchAccountError": "Ne eblis determini konton",
   "@fetchAccountError": {},
+  "filteringBy": "Filtri laŭ {entity}",
+  "@filteringBy": {
+    "description": "Filtering by a community or creator in search."
+  },
+  "filters": "Filtriloj",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "floatingActionButton": "Flosanta Ago-Butono",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
+  },
+  "floatingActionButtonInformation": "Thunder havas plene agordeblan FAB-sperton, kiu subtenas kelkajn gestojn.\n- Ŝovumu supren por malkaŝi pliajn agojn de FAB\n- Ŝovumu malsupren/supren por kaŝi aŭ malkaŝi la FAB\n\nPor personecigi la ĉefajn kaj duarangajn agojn por la FAB, longe premu unu el la subaj agoj.",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "floatingActionButtonLongPressDescription": "indikas la longa-preman agon de la FAB.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "floatingActionButtonSinglePressDescription": "indikas la unu-preman agon de la FAB.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
+  },
   "fullScreenNavigationSwipeDescription": "Glitu ie ajn por reiri kiam gestoj de maldekstre al dekstre estas malŝaltitaj",
   "@fullScreenNavigationSwipeDescription": {},
   "general": "Ĝenerala",
   "@general": {
     "description": "General settings category."
+  },
+  "generalSettings": "Ĝeneralaj Agordoj",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
   },
   "gestures": "Gestoj",
   "@gestures": {},
@@ -215,20 +427,46 @@
   "@includeText": {},
   "includeTitle": "Inkluzivi Titolon",
   "@includeTitle": {},
+  "information": "Informoj",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
   "instance": "Instanco",
   "@instance": {},
   "instanceHasAlreadyBenAdded": "{instance} jam estis aldonita.",
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "Vi eble ne estas konektita al la Interreto, aŭ via instanco eble nuntempe ne disponeblas.",
   "@internetOrInstanceIssues": {},
+  "keywordFilterDescription": "Filtrigas afiŝojn enhavantajn ajnajn ŝlosilvortojn en la titolo aŭ korpo",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "keywordFilters": "Ŝlosilvortaj Filtriloj",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "language": "Lingvo",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "languageNotAllowed": "La komunumo al kiu vi afiŝas ne permesas afiŝojn en la lingvo, kiun vi elektis. Provu alian lingvon.",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
+  },
   "link": "{count, plural, zero {Ligilo} one {Ligilo} other {Ligiloj} } ",
   "@link": {},
   "linkActions": "Ligilaj Agoj",
   "@linkActions": {},
+  "linksBehaviourSettings": "Ligiloj",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
   "loadMorePlural": "Ŝarĝi {count} pliajn respondojn…",
   "@loadMorePlural": {},
   "loadMoreSingular": "Ŝarĝi {count} plian respondon…",
   "@loadMoreSingular": {},
+  "local": "Loka",
+  "@local": {},
   "localPosts": "Lokaj Afiŝoj",
   "@localPosts": {},
   "logOut": "Elsaluti",
@@ -249,6 +487,10 @@
   },
   "manageAccounts": "Manipuli Kontojn",
   "@manageAccounts": {},
+  "markAllAsRead": "Marki ĉion kiel legita",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
   "mention": "{count, plural, zero {Mencio} one {Mencio} other {Mencioj} }",
   "@mention": {},
   "message": "{count, plural, zero {Mesaĝo} one {Mesaĝo} other {Mesaĝoj} }",
@@ -279,12 +521,30 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "Neniuj blokitaj komunumoj.",
   "@noCommunityBlocks": {},
+  "noFavoritedCommunities": "Neniuj favoratigitaj komunumoj",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
   "noInstanceBlocks": "Neniuj blokitaj instancoj.",
   "@noInstanceBlocks": {},
+  "noKeywordFilters": "Neniujn ŝlosilvortajn filtrilojn aldonis",
+  "@noKeywordFilters": {
+    "description": "Message for no keywords added"
+  },
+  "noLanguage": "Neniu lingvo",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
   "noPosts": "Neniuj afiŝoj trovitaj",
   "@noPosts": {},
   "noPostsFound": "Neniuj afiŝoj trovitaj",
   "@noPostsFound": {},
+  "noResultsFound": "Neniuj rezultoj trovitaj.",
+  "@noResultsFound": {},
+  "noSubscriptions": "Neniuj Abonoj",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
   "noUserBlocks": "Neniuj blokitaj uzantoj.",
   "@noUserBlocks": {},
   "noUsersFound": "Neniuj uzantoj trovitaj",
@@ -298,6 +558,10 @@
   "notifications": "{count, plural, zero {Sciigo} one {Sciigo} other {Sciigoj}}",
   "@notifications": {
     "description": "Message formatting for notifications count."
+  },
+  "notificationsBehaviourSettings": "Sciigoj",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
   },
   "off": "malŝaltita",
   "@off": {},
@@ -321,16 +585,40 @@
   "@openInBrowser": {},
   "openInstance": "Malfermi Instancon",
   "@openInstance": {},
+  "openSettings": "Malfermi Agordojn",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
   "overview": "Superrigardo",
   "@overview": {},
   "password": "Pasvorto",
   "@password": {},
+  "pending": "Pritraktota",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "permissionDenied": "Permeso Rifuzita",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "permissionDeniedMessage": "Thunder postulas iujn permesojn por konservi ĉi tiun bildon, kiuj estis rifuzitaj.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "postBehaviourSettings": "Afiŝoj",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
   "postBody": "Afiŝan Korpo",
   "@postBody": {},
   "postLocked": "Afiŝo ŝlosita. Neniuj respondoj permesitaj.",
   "@postLocked": {},
   "postNSFW": "Marki kiel NSFW",
   "@postNSFW": {},
+  "postPreview": "Montri antaŭrigardon de la afiŝo kun la donitaj agordoj",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
   "postSavedAsDraft": "Afiŝo konservita kiel malneto",
   "@postSavedAsDraft": {},
   "postSwipeGesturesHint": "Ĉu vi volas uzi butonojn anstataŭe? Ŝanĝu kiajn butonojn aperas sur afiŝkartoj en ĝeneralaj agordoj.",
@@ -343,6 +631,10 @@
   "@postURL": {},
   "postUploadImageError": "Ne eblis alŝuti bildon",
   "@postUploadImageError": {},
+  "postViewType": "Tipo de Afiŝa Rigardo",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
   "posts": "Afiŝoj",
   "@posts": {},
   "preview": "Antaŭrigardo",
@@ -365,8 +657,20 @@
   "@remove": {},
   "removeAccount": "Forigi Konton",
   "@removeAccount": {},
+  "removeFromFavorites": "Forigi el favoratoj",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
   "removeInstance": "Forigi Instancon",
   "@removeInstance": {},
+  "removeKeyword": "Ĉu forigi \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "removeKeywordFilter": "Forigi Ŝlosilvorton",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
   "removedCommunityFromSubscriptions": "Malabonita de komunumo",
   "@removedCommunityFromSubscriptions": {},
   "reply": "{count, plural, zero {Respondo} one {Respondo} other {Respondoj} }",
@@ -381,6 +685,24 @@
   "@report": {},
   "reportComment": "Raporti Komenton",
   "@reportComment": {},
+  "reset": "Restarigi",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetCommentPreferences": "Restarigi komentajn preferojn",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "resetPostPreferences": "Restarigi afiŝajn preferojn",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "resetPreferences": "Restarigi Preferojn",
+  "@resetPreferences": {},
+  "resetPreferencesAndData": "Restarigi Preferojn kaj Datenojn",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
   "restore": "Restarigi",
   "@restore": {},
   "restoredCommentFromDraft": "Restartigita komento el malneto",
@@ -413,6 +735,8 @@
   "@searchByText": {},
   "searchByUrl": "Serĉi per URL",
   "@searchByUrl": {},
+  "searchComments": "Serĉi Komentojn",
+  "@searchComments": {},
   "searchCommentsFederatedWith": "Serĉi komentojn federaciitajn kun {instance}",
   "@searchCommentsFederatedWith": {},
   "searchCommunitiesFederatedWith": "Serĉi komunumojn federaciitajn kun {instance}",
@@ -423,16 +747,26 @@
   "@searchPostSearchType": {},
   "searchPostsFederatedWith": "Serĉi afiŝojn federaciitajn kun {instance}",
   "@searchPostsFederatedWith": {},
+  "searchTerm": "Serĉa termino",
+  "@searchTerm": {},
   "searchUsersFederatedWith": "Serĉi uzantojn federaciitajn kun {instance}",
   "@searchUsersFederatedWith": {},
   "selectCommunity": "Elekti komunumon",
   "@selectCommunity": {},
   "selectFeedType": "Elekti Abonfluan Tipon",
   "@selectFeedType": {},
+  "selectLanguage": "Elekti lingvon",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
   "selectSearchType": "Elekti Serĉan Tipon",
   "@selectSearchType": {},
   "serverErrorComments": "Servila eraro estis renkontita kiam oni alportis pliajn komentojn: {message}",
   "@serverErrorComments": {},
+  "setAction": "Agordi Agon",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
   "setLongPress": "Agordi kiel longprema ago",
   "@setLongPress": {},
   "setShortPress": "Agordi kiel mallongprema ago",
@@ -455,12 +789,24 @@
   "@sharePost": {},
   "showAll": "Montri Ĉion",
   "@showAll": {},
+  "showBotAccounts": "Montri Robotajn kontojn",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
   "showLess": "Montri malpli",
   "@showLess": {},
   "showMore": "Montri pli",
   "@showMore": {},
   "showPassword": "Montri Pasvorton",
   "@showPassword": {},
+  "showReadPosts": "Montri Legitajn Afiŝojn",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "showScores": "Montri Afiŝajn/Komentajn Poentojn",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
   "sidebar": "Flankbreto",
   "@sidebar": {},
   "sidebarBottomNavDoubleTapDescription": "Duoble premu la malsupran navigilon por malfermi la flankbreton",
@@ -491,10 +837,18 @@
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "Malblokita {communityName}",
   "@successfullyUnblockedCommunity": {},
+  "suggestedTitle": "Sugestita titolo",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
   "tapToExit": "Reiru dufoje por eliri",
   "@tapToExit": {},
   "text": "Teksto",
   "@text": {},
+  "theming": "Haŭtado",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
   "timeoutComments": "Eraro: Eltempiĝo kiam oni provas alporti komentojn",
   "@timeoutComments": {},
   "timeoutErrorMessage": "Estis eltempiĝo atendante respondon.",
@@ -519,8 +873,20 @@
   "@topHour": {},
   "topMonth": "Monata Supro",
   "@topMonth": {},
+  "topNineMonths": "Supro en la Pasintaj 9 Monatoj",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
   "topSixHour": "Supro en Pasintaj 6 Horoj",
   "@topSixHour": {},
+  "topSixMonths": "Supro en la Pasintaj 6 Monatoj",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "topThreeMonths": "Supro en la Pasintaj 3 Monatoj",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
   "topTwelveHour": "Supro en Pasintaj 12 Horoj",
   "@topTwelveHour": {},
   "topWeek": "Semajna Supro",
@@ -529,20 +895,40 @@
   "@topYear": {},
   "totp": "TOTP (nedeviga)",
   "@totp": {},
+  "translationsMayNotBeComplete": "Bonvolu noti, ke la tradukoj eble ne estas kompletaj",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
   "trendingCommunities": "Tendencaj Komunumoj",
   "@trendingCommunities": {},
   "unableToFindCommunity": "Ne eblas trovi komunumon",
   "@unableToFindCommunity": {},
   "unableToFindInstance": "Ne eblas trovi instancon",
   "@unableToFindInstance": {},
+  "unableToFindLanguage": "Ne eblas trovi lingvon",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
   "unableToFindUser": "Ne eblas trovi uzanton",
   "@unableToFindUser": {},
+  "unableToLoadImage": "Ne eblas ŝargi bildon",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "unableToLoadImageFrom": "Ne eblas ŝargi bildon de {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
   "unableToLoadInstance": "Ne eblas ŝargi {instance}",
   "@unableToLoadInstance": {},
   "unableToLoadPostsFrominstance": "Ne eblas ŝargi afiŝojn el {instance}",
   "@unableToLoadPostsFrominstance": {},
   "unableToLoadReplies": "Ne eblas ŝargi pliajn respondojn.",
   "@unableToLoadReplies": {},
+  "unblockInstance": "Malbloki Instancon",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
   "unexpectedError": "Neatendita Eraro",
   "@unexpectedError": {},
   "unsubscribe": "Malaboni",
@@ -569,11 +955,19 @@
   },
   "useSuggestedTitle": "Uzi proponitan titolon: {title}",
   "@useSuggestedTitle": {},
+  "userFormat": "Uzanta Formato",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
   "userNotLoggedIn": "Uzanto ne ensalutinta",
   "@userNotLoggedIn": {},
   "userProfiles": "Uzantprofiloj",
   "@userProfiles": {
     "description": "Settings related to user profiles."
+  },
+  "userSettingDescription": "Ĉi tiuj agordoj sinkronigas kun via Lemmy-konto kaj estas aplikataj nur po-konta.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
   },
   "username": "Uzantnomo",
   "@username": {},
@@ -589,404 +983,10 @@
   "@visitUserProfile": {},
   "xDownvotes": "{x} subenvoĉdonoj",
   "@xDownvotes": {},
-  "xUpvotes": "{x} suprenvoĉdonoj",
-  "@xUpvotes": {},
-  "clearPreferences": "Viŝi Preferojn",
-  "@clearPreferences": {
-    "description": "Label for action to clear local user preferences in the dialog"
-  },
-  "compactView": "Kompakta Rigardo",
-  "@compactView": {
-    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
-  },
-  "expandPostPreview": "Etendi Afiŝan Antaŭrigardon",
-  "@expandPostPreview": {
-    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
-  },
-  "confirmResetCommentPreferences": "Ĉi tio restarigos ĉiujn defaŭltajn komentajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?",
-  "@confirmResetCommentPreferences": {
-    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
-  },
-  "reset": "Restarigi",
-  "@reset": {
-    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
-  },
-  "appLanguage": "Lingvo de la Aplikaĵo",
-  "@appLanguage": {
-    "description": "Language selection in settings."
-  },
-  "resetPreferences": "Restarigi Preferojn",
-  "@resetPreferences": {},
-  "unableToFindLanguage": "Ne eblas trovi lingvon",
-  "@unableToFindLanguage": {
-    "description": "Error message when language cannot be found."
-  },
-  "noLanguage": "Neniu lingvo",
-  "@noLanguage": {
-    "description": "The entry for no language when selecting a post language"
-  },
-  "creator": "Kreinto",
-  "@creator": {
-    "description": "The creator filter for searches."
-  },
-  "expandCommentPreview": "Etendi Komentan Antaŭrigardon",
-  "@expandCommentPreview": {
-    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
-  },
-  "compactViewDescription": "Ebligu kompaktan rigardon por ĝustigi agordojn",
-  "@compactViewDescription": {
-    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
-  },
-  "postViewType": "Tipo de Afiŝa Rigardo",
-  "@postViewType": {
-    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
-  },
-  "endSearch": "Fini Serĉon",
-  "@endSearch": {},
-  "notificationsBehaviourSettings": "Sciigoj",
-  "@notificationsBehaviourSettings": {
-    "description": "Subcategory in Setting -> General"
-  },
-  "cardViewSettings": "Agordoj de Karta Rigardo",
-  "@cardViewSettings": {
-    "description": "Subcategory in Setting -> Appearance -> Posts"
-  },
-  "deleteLocalPreferencesDescription": "Ĉi tio viŝos ĉiujn viajn uzantpreferojn kaj agordojn en Thunder.\n\nĈu vi volas daŭrigi?",
-  "@deleteLocalPreferencesDescription": {
-    "description": "Description for confirmation action to delete local preferences"
-  },
-  "userSettingDescription": "Ĉi tiuj agordoj sinkronigas kun via Lemmy-konto kaj estas aplikataj nur po-konta.",
-  "@userSettingDescription": {
-    "description": "Description which explains that the settings are applied globally to the current user."
-  },
-  "resetPreferencesAndData": "Restarigi Preferojn kaj Datenojn",
-  "@resetPreferencesAndData": {
-    "description": "Debug setting header for resetting all user preferences and data."
-  },
-  "floatingActionButton": "Flosanta Ago-Butono",
-  "@floatingActionButton": {
-    "description": "Floating Action Button settings category."
-  },
-  "collapsePostPreview": "Maletendi Afiŝan Antaŭrigardon",
-  "@collapsePostPreview": {
-    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
-  },
-  "feedTypeAndSorts": "Defaŭlta Flua Tipo kaj Ordigo",
-  "@feedTypeAndSorts": {
-    "description": "Subcategory in Setting -> General"
-  },
-  "all": "Ĉiuj",
-  "@all": {},
-  "generalSettings": "Ĝeneralaj Agordoj",
-  "@generalSettings": {
-    "description": "Subcategory in Settings"
-  },
-  "combineCommentScoresLabel": "Kombini Komentajn Poentojn",
-  "@combineCommentScoresLabel": {
-    "description": "Label for setting to combine comment scores"
-  },
-  "compactViewSettings": "Agordoj de Kompakta Rigardo",
-  "@compactViewSettings": {
-    "description": "Subcategory in Setting -> Appearance -> Posts"
-  },
-  "searchTerm": "Serĉa termino",
-  "@searchTerm": {},
-  "deleteLocalDatabaseDescription": "Ĉi tiu ago viŝos la lokan datenbazon kaj elsalutos vin el ĉiuj viaj kontoj.\n\nĈu vi certas, ke vi volas daŭrigi?",
-  "@deleteLocalDatabaseDescription": {
-    "description": "Description for confirmation action to delete local database"
-  },
-  "resetPostPreferences": "Restarigi afiŝajn preferojn",
-  "@resetPostPreferences": {
-    "description": "Semantic label for button in post appearance settings."
-  },
   "xScore": "{x} poentaro",
   "@xScore": {
     "description": "The total score of post or comment"
   },
-  "appearance": "Aspekto",
-  "@appearance": {
-    "description": "Title of Appearance in Settings -> Appearance"
-  },
-  "confirmResetPostPreferences": "Ĉi tio restarigos ĉiujn defaŭltajn afiŝajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?",
-  "@confirmResetPostPreferences": {
-    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
-  },
-  "filters": "Filtriloj",
-  "@filters": {
-    "description": "Category to describe various filters (user, community, instance blocking)"
-  },
-  "collapseCommentPreview": "Maletendi Komentan Antaŭrigardon",
-  "@collapseCommentPreview": {
-    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
-  },
-  "topSixMonths": "Supro en la Pasintaj 6 Monatoj",
-  "@topSixMonths": {
-    "description": "Sort mode for top in past 6 months"
-  },
-  "deleteLocalPreferences": "Viŝi Lokajn Preferojn",
-  "@deleteLocalPreferences": {
-    "description": "Label for action to delete local preferences"
-  },
-  "debug": "Sencimigi",
-  "@debug": {
-    "description": "Debug settings category."
-  },
-  "resetCommentPreferences": "Restarigi komentajn preferojn",
-  "@resetCommentPreferences": {
-    "description": "Semantic label for button in comment appearance settings."
-  },
-  "commentBehaviourSettings": "Komentoj",
-  "@commentBehaviourSettings": {
-    "description": "Subcategory in Setting -> General"
-  },
-  "noResultsFound": "Neniuj rezultoj trovitaj.",
-  "@noResultsFound": {},
-  "expandPost": "Etendi afiŝon",
-  "@expandPost": {},
-  "topNineMonths": "Supro en la Pasintaj 9 Monatoj",
-  "@topNineMonths": {
-    "description": "Sort mode for top in past 9 months"
-  },
-  "about": "Pri",
-  "@about": {
-    "description": "About settings category."
-  },
-  "local": "Loka",
-  "@local": {},
-  "postPreview": "Montri antaŭrigardon de la afiŝo kun la donitaj agordoj",
-  "@postPreview": {
-    "description": "Description for the post preview in Setting -> Appearance -> Posts"
-  },
-  "cardView": "Karta Rigardo",
-  "@cardView": {
-    "description": "Label for the card view option in Setting -> Appearance -> Posts"
-  },
-  "suggestedTitle": "Sugestita titolo",
-  "@suggestedTitle": {
-    "description": "Suggested title for the post."
-  },
-  "selectLanguage": "Elekti lingvon",
-  "@selectLanguage": {
-    "description": "The prompt to select a language in the post creation page"
-  },
-  "languageNotAllowed": "La komunumo al kiu vi afiŝas ne permesas afiŝojn en la lingvo, kiun vi elektis. Provu alian lingvon.",
-  "@languageNotAllowed": {
-    "description": "The error message for the language_not_allowed Lemmy exception"
-  },
-  "clearDatabase": "Viŝi datenbazon",
-  "@clearDatabase": {
-    "description": "Label for action to clear local database in the dialog"
-  },
-  "feedBehaviourSettings": "Fluo",
-  "@feedBehaviourSettings": {
-    "description": "Subcategory in Setting -> General"
-  },
-  "commentPreview": "Montri antaŭrigardon de la komentoj kun la donitaj agordoj",
-  "@commentPreview": {
-    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
-  },
-  "theming": "Haŭtado",
-  "@theming": {
-    "description": "Title of Theming in Settings -> Appearance -> Theming"
-  },
-  "showReadPosts": "Montri Legitajn Afiŝojn",
-  "@showReadPosts": {
-    "description": "Setting to show read posts in feed."
-  },
-  "language": "Lingvo",
-  "@language": {
-    "description": "Label when creating or editing a post."
-  },
-  "filteringBy": "Filtri laŭ {entity}",
-  "@filteringBy": {
-    "description": "Filtering by a community or creator in search."
-  },
-  "deleteLocalDatabase": "Viŝi Lokan Datenbazon",
-  "@deleteLocalDatabase": {
-    "description": "Label for action to delete local database"
-  },
-  "editPost": "Redakti Afiŝon",
-  "@editPost": {
-    "description": "Title when editing a post."
-  },
-  "topThreeMonths": "Supro en la Pasintaj 3 Monatoj",
-  "@topThreeMonths": {
-    "description": "Sort mode for top in past 3 months"
-  },
-  "pending": "Pritraktota",
-  "@pending": {
-    "description": "Describes the subscription status for 'Pending'"
-  },
-  "searchComments": "Serĉi Komentojn",
-  "@searchComments": {},
-  "cardViewDescription": "Ebligu kartan rigardon por ĝustigi agordojn",
-  "@cardViewDescription": {
-    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
-  },
-  "postBehaviourSettings": "Afiŝoj",
-  "@postBehaviourSettings": {
-    "description": "Subcategory in Setting -> General"
-  },
-  "debugDescription": "La sekvaj sencimigaj agordoj devas esti uzataj nur por problemsolvi.",
-  "@debugDescription": {
-    "description": "Explanation for debug settings page"
-  },
-  "linksBehaviourSettings": "Ligiloj",
-  "@linksBehaviourSettings": {
-    "description": "Subcategory in Setting -> General"
-  },
-  "collapsePost": "Maletendi Afiŝon",
-  "@collapsePost": {},
-  "unableToLoadImage": "Ne eblas ŝargi bildon",
-  "@unableToLoadImage": {
-    "description": "Placeholder for when we are unable to load a binary image"
-  },
-  "showScores": "Montri Afiŝajn/Komentajn Poentojn",
-  "@showScores": {
-    "description": "Option to show scores on posts and comments."
-  },
-  "unblockInstance": "Malbloki Instancon",
-  "@unblockInstance": {
-    "description": "Tooltip for unblocking an instance"
-  },
-  "information": "Informoj",
-  "@information": {
-    "description": "Information heading - used in the FAB settings page"
-  },
-  "showBotAccounts": "Montri Robotajn kontojn",
-  "@showBotAccounts": {
-    "description": "Option to show bot accounts."
-  },
-  "floatingActionButtonInformation": "Thunder havas plene agordeblan FAB-sperton, kiu subtenas kelkajn gestojn.\n- Ŝovumu supren por malkaŝi pliajn agojn de FAB\n- Ŝovumu malsupren/supren por kaŝi aŭ malkaŝi la FAB\n\nPor personecigi la ĉefajn kaj duarangajn agojn por la FAB, longe premu unu el la subaj agoj.",
-  "@floatingActionButtonInformation": {
-    "description": "Description of the FAB in the settings page"
-  },
-  "setAction": "Agordi Agon",
-  "@setAction": {
-    "description": "Label for the action to set (short-press, long-press)"
-  },
-  "expandInformation": "Etendi Informojn",
-  "@expandInformation": {
-    "description": "Describes the action to expand information - used in FAB settings"
-  },
-  "floatingActionButtonLongPressDescription": "indikas la longa-preman agon de la FAB.",
-  "@floatingActionButtonLongPressDescription": {
-    "description": "Description of the FAB's long-press action"
-  },
-  "enablePostFab": "Ebligi Flosantan Butonon sur Afiŝoj",
-  "@enablePostFab": {
-    "description": "Enable the Floating Action Button for the post"
-  },
-  "collapseInformation": "Maletendi Informojn",
-  "@collapseInformation": {
-    "description": "Describes the action to collapse information - used in FAB settings"
-  },
-  "unableToLoadImageFrom": "Ne eblas ŝargi bildon de {domain}",
-  "@unableToLoadImageFrom": {
-    "description": "Placeholder for when we are unable to load an image from a URL"
-  },
-  "enableFeedFab": "Ebligi Flosantan Butonon sur Fluoj",
-  "@enableFeedFab": {
-    "description": "Enable the Floating Action Button for the feed"
-  },
-  "floatingActionButtonSinglePressDescription": "indikas la unu-preman agon de la FAB.",
-  "@floatingActionButtonSinglePressDescription": {
-    "description": "Description of the FAB's single-press action"
-  },
-  "translationsMayNotBeComplete": "Bonvolu noti, ke la tradukoj eble ne estas kompletaj",
-  "@translationsMayNotBeComplete": {
-    "description": "Warning that translations may not be complete when selecting a language in the settings"
-  },
-  "communityFormat": "Komunuma Formato",
-  "@communityFormat": {
-    "description": "Setting for community full name format"
-  },
-  "noKeywordFilters": "Neniujn ŝlosilvortajn filtrilojn aldonis",
-  "@noKeywordFilters": {
-    "description": "Message for no keywords added"
-  },
-  "keywordFilterDescription": "Filtrigas afiŝojn enhavantajn ajnajn ŝlosilvortojn en la titolo aŭ korpo",
-  "@keywordFilterDescription": {
-    "description": "Description of keyword filter settings"
-  },
-  "commentShowUserInstance": "Montri uzantan instancon",
-  "@commentShowUserInstance": {
-    "description": "Settings toggle to display user instance alongside their display name in comments"
-  },
-  "confirmLogOutTitle": "Ĉu elsaluti?",
-  "@confirmLogOutTitle": {
-    "description": "The title of the confirm logout dialog"
-  },
-  "advanced": "Altnivela",
-  "@advanced": {
-    "description": "Heading for advanced settings"
-  },
-  "addKeywordFilter": "Aldoni Ŝlosilvorton",
-  "@addKeywordFilter": {
-    "description": "Hint for text field to add keyword"
-  },
-  "keywordFilters": "Ŝlosilvortaj Filtriloj",
-  "@keywordFilters": {
-    "description": "Subcategory in Setting -> General"
-  },
-  "removeKeywordFilter": "Forigi Ŝlosilvorton",
-  "@removeKeywordFilter": {
-    "description": "Title for dialig to remove keyword"
-  },
-  "confirmLogOutBody": "Ĉu vi certas, ke vi volas elsaluti?",
-  "@confirmLogOutBody": {
-    "description": "The body of the confirm logout dialog"
-  },
-  "permissionDeniedMessage": "Thunder postulas iujn permesojn por konservi ĉi tiun bildon, kiuj estis rifuzitaj.",
-  "@permissionDeniedMessage": {
-    "description": "Explanation for error when user denies OS permissions"
-  },
-  "permissionDenied": "Permeso Rifuzita",
-  "@permissionDenied": {
-    "description": "Title for error when user denies OS permissions"
-  },
-  "openSettings": "Malfermi Agordojn",
-  "@openSettings": {
-    "description": "Prompt for the user to open system settings"
-  },
-  "removeKeyword": "Ĉu forigi \"{keyword}\"?",
-  "@removeKeyword": {
-    "description": "Description of removing a keyword"
-  },
-  "userFormat": "Uzanta Formato",
-  "@userFormat": {
-    "description": "Setting for user full name format"
-  },
-  "confirmMarkAllAsReadTitle": "Ĉu marki ĉion kiel legita?",
-  "@confirmMarkAllAsReadTitle": {
-    "description": "The title of the confirm mark all as read dialog"
-  },
-  "addToFavorites": "Aldoni al favoratoj",
-  "@addToFavorites": {
-    "description": "Action to add a community in drawer to favorites"
-  },
-  "noSubscriptions": "Neniuj Abonoj",
-  "@noSubscriptions": {
-    "description": "Message for no subscriptions on the drawer"
-  },
-  "removeFromFavorites": "Forigi el favoratoj",
-  "@removeFromFavorites": {
-    "description": "Action to remove a community in drawer from favorites"
-  },
-  "noFavoritedCommunities": "Neniuj favoratigitaj komunumoj",
-  "@noFavoritedCommunities": {
-    "description": "Message for no favorited communities on the drawer"
-  },
-  "favorites": "Favoratoj",
-  "@favorites": {
-    "description": "The favorited communities on the drawer"
-  },
-  "markAllAsRead": "Marki ĉion kiel legita",
-  "@markAllAsRead": {
-    "description": "The mark all as read action"
-  },
-  "confirmMarkAllAsReadBody": "Ĉu vi certas, ke vi volas marki ĉiujn mesaĝojn kiel legitajn?",
-  "@confirmMarkAllAsReadBody": {
-    "description": "The body of the confirm mark all as read dialog"
-  }
+  "xUpvotes": "{x} suprenvoĉdonoj",
+  "@xUpvotes": {}
 }
