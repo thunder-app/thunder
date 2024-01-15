@@ -59,8 +59,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        // The following line is required by flutter_local_notifications
-        multiDexEnabled true
     }
 
     signingConfigs {
