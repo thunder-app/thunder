@@ -244,10 +244,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     // Check whether Android is currently allowing Thunder to send notifications
     final AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-    areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
-    // This setState has no body because async operations aren't allowed,
-    // but its purpose is to update areAndroidNotificationsAllowed.
-    setState(() {});
+    final bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+    setState(() => this.areAndroidNotificationsAllowed = areAndroidNotificationsAllowed);
   }
 
   @override
