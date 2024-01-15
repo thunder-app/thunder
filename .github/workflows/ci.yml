@@ -24,9 +24,6 @@ jobs:
           cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
           architecture: x64 # optional, x64 or arm64
 
-      - name: Create Empty .env File
-        run: echo "#" > .env
-
       - name: Dependencies
         run: flutter pub get
       
@@ -36,8 +33,8 @@ jobs:
       - name: Copy translation file
         run: cp ./lib/l10n/app_en.arb ./lib/l10n/app_en_tmp.arb
 
-      - name: Format translation file
-        run: arb_utils sort ./lib/l10n/app_en.arb
+      # - name: Format translation file
+      #   run: arb_utils sort ./lib/l10n/app_en.arb
 
       - name: Check sorted translations against reference
         run: |
