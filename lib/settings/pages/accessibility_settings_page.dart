@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -74,8 +75,8 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                     ),
                   ),
                   ToggleOption(
-                    description: LocalSettings.reduceAnimations.label,
-                    subtitle: AppLocalizations.of(context)!.reducesAnimations, // @TODO: Add subtitle field to LocalSettings for these strings
+                    description: l10n.reduceAnimations,
+                    subtitle: l10n.reducesAnimations,
                     value: reduceAnimations,
                     iconEnabled: Icons.animation,
                     iconDisabled: Icons.animation,

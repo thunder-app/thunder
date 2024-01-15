@@ -749,15 +749,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
-  gallery_saver:
+  gal:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "1e902f066778756b36d709cd611e62e0abdf7767"
-      resolved-ref: "1e902f066778756b36d709cd611e62e0abdf7767"
-      url: "https://github.com/thunder-app/gallery_saver.git"
-    source: git
-    version: "2.3.2"
+      name: gal
+      sha256: "88f8e87074c7935c49b30910f4afabf1fa9e42a5a1f9b2f6d295c7ef55be29e5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   glob:
     dependency: transitive
     description:
@@ -958,22 +957,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.8"
-  leak_tracker:
-    dependency: transitive
-    description:
-      name: leak_tracker
-      sha256: "7e108028e3d258667d079986da8c0bc32da4cb57431c2af03b1dc1038621a9dc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.0.13"
-  leak_tracker_testing:
-    dependency: transitive
-    description:
-      name: leak_tracker_testing
-      sha256: b06739349ec2477e943055aea30172c5c7000225f79dad4702e2ec0eda79a6ff
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
   lemmy_api_client:
     dependency: "direct main"
     description:
@@ -1045,18 +1028,18 @@ packages:
     dependency: transitive
     description:
       name: material_color_utilities
-      sha256: "0e0a020085b65b6083975e499759762399b4475f766c21668c4ecca34ea74e5a"
+      sha256: "9528f2f296073ff54cb9fee677df673ace1218163c3bc7628093e7eed5203d41"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.0"
+    version: "0.5.0"
   meta:
     dependency: transitive
     description:
       name: meta
-      sha256: d584fa6707a52763a52446f02cc621b077888fb63b93bbcb1143a7be5a0c0c04
+      sha256: a6e590c838b18133bb482a2745ad77c5bb7715fb0451209e1a7567d416678b8e
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.0"
+    version: "1.10.0"
   mime:
     dependency: transitive
     description:
@@ -1720,14 +1703,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
-  vm_service:
-    dependency: transitive
-    description:
-      name: vm_service
-      sha256: b3d56ff4341b8f182b96aceb2fa20e3dcb336b9f867bc0eafc0de10f1048e957
-      url: "https://pub.dev"
-    source: hosted
-    version: "13.0.0"
   watcher:
     dependency: transitive
     description:

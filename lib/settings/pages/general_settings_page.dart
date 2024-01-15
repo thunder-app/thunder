@@ -280,7 +280,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListOption(
-                description: LocalSettings.defaultFeedListingType.label,
+                description: l10n.defaultFeedType,
                 value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
                 options: [
                   ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
@@ -296,7 +296,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListOption(
-                description: LocalSettings.defaultFeedSortType.label,
+                description: l10n.defaultFeedSortType,
                 value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
                 options: [...SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never), ...topSortTypeItems],
                 icon: Icons.sort_rounded,
@@ -304,7 +304,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 isBottomModalScrollControlled: true,
                 customListPicker: SortPicker(
                   includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
-                  title: LocalSettings.defaultFeedSortType.label,
+                  title: l10n.defaultFeedSortType,
                   onSelect: (value) {
                     setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
                   },
@@ -327,7 +327,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListOption(
-                description: LocalSettings.defaultCommentSortType.label,
+                description: l10n.defaultCommentSortType,
                 value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
                 options: CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never),
                 icon: Icons.comment_bank_rounded,
@@ -394,7 +394,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.hideNsfwPosts.label,
+                description: l10n.hideNsfwPostsFromFeed,
                 value: hideNsfwPosts,
                 iconEnabled: Icons.no_adult_content,
                 iconDisabled: Icons.no_adult_content,
@@ -406,7 +406,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.tappableAuthorCommunity.label,
+                description: l10n.tappableAuthorCommunity,
                 value: tappableAuthorCommunity,
                 iconEnabled: Icons.touch_app_rounded,
                 iconDisabled: Icons.touch_app_outlined,
@@ -418,7 +418,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.markPostAsReadOnMediaView.label,
+                description: l10n.markPostAsReadOnMediaView,
                 value: markPostReadOnMediaView,
                 iconEnabled: Icons.visibility,
                 iconDisabled: Icons.remove_red_eye_outlined,
@@ -430,7 +430,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.useTabletMode.label,
+                description: l10n.tabletMode,
                 value: tabletMode,
                 iconEnabled: Icons.tablet_rounded,
                 iconDisabled: Icons.smartphone_rounded,
@@ -462,7 +462,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.useAdvancedShareSheet.label,
+                description: l10n.useAdvancedShareSheet,
                 value: useAdvancedShareSheet,
                 iconEnabled: Icons.screen_share_rounded,
                 iconDisabled: Icons.screen_share_outlined,
@@ -481,7 +481,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.collapseParentCommentBodyOnGesture.label,
+                description: l10n.collapseParentCommentBodyOnGesture,
                 value: collapseParentCommentOnGesture,
                 iconEnabled: Icons.mode_comment_outlined,
                 iconDisabled: Icons.comment_outlined,
@@ -493,7 +493,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.enableCommentNavigation.label,
+                description: l10n.enableCommentNavigation,
                 value: enableCommentNavigation,
                 iconEnabled: Icons.unfold_more_rounded,
                 iconDisabled: Icons.unfold_less_rounded,
@@ -505,8 +505,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.combineNavAndFab.label,
-                subtitle: l10n.combineNavAndFab,
+                description: l10n.combineNavAndFab,
+                subtitle: l10n.combineNavAndFabDescription,
                 value: combineNavAndFab,
                 iconEnabled: Icons.join_full_rounded,
                 iconDisabled: Icons.join_inner_rounded,
@@ -526,7 +526,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.openLinksInExternalBrowser.label,
+                description: l10n.openLinksInExternalBrowser,
                 value: openInExternalBrowser,
                 iconEnabled: Icons.add_link_rounded,
                 iconDisabled: Icons.link_rounded,
@@ -539,7 +539,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ToggleOption(
-                  description: LocalSettings.openLinksInReaderMode.label,
+                  description: l10n.openLinksInReaderMode,
                   value: openInReaderMode,
                   iconEnabled: Icons.menu_book_rounded,
                   iconDisabled: Icons.menu_book_rounded,
@@ -580,7 +580,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.scrapeMissingPreviews.label,
+                description: l10n.scrapeMissingPreviews,
                 subtitle: l10n.scrapeMissingPreviews,
                 value: scrapeMissingPreviews,
                 iconEnabled: Icons.image_search_rounded,
@@ -639,7 +639,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showInAppUpdateNotification.label,
+                description: l10n.showInAppUpdateNotifications,
                 value: showInAppUpdateNotification,
                 iconEnabled: Icons.update_rounded,
                 iconDisabled: Icons.update_disabled_rounded,

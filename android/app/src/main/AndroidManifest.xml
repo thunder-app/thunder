@@ -9,13 +9,15 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- The tools:replace line is needed by background_fetch -->
+    <!-- requestLegacyExternalStorage is required for saving media to an album in API 29 -->
     <application
         tools:replace="android:label"
         android:label="Thunder"
         android:name="${applicationName}"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/launcher_icon"
+        android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true" 
         >
         <activity
             android:name=".MainActivity"

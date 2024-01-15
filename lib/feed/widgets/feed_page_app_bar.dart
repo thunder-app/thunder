@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
@@ -139,6 +140,16 @@ class FeedPageAppBar extends StatelessWidget {
                           horizontalTitleGap: 5,
                           leading: Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
                           title: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
+                        ),
+                      ),
+                    if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
+                      PopupMenuItem(
+                        onTap: () => Share.share(feedBloc.state.fullCommunityView!.communityView.community.actorId),
+                        child: ListTile(
+                          dense: true,
+                          horizontalTitleGap: 5,
+                          leading: const Icon(Icons.share_rounded, size: 20),
+                          title: Text(l10n.share),
                         ),
                       ),
                   ],
