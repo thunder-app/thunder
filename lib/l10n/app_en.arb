@@ -63,7 +63,7 @@
   "@appearance": {
     "description": "Title of Appearance in Settings -> Appearance"
   },
-  "appFont": "App Font",
+  "appFontFamily": "App Font",
   "@appFont": {
     "description": "Setting to change the app's font"
   },
