@@ -157,7 +157,7 @@ extension LocalizationExt on AppLocalizations {
       'tabletMode': tabletMode,
       'scrapeMissingLinkPreviews': scrapeMissingLinkPreviews,
       'openLinksInExternalBrowser': openLinksInExternalBrowser,
-    'browserMode': browserMode,
+      'browserMode': browserMode,
       'openLinksInReaderMode': openLinksInReaderMode,
       'showUserDisplayNames': showUserDisplayNames,
       'markPostAsReadOnMediaView': markPostAsReadOnMediaView,
