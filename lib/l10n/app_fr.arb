@@ -31,7 +31,7 @@
   "@addToFavorites": {
     "description": "Action to add a community in drawer to favorites"
   },
-  "addedCommunityToSubscriptions": "S'abonner à la communauté",
+  "addedCommunityToSubscriptions": "Abonné à la communauté",
   "@addedCommunityToSubscriptions": {},
   "advanced": "Avancé",
   "@advanced": {
@@ -145,7 +145,7 @@
   "@combineCommentScoresLabel": {
     "description": "Label for setting to combine comment scores"
   },
-  "combineNavAndFab": "Le bouton d'action flottant s'affiche entre les boutons de navigation.",
+  "combineNavAndFab": "Combiner le bouton d'action flottant et les boutons de navigation",
   "@combineNavAndFab": {},
   "comment": "Commentaire",
   "@comment": {},
@@ -1028,5 +1028,247 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} votes positifs",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "combineCommentScores": "Combiner les scores de commentaire",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
+  "combineNavAndFabDescription": "Le bouton d'action flottant s'affiche entre les boutons de navigation.",
+  "@combineNavAndFabDescription": {},
+  "commentSwipeActions": "Actions du balayage de commentaire",
+  "@commentSwipeActions": {
+    "description": "Setting for comment swipe actions"
+  },
+  "crossPostedFrom": "Publication croisé avec : {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
+  },
+  "defaultCommentSortType": "Type de classement de commentaire par défaut",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "defaultFeedSortType": "Type de classement de fil par défaut",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  },
+  "deleteAccount": "Effacer le compte",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "deleteAccountDescription": "Pour supprimer définitivement votre compte, vous serez redirigé vers votre site d'instance. \n\nÊtes-vous sûr de vouloir continuer ?",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
+  "enableFloatingButtonOnFeeds": "Activer bouton flottant sur les fils",
+  "@enableFloatingButtonOnFeeds": {
+    "description": "Setting for enable floating button on feeds"
+  },
+  "leftLongSwipe": "Balayage long à gauche",
+  "@leftLongSwipe": {
+    "description": "Setting for left long swipe"
+  },
+  "hideNsfwPostsFromFeed": "Masquer les publications NSFW du fil",
+  "@hideNsfwPostsFromFeed": {
+    "description": "Toggle to hide NSFW posts from the feed."
+  },
+  "openLinksInReaderMode": "Ouvrir les liens en mode lecture",
+  "@openLinksInReaderMode": {
+    "description": "Toggle to open links in reader mode when available."
+  },
+  "reduceAnimations": "Réduire les animations",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "rightLongSwipe": "Balayage long à droite",
+  "@rightLongSwipe": {
+    "description": "Setting for right long swipe"
+  },
+  "postContentFontScale": "Taille de police du contenu de publication",
+  "@postContentFontScale": {
+    "description": "Setting for post content font scale"
+  },
+  "showCommentActionButtons": "Afficher les boutons d'action des commentaires",
+  "@showCommentActionButtons": {
+    "description": "Toggle to show comment action buttons."
+  },
+  "postSwipeActions": "Actions du balayage des publications",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
+  "showEdgeToEdgeImages": "Afficher les images bord à bord",
+  "@showEdgeToEdgeImages": {
+    "description": "Toggle to view edge to edge images."
+  },
+  "openLinksInExternalBrowser": "Ouvrir les liens dans un navigateur externe",
+  "@openLinksInExternalBrowser": {
+    "description": "Toggle to open links in an external browser."
+  },
+  "showPostSaveAction": "Afficher le bouton sauvegarder",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "showInAppUpdateNotifications": "Être notifié des nouvelles versions sur GitHub",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
+  "showPostTextContentPreview": "Afficher l'aperçu de texte",
+  "@showPostTextContentPreview": {
+    "description": "Toggle to show text previews."
+  },
+  "showPostTitleFirst": "Afficher le titre en premier",
+  "@showPostTitleFirst": {
+    "description": "Toggle to show post title first."
+  },
+  "showThumbnailPreviewOnRight": "Afficher les vignettes à droite",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Toggle to show thumbnails on the right side."
+  },
+  "showPostVoteActions": "Afficher les boutons de vote",
+  "@showPostVoteActions": {
+    "description": "Toggle to show vote buttons."
+  },
+  "showUserDisplayNames": "Afficher les noms d'affichage des utilisateurs",
+  "@showUserDisplayNames": {
+    "description": "Toggle to show user display names."
+  },
+  "useAdvancedShareSheet": "Utiliser le formulaire de partage avancé",
+  "@useAdvancedShareSheet": {
+    "description": "Toggle to use advanced share sheet."
+  },
+  "themeAccentColor": "Couleurs d'accentuation",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "theme": "Thème",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "tappableAuthorCommunity": "Auteurs et communautés cliquable",
+  "@tappableAuthorCommunity": {
+    "description": "Toggle to make authors and communities tappable."
+  },
+  "unsubscribeFromCommunity": "Se désabonner de la Communauté",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
+  "tabletMode": "Mode tablette (affichage sur deux colonnes)",
+  "@tabletMode": {
+    "description": "Toggle to enable 2-column tablet mode."
+  },
+  "commentFontScale": "Taille de police des commentaires",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
+  },
+  "dangerZone": "Actions sensibles",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "confirm": "Confirmer",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "defaultFeedType": "Type de fil par défaut",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
+  "enableCommentNavigation": "Activer la navigation dans les commentaires",
+  "@enableCommentNavigation": {
+    "description": "Setting for enable comment navigation"
+  },
+  "enableFloatingButtonOnPosts": "Activer bouton flottant sur les publications",
+  "@enableFloatingButtonOnPosts": {
+    "description": "Setting for enable floating button on posts"
+  },
+  "fullscreenSwipeGestures": "Geste de balayage en plein écran",
+  "@fullscreenSwipeGestures": {
+    "description": "Setting for fullscreen swipe gestures"
+  },
+  "hideNsfwPreviews": "Masquer les aperçus NSFW",
+  "@hideNsfwPreviews": {
+    "description": "Toggle to hide NSFW previews."
+  },
+  "hideTopBarOnScroll": "Masquer la barre du haut pendant le défilement",
+  "@hideTopBarOnScroll": {
+    "description": "Settings toggle to hide the top bar on scroll"
+  },
+  "leftShortSwipe": "Balayage court à gauche",
+  "@leftShortSwipe": {
+    "description": "Setting for left short swipe"
+  },
+  "markPostAsReadOnMediaView": "Marquer comme lu après lecture du contenu",
+  "@markPostAsReadOnMediaView": {
+    "description": "Toggle to mark posts as read after viewing media."
+  },
+  "metadataFontScale": "Taille de police de métadonnée",
+  "@metadataFontScale": {
+    "description": "Setting for metadata font scale"
+  },
+  "navbarDoubleTapGestures": "Gestes de double appui sur la barre de navigation",
+  "@navbarDoubleTapGestures": {
+    "description": "Setting for navbar double tap gestures"
+  },
+  "navbarSwipeGestures": "Balayer la barre de navigation",
+  "@navbarSwipeGestures": {
+    "description": "Setting for navbar swipe gestures"
+  },
+  "nestedCommentIndicatorColor": "Couleur de l'indicateur de commentaire imbriqué",
+  "@nestedCommentIndicatorColor": {
+    "description": "Setting for nested comment indicator color"
+  },
+  "nestedCommentIndicatorStyle": "Style de l'indicateur de commentaire imbriqué",
+  "@nestedCommentIndicatorStyle": {
+    "description": "Setting for nested comment indicator style"
+  },
+  "newPost": "Nouvelle publication",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "postTitleFontScale": "Taille de police du titre des publications",
+  "@postTitleFontScale": {
+    "description": "Setting for post title font scale"
+  },
+  "rightShortSwipe": "Balayage court à droite",
+  "@rightShortSwipe": {
+    "description": "Setting for right short swipe"
+  },
+  "scrapeMissingLinkPreviews": "Récupérer les aperçus de liens manquants",
+  "@scrapeMissingLinkPreviews": {
+    "description": "Toggle to scrape missing external link previews."
+  },
+  "showCrossPosts": "Montrer les publications croisées",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "showFullHeightImages": "Afficher les images en pleine hauteur",
+  "@showFullHeightImages": {
+    "description": "Toggle to view full height images."
+  },
+  "showPostAuthor": "Afficher l'auteur de la publication",
+  "@showPostAuthor": {
+    "description": "Toggle to show post author."
+  },
+  "showPostCommunityIcons": "Afficher les icônes de communauté",
+  "@showPostCommunityIcons": {
+    "description": "Toggle to show community icons."
+  },
+  "showScoreCounters": "Afficher les notes des utilisateurs",
+  "@showScoreCounters": {
+    "description": "Toggle to display user scores."
+  },
+  "showUserInstance": "Afficher l'instance de l'utilisateur",
+  "@showUserInstance": {
+    "description": "Toggle to show user instance."
+  },
+  "subscribeToCommunity": "S'abonner à la communauté",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
+  "trySearchingFor": "Essayer de chercher...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
+  "collapseParentCommentBodyOnGesture": "Masque les commentaires parents lorsque réduit",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  }
 }
