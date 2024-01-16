@@ -1,4 +1,8 @@
 {
+  "about": "Riguardo",
+  "@about": {
+    "description": "About settings category."
+  },
   "accessibility": "Accessibilità",
   "@accessibility": {},
   "accessibilityProfilesDescription": "I profili di accessibilità consentono di applicare più impostazioni contemporaneamente per soddisfare un requisito di accessibilità specifico.",
@@ -19,6 +23,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Aggiungi Istanza Anonima",
   "@addAnonymousInstance": {},
+  "addToFavorites": "Aggiungi ai preferiti",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
   "addedCommunityToSubscriptions": "Comunità aggiunta alle iscrizioni",
   "@addedCommunityToSubscriptions": {},
   "allPosts": "Tutti i post",
@@ -277,7 +285,7 @@
   "@new_": {},
   "noComments": "Oh. Non ci sono commenti.",
   "@noComments": {},
-  "noCommentsFound": "Nessun commento trovato",
+  "noCommentsFound": "Nessun commento trovato.",
   "@noCommentsFound": {},
   "noCommunitiesFound": "Nessuna comunità trovata",
   "@noCommunitiesFound": {},

@@ -232,9 +232,12 @@ class _UserSidebarState extends State<UserSidebar> {
                                   right: 8,
                                   bottom: 8,
                                 ),
-                                child: CommonMarkdownBody(
-                                  body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
-                                  imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                                child: Material(
+                                  child: CommonMarkdownBody(
+                                    body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
+                                    imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                                    allowHorizontalTranslation: false,
+                                  ),
                                 ),
                               ),
                               const Padding(
