@@ -7,7 +7,7 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Специальные возможности позволяют одновременно применять несколько настроек для удовлетворения конкретного требования доступности.",
   "@accessibilityProfilesDescription": {},
-  "account": "Аккаунт",
+  "account": "{count, plural, zero {Аккаунтов} one {Аккаунт} other {Аккаунта} } ",
   "@account": {},
   "accountSettings": "Настройки аккаунта",
   "@accountSettings": {},
