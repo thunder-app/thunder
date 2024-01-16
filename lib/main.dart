@@ -29,6 +29,7 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:flutter/foundation.dart';
 
@@ -41,6 +42,9 @@ void main() async {
 
   // Load up sqlite database
   await DB.instance.database;
+
+  // Clear image cache
+  await clearExtendedImageCache();
 
   // Register dart_ping on iOS
   if (!kIsWeb && Platform.isIOS) {

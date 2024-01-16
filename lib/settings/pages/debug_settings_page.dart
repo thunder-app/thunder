@@ -2,18 +2,25 @@ import 'package:flutter/material.dart';
 
 import 'package:path/path.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/shared/dialogs.dart';
 
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
+import 'package:thunder/utils/cache.dart';
 
-class DebugSettingsPage extends StatelessWidget {
+class DebugSettingsPage extends StatefulWidget {
   const DebugSettingsPage({super.key});
 
+  @override
+  State<DebugSettingsPage> createState() => _DebugSettingsPageState();
+}
+
+class _DebugSettingsPageState extends State<DebugSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -110,6 +117,33 @@ class DebugSettingsPage extends StatelessWidget {
                     },
                     primaryButtonText: l10n.clearDatabase,
                   );
+                },
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: Divider(indent: 16.0, endIndent: 16.0)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: FutureBuilder<int>(
+                future: getExtendedImageCacheSize(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return SettingsListTile(
+                      icon: Icons.data_saver_off_rounded,
+                      description: l10n.clearCache('${(snapshot.data! / (1024 * 1024)).toStringAsFixed(2)} MB'),
+                      widget: const SizedBox(
+                        height: 42.0,
+                        child: Icon(Icons.chevron_right_rounded),
+                      ),
+                      onTap: () async {
+                        await clearDiskCachedImages();
+                        if (context.mounted) showSnackbar(context, l10n.clearedCache);
+                        setState(() {}); // Trigger a rebuild to refresh the cache size
+                      },
+                    );
+                  }
+                  return Container();
                 },
               ),
             ),
