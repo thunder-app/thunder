@@ -121,7 +121,15 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: Divider(indent: 16.0, endIndent: 16.0)),
+          SliverToBoxAdapter(
+            child: Divider(
+              indent: 32.0,
+              height: 32.0,
+              endIndent: 32.0,
+              thickness: 2.0,
+              color: theme.dividerColor.withOpacity(0.6),
+            ),
+          ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
