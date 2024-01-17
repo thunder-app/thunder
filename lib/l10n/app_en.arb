@@ -3,6 +3,10 @@
   "@about": {
     "description": "About settings category."
   },
+  "accentColors": "Accent Colors",
+  "@accentColors": {
+    "description": "Label describing theme accent colors"
+  },
   "accessibility": "Accessibility",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
@@ -73,6 +77,10 @@
   "@backButton": {},
   "backToTop": "Back To Top",
   "@backToTop": {},
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
   "blockCommunity": "Block Community",
   "@blockCommunity": {},
   "blockInstance": "Block Instance",
@@ -177,6 +185,10 @@
   "@commentFontScale": {
     "description": "Setting for comment font scale"
   },
+  "commentFontSizeScale": "Comment Font Size Scale",
+  "@commentFontSizeScale": {
+    "description": "Label describing setting for the font scale of comments"
+  },
   "commentPreview": "Show a preview of the comments with the given settings",
   "@commentPreview": {
     "description": "Description for the comment preview in Setting -> Appearance -> Comments"
@@ -251,6 +263,10 @@
   "@confirmResetPostPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
   },
+  "contentFontSizeScale": "Post Content Font Scale",
+  "@contentFontSizeScale": {
+    "description": "Label describing setting for the font scale of post content"
+  },
   "controversial": "Controversial",
   "@controversial": {},
   "copiedToClipboard": "Copied to clipboard",
@@ -298,6 +314,10 @@
   "dangerZone": "Danger Zone",
   "@dangerZone": {
     "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "dark": "Dark",
+  "@dark": {
+    "description": "Describes using the dark theme"
   },
   "debug": "Debug",
   "@debug": {
@@ -429,6 +449,10 @@
   "@expanded": {
     "description": "Expanded post body view type"
   },
+  "extraLarge": "Extra Large",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
@@ -475,6 +499,10 @@
   "@floatingActionButtonSinglePressDescription": {
     "description": "Description of the FAB's single-press action"
   },
+  "fonts": "Fonts",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
   "fullscreenSwipeGestures": "Fullscreen Swipe Gestures",
@@ -488,78 +516,6 @@
   "generalSettings": "General Settings",
   "@generalSettings": {
     "description": "Subcategory in Settings"
-  },
-  "fonts": "Fonts",
-  "@fonts": {
-    "description": "Settings category for fonts"
-  },
-  "accentColors": "Accent Colors",
-  "@accentColors": {
-    "description": "Label describing theme accent colors"
-  },
-  "useMaterialYouTheme": "Use Material You Theme",
-  "@useMaterialYouTheme": {
-    "description": "Label describing setting for using Material You theme"
-  },
-  "useMaterialYouThemeDescription": "Overrides the selected custom theme",
-  "@useMaterialYouThemeDescription": {
-    "description": "Subtitle of the setting for using Material You theme"
-  },
-  "titleFontSizeScale": "Title Font Size Scale",
-  "@titleFontSizeScale": {
-    "description": "Label describing setting for the font scale of post titles"
-  },
-  "contentFontSizeScale": "Post Content Font Scale",
-  "@contentFontSizeScale": {
-    "description": "Label describing setting for the font scale of post content"
-  },
-  "commentFontSizeScale": "Comment Font Size Scale",
-  "@commentFontSizeScale": {
-    "description": "Label describing setting for the font scale of comments"
-  },
-  "metadataFontSizeScale": "Metadata Font Size Scale",
-  "@metadataFontSizeScale": {
-    "description": "Label describing setting for the font scale of metadata text"
-  },
-  "system": "System",
-  "@system": {
-    "description": "Describes using the system settings for theme"
-  },
-  "light": "Light",
-  "@light": {
-    "description":  "Describes using the light theme"
-  },
-  "dark": "Dark",
-  "@dark": {
-    "description": "Describes using the dark theme"
-  },
-  "pureBlack": "Pure Black",
-  "@pureBlack": {
-    "description": "Describes using the pure black theme"
-  },
-  "theme": "Theme",
-  "@theme": {
-    "description": "Settings category for theme"
-  },
-  "small": "Small",
-  "@small": {
-    "description": "Description for small font scale"
-  },
-  "base": "Base",
-  "@base": {
-    "description": "Description for base font scale"
-  },
-  "medium": "Medium",
-  "@medium": {
-    "description": "Description for medium font scale"
-  },
-  "large": "Large",
-  "@large": {
-    "description": "Description for large font scale"
-  },
-  "extraLarge": "Extra Large",
-  "@extraLarge": {
-    "description": "Description for extra large font scale"
   },
   "gestures": "Gestures",
   "@gestures": {},
@@ -633,6 +589,10 @@
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
   },
+  "large": "Large",
+  "@large": {
+    "description": "Description for large font scale"
+  },
   "leftLongSwipe": "Left Long Swipe",
   "@leftLongSwipe": {
     "description": "Setting for left long swipe"
@@ -640,6 +600,10 @@
   "leftShortSwipe": "Left Short Swipe",
   "@leftShortSwipe": {
     "description": "Setting for left short swipe"
+  },
+  "light": "Light",
+  "@light": {
+    "description": "Describes using the light theme"
   },
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
@@ -683,6 +647,10 @@
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
   },
+  "medium": "Medium",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
   "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
   "@mention": {},
   "message": "{count, plural, zero {Message} one {Message} other {Messages} }",
@@ -690,6 +658,10 @@
   "metadataFontScale": "Metadata Font Scale",
   "@metadataFontScale": {
     "description": "Setting for metadata font scale"
+  },
+  "metadataFontSizeScale": "Metadata Font Size Scale",
+  "@metadataFontSizeScale": {
+    "description": "Label describing setting for the font scale of metadata text"
   },
   "missingErrorMessage": "No error message available",
   "@missingErrorMessage": {},
@@ -851,7 +823,7 @@
   "@postContentFontScale": {
     "description": "Setting for post content font scale"
   },
-  "postCreatedSuccessfully" :"Post created successfully!",
+  "postCreatedSuccessfully": "Post created successfully!",
   "@postCreatedSuccessfully": {
     "description": "Notifying the user that their post was created successfully"
   },
@@ -895,6 +867,10 @@
   "@profileAppliedSuccessfully": {},
   "profiles": "Profiles",
   "@profiles": {},
+  "pureBlack": "Pure Black",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
@@ -1145,6 +1121,10 @@
   "@sidebarBottomNavDoubleTapDescription": {},
   "sidebarBottomNavSwipeDescription": "Swipe bottom nav to open sidebar",
   "@sidebarBottomNavSwipeDescription": {},
+  "small": "Small",
+  "@small": {
+    "description": "Description for small font scale"
+  },
   "somethingWentWrong": "Oops, something went wrong!",
   "@somethingWentWrong": {},
   "sortBy": "Sort By",
@@ -1180,6 +1160,10 @@
   "suggestedTitle": "Suggested title",
   "@suggestedTitle": {
     "description": "Suggested title for the post."
+  },
+  "system": "System",
+  "@system": {
+    "description": "Describes using the system settings for theme"
   },
   "tabletMode": "Tablet Mode (2-column view)",
   "@tabletMode": {
@@ -1217,6 +1201,10 @@
   "@timeoutUpvoteComment": {},
   "timeoutVotingPost": "Error: Timeout when attempting to vote post.",
   "@timeoutVotingPost": {},
+  "titleFontSizeScale": "Title Font Size Scale",
+  "@titleFontSizeScale": {
+    "description": "Label describing setting for the font scale of post titles"
+  },
   "toggelRead": "Toggle Read",
   "@toggelRead": {},
   "top": "Top",
@@ -1328,6 +1316,10 @@
   "useMaterialYouTheme": "Use Material You Theme",
   "@useMaterialYouTheme": {
     "description": "Toggle to use Material You theme."
+  },
+  "useMaterialYouThemeDescription": "Overrides the selected custom theme",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
   },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
