@@ -71,12 +71,12 @@
   "@back": {},
   "backButton": "Back button",
   "@backButton": {},
+  "backToTop": "Back To Top",
+  "@backToTop": {},
   "backgroundCheckWarning": "Note that notification checks will consume additional battery",
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
   },
-  "backToTop": "Back To Top",
-  "@backToTop": {},
   "base": "Base",
   "@base": {
     "description": "Description for base font scale"
@@ -401,10 +401,6 @@
   "@enableFeedFab": {
     "description": "Enable the Floating Action Button for the feed"
   },
-  "enableInboxNotifications": "Enable Inbox Notifications (Experimental)",
-  "@enableInboxNotifications": {
-    "description": "Setting name for inbox notifications"
-  },
   "enableFloatingButtonOnFeeds": "Enable Floating Button On Feeds",
   "@enableFloatingButtonOnFeeds": {
     "description": "Setting for enable floating button on feeds"
@@ -412,6 +408,10 @@
   "enableFloatingButtonOnPosts": "Enable Floating Button On Posts",
   "@enableFloatingButtonOnPosts": {
     "description": "Setting for enable floating button on posts"
+  },
+  "enableInboxNotifications": "Enable Inbox Notifications (Experimental)",
+  "@enableInboxNotifications": {
+    "description": "Setting name for inbox notifications"
   },
   "enablePostFab": "Enable Floating Button on Posts",
   "@enablePostFab": {
