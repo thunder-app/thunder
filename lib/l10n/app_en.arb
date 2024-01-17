@@ -185,10 +185,6 @@
   "@commentFontScale": {
     "description": "Setting for comment font scale"
   },
-  "commentFontSizeScale": "Comment Font Size Scale",
-  "@commentFontSizeScale": {
-    "description": "Label describing setting for the font scale of comments"
-  },
   "commentPreview": "Show a preview of the comments with the given settings",
   "@commentPreview": {
     "description": "Description for the comment preview in Setting -> Appearance -> Comments"
@@ -658,10 +654,6 @@
   "metadataFontScale": "Metadata Font Scale",
   "@metadataFontScale": {
     "description": "Setting for metadata font scale"
-  },
-  "metadataFontSizeScale": "Metadata Font Size Scale",
-  "@metadataFontSizeScale": {
-    "description": "Label describing setting for the font scale of metadata text"
   },
   "missingErrorMessage": "No error message available",
   "@missingErrorMessage": {},
@@ -1201,10 +1193,6 @@
   "@timeoutUpvoteComment": {},
   "timeoutVotingPost": "Error: Timeout when attempting to vote post.",
   "@timeoutVotingPost": {},
-  "titleFontSizeScale": "Title Font Size Scale",
-  "@titleFontSizeScale": {
-    "description": "Label describing setting for the font scale of post titles"
-  },
   "toggelRead": "Toggle Read",
   "@toggelRead": {},
   "top": "Top",
