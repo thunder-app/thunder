@@ -39,8 +39,9 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     }
   }
 
-  /// Creates or edits a post. When successful, it returns the newly created/updated post in the form of a [PostViewMedia]
-  Future<void> createOrEditPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited, int? languageId}) async {
+  /// Creates or edits a post. When successful, it emits the newly created/updated post in the form of a [PostViewMedia]
+  /// and returns the newly created post id.
+  Future<int?> createOrEditPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited, int? languageId}) async {
     emit(state.copyWith(status: CreatePostStatus.submitting));
 
     try {
@@ -58,8 +59,11 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       List<PostViewMedia> postViewMedias = await parsePostViews([postView]);
 
       emit(state.copyWith(status: CreatePostStatus.success, postViewMedia: postViewMedias.firstOrNull));
+      return postViewMedias.firstOrNull?.postView.post.id;
     } catch (e) {
-      return emit(state.copyWith(status: CreatePostStatus.error, message: getExceptionErrorMessage(e)));
+      emit(state.copyWith(status: CreatePostStatus.error, message: getExceptionErrorMessage(e)));
     }
+
+    return null;
   }
 }

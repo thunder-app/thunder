@@ -20,6 +20,7 @@ enum LocalSettings {
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames'),
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', key: 'markPostAsReadOnMediaView'),
   showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', key: 'showInAppUpdateNotifications'),
+  enableInboxNotifications(name: 'setting_enable_inbox_notifications', key: 'enableInboxNotifications'),
   scoreCounters(name: 'setting_score_counters', key: "showScoreCounters"),
   appLanguageCode(name: 'setting_app_language_code', key: 'appLanguage'),
 
@@ -160,6 +161,7 @@ extension LocalizationExt on AppLocalizations {
       'showUserDisplayNames': showUserDisplayNames,
       'markPostAsReadOnMediaView': markPostAsReadOnMediaView,
       'showInAppUpdateNotifications': showInAppUpdateNotifications,
+      'enableInboxNotifications': enableInboxNotifications,
       'showScoreCounters': showScoreCounters,
       'appLanguage': appLanguage,
       'compactView': compactView,

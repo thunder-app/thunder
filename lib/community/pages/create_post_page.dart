@@ -35,6 +35,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_post.dart';
 
 class CreatePostPage extends StatefulWidget {
   final int? communityId;
@@ -61,6 +62,9 @@ class CreatePostPage extends StatefulWidget {
   /// Callback function that is triggered whenever the post is successfully created or updated
   final Function(PostViewMedia postViewMedia)? onPostSuccess;
 
+  // The scaffold key for the main Thunder page
+  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
+
   const CreatePostPage({
     super.key,
     required this.communityId,
@@ -72,6 +76,7 @@ class CreatePostPage extends StatefulWidget {
     this.prePopulated = false,
     this.postView,
     this.onPostSuccess,
+    this.scaffoldMessengerKey,
   });
 
   @override
@@ -337,9 +342,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           child: IconButton(
                             onPressed: isSubmitButtonDisabled
                                 ? null
-                                : () {
+                                : () async {
                                     draftPost.saveAsDraft = false;
-                                    context.read<CreatePostCubit>().createOrEditPost(
+
+                                    final int? postId = await context.read<CreatePostCubit>().createOrEditPost(
                                           communityId: communityId!,
                                           name: _titleTextController.text,
                                           body: _bodyTextController.text,
@@ -348,6 +354,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           postIdBeingEdited: widget.postView?.post.id,
                                           languageId: languageId,
                                         );
+
+                                    if (context.mounted && widget.scaffoldMessengerKey?.currentContext != null && widget.postView?.post.id == null && postId != null) {
+                                      showSnackbar(
+                                        context,
+                                        l10n.postCreatedSuccessfully,
+                                        trailingIcon: Icons.remove_red_eye_rounded,
+                                        trailingAction: () {
+                                          navigateToPost(widget.scaffoldMessengerKey!.currentContext!, postId: postId);
+                                        },
+                                        customState: widget.scaffoldMessengerKey?.currentState,
+                                      );
+                                    }
                                   },
                             icon: Icon(
                               widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,

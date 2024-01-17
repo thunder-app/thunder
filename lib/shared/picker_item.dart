@@ -37,6 +37,7 @@ class PickerItem<T> extends StatelessWidget {
               style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
                 color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(onSelected == null ? 0.5 : 1),
               ),
+              textScaler: TextScaler.noScaling,
             ),
             leading: icon != null ? Icon(icon) : this.leading,
             trailing: Icon(trailingIcon),

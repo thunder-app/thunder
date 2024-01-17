@@ -38,6 +38,9 @@ class CommentSubview extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
 
+  /// The messenger key back to the post page
+  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
+
   const CommentSubview({
     super.key,
     required this.comments,
@@ -59,6 +62,7 @@ class CommentSubview extends StatefulWidget {
     required this.now,
     required this.moderators,
     required this.crossPosts,
+    this.scaffoldMessengerKey,
   });
 
   @override
@@ -135,6 +139,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
               postViewMedia: widget.postViewMedia!,
               moderators: widget.moderators,
               crossPosts: widget.crossPosts,
+              scaffoldMessengerKey: widget.scaffoldMessengerKey,
             );
           }
           if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {

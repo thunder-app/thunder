@@ -64,6 +64,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                         (item) => PickerItem(
                           label: item.capitalizeLabel ? item.label.capitalize : item.label,
                           icon: item.icon,
+                          textTheme: item.textTheme,
                           onSelected: () {
                             if (widget.closeOnSelect) {
                               Navigator.of(context).pop();
@@ -114,7 +115,6 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                               ),
                             ],
                           ),
-                          textTheme: item.textTheme,
                         ),
                       )
                       .toList(),

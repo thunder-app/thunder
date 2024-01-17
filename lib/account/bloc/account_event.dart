@@ -7,6 +7,10 @@ abstract class AccountEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class RefreshAccountInformation extends AccountEvent {}
+
 class GetAccountInformation extends AccountEvent {}
+
+class GetAccountSubscriptions extends AccountEvent {}
 
 class GetFavoritedCommunities extends AccountEvent {}

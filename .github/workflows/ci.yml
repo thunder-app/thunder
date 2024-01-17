@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
 
 jobs:
   linting:
@@ -23,11 +24,27 @@ jobs:
           cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
           architecture: x64 # optional, x64 or arm64
 
-      - name: Create Empty .env File
-        run: echo "#" > .env
-
       - name: Dependencies
         run: flutter pub get
+      
+      - name: Install arb_utils to check sorting of translations
+        run: dart pub global activate arb_utils
+
+      - name: Copy translation file
+        run: cp ./lib/l10n/app_en.arb ./lib/l10n/app_en_tmp.arb
+
+      - name: Sort translation .arb file alphabetically
+        run: arb_utils sort ./lib/l10n/app_en.arb
+
+      - name: Check sorted translations against reference
+        run: |
+          # Check if the contents of the destination file match the reference file
+          if cmp -s "./lib/l10n/app_en.arb" "./lib/l10n/app_en_tmp.arb"; then
+            echo "Translation entries are in alphabetical order."
+          else
+            echo "Translation entries are not in alphabetical order."
+            exit 1  # Fail the workflow if files are not the same
+          fi
 
       - name: Linting
         # We'll ignore info and warnings when performing this step
