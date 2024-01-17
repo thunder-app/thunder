@@ -55,6 +55,7 @@
   "@animations": {},
   "anonymous": "Anonymous",
   "@anonymous": {},
+  "appFontFamily": "App Font",
   "appLanguage": "App Language",
   "@appLanguage": {
     "description": "Language selection in settings."
@@ -62,10 +63,6 @@
   "appearance": "Appearance",
   "@appearance": {
     "description": "Title of Appearance in Settings -> Appearance"
-  },
-  "appFontFamily": "App Font",
-  "@appFont": {
-    "description": "Setting to change the app's font"
   },
   "applied": "Applied",
   "@applied": {},
