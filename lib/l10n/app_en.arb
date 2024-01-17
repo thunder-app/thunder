@@ -259,10 +259,6 @@
   "@confirmResetPostPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
   },
-  "contentFontSizeScale": "Post Content Font Scale",
-  "@contentFontSizeScale": {
-    "description": "Label describing setting for the font scale of post content"
-  },
   "controversial": "Controversial",
   "@controversial": {},
   "copiedToClipboard": "Copied to clipboard",
