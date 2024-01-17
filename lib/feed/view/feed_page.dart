@@ -52,6 +52,7 @@ class FeedPage extends StatefulWidget {
     this.userId,
     this.username,
     this.scaffoldStateKey,
+    this.scaffoldMessengerKey,
   });
 
   /// The type of feed to display.
@@ -83,6 +84,9 @@ class FeedPage extends StatefulWidget {
 
   /// The scaffold key which holds the drawer
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
+
+  /// The messenger key back to the main Thunder page
+  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -127,7 +131,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
 
       return BlocProvider.value(
         value: bloc,
-        child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
+        child: FeedView(scaffoldStateKey: widget.scaffoldStateKey, scaffoldMessengerKey: widget.scaffoldMessengerKey),
       );
     }
 
@@ -143,16 +147,19 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           username: widget.username,
           reset: true,
         )),
-      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
+      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey, scaffoldMessengerKey: widget.scaffoldMessengerKey),
     );
   }
 }
 
 class FeedView extends StatefulWidget {
-  const FeedView({super.key, this.scaffoldStateKey});
+  const FeedView({super.key, this.scaffoldStateKey, this.scaffoldMessengerKey});
 
   /// The scaffold key which holds the drawer
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
+
+  /// The messenger key back to the main Thunder page
+  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -426,7 +433,10 @@ class _FeedViewState extends State<FeedView> {
                           curve: Curves.easeIn,
                           child: Container(
                             margin: const EdgeInsets.all(16),
-                            child: FeedFAB(heroTag: state.communityName),
+                            child: FeedFAB(
+                              heroTag: state.communityName,
+                              scaffoldMessengerKey: widget.scaffoldMessengerKey,
+                            ),
                           ),
                         ),
                     ],

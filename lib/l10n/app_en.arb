@@ -779,6 +779,10 @@
   "@postContentFontScale": {
     "description": "Setting for post content font scale"
   },
+  "postCreatedSuccessfully" :"Post created successfully!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
+  },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
   "postNSFW": "Mark as NSFW",

@@ -54,6 +54,9 @@ class PostSubview extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
 
+  /// The messenger key back to the post page
+  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
+
   const PostSubview({
     super.key,
     this.selectedCommentId,
@@ -61,6 +64,7 @@ class PostSubview extends StatefulWidget {
     required this.postViewMedia,
     required this.moderators,
     required this.crossPosts,
+    this.scaffoldMessengerKey,
   });
 
   @override
@@ -170,7 +174,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   ),
                 ),
               ),
-            if (showCrossPosts && sortedCrossPosts.isNotEmpty) CrossPosts(crossPosts: sortedCrossPosts, originalPost: widget.postViewMedia),
+            if (showCrossPosts && sortedCrossPosts.isNotEmpty)
+              CrossPosts(
+                crossPosts: sortedCrossPosts,
+                originalPost: widget.postViewMedia,
+                scaffoldMessengerKey: widget.scaffoldMessengerKey,
+              ),
             const SizedBox(height: 16.0),
             SizedBox(
               width: MediaQuery.of(context).size.width,
