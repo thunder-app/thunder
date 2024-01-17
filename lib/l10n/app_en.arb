@@ -3,10 +3,6 @@
   "@about": {
     "description": "About settings category."
   },
-  "accentColors": "Accent Colors",
-  "@accentColors": {
-    "description": "Label describing theme accent colors"
-  },
   "accessibility": "Accessibility",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
