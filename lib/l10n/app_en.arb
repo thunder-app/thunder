@@ -649,6 +649,10 @@
   },
   "missingErrorMessage": "No error message available",
   "@missingErrorMessage": {},
+  "moderatedCommunities": "Moderated Communities",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
   "mostComments": "Most Comments",
   "@mostComments": {},
   "mustBeLoggedInComment": "You need to be logged in to comment",
