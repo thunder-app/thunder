@@ -1,0 +1,1032 @@
+{
+  "about": "À propos",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accessibility": "Accessibilité",
+  "@accessibility": {},
+  "accessibilityProfilesDescription": "Les profils d'accessibilité permettent d'appliquer plusieurs paramètres à la fois pour répondre à une exigence d'accessibilité particulière.",
+  "@accessibilityProfilesDescription": {},
+  "account": "Compte",
+  "@account": {},
+  "accountSettings": "Paramètres de compte",
+  "@accountSettings": {},
+  "actions": "Actions",
+  "@actions": {},
+  "active": "Active",
+  "@active": {},
+  "add": "Ajouter",
+  "@add": {},
+  "addAccount": "Ajouter compte",
+  "@addAccount": {},
+  "addAccountToSeeProfile": "Connectez-vous pour voir votre compte.",
+  "@addAccountToSeeProfile": {},
+  "addAnonymousInstance": "Ajouter une instance anonyme",
+  "@addAnonymousInstance": {},
+  "addKeywordFilter": "Ajouter un mot-clef",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "Ajouter au favoris",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addedCommunityToSubscriptions": "S'abonner à la communauté",
+  "@addedCommunityToSubscriptions": {},
+  "advanced": "Avancé",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "all": "Tout",
+  "@all": {},
+  "allPosts": "Tous les messages",
+  "@allPosts": {},
+  "allowOpenSupportedLinks": "Autoriser l'application à ouvrir les liens compatibles.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "alreadyPostedTo": "Déjà posté dans",
+  "@alreadyPostedTo": {},
+  "andXMore": "et {count} plus",
+  "@andXMore": {},
+  "animations": "Animations",
+  "@animations": {},
+  "anonymous": "Anonyme",
+  "@anonymous": {},
+  "appLanguage": "Langue de l'application",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "appearance": "Apparence",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "applied": "Appliqué",
+  "@applied": {},
+  "apply": "Appliquer",
+  "@apply": {},
+  "back": "Retour",
+  "@back": {},
+  "backButton": "Bouton retour",
+  "@backButton": {},
+  "backToTop": "Retour en haut",
+  "@backToTop": {},
+  "blockCommunity": "Bloquer la communauté",
+  "@blockCommunity": {},
+  "blockInstance": "Bloquer l'instance",
+  "@blockInstance": {},
+  "blockUser": "Bloquer l'utilisateur",
+  "@blockUser": {},
+  "blockedCommunities": "Communautés bloquées",
+  "@blockedCommunities": {},
+  "blockedInstances": "Instances bloquées",
+  "@blockedInstances": {},
+  "blockedUsers": "Utilisateurs bloqués",
+  "@blockedUsers": {},
+  "browsingAnonymously": "Vous parcourez {instance} anonymement.",
+  "@browsingAnonymously": {},
+  "cancel": "Annuler",
+  "@cancel": {},
+  "cannotReportOwnComment": "Vous ne pouvez pas signaler votre propre message.",
+  "@cannotReportOwnComment": {},
+  "cantBlockAdmin": "Vous ne pouvez pas bloquer un administrateur d'instance.",
+  "@cantBlockAdmin": {},
+  "cantBlockYourself": "Vous ne pouvez pas vous bloquer vous-même.",
+  "@cantBlockYourself": {},
+  "cardView": "Carte de visite",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "cardViewDescription": "Activer l'affichage des cartes pour ajuster les paramètres",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "cardViewSettings": "Configuration de l'affichage des cartes",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "changeSort": "Changer l'ordre",
+  "@changeSort": {},
+  "clearDatabase": "Effacer la base de données",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearPreferences": "Effacer les préférences",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "clearSearch": "Effacer la recherche",
+  "@clearSearch": {},
+  "clearedDatabase": "La base de données locale a été effacée. Redémarrer Thunder pour que les nouvelles modifications soient prises en compte.",
+  "@clearedDatabase": {},
+  "clearedUserPreferences": "Effacer toutes les préférences utilisateur",
+  "@clearedUserPreferences": {},
+  "close": "Fermer",
+  "@close": {},
+  "collapseCommentPreview": "Réduire l'aperçu des commentaires",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "collapseInformation": "Réduire l'information",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "collapsePost": "Réduire la publication",
+  "@collapsePost": {},
+  "collapsePostPreview": "Réduire l'aperçu de publication",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "collapseSpoiler": "Minimiser la révélation",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "combineCommentScoresLabel": "Combiner les scores de commentaires",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "combineNavAndFab": "Le bouton d'action flottant s'affiche entre les boutons de navigation.",
+  "@combineNavAndFab": {},
+  "comment": "Commentaire",
+  "@comment": {},
+  "commentBehaviourSettings": "Commentaires",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "commentPreview": "Montrer un aperçu des commentaires avec la configuration",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "commentReported": "Le commentaire a été signalé pour examen.",
+  "@commentReported": {},
+  "commentSavedAsDraft": "Commentaire sauvegarder comme brouillon",
+  "@commentSavedAsDraft": {},
+  "commentShowUserInstance": "Afficher l'instance de l'utilisateur",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "commentSortType": "Type d'ordre des commentaires",
+  "@commentSortType": {},
+  "commentSwipeGesturesHint": "Vous souhaitez utiliser les boutons ? Activez-les dans la section des commentaires des paramètres généraux.",
+  "@commentSwipeGesturesHint": {},
+  "comments": "Commentaires",
+  "@comments": {},
+  "communities": "Communautés",
+  "@communities": {},
+  "community": "Communauté",
+  "@community": {},
+  "communityFormat": "Format de la communauté",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "compactView": "Vue compacte",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "compactViewDescription": "Appliquer la vue compacte pour modifier les paramètres",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "compactViewSettings": "Configurations de la vue compacte",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "condensed": "Condensé",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "confirmLogOutBody": "Êtes-vous sûr de vouloir vous déconnecter ?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "confirmLogOutTitle": "Déconnecter ?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "confirmMarkAllAsReadBody": "Êtes-vous sûr de vouloir marquer tous les messages comme lu ?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "confirmMarkAllAsReadTitle": "Tout marquer comme lu ?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "confirmResetCommentPreferences": "Ceci va réinitialiser toutes les préférences des commentaires. Voulez-vous continuer ?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "confirmResetPostPreferences": "Cette opération réinitialisera toutes les préférences de publication. Voulez-vous continuer ?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "controversial": "Controversé",
+  "@controversial": {},
+  "copiedToClipboard": "Copié dans le presse-papiers",
+  "@copiedToClipboard": {},
+  "copy": "Copier",
+  "@copy": {},
+  "copyText": "Copier le texte",
+  "@copyText": {},
+  "couldNotDetermineCommentDelete": "Erreur : Impossible de déterminer la publication à supprimer.",
+  "@couldNotDetermineCommentDelete": {},
+  "couldNotDeterminePostComment": "Erreur : Impossible de déterminer la publication à commenter.",
+  "@couldNotDeterminePostComment": {},
+  "couldntCreateReport": "Votre signalement de commentaire n'a pas pu être transmis pour le moment. Veuillez réessayer plus tard",
+  "@couldntCreateReport": {},
+  "countSubscribers": "{count} abonnés",
+  "@countSubscribers": {},
+  "countUsers": "{count} utilisateurs",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "createAccount": "Créer un compte",
+  "@createAccount": {},
+  "createComment": "Créer un commentaire",
+  "@createComment": {},
+  "createNewCrossPost": "Créer une nouvelle publication croisée",
+  "@createNewCrossPost": {},
+  "createPost": "Créer publication",
+  "@createPost": {},
+  "creator": "Créateur",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "crossPostedTo": "Publication croisée sur",
+  "@crossPostedTo": {},
+  "currentLongPress": "Actuellement défini comme appui long",
+  "@currentLongPress": {},
+  "currentSinglePress": "Actuellement défini comme appui simple",
+  "@currentSinglePress": {},
+  "customizeSwipeActions": "Personnalisation des actions de balayage (touchez pour modifier)",
+  "@customizeSwipeActions": {},
+  "debug": "Déboguer",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "debugDescription": "Les paramètres de débogage suivants ne doivent être utilisés qu'à des fins de dépannage.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
+  "delete": "Supprimer",
+  "@delete": {},
+  "deleteLocalDatabase": "Supprimer la base de donnée locale",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "deleteLocalDatabaseDescription": "Cette action va supprimer la base de donnée locale et vous déconnecter de tous vos comptes\n\nVoulez-vous continuer ?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "deleteLocalPreferences": "Supprimer les préférences locales",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "deleteLocalPreferencesDescription": "Cette opération effacera toutes vos préférences d'utilisateur et tous les paramètres de Thunder.\n\nVoulez-vous continuer ?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
+  "dimReadPosts": "Les publications lues seront grisées",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "dismissRead": "Rejeter la lecture",
+  "@dismissRead": {},
+  "displayUserScore": "Afficher les scores utilisateur (karma).",
+  "@displayUserScore": {
+    "description": "Option for displaying user scores or karma."
+  },
+  "downloadingMedia": "Téléchargement de fichier multimédia à partager…",
+  "@downloadingMedia": {},
+  "downvote": "Vote négatif",
+  "@downvote": {},
+  "downvotesDisabled": "Les votes négatifs sont désactivés sur cette instance.",
+  "@downvotesDisabled": {},
+  "edit": "Éditer",
+  "@edit": {},
+  "editComment": "Éditer commentaire",
+  "@editComment": {},
+  "editPost": "Éditer la publication",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "empty": "Vide",
+  "@empty": {},
+  "emptyInbox": "Boite de réception vide",
+  "@emptyInbox": {},
+  "emptyUri": "Le lien est vide. Veuillez fournir un lien dynamique valide pour continuer.",
+  "@emptyUri": {
+    "description": "Error message for empty link."
+  },
+  "enableFeedFab": "Activer le bouton flottant sur les fils",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "enablePostFab": "Activer le bouton flottant dans les publications",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "endSearch": "Terminer la recherche",
+  "@endSearch": {},
+  "errorDownloadingMedia": "Impossible de télécharger le fichier multimédia à partager : {errorMessage}",
+  "@errorDownloadingMedia": {},
+  "exceptionProcessingUri": "Une erreur s'est produite lors du traitement du lien. Il se peut qu'il ne soit pas disponible sur votre instance.",
+  "@exceptionProcessingUri": {
+    "description": "An unspecified error during link processing."
+  },
+  "expandCommentPreview": "Développer l'aperçu des commentaires",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "expandInformation": "Maximiser l'information",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "expandOptions": "Développer les options",
+  "@expandOptions": {},
+  "expandPost": "Développer la publication",
+  "@expandPost": {},
+  "expandPostPreview": "Développer l'aperçu de publication",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
+  "expandSpoiler": "Maximiser la révélation",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "expanded": "Développer",
+  "@expanded": {
+    "description": "Expanded post body view type"
+  },
+  "failedToBlock": "Échec du blocage : {errorMessage}",
+  "@failedToBlock": {},
+  "failedToLoadBlocks": "Impossible de charger les blocs : {errorMessage}",
+  "@failedToLoadBlocks": {},
+  "failedToUnblock": "Impossible de débloquer : {errorMessage}",
+  "@failedToUnblock": {},
+  "favorites": "Favoris",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "feed": "Fil",
+  "@feed": {},
+  "feedBehaviourSettings": "Fil",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "feedTypeAndSorts": "Type de fil et tri par défaut",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "fetchAccountError": "Impossible de déterminer le compte",
+  "@fetchAccountError": {},
+  "filteringBy": "Filtrer par {entity}",
+  "@filteringBy": {
+    "description": "Filtering by a community or creator in search."
+  },
+  "filters": "Filtres",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "floatingActionButton": "Bouton d'action flottant",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
+  },
+  "floatingActionButtonInformation": "Thunder dispose d'une expérience FAB entièrement personnalisable qui prend en charge quelques gestes.\n- Glissez vers le haut pour révéler des actions FAB supplémentaires\n- Balayez vers le bas ou vers le haut pour cacher ou révéler le FAB.\n\nPour personnaliser les actions principales et secondaires du FAB, appuyez longuement sur l'une des actions ci-dessous.",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "floatingActionButtonLongPressDescription": "Indique l'action d'appui long de la FAB.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "floatingActionButtonSinglePressDescription": "Indique l'action d'appui simple de la FAB.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
+  },
+  "fullScreenNavigationSwipeDescription": "Balayer n'importe où pour revenir en arrière lorsque les gestes de gauche à droite sont désactivés",
+  "@fullScreenNavigationSwipeDescription": {},
+  "general": "Général",
+  "@general": {
+    "description": "General settings category."
+  },
+  "generalSettings": "Paramètres généraux",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
+  "gestures": "Gestes",
+  "@gestures": {},
+  "gettingStarted": "Pour commencer",
+  "@gettingStarted": {},
+  "hidePassword": "Masquer le mot de passe",
+  "@hidePassword": {},
+  "hot": "Tendances",
+  "@hot": {},
+  "image": "Image",
+  "@image": {},
+  "importExportSettings": "Paramètres d'import/export",
+  "@importExportSettings": {
+    "description": "Category for settings related to import and export."
+  },
+  "importSettings": "Paramètres d'import",
+  "@importSettings": {
+    "description": "Action to import application settings."
+  },
+  "inReplyTo": "En réponse à {post} dans {community}",
+  "@inReplyTo": {},
+  "inbox": "Boite de réception",
+  "@inbox": {},
+  "includeCommunity": "Inclure la communauté",
+  "@includeCommunity": {},
+  "includeExternalLink": "Inclure lien externe",
+  "@includeExternalLink": {},
+  "includeImage": "Inclure image",
+  "@includeImage": {},
+  "includePostLink": "Inclure un lien vers la publication",
+  "@includePostLink": {},
+  "includeText": "Inclure texte",
+  "@includeText": {},
+  "includeTitle": "Inclure le titre",
+  "@includeTitle": {},
+  "information": "Information",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
+  "instance": "Instance",
+  "@instance": {},
+  "instanceHasAlreadyBenAdded": "{instance} a déjà été ajouté.",
+  "@instanceHasAlreadyBenAdded": {},
+  "internetOrInstanceIssues": "Il se peut que vous ne soyez pas connecté à internet ou que votre instance soit actuellement indisponible.",
+  "@internetOrInstanceIssues": {},
+  "keywordFilterDescription": "Filtre les publications contenant des mots-clés dans le titre ou le corps du message",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "keywordFilters": "Filtres de mots-clés",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "language": "Langue",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "languageNotAllowed": "La communauté dans laquelle vous publiez ne permet pas la publication de messages dans la langue que vous avez sélectionnée. Essayez une autre langue.",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
+  },
+  "link": "{count, plural, zero {Lien} one {Lien} other {Lien} } ",
+  "@link": {},
+  "linkActions": "Actions de lien",
+  "@linkActions": {},
+  "linksBehaviourSettings": "Liens",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "loadMorePlural": "Charger {count} réponses supplémentaires…",
+  "@loadMorePlural": {},
+  "loadMoreSingular": "Charger {count} réponse supplémentaire…",
+  "@loadMoreSingular": {},
+  "local": "Local",
+  "@local": {},
+  "localPosts": "Publications locales",
+  "@localPosts": {},
+  "logOut": "Déconnexion",
+  "@logOut": {},
+  "login": "Connexion",
+  "@login": {},
+  "loginFailed": "Impossible de se connecter. Veuillez réessayer :({errorMessage})",
+  "@loginFailed": {},
+  "loginSucceeded": "Connecté.",
+  "@loginSucceeded": {},
+  "loginToPerformAction": "Vous devez être connecté pour accomplir cette tâche.",
+  "@loginToPerformAction": {},
+  "loginToSeeInbox": "Connectez-vous pour voir votre boîte de réception",
+  "@loginToSeeInbox": {},
+  "malformedUri": "Le lien que vous avez fourni est dans un format non supporté. Veuillez vous assurer qu'il s'agit d'un lien valide.",
+  "@malformedUri": {
+    "description": "Error related to unsupported link format."
+  },
+  "manageAccounts": "Gérer les comptes",
+  "@manageAccounts": {},
+  "markAllAsRead": "Tout marquer comme lu",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
+  "@mention": {},
+  "message": "{count, plural, zero {Message} one {Message} other {Messages} }",
+  "@message": {},
+  "missingErrorMessage": "Aucun message d'erreur disponible",
+  "@missingErrorMessage": {},
+  "mostComments": "Les plus commentés",
+  "@mostComments": {},
+  "mustBeLoggedInComment": "Vous devez être connecté pour commenter",
+  "@mustBeLoggedInComment": {},
+  "mustBeLoggedInPost": "Vous devez être connecté pour créer une publication",
+  "@mustBeLoggedInPost": {},
+  "navigateDown": "Commentaire suivant",
+  "@navigateDown": {},
+  "navigateUp": "Commentaire précédent",
+  "@navigateUp": {},
+  "navigation": "Navigation",
+  "@navigation": {},
+  "newComments": "Nouveaux commentaires",
+  "@newComments": {},
+  "new_": "Nouveau",
+  "@new_": {},
+  "noComments": "Oh. Il n'y a pas de commentaires.",
+  "@noComments": {},
+  "noCommentsFound": "Aucun commentaire trouvé",
+  "@noCommentsFound": {},
+  "noCommunitiesFound": "Aucune communauté trouvée",
+  "@noCommunitiesFound": {},
+  "noCommunityBlocks": "Pas de communautés bloquées.",
+  "@noCommunityBlocks": {},
+  "noFavoritedCommunities": "Pas de communautés préférées",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
+  "noInstanceBlocks": "Pas d'instances bloquées.",
+  "@noInstanceBlocks": {},
+  "noKeywordFilters": "Aucun filtre par mot-clé ajouté",
+  "@noKeywordFilters": {
+    "description": "Message for no keywords added"
+  },
+  "noLanguage": "Pas de langue",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
+  "noPosts": "Aucune publication trouvée",
+  "@noPosts": {},
+  "noPostsFound": "Aucune publication trouvée",
+  "@noPostsFound": {},
+  "noResultsFound": "Aucun résultat trouvé.",
+  "@noResultsFound": {},
+  "noSubscriptions": "Pas d'abonnements",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "noUserBlocks": "Pas d'utilisateurs bloqués.",
+  "@noUserBlocks": {},
+  "noUsersFound": "Aucun utilisateur trouvé",
+  "@noUsersFound": {},
+  "notValidLemmyInstance": "{instance} ne semble pas être une instance de Lemmy valide",
+  "@notValidLemmyInstance": {},
+  "notValidUrl": "URL invalide",
+  "@notValidUrl": {},
+  "nothingToShare": "Rien à partager",
+  "@nothingToShare": {},
+  "notifications": "{count, plural, zero {Notification} one {Notifications} other {Notifications}}",
+  "@notifications": {
+    "description": "Message formatting for notifications count."
+  },
+  "notificationsBehaviourSettings": "Notifications",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "off": "éteint",
+  "@off": {},
+  "ok": "OK",
+  "@ok": {},
+  "old": "Ancien",
+  "@old": {},
+  "on": "allumé",
+  "@on": {},
+  "onlyModsCanPostInCommunity": "Seuls les modérateurs peuvent publier dans cette communauté",
+  "@onlyModsCanPostInCommunity": {},
+  "open": "Ouvrir",
+  "@open": {},
+  "openAccountSwitcher": "Ouvrir le sélecteur de compte",
+  "@openAccountSwitcher": {},
+  "openByDefault": "Ouvrir par défaut",
+  "@openByDefault": {
+    "description": "Indicating the default behavior of opening links."
+  },
+  "openInBrowser": "Ouvrir dans le navigateur",
+  "@openInBrowser": {},
+  "openInstance": "Ouvrir l'instance",
+  "@openInstance": {},
+  "openSettings": "Ouvrir les paramètres",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "overview": "Vue d'ensemble",
+  "@overview": {},
+  "password": "Mot de passe",
+  "@password": {},
+  "pending": "En attente",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "permissionDenied": "Permission refusé",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "permissionDeniedMessage": "Thunder a besoin de certaines permissions pour enregistrer cette image, qui lui ont été refusées.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "postBehaviourSettings": "Publications",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "postBody": "Corps de publication",
+  "@postBody": {},
+  "postBodySettings": "Paramètres de corps de publication",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "postBodySettingsDescription": "Ces paramètres affectent l'affichage du corps de publication",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
+  "postBodyViewType": "Type de vue du corps de publication",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
+  },
+  "postLocked": "Publication verrouillée. Impossible de répondre.",
+  "@postLocked": {},
+  "postNSFW": "Marquer comme NSFW",
+  "@postNSFW": {},
+  "postPreview": "Affiche un aperçu de la publication avec les paramètres données",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
+  "postSavedAsDraft": "Publication enregistrée comme brouillon",
+  "@postSavedAsDraft": {},
+  "postSwipeGesturesHint": "Vous souhaitez utiliser des boutons à la place ? Modifiez les boutons qui apparaissent dans les publications dans les paramètres généraux.",
+  "@postSwipeGesturesHint": {},
+  "postTitle": "Titre",
+  "@postTitle": {},
+  "postTogglePreview": "Aperçu des modifications",
+  "@postTogglePreview": {},
+  "postURL": "URL",
+  "@postURL": {},
+  "postUploadImageError": "Impossible d'envoyer l'image",
+  "@postUploadImageError": {},
+  "postViewType": "Type de vue des publications",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
+  "posts": "Publications",
+  "@posts": {},
+  "preview": "Prévisualisation",
+  "@preview": {},
+  "profileAppliedSuccessfully": "{profile} appliqué avec succès !",
+  "@profileAppliedSuccessfully": {},
+  "profiles": "Profils",
+  "@profiles": {},
+  "reachedTheBottom": "Hum. Il semble que vous ayez touché le fond.",
+  "@reachedTheBottom": {},
+  "readAll": "Tout lire",
+  "@readAll": {},
+  "reducesAnimations": "Réduire les animations utilisées dans Thunder",
+  "@reducesAnimations": {},
+  "refresh": "Rafraîchir",
+  "@refresh": {},
+  "refreshContent": "Rafraîchir le contenu",
+  "@refreshContent": {},
+  "remove": "Supprimer",
+  "@remove": {},
+  "removeAccount": "Supprimer compte",
+  "@removeAccount": {},
+  "removeFromFavorites": "Supprimer des favoris",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "removeInstance": "Supprimer l'instance",
+  "@removeInstance": {},
+  "removeKeyword": "Supprimer \"{keyword}\" ?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "removeKeywordFilter": "Supprimer le mot-clé",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
+  "removedCommunityFromSubscriptions": "Désabonné de la communauté",
+  "@removedCommunityFromSubscriptions": {},
+  "reply": "{count, plural, zero {Réponse} one {Réponse} other {Réponses} }",
+  "@reply": {},
+  "replyNotSupported": "Répondre depuis cette page n'est actuellement pas supporté",
+  "@replyNotSupported": {},
+  "replyToPost": "Répondre à la publication",
+  "@replyToPost": {},
+  "replyingTo": "Répondre à {author}",
+  "@replyingTo": {},
+  "report": "Signaler",
+  "@report": {},
+  "reportComment": "Signaler le commentaire",
+  "@reportComment": {},
+  "reset": "Réinitialiser",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetCommentPreferences": "Réinitialiser les préférences de commentaires",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "resetPostPreferences": "Réinitialiser les préférences de publication",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "resetPreferences": "Réinitialiser les préférences",
+  "@resetPreferences": {},
+  "resetPreferencesAndData": "Réinitialiser les préférences et données",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
+  "restore": "Restaurer",
+  "@restore": {},
+  "restoredCommentFromDraft": "Commentaire restauré depuis les brouillons",
+  "@restoredCommentFromDraft": {},
+  "restoredPostFromDraft": "Publication restauré depuis les brouillons",
+  "@restoredPostFromDraft": {},
+  "retry": "Réessayer",
+  "@retry": {},
+  "save": "Enregistrer",
+  "@save": {},
+  "saveSettings": "Enregistrer les paramètres",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "saved": "Enregistrer",
+  "@saved": {},
+  "scaled": "Échelle",
+  "@scaled": {},
+  "scrapeMissingPreviews": "L'activation aura un impact sur les performances.",
+  "@scrapeMissingPreviews": {
+    "description": "Notice regarding potential performance impact when enabling link scrapping."
+  },
+  "screenReaderProfile": "Profil du lecteur d'écran",
+  "@screenReaderProfile": {},
+  "screenReaderProfileDescription": "Optimise Thunder pour les lecteurs d'écran en réduisant les éléments globaux et en supprimant les gestes potentiellement conflictuels.",
+  "@screenReaderProfileDescription": {},
+  "search": "Rechercher",
+  "@search": {},
+  "searchByText": "Rechercher par texte",
+  "@searchByText": {},
+  "searchByUrl": "Rechercher par URL",
+  "@searchByUrl": {},
+  "searchComments": "Rechercher commentaires",
+  "@searchComments": {},
+  "searchCommentsFederatedWith": "Rechercher les commentaires fédérés avec {instance}",
+  "@searchCommentsFederatedWith": {},
+  "searchCommunitiesFederatedWith": "Rechercher des communautés fédérées avec {instance}",
+  "@searchCommunitiesFederatedWith": {},
+  "searchInstance": "Rechercher {instance}",
+  "@searchInstance": {},
+  "searchPostSearchType": "Sélectionner le type de recherche",
+  "@searchPostSearchType": {},
+  "searchPostsFederatedWith": "Rechercher de publications fédérées avec {instance}",
+  "@searchPostsFederatedWith": {},
+  "searchTerm": "Rechercher les termes",
+  "@searchTerm": {},
+  "searchUsersFederatedWith": "Rechercher les utilisateurs fédérés avec {instance}",
+  "@searchUsersFederatedWith": {},
+  "selectCommunity": "Sélectionnez une communauté",
+  "@selectCommunity": {},
+  "selectFeedType": "Sélectionnez le type de fil",
+  "@selectFeedType": {},
+  "selectLanguage": "Sélectionner la langue",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "selectSearchType": "Sélectionner le type de recherche",
+  "@selectSearchType": {},
+  "serverErrorComments": "Une erreur de serveur a été rencontrée lors de l'obtention de plus de commentaires : {message}",
+  "@serverErrorComments": {},
+  "setAction": "Définir une action",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "setLongPress": "Définir comme action d'appui long",
+  "@setLongPress": {},
+  "setShortPress": "Définir comme action d'appui court",
+  "@setShortPress": {},
+  "settingTypeNotSupported": "Les paramètres de type {settingType} ne sont pas encore pris en charge.",
+  "@settingTypeNotSupported": {},
+  "settings": "Paramètres",
+  "@settings": {},
+  "settingsFeedCards": "Ces paramètres s'appliquent aux cartes du fil principal, les actions étant toujours disponibles lors de l'ouverture des publications.",
+  "@settingsFeedCards": {
+    "description": "Settings for controlling the display of cards in the main feed."
+  },
+  "share": "Partager",
+  "@share": {},
+  "shareLink": "Partager le lien",
+  "@shareLink": {},
+  "shareMedia": "Partager un fichier multimédia",
+  "@shareMedia": {},
+  "sharePost": "Partager la publication",
+  "@sharePost": {},
+  "showAll": "Tout afficher",
+  "@showAll": {},
+  "showBotAccounts": "Afficher les comptes de bots",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "showLess": "Voir moins",
+  "@showLess": {},
+  "showMore": "Voir plus",
+  "@showMore": {},
+  "showPassword": "Afficher mot de passe",
+  "@showPassword": {},
+  "showReadPosts": "Afficher les publications lues",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "showScores": "Afficher les scores de publication/commentaire",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "sidebar": "Barre latérale",
+  "@sidebar": {},
+  "sidebarBottomNavDoubleTapDescription": "Double-clic sur la barre de navigation inférieure pour ouvrir la barre latérale",
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "sidebarBottomNavSwipeDescription": "Balayer la barre de navigation inférieure pour ouvrir la barre latérale",
+  "@sidebarBottomNavSwipeDescription": {},
+  "somethingWentWrong": "Oups, quelque chose a mal tourné !",
+  "@somethingWentWrong": {},
+  "sortBy": "Trier par",
+  "@sortBy": {},
+  "sortByTop": "Trier par Top",
+  "@sortByTop": {},
+  "sortOptions": "Options de tri",
+  "@sortOptions": {},
+  "spoiler": "Révélation",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "submit": "Soumettre",
+  "@submit": {},
+  "subscribe": "S'abonner",
+  "@subscribe": {},
+  "subscribed": "Abonné",
+  "@subscribed": {},
+  "subscriptions": "Abonnements",
+  "@subscriptions": {},
+  "successfullyBlocked": "Bloqué.",
+  "@successfullyBlocked": {},
+  "successfullyBlockedCommunity": "Bloqué {communityName}",
+  "@successfullyBlockedCommunity": {},
+  "successfullyUnblocked": "Débloqué.",
+  "@successfullyUnblocked": {},
+  "successfullyUnblockedCommunity": "Débloqué {communityName}",
+  "@successfullyUnblockedCommunity": {},
+  "suggestedTitle": "Titre suggéré",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "tapToExit": "Retour deux fois pour quitter",
+  "@tapToExit": {},
+  "text": "Texte",
+  "@text": {},
+  "theming": "Thème",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "timeoutComments": "Erreur : Délai d'attente dépassé lors de la tentative de récupération des commentaires",
+  "@timeoutComments": {},
+  "timeoutErrorMessage": "Il y a eu un délai d'attente dépassé pour une réponse.",
+  "@timeoutErrorMessage": {},
+  "timeoutSaveComment": "Erreur : Délai dépassé lors de la tentative d'enregistrement d'un commentaire",
+  "@timeoutSaveComment": {},
+  "timeoutSavingPost": "Erreur : Délai dépassé lors de la tentative d'enregistrement de la publication.",
+  "@timeoutSavingPost": {},
+  "timeoutUpvoteComment": "Erreur : Délai dépassé lors de la tentative de vote sur un commentaire",
+  "@timeoutUpvoteComment": {},
+  "timeoutVotingPost": "Erreur : Délai dépassé lors de la tentative de vote de la publication.",
+  "@timeoutVotingPost": {},
+  "toggelRead": "Basculer vers la lecture",
+  "@toggelRead": {},
+  "top": "Top",
+  "@top": {},
+  "topAll": "Top depuis le début",
+  "@topAll": {},
+  "topDay": "Top aujourd'hui",
+  "@topDay": {},
+  "topHour": "Top dernière heure",
+  "@topHour": {},
+  "topMonth": "Top mois",
+  "@topMonth": {},
+  "topNineMonths": "Top 9 derniers mois",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "topSixHour": "Top 6 dernières heures",
+  "@topSixHour": {},
+  "topSixMonths": "Top 6 derniers mois",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "topThreeMonths": "Top 3 derniers mois",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "topTwelveHour": "Top 12 dernières heures",
+  "@topTwelveHour": {},
+  "topWeek": "Top semaine",
+  "@topWeek": {},
+  "topYear": "Top année",
+  "@topYear": {},
+  "totp": "TOTP (optionnel)",
+  "@totp": {},
+  "translationsMayNotBeComplete": "Veuillez noter que les traductions peuvent ne pas être complètes",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "trendingCommunities": "Communautés en tendance",
+  "@trendingCommunities": {},
+  "unableToFindCommunity": "Impossible de trouver la communauté",
+  "@unableToFindCommunity": {},
+  "unableToFindCommunityName": "Impossible de trouver la communauté '{communityName}'",
+  "@unableToFindCommunityName": {
+    "description": "Error message for when we are unable to find a community, including the name"
+  },
+  "unableToFindInstance": "Impossible de trouver l’instance",
+  "@unableToFindInstance": {},
+  "unableToFindLanguage": "Impossible de trouver la langue",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
+  "unableToFindUser": "Impossible de trouver l'utilisateur",
+  "@unableToFindUser": {},
+  "unableToLoadImage": "Impossible de charger l'image",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "unableToLoadImageFrom": "Impossible de charger l'image de {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "unableToLoadInstance": "Impossible de charger {instance}",
+  "@unableToLoadInstance": {},
+  "unableToLoadPostsFrominstance": "Impossible de charger les publications de {instance}",
+  "@unableToLoadPostsFrominstance": {},
+  "unableToLoadReplies": "Impossible de charger plus de réponses.",
+  "@unableToLoadReplies": {},
+  "unblockInstance": "Débloquer l'instance",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "unexpectedError": "Erreur inattendue",
+  "@unexpectedError": {},
+  "unsubscribe": "Se désabonner",
+  "@unsubscribe": {},
+  "unsubscribePending": "Se désabonner (abonnement en attente)",
+  "@unsubscribePending": {},
+  "unsubscribed": "Désabonné",
+  "@unsubscribed": {},
+  "updateReleased": "Mise à jour publiée : {version}",
+  "@updateReleased": {},
+  "uploadImage": "Envoyer une image",
+  "@uploadImage": {},
+  "upvote": "Vote positif",
+  "@upvote": {},
+  "uriNotSupported": "Ce type de lien n'est pas pris en charge pour le moment.",
+  "@uriNotSupported": {
+    "description": "Unsupported link type at the present time."
+  },
+  "url": "URL",
+  "@url": {},
+  "useCompactView": "Activer pour les petites publications, désactiver pour les grandes.",
+  "@useCompactView": {
+    "description": "Option to enable or disable compact view for small posts."
+  },
+  "useSuggestedTitle": "Utiliser le titre suggéré : {title}",
+  "@useSuggestedTitle": {},
+  "userFormat": "Format d'utilisateur",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "userNotLoggedIn": "Utilisateur non connecté",
+  "@userNotLoggedIn": {},
+  "userProfiles": "Profils utilisateur",
+  "@userProfiles": {
+    "description": "Settings related to user profiles."
+  },
+  "userSettingDescription": "Ces paramètres sont synchronisés avec votre compte Lemmy et ne sont appliqués que par compte.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
+  "username": "Nom d'utilisateur",
+  "@username": {},
+  "users": "Utilisateur",
+  "@users": {},
+  "viewAllComments": "Voir tous les commentaires",
+  "@viewAllComments": {},
+  "visitCommunity": "Visiter la communauté",
+  "@visitCommunity": {},
+  "visitInstance": "Voir l'instance",
+  "@visitInstance": {},
+  "visitUserProfile": "Voir le profil utilisateur",
+  "@visitUserProfile": {},
+  "xDownvotes": "{x} votes négatifs",
+  "@xDownvotes": {},
+  "xScore": "{x} score",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "xUpvotes": "{x} votes positifs",
+  "@xUpvotes": {}
+}

@@ -111,9 +111,12 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                       child: ListView(
                         shrinkWrap: true,
                         children: [
-                          CommonMarkdownBody(
-                            body: communityView.community.description ?? '',
-                            imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                          Material(
+                            child: CommonMarkdownBody(
+                              body: communityView.community.description ?? '',
+                              imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                              allowHorizontalTranslation: false,
+                            ),
                           ),
                           const SidebarSectionHeader(value: "Stats"),
                           Padding(

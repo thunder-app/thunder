@@ -20,9 +20,12 @@ import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FeedFAB extends StatelessWidget {
-  const FeedFAB({super.key, this.heroTag});
+  const FeedFAB({super.key, this.heroTag, this.scaffoldMessengerKey});
 
   final String? heroTag;
+
+  /// The messenger key back to the main Thunder page
+  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
 
   @override
   build(BuildContext context) {
@@ -287,6 +290,7 @@ class FeedFAB extends StatelessWidget {
               child: CreatePostPage(
                 communityId: feedBloc.state.communityId,
                 communityView: feedBloc.state.fullCommunityView?.communityView,
+                scaffoldMessengerKey: scaffoldMessengerKey,
               ),
             );
           },

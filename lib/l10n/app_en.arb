@@ -109,6 +109,10 @@
   },
   "changeSort": "Change Sort",
   "@changeSort": {},
+  "clearCache": "Clear Cache ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
   "clearDatabase": "Clear Database",
   "@clearDatabase": {
     "description": "Label for action to clear local database in the dialog"
@@ -119,6 +123,10 @@
   },
   "clearSearch": "Clear Search",
   "@clearSearch": {},
+  "clearedCache": "Cleared cache successfully.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
   "clearedDatabase": "Local database cleared. Restart Thunder for new changes to take effect.",
   "@clearedDatabase": {},
   "clearedUserPreferences": "Cleared all user preferences",
@@ -211,13 +219,13 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
-  "confirm": "Confirm",
-  "@confirm": {
-    "description": "Label for the confirm action in the dialog"
-  },
   "condensed": "Condensed",
   "@condensed": {
     "description": "Condensed post body view type"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
   },
   "confirmLogOutBody": "Are you sure you want to log out?",
   "@confirmLogOutBody": {
@@ -842,6 +850,10 @@
   "postContentFontScale": "Post Content Font Scale",
   "@postContentFontScale": {
     "description": "Setting for post content font scale"
+  },
+  "postCreatedSuccessfully" :"Post created successfully!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
   },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},

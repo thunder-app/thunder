@@ -1,0 +1,1028 @@
+{
+  "about": "О приложении",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accessibility": "Специальные возможности",
+  "@accessibility": {},
+  "accessibilityProfilesDescription": "Специальные возможности позволяют одновременно применять несколько настроек для удовлетворения конкретного требования доступности.",
+  "@accessibilityProfilesDescription": {},
+  "account": "Аккаунт",
+  "@account": {},
+  "accountSettings": "Настройки аккаунта",
+  "@accountSettings": {},
+  "actions": "Действия",
+  "@actions": {},
+  "active": "Активный",
+  "@active": {},
+  "add": "Добавить",
+  "@add": {},
+  "addAccount": "Добавить аккаунт",
+  "@addAccount": {},
+  "addAccountToSeeProfile": "Войдите, чтобы увидеть свой аккаунт.",
+  "@addAccountToSeeProfile": {},
+  "addAnonymousInstance": "Добавить анонимный инстанс",
+  "@addAnonymousInstance": {},
+  "addKeywordFilter": "Добавить ключевое слово",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "Добавить в избранное",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addedCommunityToSubscriptions": "Подписались на сообщество",
+  "@addedCommunityToSubscriptions": {},
+  "advanced": "Дополнительно",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "all": "Все",
+  "@all": {},
+  "allPosts": "Все посты",
+  "@allPosts": {},
+  "allowOpenSupportedLinks": "Разрешить приложению открывать поддерживаемые ссылки.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "alreadyPostedTo": "Уже опубликовано в",
+  "@alreadyPostedTo": {},
+  "andXMore": "и ещё {count}",
+  "@andXMore": {},
+  "animations": "Анимации",
+  "@animations": {},
+  "anonymous": "Анонимно",
+  "@anonymous": {},
+  "appLanguage": "Язык приложения",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "appearance": "Внешний вид",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "applied": "Применено",
+  "@applied": {},
+  "apply": "Применить",
+  "@apply": {},
+  "back": "Назад",
+  "@back": {},
+  "backButton": "Кнопка назад",
+  "@backButton": {},
+  "backToTop": "Наверх",
+  "@backToTop": {},
+  "blockCommunity": "Заблокировать сообщество",
+  "@blockCommunity": {},
+  "blockInstance": "Заблокировать инстанс",
+  "@blockInstance": {},
+  "blockUser": "Заблокировать пользователя",
+  "@blockUser": {},
+  "blockedCommunities": "Заблокированные сообщества",
+  "@blockedCommunities": {},
+  "blockedInstances": "Заблокированные инстансы",
+  "@blockedInstances": {},
+  "blockedUsers": "Заблокированные пользователи",
+  "@blockedUsers": {},
+  "browsingAnonymously": "Вы уже просматриваете {instance} анонимно.",
+  "@browsingAnonymously": {},
+  "cancel": "Отмена",
+  "@cancel": {},
+  "cannotReportOwnComment": "Вы не можете пожаловаться на свой комментарий.",
+  "@cannotReportOwnComment": {},
+  "cantBlockAdmin": "Вы не можете заблокировать администратора инстанса.",
+  "@cantBlockAdmin": {},
+  "cantBlockYourself": "Вы можете не блокировать себя.",
+  "@cantBlockYourself": {},
+  "cardView": "Карточки",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "cardViewDescription": "Включите вид карточек чтобы применить настройки",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "cardViewSettings": "Настройки карточек",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "changeSort": "Изменить сортировку",
+  "@changeSort": {},
+  "clearDatabase": "Очистить базу данных",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearPreferences": "Очистить предпочтения",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "clearSearch": "Очистить поиск",
+  "@clearSearch": {},
+  "clearedDatabase": "Локальная база данных очищена. Перезапустить Thunder, чтобы изменения вступили в силу.",
+  "@clearedDatabase": {},
+  "clearedUserPreferences": "Очищены все пользовательские параметры",
+  "@clearedUserPreferences": {},
+  "close": "Закрыть",
+  "@close": {},
+  "collapseCommentPreview": "Свернуть предпросмотр комментария",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "collapseInformation": "Свернуть информацию",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "collapsePost": "Свернуть публикацию",
+  "@collapsePost": {},
+  "collapsePostPreview": "Свернуть предпросмотр сообщения",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "collapseSpoiler": "Свернуть спойлер",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "combineCommentScoresLabel": "Свернуть оценки комментария",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "combineNavAndFab": "Плавающая кнопка действия будет отображаться между кнопками навигации.",
+  "@combineNavAndFab": {},
+  "comment": "Комментарий",
+  "@comment": {},
+  "commentBehaviourSettings": "Комментарии",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "commentPreview": "Показать предпросмотр комментариев с заданными настройками",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "commentReported": "Этот комментарий был отмечен для рассмотрения.",
+  "@commentReported": {},
+  "commentSavedAsDraft": "Комментарий сохранен как черновик",
+  "@commentSavedAsDraft": {},
+  "commentShowUserInstance": "Показывать инстанс пользователя",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "commentSortType": "Тип сортировки комментариев",
+  "@commentSortType": {},
+  "commentSwipeGesturesHint": "Хотите вместо этого использовать кнопки? Включите их в разделе комментариев в общих настройках.",
+  "@commentSwipeGesturesHint": {},
+  "comments": "Комментарии",
+  "@comments": {},
+  "communities": "Сообщества",
+  "@communities": {},
+  "community": "Сообщество",
+  "@community": {},
+  "communityFormat": "Формат сообщества",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "compactView": "Компактный вид",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "compactViewDescription": "Включите компактный вид, чтобы настроить параметры",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "compactViewSettings": "Настройки компактного вида",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "condensed": "Сжатый",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "confirmLogOutBody": "Вы уверены, что хотите выйти?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "confirmLogOutTitle": "Выйти?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "confirmMarkAllAsReadBody": "Вы уверены, что хотите отметить все сообщения прочитанными?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "confirmMarkAllAsReadTitle": "Пометить всё прочитанным?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "confirmResetCommentPreferences": "Это сбросит все настройки комментариев. Вы уверены, что хотите продолжить?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "confirmResetPostPreferences": "Это сбросит все настройки публикаций. Вы уверены, что хотите продолжить?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "controversial": "Разговор",
+  "@controversial": {},
+  "copiedToClipboard": "Скопировано в буфер обмена",
+  "@copiedToClipboard": {},
+  "copy": "Копировать",
+  "@copy": {},
+  "copyText": "Копировать текст",
+  "@copyText": {},
+  "couldNotDetermineCommentDelete": "Ошибка: не удалось определить публикацию для удаления комментария.",
+  "@couldNotDetermineCommentDelete": {},
+  "couldNotDeterminePostComment": "Ошибка: не удалось определить публикацию для комментария.",
+  "@couldNotDeterminePostComment": {},
+  "couldntCreateReport": "В настоящее время не удалось отправить ваш отчет о комментариях. Пожалуйста, повторите попытку позже",
+  "@couldntCreateReport": {},
+  "countSubscribers": "{count} подписчиков",
+  "@countSubscribers": {},
+  "countUsers": "{count} пользователей",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "createAccount": "Создать аккаунт",
+  "@createAccount": {},
+  "createComment": "Создать комментарий",
+  "@createComment": {},
+  "createNewCrossPost": "Создать новый кросс-пост",
+  "@createNewCrossPost": {},
+  "createPost": "Создать пост",
+  "@createPost": {},
+  "creator": "Создатель",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "crossPostedTo": "Кросс-пост в",
+  "@crossPostedTo": {},
+  "currentLongPress": "В настоящее время установлено как длительное нажатие",
+  "@currentLongPress": {},
+  "currentSinglePress": "В настоящее время установлено как однократное нажатие",
+  "@currentSinglePress": {},
+  "customizeSwipeActions": "Настройте действия свайпа (нажмите, чтобы изменить)",
+  "@customizeSwipeActions": {},
+  "debug": "Отладка",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "debugDescription": "Следующие параметры отладки следует использовать только в целях устранения неполадок.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
+  "delete": "Удалить",
+  "@delete": {},
+  "deleteLocalDatabase": "Удалить локальную базу данных",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "deleteLocalDatabaseDescription": "Это действие удалит локальную базу данных и сбросит вас из всех ваших аккаунтов.\n\nВы уверены, что хотите продолжить?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "deleteLocalPreferences": "Удалить локальные предпочтения",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "deleteLocalPreferencesDescription": "Это очистит все ваши пользовательские предпочтения и настройки в Thunder.\n\nВы хотите продолжить?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
+  "dimReadPosts": "Прочитанные сообщения будут выделены серым цветом",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "dismissRead": "Отклонить чтение",
+  "@dismissRead": {},
+  "displayUserScore": "Показывать очки пользователей (Карма).",
+  "@displayUserScore": {
+    "description": "Option for displaying user scores or karma."
+  },
+  "downloadingMedia": "Загрузка медиа для отправки…",
+  "@downloadingMedia": {},
+  "downvote": "Понизить",
+  "@downvote": {},
+  "downvotesDisabled": "На этом инстансе отключены голоса \"Против\".",
+  "@downvotesDisabled": {},
+  "edit": "Редактировать",
+  "@edit": {},
+  "editComment": "Изменить комментарий",
+  "@editComment": {},
+  "editPost": "Изменение поста",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "empty": "Пусто",
+  "@empty": {},
+  "emptyInbox": "Пустые входящие",
+  "@emptyInbox": {},
+  "emptyUri": "Ссылка пуста. Пожалуйста, предоставьте действительную динамическую ссылку для продолжения.",
+  "@emptyUri": {
+    "description": "Error message for empty link."
+  },
+  "enableFeedFab": "Включить плавающую кнопку в лентах",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "enablePostFab": "Включить плавающую кнопку в сообщениях",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "endSearch": "Конец поиска",
+  "@endSearch": {},
+  "errorDownloadingMedia": "Не удалось загрузить медиа для отправки: {errorMessage}",
+  "@errorDownloadingMedia": {},
+  "exceptionProcessingUri": "При обработке ссылки произошла ошибка. Она не может быть доступна на вашем инстансе.",
+  "@exceptionProcessingUri": {
+    "description": "An unspecified error during link processing."
+  },
+  "expandCommentPreview": "Расширить предпросмотр комментариев",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "expandInformation": "Расширить информацию",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "expandOptions": "Развернуть параметры",
+  "@expandOptions": {},
+  "expandPost": "Развернуть публикацию",
+  "@expandPost": {},
+  "expandPostPreview": "Развернуть предпросмотр сообщения",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
+  "expandSpoiler": "Развернуть спойлер",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "expanded": "Расширенный",
+  "@expanded": {
+    "description": "Expanded post body view type"
+  },
+  "failedToBlock": "Не удалось заблокировать : {errorMessage}",
+  "@failedToBlock": {},
+  "failedToLoadBlocks": "Невозможно загрузить заблокированных: {errorMessage}",
+  "@failedToLoadBlocks": {},
+  "failedToUnblock": "Не удалось разблокировать: {errorMessage}",
+  "@failedToUnblock": {},
+  "favorites": "Избранные",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "feed": "Новости",
+  "@feed": {},
+  "feedBehaviourSettings": "Новости",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "feedTypeAndSorts": "Тип новостей по умолчанию и сортировка",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "fetchAccountError": "Не удалось определить аккаунт",
+  "@fetchAccountError": {},
+  "filteringBy": "Отсортировано по {entity}",
+  "@filteringBy": {
+    "description": "Filtering by a community or creator in search."
+  },
+  "filters": "Фильтры",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "floatingActionButton": "Действия летающей кнопки",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
+  },
+  "floatingActionButtonInformation": "Thunder имеет полностью настраиваемый интерфейс FAB, поддерживающий несколько жестов.\n- Проведите пальцем вверх, чтобы открыть дополнительные действия FAB.\n- Проведите пальцем вниз/вверх, чтобы скрыть или показать FAB.\n\nЧтобы настроить основные и дополнительные действия для FAB, нажмите и удерживайте одно из действий ниже.",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "floatingActionButtonLongPressDescription": "обозначает длительное нажатие действия FAB.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "floatingActionButtonSinglePressDescription": "обозначает однократное нажатие FAB.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
+  },
+  "fullScreenNavigationSwipeDescription": "Проведите пальцем в любом месте, чтобы вернуться назад, когда жесты слева направо отключены",
+  "@fullScreenNavigationSwipeDescription": {},
+  "general": "Общее",
+  "@general": {
+    "description": "General settings category."
+  },
+  "generalSettings": "Общие настройки",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
+  "gestures": "Жесты",
+  "@gestures": {},
+  "gettingStarted": "Начало",
+  "@gettingStarted": {},
+  "hidePassword": "Скрыть пароль",
+  "@hidePassword": {},
+  "hot": "Горячее",
+  "@hot": {},
+  "image": "Изображение",
+  "@image": {},
+  "importExportSettings": "Импорт/экспорт настроек",
+  "@importExportSettings": {
+    "description": "Category for settings related to import and export."
+  },
+  "importSettings": "Настройки импорта",
+  "@importSettings": {
+    "description": "Action to import application settings."
+  },
+  "inReplyTo": "Ответ на {post} в {community}",
+  "@inReplyTo": {},
+  "inbox": "Входящие",
+  "@inbox": {},
+  "includeCommunity": "Включить сообщество",
+  "@includeCommunity": {},
+  "includeExternalLink": "Включить внешние ссылки",
+  "@includeExternalLink": {},
+  "includeImage": "Включить изображение",
+  "@includeImage": {},
+  "includePostLink": "Включить ссылку на публикацию",
+  "@includePostLink": {},
+  "includeText": "Включить текст",
+  "@includeText": {},
+  "includeTitle": "Включить заголовок",
+  "@includeTitle": {},
+  "information": "Информация",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
+  "instance": "Инстанс",
+  "@instance": {},
+  "instanceHasAlreadyBenAdded": "{instance} уже добавлен.",
+  "@instanceHasAlreadyBenAdded": {},
+  "internetOrInstanceIssues": "Возможно, вы не подключены к Интернету или ваш инстанс в данный момент недоступен.",
+  "@internetOrInstanceIssues": {},
+  "keywordFilterDescription": "Фильтрует сообщения, содержащие любые ключевые слова в заголовке или тексте",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "keywordFilters": "Фильтры ключевых слов",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "language": "Язык",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "languageNotAllowed": "Сообщество, в котором вы публикуете сообщение, не разрешает публиковать сообщения на выбранном вами языке. Попробуйте другой язык.",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
+  },
+  "link": "{count, plural, zero {Ссылок} one {Ссылка} other {Ссылки} } ",
+  "@link": {},
+  "linkActions": "Действие по ссылкам",
+  "@linkActions": {},
+  "linksBehaviourSettings": "Ссылки",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "loadMorePlural": "Загрузить {count} ответов…",
+  "@loadMorePlural": {},
+  "loadMoreSingular": "Загрузить {count} ответ…",
+  "@loadMoreSingular": {},
+  "local": "Местные",
+  "@local": {},
+  "localPosts": "Местные посты",
+  "@localPosts": {},
+  "logOut": "Выйти",
+  "@logOut": {},
+  "login": "Войти",
+  "@login": {},
+  "loginFailed": "Не удалось войти. Попробуйте еще раз: ({errorMessage})",
+  "@loginFailed": {},
+  "loginSucceeded": "Вход выполнен.",
+  "@loginSucceeded": {},
+  "loginToPerformAction": "Вам необходимо войти в систему, чтобы выполнить эту задачу.",
+  "@loginToPerformAction": {},
+  "loginToSeeInbox": "Войдите, чтобы увидеть свои входящие",
+  "@loginToSeeInbox": {},
+  "malformedUri": "Предоставленная вами ссылка имеет неподдерживаемый формат. Пожалуйста, убедитесь, что это действительная ссылка.",
+  "@malformedUri": {
+    "description": "Error related to unsupported link format."
+  },
+  "manageAccounts": "Управление аккаунтами",
+  "@manageAccounts": {},
+  "markAllAsRead": "Пометить всё прочитанным",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "mention": "{count, plural, zero {Упоминаний} one {Упоминание} other {Упоминаний} }",
+  "@mention": {},
+  "message": "{count, plural, zero {Сообщений} one {Сообщение} other {Сообщений} }",
+  "@message": {},
+  "missingErrorMessage": "Сообщение об ошибке отсутствует",
+  "@missingErrorMessage": {},
+  "mostComments": "Большинство комментариев",
+  "@mostComments": {},
+  "mustBeLoggedInComment": "Вы должны войти в систему, чтобы оставлять комментарии",
+  "@mustBeLoggedInComment": {},
+  "mustBeLoggedInPost": "Вам необходимо войти в систему, чтобы создать сообщение",
+  "@mustBeLoggedInPost": {},
+  "navigateDown": "Следующий комментарий",
+  "@navigateDown": {},
+  "navigateUp": "Предыдущий комментарий",
+  "@navigateUp": {},
+  "navigation": "Навигация",
+  "@navigation": {},
+  "newComments": "Новые комментарии",
+  "@newComments": {},
+  "new_": "Новый",
+  "@new_": {},
+  "noComments": "Ой. Нет комментариев.",
+  "@noComments": {},
+  "noCommentsFound": "Нет комментариев",
+  "@noCommentsFound": {},
+  "noCommunitiesFound": "Нет сообществ",
+  "@noCommunitiesFound": {},
+  "noCommunityBlocks": "Нет заблокированных сообществ.",
+  "@noCommunityBlocks": {},
+  "noFavoritedCommunities": "Нет избранных сообществ",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
+  "noInstanceBlocks": "Нет заблокированных инстансов.",
+  "@noInstanceBlocks": {},
+  "noKeywordFilters": "Фильтры ключевых слов не добавлены",
+  "@noKeywordFilters": {
+    "description": "Message for no keywords added"
+  },
+  "noLanguage": "Нет языка",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
+  "noPosts": "Нет постов",
+  "@noPosts": {},
+  "noPostsFound": "Нет постов",
+  "@noPostsFound": {},
+  "noResultsFound": "Результаты не найдены.",
+  "@noResultsFound": {},
+  "noSubscriptions": "Нет подписок",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "noUserBlocks": "Нет заблокированных пользователей.",
+  "@noUserBlocks": {},
+  "noUsersFound": "Нет пользователей",
+  "@noUsersFound": {},
+  "notValidLemmyInstance": "{instance} не является действительным инстансом Lemmy",
+  "@notValidLemmyInstance": {},
+  "notValidUrl": "Недействительный URL-адрес",
+  "@notValidUrl": {},
+  "nothingToShare": "Нечем поделиться",
+  "@nothingToShare": {},
+  "notifications": "{count, plural, zero {Уведомлений} one {Уведомление} other {Уведомления}}",
+  "@notifications": {
+    "description": "Message formatting for notifications count."
+  },
+  "notificationsBehaviourSettings": "Уведомления",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "off": "выключено",
+  "@off": {},
+  "ok": "OK",
+  "@ok": {},
+  "old": "Старое",
+  "@old": {},
+  "on": "включено",
+  "@on": {},
+  "onlyModsCanPostInCommunity": "Только модераторы могут публиковать сообщения в этом сообществе",
+  "@onlyModsCanPostInCommunity": {},
+  "open": "Открыть",
+  "@open": {},
+  "openAccountSwitcher": "Открыть переключение аккаунтов",
+  "@openAccountSwitcher": {},
+  "openByDefault": "Открыть по умолчанию",
+  "@openByDefault": {
+    "description": "Indicating the default behavior of opening links."
+  },
+  "openInBrowser": "Открыть в браузере",
+  "@openInBrowser": {},
+  "openInstance": "Открыть инстанс",
+  "@openInstance": {},
+  "openSettings": "Откройте настройки",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "overview": "Обзор",
+  "@overview": {},
+  "password": "Пароль",
+  "@password": {},
+  "pending": "Ожидание",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "permissionDenied": "Разрешение не дано",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "permissionDeniedMessage": "Для сохранения этого изображения Thunder требуются некоторые разрешения, которые были отклонены.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "postBehaviourSettings": "Посты",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "postBody": "Текст сообщения",
+  "@postBody": {},
+  "postBodySettings": "Настройки тела сообщения",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "postBodySettingsDescription": "Эти настройки влияют на отображение тела сообщения",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
+  "postBodyViewType": "Тип представления тела сообщения",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
+  },
+  "postLocked": "Пост заблокирован. Ответы не допускаются.",
+  "@postLocked": {},
+  "postNSFW": "Пометить как NSFW",
+  "@postNSFW": {},
+  "postPreview": "Показать предпросмотр публикации с заданными настройками",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
+  "postSavedAsDraft": "Сообщение сохранено как черновик",
+  "@postSavedAsDraft": {},
+  "postSwipeGesturesHint": "Хотите вместо этого использовать кнопки? Измените, какие кнопки отображаются на открытках, в общих настройках.",
+  "@postSwipeGesturesHint": {},
+  "postTitle": "Название",
+  "@postTitle": {},
+  "postTogglePreview": "Переключить просмотр",
+  "@postTogglePreview": {},
+  "postURL": "Ссылка",
+  "@postURL": {},
+  "postUploadImageError": "Не удалось загрузить изображение",
+  "@postUploadImageError": {},
+  "postViewType": "Тип просмотра сообщения",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
+  "posts": "Посты",
+  "@posts": {},
+  "preview": "Предпросмотр",
+  "@preview": {},
+  "profileAppliedSuccessfully": "{profile} применён успешно!",
+  "@profileAppliedSuccessfully": {},
+  "profiles": "Профили",
+  "@profiles": {},
+  "reachedTheBottom": "Хм. Кажется, вы достигли конца.",
+  "@reachedTheBottom": {},
+  "readAll": "Прочитать всё",
+  "@readAll": {},
+  "reducesAnimations": "Уменьшает количество анимаций, используемых в Thunder",
+  "@reducesAnimations": {},
+  "refresh": "Обновить",
+  "@refresh": {},
+  "refreshContent": "Обновить контент",
+  "@refreshContent": {},
+  "remove": "Удалить",
+  "@remove": {},
+  "removeAccount": "Удалить аккаунт",
+  "@removeAccount": {},
+  "removeFromFavorites": "Удалить из избранных",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "removeInstance": "Удалить инстанс",
+  "@removeInstance": {},
+  "removeKeyword": "Удалить \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "removeKeywordFilter": "Удалить ключевое слово",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
+  "removedCommunityFromSubscriptions": "Отписались от сообщества",
+  "@removedCommunityFromSubscriptions": {},
+  "reply": "{count, plural, zero {Ответов} one {Ответ} other {Ответы} }",
+  "@reply": {},
+  "replyNotSupported": "Ответ из этого инстанса в настоящее время пока не поддерживается",
+  "@replyNotSupported": {},
+  "replyToPost": "Ответ на пост",
+  "@replyToPost": {},
+  "replyingTo": "Ответ {author}",
+  "@replyingTo": {},
+  "report": "Пожаловаться",
+  "@report": {},
+  "reportComment": "Пожаловаться на комментарий",
+  "@reportComment": {},
+  "reset": "Сбросить",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetCommentPreferences": "Сбросить параметры комментариев",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "resetPostPreferences": "Сбросить параметры постов",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "resetPreferences": "Сброс предпочтений",
+  "@resetPreferences": {},
+  "resetPreferencesAndData": "Сбросить настройки и данные",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
+  "restore": "Восстановить",
+  "@restore": {},
+  "restoredCommentFromDraft": "Восстановлен комментарий из черновика",
+  "@restoredCommentFromDraft": {},
+  "restoredPostFromDraft": "Восстановлен пост из черновика",
+  "@restoredPostFromDraft": {},
+  "retry": "Ещё раз",
+  "@retry": {},
+  "save": "Сохранить",
+  "@save": {},
+  "saveSettings": "Сохранить настройки",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "saved": "Сохранено",
+  "@saved": {},
+  "scaled": "Масштабированный",
+  "@scaled": {},
+  "scrapeMissingPreviews": "Включение приведет к снижению производительности.",
+  "@scrapeMissingPreviews": {
+    "description": "Notice regarding potential performance impact when enabling link scrapping."
+  },
+  "screenReaderProfile": "Профиль чтения экрана",
+  "@screenReaderProfile": {},
+  "screenReaderProfileDescription": "Оптимизирует Thunder для программ чтения с экрана, уменьшая количество элементов и удаляя потенциально конфликтующие жесты.",
+  "@screenReaderProfileDescription": {},
+  "search": "Поиск",
+  "@search": {},
+  "searchByText": "Поиск по тексту",
+  "@searchByText": {},
+  "searchByUrl": "Поиск по ссылке",
+  "@searchByUrl": {},
+  "searchComments": "Поиск комментариев",
+  "@searchComments": {},
+  "searchCommentsFederatedWith": "Поиск комментариев с помощью {instance}",
+  "@searchCommentsFederatedWith": {},
+  "searchCommunitiesFederatedWith": "Поиск сообществ с {instance}",
+  "@searchCommunitiesFederatedWith": {},
+  "searchInstance": "Поиск {instance}",
+  "@searchInstance": {},
+  "searchPostSearchType": "Выберите тип поиска сообщений",
+  "@searchPostSearchType": {},
+  "searchPostsFederatedWith": "Поиск постов с {instance}",
+  "@searchPostsFederatedWith": {},
+  "searchTerm": "Поиск термина",
+  "@searchTerm": {},
+  "searchUsersFederatedWith": "Поиск пользователей с {instance}",
+  "@searchUsersFederatedWith": {},
+  "selectCommunity": "Выберите сообщество",
+  "@selectCommunity": {},
+  "selectFeedType": "Выберите тип новостей",
+  "@selectFeedType": {},
+  "selectLanguage": "Выберите язык",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "selectSearchType": "Выберите тип поиска",
+  "@selectSearchType": {},
+  "serverErrorComments": "Ошибка сервера была обнаружена при получении дополнительных комментариев: {message}",
+  "@serverErrorComments": {},
+  "setAction": "Выбрать действие",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "setLongPress": "Установить как действие при длительном нажатии",
+  "@setLongPress": {},
+  "setShortPress": "Установить как действие короткого нажатия",
+  "@setShortPress": {},
+  "settingTypeNotSupported": "Настройки типа {settingType} пока не поддерживаются.",
+  "@settingTypeNotSupported": {},
+  "settings": "Настройки",
+  "@settings": {},
+  "settingsFeedCards": "Эти настройки применяются к карточкам в основной ленте, действия доступны всегда при фактическом открытии постов.",
+  "@settingsFeedCards": {
+    "description": "Settings for controlling the display of cards in the main feed."
+  },
+  "share": "Поделиться",
+  "@share": {},
+  "shareLink": "Поделиться ссылкой",
+  "@shareLink": {},
+  "shareMedia": "Поделиться медиа",
+  "@shareMedia": {},
+  "sharePost": "Поделиться постом",
+  "@sharePost": {},
+  "showAll": "Показать все",
+  "@showAll": {},
+  "showBotAccounts": "Показать аккаунты ботов",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "showLess": "Показать меньше",
+  "@showLess": {},
+  "showMore": "Показать больше",
+  "@showMore": {},
+  "showPassword": "Показать пароль",
+  "@showPassword": {},
+  "showReadPosts": "Показать прочитанные сообщения",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "showScores": "Показать оценки сообщений/комментариев",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "sidebar": "Боковая панель",
+  "@sidebar": {},
+  "sidebarBottomNavDoubleTapDescription": "Дважды коснитесь нижней панели навигации, чтобы открыть боковую панель",
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "sidebarBottomNavSwipeDescription": "Проведите пальцем по нижней панели навигации, чтобы открыть боковую панель",
+  "@sidebarBottomNavSwipeDescription": {},
+  "somethingWentWrong": "Упс! Что-то пошло не так!",
+  "@somethingWentWrong": {},
+  "sortBy": "Сортировать по",
+  "@sortBy": {},
+  "sortByTop": "Сортировать по топу",
+  "@sortByTop": {},
+  "sortOptions": "Опции сортировки",
+  "@sortOptions": {},
+  "spoiler": "Спойлер",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "submit": "Отправить",
+  "@submit": {},
+  "subscribe": "Подписаться",
+  "@subscribe": {},
+  "subscribed": "Подписано",
+  "@subscribed": {},
+  "subscriptions": "Подписки",
+  "@subscriptions": {},
+  "successfullyBlocked": "Заблокировано.",
+  "@successfullyBlocked": {},
+  "successfullyBlockedCommunity": "Заблокировано {communityName}",
+  "@successfullyBlockedCommunity": {},
+  "successfullyUnblocked": "Разблокировано.",
+  "@successfullyUnblocked": {},
+  "successfullyUnblockedCommunity": "Разблокировано {communityName}",
+  "@successfullyUnblockedCommunity": {},
+  "suggestedTitle": "Предлагаемое название",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "tapToExit": "Вернитесь дважды, чтобы выйти",
+  "@tapToExit": {},
+  "text": "Текст",
+  "@text": {},
+  "theming": "Темы",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "timeoutComments": "Ошибка: тайм-аут при попытке получить комментарии",
+  "@timeoutComments": {},
+  "timeoutErrorMessage": "Был тайм-аут ожидания ответа.",
+  "@timeoutErrorMessage": {},
+  "timeoutSaveComment": "Ошибка: тайм-аут при попытке сохранить комментарий",
+  "@timeoutSaveComment": {},
+  "timeoutSavingPost": "Ошибка: тайм-аут при попытке сохранить сообщение.",
+  "@timeoutSavingPost": {},
+  "timeoutUpvoteComment": "Ошибка: тайм-аут при попытке проголосовать за комментарий",
+  "@timeoutUpvoteComment": {},
+  "timeoutVotingPost": "Ошибка: тайм-аут при попытке проголосовать за публикацию.",
+  "@timeoutVotingPost": {},
+  "toggelRead": "Переключить чтение",
+  "@toggelRead": {},
+  "top": "Топ",
+  "@top": {},
+  "topAll": "Топ за всё время",
+  "@topAll": {},
+  "topDay": "Популярно сегодня",
+  "@topDay": {},
+  "topHour": "Топ за час",
+  "@topHour": {},
+  "topMonth": "Популярно за месяц",
+  "@topMonth": {},
+  "topNineMonths": "Топ за 9 месяцев",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "topSixHour": "Топ за 6 часов",
+  "@topSixHour": {},
+  "topSixMonths": "Топ за полгода",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "topThreeMonths": "Топ за 3 месяца",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "topTwelveHour": "Топ за 12 часов",
+  "@topTwelveHour": {},
+  "topWeek": "Популярно за неделю",
+  "@topWeek": {},
+  "topYear": "Популярно за год",
+  "@topYear": {},
+  "totp": "TOTP (необязательно)",
+  "@totp": {},
+  "translationsMayNotBeComplete": "Обратите внимание, что переводы могут быть неполными",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "trendingCommunities": "Популярные сообщества",
+  "@trendingCommunities": {},
+  "unableToFindCommunity": "Не удалось найти сообщество",
+  "@unableToFindCommunity": {},
+  "unableToFindInstance": "Не удалось найти инстанс",
+  "@unableToFindInstance": {},
+  "unableToFindLanguage": "Невозможно найти язык",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
+  "unableToFindUser": "Не удалось найти пользователя",
+  "@unableToFindUser": {},
+  "unableToLoadImage": "Невозможно загрузить изображение",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "unableToLoadImageFrom": "Невозможно загрузить изображение с {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "unableToLoadInstance": "Невозможно загрузить {instance}",
+  "@unableToLoadInstance": {},
+  "unableToLoadPostsFrominstance": "Невозможно загрузить посты из {instance}",
+  "@unableToLoadPostsFrominstance": {},
+  "unableToLoadReplies": "Не удалось загрузить больше ответов.",
+  "@unableToLoadReplies": {},
+  "unblockInstance": "Разблокировать инстанс",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "unexpectedError": "Неожиданная ошибка",
+  "@unexpectedError": {},
+  "unsubscribe": "Отписаться",
+  "@unsubscribe": {},
+  "unsubscribePending": "Отписаться (подписка в ожидании)",
+  "@unsubscribePending": {},
+  "unsubscribed": "Отписались",
+  "@unsubscribed": {},
+  "updateReleased": "Вышло обновление: {version}",
+  "@updateReleased": {},
+  "uploadImage": "Загрузка изображения",
+  "@uploadImage": {},
+  "upvote": "Против",
+  "@upvote": {},
+  "uriNotSupported": "Этот тип ссылки на данный момент не поддерживается.",
+  "@uriNotSupported": {
+    "description": "Unsupported link type at the present time."
+  },
+  "url": "Ссылка",
+  "@url": {},
+  "useCompactView": "Включить для небольших постов, отключить для больших.",
+  "@useCompactView": {
+    "description": "Option to enable or disable compact view for small posts."
+  },
+  "useSuggestedTitle": "Использовать предложенное название: {title}",
+  "@useSuggestedTitle": {},
+  "userFormat": "Формат пользователя",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "userNotLoggedIn": "Пользователь не авторизован",
+  "@userNotLoggedIn": {},
+  "userProfiles": "Профили пользователей",
+  "@userProfiles": {
+    "description": "Settings related to user profiles."
+  },
+  "userSettingDescription": "Эти настройки синхронизируются с вашим аккаунтом Lemmy и применяются только к каждому аккаунту.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
+  "username": "Имя пользователя",
+  "@username": {},
+  "users": "Пользователи",
+  "@users": {},
+  "viewAllComments": "Показать все комментарии",
+  "@viewAllComments": {},
+  "visitCommunity": "Посетите сообщество",
+  "@visitCommunity": {},
+  "visitInstance": "Посетите инстанс",
+  "@visitInstance": {},
+  "visitUserProfile": "Посетить профиль пользователя",
+  "@visitUserProfile": {},
+  "xDownvotes": "{x} против",
+  "@xDownvotes": {},
+  "xScore": "{x} очков",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "xUpvotes": "{x} за",
+  "@xUpvotes": {}
+}
