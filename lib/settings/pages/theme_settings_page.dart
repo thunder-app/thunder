@@ -17,6 +17,7 @@ import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/utils/global_context.dart';
 
 class ThemeSettingsPage extends StatefulWidget {
   const ThemeSettingsPage({super.key});
@@ -26,6 +27,8 @@ class ThemeSettingsPage extends StatefulWidget {
 }
 
 class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+
   /// -------------------------- Theme Related Settings --------------------------
   // Theme Settings
   ThemeType themeType = ThemeType.system;
@@ -42,7 +45,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         payload: CustomThemeType.deepBlue),
     ...CustomThemeType.values.where((element) => element != CustomThemeType.deepBlue).map((CustomThemeType scheme) {
       return ListPickerItem(colors: [scheme.primaryColor, scheme.secondaryColor, scheme.tertiaryColor], label: scheme.label, payload: scheme);
-    }).toList()
+    })
   ];
 
   // Font Settings
@@ -51,21 +54,11 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   FontScale commentFontSizeScale = FontScale.base;
   FontScale metadataFontSizeScale = FontScale.base;
 
-  //Theme
-  List<ListPickerItem> themeOptions = [
-    const ListPickerItem(icon: Icons.phonelink_setup_rounded, label: 'System', payload: ThemeType.system),
-    const ListPickerItem(icon: Icons.light_mode_rounded, label: 'Light', payload: ThemeType.light),
-    const ListPickerItem(icon: Icons.dark_mode_outlined, label: 'Dark', payload: ThemeType.dark),
-    const ListPickerItem(icon: Icons.dark_mode, label: 'Pure Black', payload: ThemeType.pureBlack)
-  ];
+  /// Theme - this is initialized in initState since we need to get l10n for localization strings
+  List<ListPickerItem> themeOptions = [];
 
-  // Font size
-  List<ListPickerItem> fontScaleOptions = [
-    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.small.label, payload: FontScale.small),
-    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.base.label, payload: FontScale.base),
-    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.large.label, payload: FontScale.large),
-    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.extraLarge.label, payload: FontScale.extraLarge),
-  ];
+  /// Font size scales
+  List<ListPickerItem> fontScaleOptions = [];
 
   // Loading
   bool isLoading = true;
@@ -80,6 +73,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         await prefs.setInt(LocalSettings.appTheme.name, value);
         setState(() => themeType = ThemeType.values[value]);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        Future.delayed(const Duration(milliseconds: 300), () => _initFontScaleOptions()); // Refresh the font scale options since the textTheme has most likely changed (dark -> light and vice versa)
         break;
       case LocalSettings.appThemeAccentColor:
         await prefs.setString(LocalSettings.appThemeAccentColor.name, (value as CustomThemeType).name);
@@ -140,9 +134,39 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     });
   }
 
+  void _initFontScaleOptions() {
+    final theme = Theme.of(context);
+
+    setState(() {
+      fontScaleOptions = FontScale.values
+          .map(
+            (FontScale fontScale) => ListPickerItem(
+              icon: Icons.text_fields_rounded,
+              label: fontScale.label,
+              payload: fontScale,
+              textTheme: theme.textTheme.copyWith(
+                bodyMedium: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * fontScale.textScaleFactor),
+                ),
+              ),
+            ),
+          )
+          .toList();
+    });
+  }
+
   @override
   void initState() {
+    themeOptions = [
+      ListPickerItem(icon: Icons.phonelink_setup_rounded, label: l10n.system, payload: ThemeType.system),
+      ListPickerItem(icon: Icons.light_mode_rounded, label: l10n.light, payload: ThemeType.light),
+      ListPickerItem(icon: Icons.dark_mode_outlined, label: l10n.dark, payload: ThemeType.dark),
+      ListPickerItem(icon: Icons.dark_mode, label: l10n.pureBlack, payload: ThemeType.pureBlack)
+    ];
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initFontScaleOptions());
+
     super.initState();
   }
 
@@ -152,7 +176,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Theming'), centerTitle: false),
+      appBar: AppBar(title: Text(l10n.theming), centerTitle: false),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -166,10 +190,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
-                          child: Text(
-                            l10n.theme,
-                            style: theme.textTheme.titleLarge,
-                          ),
+                          child: Text(l10n.theme, style: theme.textTheme.titleLarge),
                         ),
                         ListOption(
                             description: l10n.theme,
@@ -227,7 +248,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         if (!kIsWeb && Platform.isAndroid) ...[
                           ToggleOption(
                             description: l10n.useMaterialYouTheme,
-                            subtitle: 'Overrides the selected custom theme',
+                            subtitle: l10n.useMaterialYouThemeDescription,
                             value: useMaterialYouTheme,
                             iconEnabled: Icons.color_lens_rounded,
                             iconDisabled: Icons.color_lens_rounded,
@@ -245,10 +266,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
-                          child: Text(
-                            'Fonts',
-                            style: theme.textTheme.titleLarge,
-                          ),
+                          child: Text(l10n.fonts, style: theme.textTheme.titleLarge),
                         ),
                         ListOption(
                           description: l10n.postTitleFontScale,

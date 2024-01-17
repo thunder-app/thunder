@@ -73,6 +73,10 @@
   "@backButton": {},
   "backToTop": "Back To Top",
   "@backToTop": {},
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
   "blockCommunity": "Block Community",
   "@blockCommunity": {},
   "blockInstance": "Block Instance",
@@ -299,6 +303,10 @@
   "@dangerZone": {
     "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
   },
+  "dark": "Dark",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
   "debug": "Debug",
   "@debug": {
     "description": "Debug settings category."
@@ -429,6 +437,10 @@
   "@expanded": {
     "description": "Expanded post body view type"
   },
+  "extraLarge": "Extra Large",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
@@ -474,6 +486,10 @@
   "floatingActionButtonSinglePressDescription": "denotes the FAB's single-press action.",
   "@floatingActionButtonSinglePressDescription": {
     "description": "Description of the FAB's single-press action"
+  },
+  "fonts": "Fonts",
+  "@fonts": {
+    "description": "Settings category for fonts"
   },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
@@ -561,6 +577,10 @@
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
   },
+  "large": "Large",
+  "@large": {
+    "description": "Description for large font scale"
+  },
   "leftLongSwipe": "Left Long Swipe",
   "@leftLongSwipe": {
     "description": "Setting for left long swipe"
@@ -568,6 +588,10 @@
   "leftShortSwipe": "Left Short Swipe",
   "@leftShortSwipe": {
     "description": "Setting for left short swipe"
+  },
+  "light": "Light",
+  "@light": {
+    "description": "Describes using the light theme"
   },
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
@@ -610,6 +634,10 @@
   "markPostAsReadOnMediaView": "Mark Read After Viewing Media",
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
+  },
+  "medium": "Medium",
+  "@medium": {
+    "description": "Description for medium font scale"
   },
   "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
   "@mention": {},
@@ -779,7 +807,7 @@
   "@postContentFontScale": {
     "description": "Setting for post content font scale"
   },
-  "postCreatedSuccessfully" :"Post created successfully!",
+  "postCreatedSuccessfully": "Post created successfully!",
   "@postCreatedSuccessfully": {
     "description": "Notifying the user that their post was created successfully"
   },
@@ -823,6 +851,10 @@
   "@profileAppliedSuccessfully": {},
   "profiles": "Profiles",
   "@profiles": {},
+  "pureBlack": "Pure Black",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
@@ -1073,6 +1105,10 @@
   "@sidebarBottomNavDoubleTapDescription": {},
   "sidebarBottomNavSwipeDescription": "Swipe bottom nav to open sidebar",
   "@sidebarBottomNavSwipeDescription": {},
+  "small": "Small",
+  "@small": {
+    "description": "Description for small font scale"
+  },
   "somethingWentWrong": "Oops, something went wrong!",
   "@somethingWentWrong": {},
   "sortBy": "Sort By",
@@ -1108,6 +1144,10 @@
   "suggestedTitle": "Suggested title",
   "@suggestedTitle": {
     "description": "Suggested title for the post."
+  },
+  "system": "System",
+  "@system": {
+    "description": "Describes using the system settings for theme"
   },
   "tabletMode": "Tablet Mode (2-column view)",
   "@tabletMode": {
@@ -1256,6 +1296,10 @@
   "useMaterialYouTheme": "Use Material You Theme",
   "@useMaterialYouTheme": {
     "description": "Toggle to use Material You theme."
+  },
+  "useMaterialYouThemeDescription": "Overrides the selected custom theme",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
   },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
