@@ -57,7 +57,9 @@ import 'package:thunder/utils/navigate_user.dart';
 String? currentIntent;
 
 class Thunder extends StatefulWidget {
-  const Thunder({super.key});
+  final PageController pageController;
+
+  const Thunder({super.key, required this.pageController});
 
   @override
   State<Thunder> createState() => _ThunderState();
@@ -66,8 +68,6 @@ class Thunder extends StatefulWidget {
 class _ThunderState extends State<Thunder> {
   int selectedPageIndex = 0;
   int appExitCounter = 0;
-
-  PageController pageController = PageController(initialPage: 0);
 
   bool hasShownUpdateDialog = false;
 
@@ -86,6 +86,8 @@ class _ThunderState extends State<Thunder> {
   @override
   void initState() {
     super.initState();
+
+    selectedPageIndex = widget.pageController.initialPage;
 
     // Listen for callbacks from Android native code
     if (!kIsWeb && Platform.isAndroid) {
@@ -106,7 +108,6 @@ class _ThunderState extends State<Thunder> {
 
   @override
   void dispose() {
-    pageController.dispose();
     textIntentDataStreamSubscription.cancel();
     mediaIntentDataStreamSubscription.cancel();
     super.dispose();
@@ -205,9 +206,9 @@ class _ThunderState extends State<Thunder> {
         selectedPageIndex = 0;
 
         if (reduceAnimations) {
-          pageController.jumpToPage(selectedPageIndex);
+          widget.pageController.jumpToPage(selectedPageIndex);
         } else {
-          pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+          widget.pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
         }
       });
       return Future.value(false);
@@ -446,9 +447,9 @@ class _ThunderState extends State<Thunder> {
                                 Navigator.of(context).pop();
 
                                 if (reduceAnimations) {
-                                  pageController.jumpToPage(2);
+                                  widget.pageController.jumpToPage(2);
                                 } else {
-                                  pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                                  widget.pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
                                 }
                               },
                             )
@@ -469,9 +470,9 @@ class _ThunderState extends State<Thunder> {
                             selectedPageIndex = index;
 
                             if (reduceAnimations) {
-                              pageController.jumpToPage(index);
+                              widget.pageController.jumpToPage(index);
                             } else {
-                              pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                              widget.pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
                             }
                           });
                         },
@@ -520,7 +521,7 @@ class _ThunderState extends State<Thunder> {
                               }
 
                               return PageView(
-                                controller: pageController,
+                                controller: widget.pageController,
                                 onPageChanged: (index) => setState(() => selectedPageIndex = index),
                                 physics: const NeverScrollableScrollPhysics(),
                                 children: <Widget>[
