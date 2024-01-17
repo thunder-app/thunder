@@ -7,6 +7,7 @@ class AccountState extends Equatable {
     this.status = AccountStatus.initial,
     this.subsciptions = const [],
     this.favorites = const [],
+    this.moderates = const [],
     this.personView,
     this.errorMessage,
   });
@@ -20,6 +21,9 @@ class AccountState extends Equatable {
   /// The user's favorites if logged in
   final List<CommunityView> favorites;
 
+  /// The user's moderated communities
+  final List<CommunityModeratorView> moderates;
+
   /// The user's information
   final PersonView? personView;
 
@@ -27,6 +31,7 @@ class AccountState extends Equatable {
     AccountStatus? status,
     List<CommunityView>? subsciptions,
     List<CommunityView>? favorites,
+    List<CommunityModeratorView>? moderates,
     PersonView? personView,
     String? errorMessage,
   }) {
@@ -34,11 +39,12 @@ class AccountState extends Equatable {
       status: status ?? this.status,
       subsciptions: subsciptions ?? this.subsciptions,
       favorites: favorites ?? this.favorites,
+      moderates: moderates ?? this.moderates,
       personView: personView ?? this.personView,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, subsciptions, favorites, errorMessage];
+  List<Object?> get props => [status, subsciptions, favorites, moderates, personView, errorMessage];
 }

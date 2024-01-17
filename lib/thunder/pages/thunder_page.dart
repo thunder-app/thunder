@@ -483,7 +483,7 @@ class _ThunderState extends State<Thunder> {
                         },
                         buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
                         listener: (context, state) {
-                          context.read<AccountBloc>().add(GetAccountInformation());
+                          context.read<AccountBloc>().add(RefreshAccountInformation());
 
                           // Add a bit of artificial delay to allow preferences to set the proper active profile
                           Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
