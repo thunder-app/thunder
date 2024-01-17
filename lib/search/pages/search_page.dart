@@ -743,7 +743,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
             _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
             showSnackbar(context, subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
-            context.read<AccountBloc>().add(GetAccountInformation());
+            context.read<AccountBloc>().add(GetAccountSubscriptions());
           },
           icon: Icon(
             switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {

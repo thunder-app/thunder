@@ -20,19 +20,21 @@ import 'package:thunder/settings/settings.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 
+PageController thunderPageController = PageController(initialPage: 0);
+
 final GoRouter router = GoRouter(
   debugLogDiagnostics: true,
   routes: <GoRoute>[
     GoRoute(
       name: 'home',
       path: '/',
-      builder: (BuildContext context, GoRouterState state) => const Thunder(),
+      builder: (BuildContext context, GoRouterState state) => Thunder(pageController: thunderPageController),
       routes: const <GoRoute>[],
     ),
     GoRoute(
       name: 'settings',
       path: '/settings',
-      builder: (BuildContext context, GoRouterState state) => SettingsPage(),
+      builder: (BuildContext context, GoRouterState state) => const SettingsPage(),
       routes: <GoRoute>[
         GoRoute(
           name: 'general',

@@ -111,7 +111,6 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
 Future<void> triggerRefresh(BuildContext context) async {
   FeedState state = context.read<FeedBloc>().state;
 
-  context.read<AccountBloc>().add(GetAccountInformation());
   context.read<FeedBloc>().add(
         FeedFetchedEvent(
           feedType: state.feedType,

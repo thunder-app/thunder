@@ -104,6 +104,8 @@ dependencies:
   sqflite_common_ffi_web: ^0.4.2
   jovial_svg: ^1.1.19
   flutter_displaymode: ^0.6.0
+  flutter_local_notifications: ^16.2.0
+  background_fetch: ^1.2.1
   gal: ^2.2.0
 
 dev_dependencies:
