@@ -1278,5 +1278,61 @@
   "useMaterialYouTheme": "Utilizar en el tema Material You",
   "@useMaterialYouTheme": {
     "description": "Toggle to use Material You theme."
+  },
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "clearedCache": "Borrado de la caché con éxito.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "dark": "Oscuro",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "fonts": "Fuentes",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
+  "large": "Grande",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "medium": "Medio",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "pureBlack": "Negro puro",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "small": "Pequeño",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "system": "Sistema",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "clearCache": "Borrar la caché ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "useMaterialYouThemeDescription": "Anula el tema personalizado seleccionado",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
+  },
+  "extraLarge": "Extra grande",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "light": "Claro",
+  "@light": {
+    "description": "Describes using the light theme"
+  },
+  "postCreatedSuccessfully": "¡Publicación creada exitosamente!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
   }
 }
