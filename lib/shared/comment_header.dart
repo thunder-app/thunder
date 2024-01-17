@@ -157,7 +157,7 @@ class CommentHeader extends StatelessWidget {
                                       TextSpan(
                                           style: theme.textTheme.bodyMedium?.copyWith(
                                             fontWeight: FontWeight.w500,
-                                            fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
+                                            fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.metadataFontSizeScale.textScaleFactor),
                                           ),
                                           text: comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
                                           children: [
@@ -166,7 +166,7 @@ class CommentHeader extends StatelessWidget {
                                                 text: generateUserFullNameSuffix(context, fetchInstanceNameFromUrl(comment.creator.actorId)),
                                                 style: theme.textTheme.bodyMedium?.copyWith(
                                                   fontWeight: FontWeight.w300,
-                                                  fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
+                                                  fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.metadataFontSizeScale.textScaleFactor),
                                                 ),
                                               )
                                           ]),
