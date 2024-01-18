@@ -9,7 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 /// If no title is available, displays the first letter of the community name.
 class CommunityAvatar extends StatelessWidget {
   /// The community information to display
-  final Community? community;
+  final Community community;
 
   /// The radius of the avatar. Defaults to 12
   final double radius;
@@ -24,20 +24,20 @@ class CommunityAvatar extends StatelessWidget {
       backgroundColor: theme.colorScheme.secondaryContainer,
       maxRadius: radius,
       child: Text(
-        community?.title.isNotEmpty == true
-            ? community!.title[0].toUpperCase()
-            : community?.name.isNotEmpty == true
-                ? community!.name[0].toUpperCase()
+        community.title.isNotEmpty == true
+            ? community.title[0].toUpperCase()
+            : community.name.isNotEmpty == true
+                ? community.name[0].toUpperCase()
                 : '',
         semanticsLabel: '',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: radius),
       ),
     );
 
-    if (community?.icon?.isNotEmpty != true) return placeholderIcon;
+    if (community.icon?.isNotEmpty != true) return placeholderIcon;
 
     return CachedNetworkImage(
-      imageUrl: community!.icon!,
+      imageUrl: community.icon!,
       imageBuilder: (context, imageProvider) {
         return CircleAvatar(
           backgroundColor: Colors.transparent,
