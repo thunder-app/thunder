@@ -196,11 +196,16 @@ class _ThunderState extends State<Thunder> {
     });
   }
 
-  void _showExitWarning() {
-    showSnackbar(context, AppLocalizations.of(context)!.tapToExit, duration: const Duration(milliseconds: 3500));
+  void _showExitWarning(ScaffoldMessengerState? currentState) {
+    showSnackbar(
+      context,
+      AppLocalizations.of(context)!.tapToExit,
+      duration: const Duration(milliseconds: 3500),
+      customState: currentState,
+    );
   }
 
-  Future<bool> _handleBackButtonPress() async {
+  Future<bool> _handleBackButtonPress(ScaffoldMessengerState? currentState) async {
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
@@ -220,7 +225,7 @@ class _ThunderState extends State<Thunder> {
 
     if (appExitCounter == 0) {
       appExitCounter++;
-      _showExitWarning();
+      _showExitWarning(currentState);
       Timer(const Duration(milliseconds: 3500), () {
         appExitCounter = 0;
       });
@@ -393,7 +398,7 @@ class _ThunderState extends State<Thunder> {
         BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
       ],
       child: WillPopScope(
-        onWillPop: () async => _handleBackButtonPress(),
+        onWillPop: () async => _handleBackButtonPress(scaffoldMessengerKey.currentState),
         child: BlocListener<DeepLinksCubit, DeepLinksState>(
           listener: (context, state) {
             switch (state.deepLinkStatus) {
