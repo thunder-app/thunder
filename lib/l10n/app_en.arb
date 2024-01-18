@@ -1177,7 +1177,7 @@
   "@tabletMode": {
     "description": "Toggle to enable 2-column tablet mode."
   },
-  "tapToExit": "Go back twice to exit",
+  "tapToExit": "Press back again to exit",
   "@tapToExit": {},
   "tappableAuthorCommunity": "Tappable Authors & Communities",
   "@tappableAuthorCommunity": {
