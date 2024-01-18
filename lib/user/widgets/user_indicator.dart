@@ -5,7 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
-import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
 
 class UserIndicator extends StatefulWidget {

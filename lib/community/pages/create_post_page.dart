@@ -26,7 +26,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
-import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/link_preview_card.dart';
@@ -789,7 +789,7 @@ class _CommunitySelectorState extends State<CommunitySelector> {
           padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
           child: Row(
             children: [
-              CommunityIcon(community: _communityView?.community, radius: 16),
+              CommunityAvatar(community: _communityView?.community, radius: 16),
               const SizedBox(width: 12),
               _communityId != null
                   ? Column(
