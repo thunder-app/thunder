@@ -1334,5 +1334,37 @@
   "postCreatedSuccessfully": "¡Publicación creada exitosamente!",
   "@postCreatedSuccessfully": {
     "description": "Notifying the user that their post was created successfully"
+  },
+  "understandEnable": "Comprendo, Activar",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
+  },
+  "disable": "Desactivar",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "warning": "Advertencia",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "enableInboxNotifications": "Activar las notificaciones de la bandeja de entrada (experimental)",
+  "@enableInboxNotifications": {
+    "description": "Setting name for inbox notifications"
+  },
+  "moderatedCommunities": "Comunidades moderadas",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "notificationsNotAllowed": "Las notificaciones no están permitidas para Thunder en la configuración del sistema",
+  "@notificationsNotAllowed": {
+    "description": "Description for when notifications are now allowed for app"
+  },
+  "backgroundCheckWarning": "Tenga en cuenta que las comprobaciones de notificaciones consumirán más batería",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "notificationsWarningDialog": "Las notificaciones son una función experimental que puede no funcionar correctamente en todos los dispositivos.\n\n· Las omprobaciones se producirán cada ~15 minutos y consumirán batería adicional.\n\n· Desactiva las optimizaciones de batería para una mayor probabilidad de éxito de las notificaciones.\n\nConsulte la siguiente página para obtener más información.",
+  "@notificationsWarningDialog": {
+    "description": "The content of the warning dialog for the notifications feature"
   }
 }
