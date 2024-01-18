@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+/// A community avatar. Displays the associated community icon if available.
+///
+/// Otherwise, displays the first letter of the community title (display name).
+/// If no title is available, displays the first letter of the community name.
 class CommunityAvatar extends StatelessWidget {
+  /// The community information to display
   final Community? community;
+
+  /// The radius of the avatar. Defaults to 12
   final double radius;
 
   const CommunityAvatar({super.key, required this.community, this.radius = 12.0});

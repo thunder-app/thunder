@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+/// A user avatar. Displays the associated user icon if available.
+///
+/// Otherwise, displays the first letter of the user's display name.
+/// If no display name is available, displays the first letter of the user's username.
 class UserAvatar extends StatelessWidget {
+  /// The user information to display
   final Person? person;
+
+  /// The radius of the avatar. Defaults to 16
   final double radius;
 
   const UserAvatar({super.key, required this.person, this.radius = 16.0});
