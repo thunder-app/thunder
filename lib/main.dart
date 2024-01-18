@@ -42,8 +42,11 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  //Setting SystemUIMode
+  // Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  // Load up preferences
+  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
   // Load up sqlite database
   await DB.instance.database;
@@ -56,24 +59,25 @@ void main() async {
     DartPingIOS.register();
   }
 
-  // Initialize local notifications. Note that this doesn't request permissions or actually send any notifications.
-  // It's just hooking up callbacks and settings.
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  // Initialize the Android-specific settings, using the splash asset as the notification icon.
-  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
-  const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
+  if (!kIsWeb && Platform.isAndroid) {
+    // Initialize local notifications. Note that this doesn't request permissions or actually send any notifications.
+    // It's just hooking up callbacks and settings.
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    // Initialize the Android-specific settings, using the splash asset as the notification icon.
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
+    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
 
-  // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
-  final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse?.payload == repliesGroupKey) {
-    thunderPageController = PageController(initialPage: 3);
-  }
+    // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse?.payload == repliesGroupKey) {
+      thunderPageController = PageController(initialPage: 3);
+    }
 
-  // Initialize background fetch (this is async and can go run on its own).
-  final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-  if (!kIsWeb && Platform.isAndroid && (prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false)) {
-    initBackgroundFetch();
+    // Initialize background fetch (this is async and can go run on its own).
+    if (prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false) {
+      initBackgroundFetch();
+    }
   }
 
   final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
