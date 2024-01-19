@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -14,6 +15,11 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+const Color upVoteColor = Colors.orange;
+const Color downVoteColor = Colors.blue;
+Color readColor = Colors.grey.shade700;
 
 class PostCardMetaData extends StatelessWidget {
   final int score;
@@ -108,6 +114,205 @@ class PostCardMetaData extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// Contains metadata related to a given post. This is generally displayed as part of the post card.
+///
+/// This information is customizable, and can be changed by the user in the settings.
+/// The order in which the items are displayed depends on the order in the [postCardMetadataItems] list
+class PostCardMetadata extends StatelessWidget {
+  /// The score of the post. If null, no score will be displayed.
+  final int? score;
+
+  /// The number of upvotes on the post. If null, no upvote count will be displayed.
+  final int? upvoteCount;
+
+  /// The number of downvotes on the post. If null, no downvote count will be displayed.
+  final int? downvoteCount;
+
+  /// The vote for the post. This should be either 0, 1 or -1. Defaults to 0 if not specified.
+  /// When specified, this will change the color of the upvote/downvote/score icons.
+  final int? voteType;
+
+  /// The number of comments on the post. If null, no comment count will be displayed.
+  final int? commentCount;
+
+  /// The date/time the post was created or updated. This string should conform to ISO-8601 format.
+  final String? dateTime;
+
+  /// Whether or not the post has been edited. This determines the icon for the [dateTime] field.
+  final bool? hasBeenEdited;
+
+  /// Whether or not the post has been read. This is passed down to the individual [PostCardMetadataItem] widgets to determine the color.
+  final bool? hasBeenRead;
+
+  /// The URL to display in the metadata. If null, no URL will be displayed.
+  final String? url;
+
+  const PostCardMetadata({
+    super.key,
+    this.score,
+    this.upvoteCount,
+    this.downvoteCount,
+    this.voteType = 0,
+    this.commentCount,
+    this.dateTime,
+    this.hasBeenEdited = false,
+    this.hasBeenRead = false,
+    this.url,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<AuthBloc>().state;
+    final showScores = state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+
+    List<PostCardMetadataItem> postCardMetadataItems = [
+      PostCardMetadataItem.score,
+      PostCardMetadataItem.upvote,
+      PostCardMetadataItem.downvote,
+      PostCardMetadataItem.commentCount,
+      PostCardMetadataItem.dateTime,
+      PostCardMetadataItem.url,
+    ];
+
+    return Wrap(
+      spacing: 8.0,
+      children: postCardMetadataItems.map(
+        (PostCardMetadataItem postCardMetadataItem) {
+          return switch (postCardMetadataItem) {
+            PostCardMetadataItem.score => showScores ? ScorePostCardMetaData(score: score, voteType: voteType, hasBeenRead: hasBeenRead ?? false) : Container(),
+            PostCardMetadataItem.upvote => showScores ? UpvotePostCardMetaData(upvotes: upvoteCount, isUpvoted: voteType == 1, hasBeenRead: hasBeenRead ?? false) : Container(),
+            PostCardMetadataItem.downvote => showScores ? DownvotePostCardMetaData(downvotes: downvoteCount, isDownvoted: voteType == -1, hasBeenRead: hasBeenRead ?? false) : Container(),
+            PostCardMetadataItem.commentCount => Container(),
+            PostCardMetadataItem.dateTime => Container(),
+            PostCardMetadataItem.url => Container(),
+          };
+        },
+      ).toList(),
+    );
+  }
+}
+
+/// Contains metadata related to the score of a given post. This is used in the [PostCardMetadata] widget.
+class ScorePostCardMetaData extends StatelessWidget {
+  /// The score of the post. Defaults to 0 if not specified.
+  final int? score;
+
+  /// The vote for the post. This should be either 0, 1 or -1. Defaults to 0 if not specified.
+  final int? voteType;
+
+  /// Whether or not the post has been read. This is used to determine the color.
+  final bool hasBeenRead;
+
+  const ScorePostCardMetaData({
+    super.key,
+    this.score = 0,
+    this.voteType = 0,
+    this.hasBeenRead = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final state = context.read<ThunderBloc>().state;
+
+    final color = switch (voteType) {
+      1 => upVoteColor,
+      -1 => downVoteColor,
+      _ => hasBeenRead ? readColor : null,
+    };
+
+    return Wrap(
+      spacing: 2.0,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Icon(Icons.arrow_upward, size: 20.0, color: color),
+        ScalableText(
+          formatNumberToK(score ?? 0),
+          semanticsLabel: l10n.xScore(formatNumberToK(score ?? 0)),
+          fontScale: state.metadataFontSizeScale,
+          style: theme.textTheme.bodyMedium?.copyWith(color: color),
+        ),
+        Icon(Icons.arrow_downward, size: 20.0, color: color),
+      ],
+    );
+  }
+}
+
+/// Contains metadata related to the upvotes of a given post. This is used in the [PostCardMetadata] widget.
+class UpvotePostCardMetaData extends StatelessWidget {
+  /// The number of upvotes on the post. Defaults to 0 if not specified.
+  final int? upvotes;
+
+  /// Whether or not the post has been upvoted. Defaults to false if not specified.
+  final bool? isUpvoted;
+
+  /// Whether or not the post has been read. This is used to determine the color.
+  final bool hasBeenRead;
+
+  const UpvotePostCardMetaData({
+    super.key,
+    this.upvotes = 0,
+    this.isUpvoted = false,
+    this.hasBeenRead = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.read<ThunderBloc>().state;
+
+    final color = switch (isUpvoted) {
+      true => upVoteColor,
+      _ => hasBeenRead ? readColor : null,
+    };
+
+    return IconText(
+      fontScale: state.metadataFontSizeScale,
+      text: formatNumberToK(upvotes ?? 0),
+      textColor: color,
+      padding: 2.0,
+      icon: Icon(Icons.arrow_upward, size: 20.0, color: color),
+    );
+  }
+}
+
+/// Contains metadata related to the downvotes of a given post. This is used in the [PostCardMetadata] widget.
+class DownvotePostCardMetaData extends StatelessWidget {
+  /// The number of downvotes on the post. Defaults to 0 if not specified.
+  final int? downvotes;
+
+  /// Whether or not the post has been downvoted. Defaults to false if not specified.
+  final bool? isDownvoted;
+
+  /// Whether or not the post has been read. This is used to determine the color.
+  final bool hasBeenRead;
+
+  const DownvotePostCardMetaData({
+    super.key,
+    this.downvotes = 0,
+    this.isDownvoted = false,
+    this.hasBeenRead = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.read<ThunderBloc>().state;
+
+    final color = switch (isDownvoted) {
+      true => downVoteColor,
+      _ => hasBeenRead ? readColor : null,
+    };
+
+    return IconText(
+      fontScale: state.metadataFontSizeScale,
+      text: formatNumberToK(downvotes ?? 0),
+      textColor: color,
+      padding: 2.0,
+      icon: Icon(Icons.arrow_downward, size: 20.0, color: color),
     );
   }
 }
