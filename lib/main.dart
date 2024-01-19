@@ -31,6 +31,7 @@ import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/cache.dart';
@@ -59,6 +60,9 @@ void main() async {
     DartPingIOS.register();
   }
 
+  /// Allows the top-level notification handlers to trigger actions farther down
+  final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
+
   if (!kIsWeb && Platform.isAndroid) {
     // Initialize local notifications. Note that this doesn't request permissions or actually send any notifications.
     // It's just hooking up callbacks and settings.
@@ -66,12 +70,12 @@ void main() async {
     // Initialize the Android-specific settings, using the splash asset as the notification icon.
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
     const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (notificationResponse) => notificationsStreamController.add(notificationResponse));
 
     // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
     final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse?.payload == repliesGroupKey) {
-      thunderPageController = PageController(initialPage: 3);
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse != null) {
+      notificationsStreamController.add(notificationAppLaunchDetails.notificationResponse!);
     }
 
     // Initialize background fetch (this is async and can go run on its own).
@@ -83,7 +87,7 @@ void main() async {
   final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
-  runApp(const ThunderApp());
+  runApp(ThunderApp(notificationsStream: notificationsStreamController.stream));
 
   // Set high refresh rate after app initialization
   FlutterDisplayMode.setHighRefreshRate();
@@ -95,7 +99,9 @@ void main() async {
 }
 
 class ThunderApp extends StatelessWidget {
-  const ThunderApp({super.key});
+  final Stream<NotificationResponse> notificationsStream;
+
+  const ThunderApp({super.key, required this.notificationsStream});
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +118,9 @@ class ThunderApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => DeepLinksCubit(),
+        ),
+        BlocProvider(
+          create: (context) => NotificationsCubit(notificationsStream: notificationsStream),
         ),
         BlocProvider(
           create: (context) => ThunderBloc(),
@@ -207,25 +216,6 @@ class ThunderApp extends StatelessWidget {
     );
   }
 }
-
-// ---------------- START LOCAL NOTIFICATION STUFF ---------------- //
-
-/// This seems to a notification callback handler that is only need for iOS.
-void onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) {}
-
-/// This is the notification handler that runs when a notification is tapped while the app is running.
-void onDidReceiveNotificationResponse(NotificationResponse details) {
-  switch (details.payload) {
-    case repliesGroupKey:
-      // Navigate to the inbox page
-      thunderPageController.jumpToPage(3);
-      break;
-    default:
-      break;
-  }
-}
-
-// ---------------- END LOCAL NOTIFICATION STUFF ---------------- //
 
 // ---------------- START BACKGROUND FETCH STUFF ---------------- //
 

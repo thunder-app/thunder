@@ -32,6 +32,7 @@ import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
+import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
 import 'package:thunder/utils/constants.dart';
@@ -53,6 +54,7 @@ import 'package:thunder/utils/navigate_create_post.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/utils/notifications.dart';
 
 String? currentIntent;
 
@@ -103,6 +105,8 @@ class _ThunderState extends State<Thunder> {
       handleSharedFilesAndText();
       BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
       BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
+
+      BlocProvider.of<NotificationsCubit>(context).handleNotifications();
     });
   }
 
@@ -399,191 +403,198 @@ class _ThunderState extends State<Thunder> {
       ],
       child: WillPopScope(
         onWillPop: () async => _handleBackButtonPress(scaffoldMessengerKey.currentState),
-        child: BlocListener<DeepLinksCubit, DeepLinksState>(
+        child: BlocListener<NotificationsCubit, NotificationsState>(
           listener: (context, state) {
-            switch (state.deepLinkStatus) {
-              case DeepLinkStatus.loading:
-                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  scaffoldMessengerKey.currentState?.showSnackBar(
-                    const SnackBar(content: CircularProgressIndicator.adaptive()),
-                  );
-                });
-
-              case DeepLinkStatus.empty:
-                showSnackbar(context, state.error ?? l10n.emptyUri);
-              case DeepLinkStatus.error:
-                showSnackbar(context, state.error ?? l10n.exceptionProcessingUri);
-
-              case DeepLinkStatus.success:
-                try {
-                  _handleDeepLinkNavigation(context, linkType: state.linkType, link: state.link);
-                } catch (e) {
-                  _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, state.link!);
-                }
-
-              case DeepLinkStatus.unknown:
-                showSnackbar(context, state.error ?? l10n.uriNotSupported);
+            if (state.status == NotificationsStatus.reply) {
+              navigateToNotificationReplyPage(context, replyId: state.replyId);
             }
           },
-          child: BlocBuilder<ThunderBloc, ThunderState>(
-            builder: (context, thunderBlocState) {
-              reduceAnimations = thunderBlocState.reduceAnimations;
+          child: BlocListener<DeepLinksCubit, DeepLinksState>(
+            listener: (context, state) {
+              switch (state.deepLinkStatus) {
+                case DeepLinkStatus.loading:
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    scaffoldMessengerKey.currentState?.showSnackBar(
+                      const SnackBar(content: CircularProgressIndicator.adaptive()),
+                    );
+                  });
 
-              switch (thunderBlocState.status) {
-                case ThunderStatus.initial:
-                  context.read<ThunderBloc>().add(InitializeAppEvent());
-                  return Container();
-                case ThunderStatus.loading:
-                  return Container();
-                case ThunderStatus.refreshing:
-                case ThunderStatus.success:
-                  FlutterNativeSplash.remove();
+                case DeepLinkStatus.empty:
+                  showSnackbar(context, state.error ?? l10n.emptyUri);
+                case DeepLinkStatus.error:
+                  showSnackbar(context, state.error ?? l10n.exceptionProcessingUri);
 
-                  // Update the variable so that it can be used in _handleBackButtonPress
-                  _isFabOpen = thunderBlocState.isFabOpen;
+                case DeepLinkStatus.success:
+                  try {
+                    _handleDeepLinkNavigation(context, linkType: state.linkType, link: state.link);
+                  } catch (e) {
+                    _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, state.link!);
+                  }
 
-                  return ScaffoldMessenger(
-                    key: scaffoldMessengerKey,
-                    child: Scaffold(
-                      key: scaffoldStateKey,
-                      drawer: selectedPageIndex == 0
-                          ? CommunityDrawer(
-                              navigateToAccount: () {
-                                Navigator.of(context).pop();
-
-                                if (reduceAnimations) {
-                                  widget.pageController.jumpToPage(2);
-                                } else {
-                                  widget.pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                                }
-                              },
-                            )
-                          : null,
-                      floatingActionButton: thunderBlocState.enableFeedsFab
-                          ? AnimatedOpacity(
-                              opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
-                              duration: const Duration(milliseconds: 150),
-                              curve: Curves.easeIn,
-                              child: FeedFAB(scaffoldMessengerKey: scaffoldMessengerKey),
-                            )
-                          : null,
-                      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-                      bottomNavigationBar: CustomBottomNavigationBar(
-                        selectedPageIndex: selectedPageIndex,
-                        onPageChange: (int index) {
-                          setState(() {
-                            selectedPageIndex = index;
-
-                            if (reduceAnimations) {
-                              widget.pageController.jumpToPage(index);
-                            } else {
-                              widget.pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                            }
-                          });
-                        },
-                      ),
-                      body: BlocConsumer<AuthBloc, AuthState>(
-                        listenWhen: (AuthState previous, AuthState current) {
-                          if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
-                          return false;
-                        },
-                        buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
-                        listener: (context, state) {
-                          context.read<AccountBloc>().add(RefreshAccountInformation());
-
-                          // Add a bit of artificial delay to allow preferences to set the proper active profile
-                          Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
-                          if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
-                            context.read<FeedBloc>().add(
-                                  FeedFetchedEvent(
-                                    feedType: FeedType.general,
-                                    postListingType: thunderBlocState.defaultListingType,
-                                    sortType: thunderBlocState.defaultSortType,
-                                    reset: true,
-                                  ),
-                                );
-                          }
-                        },
-                        builder: (context, state) {
-                          switch (state.status) {
-                            case AuthStatus.initial:
-                              context.read<AuthBloc>().add(CheckAuth());
-                              return Scaffold(
-                                appBar: AppBar(),
-                                body: Center(
-                                  child: Container(),
-                                ),
-                              );
-                            case AuthStatus.success:
-                              Version? version = thunderBlocState.version;
-                              bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
-
-                              if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
-                                  showUpdateNotification(context, version);
-                                  setState(() => hasShownUpdateDialog = true);
-                                });
-                              }
-
-                              return PageView(
-                                controller: widget.pageController,
-                                onPageChanged: (index) => setState(() => selectedPageIndex = index),
-                                physics: const NeverScrollableScrollPhysics(),
-                                children: <Widget>[
-                                  Stack(
-                                    children: [
-                                      FeedPage(
-                                        useGlobalFeedBloc: true,
-                                        feedType: FeedType.general,
-                                        postListingType: thunderBlocState.defaultListingType,
-                                        sortType: thunderBlocState.defaultSortType,
-                                        scaffoldStateKey: scaffoldStateKey,
-                                      ),
-                                      AnimatedOpacity(
-                                        opacity: _isFabOpen ? 1.0 : 0.0,
-                                        duration: const Duration(milliseconds: 150),
-                                        child: _isFabOpen
-                                            ? ModalBarrier(
-                                                color: theme.colorScheme.background.withOpacity(0.95),
-                                                dismissible: true,
-                                                onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                                              )
-                                            : null,
-                                      ),
-                                    ],
-                                  ),
-                                  const SearchPage(),
-                                  const AccountPage(),
-                                  const InboxPage(),
-                                  SettingsPage(),
-                                ],
-                              );
-
-                            // Should never hit these, they're handled by the login page
-                            case AuthStatus.failure:
-                            case AuthStatus.loading:
-                              return Container();
-                            case AuthStatus.failureCheckingInstance:
-                              showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
-                              return ErrorMessage(
-                                title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
-                                message: AppLocalizations.of(context)!.internetOrInstanceIssues,
-                                actionText: AppLocalizations.of(context)!.accountSettings,
-                                action: () => showProfileModalSheet(context),
-                              );
-                          }
-                        },
-                      ),
-                    ),
-                  );
-                case ThunderStatus.failure:
-                  return ErrorMessage(
-                    message: thunderBlocState.errorMessage,
-                    action: () => {context.read<AuthBloc>().add(CheckAuth())},
-                    actionText: AppLocalizations.of(context)!.refreshContent,
-                  );
+                case DeepLinkStatus.unknown:
+                  showSnackbar(context, state.error ?? l10n.uriNotSupported);
               }
             },
+            child: BlocBuilder<ThunderBloc, ThunderState>(
+              builder: (context, thunderBlocState) {
+                reduceAnimations = thunderBlocState.reduceAnimations;
+
+                switch (thunderBlocState.status) {
+                  case ThunderStatus.initial:
+                    context.read<ThunderBloc>().add(InitializeAppEvent());
+                    return Container();
+                  case ThunderStatus.loading:
+                    return Container();
+                  case ThunderStatus.refreshing:
+                  case ThunderStatus.success:
+                    FlutterNativeSplash.remove();
+
+                    // Update the variable so that it can be used in _handleBackButtonPress
+                    _isFabOpen = thunderBlocState.isFabOpen;
+
+                    return ScaffoldMessenger(
+                      key: scaffoldMessengerKey,
+                      child: Scaffold(
+                        key: scaffoldStateKey,
+                        drawer: selectedPageIndex == 0
+                            ? CommunityDrawer(
+                                navigateToAccount: () {
+                                  Navigator.of(context).pop();
+
+                                  if (reduceAnimations) {
+                                    widget.pageController.jumpToPage(2);
+                                  } else {
+                                    widget.pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                                  }
+                                },
+                              )
+                            : null,
+                        floatingActionButton: thunderBlocState.enableFeedsFab
+                            ? AnimatedOpacity(
+                                opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
+                                duration: const Duration(milliseconds: 150),
+                                curve: Curves.easeIn,
+                                child: FeedFAB(scaffoldMessengerKey: scaffoldMessengerKey),
+                              )
+                            : null,
+                        floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+                        bottomNavigationBar: CustomBottomNavigationBar(
+                          selectedPageIndex: selectedPageIndex,
+                          onPageChange: (int index) {
+                            setState(() {
+                              selectedPageIndex = index;
+
+                              if (reduceAnimations) {
+                                widget.pageController.jumpToPage(index);
+                              } else {
+                                widget.pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                              }
+                            });
+                          },
+                        ),
+                        body: BlocConsumer<AuthBloc, AuthState>(
+                          listenWhen: (AuthState previous, AuthState current) {
+                            if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
+                            return false;
+                          },
+                          buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
+                          listener: (context, state) {
+                            context.read<AccountBloc>().add(RefreshAccountInformation());
+
+                            // Add a bit of artificial delay to allow preferences to set the proper active profile
+                            Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
+                            if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
+                              context.read<FeedBloc>().add(
+                                    FeedFetchedEvent(
+                                      feedType: FeedType.general,
+                                      postListingType: thunderBlocState.defaultListingType,
+                                      sortType: thunderBlocState.defaultSortType,
+                                      reset: true,
+                                    ),
+                                  );
+                            }
+                          },
+                          builder: (context, state) {
+                            switch (state.status) {
+                              case AuthStatus.initial:
+                                context.read<AuthBloc>().add(CheckAuth());
+                                return Scaffold(
+                                  appBar: AppBar(),
+                                  body: Center(
+                                    child: Container(),
+                                  ),
+                                );
+                              case AuthStatus.success:
+                                Version? version = thunderBlocState.version;
+                                bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
+
+                                if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    showUpdateNotification(context, version);
+                                    setState(() => hasShownUpdateDialog = true);
+                                  });
+                                }
+
+                                return PageView(
+                                  controller: widget.pageController,
+                                  onPageChanged: (index) => setState(() => selectedPageIndex = index),
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  children: <Widget>[
+                                    Stack(
+                                      children: [
+                                        FeedPage(
+                                          useGlobalFeedBloc: true,
+                                          feedType: FeedType.general,
+                                          postListingType: thunderBlocState.defaultListingType,
+                                          sortType: thunderBlocState.defaultSortType,
+                                          scaffoldStateKey: scaffoldStateKey,
+                                        ),
+                                        AnimatedOpacity(
+                                          opacity: _isFabOpen ? 1.0 : 0.0,
+                                          duration: const Duration(milliseconds: 150),
+                                          child: _isFabOpen
+                                              ? ModalBarrier(
+                                                  color: theme.colorScheme.background.withOpacity(0.95),
+                                                  dismissible: true,
+                                                  onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                                                )
+                                              : null,
+                                        ),
+                                      ],
+                                    ),
+                                    const SearchPage(),
+                                    const AccountPage(),
+                                    const InboxPage(),
+                                    SettingsPage(),
+                                  ],
+                                );
+
+                              // Should never hit these, they're handled by the login page
+                              case AuthStatus.failure:
+                              case AuthStatus.loading:
+                                return Container();
+                              case AuthStatus.failureCheckingInstance:
+                                showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+                                return ErrorMessage(
+                                  title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
+                                  message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+                                  actionText: AppLocalizations.of(context)!.accountSettings,
+                                  action: () => showProfileModalSheet(context),
+                                );
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  case ThunderStatus.failure:
+                    return ErrorMessage(
+                      message: thunderBlocState.errorMessage,
+                      action: () => {context.read<AuthBloc>().add(CheckAuth())},
+                      actionText: AppLocalizations.of(context)!.refreshContent,
+                    );
+                }
+              },
+            ),
           ),
         ),
       ),
