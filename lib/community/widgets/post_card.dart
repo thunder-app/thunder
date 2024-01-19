@@ -196,6 +196,7 @@ class _PostCardState extends State<PostCard> {
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
                       navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
+                      indicateRead: widget.indicateRead,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,

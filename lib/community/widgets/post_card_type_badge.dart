@@ -42,7 +42,7 @@ class TypeBadge extends StatelessWidget {
       ),
       MediaType.image: MediaTypeBadgeItem(
         baseColor: Colors.red,
-        icon: Icon(size: 17, Icons.image_rounded, color: getIconColor(theme, Colors.red)),
+        icon: Icon(size: 17, Icons.image_outlined, color: getIconColor(theme, Colors.red)),
       )
     };
 
