@@ -1,21 +1,17 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:markdown/markdown.dart';
+
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/thunder/pages/notifications_pages.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:markdown/markdown.dart';
 
 const String _inboxMessagesChannelId = 'inbox_messages';
 const String _inboxMessagesChannelName = 'Inbox Messages';
@@ -124,49 +120,4 @@ Future<void> pollRepliesAndShowNotifications() async {
 
   // Save our poll time
   prefs.setString(_lastPollTimeId, DateTime.now().toString());
-}
-
-void navigateToNotificationReplyPage(BuildContext context, {required int? replyId}) async {
-  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-  final bool reduceAnimations = thunderBloc.state.reduceAnimations;
-  final Account? account = await fetchActiveProfileAccount();
-
-  List<CommentReplyView> allReplies = [];
-  CommentReplyView? specificReply;
-
-  bool doneFetching = false;
-  int currentPage = 1;
-
-  // Load the notifications
-  while (!doneFetching) {
-    final GetRepliesResponse getRepliesResponse = await LemmyClient.instance.lemmyApiV3.run(GetReplies(
-      sort: CommentSortType.new_,
-      page: currentPage,
-      limit: 50,
-      unreadOnly: replyId == null,
-      auth: account?.jwt,
-    ));
-
-    allReplies.addAll(getRepliesResponse.replies);
-    specificReply ??= getRepliesResponse.replies.firstWhereOrNull((crv) => crv.commentReply.id == replyId);
-
-    doneFetching = specificReply != null || getRepliesResponse.replies.isEmpty;
-    ++currentPage;
-  }
-
-  if (context.mounted) {
-    Navigator.of(context).push(
-      SwipeablePageRoute(
-        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        backGestureDetectionWidth: 45,
-        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: thunderBloc),
-          ],
-          child: NotificationsReplyPage(replies: specificReply == null ? allReplies : [specificReply]),
-        ),
-      ),
-    );
-  }
 }

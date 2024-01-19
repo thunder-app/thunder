@@ -54,7 +54,7 @@ import 'package:thunder/utils/navigate_create_post.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
-import 'package:thunder/utils/notifications.dart';
+import 'package:thunder/utils/notifications_navigation.dart';
 
 String? currentIntent;
 
