@@ -14,7 +14,7 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_comment.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class CommentReference extends StatefulWidget {
@@ -84,7 +84,8 @@ class _CommentReferenceState extends State<CommentReference> {
     final ThunderState state = context.read<ThunderBloc>().state;
 
     return Semantics(
-      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
+      label:
+          """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
           ${fetchInstanceNameFromUrl(widget.comment.community.actorId)}\n
           ${widget.comment.creator.name}\n
           ${widget.comment.counts.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.counts.upvotes))}\n

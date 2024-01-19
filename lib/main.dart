@@ -85,8 +85,10 @@ void main() async {
 
   runApp(const ThunderApp());
 
-  // Set high refresh rate after app initialization
-  FlutterDisplayMode.setHighRefreshRate();
+  if (!kIsWeb && Platform.isAndroid) {
+    // Set high refresh rate after app initialization
+    FlutterDisplayMode.setHighRefreshRate();
+  }
 
   // Register to receive BackgroundFetch events after app is terminated.
   if (!kIsWeb && Platform.isAndroid && (prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false)) {
@@ -137,6 +139,7 @@ class ThunderApp extends StatelessWidget {
           if (state.status == ThemeStatus.initial) {
             context.read<ThemeBloc>().add(ThemeChangeEvent());
           }
+
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
               ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name));

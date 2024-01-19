@@ -48,11 +48,11 @@ import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/navigate_comment.dart';
-import 'package:thunder/utils/navigate_create_post.dart';
-import 'package:thunder/utils/navigate_instance.dart';
-import 'package:thunder/utils/navigate_post.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/post/utils/navigate_create_post.dart';
+import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 
 String? currentIntent;
 
