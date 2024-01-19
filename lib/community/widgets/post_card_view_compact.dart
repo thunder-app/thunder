@@ -22,6 +22,7 @@ class PostCardViewCompact extends StatelessWidget {
   final bool isUserLoggedIn;
   final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
+  final bool? indicateRead;
 
   const PostCardViewCompact({
     super.key,
@@ -30,6 +31,7 @@ class PostCardViewCompact extends StatelessWidget {
     required this.isUserLoggedIn,
     required this.listingType,
     this.navigateToPost,
+    this.indicateRead,
   });
 
   @override
@@ -39,7 +41,7 @@ class PostCardViewCompact extends StatelessWidget {
 
     bool showThumbnailPreviewOnRight = state.showThumbnailPreviewOnRight;
     bool showTextPostIndicator = state.showTextPostIndicator;
-    bool indicateRead = state.dimReadPosts;
+    bool indicateRead = this.indicateRead ?? state.dimReadPosts;
 
     final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) &&
         isUserLoggedIn &&
@@ -61,7 +63,11 @@ class PostCardViewCompact extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           !showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
-              ? ThumbnailPreview(postViewMedia: postViewMedia, navigateToPost: navigateToPost)
+              ? ThumbnailPreview(
+                  postViewMedia: postViewMedia,
+                  navigateToPost: navigateToPost,
+                  indicateRead: indicateRead,
+                )
               : const SizedBox(width: 8.0),
           Expanded(
             child: Column(
@@ -137,7 +143,11 @@ class PostCardViewCompact extends StatelessWidget {
             ),
           ),
           showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
-              ? ThumbnailPreview(postViewMedia: postViewMedia, navigateToPost: navigateToPost)
+              ? ThumbnailPreview(
+                  postViewMedia: postViewMedia,
+                  navigateToPost: navigateToPost,
+                  indicateRead: indicateRead,
+                )
               : const SizedBox(width: 8.0),
         ],
       ),
@@ -153,10 +163,13 @@ class ThumbnailPreview extends StatelessWidget {
   /// The callback function to navigate to the post
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
 
+  final bool? indicateRead;
+
   const ThumbnailPreview({
     super.key,
     required this.postViewMedia,
     required this.navigateToPost,
+    this.indicateRead,
   });
 
   @override
@@ -164,7 +177,7 @@ class ThumbnailPreview extends StatelessWidget {
     final state = context.read<ThunderBloc>().state;
     final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
-    final indicateRead = state.dimReadPosts;
+    final indicateRead = this.indicateRead ?? state.dimReadPosts;
     final hideNsfwPreviews = state.hideNsfwPreviews;
     final markPostReadOnMediaView = state.markPostReadOnMediaView;
 
