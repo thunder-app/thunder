@@ -73,10 +73,11 @@ class UserHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  UserAvatar(
-                    person: userInfo?.person,
-                    radius: 45.0,
-                  ),
+                  if (userInfo?.person != null)
+                    UserAvatar(
+                      person: userInfo!.person,
+                      radius: 45.0,
+                    ),
                   const SizedBox(width: 20.0),
                   Expanded(
                     child: Column(
