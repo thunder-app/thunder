@@ -789,7 +789,7 @@ class _CommunitySelectorState extends State<CommunitySelector> {
           padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
           child: Row(
             children: [
-              if (_communityView?.community != null) CommunityAvatar(community: _communityView!.community, radius: 16),
+              CommunityAvatar(community: _communityView?.community, radius: 16),
               const SizedBox(width: 12),
               _communityId != null
                   ? Column(

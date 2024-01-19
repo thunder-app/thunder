@@ -92,11 +92,10 @@ class UserDrawerItem extends StatelessWidget {
         onPressed: () => navigateToAccount?.call(),
         child: Row(
           children: [
-            if (isLoggedIn)
-              UserAvatar(
-                person: accountState.personView!.person,
-                radius: 16.0,
-              ),
+            UserAvatar(
+              person: isLoggedIn ? accountState.personView?.person : null,
+              radius: 16.0,
+            ),
             const SizedBox(width: 16.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
