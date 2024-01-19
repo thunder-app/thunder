@@ -1,11 +1,10 @@
 import 'package:lemmy_api_client/v3.dart';
+
+import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/account/models/account.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
-
-import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-
-import '../../utils/date_time.dart';
+import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
 // Optimistically updates a comment
 CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, int voteType) {
