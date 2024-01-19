@@ -357,6 +357,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                           communityMode: false,
                                           isUserLoggedIn: true,
                                           listingType: ListingType.all,
+                                          indicateRead: dimReadPosts,
                                         ),
                                       )
                                     : IgnorePointer(
