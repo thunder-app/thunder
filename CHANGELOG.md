@@ -2,6 +2,7 @@
 ### Added
 - Added ability to subscribe/unsubscribe to community from long press action on posts
 - Added option to hide top app bar on scroll
+- Ability to search through settings/preferences contribution from @ggichure.
 
 ## Changed
 - Small UI adjustments for account switcher

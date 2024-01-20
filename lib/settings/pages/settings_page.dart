@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:collection';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -56,6 +55,7 @@ class SettingsPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: SearchAnchor(
+                viewHintText: l10n.search,
                 builder: (BuildContext context, SearchController controller) {
                   if (Platform.isIOS) {
                     return CupertinoSearchTextField(
@@ -68,6 +68,7 @@ class SettingsPage extends StatelessWidget {
                     );
                   } else {
                     return SearchBar(
+                      hintText: l10n.search,
                       onTap: () {
                         controller.openView();
                       },
@@ -80,30 +81,61 @@ class SettingsPage extends StatelessWidget {
                 },
                 suggestionsBuilder: (BuildContext context, SearchController controller) {
                   final List<LocalSettings> localSettings = LocalSettings.values
-                      .where((item) => item.label.toLowerCase().contains(
+                      .where((item) => l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
                             controller.text.toLowerCase(),
                           ))
                       .toSet()
                       .toList();
-                  localSettings.removeWhere((setting) => setting.label.isEmpty);
-                  localSettings.sortBy((setting) => setting.label);
+                  localSettings.removeWhere((setting) => setting.key.isEmpty);
+                  localSettings.sortBy((setting) => setting.key);
 
                   return List<ListTile>.generate(
                       localSettings.length,
                       (index) => ListTile(
-                            subtitle: Text(localSettings[index].name.replaceFirst('_', '').replaceAll(RegExp(r'setting|general|gesture'), '').replaceAll('_', ' ')),
-                            onTap: () => GoRouter.of(context).push(
-                              localSettings[index].page ?? SETTINGS_GENERAL_PAGE,
-                              extra: localSettings[index].page == SETTINGS_ABOUT_PAGE
-                                  ? [
-                                      context.read<ThunderBloc>(),
-                                      context.read<AccountBloc>(),
-                                      context.read<AuthBloc>(),
-                                    ]
-                                  : context.read<ThunderBloc>(),
-                            ),
+                            subtitle: Text(
+                                "${l10n.getLocalSettingLocalization(localSettings[index].category!.toString())} > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}"),
+                            onTap: () {
+                              String pageToNav = SETTINGS_GENERAL_PAGE;
+                              switch (localSettings[index].category) {
+                                case LocalSettingsCategories.posts:
+                                  pageToNav = SETTINGS_APPEARANCE_POSTS_PAGE;
+                                case LocalSettingsCategories.comments:
+                                  pageToNav = SETTINGS_APPEARANCE_COMMENTS_PAGE;
+                                case LocalSettingsCategories.general:
+                                  pageToNav = SETTINGS_GENERAL_PAGE;
+                                case LocalSettingsCategories.gestures:
+                                  pageToNav = SETTINGS_GESTURES_PAGE;
+                                case LocalSettingsCategories.floatingActionButton:
+                                  pageToNav = SETTINGS_GESTURES_PAGE;
+                                case LocalSettingsCategories.filters:
+                                  pageToNav = SETTINGS_FILTERS_PAGE;
+                                case LocalSettingsCategories.accessibility:
+                                  pageToNav = SETTINGS_ACCESSIBILITY_PAGE;
+                                case LocalSettingsCategories.account:
+                                  pageToNav = SETTINGS_ACCOUNT_PAGE;
+                                case LocalSettingsCategories.theming:
+                                  pageToNav = SETTINGS_APPEARANCE_THEMES_PAGE;
+                                case LocalSettingsCategories.debug:
+                                  pageToNav = SETTINGS_DEBUG_PAGE;
+                                case LocalSettingsCategories.about:
+                                  pageToNav = SETTINGS_ABOUT_PAGE;
+                                case null:
+                                  pageToNav = SETTINGS_GENERAL_PAGE;
+                              }
+
+                              GoRouter.of(context).push(
+                                pageToNav,
+                                extra: pageToNav == SETTINGS_ABOUT_PAGE
+                                    ? [
+                                        context.read<ThunderBloc>(),
+                                        context.read<AccountBloc>(),
+                                        context.read<AuthBloc>(),
+                                      ]
+                                    : context.read<ThunderBloc>(),
+                              );
+                            },
                             title: Text(
-                              localSettings[index].label,
+                              l10n.getLocalSettingLocalization(localSettings[index].key),
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           ));

@@ -246,7 +246,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Fonts',
+                            l10n.fonts,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),

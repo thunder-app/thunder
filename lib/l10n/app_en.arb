@@ -1280,5 +1280,9 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "fonts":"Fonts",
+  "@fonts":{
+    "description" :"Settings > Appearance > Theming"
+  }
 }
