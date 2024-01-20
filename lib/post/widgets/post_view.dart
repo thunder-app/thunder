@@ -24,6 +24,7 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -54,6 +55,9 @@ class PostSubview extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
 
+  /// The messenger key back to the post page
+  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
+
   const PostSubview({
     super.key,
     this.selectedCommentId,
@@ -61,6 +65,7 @@ class PostSubview extends StatefulWidget {
     required this.postViewMedia,
     required this.moderators,
     required this.crossPosts,
+    this.scaffoldMessengerKey,
   });
 
   @override
@@ -170,7 +175,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   ),
                 ),
               ),
-            if (showCrossPosts && sortedCrossPosts.isNotEmpty) CrossPosts(crossPosts: sortedCrossPosts, originalPost: widget.postViewMedia),
+            if (showCrossPosts && sortedCrossPosts.isNotEmpty)
+              CrossPosts(
+                crossPosts: sortedCrossPosts,
+                originalPost: widget.postViewMedia,
+                scaffoldMessengerKey: widget.scaffoldMessengerKey,
+              ),
             const SizedBox(height: 16.0),
             SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -549,8 +559,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
         Padding(
           padding: const EdgeInsets.only(right: 6, bottom: 0),
           child: TypeBadge(
-            postViewMedia: postViewMedia,
-            read: false,
+            mediaType: postViewMedia.media.firstOrNull?.mediaType ?? MediaType.text,
+            dim: false,
           ),
         ),
       ],

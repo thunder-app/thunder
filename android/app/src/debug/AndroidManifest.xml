@@ -4,4 +4,8 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- In Debug mode, request the EXACT_ALARM permission. -->
+    <!-- This allows us to run background_fetch at lower intervals for the sake of quicker testing. -->
+    <uses-permission android:minSdkVersion="34" android:name="android.permission.USE_EXACT_ALARM" />
 </manifest>

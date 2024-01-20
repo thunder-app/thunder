@@ -11,8 +11,8 @@ import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/shared/community_icon.dart';
-import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -30,6 +30,14 @@ class CommunityDrawer extends StatefulWidget {
 
 class _CommunityDrawerState extends State<CommunityDrawer> {
   @override
+  void initState() {
+    super.initState();
+
+    context.read<AccountBloc>().add(GetAccountSubscriptions());
+    context.read<AccountBloc>().add(GetFavoritedCommunities());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       width: min(MediaQuery.of(context).size.width * 0.85, 400.0),
@@ -45,6 +53,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                   children: [
                     FeedDrawerItems(),
                     FavoriteCommunities(),
+                    ModeratedCommunities(),
                     SubscribedCommunities(),
                   ],
                 ),
@@ -255,8 +264,11 @@ class SubscribedCommunities extends StatelessWidget {
 
     if (isLoggedIn) {
       Set<int> favoriteCommunityIds = accountState.favorites.map((cv) => cv.community.id).toSet();
+      Set<int> moderatedCommunityIds = accountState.moderates.map((cmv) => cmv.community.id).toSet();
 
-      List<CommunityView> filteredSubscriptions = accountState.subsciptions.where((CommunityView communityView) => !favoriteCommunityIds.contains(communityView.community.id)).toList();
+      List<CommunityView> filteredSubscriptions = accountState.subsciptions
+          .where((CommunityView communityView) => !favoriteCommunityIds.contains(communityView.community.id) && !moderatedCommunityIds.contains(communityView.community.id))
+          .toList();
       subscriptions = filteredSubscriptions.map((CommunityView communityView) => communityView.community).toList();
     } else {
       subscriptions = subscriptionsBloc.state.subscriptions;
@@ -312,6 +324,67 @@ class SubscribedCommunities extends StatelessWidget {
               style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
             ),
           )
+        ],
+      ],
+    );
+  }
+}
+
+class ModeratedCommunities extends StatelessWidget {
+  const ModeratedCommunities({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    FeedState feedState = context.watch<FeedBloc>().state;
+    AccountState accountState = context.watch<AccountBloc>().state;
+    ThunderState thunderState = context.read<ThunderBloc>().state;
+
+    List<CommunityModeratorView> moderatedCommunities = accountState.moderates;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (moderatedCommunities.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
+            child: Text(l10n.moderatedCommunities, style: theme.textTheme.titleSmall),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: moderatedCommunities.length,
+              itemBuilder: (context, index) {
+                Community community = moderatedCommunities[index].community;
+
+                final bool isCommunitySelected = feedState.communityId == community.id;
+
+                return TextButton(
+                  style: TextButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                    minimumSize: const Size.fromHeight(50),
+                    backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    context.read<FeedBloc>().add(
+                          FeedFetchedEvent(
+                            feedType: FeedType.community,
+                            sortType: thunderState.defaultSortType,
+                            communityId: community.id,
+                            reset: true,
+                          ),
+                        );
+                  },
+                  child: CommunityItem(community: community, showFavoriteAction: false, isFavorite: false),
+                );
+              },
+            ),
+          ),
         ],
       ],
     );
@@ -402,7 +475,7 @@ class CommunityItem extends StatelessWidget {
 
     return Row(
       children: [
-        CommunityIcon(community: community, radius: 16),
+        CommunityAvatar(community: community, radius: 16),
         const SizedBox(width: 16.0),
         Expanded(
           child: Tooltip(

@@ -57,7 +57,9 @@ import 'package:thunder/utils/navigate_user.dart';
 String? currentIntent;
 
 class Thunder extends StatefulWidget {
-  const Thunder({super.key});
+  final PageController pageController;
+
+  const Thunder({super.key, required this.pageController});
 
   @override
   State<Thunder> createState() => _ThunderState();
@@ -66,8 +68,6 @@ class Thunder extends StatefulWidget {
 class _ThunderState extends State<Thunder> {
   int selectedPageIndex = 0;
   int appExitCounter = 0;
-
-  PageController pageController = PageController(initialPage: 0);
 
   bool hasShownUpdateDialog = false;
 
@@ -86,6 +86,8 @@ class _ThunderState extends State<Thunder> {
   @override
   void initState() {
     super.initState();
+
+    selectedPageIndex = widget.pageController.initialPage;
 
     // Listen for callbacks from Android native code
     if (!kIsWeb && Platform.isAndroid) {
@@ -106,7 +108,6 @@ class _ThunderState extends State<Thunder> {
 
   @override
   void dispose() {
-    pageController.dispose();
     textIntentDataStreamSubscription.cancel();
     mediaIntentDataStreamSubscription.cancel();
     super.dispose();
@@ -126,14 +127,24 @@ class _ThunderState extends State<Thunder> {
     // For sharing images from outside the app while the app is closed
     final initialMedia = await ReceiveSharingIntent.getInitialMedia();
     if (initialMedia.isNotEmpty && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
-      navigateToCreatePostPage(context, image: File(initialMedia.first.path), prePopulated: true);
+      navigateToCreatePostPage(
+        context,
+        image: File(initialMedia.first.path),
+        prePopulated: true,
+        scaffoldMessengerKey: scaffoldMessengerKey,
+      );
     }
     // For sharing images while the app is in the memory
     mediaIntentDataStreamSubscription = ReceiveSharingIntent.getMediaStream().listen((
       List<SharedMediaFile> value,
     ) {
       if (context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
-        navigateToCreatePostPage(context, image: File(value.first.path), prePopulated: true);
+        navigateToCreatePostPage(
+          context,
+          image: File(value.first.path),
+          prePopulated: true,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+        );
       }
     });
   }
@@ -144,9 +155,19 @@ class _ThunderState extends State<Thunder> {
     if ((initialText?.isNotEmpty ?? false) && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
       final uri = Uri.tryParse(initialText!);
       if (uri?.isAbsolute == true) {
-        navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+        navigateToCreatePostPage(
+          context,
+          url: uri.toString(),
+          prePopulated: true,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+        );
       } else {
-        navigateToCreatePostPage(context, text: initialText, prePopulated: true);
+        navigateToCreatePostPage(
+          context,
+          text: initialText,
+          prePopulated: true,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+        );
       }
     }
 
@@ -157,27 +178,42 @@ class _ThunderState extends State<Thunder> {
       if ((value?.isNotEmpty ?? false) && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
         final uri = Uri.tryParse(value!);
         if (uri?.isAbsolute == true) {
-          navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+          navigateToCreatePostPage(
+            context,
+            url: uri.toString(),
+            prePopulated: true,
+            scaffoldMessengerKey: scaffoldMessengerKey,
+          );
         } else {
-          navigateToCreatePostPage(context, text: value, prePopulated: true);
+          navigateToCreatePostPage(
+            context,
+            text: value,
+            prePopulated: true,
+            scaffoldMessengerKey: scaffoldMessengerKey,
+          );
         }
       }
     });
   }
 
-  void _showExitWarning() {
-    showSnackbar(context, AppLocalizations.of(context)!.tapToExit, duration: const Duration(milliseconds: 3500));
+  void _showExitWarning(ScaffoldMessengerState? currentState) {
+    showSnackbar(
+      context,
+      AppLocalizations.of(context)!.tapToExit,
+      duration: const Duration(milliseconds: 3500),
+      customState: currentState,
+    );
   }
 
-  Future<bool> _handleBackButtonPress() async {
+  Future<bool> _handleBackButtonPress(ScaffoldMessengerState? currentState) async {
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
 
         if (reduceAnimations) {
-          pageController.jumpToPage(selectedPageIndex);
+          widget.pageController.jumpToPage(selectedPageIndex);
         } else {
-          pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+          widget.pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
         }
       });
       return Future.value(false);
@@ -189,7 +225,7 @@ class _ThunderState extends State<Thunder> {
 
     if (appExitCounter == 0) {
       appExitCounter++;
-      _showExitWarning();
+      _showExitWarning(currentState);
       Timer(const Duration(milliseconds: 3500), () {
         appExitCounter = 0;
       });
@@ -362,7 +398,7 @@ class _ThunderState extends State<Thunder> {
         BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
       ],
       child: WillPopScope(
-        onWillPop: () async => _handleBackButtonPress(),
+        onWillPop: () async => _handleBackButtonPress(scaffoldMessengerKey.currentState),
         child: BlocListener<DeepLinksCubit, DeepLinksState>(
           listener: (context, state) {
             switch (state.deepLinkStatus) {
@@ -416,9 +452,9 @@ class _ThunderState extends State<Thunder> {
                                 Navigator.of(context).pop();
 
                                 if (reduceAnimations) {
-                                  pageController.jumpToPage(2);
+                                  widget.pageController.jumpToPage(2);
                                 } else {
-                                  pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                                  widget.pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
                                 }
                               },
                             )
@@ -428,7 +464,7 @@ class _ThunderState extends State<Thunder> {
                               opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
                               duration: const Duration(milliseconds: 150),
                               curve: Curves.easeIn,
-                              child: const FeedFAB(),
+                              child: FeedFAB(scaffoldMessengerKey: scaffoldMessengerKey),
                             )
                           : null,
                       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
@@ -439,9 +475,9 @@ class _ThunderState extends State<Thunder> {
                             selectedPageIndex = index;
 
                             if (reduceAnimations) {
-                              pageController.jumpToPage(index);
+                              widget.pageController.jumpToPage(index);
                             } else {
-                              pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                              widget.pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
                             }
                           });
                         },
@@ -453,7 +489,7 @@ class _ThunderState extends State<Thunder> {
                         },
                         buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
                         listener: (context, state) {
-                          context.read<AccountBloc>().add(GetAccountInformation());
+                          context.read<AccountBloc>().add(RefreshAccountInformation());
 
                           // Add a bit of artificial delay to allow preferences to set the proper active profile
                           Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
@@ -490,7 +526,7 @@ class _ThunderState extends State<Thunder> {
                               }
 
                               return PageView(
-                                controller: pageController,
+                                controller: widget.pageController,
                                 onPageChanged: (index) => setState(() => selectedPageIndex = index),
                                 physics: const NeverScrollableScrollPhysics(),
                                 children: <Widget>[
