@@ -39,12 +39,9 @@ class NotificationsReplyPage extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: Material(
-                  child: Transform(
-                    transform: Matrix4.translationValues(0, -24, 0),
-                    child: InboxRepliesView(
-                      replies: replies,
-                      showAll: true,
-                    ),
+                  child: InboxRepliesView(
+                    replies: replies,
+                    showAll: true,
                   ),
                 ),
               ),
