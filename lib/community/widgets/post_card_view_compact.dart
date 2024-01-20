@@ -138,18 +138,8 @@ class PostCardViewCompact extends StatelessWidget {
                   dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
                   hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                   url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
-                )
-
-                // PostCardMetaData(
-                //   readColor: readColor,
-                //   score: postViewMedia.postView.counts.score,
-                //   voteType: postViewMedia.postView.myVote ?? 0,
-                //   comments: postViewMedia.postView.counts.comments,
-                //   unreadComments: postViewMedia.postView.unreadComments,
-                //   hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                //   published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
-                //   hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
-                // ),
+                  hasBeenRead: indicateRead && postViewMedia.postView.read,
+                ),
               ],
             ),
           ),

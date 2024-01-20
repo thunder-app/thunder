@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
@@ -15,12 +16,12 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const Color upVoteColor = Colors.orange;
 const Color downVoteColor = Colors.blue;
 Color readColor = Colors.grey.shade700;
 
+@Deprecated("Use [PostViewMetaData] instead")
 class PostCardMetaData extends StatelessWidget {
   final int score;
   final int voteType;
@@ -171,8 +172,8 @@ class PostCardMetadata extends StatelessWidget {
 
     List<PostCardMetadataItem> postCardMetadataItems = [
       PostCardMetadataItem.score,
-      PostCardMetadataItem.upvote,
-      PostCardMetadataItem.downvote,
+      // PostCardMetadataItem.upvote,
+      // PostCardMetadataItem.downvote,
       PostCardMetadataItem.commentCount,
       PostCardMetadataItem.dateTime,
       PostCardMetadataItem.url,
@@ -180,15 +181,16 @@ class PostCardMetadata extends StatelessWidget {
 
     return Wrap(
       spacing: 8.0,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: postCardMetadataItems.map(
         (PostCardMetadataItem postCardMetadataItem) {
           return switch (postCardMetadataItem) {
             PostCardMetadataItem.score => showScores ? ScorePostCardMetaData(score: score, voteType: voteType, hasBeenRead: hasBeenRead ?? false) : Container(),
             PostCardMetadataItem.upvote => showScores ? UpvotePostCardMetaData(upvotes: upvoteCount, isUpvoted: voteType == 1, hasBeenRead: hasBeenRead ?? false) : Container(),
             PostCardMetadataItem.downvote => showScores ? DownvotePostCardMetaData(downvotes: downvoteCount, isDownvoted: voteType == -1, hasBeenRead: hasBeenRead ?? false) : Container(),
-            PostCardMetadataItem.commentCount => Container(),
-            PostCardMetadataItem.dateTime => Container(),
-            PostCardMetadataItem.url => Container(),
+            PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(commentCount: commentCount, hasBeenRead: hasBeenRead ?? false),
+            PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: dateTime!, hasBeenRead: hasBeenRead ?? false, hasBeenEdited: hasBeenEdited ?? false),
+            PostCardMetadataItem.url => UrlPostCardMetaData(url: url, hasBeenRead: hasBeenRead ?? false),
           };
         },
       ).toList(),
@@ -230,14 +232,14 @@ class ScorePostCardMetaData extends StatelessWidget {
       spacing: 2.0,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Icon(Icons.arrow_upward, size: 20.0, color: color),
+        Icon(Icons.arrow_upward, size: 17.0, color: color),
         ScalableText(
           formatNumberToK(score ?? 0),
           semanticsLabel: l10n.xScore(formatNumberToK(score ?? 0)),
           fontScale: state.metadataFontSizeScale,
           style: theme.textTheme.bodyMedium?.copyWith(color: color),
         ),
-        Icon(Icons.arrow_downward, size: 20.0, color: color),
+        Icon(Icons.arrow_downward, size: 17.0, color: color),
       ],
     );
   }
@@ -275,7 +277,7 @@ class UpvotePostCardMetaData extends StatelessWidget {
       text: formatNumberToK(upvotes ?? 0),
       textColor: color,
       padding: 2.0,
-      icon: Icon(Icons.arrow_upward, size: 20.0, color: color),
+      icon: Icon(Icons.arrow_upward, size: 17.0, color: color),
     );
   }
 }
@@ -312,7 +314,118 @@ class DownvotePostCardMetaData extends StatelessWidget {
       text: formatNumberToK(downvotes ?? 0),
       textColor: color,
       padding: 2.0,
-      icon: Icon(Icons.arrow_downward, size: 20.0, color: color),
+      icon: Icon(Icons.arrow_downward, size: 17.0, color: color),
+    );
+  }
+}
+
+/// Contains metadata related to the number of comments for a given post. This is used in the [PostCardMetadata] widget.
+class CommentCountPostCardMetaData extends StatelessWidget {
+  /// The number of comments on the post. Defaults to 0 if not specified.
+  final int? commentCount;
+
+  /// Whether or not the post has been read. This is used to determine the color.
+  final bool hasBeenRead;
+
+  const CommentCountPostCardMetaData({
+    super.key,
+    this.commentCount = 0,
+    this.hasBeenRead = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.read<ThunderBloc>().state;
+
+    final color = switch (hasBeenRead) {
+      true => readColor,
+      _ => null,
+    };
+
+    return IconText(
+      fontScale: state.metadataFontSizeScale,
+      text: formatNumberToK(commentCount ?? 0),
+      textColor: color,
+      padding: 5.0,
+      icon: Icon(Icons.chat_rounded, size: 17.0, color: color),
+    );
+  }
+}
+
+/// Contains metadata related to the number of comments for a given post. This is used in the [PostCardMetadata] widget.
+class DateTimePostCardMetaData extends StatelessWidget {
+  /// The date/time the post was created or updated. This string should conform to ISO-8601 format.
+  final String dateTime;
+
+  /// Whether or not the post has been read. This is used to determine the color.
+  final bool hasBeenRead;
+
+  /// Whether or not the post has been edited. This determines the icon for the [dateTime] field.
+  final bool hasBeenEdited;
+
+  const DateTimePostCardMetaData({
+    super.key,
+    required this.dateTime,
+    this.hasBeenRead = false,
+    this.hasBeenEdited = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.read<ThunderBloc>().state;
+
+    final color = switch (hasBeenRead) {
+      true => readColor,
+      _ => null,
+    };
+
+    return IconText(
+      fontScale: state.metadataFontSizeScale,
+      text: formatTimeToString(dateTime: dateTime),
+      textColor: color,
+      padding: 2.0,
+      icon: Icon(hasBeenEdited ? Icons.edit : Icons.history_rounded, size: 17.0, color: color),
+    );
+  }
+}
+
+/// Contains metadata related to the url/external link for a given post. This is used in the [PostCardMetadata] widget.
+class UrlPostCardMetaData extends StatelessWidget {
+  /// The URL to display in the metadata. If null, no URL will be displayed.
+  final String? url;
+
+  /// Whether or not the post has been read. This is used to determine the color.
+  final bool hasBeenRead;
+
+  const UrlPostCardMetaData({
+    super.key,
+    this.url,
+    this.hasBeenRead = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.read<ThunderBloc>().state;
+
+    final color = switch (hasBeenRead) {
+      true => readColor,
+      _ => null,
+    };
+
+    if (url == null || url!.isEmpty == true) {
+      return Container();
+    }
+
+    return Tooltip(
+      message: url,
+      preferBelow: false,
+      child: IconText(
+        fontScale: state.metadataFontSizeScale,
+        text: Uri.parse(url ?? '').host.replaceFirst('www.', ''),
+        textColor: color,
+        padding: 3.0,
+        icon: Icon(Icons.public, size: 17.0, color: color),
+      ),
     );
   }
 }
