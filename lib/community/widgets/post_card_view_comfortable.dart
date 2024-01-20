@@ -15,6 +15,8 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
+import 'package:thunder/shared/video_player/thunder_video_player.dart';
+import 'package:thunder/shared/video_player/thunder_youtube_player.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
@@ -78,17 +80,22 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
-    var mediaView = MediaView(
-      scrapeMissingPreviews: state.scrapeMissingPreviews,
-      postView: postViewMedia,
-      showFullHeightImages: showFullHeightImages,
-      hideNsfwPreviews: hideNsfwPreviews,
-      edgeToEdgeImages: edgeToEdgeImages,
-      markPostReadOnMediaView: markPostReadOnMediaView,
-      isUserLoggedIn: isUserLoggedIn,
-      navigateToPost: navigateToPost,
-      read: indicateRead && postViewMedia.postView.read,
-    );
+    Widget mediaView;
+    if (postViewMedia.postView.post.embedVideoUrl?.isNotEmpty ?? false) {
+      mediaView = ThunderYoutubePlayer(videoUrl: postViewMedia.postView.post.embedVideoUrl!);
+    } else {
+      mediaView = MediaView(
+        scrapeMissingPreviews: state.scrapeMissingPreviews,
+        postView: postViewMedia,
+        showFullHeightImages: showFullHeightImages,
+        hideNsfwPreviews: hideNsfwPreviews,
+        edgeToEdgeImages: edgeToEdgeImages,
+        markPostReadOnMediaView: markPostReadOnMediaView,
+        isUserLoggedIn: isUserLoggedIn,
+        navigateToPost: navigateToPost,
+        read: indicateRead && postViewMedia.postView.read,
+      );
+    }
 
     final bool useSaveButton = state.showSaveAction;
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
