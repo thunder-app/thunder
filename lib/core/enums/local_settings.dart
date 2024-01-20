@@ -88,8 +88,8 @@ enum LocalSettings {
       name: 'setting_notifications_show_inapp_update', key: 'showInAppUpdateNotifications', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   scoreCounters(name: 'setting_score_counters', key: "showScoreCounters", category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   appLanguageCode(name: 'setting_app_language_code', key: 'appLanguage', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
-  enableInboxNotifications(name: 'setting_enable_inbox_notifications', key: 'enableInboxNotifications'),
- 
+  enableInboxNotifications(
+      name: 'setting_enable_inbox_notifications', key: 'enableInboxNotifications', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
