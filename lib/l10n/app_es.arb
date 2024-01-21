@@ -889,7 +889,7 @@
   "@suggestedTitle": {
     "description": "Suggested title for the post."
   },
-  "tapToExit": "Retroceder dos veces para salir",
+  "tapToExit": "Vuelve a pulsar atrás para salir",
   "@tapToExit": {},
   "text": "Texto",
   "@text": {},
