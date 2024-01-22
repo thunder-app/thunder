@@ -278,6 +278,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     final ThemeData theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    print(useCompactView);
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -508,73 +510,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Container(
-                padding: const EdgeInsets.only(bottom: 8.0, top: 6),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    !showThumbnailPreviewOnRight
-                        ? Container(
-                            width: 75,
-                            height: 75,
-                            margin: const EdgeInsets.only(right: 8.0),
-                            decoration: BoxDecoration(
-                              color: theme.dividerColor,
-                              borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                            ),
-                          )
-                        : const SizedBox(width: 0),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(right: showThumbnailPreviewOnRight ? 8.0 : 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 25,
-                              decoration: BoxDecoration(
-                                color: theme.dividerColor,
-                                borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                              ),
-                            ), // Title
-                            const SizedBox(height: 6.0),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.5,
-                              height: 15,
-                              decoration: BoxDecoration(
-                                color: theme.dividerColor,
-                                borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                              ),
-                            ),
-                            const SizedBox(height: 6.0),
-                            PostCardMetadataDraggableTarget(
-                              containedPostCardMetadataItems: compactPostCardMetadataItems,
-                              onAcceptedData: (data) {
-                                setState(() {
-                                  compactPostCardMetadataItems.add(data);
-                                  setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    showThumbnailPreviewOnRight
-                        ? Container(
-                            width: 75,
-                            height: 75,
-                            margin: const EdgeInsets.only(right: 8.0),
-                            decoration: BoxDecoration(
-                              color: theme.dividerColor,
-                              borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                            ),
-                          )
-                        : const SizedBox(width: 0),
-                  ],
-                ),
-              ),
+              child: buildCompactViewMetadataPreview(isDisabled: useCompactView == false),
             ),
           ),
           SliverToBoxAdapter(
@@ -597,6 +533,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: PostCardMetadataDraggableTarget(
+                isDisabled: useCompactView == false,
                 containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !compactPostCardMetadataItems.contains(element)).toList(),
                 onAcceptedData: (data) {
                   setState(() {
@@ -791,6 +728,81 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       ),
     );
   }
+
+  Widget buildCompactViewMetadataPreview({bool isDisabled = false}) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.only(bottom: 8.0, top: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          !showThumbnailPreviewOnRight
+              ? Container(
+                  width: 75,
+                  height: 75,
+                  margin: const EdgeInsets.only(right: 8.0),
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor,
+                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                  ),
+                )
+              : const SizedBox(width: 0),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(right: showThumbnailPreviewOnRight ? 8.0 : 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  ), // Title
+                  const SizedBox(height: 6.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  ),
+                  const SizedBox(height: 6.0),
+                  PostCardMetadataDraggableTarget(
+                    isDisabled: useCompactView == false,
+                    containerHeight: 25.0,
+                    showEmptyTargetMessage: false,
+                    containedPostCardMetadataItems: compactPostCardMetadataItems,
+                    onAcceptedData: (data) {
+                      setState(() {
+                        compactPostCardMetadataItems.add(data);
+                        setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          showThumbnailPreviewOnRight
+              ? Container(
+                  width: 75,
+                  height: 75,
+                  margin: const EdgeInsets.only(right: 8.0),
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor,
+                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                  ),
+                )
+              : const SizedBox(width: 0),
+        ],
+      ),
+    );
+  }
 }
 
 /// A draggable target for the post card metadata.
@@ -803,62 +815,88 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
   /// Callback when data is accepted
   final void Function(PostCardMetadataItem) onAcceptedData;
 
+  /// The height of the target container, when empty
+  final double containerHeight;
+
+  /// Whether to display a message when the target is empty
+  final bool showEmptyTargetMessage;
+
+  /// Whether the target is disabled
+  final bool isDisabled;
+
   const PostCardMetadataDraggableTarget({
     super.key,
     required this.containedPostCardMetadataItems,
     required this.onAcceptedData,
+    this.containerHeight = 50.0,
+    this.showEmptyTargetMessage = true,
+    this.isDisabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: DragTarget<PostCardMetadataItem>(
-        builder: (context, candidateData, rejectedData) => containedPostCardMetadataItems.isEmpty
-            ? Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.dividerColor),
-                  borderRadius: BorderRadius.circular(8),
+    return AbsorbPointer(
+      absorbing: isDisabled,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: DragTarget<PostCardMetadataItem>(
+          builder: (context, candidateData, rejectedData) => containedPostCardMetadataItems.isEmpty
+              ? Container(
+                  height: containerHeight,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: theme.dividerColor),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      showEmptyTargetMessage ? 'No items' : '',
+                      style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
+                    ),
+                  ),
+                )
+              : Container(
+                  constraints: BoxConstraints(minHeight: containerHeight),
+                  child: Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    children: containedPostCardMetadataItems
+                        .map(
+                          (item) => Draggable<PostCardMetadataItem>(
+                            data: item,
+                            feedback: buildDraggableItem(context, item: item, isFeedback: true),
+                            child: buildDraggableItem(context, item: item, isDisabled: isDisabled),
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
-              )
-            : Wrap(
-                spacing: 8.0,
-                runSpacing: 8.0,
-                children: containedPostCardMetadataItems
-                    .map(
-                      (item) => Draggable<PostCardMetadataItem>(
-                        data: item,
-                        feedback: buildDraggableItem(context, item: item, isFeedback: true),
-                        child: buildDraggableItem(context, item: item),
-                      ),
-                    )
-                    .toList(),
-              ),
-        onWillAccept: (data) {
-          if (!containedPostCardMetadataItems.contains(data)) return true;
-          return false;
-        },
-        onAccept: (data) {
-          onAcceptedData(data);
-        },
+          onLeave: (data) => HapticFeedback.mediumImpact(),
+          onWillAccept: (data) {
+            if (!containedPostCardMetadataItems.contains(data)) {
+              return true;
+            }
+            return false;
+          },
+          onAccept: (data) {
+            onAcceptedData(data);
+          },
+        ),
       ),
     );
   }
 
-  Widget buildDraggableItem(context, {required PostCardMetadataItem item, bool isFeedback = false}) {
+  Widget buildDraggableItem(context, {required PostCardMetadataItem item, bool isFeedback = false, bool isDisabled = false}) {
     final theme = Theme.of(context);
-
-    if (isFeedback) HapticFeedback.mediumImpact();
 
     return Material(
       type: MaterialType.transparency,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         decoration: BoxDecoration(
-          color: theme.dividerColor,
+          color: isDisabled ? theme.cardColor : theme.dividerColor,
+          border: isDisabled ? Border.all(color: theme.dividerColor.withOpacity(0.4)) : null,
           borderRadius: BorderRadius.circular(8),
         ),
         child: switch (item) {
