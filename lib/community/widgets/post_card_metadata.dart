@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -124,6 +125,9 @@ class PostCardMetaData extends StatelessWidget {
 /// This information is customizable, and can be changed by the user in the settings.
 /// The order in which the items are displayed depends on the order in the [postCardMetadataItems] list
 class PostCardMetadata extends StatelessWidget {
+  /// The type of view the post card is in. This is used to determine the appropriate setting to read from.
+  final ViewMode postCardViewType;
+
   /// The score of the post. If null, no score will be displayed.
   final int? score;
 
@@ -154,6 +158,7 @@ class PostCardMetadata extends StatelessWidget {
 
   const PostCardMetadata({
     super.key,
+    required this.postCardViewType,
     this.score,
     this.upvoteCount,
     this.downvoteCount,
@@ -170,7 +175,10 @@ class PostCardMetadata extends StatelessWidget {
     final state = context.watch<AuthBloc>().state;
     final showScores = state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
 
-    List<PostCardMetadataItem> postCardMetadataItems = context.read<ThunderBloc>().state.compactPostCardMetadataItems;
+    List<PostCardMetadataItem> postCardMetadataItems = switch (postCardViewType) {
+      ViewMode.compact => context.read<ThunderBloc>().state.compactPostCardMetadataItems,
+      ViewMode.comfortable => context.read<ThunderBloc>().state.cardPostCardMetadataItems,
+    };
 
     return Wrap(
       spacing: 8.0,

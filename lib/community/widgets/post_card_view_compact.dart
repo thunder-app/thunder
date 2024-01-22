@@ -130,6 +130,7 @@ class PostCardViewCompact extends StatelessWidget {
                 ),
                 const SizedBox(height: 6.0),
                 PostCardMetadata(
+                  postCardViewType: ViewMode.compact,
                   score: postViewMedia.postView.counts.score,
                   upvoteCount: postViewMedia.postView.counts.upvotes,
                   downvoteCount: postViewMedia.postView.counts.downvotes,

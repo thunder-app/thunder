@@ -57,6 +57,7 @@ class ThunderState extends Equatable {
     this.useAdvancedShareSheet = true,
     this.showCrossPosts = true,
     this.compactPostCardMetadataItems = const [],
+    this.cardPostCardMetadataItems = const [],
     this.keywordFilters = const [],
     this.appLanguageCode = 'en',
 
@@ -187,6 +188,7 @@ class ThunderState extends Equatable {
   final bool useAdvancedShareSheet;
   final bool showCrossPosts;
   final List<PostCardMetadataItem> compactPostCardMetadataItems;
+  final List<PostCardMetadataItem> cardPostCardMetadataItems;
   final List<String> keywordFilters;
 
   /// -------------------------- Post Page Related Settings --------------------------
@@ -323,6 +325,7 @@ class ThunderState extends Equatable {
     bool? useAdvancedShareSheet,
     bool? showCrossPosts,
     List<PostCardMetadataItem>? compactPostCardMetadataItems,
+    List<PostCardMetadataItem>? cardPostCardMetadataItems,
     String? appLanguageCode = 'en',
     List<String>? keywordFilters,
 
@@ -453,6 +456,7 @@ class ThunderState extends Equatable {
       useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
       showCrossPosts: showCrossPosts ?? this.showCrossPosts,
       compactPostCardMetadataItems: compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
+      cardPostCardMetadataItems: cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
@@ -587,6 +591,7 @@ class ThunderState extends Equatable {
         useAdvancedShareSheet,
         showCrossPosts,
         compactPostCardMetadataItems,
+        cardPostCardMetadataItems,
         appLanguageCode,
         keywordFilters,
 

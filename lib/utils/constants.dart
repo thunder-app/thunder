@@ -28,3 +28,10 @@ List<PostCardMetadataItem> DEFAULT_COMPACT_POST_CARD_METADATA = [
   PostCardMetadataItem.dateTime,
   PostCardMetadataItem.url,
 ];
+
+List<PostCardMetadataItem> DEFAULT_CARD_POST_CARD_METADATA = [
+  PostCardMetadataItem.score,
+  PostCardMetadataItem.commentCount,
+  PostCardMetadataItem.dateTime,
+  PostCardMetadataItem.url,
+];

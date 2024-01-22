@@ -141,6 +141,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       List<PostCardMetadataItem> compactPostCardMetadataItems =
           prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
+      List<PostCardMetadataItem> cardPostCardMetadataItems =
+          prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
 
       List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
@@ -272,6 +274,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         useAdvancedShareSheet: useAdvancedShareSheet,
         showCrossPosts: showCrossPosts,
         compactPostCardMetadataItems: compactPostCardMetadataItems,
+        cardPostCardMetadataItems: cardPostCardMetadataItems,
         keywordFilters: keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------

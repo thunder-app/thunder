@@ -47,6 +47,7 @@ enum LocalSettings {
   keywordFilters(name: 'setting_general_keyword_filters', key: 'keywordFilters'),
   hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', key: 'hideTopBarOnScroll'),
   compactPostCardMetadataItems(name: 'setting_compact_post_card_metadata_items', key: 'compactPostCardMetadataItems'),
+  cardPostCardMetadataItems(name: 'setting_card_post_card_metadata_items', key: 'cardPostCardMetadataItems'),
 
   // Advanced Settings
   userFormat(name: 'user_format', key: 'userFormat'),
