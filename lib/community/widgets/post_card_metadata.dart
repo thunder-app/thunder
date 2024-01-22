@@ -170,14 +170,7 @@ class PostCardMetadata extends StatelessWidget {
     final state = context.watch<AuthBloc>().state;
     final showScores = state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
 
-    List<PostCardMetadataItem> postCardMetadataItems = [
-      PostCardMetadataItem.score,
-      // PostCardMetadataItem.upvote,
-      // PostCardMetadataItem.downvote,
-      PostCardMetadataItem.commentCount,
-      PostCardMetadataItem.dateTime,
-      PostCardMetadataItem.url,
-    ];
+    List<PostCardMetadataItem> postCardMetadataItems = context.read<ThunderBloc>().state.compactPostCardMetadataItems;
 
     return Wrap(
       spacing: 8.0,
@@ -231,6 +224,7 @@ class ScorePostCardMetaData extends StatelessWidget {
     return Wrap(
       spacing: 2.0,
       crossAxisAlignment: WrapCrossAlignment.center,
+      runAlignment: WrapAlignment.center,
       children: [
         Icon(Icons.arrow_upward, size: 17.0, color: color),
         ScalableText(
