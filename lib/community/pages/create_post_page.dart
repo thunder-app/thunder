@@ -35,7 +35,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_post.dart';
+import 'package:thunder/post/utils/navigate_post.dart';
 
 class CreatePostPage extends StatefulWidget {
   final int? communityId;

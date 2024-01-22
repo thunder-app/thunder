@@ -23,9 +23,9 @@ import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_comment.dart';
-import 'package:thunder/utils/navigate_post.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 
 class LinkInfo {
   String? imageURL;
