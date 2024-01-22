@@ -111,8 +111,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     );
   }
 
-  Future<void> getImageSize(String imageUrl, context) async {
-    Size decodedImage = await retrieveImageDimensions(imageUrl);
+  Future<void> getImageSize() async {
+    Size decodedImage = await retrieveImageDimensions(imageUrl: widget.url, imageBytes: widget.bytes);
 
     setState(() {
       imageWidth = decodedImage.width;
@@ -127,7 +127,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getImageSize(widget.url!, context);
+      getImageSize();
     });
   }
 
@@ -347,8 +347,14 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       ),
                               ),
                             )
-                          : const Center(
-                              child: CircularProgressIndicator(),
+                          : Center(
+                              child: SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white.withOpacity(0.90),
+                                ),
+                              ),
                             )),
                 ),
                 AnimatedOpacity(
