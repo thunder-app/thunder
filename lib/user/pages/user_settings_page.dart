@@ -22,8 +22,8 @@ import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/utils/navigate_instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 
 class UserSettingsPage extends StatefulWidget {
   const UserSettingsPage({super.key});

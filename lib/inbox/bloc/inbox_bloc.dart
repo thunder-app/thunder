@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -7,7 +8,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/utils/comment.dart';
+import 'package:thunder/comment/utils/comment.dart';
 
 part 'inbox_event.dart';
 part 'inbox_state.dart';
@@ -200,9 +201,11 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       List<CommentReplyView> replies = List.from(state.replies);
       bool matchMarkedComment(CommentReplyView commentView) => commentView.commentReply.id == response.commentReplyView.commentReply.id;
       if (event.showAll) {
-        final CommentReplyView markedComment = replies.firstWhere(matchMarkedComment);
-        final int index = replies.indexOf(markedComment);
-        replies[index] = markedComment.copyWith(comment: response.commentReplyView.comment);
+        final CommentReplyView? markedComment = replies.firstWhereOrNull(matchMarkedComment);
+        if (markedComment != null) {
+          final int index = replies.indexOf(markedComment);
+          replies[index] = markedComment.copyWith(comment: response.commentReplyView.comment);
+        }
       } else {
         replies.removeWhere(matchMarkedComment);
       }

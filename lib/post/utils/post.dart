@@ -133,7 +133,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
       MediaType mediaType = MediaType.image;
 
       if (fetchImageDimensions) {
-        Size result = await retrieveImageDimensions(url);
+        Size result = await retrieveImageDimensions(imageUrl: url);
         Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
         media.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
       } else {
@@ -147,7 +147,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     if (fetchImageDimensions) {
       if (postView.post.thumbnailUrl?.isNotEmpty == true) {
         try {
-          Size result = await retrieveImageDimensions(postView.post.thumbnailUrl!);
+          Size result = await retrieveImageDimensions(imageUrl: postView.post.thumbnailUrl!);
           Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
           media.add(Media(
             mediaUrl: postView.post.thumbnailUrl!,
@@ -166,7 +166,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
           LinkInfo linkInfo = await getLinkInfo(url);
 
           if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
-            Size result = await retrieveImageDimensions(linkInfo.imageURL!);
+            Size result = await retrieveImageDimensions(imageUrl: linkInfo.imageURL!);
 
             int mediaHeight = result.height.toInt();
             int mediaWidth = result.width.toInt();

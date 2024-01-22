@@ -3,6 +3,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:markdown/markdown.dart';
+
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
@@ -10,7 +12,6 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:markdown/markdown.dart';
 
 const String _inboxMessagesChannelId = 'inbox_messages';
 const String _inboxMessagesChannelName = 'Inbox Messages';
@@ -90,7 +91,7 @@ Future<void> pollRepliesAndShowNotifications() async {
       // Body (body of comment)
       plaintextComment,
       notificationDetails,
-      payload: repliesGroupKey, // In the future, this could be a specific message ID for deep navigation
+      payload: '$repliesGroupKey-${commentReplyView.commentReply.id}',
     );
 
     // Create a summary notification for the group.

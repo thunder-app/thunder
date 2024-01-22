@@ -14,7 +14,7 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 const Color upVoteColor = Colors.orange;

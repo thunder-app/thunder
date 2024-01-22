@@ -12,7 +12,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 import '../utils/date_time.dart';

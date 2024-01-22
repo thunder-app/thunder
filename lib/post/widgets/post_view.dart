@@ -44,7 +44,7 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/shared/snackbar.dart';
 
