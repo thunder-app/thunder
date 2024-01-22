@@ -20,7 +20,7 @@ abstract class PictrsMediaExtension {
     try {
       if (url.contains("/pictrs/image/")) {
         MediaType mediaType = MediaType.image;
-        Size result = await retrieveImageDimensions(url);
+        Size result = await retrieveImageDimensions(imageUrl: url);
 
         Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height);
         mediaList.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));

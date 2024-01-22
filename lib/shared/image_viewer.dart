@@ -56,6 +56,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   /// User Settings
   bool isUserLoggedIn = false;
   bool isDownloadingMedia = false;
+  bool isSavingMedia = false;
   late double imageWidth = 0;
   late double imageHeight = 0;
   late double maxZoomLevel = 3;
@@ -111,8 +112,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     );
   }
 
-  Future<void> getImageSize(String imageUrl, context) async {
-    Size decodedImage = await retrieveImageDimensions(imageUrl);
+  Future<void> getImageSize() async {
+    Size decodedImage = await retrieveImageDimensions(imageUrl: widget.url, imageBytes: widget.bytes);
 
     setState(() {
       imageWidth = decodedImage.width;
@@ -127,7 +128,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getImageSize(widget.url!, context);
+      getImageSize();
     });
   }
 
@@ -347,8 +348,14 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       ),
                               ),
                             )
-                          : const Center(
-                              child: CircularProgressIndicator(),
+                          : Center(
+                              child: SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white.withOpacity(0.90),
+                                ),
+                              ),
                             )),
                 ),
                 AnimatedOpacity(
@@ -419,39 +426,53 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         return;
                                       }
 
-                                      // Save image on Linux platform
-                                      if (Platform.isLinux) {
-                                        final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
+                                      setState(() => isSavingMedia = true);
 
-                                        File(filePath)
-                                          ..createSync(recursive: true)
-                                          ..writeAsBytesSync(file.readAsBytesSync());
-
-                                        return setState(() => downloaded = true);
-                                      }
-
-                                      // Save image on all other supported platforms (Android, iOS, macOS, Windows)
                                       try {
-                                        await Gal.putImage(file.path, album: "Thunder");
-                                        setState(() => downloaded = true);
-                                      } on GalException catch (e) {
-                                        if (context.mounted) showSnackbar(context, e.type.message, customState: _imageViewer.currentState);
-                                        setState(() => downloaded = false);
+                                        // Save image on Linux platform
+                                        if (Platform.isLinux) {
+                                          final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
+
+                                          File(filePath)
+                                            ..createSync(recursive: true)
+                                            ..writeAsBytesSync(file.readAsBytesSync());
+
+                                          return setState(() => downloaded = true);
+                                        }
+
+                                        // Save image on all other supported platforms (Android, iOS, macOS, Windows)
+                                        try {
+                                          await Gal.putImage(file.path, album: "Thunder");
+                                          setState(() => downloaded = true);
+                                        } on GalException catch (e) {
+                                          if (context.mounted) showSnackbar(context, e.type.message, customState: _imageViewer.currentState);
+                                          setState(() => downloaded = false);
+                                        }
+                                      } finally {
+                                        setState(() => isSavingMedia = false);
                                       }
                                     },
-                              icon: downloaded
-                                  ? const Icon(
-                                      Icons.check_circle,
-                                      semanticLabel: 'Downloaded',
-                                      color: Colors.white,
-                                      shadows: <Shadow>[Shadow(color: Colors.black45, blurRadius: 50.0)],
+                              icon: isSavingMedia
+                                  ? SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white.withOpacity(0.90),
+                                      ),
                                     )
-                                  : Icon(
-                                      Icons.download,
-                                      semanticLabel: "Download",
-                                      color: Colors.white.withOpacity(0.90),
-                                      shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
-                                    ),
+                                  : downloaded
+                                      ? const Icon(
+                                          Icons.check_circle,
+                                          semanticLabel: 'Downloaded',
+                                          color: Colors.white,
+                                          shadows: <Shadow>[Shadow(color: Colors.black45, blurRadius: 50.0)],
+                                        )
+                                      : Icon(
+                                          Icons.download,
+                                          semanticLabel: "Download",
+                                          color: Colors.white.withOpacity(0.90),
+                                          shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                        ),
                             ),
                           ),
                         if (widget.navigateToPost != null)

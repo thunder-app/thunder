@@ -32,6 +32,7 @@ import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
+import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
 import 'package:thunder/utils/constants.dart';
@@ -53,6 +54,7 @@ import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/user/utils/navigate_user.dart';
+import 'package:thunder/utils/notifications_navigation.dart';
 
 String? currentIntent;
 
@@ -103,6 +105,8 @@ class _ThunderState extends State<Thunder> {
       handleSharedFilesAndText();
       BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
       BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
+
+      BlocProvider.of<NotificationsCubit>(context).handleNotifications();
     });
   }
 
@@ -399,32 +403,43 @@ class _ThunderState extends State<Thunder> {
       ],
       child: WillPopScope(
         onWillPop: () async => _handleBackButtonPress(scaffoldMessengerKey.currentState),
-        child: BlocListener<DeepLinksCubit, DeepLinksState>(
-          listener: (context, state) {
-            switch (state.deepLinkStatus) {
-              case DeepLinkStatus.loading:
-                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  scaffoldMessengerKey.currentState?.showSnackBar(
-                    const SnackBar(content: CircularProgressIndicator.adaptive()),
-                  );
-                });
-
-              case DeepLinkStatus.empty:
-                showSnackbar(context, state.error ?? l10n.emptyUri);
-              case DeepLinkStatus.error:
-                showSnackbar(context, state.error ?? l10n.exceptionProcessingUri);
-
-              case DeepLinkStatus.success:
-                try {
-                  _handleDeepLinkNavigation(context, linkType: state.linkType, link: state.link);
-                } catch (e) {
-                  _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, state.link!);
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<NotificationsCubit, NotificationsState>(
+              listener: (context, state) {
+                if (state.status == NotificationsStatus.reply) {
+                  navigateToNotificationReplyPage(context, replyId: state.replyId);
                 }
+              },
+            ),
+            BlocListener<DeepLinksCubit, DeepLinksState>(
+              listener: (context, state) {
+                switch (state.deepLinkStatus) {
+                  case DeepLinkStatus.loading:
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      scaffoldMessengerKey.currentState?.showSnackBar(
+                        const SnackBar(content: CircularProgressIndicator.adaptive()),
+                      );
+                    });
 
-              case DeepLinkStatus.unknown:
-                showSnackbar(context, state.error ?? l10n.uriNotSupported);
-            }
-          },
+                  case DeepLinkStatus.empty:
+                    showSnackbar(context, state.error ?? l10n.emptyUri);
+                  case DeepLinkStatus.error:
+                    showSnackbar(context, state.error ?? l10n.exceptionProcessingUri);
+
+                  case DeepLinkStatus.success:
+                    try {
+                      _handleDeepLinkNavigation(context, linkType: state.linkType, link: state.link);
+                    } catch (e) {
+                      _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, state.link!);
+                    }
+
+                  case DeepLinkStatus.unknown:
+                    showSnackbar(context, state.error ?? l10n.uriNotSupported);
+                }
+              },
+            ),
+          ],
           child: BlocBuilder<ThunderBloc, ThunderState>(
             builder: (context, thunderBlocState) {
               reduceAnimations = thunderBlocState.reduceAnimations;
