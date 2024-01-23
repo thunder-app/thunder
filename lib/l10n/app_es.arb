@@ -1366,5 +1366,9 @@
   "notificationsWarningDialog": "Las notificaciones son una función experimental que puede no funcionar correctamente en todos los dispositivos.\n\n· Las omprobaciones se producirán cada ~15 minutos y consumirán batería adicional.\n\n· Desactiva las optimizaciones de batería para una mayor probabilidad de éxito de las notificaciones.\n\nConsulte la siguiente página para obtener más información.",
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
+  },
+  "unableToNavigateToInstance": "No se puede navegar a {instanceHost}. Puede que no sea una instancia Lemmy válida.",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
   }
 }
