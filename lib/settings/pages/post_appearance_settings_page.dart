@@ -504,13 +504,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                       color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                     ),
                   ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    'You can customize the metadata information by dragging and dropping the desired information',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -522,24 +515,21 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Available metadata widgets',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.9),
-                    ),
-                  ),
-                ],
+            child: Container(
+              margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+              child: Text(
+                'You can customize the metadata information by dragging and dropping the desired information',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                ),
               ),
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Container(
+              decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.all(8.0),
               child: PostCardMetadataDraggableTarget(
                 isDisabled: useCompactView == false,
                 containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !compactPostCardMetadataItems.contains(element)).toList(),
@@ -552,7 +542,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -591,43 +581,33 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                       color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                     ),
                   ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    'You can customize the metadata information by dragging and dropping the desired information',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
-                    ),
-                  ),
                 ],
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: Divider()),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: buildCardViewMetadataPreview(isDisabled: useCompactView == true),
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Available metadata widgets',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.9),
-                    ),
-                  ),
-                ],
+            child: Container(
+              margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+              child: Text(
+                'You can customize the metadata information by dragging and dropping the desired information',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                ),
               ),
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Container(
+              decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.all(8.0),
               child: PostCardMetadataDraggableTarget(
                 isDisabled: useCompactView == true,
                 containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !cardPostCardMetadataItems.contains(element)).toList(),
@@ -640,8 +620,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: Divider()),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -857,7 +836,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  const SizedBox(height: 6.0),
+                  const SizedBox(height: 8.0),
                   PostCardMetadataDraggableTarget(
                     isDisabled: useCompactView == true,
                     containerHeight: 25.0,
