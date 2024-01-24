@@ -34,7 +34,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: 'settings',
       path: '/settings',
-      builder: (BuildContext context, GoRouterState state) => const SettingsPage(),
+      builder: (BuildContext context, GoRouterState state) => SettingsPage(),
       routes: <GoRoute>[
         GoRoute(
           name: 'general',
