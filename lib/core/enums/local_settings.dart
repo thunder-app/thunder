@@ -205,7 +205,8 @@ enum LocalSettings {
   currentAnonymousInstance(name: 'setting_current_anonymous_instance', key: ''),
 
   advancedShareOptions(name: 'advanced_share_options', key: ''),
-  ;
+  // import export settings
+  importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings);
 
   const LocalSettings({
     required this.name,
