@@ -7,6 +7,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/pages/notifications_pages.dart';
 
@@ -39,18 +40,20 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
   }
 
   if (context.mounted) {
-    Navigator.of(context).push(
-      SwipeablePageRoute(
-        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        backGestureDetectionWidth: 45,
-        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: thunderBloc),
-          ],
-          child: NotificationsReplyPage(replies: specificReply == null ? allReplies : [specificReply]),
-        ),
-      ),
-    );
+    Navigator.of(context)
+        .push(
+          SwipeablePageRoute(
+            transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+            backGestureDetectionWidth: 45,
+            canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: thunderBloc),
+              ],
+              child: NotificationsReplyPage(replies: specificReply == null ? allReplies : [specificReply]),
+            ),
+          ),
+        )
+        .then((_) => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
   }
 }
