@@ -818,23 +818,29 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (showCommunityIcons)
-                    Container(
-                      width: 25,
-                      height: 25,
-                      margin: const EdgeInsets.only(right: 6.0),
-                      decoration: BoxDecoration(
-                        color: theme.dividerColor,
-                        shape: BoxShape.circle,
+                  Row(
+                    children: [
+                      if (showCommunityIcons)
+                        Container(
+                          width: 25,
+                          height: 25,
+                          margin: const EdgeInsets.only(right: 6.0),
+                          decoration: BoxDecoration(
+                            color: theme.dividerColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      Expanded(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: theme.dividerColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                       ),
-                    ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    height: 15,
-                    decoration: BoxDecoration(
-                      color: theme.dividerColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    ],
                   ),
                   const SizedBox(height: 8.0),
                   PostCardMetadataDraggableTarget(
