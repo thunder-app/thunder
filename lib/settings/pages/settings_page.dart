@@ -51,11 +51,13 @@ class SettingsPage extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: Focus(
+              child: FocusableActionDetector(
                 onFocusChange: (focused) {
-                  FocusScope.of(context).unfocus();
+                  if (focused) FocusScope.of(context).unfocus();
                 },
                 child: SearchAnchor.bar(
+                  barBackgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.surfaceVariant),
+                  barElevation: MaterialStateProperty.all(0),
                   barHintText: l10n.search,
                   suggestionsBuilder: (BuildContext context, SearchController controller) {
                     final List<LocalSettings> localSettings = LocalSettings.values
