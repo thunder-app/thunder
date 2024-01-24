@@ -21,7 +21,17 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class InboxBloc extends Bloc<InboxEvent, InboxState> {
+  /// Constructor allowing an initial set of replies to be set in the state.
+  InboxBloc.withReplies(List<CommentReplyView> replies) : super(InboxState(replies: replies)) {
+    _init();
+  }
+
+  /// Unnamed constructor with default state
   InboxBloc() : super(const InboxState()) {
+    _init();
+  }
+
+  void _init() {
     on<GetInboxEvent>(
       _getInboxEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -201,11 +211,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       List<CommentReplyView> replies = List.from(state.replies);
       bool matchMarkedComment(CommentReplyView commentView) => commentView.commentReply.id == response.commentReplyView.commentReply.id;
       if (event.showAll) {
-        final CommentReplyView? markedComment = replies.firstWhereOrNull(matchMarkedComment);
-        if (markedComment != null) {
-          final int index = replies.indexOf(markedComment);
-          replies[index] = markedComment.copyWith(comment: response.commentReplyView.comment);
-        }
+        final CommentReplyView markedComment = replies.firstWhere(matchMarkedComment);
+        final int index = replies.indexOf(markedComment);
+        replies[index] = markedComment.copyWith(comment: response.commentReplyView.comment);
       } else {
         replies.removeWhere(matchMarkedComment);
       }

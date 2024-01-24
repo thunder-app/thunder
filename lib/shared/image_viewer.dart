@@ -296,6 +296,15 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
                                           animationController.forward();
                                         },
+                                        loadStateChanged: (state) {
+                                          if (state.extendedImageLoadState == LoadState.loading) {
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white.withOpacity(0.90),
+                                              ),
+                                            );
+                                          }
+                                        },
                                       )
                                     : ExtendedImage.memory(
                                         widget.bytes!,
@@ -345,16 +354,21 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
                                           animationController.forward();
                                         },
+                                        loadStateChanged: (state) {
+                                          if (state.extendedImageLoadState == LoadState.loading) {
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white.withOpacity(0.90),
+                                              ),
+                                            );
+                                          }
+                                        },
                                       ),
                               ),
                             )
                           : Center(
-                              child: SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white.withOpacity(0.90),
-                                ),
+                              child: CircularProgressIndicator(
+                                color: Colors.white.withOpacity(0.90),
                               ),
                             )),
                 ),

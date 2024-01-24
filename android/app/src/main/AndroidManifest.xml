@@ -64,28 +64,23 @@
               <data android:host="ani.social" />
               <data android:host="aussie.zone" />
               <data android:host="awful.systems" />
-              <data android:host="bakchodi.org" />
               <data android:host="beehaw.org" />
               <data android:host="burggit.moe" />
-              <data android:host="dataterm.digital" />
-              <data android:host="delraymisfitsboard.com" />
               <data android:host="discuss.online" />
               <data android:host="discuss.tchncs.de" />
-              <data android:host="exploding-heads.com" />
               <data android:host="feddit.ch" />
-              <data android:host="feddit.cl" />
               <data android:host="feddit.de" />
               <data android:host="feddit.dk" />
               <data android:host="feddit.it" />
               <data android:host="feddit.nl" />
               <data android:host="feddit.nu" />
               <data android:host="feddit.uk" />
-              <data android:host="geddit.social" />
               <data android:host="hexbear.net" />
               <data android:host="infosec.pub" />
               <data android:host="iusearchlinux.fyi" />
               <data android:host="jlai.lu" />
               <data android:host="lemdro.id" />
+              <data android:host="leminal.space" />
               <data android:host="lemm.ee" />
               <data android:host="lemmings.world" />
               <data android:host="lemmus.org" />
@@ -93,14 +88,12 @@
               <data android:host="lemmy.ca" />
               <data android:host="lemmy.dbzer0.com" />
               <data android:host="lemmy.eco.br" />
-              <data android:host="lemmy.fmhy.ml" />
               <data android:host="lemmy.kya.moe" />
               <data android:host="lemmy.ml" />
               <data android:host="lemmy.nz" />
               <data android:host="lemmy.one" />
               <data android:host="lemmy.sdf.org" />
               <data android:host="lemmy.today" />
-              <data android:host="lemmy.whynotdrs.org" />
               <data android:host="lemmy.world" />
               <data android:host="lemmy.wtf" />
               <data android:host="lemmy.zip" />
@@ -115,15 +108,10 @@
               <data android:host="reddthat.com" />
               <data android:host="sh.itjust.works" />
               <data android:host="slrpnk.net" />
-              <data android:host="social.fossware.space" />
               <data android:host="sopuli.xyz" />
               <data android:host="startrek.website" />
               <data android:host="szmer.info" />
-              <data android:host="thelemmy.club" />
               <data android:host="ttrpg.network" />
-              <data android:host="vlemmy.net" />
-              <data android:host="waveform.social" />
-              <data android:host="www.hexbear.net" />
               <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity>

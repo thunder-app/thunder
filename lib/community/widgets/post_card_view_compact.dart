@@ -80,7 +80,7 @@ class PostCardViewCompact extends StatelessWidget {
                         WidgetSpan(
                           child: Icon(
                             Icons.lock,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.orange.shade900.withOpacity(0.55) : Colors.orange.shade900,
                             size: 15 * textScaleFactor,
                           ),
                         ),
@@ -102,7 +102,19 @@ class PostCardViewCompact extends StatelessWidget {
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
-                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                      if (postViewMedia.postView.post.deleted)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.delete_rounded,
+                            size: 16 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          ),
+                        ),
+                      if (postViewMedia.postView.post.deleted ||
+                          postViewMedia.postView.post.featuredCommunity ||
+                          postViewMedia.postView.post.featuredLocal ||
+                          postViewMedia.postView.saved ||
+                          postViewMedia.postView.post.locked)
                         const WidgetSpan(child: SizedBox(width: 3.5)),
                       TextSpan(
                         text: HtmlUnescape().convert(postViewMedia.postView.post.name),

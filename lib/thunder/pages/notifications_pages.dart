@@ -20,7 +20,7 @@ class NotificationsReplyPage extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: InboxBloc()),
+        BlocProvider.value(value: InboxBloc.withReplies(replies)),
         BlocProvider.value(value: PostBloc()),
       ],
       child: Container(
@@ -39,9 +39,16 @@ class NotificationsReplyPage extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: Material(
-                  child: InboxRepliesView(
-                    replies: replies,
-                    showAll: true,
+                  child: BlocConsumer<InboxBloc, InboxState>(
+                    listener: (BuildContext context, InboxState state) {
+                      if (state.replies.isEmpty) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    builder: (context, state) => InboxRepliesView(
+                      replies: state.replies,
+                      showAll: false,
+                    ),
                   ),
                 ),
               ),
