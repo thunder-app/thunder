@@ -508,7 +508,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           }
                         : null,
                     icon: postView.post.locked
-                        ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.red)
+                        ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.orange.shade900)
                         : isOwnPost
                             ? Icon(Icons.edit_rounded, semanticLabel: AppLocalizations.of(context)!.edit)
                             : Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
