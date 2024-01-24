@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,92 +51,64 @@ class SettingsPage extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: SearchAnchor(
-                viewHintText: l10n.search,
-                builder: (BuildContext context, SearchController controller) {
-                  if (Platform.isIOS) {
-                    return CupertinoSearchTextField(
-                      onTap: () {
-                        controller.openView();
-                      },
-                      onChanged: (_) {
-                        controller.openView();
-                      },
-                    );
-                  } else {
-                    return SearchBar(
-                      hintText: l10n.search,
-                      onTap: () {
-                        controller.openView();
-                      },
-                      onChanged: (_) {
-                        controller.openView();
-                      },
-                      leading: const Icon(Icons.search),
-                    );
-                  }
+              child: Focus(
+                onFocusChange: (focused) {
+                  FocusScope.of(context).unfocus();
                 },
-                suggestionsBuilder: (BuildContext context, SearchController controller) {
-                  final List<LocalSettings> localSettings = LocalSettings.values
-                      .where((item) => l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
-                            controller.text.toLowerCase(),
-                          ))
-                      .toSet()
-                      .toList();
-                  localSettings.removeWhere((setting) => setting.key.isEmpty);
-                  localSettings.sortBy((setting) => setting.key);
+                child: SearchAnchor.bar(
+                  barHintText: l10n.search,
+                  suggestionsBuilder: (BuildContext context, SearchController controller) {
+                    final List<LocalSettings> localSettings = LocalSettings.values
+                        .where((item) => l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
+                              controller.text.toLowerCase(),
+                            ))
+                        .toSet()
+                        .toList();
 
-                  return List<ListTile>.generate(
-                      localSettings.length,
-                      (index) => ListTile(
-                            subtitle: Text(
-                                "${l10n.getLocalSettingLocalization(localSettings[index].category!.toString())} > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}"),
-                            onTap: () {
-                              String pageToNav = SETTINGS_GENERAL_PAGE;
-                              switch (localSettings[index].category) {
-                                case LocalSettingsCategories.posts:
-                                  pageToNav = SETTINGS_APPEARANCE_POSTS_PAGE;
-                                case LocalSettingsCategories.comments:
-                                  pageToNav = SETTINGS_APPEARANCE_COMMENTS_PAGE;
-                                case LocalSettingsCategories.general:
-                                  pageToNav = SETTINGS_GENERAL_PAGE;
-                                case LocalSettingsCategories.gestures:
-                                  pageToNav = SETTINGS_GESTURES_PAGE;
-                                case LocalSettingsCategories.floatingActionButton:
-                                  pageToNav = SETTINGS_GESTURES_PAGE;
-                                case LocalSettingsCategories.filters:
-                                  pageToNav = SETTINGS_FILTERS_PAGE;
-                                case LocalSettingsCategories.accessibility:
-                                  pageToNav = SETTINGS_ACCESSIBILITY_PAGE;
-                                case LocalSettingsCategories.account:
-                                  pageToNav = SETTINGS_ACCOUNT_PAGE;
-                                case LocalSettingsCategories.theming:
-                                  pageToNav = SETTINGS_APPEARANCE_THEMES_PAGE;
-                                case LocalSettingsCategories.debug:
-                                  pageToNav = SETTINGS_DEBUG_PAGE;
-                                case LocalSettingsCategories.about:
-                                  pageToNav = SETTINGS_ABOUT_PAGE;
-                                case null:
-                                  pageToNav = SETTINGS_GENERAL_PAGE;
-                              }
+                    localSettings.removeWhere((setting) => setting.key.isEmpty);
+                    localSettings.sortBy((setting) => setting.key);
 
-                              GoRouter.of(context).push(
-                                pageToNav,
-                                extra: pageToNav == SETTINGS_ABOUT_PAGE
-                                    ? [
-                                        context.read<ThunderBloc>(),
-                                        context.read<AccountBloc>(),
-                                        context.read<AuthBloc>(),
-                                      ]
-                                    : context.read<ThunderBloc>(),
-                              );
-                            },
-                            title: Text(
-                              l10n.getLocalSettingLocalization(localSettings[index].key),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ));
-                },
+                    return List<ListTile>.generate(
+                        localSettings.length,
+                        (index) => ListTile(
+                              subtitle: Text(
+                                  "${l10n.getLocalSettingLocalization(localSettings[index].category!.toString())} > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}"),
+                              onTap: () {
+                                String pageToNav = {
+                                      LocalSettingsCategories.posts: SETTINGS_APPEARANCE_POSTS_PAGE,
+                                      LocalSettingsCategories.comments: SETTINGS_APPEARANCE_COMMENTS_PAGE,
+                                      LocalSettingsCategories.general: SETTINGS_GENERAL_PAGE,
+                                      LocalSettingsCategories.gestures: SETTINGS_GESTURES_PAGE,
+                                      LocalSettingsCategories.floatingActionButton: SETTINGS_GESTURES_PAGE,
+                                      LocalSettingsCategories.filters: SETTINGS_FILTERS_PAGE,
+                                      LocalSettingsCategories.accessibility: SETTINGS_ACCESSIBILITY_PAGE,
+                                      LocalSettingsCategories.account: SETTINGS_ACCOUNT_PAGE,
+                                      LocalSettingsCategories.theming: SETTINGS_APPEARANCE_THEMES_PAGE,
+                                      LocalSettingsCategories.debug: SETTINGS_DEBUG_PAGE,
+                                      LocalSettingsCategories.about: SETTINGS_ABOUT_PAGE,
+                                    }[localSettings[index].category] ??
+                                    SETTINGS_GENERAL_PAGE;
+
+                                GoRouter.of(context).push(
+                                  pageToNav,
+                                  extra: pageToNav == SETTINGS_ABOUT_PAGE
+                                      ? [
+                                          context.read<ThunderBloc>(),
+                                          context.read<AccountBloc>(),
+                                          context.read<AuthBloc>(),
+                                        ]
+                                      : context.read<ThunderBloc>(),
+                                );
+                                controller.closeView(null);
+                                controller.clear();
+                              },
+                              title: Text(
+                                l10n.getLocalSettingLocalization(localSettings[index].key),
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ));
+                  },
+                ),
               ),
             ),
           ),

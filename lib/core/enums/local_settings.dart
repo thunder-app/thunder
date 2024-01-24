@@ -3,7 +3,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 enum LocalSettingsCategories {
   general('General'),
   filters('Filters'),
-  //appearance('Appearance'),
   posts('Posts'),
   comments('Comments'),
   gestures('Gestures'),
@@ -328,7 +327,7 @@ extension LocalizationExt on AppLocalizations {
       'blockedCommunities': blockedCommunities,
       'feedTypeAndSorts': feedTypeAndSorts,
       'profiles': profiles,
-      'animations': animations
+      'animations': animations,
     };
 
     if (localizationMap.containsKey(key)) {
