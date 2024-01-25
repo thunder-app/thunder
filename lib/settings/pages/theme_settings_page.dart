@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -20,7 +22,9 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/global_context.dart';
 
 class ThemeSettingsPage extends StatefulWidget {
-  const ThemeSettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const ThemeSettingsPage({super.key, this.settingToHighlight});
 
   @override
   State<ThemeSettingsPage> createState() => _ThemeSettingsPageState();
@@ -62,6 +66,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   // Loading
   bool isLoading = true;
+
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
 
   void setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -167,6 +174,29 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
     WidgetsBinding.instance.addPostFrameCallback((_) => _initFontScaleOptions());
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.settingToHighlight != null) {
+        setState(() => settingToHighlight = widget.settingToHighlight);
+
+        // Need some delay to finish building, even though we're in a post-frame callback.
+        Timer(const Duration(milliseconds: 500), () {
+          if (settingToHighlightKey.currentContext != null) {
+            // Ensure that the selected setting is visible on the screen
+            Scrollable.ensureVisible(
+              settingToHighlightKey.currentContext!,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          // Give time for the highlighting to appear, then turn it off
+          Timer(const Duration(seconds: 1), () {
+            setState(() => settingToHighlight = null);
+          });
+        });
+      }
+    });
+
     super.initState();
   }
 
@@ -183,118 +213,181 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                           child: Text(l10n.theme, style: theme.textTheme.titleLarge),
                         ),
-                        ListOption(
-                            description: l10n.theme,
-                            value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
-                            options: themeOptions,
-                            icon: Icons.wallpaper_rounded,
-                            onChanged: (value) => setPreferences(LocalSettings.appTheme, value.payload.index)),
-                        ListOption(
-                          description: l10n.themeAccentColor,
-                          value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
-                          valueDisplay: Stack(
-                            children: [
-                              Container(
-                                height: 28,
-                                width: 28,
-                                decoration: BoxDecoration(
-                                  color: selectedTheme.primaryColor,
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                child: Container(
-                                  height: 14,
-                                  width: 14,
-                                  decoration: BoxDecoration(
-                                    color: selectedTheme.secondaryColor,
-                                    borderRadius: const BorderRadius.only(
-                                      bottomLeft: Radius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  height: 14,
-                                  width: 14,
-                                  decoration: BoxDecoration(
-                                    color: selectedTheme.tertiaryColor,
-                                    borderRadius: const BorderRadius.only(
-                                      bottomRight: Radius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                        SmoothHighlight(
+                          key: settingToHighlight == LocalSettings.appTheme ? settingToHighlightKey : null,
+                          useInitialHighLight: settingToHighlight == LocalSettings.appTheme,
+                          enabled: settingToHighlight == LocalSettings.appTheme,
+                          color: theme.colorScheme.primaryContainer,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                            child: ListOption(
+                                description: l10n.theme,
+                                value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
+                                options: themeOptions,
+                                icon: Icons.wallpaper_rounded,
+                                onChanged: (value) => setPreferences(LocalSettings.appTheme, value.payload.index)),
                           ),
-                          options: customThemeOptions,
-                          icon: Icons.wallpaper_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
-                          closeOnSelect: false,
+                        ),
+                        SmoothHighlight(
+                          key: settingToHighlight == LocalSettings.appThemeAccentColor ? settingToHighlightKey : null,
+                          useInitialHighLight: settingToHighlight == LocalSettings.appThemeAccentColor,
+                          enabled: settingToHighlight == LocalSettings.appThemeAccentColor,
+                          color: theme.colorScheme.primaryContainer,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                            child: ListOption(
+                              description: l10n.themeAccentColor,
+                              value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
+                              valueDisplay: Stack(
+                                children: [
+                                  Container(
+                                    height: 28,
+                                    width: 28,
+                                    decoration: BoxDecoration(
+                                      color: selectedTheme.primaryColor,
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    child: Container(
+                                      height: 14,
+                                      width: 14,
+                                      decoration: BoxDecoration(
+                                        color: selectedTheme.secondaryColor,
+                                        borderRadius: const BorderRadius.only(
+                                          bottomLeft: Radius.circular(100),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      height: 14,
+                                      width: 14,
+                                      decoration: BoxDecoration(
+                                        color: selectedTheme.tertiaryColor,
+                                        borderRadius: const BorderRadius.only(
+                                          bottomRight: Radius.circular(100),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              options: customThemeOptions,
+                              icon: Icons.wallpaper_rounded,
+                              onChanged: (value) => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
+                              closeOnSelect: false,
+                            ),
+                          ),
                         ),
                         if (!kIsWeb && Platform.isAndroid) ...[
-                          ToggleOption(
-                            description: l10n.useMaterialYouTheme,
-                            subtitle: l10n.useMaterialYouThemeDescription,
-                            value: useMaterialYouTheme,
-                            iconEnabled: Icons.color_lens_rounded,
-                            iconDisabled: Icons.color_lens_rounded,
-                            onToggle: (bool value) => setPreferences(LocalSettings.useMaterialYouTheme, value),
+                          SmoothHighlight(
+                            key: settingToHighlight == LocalSettings.useMaterialYouTheme ? settingToHighlightKey : null,
+                            useInitialHighLight: settingToHighlight == LocalSettings.useMaterialYouTheme,
+                            enabled: settingToHighlight == LocalSettings.useMaterialYouTheme,
+                            color: theme.colorScheme.primaryContainer,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                              child: ToggleOption(
+                                description: l10n.useMaterialYouTheme,
+                                subtitle: l10n.useMaterialYouThemeDescription,
+                                value: useMaterialYouTheme,
+                                iconEnabled: Icons.color_lens_rounded,
+                                iconDisabled: Icons.color_lens_rounded,
+                                onToggle: (bool value) => setPreferences(LocalSettings.useMaterialYouTheme, value),
+                              ),
+                            ),
                           )
                         ],
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                           child: Text(l10n.fonts, style: theme.textTheme.titleLarge),
                         ),
-                        ListOption(
-                          description: l10n.postTitleFontScale,
-                          value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
-                          options: fontScaleOptions,
-                          icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
+                        SmoothHighlight(
+                          key: settingToHighlight == LocalSettings.titleFontSizeScale ? settingToHighlightKey : null,
+                          useInitialHighLight: settingToHighlight == LocalSettings.titleFontSizeScale,
+                          enabled: settingToHighlight == LocalSettings.titleFontSizeScale,
+                          color: theme.colorScheme.primaryContainer,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                            child: ListOption(
+                              description: l10n.postTitleFontScale,
+                              value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
+                              options: fontScaleOptions,
+                              icon: Icons.text_fields_rounded,
+                              onChanged: (value) => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
+                            ),
+                          ),
                         ),
-                        ListOption(
-                          description: l10n.postContentFontScale,
-                          value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
-                          options: fontScaleOptions,
-                          icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
+                        SmoothHighlight(
+                          key: settingToHighlight == LocalSettings.contentFontSizeScale ? settingToHighlightKey : null,
+                          useInitialHighLight: settingToHighlight == LocalSettings.contentFontSizeScale,
+                          enabled: settingToHighlight == LocalSettings.contentFontSizeScale,
+                          color: theme.colorScheme.primaryContainer,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                            child: ListOption(
+                              description: l10n.postContentFontScale,
+                              value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
+                              options: fontScaleOptions,
+                              icon: Icons.text_fields_rounded,
+                              onChanged: (value) => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
+                            ),
+                          ),
                         ),
-                        ListOption(
-                          description: l10n.commentFontScale,
-                          value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
-                          options: fontScaleOptions,
-                          icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
+                        SmoothHighlight(
+                          key: settingToHighlight == LocalSettings.commentFontSizeScale ? settingToHighlightKey : null,
+                          useInitialHighLight: settingToHighlight == LocalSettings.commentFontSizeScale,
+                          enabled: settingToHighlight == LocalSettings.commentFontSizeScale,
+                          color: theme.colorScheme.primaryContainer,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                            child: ListOption(
+                              description: l10n.commentFontScale,
+                              value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
+                              options: fontScaleOptions,
+                              icon: Icons.text_fields_rounded,
+                              onChanged: (value) => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
+                            ),
+                          ),
                         ),
-                        ListOption(
-                          description: l10n.metadataFontScale,
-                          value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
-                          options: fontScaleOptions,
-                          icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
+                        SmoothHighlight(
+                          key: settingToHighlight == LocalSettings.metadataFontSizeScale ? settingToHighlightKey : null,
+                          useInitialHighLight: settingToHighlight == LocalSettings.metadataFontSizeScale,
+                          enabled: settingToHighlight == LocalSettings.metadataFontSizeScale,
+                          color: theme.colorScheme.primaryContainer,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                            child: ListOption(
+                              description: l10n.metadataFontScale,
+                              value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
+                              options: fontScaleOptions,
+                              icon: Icons.text_fields_rounded,
+                              onChanged: (value) => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
+                            ),
+                          ),
                         ),
                       ],
                     ),

@@ -8,6 +8,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/widgets/account_placeholder.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
@@ -26,7 +27,9 @@ import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/user/utils/navigate_user.dart';
 
 class UserSettingsPage extends StatefulWidget {
-  const UserSettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const UserSettingsPage({super.key, this.settingToHighlight});
 
   @override
   State<UserSettingsPage> createState() => _UserSettingsPageState();

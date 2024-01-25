@@ -87,7 +87,7 @@ class SettingsPage extends StatelessWidget {
                                       LocalSettingsCategories.comments: SETTINGS_APPEARANCE_COMMENTS_PAGE,
                                       LocalSettingsCategories.general: SETTINGS_GENERAL_PAGE,
                                       LocalSettingsCategories.gestures: SETTINGS_GESTURES_PAGE,
-                                      LocalSettingsCategories.floatingActionButton: SETTINGS_GESTURES_PAGE,
+                                      LocalSettingsCategories.floatingActionButton: SETTINGS_FAB_PAGE,
                                       LocalSettingsCategories.filters: SETTINGS_FILTERS_PAGE,
                                       LocalSettingsCategories.accessibility: SETTINGS_ACCESSIBILITY_PAGE,
                                       LocalSettingsCategories.account: SETTINGS_ACCOUNT_PAGE,
@@ -104,8 +104,12 @@ class SettingsPage extends StatelessWidget {
                                           context.read<ThunderBloc>(),
                                           context.read<AccountBloc>(),
                                           context.read<AuthBloc>(),
+                                          localSettings[index],
                                         ]
-                                      : context.read<ThunderBloc>(),
+                                      : [
+                                          context.read<ThunderBloc>(),
+                                          localSettings[index],
+                                        ],
                                 );
                                 controller.closeView(null);
                                 controller.clear();
@@ -138,7 +142,7 @@ class SettingsPage extends StatelessWidget {
                                   context.read<AccountBloc>(),
                                   context.read<AuthBloc>(),
                                 ]
-                              : context.read<ThunderBloc>(),
+                              : [context.read<ThunderBloc>()],
                         ),
                       ))
                   .toList(),

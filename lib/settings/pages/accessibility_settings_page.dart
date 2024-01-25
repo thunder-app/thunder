@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:smooth_highlight/smooth_highlight.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
@@ -12,7 +15,9 @@ import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class AccessibilitySettingsPage extends StatefulWidget {
-  const AccessibilitySettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const AccessibilitySettingsPage({super.key, this.settingToHighlight});
 
   @override
   State<AccessibilitySettingsPage> createState() => _AccessibilitySettingsPageState();
@@ -21,6 +26,9 @@ class AccessibilitySettingsPage extends StatefulWidget {
 class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> with SingleTickerProviderStateMixin {
   /// -------------------------- Accessibility Related Settings --------------------------
   bool reduceAnimations = false;
+
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
 
   void setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -49,7 +57,30 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initPreferences();
+
+      if (widget.settingToHighlight != null) {
+        setState(() => settingToHighlight = widget.settingToHighlight);
+
+        // Need some delay to finish building, even though we're in a post-frame callback.
+        Timer(const Duration(milliseconds: 500), () {
+          if (settingToHighlightKey.currentContext != null) {
+            // Ensure that the selected setting is visible on the screen
+            Scrollable.ensureVisible(
+              settingToHighlightKey.currentContext!,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          // Give time for the highlighting to appear, then turn it off
+          Timer(const Duration(seconds: 1), () {
+            setState(() => settingToHighlight = null);
+          });
+        });
+      }
+    });
   }
 
   @override
@@ -62,25 +93,34 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+              padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 4, bottom: 8.0),
+                    padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                     child: Text(
                       AppLocalizations.of(context)!.animations,
                       style: theme.textTheme.titleLarge,
                     ),
                   ),
-                  ToggleOption(
-                    description: l10n.reduceAnimations,
-                    subtitle: l10n.reducesAnimations,
-                    value: reduceAnimations,
-                    iconEnabled: Icons.animation,
-                    iconDisabled: Icons.animation,
-                    onToggle: (bool value) => setPreferences(LocalSettings.reduceAnimations, value),
+                  SmoothHighlight(
+                    key: settingToHighlight == LocalSettings.reduceAnimations ? settingToHighlightKey : null,
+                    useInitialHighLight: settingToHighlight == LocalSettings.reduceAnimations,
+                    enabled: settingToHighlight == LocalSettings.reduceAnimations,
+                    color: theme.colorScheme.primaryContainer,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                      child: ToggleOption(
+                        description: l10n.reduceAnimations,
+                        subtitle: l10n.reducesAnimations,
+                        value: reduceAnimations,
+                        iconEnabled: Icons.animation,
+                        iconDisabled: Icons.animation,
+                        onToggle: (bool value) => setPreferences(LocalSettings.reduceAnimations, value),
+                      ),
+                    ),
                   ),
                 ],
               ),

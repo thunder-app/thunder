@@ -78,6 +78,7 @@ enum LocalSettings {
       name: 'setting_general_scrape_missing_previews', key: 'scrapeMissingLinkPreviews', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   openLinksInExternalBrowser(
       name: 'setting_links_open_in_external_browser', key: 'openLinksInExternalBrowser', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
+  openByDefault(name: 'setting_links_open_by_default', key: 'openByDefault', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   openLinksInReaderMode(
       name: 'setting_links_open_in_reader_mode', key: 'openLinksInReaderMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
@@ -125,8 +126,8 @@ enum LocalSettings {
   collapseParentCommentBodyOnGesture(
       name: 'setting_comments_collapse_parent_comment_on_gesture',
       key: 'collapseParentCommentBodyOnGesture',
-      category: LocalSettingsCategories.comments,
-      subCategory: LocalSettingsSubCategories.general),
+      category: LocalSettingsCategories.general,
+      subCategory: LocalSettingsSubCategories.comments),
   showCommentActionButtons(
       name: 'setting_general_show_comment_button_actions', key: 'showCommentActionButtons', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.general),
   commentShowUserInstance(name: 'settings_comment_show_user_instance', key: 'showUserInstance', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
@@ -248,6 +249,7 @@ extension LocalizationExt on AppLocalizations {
       'tabletMode': tabletMode,
       'scrapeMissingLinkPreviews': scrapeMissingLinkPreviews,
       'openLinksInExternalBrowser': openLinksInExternalBrowser,
+      'openByDefault': openByDefault,
       'openLinksInReaderMode': openLinksInReaderMode,
       'showUserDisplayNames': showUserDisplayNames,
       'markPostAsReadOnMediaView': markPostAsReadOnMediaView,
