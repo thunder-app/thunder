@@ -479,7 +479,7 @@ class _ThunderState extends State<Thunder> {
                               opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
                               duration: const Duration(milliseconds: 150),
                               curve: Curves.easeIn,
-                              child: FeedFAB(scaffoldMessengerKey: scaffoldMessengerKey),
+                              child: IgnorePointer(ignoring: selectedPageIndex != 0, child: FeedFAB(scaffoldMessengerKey: scaffoldMessengerKey)),
                             )
                           : null,
                       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
