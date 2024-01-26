@@ -1,1 +1,188 @@
-{}
+{
+  "about": "About",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accessibility": "Accessibility",
+  "@accessibility": {},
+  "accessibilityProfilesDescription": "Accessibility profiles allow applying several settings at once to accommodate a particular accessibility requirement.",
+  "@accessibilityProfilesDescription": {},
+  "account": "{count, plural, zero {Account} one {Account} other {Accounts} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
+  "accountSettings": "Account Settings",
+  "@accountSettings": {},
+  "add": "Add",
+  "@add": {},
+  "addAccount": "Add an Account",
+  "@addAccount": {},
+  "addAccountToSeeProfile": "Login to see your account.",
+  "@addAccountToSeeProfile": {},
+  "addAnonymousInstance": "Add Anonymous Instance",
+  "@addAnonymousInstance": {},
+  "addToFavorites": "Add to favourites",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "advanced": "Advanced",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "all": "All",
+  "@all": {},
+  "allPosts": "All Posts",
+  "@allPosts": {},
+  "appearance": "Appearance",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "apply": "Apply",
+  "@apply": {},
+  "back": "Back",
+  "@back": {},
+  "backButton": "Back button",
+  "@backButton": {},
+  "backgroundCheckWarning": "Notification checks will consume additional battery.",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "blockInstance": "Block Instance",
+  "@blockInstance": {},
+  "blockUser": "Block User",
+  "@blockUser": {},
+  "blockedCommunities": "Blocked Communities",
+  "@blockedCommunities": {},
+  "blockedUsers": "Blocked Users",
+  "@blockedUsers": {},
+  "browsingAnonymously": "You are currently browsing {instance} anonymously.",
+  "@browsingAnonymously": {},
+  "cancel": "Cancel",
+  "@cancel": {},
+  "cannotReportOwnComment": "You can't report your own comment.",
+  "@cannotReportOwnComment": {},
+  "cantBlockYourself": "You can't block yourself.",
+  "@cantBlockYourself": {},
+  "cardView": "Card View",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "cardViewDescription": "Enable card view to adjust settings.",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "cardViewSettings": "Card View Settings",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "changeSort": "Change Sorting Options",
+  "@changeSort": {},
+  "clearCache": "Clear Cache ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "clearDatabase": "Clear Database",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearSearch": "Clear Search",
+  "@clearSearch": {},
+  "clearedUserPreferences": "Cleared all user preferences.",
+  "@clearedUserPreferences": {},
+  "close": "Close",
+  "@close": {},
+  "collapseCommentPreview": "Collapse Comment Preview",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "collapseParentCommentBodyOnGesture": "Hide Parent Comment when Collapsed",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "collapsePost": "Collapse post",
+  "@collapsePost": {},
+  "collapseSpoiler": "Collapse Spoiler",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "combineCommentScores": "Combine Comment Scores",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
+  "combineNavAndFabDescription": "Floating Action Button will be shown between navigation buttons.",
+  "@combineNavAndFabDescription": {},
+  "comment": "Comment",
+  "@comment": {},
+  "commentFontScale": "Comment Content Font Scale",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
+  },
+  "actions": "Actions",
+  "@actions": {},
+  "addKeywordFilter": "Add Keyword",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addedCommunityToSubscriptions": "Subscribed to community",
+  "@addedCommunityToSubscriptions": {},
+  "active": "Active",
+  "@active": {},
+  "allowOpenSupportedLinks": "Allow app to open supported links.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "alreadyPostedTo": "Already posted to",
+  "@alreadyPostedTo": {},
+  "andXMore": "and {count} more",
+  "@andXMore": {},
+  "animations": "Animations",
+  "@animations": {},
+  "appLanguage": "App Language",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "applied": "Applied",
+  "@applied": {},
+  "anonymous": "Anonymous",
+  "@anonymous": {},
+  "backToTop": "Back to Top",
+  "@backToTop": {},
+  "blockCommunity": "Block Community",
+  "@blockCommunity": {},
+  "blockedInstances": "Blocked Instances",
+  "@blockedInstances": {},
+  "clearedCache": "Cache cleared successfully.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "clearedDatabase": "Local database cleared. Restart Thunder for new changes to take effect.",
+  "@clearedDatabase": {},
+  "collapseInformation": "Collapse Info",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "collapsePostPreview": "Collapse Post Preview",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "combineCommentScoresLabel": "Combine Comment Scores",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "combineNavAndFab": "Combine FAB and Navigation Buttons",
+  "@combineNavAndFab": {},
+  "cantBlockAdmin": "You can't block an instance admin.",
+  "@cantBlockAdmin": {},
+  "clearPreferences": "Clear Preferences",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "commentBehaviourSettings": "Comments",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  }
+}
