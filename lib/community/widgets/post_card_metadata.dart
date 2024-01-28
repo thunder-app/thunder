@@ -77,7 +77,6 @@ class PostCardMetaData extends StatelessWidget {
               ),
               text: unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' : formatNumberToK(comments),
               textColor: unreadComments != 0 && unreadComments != comments ? theme.primaryColor : readColor,
-
               padding: 5.0,
             ),
             const SizedBox(width: 8.0),
