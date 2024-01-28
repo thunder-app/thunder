@@ -135,6 +135,8 @@ enum LocalSettings {
       name: 'setting_general_nested_comment_indicator_style', key: 'nestedCommentIndicatorStyle', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   nestedCommentIndicatorColor(
       name: 'setting_general_nested_comment_indicator_color', key: 'nestedCommentIndicatorColor', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+  commentUseColorizedUsername(
+      name: 'settings_general_comments_colorized_usernames', key: 'commentUseColorizedUsername', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
 
   /// -------------------------- Accessibility Related Settings --------------------------
   reduceAnimations(name: 'setting_accessibility_reduce_animations', key: 'reduceAnimations', category: LocalSettingsCategories.accessibility, subCategory: LocalSettingsSubCategories.animations),
@@ -329,6 +331,7 @@ extension LocalizationExt on AppLocalizations {
       'feedTypeAndSorts': feedTypeAndSorts,
       'profiles': profiles,
       'animations': animations,
+      'commentUseColorizedUsername': commentUseColorizedUsername
     };
 
     if (localizationMap.containsKey(key)) {

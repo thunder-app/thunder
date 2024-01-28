@@ -207,6 +207,10 @@
   "@commentSwipeGesturesHint": {},
   "comments": "Comments",
   "@comments": {},
+  "commentUseColorizedUsername":"Colorized Usernames",
+  "@commentUseColorizedUsername":{
+    "description":"Setting used to toggle colorized comments creator display name."
+  },
   "communities": "Communities",
   "@communities": {},
   "community": "Community",
