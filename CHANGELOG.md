@@ -4,6 +4,7 @@
 - Added ability to subscribe/unsubscribe to community from long press action on posts
 - Added option to hide top app bar on scroll
 - Ability to search through settings/preferences contribution from @ggichure.
+- Added setting to show/hide user avatars in comments and posts - contribution from @ggichure
 
 ## Changed
 - Small UI adjustments for account switcher
@@ -28,7 +29,6 @@
 - Added support for displaying comment origin instance - contribution from @ggichure.
 - Added ability to favorite communities on the drawer
 - Added ability to set keywords for filtering post titles/body
-- Added setting to show/hide user avatars in comments and posts - contribution from @ggichure
 
 ## Changed
 - Added new items to the Post and Comment actions sheet - contribution from @micahmo
