@@ -58,6 +58,7 @@ class ThunderState extends Equatable {
     this.showCrossPosts = true,
     this.keywordFilters = const [],
     this.appLanguageCode = 'en',
+    this.showPostCreatorAvatar = false,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -68,6 +69,7 @@ class ThunderState extends Equatable {
     this.showCommentButtonActions = false,
     this.commentShowUserInstance = false,
     this.combineCommentScores = false,
+    this.commentsShowUserAvatars = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
@@ -185,6 +187,7 @@ class ThunderState extends Equatable {
   final bool dimReadPosts;
   final bool useAdvancedShareSheet;
   final bool showCrossPosts;
+  final bool showPostCreatorAvatar;
   final List<String> keywordFilters;
 
   /// -------------------------- Post Page Related Settings --------------------------
@@ -196,6 +199,7 @@ class ThunderState extends Equatable {
   final bool showCommentButtonActions;
   final bool commentShowUserInstance;
   final bool combineCommentScores;
+  final bool commentsShowUserAvatars;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
@@ -320,6 +324,7 @@ class ThunderState extends Equatable {
     bool? dimReadPosts,
     bool? useAdvancedShareSheet,
     bool? showCrossPosts,
+    bool? showPostCreatorAvatar,
     String? appLanguageCode = 'en',
     List<String>? keywordFilters,
 
@@ -330,6 +335,7 @@ class ThunderState extends Equatable {
     bool? showCommentButtonActions,
     bool? commentShowUserInstance,
     bool? combineCommentScores,
+    bool? commentsShowUserAvatars,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
@@ -449,6 +455,7 @@ class ThunderState extends Equatable {
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
       useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
       showCrossPosts: showCrossPosts ?? this.showCrossPosts,
+      showPostCreatorAvatar: showPostCreatorAvatar ?? this.showPostCreatorAvatar,
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
@@ -460,6 +467,7 @@ class ThunderState extends Equatable {
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
+      commentsShowUserAvatars: commentsShowUserAvatars ?? this.commentsShowUserAvatars,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
@@ -584,6 +592,7 @@ class ThunderState extends Equatable {
         showCrossPosts,
         appLanguageCode,
         keywordFilters,
+        showPostCreatorAvatar,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,
@@ -594,6 +603,7 @@ class ThunderState extends Equatable {
         showCommentButtonActions,
         commentShowUserInstance,
         combineCommentScores,
+        commentsShowUserAvatars,
 
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,

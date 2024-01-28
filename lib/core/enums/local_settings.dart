@@ -113,7 +113,7 @@ enum LocalSettings {
   showCrossPosts(name: 'setting_show_cross_posts', key: 'showCrossPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   keywordFilters(name: 'setting_general_keyword_filters', key: 'keywordFilters', category: LocalSettingsCategories.filters, subCategory: LocalSettingsSubCategories.filters),
   hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', key: 'hideTopBarOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
-
+  showPostCreatorAvatar(name: 'settings_general_show_posts_avatar', key: 'showPostCreatorAvatar', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   // Advanced Settings
   userFormat(name: 'user_format', key: 'userFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
   communityFormat(name: 'community_format', key: 'communityFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
@@ -135,6 +135,8 @@ enum LocalSettings {
       name: 'setting_general_nested_comment_indicator_style', key: 'nestedCommentIndicatorStyle', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   nestedCommentIndicatorColor(
       name: 'setting_general_nested_comment_indicator_color', key: 'nestedCommentIndicatorColor', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+  commentsShowUserAvatars(
+      name: 'settings_general_comments_show_user_avatar', key: 'commentsShowUserAvatars', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
 
   /// -------------------------- Accessibility Related Settings --------------------------
   reduceAnimations(name: 'setting_accessibility_reduce_animations', key: 'reduceAnimations', category: LocalSettingsCategories.accessibility, subCategory: LocalSettingsSubCategories.animations),
@@ -329,6 +331,8 @@ extension LocalizationExt on AppLocalizations {
       'feedTypeAndSorts': feedTypeAndSorts,
       'profiles': profiles,
       'animations': animations,
+      'commentsShowUserAvatars': commentsShowUserAvatars,
+      'showPostCreatorAvatar': showPostCreatorAvatar
     };
 
     if (localizationMap.containsKey(key)) {

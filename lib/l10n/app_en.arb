@@ -207,6 +207,10 @@
   "@commentSwipeGesturesHint": {},
   "comments": "Comments",
   "@comments": {},
+  "commentsShowUserAvatars":"Show Avatars",
+  "@commentsShowUserAvatars":{
+    "description":"Option to display user avatars in comments"
+  },
   "communities": "Communities",
   "@communities": {},
   "community": "Community",
@@ -1078,6 +1082,10 @@
   "showPostCommunityIcons": "Show Community Icons",
   "@showPostCommunityIcons": {
     "description": "Toggle to show community icons."
+  },
+  "showPostCreatorAvatar":"Show Avatars",
+  "@showPostCreatorAvatar":{
+    "description":"Option to display user avatars in posts"
   },
   "showPostSaveAction": "Show Save Button",
   "@showPostSaveAction": {

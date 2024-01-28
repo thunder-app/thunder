@@ -138,6 +138,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+      bool showPostCreatorAvatar = prefs.getBool(LocalSettings.showPostCreatorAvatar.name) ?? false;
 
       List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
@@ -148,6 +149,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       bool commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
       bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
+      bool commentsShowUserAvatars = prefs.getBool(LocalSettings.commentsShowUserAvatars.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
           NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
@@ -269,6 +271,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         useAdvancedShareSheet: useAdvancedShareSheet,
         showCrossPosts: showCrossPosts,
         keywordFilters: keywordFilters,
+        showPostCreatorAvatar: showPostCreatorAvatar,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings
@@ -279,6 +282,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         combineCommentScores: combineCommentScores,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,
+        commentsShowUserAvatars: commentsShowUserAvatars,
 
         /// -------------------------- Theme Related Settings --------------------------
         // Theme Settings
