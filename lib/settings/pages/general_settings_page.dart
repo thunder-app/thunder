@@ -230,13 +230,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       combineNavAndFab = prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
 
       browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
-      // Migrate the openInExternalBrowser setting, if found.
-      bool? legacyOpenInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name);
-      if (legacyOpenInExternalBrowser != null) {
-        browserMode = legacyOpenInExternalBrowser ? BrowserMode.external : BrowserMode.customTabs;
-        prefs.remove(LocalSettings.openLinksInExternalBrowser.name);
-        prefs.setString(LocalSettings.browserMode.name, browserMode.toString());
-      }
 
       openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;

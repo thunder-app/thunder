@@ -118,13 +118,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
-      // Migrate the openInExternalBrowser setting, if found.
-      bool? legacyOpenInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name);
-      if (legacyOpenInExternalBrowser != null) {
-        browserMode = legacyOpenInExternalBrowser ? BrowserMode.external : BrowserMode.customTabs;
-        prefs.remove(LocalSettings.openLinksInExternalBrowser.name);
-        prefs.setString(LocalSettings.browserMode.name, browserMode.toString());
-      }
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
