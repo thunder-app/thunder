@@ -534,8 +534,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 isDisabled: useCompactView == false,
                 containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !compactPostCardMetadataItems.contains(element)).toList(),
                 onAcceptedData: (data) {
+                  List<PostCardMetadataItem> newCompactPostCardMetadataItems = List.from(compactPostCardMetadataItems)..remove(data);
+
                   setState(() {
-                    compactPostCardMetadataItems.remove(data);
+                    compactPostCardMetadataItems = newCompactPostCardMetadataItems;
                     setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
                   });
                 },
@@ -612,8 +614,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 isDisabled: useCompactView == true,
                 containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !cardPostCardMetadataItems.contains(element)).toList(),
                 onAcceptedData: (data) {
+                  List<PostCardMetadataItem> newCardPostCardMetadataItems = List.from(cardPostCardMetadataItems)..remove(data);
+
                   setState(() {
-                    cardPostCardMetadataItems.remove(data);
+                    cardPostCardMetadataItems = newCardPostCardMetadataItems;
                     setPreferences(LocalSettings.cardPostCardMetadataItems, cardPostCardMetadataItems.map((e) => e.name).toList());
                   });
                 },
@@ -849,8 +853,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     showEmptyTargetMessage: false,
                     containedPostCardMetadataItems: cardPostCardMetadataItems,
                     onAcceptedData: (data) {
+                      List<PostCardMetadataItem> newCardPostCardMetadataItems = List.from(cardPostCardMetadataItems)..add(data);
+
                       setState(() {
-                        cardPostCardMetadataItems.add(data);
+                        cardPostCardMetadataItems = newCardPostCardMetadataItems;
                         setPreferences(LocalSettings.cardPostCardMetadataItems, cardPostCardMetadataItems.map((e) => e.name).toList());
                       });
                     },
@@ -932,8 +938,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     showEmptyTargetMessage: false,
                     containedPostCardMetadataItems: compactPostCardMetadataItems,
                     onAcceptedData: (data) {
+                      List<PostCardMetadataItem> newCompactPostCardMetadataItems = List.from(compactPostCardMetadataItems)..add(data);
+
                       setState(() {
-                        compactPostCardMetadataItems.add(data);
+                        compactPostCardMetadataItems = newCompactPostCardMetadataItems;
                         setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
                       });
                     },
@@ -1035,7 +1043,6 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
             return false;
           },
           onAcceptWithDetails: (DragTargetDetails<PostCardMetadataItem> details) {
-            print(details.offset);
             onAcceptedData(details.data);
           },
         ),
