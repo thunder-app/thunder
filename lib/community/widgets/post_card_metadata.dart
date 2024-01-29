@@ -145,6 +145,9 @@ class PostCardMetadata extends StatelessWidget {
   /// The number of comments on the post. If null, no comment count will be displayed.
   final int? commentCount;
 
+  /// The number of unread comments on the post. If null, no unread comment count will be displayed.
+  final int? unreadCommentCount;
+
   /// The date/time the post was created or updated. This string should conform to ISO-8601 format.
   final String? dateTime;
 
@@ -165,6 +168,7 @@ class PostCardMetadata extends StatelessWidget {
     this.downvoteCount,
     this.voteType = 0,
     this.commentCount,
+    this.unreadCommentCount,
     this.dateTime,
     this.hasBeenEdited = false,
     this.hasBeenRead = false,
@@ -190,7 +194,7 @@ class PostCardMetadata extends StatelessWidget {
             PostCardMetadataItem.score => showScores ? ScorePostCardMetaData(score: score, voteType: voteType, hasBeenRead: hasBeenRead ?? false) : Container(),
             PostCardMetadataItem.upvote => showScores ? UpvotePostCardMetaData(upvotes: upvoteCount, isUpvoted: voteType == 1, hasBeenRead: hasBeenRead ?? false) : Container(),
             PostCardMetadataItem.downvote => showScores ? DownvotePostCardMetaData(downvotes: downvoteCount, isDownvoted: voteType == -1, hasBeenRead: hasBeenRead ?? false) : Container(),
-            PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(commentCount: commentCount, hasBeenRead: hasBeenRead ?? false),
+            PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(commentCount: commentCount, unreadCommentCount: unreadCommentCount ?? 0, hasBeenRead: hasBeenRead ?? false),
             PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: dateTime!, hasBeenRead: hasBeenRead ?? false, hasBeenEdited: hasBeenEdited ?? false),
             PostCardMetadataItem.url => UrlPostCardMetaData(url: url, hasBeenRead: hasBeenRead ?? false),
           };
@@ -327,30 +331,35 @@ class CommentCountPostCardMetaData extends StatelessWidget {
   /// The number of comments on the post. Defaults to 0 if not specified.
   final int? commentCount;
 
+  /// The number of unread comments on the post. Defaults to 0 if not specified.
+  final int? unreadCommentCount;
+
   /// Whether or not the post has been read. This is used to determine the color.
   final bool hasBeenRead;
 
   const CommentCountPostCardMetaData({
     super.key,
     this.commentCount = 0,
+    this.unreadCommentCount = 0,
     this.hasBeenRead = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
     final color = switch (hasBeenRead) {
-      true => readColor,
-      _ => null,
+      true => (unreadCommentCount != 0 && unreadCommentCount != commentCount) ? theme.primaryColor : readColor,
+      _ => (unreadCommentCount != 0 && unreadCommentCount != commentCount) ? theme.primaryColor : null,
     };
 
     return IconText(
       fontScale: state.metadataFontSizeScale,
-      text: formatNumberToK(commentCount ?? 0),
+      text: (unreadCommentCount != 0 && unreadCommentCount != commentCount) ? '+${formatNumberToK(unreadCommentCount ?? 0)}' : formatNumberToK(commentCount ?? 0),
       textColor: color,
       padding: 5.0,
-      icon: Icon(Icons.chat_rounded, size: 17.0, color: color),
+      icon: Icon(unreadCommentCount != 0 && unreadCommentCount != commentCount ? Icons.mark_unread_chat_alt_rounded : Icons.chat, size: 17.0, color: color),
     );
   }
 }
