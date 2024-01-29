@@ -6,13 +6,13 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class PostCardMetaData extends StatelessWidget {
@@ -203,7 +203,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
             GestureDetector(
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: CommunityIcon(community: postView.community, radius: 14),
+                child: CommunityAvatar(community: postView.community, radius: 14),
               ),
               onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
             ),

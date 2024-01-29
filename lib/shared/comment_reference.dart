@@ -14,7 +14,7 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_comment.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class CommentReference extends StatefulWidget {

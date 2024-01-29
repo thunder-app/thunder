@@ -23,8 +23,8 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';

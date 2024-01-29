@@ -59,35 +59,47 @@ Future<bool> isImageUriSvg(Uri? imageUri) async {
   }
 }
 
-Future<Size> retrieveImageDimensions(String imageUrl) async {
+/// Retrieves the size of the given image.
+/// Must provide either [imageUrl] or [imageBytes].
+Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) async {
+  assert(imageUrl != null || imageBytes != null);
+
   try {
-    bool isImage = isImageUrl(imageUrl);
-    if (!isImage) throw Exception('The URL provided was not an image');
-
-    final uri = Uri.parse(imageUrl);
-    final path = uri.path.toLowerCase();
-
-    // We'll just retrieve the first part of the image
-    final rangeResponse = await http.get(
-      uri,
-      headers: {'Range': 'bytes=0-1000'},
-    );
-
-    // Read the response body as bytes
-    final imageData = rangeResponse.bodyBytes;
-
-    // Get the image dimensions
-    if (path.endsWith('jpg') || path.endsWith('jpeg')) {
-      return getJPEGImageDimensions(imageData);
+    if (imageBytes != null) {
+      // We assume that byte-based images, which are only generated in-app by Thunder
+      // are all PNGs.
+      return getPNGImageDimensions(imageBytes);
     }
-    if (path.endsWith('gif')) {
-      return getGIFImageDimensions(imageData);
-    }
-    if (path.endsWith('png')) {
-      return getPNGImageDimensions(imageData);
-    }
-    if (path.endsWith('webp')) {
-      return getWEBPImageDimensions(imageData);
+    // We know imageUrl is not null here due to the assertion.
+    else {
+      bool isImage = isImageUrl(imageUrl!);
+      if (!isImage) throw Exception('The URL provided was not an image');
+
+      final uri = Uri.parse(imageUrl);
+      final path = uri.path.toLowerCase();
+
+      // We'll just retrieve the first part of the image
+      final rangeResponse = await http.get(
+        uri,
+        headers: {'Range': 'bytes=0-1000'},
+      );
+
+      // Read the response body as bytes
+      final imageData = rangeResponse.bodyBytes;
+
+      // Get the image dimensions
+      if (path.endsWith('jpg') || path.endsWith('jpeg')) {
+        return getJPEGImageDimensions(imageData);
+      }
+      if (path.endsWith('gif')) {
+        return getGIFImageDimensions(imageData);
+      }
+      if (path.endsWith('png')) {
+        return getPNGImageDimensions(imageData);
+      }
+      if (path.endsWith('webp')) {
+        return getWEBPImageDimensions(imageData);
+      }
     }
   } catch (e) {
     throw Exception('Failed to retrieve image dimensions');

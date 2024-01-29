@@ -34,8 +34,8 @@ import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
-import 'package:thunder/shared/community_icon.dart';
-import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
@@ -43,7 +43,7 @@ import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class SearchPage extends StatefulWidget {
@@ -207,7 +207,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   title: Material(
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(50),
-                    elevation: 8,
                     child: Stack(
                       children: [
                         TextField(
@@ -250,6 +249,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   )
                                 : null,
                             prefixIcon: const Icon(Icons.search_rounded),
+                            contentPadding: const EdgeInsets.fromLTRB(12, 20, 12, 12),
                           ),
                         ),
                       ],
@@ -713,7 +713,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       message: '${communityView.community.title}\n${generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId))}',
       preferBelow: false,
       child: ListTile(
-        leading: CommunityIcon(community: communityView.community, radius: 25),
+        leading: CommunityAvatar(community: communityView.community, radius: 25),
         title: Text(
           communityView.community.title,
           overflow: TextOverflow.ellipsis,

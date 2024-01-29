@@ -43,9 +43,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   }
 
   Future<void> _refreshAccountInformation(RefreshAccountInformation event, Emitter<AccountState> emit) async {
-    add(GetAccountInformation());
-    add(GetAccountSubscriptions());
-    add(GetFavoritedCommunities());
+    await _getAccountInformation(GetAccountInformation(), emit);
+    await _getAccountSubscriptions(GetAccountSubscriptions(), emit);
+    await _getFavoritedCommunities(GetFavoritedCommunities(), emit);
   }
 
   /// Fetches the current account's information. This updates [personView] which holds moderated community information.
