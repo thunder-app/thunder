@@ -16,7 +16,7 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 
 class LinkPreviewCard extends StatelessWidget {
   const LinkPreviewCard({

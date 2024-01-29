@@ -30,9 +30,11 @@ class ThunderState extends Equatable {
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
+    this.enableInboxNotifications = false,
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
     this.communitySeparator = FullNameSeparator.dot,
+    this.hideTopBarOnScroll = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -55,7 +57,7 @@ class ThunderState extends Equatable {
     this.useAdvancedShareSheet = true,
     this.showCrossPosts = true,
     this.keywordFilters = const [],
-    this.appLanguageCode,
+    this.appLanguageCode = 'en',
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -156,9 +158,11 @@ class ThunderState extends Equatable {
   final bool markPostReadOnMediaView;
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
+  final bool enableInboxNotifications;
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
   final FullNameSeparator communitySeparator;
+  final bool hideTopBarOnScroll;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -290,9 +294,11 @@ class ThunderState extends Equatable {
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
     bool? showInAppUpdateNotification,
+    bool? enableInboxNotifications,
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
     FullNameSeparator? communitySeparator,
+    bool? hideTopBarOnScroll,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -314,7 +320,7 @@ class ThunderState extends Equatable {
     bool? dimReadPosts,
     bool? useAdvancedShareSheet,
     bool? showCrossPosts,
-    String? appLanguageCode,
+    String? appLanguageCode = 'en',
     List<String>? keywordFilters,
 
     /// -------------------------- Post Page Related Settings --------------------------
@@ -416,10 +422,12 @@ class ThunderState extends Equatable {
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
+      enableInboxNotifications: enableInboxNotifications ?? this.enableInboxNotifications,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
       communitySeparator: communitySeparator ?? this.communitySeparator,
+      hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -550,6 +558,7 @@ class ThunderState extends Equatable {
         markPostReadOnMediaView,
         disableFeedFab,
         showInAppUpdateNotification,
+        enableInboxNotifications,
         userSeparator,
         communitySeparator,
 

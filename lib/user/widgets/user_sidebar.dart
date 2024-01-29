@@ -9,7 +9,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_sidebar_activity.dart';
 import 'package:thunder/user/widgets/user_sidebar_stats.dart';
@@ -232,9 +232,12 @@ class _UserSidebarState extends State<UserSidebar> {
                                   right: 8,
                                   bottom: 8,
                                 ),
-                                child: CommonMarkdownBody(
-                                  body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
-                                  imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                                child: Material(
+                                  child: CommonMarkdownBody(
+                                    body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
+                                    imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                                    allowHorizontalTranslation: false,
+                                  ),
                                 ),
                               ),
                               const Padding(
@@ -359,7 +362,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                                       padding: const EdgeInsets.all(8.0),
                                                       child: Row(
                                                         children: [
-                                                          CommunityIcon(community: mods.community, radius: 20.0),
+                                                          CommunityAvatar(community: mods.community, radius: 20.0),
                                                           const SizedBox(width: 16.0),
                                                           Expanded(
                                                             child: Column(

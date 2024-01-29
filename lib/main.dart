@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:background_fetch/background_fetch.dart';
 import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,12 +9,14 @@ import 'package:flutter/services.dart';
 // External Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:flutter_displaymode/flutter_displaymode.dart";
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -27,36 +31,79 @@ import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:flutter/foundation.dart';
+import 'package:thunder/utils/notifications.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  //Setting SystemUIMode
+  // Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  // Load up preferences
+  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
   // Load up sqlite database
   await DB.instance.database;
+
+  // Clear image cache
+  await clearExtendedImageCache();
 
   // Register dart_ping on iOS
   if (!kIsWeb && Platform.isIOS) {
     DartPingIOS.register();
   }
 
+  /// Allows the top-level notification handlers to trigger actions farther down
+  final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
+
+  if (!kIsWeb && Platform.isAndroid) {
+    // Initialize local notifications. Note that this doesn't request permissions or actually send any notifications.
+    // It's just hooking up callbacks and settings.
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    // Initialize the Android-specific settings, using the splash asset as the notification icon.
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
+    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (notificationResponse) => notificationsStreamController.add(notificationResponse));
+
+    // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse != null) {
+      notificationsStreamController.add(notificationAppLaunchDetails.notificationResponse!);
+    }
+
+    // Initialize background fetch (this is async and can go run on its own).
+    if (prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false) {
+      initBackgroundFetch();
+    }
+  }
+
   final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
-  runApp(const ThunderApp());
-  // Set high refresh rate after app initialization
-  FlutterDisplayMode.setHighRefreshRate();
+  runApp(ThunderApp(notificationsStream: notificationsStreamController.stream));
+
+  if (!kIsWeb && Platform.isAndroid) {
+    // Set high refresh rate after app initialization
+    FlutterDisplayMode.setHighRefreshRate();
+  }
+
+  // Register to receive BackgroundFetch events after app is terminated.
+  if (!kIsWeb && Platform.isAndroid && (prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false)) {
+    initHeadlessBackgroundFetch();
+  }
 }
 
 class ThunderApp extends StatelessWidget {
-  const ThunderApp({super.key});
+  final Stream<NotificationResponse> notificationsStream;
+
+  const ThunderApp({super.key, required this.notificationsStream});
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +120,9 @@ class ThunderApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => DeepLinksCubit(),
+        ),
+        BlocProvider(
+          create: (context) => NotificationsCubit(notificationsStream: notificationsStream),
         ),
         BlocProvider(
           create: (context) => ThunderBloc(),
@@ -98,6 +148,7 @@ class ThunderApp extends StatelessWidget {
           if (state.status == ThemeStatus.initial) {
             context.read<ThemeBloc>().add(ThemeChangeEvent());
           }
+
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
               ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name));
@@ -168,3 +219,67 @@ class ThunderApp extends StatelessWidget {
     );
   }
 }
+
+// ---------------- START BACKGROUND FETCH STUFF ---------------- //
+
+/// This method handles "headless" callbacks,
+/// i.e., whent the app is not running
+@pragma('vm:entry-point')
+void backgroundFetchHeadlessTask(HeadlessTask task) async {
+  if (task.timeout) {
+    BackgroundFetch.finish(task.taskId);
+    return;
+  }
+  // Run the poll!
+  await pollRepliesAndShowNotifications();
+  BackgroundFetch.finish(task.taskId);
+}
+
+/// The method initializes background fetching while the app is running
+Future<void> initBackgroundFetch() async {
+  await BackgroundFetch.configure(
+    BackgroundFetchConfig(
+      minimumFetchInterval: 15,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      enableHeadless: true,
+      requiredNetworkType: NetworkType.NONE,
+      requiresBatteryNotLow: false,
+      requiresStorageNotLow: false,
+      requiresCharging: false,
+      requiresDeviceIdle: false,
+      // Uncomment this line (and set the minimumFetchInterval to 1) for quicker testing.
+      //forceAlarmManager: true,
+    ),
+    // This is the callback that handles background fetching while the app is running.
+    (String taskId) async {
+      // Run the poll!
+      await pollRepliesAndShowNotifications();
+      BackgroundFetch.finish(taskId);
+    },
+    // This is the timeout callback.
+    (String taskId) async {
+      BackgroundFetch.finish(taskId);
+    },
+  );
+}
+
+void disableBackgroundFetch() async {
+  await BackgroundFetch.configure(
+    BackgroundFetchConfig(
+      minimumFetchInterval: 15,
+      stopOnTerminate: true,
+      startOnBoot: false,
+      enableHeadless: false,
+    ),
+    () {},
+    () {},
+  );
+}
+
+// This method initializes background fetching while the app is not running
+void initHeadlessBackgroundFetch() async {
+  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+}
+
+// ---------------- END BACKGROUND FETCH STUFF ---------------- //

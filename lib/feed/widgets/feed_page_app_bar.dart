@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
@@ -21,9 +22,13 @@ import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FeedPageAppBar extends StatelessWidget {
-  const FeedPageAppBar({super.key, this.showAppBarTitle = true});
+  const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
 
+  /// Whether to show the app bar title
   final bool showAppBarTitle;
+
+  /// The scaffold key of the parent scaffold holding the drawer.
+  final GlobalKey<ScaffoldState>? scaffoldStateKey;
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +39,14 @@ class FeedPageAppBar extends StatelessWidget {
     final FeedState feedState = feedBloc.state;
 
     return SliverAppBar(
-      pinned: true,
+      pinned: !thunderBloc.state.hideTopBarOnScroll,
       floating: true,
       centerTitle: false,
       toolbarHeight: 70.0,
+      surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
-        icon: Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community
+        icon: scaffoldStateKey == null
             ? (!kIsWeb && Platform.isIOS
                 ? Icon(
                     Icons.arrow_back_ios_new_rounded,
@@ -50,7 +56,7 @@ class FeedPageAppBar extends StatelessWidget {
             : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
         onPressed: () {
           HapticFeedback.mediumImpact();
-          (Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : Scaffold.of(context).openDrawer();
+          (scaffoldStateKey == null && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : scaffoldStateKey?.currentState?.openDrawer();
         },
       ),
       actions: feedState.status != FeedStatus.failureLoadingCommunity
@@ -134,6 +140,16 @@ class FeedPageAppBar extends StatelessWidget {
                           horizontalTitleGap: 5,
                           leading: Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
                           title: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
+                        ),
+                      ),
+                    if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
+                      PopupMenuItem(
+                        onTap: () => Share.share(feedBloc.state.fullCommunityView!.communityView.community.actorId),
+                        child: ListTile(
+                          dense: true,
+                          horizontalTitleGap: 5,
+                          leading: const Icon(Icons.share_rounded, size: 20),
+                          title: Text(l10n.share),
                         ),
                       ),
                   ],

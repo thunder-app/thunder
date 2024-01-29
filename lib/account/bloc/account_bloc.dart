@@ -14,7 +14,6 @@ part 'account_event.dart';
 part 'account_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
-const timeout = Duration(seconds: 5);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -22,87 +21,116 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
   AccountBloc() : super(const AccountState()) {
-    on<GetAccountInformation>((event, emit) async {
-      int attemptCount = 0;
+    on<RefreshAccountInformation>(
+      _refreshAccountInformation,
+      transformer: restartable(),
+    );
 
-      bool hasFetchedAllSubsciptions = false;
+    on<GetAccountInformation>(
+      _getAccountInformation,
+      transformer: restartable(),
+    );
+
+    on<GetAccountSubscriptions>(
+      _getAccountSubscriptions,
+      transformer: restartable(),
+    );
+
+    on<GetFavoritedCommunities>(
+      _getFavoritedCommunities,
+      transformer: restartable(),
+    );
+  }
+
+  Future<void> _refreshAccountInformation(RefreshAccountInformation event, Emitter<AccountState> emit) async {
+    await _getAccountInformation(GetAccountInformation(), emit);
+    await _getAccountSubscriptions(GetAccountSubscriptions(), emit);
+    await _getFavoritedCommunities(GetFavoritedCommunities(), emit);
+  }
+
+  /// Fetches the current account's information. This updates [personView] which holds moderated community information.
+  Future<void> _getAccountInformation(GetAccountInformation event, Emitter<AccountState> emit) async {
+    Account? account = await fetchActiveProfileAccount();
+
+    if (account == null || account.jwt == null) {
+      return emit(state.copyWith(status: AccountStatus.success, personView: null, moderates: []));
+    }
+
+    try {
+      emit(state.copyWith(status: AccountStatus.loading));
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      GetPersonDetailsResponse? getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
+        username: account.username,
+        auth: account.jwt,
+        sort: SortType.new_,
+        page: 1,
+      ));
+
+      // This eliminates an issue which has plagued me a lot which is that there's a race condition
+      // with so many calls to GetAccountInformation, we can return success for the new and old account.
+      if (getPersonDetailsResponse?.personView.person.id == account.userId) {
+        return emit(state.copyWith(status: AccountStatus.success, personView: getPersonDetailsResponse?.personView, moderates: getPersonDetailsResponse?.moderates));
+      } else {
+        return emit(state.copyWith(status: AccountStatus.success, personView: null));
+      }
+    } catch (e) {
+      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  /// Fetches the current account's subscriptions.
+  Future<void> _getAccountSubscriptions(GetAccountSubscriptions event, Emitter<AccountState> emit) async {
+    Account? account = await fetchActiveProfileAccount();
+
+    if (account == null || account.jwt == null) {
+      return emit(state.copyWith(status: AccountStatus.success, subsciptions: [], personView: null));
+    }
+
+    try {
+      emit(state.copyWith(status: AccountStatus.loading));
+
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      List<CommunityView> subscriptions = [];
+
       int currentPage = 1;
+      bool hasFetchedAllSubsciptions = false;
 
-      try {
-        var exception;
+      while (!hasFetchedAllSubsciptions) {
+        ListCommunitiesResponse listCommunitiesResponse = await lemmy.run(
+          ListCommunities(
+            auth: account.jwt,
+            page: currentPage,
+            type: ListingType.subscribed,
+            limit: 50, // Temporarily increasing this to address issue of missing subscriptions
+          ),
+        );
 
-        Account? account = await fetchActiveProfileAccount();
-
-        while (attemptCount < 2) {
-          try {
-            LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-            emit(state.copyWith(status: AccountStatus.loading));
-
-            if (account == null || account.jwt == null) {
-              return emit(state.copyWith(status: AccountStatus.success, subsciptions: [], personView: null));
-            } else {
-              emit(state.copyWith(status: AccountStatus.loading));
-            }
-
-            List<CommunityView> subsciptions = [];
-            List<CommunityView> favoritedCommunities = [];
-
-            while (!hasFetchedAllSubsciptions) {
-              ListCommunitiesResponse listCommunitiesResponse = await lemmy.run(
-                ListCommunities(
-                  auth: account.jwt,
-                  page: currentPage,
-                  type: ListingType.subscribed,
-                  limit: 50, // Temporarily increasing this to address issue of missing subscriptions
-                ),
-              );
-
-              subsciptions.addAll(listCommunitiesResponse.communities);
-              currentPage++;
-              hasFetchedAllSubsciptions = listCommunitiesResponse.communities.isEmpty;
-            }
-
-            // Sort subscriptions by their name
-            subsciptions.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
-
-            List<Favorite> favorites = await Favorite.favorites(account.id);
-            favoritedCommunities = subsciptions.where((CommunityView communityView) => favorites.any((Favorite favorite) => favorite.communityId == communityView.community.id)).toList();
-
-            GetPersonDetailsResponse? getPersonDetailsResponse =
-                await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: SortType.new_, page: 1)).timeout(timeout, onTimeout: () {
-              throw Exception('Error: Timeout when attempting to fetch account details');
-            });
-
-            // This eliminates an issue which has plagued me a lot which is that there's a race condition
-            // with so many calls to GetAccountInformation, we can return success for the new and old account.
-            if (getPersonDetailsResponse.personView.person.id == (await fetchActiveProfileAccount())?.userId) {
-              return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, favorites: favoritedCommunities, personView: getPersonDetailsResponse.personView));
-            } else {
-              return emit(state.copyWith(status: AccountStatus.success));
-            }
-          } catch (e) {
-            exception = e;
-            attemptCount++;
-          }
-        }
-        emit(state.copyWith(status: AccountStatus.failure, errorMessage: exception.toString()));
-      } catch (e) {
-        emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
-      }
-    });
-
-    on<GetFavoritedCommunities>((event, emit) async {
-      Account? account = await fetchActiveProfileAccount();
-
-      if (account == null || account.jwt == null) {
-        return emit(state.copyWith(status: AccountStatus.success));
+        subscriptions.addAll(listCommunitiesResponse.communities);
+        currentPage++;
+        hasFetchedAllSubsciptions = listCommunitiesResponse.communities.isEmpty;
       }
 
-      List<Favorite> favorites = await Favorite.favorites(account.id);
-      List<CommunityView> favoritedCommunities =
-          state.subsciptions.where((CommunityView communityView) => favorites.any((Favorite favorite) => favorite.communityId == communityView.community.id)).toList();
+      // Sort subscriptions by their name
+      subscriptions.sort((CommunityView a, CommunityView b) => a.community.title.toLowerCase().compareTo(b.community.title.toLowerCase()));
+      return emit(state.copyWith(status: AccountStatus.success, subsciptions: subscriptions));
+    } catch (e) {
+      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
+    }
+  }
 
-      emit(state.copyWith(status: AccountStatus.success, favorites: favoritedCommunities));
-    });
+  /// Fetches the current account's favorited communities.
+  Future<void> _getFavoritedCommunities(GetFavoritedCommunities event, Emitter<AccountState> emit) async {
+    Account? account = await fetchActiveProfileAccount();
+
+    if (account == null || account.jwt == null) {
+      return emit(state.copyWith(status: AccountStatus.success));
+    }
+
+    List<Favorite> favorites = await Favorite.favorites(account.id);
+    List<CommunityView> favoritedCommunities =
+        state.subsciptions.where((CommunityView communityView) => favorites.any((Favorite favorite) => favorite.communityId == communityView.community.id)).toList();
+
+    return emit(state.copyWith(status: AccountStatus.success, favorites: favoritedCommunities));
   }
 }

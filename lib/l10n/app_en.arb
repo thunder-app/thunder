@@ -7,8 +7,10 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
   "@accessibilityProfilesDescription": {},
-  "account": "Account",
-  "@account": {},
+  "account": "{count, plural, zero {Account} one {Account} other {Accounts} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "actions": "Actions",
@@ -71,6 +73,14 @@
   "@backButton": {},
   "backToTop": "Back To Top",
   "@backToTop": {},
+  "backgroundCheckWarning": "Note that notification checks will consume additional battery",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
   "blockCommunity": "Block Community",
   "@blockCommunity": {},
   "blockInstance": "Block Instance",
@@ -107,6 +117,10 @@
   },
   "changeSort": "Change Sort",
   "@changeSort": {},
+  "clearCache": "Clear Cache ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
   "clearDatabase": "Clear Database",
   "@clearDatabase": {
     "description": "Label for action to clear local database in the dialog"
@@ -117,6 +131,10 @@
   },
   "clearSearch": "Clear Search",
   "@clearSearch": {},
+  "clearedCache": "Cleared cache successfully.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
   "clearedDatabase": "Local database cleared. Restart Thunder for new changes to take effect.",
   "@clearedDatabase": {},
   "clearedUserPreferences": "Cleared all user preferences",
@@ -131,6 +149,10 @@
   "@collapseInformation": {
     "description": "Describes the action to collapse information - used in FAB settings"
   },
+  "collapseParentCommentBodyOnGesture": "Hide Parent Comment when Collapsed",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
   "collapsePost": "Collapse post",
   "@collapsePost": {},
   "collapsePostPreview": "Collapse Post Preview",
@@ -141,17 +163,27 @@
   "@collapseSpoiler": {
     "description": "Label for collapsing spoiler"
   },
+  "combineCommentScores": "Combine Comment Scores",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
   "combineCommentScoresLabel": "Combine Comment Scores",
   "@combineCommentScoresLabel": {
     "description": "Label for setting to combine comment scores"
   },
-  "combineNavAndFab": "Floating Action Button will be shown between navigation buttons.",
+  "combineNavAndFab": "Combine FAB and Navigation Buttons",
   "@combineNavAndFab": {},
+  "combineNavAndFabDescription": "Floating Action Button will be shown between navigation buttons.",
+  "@combineNavAndFabDescription": {},
   "comment": "Comment",
   "@comment": {},
   "commentBehaviourSettings": "Comments",
   "@commentBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
+  },
+  "commentFontScale": "Comment Content Font Scale",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
   },
   "commentPreview": "Show a preview of the comments with the given settings",
   "@commentPreview": {
@@ -167,6 +199,10 @@
   },
   "commentSortType": "Comment Sort Type",
   "@commentSortType": {},
+  "commentSwipeActions": "Comment Swipe Actions",
+  "@commentSwipeActions": {
+    "description": "Setting for comment swipe actions"
+  },
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "@commentSwipeGesturesHint": {},
   "comments": "Comments",
@@ -194,6 +230,10 @@
   "condensed": "Condensed",
   "@condensed": {
     "description": "Condensed post body view type"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
   },
   "confirmLogOutBody": "Are you sure you want to log out?",
   "@confirmLogOutBody": {
@@ -251,6 +291,10 @@
   "@creator": {
     "description": "The creator filter for searches."
   },
+  "crossPostedFrom": "cross-posted from:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
+  },
   "crossPostedTo": "Cross-posted to",
   "@crossPostedTo": {},
   "currentLongPress": "Currently set as long press",
@@ -259,6 +303,14 @@
   "@currentSinglePress": {},
   "customizeSwipeActions": "Customize swipe actions (tap to change)",
   "@customizeSwipeActions": {},
+  "dangerZone": "Danger Zone",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "dark": "Dark",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
   "debug": "Debug",
   "@debug": {
     "description": "Debug settings category."
@@ -267,8 +319,28 @@
   "@debugDescription": {
     "description": "Explanation for debug settings page"
   },
+  "defaultCommentSortType": "Default Comment Sort Type",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "defaultFeedSortType": "Default Feed Sort Type",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  },
+  "defaultFeedType": "Default Feed Type",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
   "delete": "Delete",
   "@delete": {},
+  "deleteAccount": "Delete Account",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "deleteAccountDescription": "To permanently delete your account, you will be redirected to your instance site. \n\nAre you sure you want to continue?",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
   "deleteLocalDatabase": "Delete Local Database",
   "@deleteLocalDatabase": {
     "description": "Label for action to delete local database"
@@ -285,9 +357,13 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
-  "dimReadPosts": "Read posts will be grayed out",
+  "dimReadPosts": "Dim Read Posts",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
+  },
+  "disable": "Disable",
+  "@disable": {
+    "description": "Action for disabling something"
   },
   "dismissRead": "Dismiss Read",
   "@dismissRead": {},
@@ -317,9 +393,25 @@
   "@emptyUri": {
     "description": "Error message for empty link."
   },
+  "enableCommentNavigation": "Enable Comment Navigation",
+  "@enableCommentNavigation": {
+    "description": "Setting for enable comment navigation"
+  },
   "enableFeedFab": "Enable Floating Button on Feeds",
   "@enableFeedFab": {
     "description": "Enable the Floating Action Button for the feed"
+  },
+  "enableFloatingButtonOnFeeds": "Enable Floating Button On Feeds",
+  "@enableFloatingButtonOnFeeds": {
+    "description": "Setting for enable floating button on feeds"
+  },
+  "enableFloatingButtonOnPosts": "Enable Floating Button On Posts",
+  "@enableFloatingButtonOnPosts": {
+    "description": "Setting for enable floating button on posts"
+  },
+  "enableInboxNotifications": "Enable Inbox Notifications (Experimental)",
+  "@enableInboxNotifications": {
+    "description": "Setting name for inbox notifications"
   },
   "enablePostFab": "Enable Floating Button on Posts",
   "@enablePostFab": {
@@ -356,6 +448,10 @@
   "expanded": "Expanded",
   "@expanded": {
     "description": "Expanded post body view type"
+  },
+  "extraLarge": "Extra Large",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
   },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
@@ -403,8 +499,16 @@
   "@floatingActionButtonSinglePressDescription": {
     "description": "Description of the FAB's single-press action"
   },
+  "fonts": "Fonts",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
+  "fullscreenSwipeGestures": "Fullscreen Swipe Gestures",
+  "@fullscreenSwipeGestures": {
+    "description": "Setting for fullscreen swipe gestures"
+  },
   "general": "General",
   "@general": {
     "description": "General settings category."
@@ -417,8 +521,20 @@
   "@gestures": {},
   "gettingStarted": "Getting Started",
   "@gettingStarted": {},
+  "hideNsfwPostsFromFeed": "Hide NSFW Posts from Feed",
+  "@hideNsfwPostsFromFeed": {
+    "description": "Toggle to hide NSFW posts from the feed."
+  },
+  "hideNsfwPreviews": "Hide NSFW Previews",
+  "@hideNsfwPreviews": {
+    "description": "Toggle to hide NSFW previews."
+  },
   "hidePassword": "Hide Password",
   "@hidePassword": {},
+  "hideTopBarOnScroll": "Hide Top Bar on Scroll",
+  "@hideTopBarOnScroll": {
+    "description": "Settings toggle to hide the top bar on scroll"
+  },
   "hot": "Hot",
   "@hot": {},
   "image": "Image",
@@ -473,6 +589,22 @@
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
   },
+  "large": "Large",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "leftLongSwipe": "Left Long Swipe",
+  "@leftLongSwipe": {
+    "description": "Setting for left long swipe"
+  },
+  "leftShortSwipe": "Left Short Swipe",
+  "@leftShortSwipe": {
+    "description": "Setting for left short swipe"
+  },
+  "light": "Light",
+  "@light": {
+    "description": "Describes using the light theme"
+  },
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
   "linkActions": "Link Actions",
@@ -511,33 +643,69 @@
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
+  "markPostAsReadOnMediaView": "Mark Read After Viewing Media",
+  "@markPostAsReadOnMediaView": {
+    "description": "Toggle to mark posts as read after viewing media."
+  },
+  "medium": "Medium",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
   "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
   "@mention": {},
   "message": "{count, plural, zero {Message} one {Message} other {Messages} }",
   "@message": {},
+  "metadataFontScale": "Metadata Font Scale",
+  "@metadataFontScale": {
+    "description": "Setting for metadata font scale"
+  },
   "missingErrorMessage": "No error message available",
   "@missingErrorMessage": {},
+  "moderatedCommunities": "Moderated Communities",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
   "mostComments": "Most Comments",
   "@mostComments": {},
   "mustBeLoggedInComment": "You need to be logged in to comment",
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
   "@mustBeLoggedInPost": {},
+  "navbarDoubleTapGestures": "Navbar Double Tap Gestures",
+  "@navbarDoubleTapGestures": {
+    "description": "Setting for navbar double tap gestures"
+  },
+  "navbarSwipeGestures": "Navbar Swipe Gestures",
+  "@navbarSwipeGestures": {
+    "description": "Setting for navbar swipe gestures"
+  },
   "navigateDown": "Next comment",
   "@navigateDown": {},
   "navigateUp": "Previous comment",
   "@navigateUp": {},
   "navigation": "Navigation",
   "@navigation": {},
+  "nestedCommentIndicatorColor": "Nested Comment Indicator Color",
+  "@nestedCommentIndicatorColor": {
+    "description": "Setting for nested comment indicator color"
+  },
+  "nestedCommentIndicatorStyle": "Nested Comment Indicator Style",
+  "@nestedCommentIndicatorStyle": {
+    "description": "Setting for nested comment indicator style"
+  },
   "newComments": "New Comments",
   "@newComments": {},
+  "newPost": "New Post",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
   "new_": "New",
   "@new_": {},
   "noComments": "Oh. There are no comments.",
   "@noComments": {},
-  "noCommentsFound": "No comments found",
+  "noCommentsFound": "No comments found.",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No communities found",
+  "noCommunitiesFound": "No communities found.",
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
@@ -555,7 +723,7 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "No posts found",
+  "noPosts": "No posts found.",
   "@noPosts": {},
   "noPostsFound": "No posts found",
   "@noPostsFound": {},
@@ -567,7 +735,7 @@
   },
   "noUserBlocks": "No blocked users.",
   "@noUserBlocks": {},
-  "noUsersFound": "No users found",
+  "noUsersFound": "No users found.",
   "@noUsersFound": {},
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
@@ -582,6 +750,14 @@
   "notificationsBehaviourSettings": "Notifications",
   "@notificationsBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
+  },
+  "notificationsNotAllowed": "Notifications are not allowed for Thunder in system settings",
+  "@notificationsNotAllowed": {
+    "description": "Description for when notifications are now allowed for app"
+  },
+  "notificationsWarningDialog": "Notifications are an experimental feature which may not function correctly on all devices.\n\n· Checks will occur every ~15 minutes and will consume additional battery.\n\n· Disable battery optimizations for a higher likelihood of successful notifications.\n\nSee the following page for more information.",
+  "@notificationsWarningDialog": {
+    "description": "The content of the warning dialog for the notifications feature"
   },
   "off": "off",
   "@off": {},
@@ -605,6 +781,14 @@
   "@openInBrowser": {},
   "openInstance": "Open Instance",
   "@openInstance": {},
+  "openLinksInExternalBrowser": "Open Links in External Browser",
+  "@openLinksInExternalBrowser": {
+    "description": "Toggle to open links in an external browser."
+  },
+  "openLinksInReaderMode": "Open Links in Reader Mode",
+  "@openLinksInReaderMode": {
+    "description": "Toggle to open links in reader mode when available."
+  },
   "openSettings": "Open Settings",
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
@@ -643,6 +827,14 @@
   "@postBodyViewType": {
     "description": "Setting name for the post body view type setting"
   },
+  "postContentFontScale": "Post Content Font Scale",
+  "@postContentFontScale": {
+    "description": "Setting for post content font scale"
+  },
+  "postCreatedSuccessfully": "Post created successfully!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
+  },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
   "postNSFW": "Mark as NSFW",
@@ -653,10 +845,18 @@
   },
   "postSavedAsDraft": "Post saved as draft",
   "@postSavedAsDraft": {},
+  "postSwipeActions": "Post Swipe Actions",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
   "postSwipeGesturesHint": "Looking to use buttons instead? Change what buttons appear on post cards in general settings.",
   "@postSwipeGesturesHint": {},
   "postTitle": "Title",
   "@postTitle": {},
+  "postTitleFontScale": "Post Title Font Scale",
+  "@postTitleFontScale": {
+    "description": "Setting for post title font scale"
+  },
   "postTogglePreview": "Toggle Preview",
   "@postTogglePreview": {},
   "postURL": "URL",
@@ -679,10 +879,18 @@
   "@profileAppliedSuccessfully": {},
   "profiles": "Profiles",
   "@profiles": {},
+  "pureBlack": "Pure Black",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
+  "reduceAnimations": "Reduce Animations",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
   "reducesAnimations": "Reduces the animations used within Thunder",
   "@reducesAnimations": {},
   "refresh": "Refresh",
@@ -747,6 +955,14 @@
   "@restoredPostFromDraft": {},
   "retry": "Retry",
   "@retry": {},
+  "rightLongSwipe": "Right Long Swipe",
+  "@rightLongSwipe": {
+    "description": "Setting for right long swipe"
+  },
+  "rightShortSwipe": "Right Short Swipe",
+  "@rightShortSwipe": {
+    "description": "Setting for right short swipe"
+  },
   "save": "Save",
   "@save": {},
   "saveSettings": "Save Settings",
@@ -757,6 +973,10 @@
   "@saved": {},
   "scaled": "Scaled",
   "@scaled": {},
+  "scrapeMissingLinkPreviews": "Scrape Missing Link Previews",
+  "@scrapeMissingLinkPreviews": {
+    "description": "Toggle to scrape missing external link previews."
+  },
   "scrapeMissingPreviews": "Enabling will have a performance hit.",
   "@scrapeMissingPreviews": {
     "description": "Notice regarding potential performance impact when enabling link scrapping."
@@ -829,19 +1049,83 @@
   "@showBotAccounts": {
     "description": "Option to show bot accounts."
   },
+  "showCommentActionButtons": "Show Comment Action Buttons",
+  "@showCommentActionButtons": {
+    "description": "Toggle to show comment action buttons."
+  },
+  "showCrossPosts": "Show Cross Posts",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "showEdgeToEdgeImages": "Show Edge to Edge Images",
+  "@showEdgeToEdgeImages": {
+    "description": "Toggle to view edge to edge images."
+  },
+  "showFullHeightImages": "Show Full Height Images",
+  "@showFullHeightImages": {
+    "description": "Toggle to view full height images."
+  },
+  "showInAppUpdateNotifications": "Get Notified of new GitHub Releases",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
   "showLess": "Show fewer",
   "@showLess": {},
   "showMore": "Show more",
   "@showMore": {},
   "showPassword": "Show Password",
   "@showPassword": {},
+  "showPostAuthor": "Show Post Author",
+  "@showPostAuthor": {
+    "description": "Toggle to show post author."
+  },
+  "showPostCommunityIcons": "Show Community Icons",
+  "@showPostCommunityIcons": {
+    "description": "Toggle to show community icons."
+  },
+  "showPostSaveAction": "Show Save Button",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "showPostTextContentPreview": "Show Text Preview",
+  "@showPostTextContentPreview": {
+    "description": "Toggle to show text previews."
+  },
+  "showPostTitleFirst": "Show Title First",
+  "@showPostTitleFirst": {
+    "description": "Toggle to show post title first."
+  },
+  "showPostVoteActions": "Show Vote Buttons",
+  "@showPostVoteActions": {
+    "description": "Toggle to show vote buttons."
+  },
   "showReadPosts": "Show Read Posts",
   "@showReadPosts": {
     "description": "Setting to show read posts in feed."
   },
+  "showScoreCounters": "Display User Scores",
+  "@showScoreCounters": {
+    "description": "Toggle to display user scores."
+  },
   "showScores": "Show Post/Comment Scores",
   "@showScores": {
     "description": "Option to show scores on posts and comments."
+  },
+  "showTextPostIndicator": "Show Text Post Indicator",
+  "@showTextPostIndicator": {
+    "description": "Toggle to show text post indicator."
+  },
+  "showThumbnailPreviewOnRight": "Show Thumbnails on the Right",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Toggle to show thumbnails on the right side."
+  },
+  "showUserDisplayNames": "Show User Display Names",
+  "@showUserDisplayNames": {
+    "description": "Toggle to show user display names."
+  },
+  "showUserInstance": "Show User Instance",
+  "@showUserInstance": {
+    "description": "Toggle to show user instance."
   },
   "sidebar": "Sidebar",
   "@sidebar": {},
@@ -849,6 +1133,10 @@
   "@sidebarBottomNavDoubleTapDescription": {},
   "sidebarBottomNavSwipeDescription": "Swipe bottom nav to open sidebar",
   "@sidebarBottomNavSwipeDescription": {},
+  "small": "Small",
+  "@small": {
+    "description": "Description for small font scale"
+  },
   "somethingWentWrong": "Oops, something went wrong!",
   "@somethingWentWrong": {},
   "sortBy": "Sort By",
@@ -865,6 +1153,10 @@
   "@submit": {},
   "subscribe": "Subscribe",
   "@subscribe": {},
+  "subscribeToCommunity": "Subscribe to Community",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
   "subscribed": "Subscribed",
   "@subscribed": {},
   "subscriptions": "Subscriptions",
@@ -881,10 +1173,30 @@
   "@suggestedTitle": {
     "description": "Suggested title for the post."
   },
-  "tapToExit": "Go back twice to exit",
+  "system": "System",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "tabletMode": "Tablet Mode (2-column view)",
+  "@tabletMode": {
+    "description": "Toggle to enable 2-column tablet mode."
+  },
+  "tapToExit": "Press back again to exit",
   "@tapToExit": {},
+  "tappableAuthorCommunity": "Tappable Authors & Communities",
+  "@tappableAuthorCommunity": {
+    "description": "Toggle to make authors and communities tappable."
+  },
   "text": "Text",
   "@text": {},
+  "theme": "Theme",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "themeAccentColor": "Accent Colors",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
   "theming": "Theming",
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
@@ -941,6 +1253,10 @@
   },
   "trendingCommunities": "Trending Communities",
   "@trendingCommunities": {},
+  "trySearchingFor": "Try searching for...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
   "unableToFindCommunity": "Unable to find community",
   "@unableToFindCommunity": {},
   "unableToFindCommunityName": "Unable to find community '{communityName}'",
@@ -969,14 +1285,26 @@
   "@unableToLoadPostsFrominstance": {},
   "unableToLoadReplies": "Unable to load more replies.",
   "@unableToLoadReplies": {},
+  "unableToNavigateToInstance": "Unable to navigate to {instanceHost}. It may not be a valid Lemmy instance.",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
+  },
+  "understandEnable": "I Understand, Enable",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
   },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
+  "unsubscribeFromCommunity": "Unsubscribe from Community",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
   "unsubscribePending": "Unsubscribe (subscription pending)",
   "@unsubscribePending": {},
   "unsubscribed": "Unsubscribed",
@@ -993,9 +1321,21 @@
   },
   "url": "URL",
   "@url": {},
+  "useAdvancedShareSheet": "Use Advanced Share Sheet",
+  "@useAdvancedShareSheet": {
+    "description": "Toggle to use advanced share sheet."
+  },
   "useCompactView": "Enable for small posts, disable for big.",
   "@useCompactView": {
     "description": "Option to enable or disable compact view for small posts."
+  },
+  "useMaterialYouTheme": "Use Material You Theme",
+  "@useMaterialYouTheme": {
+    "description": "Toggle to use Material You theme."
+  },
+  "useMaterialYouThemeDescription": "Overrides the selected custom theme",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
   },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
@@ -1025,6 +1365,10 @@
   "@visitInstance": {},
   "visitUserProfile": "Visit User Profile",
   "@visitUserProfile": {},
+  "warning": "Warning",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
   "xDownvotes": "{x} downvotes",
   "@xDownvotes": {},
   "xScore": "{x} score",

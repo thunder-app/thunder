@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/full_name_separator.dart';
-import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -91,7 +91,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                     children: [
                       Row(
                         children: [
-                          CommunityIcon(
+                          CommunityAvatar(
                             community: widget.getCommunityResponse.communityView.community,
                             radius: 45.0,
                             showCommunityStatus: true,

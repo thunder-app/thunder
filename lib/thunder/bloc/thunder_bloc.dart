@@ -111,9 +111,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
-      String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name);
+      bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
+      String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+      bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -239,9 +241,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
         showInAppUpdateNotification: showInAppUpdateNotification,
+        enableInboxNotifications: enableInboxNotifications,
         appLanguageCode: appLanguageCode,
         userSeparator: userSeparator,
         communitySeparator: communitySeparator,
+        hideTopBarOnScroll: hideTopBarOnScroll,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings

@@ -6,7 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 
 import 'package:thunder/shared/icon_text.dart';
-import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 

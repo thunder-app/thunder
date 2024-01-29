@@ -14,7 +14,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/navigate_post.dart';
+import 'package:thunder/post/utils/navigate_post.dart';
 
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
@@ -192,11 +192,6 @@ class _PostCardState extends State<PostCard> {
               child: state.useCompactView
                   ? PostCardViewCompact(
                       postViewMedia: widget.postViewMedia,
-                      showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
-                      showTextPostIndicator: state.showTextPostIndicator,
-                      showPostAuthor: state.showPostAuthor,
-                      hideNsfwPreviews: state.hideNsfwPreviews,
-                      markPostReadOnMediaView: state.markPostReadOnMediaView,
                       communityMode: widget.communityMode,
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
@@ -233,6 +228,7 @@ class _PostCardState extends State<PostCard> {
                   PostCardAction.blockUser,
                   PostCardAction.blockInstance,
                   PostCardAction.visitCommunity,
+                  widget.postViewMedia.postView.subscribed == SubscribedType.notSubscribed ? PostCardAction.subscribeToCommunity : PostCardAction.unsubscribeFromCommunity,
                   PostCardAction.blockCommunity,
                 ],
                 multiActionsToInclude: [

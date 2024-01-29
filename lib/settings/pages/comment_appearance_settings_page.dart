@@ -16,7 +16,7 @@ import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/utils/comment.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/utils/constants.dart';
 
 class CommentAppearanceSettingsPage extends StatefulWidget {
@@ -290,7 +290,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.showCommentActionButtons.label,
+                description: l10n.showCommentActionButtons,
                 value: showCommentButtonActions,
                 iconEnabled: Icons.mode_comment_rounded,
                 iconDisabled: Icons.mode_comment_outlined,
@@ -326,7 +326,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListOption(
-                description: LocalSettings.nestedCommentIndicatorStyle.label,
+                description: l10n.nestedCommentIndicatorStyle,
                 value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
                 options: [
                   ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
@@ -341,7 +341,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListOption(
-                description: LocalSettings.nestedCommentIndicatorColor.label,
+                description: l10n.nestedCommentIndicatorColor,
                 value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
                 options: [
                   ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),

@@ -2,9 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:thunder/utils/global_context.dart';
+
 enum FontScale {
   small,
   base,
+  medium,
   large,
   extraLarge,
 }
@@ -18,6 +23,9 @@ extension FontScaleExtension on FontScale {
       case FontScale.base:
         if (!kIsWeb && Platform.isIOS) return 1;
         return 0.95;
+      case FontScale.medium:
+        if (!kIsWeb && Platform.isIOS) return 1.1;
+        return 1.05;
       case FontScale.large:
         if (!kIsWeb && Platform.isIOS) return 1.15;
         return 1.2;
@@ -28,15 +36,19 @@ extension FontScaleExtension on FontScale {
   }
 
   String get label {
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+
     switch (this) {
       case FontScale.small:
-        return 'Small';
+        return l10n.small;
       case FontScale.base:
-        return 'Base';
+        return l10n.base;
+      case FontScale.medium:
+        return l10n.medium;
       case FontScale.large:
-        return 'Large';
+        return l10n.large;
       case FontScale.extraLarge:
-        return 'Extra Large';
+        return l10n.extraLarge;
     }
   }
 }
