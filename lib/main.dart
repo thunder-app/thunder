@@ -16,6 +16,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:push/push.dart' as push;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
@@ -60,50 +61,123 @@ void main() async {
     DartPingIOS.register();
   }
 
-  /// Allows the top-level notification handlers to trigger actions farther down
-  final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
-
-  if (!kIsWeb && Platform.isAndroid) {
-    // Initialize local notifications. Note that this doesn't request permissions or actually send any notifications.
-    // It's just hooking up callbacks and settings.
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    // Initialize the Android-specific settings, using the splash asset as the notification icon.
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
-    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (notificationResponse) => notificationsStreamController.add(notificationResponse));
-
-    // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
-    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse != null) {
-      notificationsStreamController.add(notificationAppLaunchDetails.notificationResponse!);
-    }
-
-    // Initialize background fetch (this is async and can go run on its own).
-    if (prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false) {
-      initBackgroundFetch();
-    }
-  }
-
+  // Set up initial instance
   final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
-  runApp(ThunderApp(notificationsStream: notificationsStreamController.stream));
+  runApp(ThunderApp(prefs: prefs));
 
   if (!kIsWeb && Platform.isAndroid) {
     // Set high refresh rate after app initialization
     FlutterDisplayMode.setHighRefreshRate();
   }
-
-  // Register to receive BackgroundFetch events after app is terminated.
-  if (!kIsWeb && Platform.isAndroid && (prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false)) {
-    initHeadlessBackgroundFetch();
-  }
 }
 
-class ThunderApp extends StatelessWidget {
-  final Stream<NotificationResponse> notificationsStream;
+class ThunderApp extends StatefulWidget {
+  final SharedPreferences prefs;
 
-  const ThunderApp({super.key, required this.notificationsStream});
+  const ThunderApp({super.key, required this.prefs});
+
+  @override
+  State<ThunderApp> createState() => _ThunderAppState();
+}
+
+class _ThunderAppState extends State<ThunderApp> {
+  /// Allows the top-level notification handlers to trigger actions farther down
+  final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
+
+  /// Stream which listens for incoming notification taps
+  late StreamSubscription onNotificationTapSubscription;
+
+  /// Stream which listens for new tokens for push notifications
+  late StreamSubscription onNewTokenSubscription;
+
+  /// Initialize Android specific notification logic. This is only called when the app is running on Android.
+  void initAndroidNotificationLogic() async {
+    // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await FlutterLocalNotificationsPlugin().getNotificationAppLaunchDetails();
+
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse != null) {
+      notificationsStreamController.add(notificationAppLaunchDetails.notificationResponse!);
+    }
+
+    // Register to receive BackgroundFetch events after app is terminated.
+    initHeadlessBackgroundFetch();
+  }
+
+  /// Initialize iOS specific notification logic. This is only called when the app is running on iOS.
+  void initIOSNotificationLogic() async {
+    final token = await push.Push.instance.token;
+
+    /// We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
+    debugPrint("Device token: $token");
+
+    // Handle new tokens generated from the device
+    onNewTokenSubscription = push.Push.instance.onNewToken.listen((token) {
+      /// We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
+      debugPrint("Received new device token: $token");
+    });
+
+    // Handle notification launching app from terminated state
+    push.Push.instance.notificationTapWhichLaunchedAppFromTerminated.then((data) {
+      if (data == null) return;
+      if (data.containsKey(repliesGroupKey)) {
+        notificationsStreamController.add(NotificationResponse(payload: data[repliesGroupKey] as String, notificationResponseType: NotificationResponseType.selectedNotification));
+      }
+    });
+
+    /// Handle notification taps. This triggers when the user taps on a notification when the app is on the foreground or background.
+    onNotificationTapSubscription = push.Push.instance.onNotificationTap.listen((data) {
+      debugPrint('Notification was tapped: Data: $data \n');
+
+      if (data.containsKey(repliesGroupKey)) {
+        notificationsStreamController.add(NotificationResponse(payload: data[repliesGroupKey] as String, notificationResponseType: NotificationResponseType.selectedNotification));
+      }
+    });
+  }
+
+  /// Initializes shared notification logic for both Android and iOS
+  void initSharedNotificationLogic() async {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    // Initialize the Android-specific settings, using the splash asset as the notification icon.
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
+
+    // Initialize the iOS-specific settings.
+    const DarwinInitializationSettings initializationSettingsApple = DarwinInitializationSettings(requestAlertPermission: false, requestSoundPermission: false, requestBadgePermission: false);
+
+    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsApple);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (notificationResponse) => notificationsStreamController.add(notificationResponse));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if ((widget.prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false)) {
+      initSharedNotificationLogic();
+
+      if (Platform.isAndroid) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          initAndroidNotificationLogic();
+        });
+      }
+
+      if (Platform.isIOS) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          initIOSNotificationLogic();
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    onNewTokenSubscription.cancel();
+    onNotificationTapSubscription.cancel();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +196,7 @@ class ThunderApp extends StatelessWidget {
           create: (context) => DeepLinksCubit(),
         ),
         BlocProvider(
-          create: (context) => NotificationsCubit(notificationsStream: notificationsStream),
+          create: (context) => NotificationsCubit(notificationsStream: notificationsStreamController.stream),
         ),
         BlocProvider(
           create: (context) => ThunderBloc(),

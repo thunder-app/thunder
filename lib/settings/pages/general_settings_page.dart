@@ -9,6 +9,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:push/push.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
@@ -76,6 +77,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// Not a setting, but tracks whether Android is allowing Thunder to send notifications
   bool? areAndroidNotificationsAllowed = false;
+
+  /// Not a setting, but tracks whether iOS is allowing Thunder to send notifications
+  UNNotificationSettings? areIOSNotificationsAllowed;
 
   /// When enabled, authors and community names will be tappable when in compact view
   bool tappableAuthorCommunity = false;
@@ -203,6 +207,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
+    if (Platform.isIOS) {
+      Push.instance.getNotificationSettings().then((settings) => areIOSNotificationsAllowed = settings);
+    } else if (Platform.isAndroid) {
+      Push.instance.areNotificationsEnabled().then((areNotificationsEnabled) => areAndroidNotificationsAllowed = areNotificationsEnabled);
+    }
+
     setState(() {
       // Default Sorts and Listing
       try {
@@ -261,6 +271,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+
+    print(areIOSNotificationsAllowed);
 
     return Scaffold(
       body: CustomScrollView(
@@ -647,7 +659,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
             ),
           ),
-          if (!kIsWeb && Platform.isAndroid)
+          if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -710,15 +722,27 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       // This setState has no body because async operations aren't allowed,
                       // but its purpose is to update areAndroidNotificationsAllowed.
                       setState(() {});
+
+                      if (value) {
+                        // Ensure that background fetching is enabled.
+                        initBackgroundFetch();
+                        initHeadlessBackgroundFetch();
+                      } else {
+                        // Ensure that background fetching is disabled.
+                        disableBackgroundFetch();
+                      }
                     }
 
-                    if (value) {
-                      // Ensure that background fetching is enabled.
-                      initBackgroundFetch();
-                      initHeadlessBackgroundFetch();
-                    } else {
-                      // Ensure that background fetching is disabled.
-                      disableBackgroundFetch();
+                    if (!kIsWeb && Platform.isIOS && value) {
+                      // We're on iOS. Request notifications permissions if needed.
+                      final IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
+                          FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+                      await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
+
+                      // This setState has no body because async operations aren't allowed,
+                      // but its purpose is to update areIOSNotificationsAllowed.
+                      setState(() {});
                     }
                   },
                   subtitle: enableInboxNotifications
