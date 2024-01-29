@@ -1007,12 +1007,8 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: DragTarget<PostCardMetadataItem>(
           builder: (context, candidateData, rejectedData) => containedPostCardMetadataItems.isEmpty
-              ? Container(
+              ? SizedBox(
                   height: containerHeight,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: theme.dividerColor),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
                   child: Center(
                     child: Text(
                       showEmptyTargetMessage ? l10n.noItems : '',
