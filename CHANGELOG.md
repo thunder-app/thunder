@@ -4,6 +4,7 @@
 - Added ability to subscribe/unsubscribe to community from long press action on posts
 - Added option to hide top app bar on scroll
 - Ability to search through settings/preferences contribution from @ggichure.
+- Show the number of new comments a read post has received since last visited
 
 ## Changed
 - Small UI adjustments for account switcher
