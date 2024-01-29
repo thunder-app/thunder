@@ -207,7 +207,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   title: Material(
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(50),
-                    elevation: 8,
                     child: Stack(
                       children: [
                         TextField(
@@ -250,6 +249,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   )
                                 : null,
                             prefixIcon: const Icon(Icons.search_rounded),
+                            contentPadding: const EdgeInsets.fromLTRB(12, 20, 12, 12),
                           ),
                         ),
                       ],

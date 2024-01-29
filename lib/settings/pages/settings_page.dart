@@ -20,8 +20,15 @@ class SettingTopic {
   SettingTopic({required this.title, required this.icon, required this.path});
 }
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final SearchController _searchController = SearchController();
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +60,13 @@ class SettingsPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: FocusableActionDetector(
                 onFocusChange: (focused) {
-                  if (focused) FocusScope.of(context).unfocus();
+                  if (focused) {
+                    FocusScope.of(context).unfocus();
+                    _searchController.text = '';
+                  }
                 },
                 child: SearchAnchor.bar(
+                  searchController: _searchController,
                   barBackgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.surfaceVariant),
                   barElevation: MaterialStateProperty.all(0),
                   barHintText: l10n.search,
