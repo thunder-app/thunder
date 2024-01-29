@@ -518,7 +518,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Container(
               margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
               child: Text(
-                'You can customize the metadata information by dragging and dropping the desired information',
+                l10n.postMetadataInstructions,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                 ),
@@ -598,7 +598,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Container(
               margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
               child: Text(
-                'You can customize the metadata information by dragging and dropping the desired information',
+                l10n.postMetadataInstructions,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                 ),
@@ -769,6 +769,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   Widget buildCardViewMetadataPreview({bool isDisabled = false}) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -806,7 +807,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         ],
         if (showTextContent) ...[
           ScalableText(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            l10n.placeholderText,
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.bodyMedium?.copyWith(
@@ -998,6 +999,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return AbsorbPointer(
       absorbing: isDisabled,
@@ -1013,7 +1015,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      showEmptyTargetMessage ? 'No items' : '',
+                      showEmptyTargetMessage ? l10n.noItems : '',
                       style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
                     ),
                   ),
