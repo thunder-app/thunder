@@ -423,7 +423,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   onChanged: (ListPickerItem<Locale> value) {
                     setPreferences(LocalSettings.appLanguageCode, value.payload);
                   },
-                  isBottomModalScrollControlled: true,
                   valueDisplay: Row(
                     children: [
                       Text(
