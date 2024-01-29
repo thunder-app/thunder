@@ -24,6 +24,7 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -43,7 +44,7 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/shared/snackbar.dart';
 
@@ -507,7 +508,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           }
                         : null,
                     icon: postView.post.locked
-                        ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.red)
+                        ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.orange.shade900)
                         : isOwnPost
                             ? Icon(Icons.edit_rounded, semanticLabel: AppLocalizations.of(context)!.edit)
                             : Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
@@ -558,8 +559,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
         Padding(
           padding: const EdgeInsets.only(right: 6, bottom: 0),
           child: TypeBadge(
-            postViewMedia: postViewMedia,
-            read: false,
+            mediaType: postViewMedia.media.firstOrNull?.mediaType ?? MediaType.text,
+            dim: false,
           ),
         ),
       ],

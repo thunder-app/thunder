@@ -13,7 +13,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/utils/search_utils.dart';
-import 'package:thunder/utils/comment.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 

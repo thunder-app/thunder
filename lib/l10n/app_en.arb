@@ -1178,7 +1178,7 @@
   "@tabletMode": {
     "description": "Toggle to enable 2-column tablet mode."
   },
-  "tapToExit": "Go back twice to exit",
+  "tapToExit": "Press back again to exit",
   "@tapToExit": {},
   "tappableAuthorCommunity": "Tappable Authors & Communities",
   "@tappableAuthorCommunity": {
@@ -1282,6 +1282,10 @@
   "@unableToLoadPostsFrominstance": {},
   "unableToLoadReplies": "Unable to load more replies.",
   "@unableToLoadReplies": {},
+  "unableToNavigateToInstance": "Unable to navigate to {instanceHost}. It may not be a valid Lemmy instance.",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"

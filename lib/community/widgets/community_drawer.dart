@@ -11,8 +11,8 @@ import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/shared/community_icon.dart';
-import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -475,7 +475,7 @@ class CommunityItem extends StatelessWidget {
 
     return Row(
       children: [
-        CommunityIcon(community: community, radius: 16),
+        CommunityAvatar(community: community, radius: 16),
         const SizedBox(width: 16.0),
         Expanded(
           child: Tooltip(

@@ -212,10 +212,10 @@ class _PostPageState extends State<PostPage> {
                       PopupMenuItem(
                         onTap: () => createCrossPost(
                           context,
-                          title: widget.postView?.postView.post.name ?? '',
-                          url: widget.postView?.postView.post.url,
-                          text: widget.postView?.postView.post.body,
-                          postUrl: widget.postView?.postView.post.apId,
+                          title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
+                          url: widget.postView?.postView.post.url ?? state.postView?.postView.post.url,
+                          text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body,
+                          postUrl: widget.postView?.postView.post.apId ?? state.postView?.postView.post.apId,
                           scaffoldMessengerKey: _scaffoldMessengerKey,
                         ),
                         child: ListTile(

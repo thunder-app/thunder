@@ -15,9 +15,9 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
-import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
-import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -185,7 +185,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
       child: ListTile(
-        leading: CommunityIcon(community: payload.community),
+        leading: CommunityAvatar(community: payload.community),
         title: Text(
           payload.community.title,
           maxLines: 1,

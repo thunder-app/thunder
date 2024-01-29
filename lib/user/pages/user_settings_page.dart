@@ -12,18 +12,18 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
-import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/utils/navigate_instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 
 class UserSettingsPage extends StatefulWidget {
   const UserSettingsPage({super.key});
@@ -372,7 +372,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 navigateToFeedPage(context, feedType: FeedType.community, communityName: '${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
               },
               child: ListTile(
-                leading: CommunityIcon(community: community, radius: 16.0),
+                leading: CommunityAvatar(community: community, radius: 16.0),
                 visualDensity: const VisualDensity(vertical: -2),
                 title: Text(
                   community.title,

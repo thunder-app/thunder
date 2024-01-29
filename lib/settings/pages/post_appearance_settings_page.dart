@@ -354,12 +354,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                     ? IgnorePointer(
                                         child: PostCardViewCompact(
                                           postViewMedia: snapshot.data![index]!,
-                                          showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
-                                          showTextPostIndicator: showTextPostIndicator,
-                                          showPostAuthor: showPostAuthor,
-                                          hideNsfwPreviews: hideNsfwPreviews,
                                           communityMode: false,
-                                          markPostReadOnMediaView: false,
                                           isUserLoggedIn: true,
                                           listingType: ListingType.all,
                                           indicateRead: dimReadPosts,

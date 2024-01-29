@@ -372,7 +372,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 onChanged: (ListPickerItem<Locale> value) {
                   setPreferences(LocalSettings.appLanguageCode, value.payload);
                 },
-                isBottomModalScrollControlled: true,
                 valueDisplay: Row(
                   children: [
                     Text(
@@ -581,7 +580,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: l10n.scrapeMissingPreviews,
+                description: l10n.scrapeMissingLinkPreviews,
                 subtitle: l10n.scrapeMissingPreviews,
                 value: scrapeMissingPreviews,
                 iconEnabled: Icons.image_search_rounded,
