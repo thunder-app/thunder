@@ -72,9 +72,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   barHintText: l10n.search,
                   suggestionsBuilder: (BuildContext context, SearchController controller) {
                     final List<LocalSettings> localSettings = LocalSettings.values
-                        .where((item) => l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
-                              controller.text.toLowerCase(),
-                            ))
+                        .where((item) =>
+                            item.searchable &&
+                            l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
+                                  controller.text.toLowerCase(),
+                                ))
                         .toSet()
                         .toList();
 

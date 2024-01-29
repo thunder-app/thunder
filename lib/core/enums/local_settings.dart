@@ -78,7 +78,11 @@ enum LocalSettings {
       name: 'setting_general_scrape_missing_previews', key: 'scrapeMissingLinkPreviews', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   // Deprecated, use browserMode
   openLinksInExternalBrowser(
-      name: 'setting_links_open_in_external_browser', key: 'openLinksInExternalBrowser', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
+      name: 'setting_links_open_in_external_browser',
+      key: 'openLinksInExternalBrowser',
+      category: LocalSettingsCategories.general,
+      subCategory: LocalSettingsSubCategories.linksBehaviourSettings,
+      searchable: false),
   browserMode(name: 'setting_browser_mode', key: 'browserMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   openLinksInReaderMode(
       name: 'setting_links_open_in_reader_mode', key: 'openLinksInReaderMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
@@ -215,6 +219,7 @@ enum LocalSettings {
     this.category,
     this.subCategory,
     required this.key,
+    this.searchable = true,
   });
 
   /// The name of the setting as stored in local preferences
@@ -230,6 +235,9 @@ enum LocalSettings {
   /// Represents a key used to uniquely identify the settings subcategory.
   /// This key is essential for organizing and managing specific settings.
   final LocalSettingsSubCategories? subCategory;
+
+  /// Whether this setting should appear as a search result
+  final bool searchable;
 
   /// Defines the settings that are excluded from import/export
   static List<LocalSettings> importExportExcludedSettings = [
