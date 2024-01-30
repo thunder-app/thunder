@@ -93,6 +93,10 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "browserMode": "Link handling",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
   "browsingAnonymously": "You are currently browsing {instance} anonymously.",
   "@browsingAnonymously": {},
   "cancel": "Cancel",
@@ -503,6 +507,10 @@
   "@fonts": {
     "description": "Settings category for fonts"
   },
+  "forward": "Forward",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
   "fullscreenSwipeGestures": "Fullscreen Swipe Gestures",
@@ -609,6 +617,30 @@
   "@link": {},
   "linkActions": "Link Actions",
   "@linkActions": {},
+  "linkHandlingCustomTabs": "Open in system browser embedded in-app",
+  "@linkHandlingCustomTabs": {
+    "description": "Description for custom tabs link handling"
+  },
+  "linkHandlingCustomTabsShort": "In-app embedded",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  },
+  "linkHandlingExternal": "Open in system browser externally",
+  "@linkHandlingExternal": {
+    "description": "Description for external link handling"
+  },
+  "linkHandlingExternalShort": "External",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "linkHandlingInApp": "Use Thunder's built-in browser",
+  "@linkHandlingInApp": {
+    "description": "Description for in-app link handling"
+  },
+  "linkHandlingInAppShort": "In-app",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
   "linksBehaviourSettings": "Links",
   "@linksBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
