@@ -54,9 +54,7 @@ class FeedFAB extends StatelessWidget {
 
     bool isPostLocked = false;
 
-    if (feedState.status != FeedStatus.initial && !authState.isLoggedIn) {
-      isPostLocked = true;
-    } else if (isCommunityFeed) {
+    if (authState.isLoggedIn && isCommunityFeed) {
       final CommunityView communityView = feedState.fullCommunityView!.communityView;
 
       if (communityView.community.postingRestrictedToMods && !accountState.moderates.any((CommunityModeratorView cmv) => cmv.community.id == communityView.community.id)) {
