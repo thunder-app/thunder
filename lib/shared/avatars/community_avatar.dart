@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 /// A community avatar. Displays the associated community icon if available.
@@ -14,11 +15,15 @@ class CommunityAvatar extends StatelessWidget {
   /// The radius of the avatar. Defaults to 12
   final double radius;
 
-  const CommunityAvatar({super.key, this.community, this.radius = 12.0});
+  /// Whether to show the community status (locked)
+  final bool showCommunityStatus;
+
+  const CommunityAvatar({super.key, this.community, this.radius = 12.0, this.showCommunityStatus = false});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     CircleAvatar placeholderIcon = CircleAvatar(
       backgroundColor: theme.colorScheme.secondaryContainer,
@@ -39,10 +44,27 @@ class CommunityAvatar extends StatelessWidget {
     return CachedNetworkImage(
       imageUrl: community!.icon!,
       imageBuilder: (context, imageProvider) {
-        return CircleAvatar(
-          backgroundColor: Colors.transparent,
-          foregroundImage: imageProvider,
-          maxRadius: radius,
+        return Stack(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.transparent,
+              foregroundImage: imageProvider,
+              maxRadius: radius,
+            ),
+            if (community?.postingRestrictedToMods == true && showCommunityStatus)
+              Positioned(
+                bottom: -2.0,
+                right: -2.0,
+                child: Tooltip(
+                  message: l10n.onlyModsCanPostInCommunity,
+                  child: Container(
+                    padding: const EdgeInsets.all(4.0),
+                    decoration: const BoxDecoration(color: Colors.transparent, shape: BoxShape.circle),
+                    child: Icon(Icons.lock, color: theme.colorScheme.error, size: 18.0, semanticLabel: l10n.onlyModsCanPostInCommunity),
+                  ),
+                ),
+              ),
+          ],
         );
       },
       placeholder: (context, url) => placeholderIcon,

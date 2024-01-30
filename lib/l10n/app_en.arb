@@ -867,10 +867,6 @@
   "@postViewType": {
     "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
   },
-  "postingRestrictedToMods": "Posting restricted to mods",
-  "@postingRestrictedToMods": {
-    "description": "Description explaining that posting is restricted to mods only"
-  },
   "posts": "Posts",
   "@posts": {},
   "preview": "Preview",
