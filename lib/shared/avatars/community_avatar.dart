@@ -59,7 +59,7 @@ class CommunityAvatar extends StatelessWidget {
                   message: l10n.onlyModsCanPostInCommunity,
                   child: Container(
                     padding: const EdgeInsets.all(4.0),
-                    decoration: const BoxDecoration(color: Colors.transparent, shape: BoxShape.circle),
+                    decoration: BoxDecoration(color: theme.colorScheme.surface, shape: BoxShape.circle),
                     child: Icon(Icons.lock, color: theme.colorScheme.error, size: 18.0, semanticLabel: l10n.onlyModsCanPostInCommunity),
                   ),
                 ),
