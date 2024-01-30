@@ -280,16 +280,17 @@ class FeedFAB extends StatelessWidget {
   }
 
   Future<void> triggerNewPost(BuildContext context, {bool isPostingLocked = false}) async {
-    FeedBloc feedBloc = context.read<FeedBloc>();
+    final l10n = AppLocalizations.of(context)!;
 
     if (!context.read<AuthBloc>().state.isLoggedIn) {
-      return showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInPost);
+      return showSnackbar(context, l10n.mustBeLoggedInPost);
     }
 
     if (isPostingLocked) {
-      return showSnackbar(context, AppLocalizations.of(context)!.onlyModsCanPostInCommunity);
+      return showSnackbar(context, l10n.onlyModsCanPostInCommunity);
     }
 
+    FeedBloc feedBloc = context.read<FeedBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
     AccountBloc accountBloc = context.read<AccountBloc>();
 
