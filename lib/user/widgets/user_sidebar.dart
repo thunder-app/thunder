@@ -161,7 +161,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                         onPressed: isLoggedIn
                                             ? () {
                                                 HapticFeedback.heavyImpact();
-                                                hideSnackbar(context);
+                                                hideSnackbar();
                                                 context.read<UserBloc>().add(
                                                       BlockUserEvent(
                                                         personId: widget.userInfo!.person.id,

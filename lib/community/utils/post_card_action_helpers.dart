@@ -314,7 +314,7 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
             mediaFile = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.mediaUrl!);
 
             // Hide snackbar
-            hideSnackbar(context);
+            hideSnackbar();
           }
 
           // Share

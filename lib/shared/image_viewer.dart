@@ -404,7 +404,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         await Share.shareXFiles([XFile(mediaFile!.path)]);
                                       } catch (e) {
                                         // Tell the user that the download failed
-                                        showSnackbar(context, AppLocalizations.of(context)!.errorDownloadingMedia(e), customState: _imageViewer.currentState);
+                                        showSnackbar(context, AppLocalizations.of(context)!.errorDownloadingMedia(e));
                                       } finally {
                                         setState(() => isDownloadingMedia = false);
                                       }
@@ -459,7 +459,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                           await Gal.putImage(file.path, album: "Thunder");
                                           setState(() => downloaded = true);
                                         } on GalException catch (e) {
-                                          if (context.mounted) showSnackbar(context, e.type.message, customState: _imageViewer.currentState);
+                                          if (context.mounted) showSnackbar(context, e.type.message);
                                           setState(() => downloaded = false);
                                         }
                                       } finally {

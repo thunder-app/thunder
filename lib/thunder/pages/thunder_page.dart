@@ -205,7 +205,6 @@ class _ThunderState extends State<Thunder> {
       context,
       AppLocalizations.of(context)!.tapToExit,
       duration: const Duration(milliseconds: 3500),
-      customState: currentState,
     );
   }
 

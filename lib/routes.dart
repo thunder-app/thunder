@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -23,6 +24,7 @@ import 'package:thunder/user/pages/user_settings_page.dart';
 PageController thunderPageController = PageController(initialPage: 0);
 
 final GoRouter router = GoRouter(
+  navigatorKey: Get.key,
   debugLogDiagnostics: true,
   routes: <GoRoute>[
     GoRoute(

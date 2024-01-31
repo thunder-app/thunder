@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void showSnackbar(
   BuildContext context,
   String text, {
-  ScaffoldMessengerState? customState,
   bool clearSnackBars = true,
   Duration? duration,
   Color? backgroundColor,
@@ -15,55 +15,65 @@ void showSnackbar(
   IconData? trailingIcon,
   void Function()? trailingAction,
 }) {
-  int wordCount = RegExp(r'[\w-]+').allMatches(text).length;
-  SnackBar snackBar = SnackBar(
+  final ThemeData theme = Theme.of(context);
+  final int wordCount = RegExp(r'[\w-]+').allMatches(text).length;
+
+  GetSnackBar snackBar = GetSnackBar(
     duration: duration ?? Duration(milliseconds: max(4000, 1000 * wordCount)), // Assuming 60 WPM or 1 WPS
-    backgroundColor: backgroundColor,
-    content: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        if (leadingIcon != null)
-          Icon(
+    messageText: Text(
+      text,
+      style: const TextStyle(color: Colors.white),
+    ),
+    icon: leadingIcon != null
+        ? Icon(
             leadingIcon,
             color: leadingIconColor,
-          ),
-        if (leadingIcon != null) const SizedBox(width: 8.0),
-        Expanded(
-          child: Text(
-            text,
-          ),
-        ),
-        if (trailingIcon != null)
-          SizedBox(
+          )
+        : null,
+    backgroundColor: backgroundColor ?? const Color(0xFF303030),
+    mainButton: trailingIcon != null
+        ? SizedBox(
             height: 20,
             child: IconButton(
               visualDensity: VisualDensity.compact,
               onPressed: trailingAction != null
                   ? () {
-                      (customState ?? ScaffoldMessenger.of(context)).clearSnackBars();
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        Get.closeCurrentSnackbar();
+                      });
                       trailingAction();
                     }
                   : null,
               icon: Icon(
                 trailingIcon,
-                color: trailingIconColor ?? Theme.of(context).colorScheme.inversePrimary,
+                color: trailingIconColor ?? theme.colorScheme.inversePrimary,
               ),
             ),
-          ),
-      ],
-    ),
+          )
+        : null,
+    margin: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
+    borderRadius: 6.0,
+    boxShadows: [
+      BoxShadow(
+        color: (backgroundColor ?? const Color(0xFF303030)).withOpacity(0.5),
+        blurRadius: 5,
+        offset: const Offset(1, 1),
+      ),
+    ],
+    animationDuration: const Duration(milliseconds: 400),
   );
 
-  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
     if (clearSnackBars) {
-      (customState ?? ScaffoldMessenger.of(context)).clearSnackBars();
+      Get.closeCurrentSnackbar();
     }
-    (customState ?? ScaffoldMessenger.of(context)).showSnackBar(snackBar);
+
+    Get.showSnackbar(snackBar);
   });
 }
 
-void hideSnackbar(BuildContext context, {ScaffoldMessengerState? customState}) {
-  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    (customState ?? ScaffoldMessenger.of(context)).clearSnackBars();
+void hideSnackbar() {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    Get.closeCurrentSnackbar();
   });
 }

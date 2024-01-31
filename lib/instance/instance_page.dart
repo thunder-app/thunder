@@ -46,7 +46,7 @@ class _InstancePageState extends State<InstancePage> {
     return BlocListener<InstanceBloc, InstanceState>(
       listener: (context, state) {
         if (state.message != null) {
-          showSnackbar(context, state.message!, customState: _key.currentState);
+          showSnackbar(context, state.message!);
         }
 
         if (state.status == InstanceStatus.success && currentlyTogglingBlock) {

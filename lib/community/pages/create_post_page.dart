@@ -33,6 +33,7 @@ import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/debounce.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
@@ -218,7 +219,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
       sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
-      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
+      // Use GlobalContext here because the widget is disposed
+      showSnackbar(GlobalContext.context, AppLocalizations.of(GlobalContext.context)!.postSavedAsDraft);
     } else {
       sharedPreferences?.remove(draftId);
     }
@@ -355,7 +357,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           languageId: languageId,
                                         );
 
-                                    if (context.mounted && widget.scaffoldMessengerKey?.currentContext != null && widget.postView?.post.id == null && postId != null) {
+                                    if (context.mounted && widget.postView?.post.id == null && postId != null) {
                                       showSnackbar(
                                         context,
                                         l10n.postCreatedSuccessfully,
@@ -363,7 +365,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                         trailingAction: () {
                                           navigateToPost(widget.scaffoldMessengerKey!.currentContext!, postId: postId);
                                         },
-                                        customState: widget.scaffoldMessengerKey?.currentState,
                                       );
                                     }
                                   },

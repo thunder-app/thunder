@@ -287,7 +287,7 @@ class _FeedViewState extends State<FeedView> {
                 }
 
                 if ((state.status == FeedStatus.failure || state.status == FeedStatus.failureLoadingCommunity) && state.message != null) {
-                  showSnackbar(context, state.message!, customState: _key.currentState);
+                  showSnackbar(context, state.message!);
                   context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
                 }
               },
