@@ -209,7 +209,31 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.delete:
-      // TODO: Handle this case.
+        // Optimistically delete the post
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+        PostView originalPostView = postViewMedia.postView;
+
+        try {
+          PostView updatedPostView = optimisticallyDeletePost(postViewMedia.postView, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+
+          // Emit the state to update UI immediately
+          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.fetching));
+
+          bool success = await deletePost(originalPostView.post.id, event.value);
+          if (success) return emit(state.copyWith(status: FeedStatus.success));
+
+          // Restore the original post contents if not successful
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        } catch (e) {
+          // Restore the original post contents
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        }
       case PostAction.report:
       // TODO: Handle this case.
       case PostAction.lock:
