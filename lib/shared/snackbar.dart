@@ -22,15 +22,15 @@ void showSnackbar(
     duration: duration ?? Duration(milliseconds: max(4000, 1000 * wordCount)), // Assuming 60 WPM or 1 WPS
     messageText: Text(
       text,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: theme.colorScheme.onInverseSurface),
     ),
     icon: leadingIcon != null
         ? Icon(
             leadingIcon,
-            color: leadingIconColor,
+            color: leadingIconColor ?? theme.colorScheme.inversePrimary,
           )
         : null,
-    backgroundColor: backgroundColor ?? const Color(0xFF303030),
+    backgroundColor: backgroundColor ?? theme.colorScheme.inverseSurface,
     mainButton: trailingIcon != null
         ? SizedBox(
             height: 20,
@@ -55,7 +55,7 @@ void showSnackbar(
     borderRadius: 6.0,
     boxShadows: [
       BoxShadow(
-        color: (backgroundColor ?? const Color(0xFF303030)).withOpacity(0.5),
+        color: (backgroundColor ?? theme.colorScheme.inverseSurface).withOpacity(0.5),
         blurRadius: 5,
         offset: const Offset(1, 1),
       ),
