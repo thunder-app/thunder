@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
@@ -18,6 +20,7 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -49,6 +52,10 @@ enum PostCardAction {
   toggleRead,
   share,
   delete,
+  moderatorActions,
+  moderatorLockPost,
+  moderatorPinCommunity,
+  moderatorRemovePost,
 }
 
 class ExtendedPostCardActions {
@@ -174,20 +181,51 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.share,
     icon: Icons.share_rounded,
     label: l10n.share,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.moderatorActions,
+    icon: Icons.shield_rounded,
+    label: 'Moderator Actions',
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.moderatorLockPost,
+    icon: Icons.lock,
+    label: 'Lock Post',
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.moderatorPinCommunity,
+    icon: Icons.push_pin_rounded,
+    label: 'Pin Community',
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.moderatorRemovePost,
+    icon: Icons.delete_rounded,
+    label: 'Remove Post',
   )
 ];
+
+enum PostActionBottomSheetPage {
+  general,
+  share,
+  moderator,
+}
 
 void showPostActionBottomModalSheet(
   BuildContext context,
   PostViewMedia postViewMedia, {
   List<PostCardAction>? actionsToInclude,
   List<PostCardAction>? multiActionsToInclude,
+  PostActionBottomSheetPage postActionBottomSheetPage = PostActionBottomSheetPage.general,
 }) {
   final theme = Theme.of(context);
+
   final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
   final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
   final bool isOwnPost = postViewMedia.postView.creator.id == context.read<AuthBloc>().state.account?.userId;
   final bool isDeleted = postViewMedia.postView.post.deleted;
+
+  final bool isModerator =
+      context.read<AccountBloc>().state.moderates.any((CommunityModeratorView communityModeratorView) => communityModeratorView.community.id == postViewMedia.postView.community.id);
 
   actionsToInclude ??= [];
   List<ExtendedPostCardActions> postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
@@ -202,12 +240,16 @@ void showPostActionBottomModalSheet(
   }
 
   // Add the option to delete one's own posts
-  if (isOwnPost) {
+  if (isOwnPost && postActionBottomSheetPage == PostActionBottomSheetPage.general) {
     postCardActionItemsToUse.add(ExtendedPostCardActions(
       postCardAction: PostCardAction.delete,
       icon: isDeleted ? Icons.restore_from_trash_rounded : Icons.delete_rounded,
       label: isDeleted ? AppLocalizations.of(context)!.restore : AppLocalizations.of(context)!.delete,
     ));
+  }
+
+  if (isModerator && postActionBottomSheetPage == PostActionBottomSheetPage.general) {
+    postCardActionItemsToUse.add(postCardActionItems.firstWhere((ExtendedPostCardActions extendedPostCardActions) => extendedPostCardActions.postCardAction == PostCardAction.moderatorActions));
   }
 
   multiActionsToInclude ??= [];
@@ -359,6 +401,7 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
               : showPostActionBottomModalSheet(
                   context,
                   postViewMedia,
+                  postActionBottomSheetPage: PostActionBottomSheetPage.share,
                   actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
                 );
       break;
@@ -373,6 +416,62 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       break;
     case PostCardAction.delete:
       context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.post.deleted));
+      break;
+    case PostCardAction.moderatorActions:
+      showPostActionBottomModalSheet(
+        context,
+        postViewMedia,
+        postActionBottomSheetPage: PostActionBottomSheetPage.moderator,
+        actionsToInclude: [PostCardAction.moderatorLockPost, PostCardAction.moderatorPinCommunity, PostCardAction.moderatorRemovePost],
+      );
+      break;
+    case PostCardAction.moderatorLockPost:
+      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.post.locked));
+      break;
+    case PostCardAction.moderatorPinCommunity:
+      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.post.featuredCommunity));
+      break;
+    case PostCardAction.moderatorRemovePost:
+      TextEditingController? textEditingController = TextEditingController();
+
+      // Show a dialog to add a reason for removing the post
+      showThunderDialog(
+        context: context,
+        title: l10n.removalReason,
+        // Use a stateful widget for the content so we can update the error message
+        contentWidgetBuilder: (setPrimaryButtonEnabled) => StatefulBuilder(
+          builder: (context, setState) {
+            return TextField(
+              textInputAction: TextInputAction.done,
+              autocorrect: false,
+              controller: textEditingController,
+              decoration: InputDecoration(
+                isDense: true,
+                border: const OutlineInputBorder(),
+                labelText: l10n.reason,
+              ),
+              enableSuggestions: false,
+            );
+          },
+        ),
+        secondaryButtonText: l10n.cancel,
+        onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+        primaryButtonText: l10n.remove,
+        onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+          context.read<FeedBloc>().add(
+                FeedItemActionedEvent(
+                  postAction: PostAction.remove,
+                  postId: postViewMedia.postView.post.id,
+                  value: {
+                    'remove': !postViewMedia.postView.post.removed,
+                    'reason': textEditingController.text,
+                  },
+                ),
+              );
+          Navigator.of(dialogContext).pop();
+        },
+      );
+
       break;
   }
 }

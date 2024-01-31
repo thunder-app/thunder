@@ -915,6 +915,10 @@
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
+  "reason": "Reason",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
   "reduceAnimations": "Reduce Animations",
   "@reduceAnimations": {
     "description": "Toggle to reduce animations."
@@ -925,6 +929,10 @@
   "@refresh": {},
   "refreshContent": "Refresh Content",
   "@refreshContent": {},
+  "removalReason": "Removal Reason",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
   "remove": "Remove",
   "@remove": {},
   "removeAccount": "Remove Account",
