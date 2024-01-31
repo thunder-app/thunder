@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/image_caching_mode.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -101,6 +102,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// Defines the separator used to denote full commuity names
   FullNameSeparator communitySeparator = FullNameSeparator.dot;
+
+  /// Defines the image caching mode
+  ImageCachingMode imageCachingMode = ImageCachingMode.relaxed;
 
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
@@ -194,6 +198,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setString(LocalSettings.communityFormat.name, value);
         setState(() => communitySeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.dot));
         break;
+      case LocalSettings.imageCachingMode:
+        await prefs.setString(LocalSettings.imageCachingMode.name, value);
+        setState(() => imageCachingMode = ImageCachingMode.values.byName(value ?? ImageCachingMode.relaxed));
+        break;
     }
 
     if (context.mounted) {
@@ -236,6 +244,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+      imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
 
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
@@ -638,6 +647,31 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ],
                 icon: Icons.people_rounded,
                 onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListOption(
+                description: l10n.imageCachingMode,
+                value: ListPickerItem(
+                  label: switch (imageCachingMode) {
+                    ImageCachingMode.aggressive => l10n.imageCachingModeAggressiveShort,
+                    ImageCachingMode.relaxed => l10n.imageCachingModeRelaxedShort,
+                  },
+                  payload: imageCachingMode,
+                  capitalizeLabel: false,
+                ),
+                options: [
+                  ListPickerItem(icon: Icons.broken_image, label: l10n.imageCachingModeAggressive, payload: ImageCachingMode.aggressive, capitalizeLabel: false),
+                  ListPickerItem(icon: Icons.broken_image_outlined, label: l10n.imageCachingModeRelaxed, payload: ImageCachingMode.relaxed, capitalizeLabel: false),
+                ],
+                icon: switch (imageCachingMode) {
+                  ImageCachingMode.aggressive => Icons.broken_image,
+                  ImageCachingMode.relaxed => Icons.broken_image_outlined,
+                },
+                onChanged: (value) => setPreferences(LocalSettings.imageCachingMode, value.payload.name),
               ),
             ),
           ),

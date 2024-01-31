@@ -7,9 +7,11 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/image_caching_mode.dart';
 
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
@@ -212,6 +214,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   Widget previewImage(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
@@ -224,8 +227,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
-      clearMemoryCacheWhenDispose: false,
-      cacheMaxAge: const Duration(minutes: 1),
+      clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
       cacheWidth: widget.viewMode == ViewMode.compact
           ? (75 * View.of(context).devicePixelRatio.ceil())
           : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
