@@ -1,5 +1,6 @@
 ## Unreleased
 ### Added
+- Added indicator when community posting is locked to moderators
 - Added additional font scale option for medium
 - Added ability to subscribe/unsubscribe to community from long press action on posts
 - Added option to hide top app bar on scroll
