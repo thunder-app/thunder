@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
@@ -105,32 +106,20 @@ class NavigationControls extends StatelessWidget {
             ),
             PopupMenuButton(
               itemBuilder: (BuildContext context) => [
-                PopupMenuItem(
+                ThunderPopupMenuItem(
                   onTap: () async => await webViewController.reload(),
-                  child: ListTile(
-                    dense: true,
-                    horizontalTitleGap: 5,
-                    leading: const Icon(Icons.replay_rounded, size: 20),
-                    title: Text(l10n.refresh),
-                  ),
+                  icon: Icons.replay_rounded,
+                  title: l10n.refresh,
                 ),
-                PopupMenuItem(
+                ThunderPopupMenuItem(
                   onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
-                  child: ListTile(
-                    dense: true,
-                    horizontalTitleGap: 5,
-                    leading: const Icon(Icons.open_in_browser_rounded, size: 20),
-                    title: Text(l10n.openInBrowser),
-                  ),
+                  icon: Icons.open_in_browser_rounded,
+                  title: l10n.openInBrowser,
                 ),
-                PopupMenuItem(
+                ThunderPopupMenuItem(
                   onTap: () => Share.share(url),
-                  child: ListTile(
-                    dense: true,
-                    horizontalTitleGap: 5,
-                    leading: const Icon(Icons.share_rounded, size: 20),
-                    title: Text(l10n.share),
-                  ),
+                  icon: Icons.share_rounded,
+                  title: l10n.share,
                 ),
               ],
             ),
