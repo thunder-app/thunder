@@ -38,6 +38,7 @@ import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:thunder/utils/notifications.dart';
+import 'package:thunder/utils/preferences.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -86,6 +87,9 @@ void main() async {
 
   final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
   LemmyClient.instance.changeBaseUrl(initialInstance);
+
+  // Perform preference migrations
+  performSharedPreferencesMigration();
 
   runApp(ThunderApp(notificationsStream: notificationsStreamController.stream));
 

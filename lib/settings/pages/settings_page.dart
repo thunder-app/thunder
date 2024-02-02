@@ -20,10 +20,15 @@ class SettingTopic {
   SettingTopic({required this.title, required this.icon, required this.path});
 }
 
-class SettingsPage extends StatelessWidget {
-  final SearchController _searchController = SearchController();
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
 
-  SettingsPage({super.key});
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final SearchController _searchController = SearchController();
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +72,11 @@ class SettingsPage extends StatelessWidget {
                   barHintText: l10n.search,
                   suggestionsBuilder: (BuildContext context, SearchController controller) {
                     final List<LocalSettings> localSettings = LocalSettings.values
-                        .where((item) => l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
-                              controller.text.toLowerCase(),
-                            ))
+                        .where((item) =>
+                            item.searchable &&
+                            l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
+                                  controller.text.toLowerCase(),
+                                ))
                         .toSet()
                         .toList();
 
