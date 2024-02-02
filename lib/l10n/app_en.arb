@@ -209,9 +209,9 @@
   },
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "@commentSwipeGesturesHint": {},
-  "commentUseColorizedUsername":"Colorized Usernames",
-  "@commentUseColorizedUsername":{
-    "description":"Setting used to toggle colorized comments creator display name."
+  "commentUseColorizedUsername": "Colorized Usernames",
+  "@commentUseColorizedUsername": {
+    "description": "Setting used to toggle colorized comments creator display name."
   },
   "comments": "Comments",
   "@comments": {},
