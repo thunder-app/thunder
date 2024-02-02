@@ -355,7 +355,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           languageId: languageId,
                                         );
 
-                                    if (context.mounted && widget.scaffoldMessengerKey?.currentContext != null && widget.postView?.post.id == null && postId != null) {
+                                    if (postId != null) {
                                       showSnackbar(
                                         context,
                                         l10n.postCreatedSuccessfully,
