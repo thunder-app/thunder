@@ -203,7 +203,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
       return Row(
         children: [
           if (showCommunityIcons)
-            GestureDetector(
+            InkWell(
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: CommunityAvatar(community: postView.community, radius: 14),
@@ -211,14 +211,16 @@ class PostCommunityAndAuthor extends StatelessWidget {
               onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
             ),
           if (state.showPostCreatorAvatar)
-            GestureDetector(
-              onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToUserPage(context, userId: postView.creator.id),
-              child: UserAvatar(
-                person: postView.creator,
-                radius: 16,
+            InkWell(
+              onTap: () => navigateToUserPage(context, userId: postView.creator.id),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: UserAvatar(
+                  person: postView.creator,
+                  radius: 16,
+                ),
               ),
             ),
-          if (state.showPostCreatorAvatar) const SizedBox(width: 8),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(right: 6.0),
