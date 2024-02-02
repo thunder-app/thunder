@@ -12,7 +12,7 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class PostCardMetaData extends StatelessWidget {
@@ -44,6 +44,7 @@ class PostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthState authState = context.watch<AuthBloc>().state;
     final showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+    final theme = Theme.of(context);
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
@@ -70,12 +71,12 @@ class PostCardMetaData extends StatelessWidget {
             IconText(
               fontScale: state.metadataFontSizeScale,
               icon: Icon(
-                Icons.chat,
+                unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded : Icons.chat,
                 size: 18.0,
-                color: readColor,
+                color: unreadComments != 0 && unreadComments != comments ? theme.primaryColor : readColor,
               ),
-              text: formatNumberToK(comments),
-              textColor: readColor,
+              text: unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' : formatNumberToK(comments),
+              textColor: unreadComments != 0 && unreadComments != comments ? theme.primaryColor : readColor,
               padding: 5.0,
             ),
             const SizedBox(width: 8.0),

@@ -79,6 +79,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
         }
       },
       child: ListView.builder(
+        padding: EdgeInsets.zero,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: widget.replies.length,

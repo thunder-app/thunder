@@ -21,7 +21,7 @@ import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 
 const kSidebarWidthFactor = 0.8;
 

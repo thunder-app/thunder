@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -7,7 +8,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/utils/comment.dart';
+import 'package:thunder/comment/utils/comment.dart';
 
 part 'inbox_event.dart';
 part 'inbox_state.dart';
@@ -20,7 +21,17 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class InboxBloc extends Bloc<InboxEvent, InboxState> {
+  /// Constructor allowing an initial set of replies to be set in the state.
+  InboxBloc.withReplies(List<CommentReplyView> replies) : super(InboxState(replies: replies)) {
+    _init();
+  }
+
+  /// Unnamed constructor with default state
   InboxBloc() : super(const InboxState()) {
+    _init();
+  }
+
+  void _init() {
     on<GetInboxEvent>(
       _getInboxEvent,
       transformer: throttleDroppable(throttleDuration),

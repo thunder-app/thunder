@@ -23,8 +23,8 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -48,6 +48,7 @@ enum PostCardAction {
   save,
   toggleRead,
   share,
+  delete,
 }
 
 class ExtendedPostCardActions {
@@ -185,6 +186,8 @@ void showPostActionBottomModalSheet(
   final theme = Theme.of(context);
   final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
   final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
+  final bool isOwnPost = postViewMedia.postView.creator.id == context.read<AuthBloc>().state.account?.userId;
+  final bool isDeleted = postViewMedia.postView.post.deleted;
 
   actionsToInclude ??= [];
   List<ExtendedPostCardActions> postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
@@ -196,6 +199,15 @@ void showPostActionBottomModalSheet(
   // Hide the option to block a community if the user is subscribed to it
   if (actionsToInclude.contains(PostCardAction.blockCommunity) && postViewMedia.postView.subscribed != SubscribedType.notSubscribed) {
     postCardActionItemsToUse.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockCommunity);
+  }
+
+  // Add the option to delete one's own posts
+  if (isOwnPost) {
+    postCardActionItemsToUse.add(ExtendedPostCardActions(
+      postCardAction: PostCardAction.delete,
+      icon: isDeleted ? Icons.restore_from_trash_rounded : Icons.delete_rounded,
+      label: isDeleted ? AppLocalizations.of(context)!.restore : AppLocalizations.of(context)!.delete,
+    ));
   }
 
   multiActionsToInclude ??= [];
@@ -358,6 +370,9 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       break;
     case PostCardAction.unsubscribeFromCommunity:
       context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: postViewMedia.postView.community.id, value: false));
+      break;
+    case PostCardAction.delete:
+      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.post.deleted));
       break;
   }
 }

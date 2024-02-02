@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 
 class AppearanceSettingsPage extends StatelessWidget {
   const AppearanceSettingsPage({super.key});
@@ -32,7 +33,7 @@ class AppearanceSettingsPage extends StatelessWidget {
                   leading: const Icon(Icons.text_fields),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => GoRouter.of(context).push(
-                    '/settings/appearance/themes',
+                    SETTINGS_APPEARANCE_THEMES_PAGE,
                     extra: context.read<ThunderBloc>(),
                   ),
                 ),
@@ -56,7 +57,7 @@ class AppearanceSettingsPage extends StatelessWidget {
                   leading: const Icon(Icons.splitscreen_rounded),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => GoRouter.of(context).push(
-                    '/settings/appearance/posts',
+                    SETTINGS_APPEARANCE_POSTS_PAGE,
                     extra: context.read<ThunderBloc>(),
                   ),
                 ),
@@ -65,7 +66,7 @@ class AppearanceSettingsPage extends StatelessWidget {
                   leading: const Icon(Icons.comment_rounded),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => GoRouter.of(context).push(
-                    '/settings/appearance/comments',
+                    SETTINGS_APPEARANCE_COMMENTS_PAGE,
                     extra: context.read<ThunderBloc>(),
                   ),
                 ),

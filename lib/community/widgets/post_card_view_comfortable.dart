@@ -130,7 +130,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       WidgetSpan(
                           child: Icon(
                         Icons.lock,
-                        color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                        color: indicateRead && postViewMedia.postView.read ? Colors.orange.shade900.withOpacity(0.55) : Colors.orange.shade900,
                         size: 15 * textScaleFactor,
                       )),
                     ],
@@ -151,7 +151,16 @@ class PostCardViewComfortable extends StatelessWidget {
                           color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                         ),
                       ),
-                    if (postViewMedia.postView.post.featuredCommunity ||
+                    if (postViewMedia.postView.post.deleted)
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.delete_rounded,
+                          size: 16 * textScaleFactor,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                        ),
+                      ),
+                    if (postViewMedia.postView.post.deleted ||
+                        postViewMedia.postView.post.featuredCommunity ||
                         postViewMedia.postView.post.featuredLocal ||
                         (!useSaveButton && postViewMedia.postView.saved) ||
                         postViewMedia.postView.post.locked)
@@ -195,7 +204,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         WidgetSpan(
                             child: Icon(
                           Icons.lock,
-                          color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.orange.shade900.withOpacity(0.55) : Colors.orange.shade900,
                           size: 15 * textScaleFactor,
                         )),
                       ],
@@ -216,7 +225,16 @@ class PostCardViewComfortable extends StatelessWidget {
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
-                      if (postViewMedia.postView.post.featuredCommunity ||
+                      if (postViewMedia.postView.post.deleted)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.delete_rounded,
+                            size: 16 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          ),
+                        ),
+                      if (postViewMedia.postView.post.deleted ||
+                          postViewMedia.postView.post.featuredCommunity ||
                           postViewMedia.postView.post.featuredLocal ||
                           (!useSaveButton && postViewMedia.postView.saved) ||
                           postViewMedia.postView.post.locked)

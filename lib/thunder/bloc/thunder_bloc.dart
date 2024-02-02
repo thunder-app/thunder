@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/enums/browser_mode.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
@@ -106,7 +107,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       // General Settings
       bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
-      bool openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
       bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
@@ -116,6 +116,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
+
+      BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -236,7 +238,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         // General Settings
         scrapeMissingPreviews: scrapeMissingPreviews,
-        openInExternalBrowser: openInExternalBrowser,
+        browserMode: browserMode,
         openInReaderMode: openInReaderMode,
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,

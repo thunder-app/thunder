@@ -43,7 +43,7 @@ import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class SearchPage extends StatefulWidget {
@@ -207,7 +207,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   title: Material(
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(50),
-                    elevation: 8,
                     child: Stack(
                       children: [
                         TextField(
@@ -250,6 +249,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   )
                                 : null,
                             prefixIcon: const Icon(Icons.search_rounded),
+                            contentPadding: const EdgeInsets.fromLTRB(12, 20, 12, 12),
                           ),
                         ),
                       ],
