@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/error_messages.dart';
@@ -45,18 +46,21 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     emit(state.copyWith(status: CreatePostStatus.submitting));
 
     try {
-      PostView postView = await createPost(
-        communityId: communityId,
-        name: name,
-        body: body,
-        url: url,
-        nsfw: nsfw,
-        postIdBeingEdited: postIdBeingEdited,
-        languageId: languageId,
-      );
+      final lemmy = LemmyClient.instance.lemmyApiV3;
+      // PostView postView = await createPost(
+      //   communityId: communityId,
+      //   name: name,
+      //   body: body,
+      //   url: url,
+      //   nsfw: nsfw,
+      //   postIdBeingEdited: postIdBeingEdited,
+      //   languageId: languageId,
+      // );
+
+      GetPostResponse getPostResponse = await lemmy.run(GetPost(id: 14462486));
 
       // Parse the newly created post
-      List<PostViewMedia> postViewMedias = await parsePostViews([postView]);
+      List<PostViewMedia> postViewMedias = await parsePostViews([getPostResponse.postView]);
 
       emit(state.copyWith(status: CreatePostStatus.success, postViewMedia: postViewMedias.firstOrNull));
       return postViewMedias.firstOrNull?.postView.post.id;
