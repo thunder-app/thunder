@@ -182,7 +182,7 @@ void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = fa
     Account? account = await fetchActiveProfileAccount();
     imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!, postImage: postImage));
   } catch (e) {
-    showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: Theme.of(context).colorScheme.errorContainer);
+    showSnackbar(AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: Theme.of(context).colorScheme.errorContainer);
   }
 }
 

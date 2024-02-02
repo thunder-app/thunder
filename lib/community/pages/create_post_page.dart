@@ -13,6 +13,7 @@ import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -33,6 +34,7 @@ import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/debounce.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
@@ -62,9 +64,6 @@ class CreatePostPage extends StatefulWidget {
   /// Callback function that is triggered whenever the post is successfully created or updated
   final Function(PostViewMedia postViewMedia)? onPostSuccess;
 
-  // The scaffold key for the main Thunder page
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
-
   const CreatePostPage({
     super.key,
     required this.communityId,
@@ -76,7 +75,6 @@ class CreatePostPage extends StatefulWidget {
     this.prePopulated = false,
     this.postView,
     this.onPostSuccess,
-    this.scaffoldMessengerKey,
   });
 
   @override
@@ -218,7 +216,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
       sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
-      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        showSnackbar(AppLocalizations.of(GlobalContext.context)!.postSavedAsDraft);
+      });
     } else {
       sharedPreferences?.remove(draftId);
     }
@@ -260,7 +261,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     if (context.mounted && draftPost.isNotEmpty) {
       showSnackbar(
-        context,
         AppLocalizations.of(context)!.restoredPostFromDraft,
         trailingIcon: Icons.delete_forever_rounded,
         trailingIconColor: Theme.of(context).colorScheme.errorContainer,
@@ -306,7 +306,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           }
 
           if (state.status == CreatePostStatus.error && state.message != null) {
-            showSnackbar(context, state.message!);
+            showSnackbar(state.message!);
             context.read<CreatePostCubit>().clearMessage();
           }
 
@@ -319,7 +319,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               break;
             case CreatePostStatus.imageUploadFailure:
             case CreatePostStatus.postImageUploadFailure:
-              showSnackbar(context, l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
             default:
               break;
           }
@@ -355,15 +355,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           languageId: languageId,
                                         );
 
-                                    if (postId != null) {
+                                    if (widget.postView?.post.id == null && postId != null) {
                                       showSnackbar(
-                                        context,
                                         l10n.postCreatedSuccessfully,
                                         trailingIcon: Icons.remove_red_eye_rounded,
                                         trailingAction: () {
-                                          navigateToPost(widget.scaffoldMessengerKey!.currentContext!, postId: postId);
+                                          navigateToPost(context, postId: postId);
                                         },
-                                        customState: widget.scaffoldMessengerKey?.currentState,
                                       );
                                     }
                                   },

@@ -21,12 +21,9 @@ import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FeedFAB extends StatelessWidget {
-  const FeedFAB({super.key, this.heroTag, this.scaffoldMessengerKey});
+  const FeedFAB({super.key, this.heroTag});
 
   final String? heroTag;
-
-  /// The messenger key back to the main Thunder page
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
 
   @override
   build(BuildContext context) {
@@ -283,11 +280,11 @@ class FeedFAB extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     if (!context.read<AuthBloc>().state.isLoggedIn) {
-      return showSnackbar(context, l10n.mustBeLoggedInPost);
+      return showSnackbar(l10n.mustBeLoggedInPost);
     }
 
     if (isPostingLocked) {
-      return showSnackbar(context, l10n.onlyModsCanPostInCommunity);
+      return showSnackbar(l10n.onlyModsCanPostInCommunity);
     }
 
     FeedBloc feedBloc = context.read<FeedBloc>();
@@ -312,7 +309,6 @@ class FeedFAB extends StatelessWidget {
             child: CreatePostPage(
               communityId: feedBloc.state.communityId,
               communityView: feedBloc.state.fullCommunityView?.communityView,
-              scaffoldMessengerKey: scaffoldMessengerKey,
             ),
           );
         },

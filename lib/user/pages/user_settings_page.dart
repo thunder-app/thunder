@@ -60,18 +60,15 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
               if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) &&
                   (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                showSnackbar(
-                    context,
-                    state.status == UserSettingsStatus.failure
-                        ? l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage)
-                        : l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
+                showSnackbar(state.status == UserSettingsStatus.failure
+                    ? l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage)
+                    : l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
               } else if (state.status == UserSettingsStatus.failure) {
-                showSnackbar(context, l10n.failedToLoadBlocks(state.errorMessage ?? l10n.missingErrorMessage));
+                showSnackbar(l10n.failedToLoadBlocks(state.errorMessage ?? l10n.missingErrorMessage));
               }
 
               if (state.status == UserSettingsStatus.successBlock && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
                 showSnackbar(
-                  context,
                   l10n.successfullyUnblocked,
                   trailingIcon: Icons.undo_rounded,
                   trailingAction: () {
@@ -87,7 +84,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               }
 
               if (state.status == UserSettingsStatus.revert && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                showSnackbar(context, l10n.successfullyBlocked);
+                showSnackbar(l10n.successfullyBlocked);
               }
             },
             builder: (context, state) {

@@ -742,7 +742,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           onPressed: () {
             SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
             _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
-            showSnackbar(context, subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
+            showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
             context.read<AccountBloc>().add(GetAccountSubscriptions());
           },
           icon: Icon(
@@ -862,7 +862,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
                 if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
                   await Future.delayed(const Duration(milliseconds: 300));
-                  if (context.mounted) showSnackbar(context, l10n.commentSavedAsDraft);
+                  if (context.mounted) showSnackbar(l10n.commentSavedAsDraft);
                   prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                 } else {
                   prefs.remove(draftId);
