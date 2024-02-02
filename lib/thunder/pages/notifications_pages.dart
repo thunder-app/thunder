@@ -10,8 +10,11 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 /// A page for displaying the result of reply notifications
 class NotificationsReplyPage extends StatelessWidget {
   final List<CommentReplyView> replies;
+  late final InboxBloc inboxBloc;
 
-  const NotificationsReplyPage({super.key, required this.replies});
+  NotificationsReplyPage({super.key, required this.replies}) {
+    inboxBloc = InboxBloc.withReplies(replies);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,7 @@ class NotificationsReplyPage extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: InboxBloc.withReplies(replies)),
+        BlocProvider.value(value: inboxBloc),
         BlocProvider.value(value: PostBloc()),
       ],
       child: Container(
