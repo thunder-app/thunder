@@ -33,6 +33,7 @@ import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/cross_posts.dart';
@@ -191,6 +192,14 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      if (thunderState.showPostCreatorAvatar)
+                        UserAvatar(
+                          person: postView.creator,
+                        ),
+                      if (thunderState.showPostCreatorAvatar)
+                        const SizedBox(
+                          width: 8,
+                        ),
                       Tooltip(
                         excludeFromSemantics: true,
                         message:

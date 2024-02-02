@@ -72,6 +72,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// When enabled, cross posts will be shown on the post page
   bool showCrossPosts = true;
 
+  /// When enabled, user avatars will be displayed in feed and post page
+  bool showPostCreatorAvatar = false;
+
   /// Controller to manage expandable state for comment preview
   ExpandableController expandableController = ExpandableController();
 
@@ -89,6 +92,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
+      showPostCreatorAvatar = prefs.getBool(LocalSettings.showPostCreatorAvatar.name) ?? false;
 
       // Compact View Settings
       showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
@@ -180,6 +184,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setString(LocalSettings.postBodyViewType.name, (value as PostBodyViewType).name);
         setState(() => postBodyViewType = value);
         break;
+      case LocalSettings.showPostCreatorAvatar:
+        await prefs.setBool(LocalSettings.showPostCreatorAvatar.name, value);
+        setState(() => showPostCreatorAvatar = value);
+        break;
     }
 
     if (context.mounted) {
@@ -207,6 +215,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.showPostCommunityIcons.name);
     await prefs.remove(LocalSettings.showCrossPosts.name);
     await prefs.remove(LocalSettings.postBodyViewType.name);
+    await prefs.remove(LocalSettings.showPostCreatorAvatar.name);
 
     await initPreferences();
 
@@ -450,6 +459,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 iconEnabled: Icons.person_rounded,
                 iconDisabled: Icons.person_off_rounded,
                 onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ToggleOption(
+                description: l10n.showPostCreatorAvatar,
+                value: showPostCreatorAvatar,
+                iconEnabled: Icons.image,
+                iconDisabled: Icons.image_not_supported,
+                onToggle: (bool value) => setPreferences(LocalSettings.showPostCreatorAvatar, value),
               ),
             ),
           ),

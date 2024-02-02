@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
@@ -54,6 +55,11 @@ class CommentHeader extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
+                if (state.commentsShowUserAvatars)
+                  UserAvatar(
+                    person: comment.creator,
+                  ),
+                if (state.commentsShowUserAvatars) const SizedBox(width: 4),
                 Tooltip(
                   excludeFromSemantics: true,
                   message:

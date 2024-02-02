@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -201,12 +203,23 @@ class PostCommunityAndAuthor extends StatelessWidget {
       return Row(
         children: [
           if (showCommunityIcons)
-            GestureDetector(
+            InkWell(
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: CommunityAvatar(community: postView.community, radius: 14),
               ),
               onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
+            ),
+          if (state.showPostCreatorAvatar)
+            InkWell(
+              onTap: () => navigateToUserPage(context, userId: postView.creator.id),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: UserAvatar(
+                  person: postView.creator,
+                  radius: 16,
+                ),
+              ),
             ),
           Expanded(
             child: Padding(
@@ -214,7 +227,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
               child: Wrap(
                 direction: Axis.horizontal,
                 alignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.end,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   if (state.showPostAuthor || communityMode)
                     Row(
@@ -264,7 +277,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                           ),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
