@@ -759,6 +759,10 @@
   "@noPosts": {},
   "noPostsFound": "No posts found",
   "@noPostsFound": {},
+  "noReplies": "No replies",
+  "@noReplies": {
+    "description": "Message for when there are no inbox replies"
+  },
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
   "noSubscriptions": "No Subscriptions",

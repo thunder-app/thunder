@@ -41,10 +41,9 @@ extension on CommentReplyView {
 }
 
 class InboxRepliesView extends StatefulWidget {
-  final List<CommentReplyView> replies;
   final bool showAll;
 
-  const InboxRepliesView({super.key, this.replies = const [], required this.showAll});
+  const InboxRepliesView({super.key, required this.showAll});
 
   @override
   State<InboxRepliesView> createState() => _InboxRepliesViewState();
@@ -62,12 +61,9 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
   @override
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now().toUtc();
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-    if (widget.replies.isEmpty) {
-      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No replies'));
-    }
-
-    return BlocListener<InboxBloc, InboxState>(
+    return BlocConsumer<InboxBloc, InboxState>(
       listener: (context, state) {
         if (state.status == InboxStatus.success) {
           if (inboxReplyMarkedAsRead == null) return;
@@ -78,119 +74,121 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
           });
         }
       },
-      child: ListView.builder(
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: widget.replies.length,
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              Divider(
-                height: 1.0,
-                thickness: 1.0,
-                color: ElevationOverlay.applySurfaceTint(
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surfaceTint,
-                  10,
-                ),
-              ),
-              CommentReference(
-                comment: widget.replies[index].toCommentView(),
-                now: now,
-                onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-                onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-                onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-                onReportAction: (int commentId) {
-                  showReportCommentActionBottomSheet(
-                    context,
-                    commentId: commentId,
-                  );
-                },
-                onReplyEditAction: (CommentView commentView, bool isEdit) async {
-                  HapticFeedback.mediumImpact();
-                  InboxBloc inboxBloc = context.read<InboxBloc>();
-                  PostBloc postBloc = context.read<PostBloc>();
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                  AccountBloc accountBloc = context.read<AccountBloc>();
-
-                  final ThunderState state = context.read<ThunderBloc>().state;
-                  final bool reduceAnimations = state.reduceAnimations;
-
-                  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                  DraftComment? newDraftComment;
-                  DraftComment? previousDraftComment;
-                  String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
-                  String? draftCommentJson = prefs.getString(draftId);
-                  if (draftCommentJson != null) {
-                    previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-                  }
-                  Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                    if (newDraftComment?.isNotEmpty == true) {
-                      prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                    }
-                  });
-
-                  Navigator.of(context)
-                      .push(
-                    SwipeablePageRoute(
-                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                      canOnlySwipeFromEdge: true,
-                      backGestureDetectionWidth: 45,
-                      builder: (context) {
-                        return MultiBlocProvider(
-                            providers: [
-                              BlocProvider<InboxBloc>.value(value: inboxBloc),
-                              BlocProvider<PostBloc>.value(value: postBloc),
-                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                              BlocProvider<AccountBloc>.value(value: accountBloc),
-                            ],
-                            child: CreateCommentPage(
-                              commentView: commentView,
-                              comment: commentView.comment,
-                              isEdit: isEdit,
-                              previousDraftComment: previousDraftComment,
-                              onUpdateDraft: (c) => newDraftComment = c,
-                            ));
-                      },
+      builder: (context, state) => state.replies.isEmpty
+          ? Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text(l10n.noReplies))
+          : ListView.builder(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: state.replies.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Divider(
+                      height: 1.0,
+                      thickness: 1.0,
+                      color: ElevationOverlay.applySurfaceTint(
+                        Theme.of(context).colorScheme.surface,
+                        Theme.of(context).colorScheme.surfaceTint,
+                        10,
+                      ),
                     ),
-                  )
-                      .whenComplete(() async {
-                    timer.cancel();
+                    CommentReference(
+                      comment: state.replies[index].toCommentView(),
+                      now: now,
+                      onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                      onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                      onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                      onReportAction: (int commentId) {
+                        showReportCommentActionBottomSheet(
+                          context,
+                          commentId: commentId,
+                        );
+                      },
+                      onReplyEditAction: (CommentView commentView, bool isEdit) async {
+                        HapticFeedback.mediumImpact();
+                        InboxBloc inboxBloc = context.read<InboxBloc>();
+                        PostBloc postBloc = context.read<PostBloc>();
+                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                        AccountBloc accountBloc = context.read<AccountBloc>();
 
-                    if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
-                      await Future.delayed(const Duration(milliseconds: 300));
-                      showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
-                      prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                    } else {
-                      prefs.remove(draftId);
-                    }
-                  });
-                },
-                isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
-                child: widget.replies[index].commentReply.read == false && !inboxRepliesMarkedAsRead.contains(widget.replies[index].commentReply.id)
-                    ? inboxReplyMarkedAsRead != widget.replies[index].commentReply.id
-                        ? IconButton(
-                            onPressed: () {
-                              setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply.id);
-                              context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply.id, read: true, showAll: widget.showAll));
+                        final ThunderState state = context.read<ThunderBloc>().state;
+                        final bool reduceAnimations = state.reduceAnimations;
+
+                        SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                        DraftComment? newDraftComment;
+                        DraftComment? previousDraftComment;
+                        String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
+                        String? draftCommentJson = prefs.getString(draftId);
+                        if (draftCommentJson != null) {
+                          previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
+                        }
+                        Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+                          if (newDraftComment?.isNotEmpty == true) {
+                            prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+                          }
+                        });
+
+                        Navigator.of(context)
+                            .push(
+                          SwipeablePageRoute(
+                            transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                            canOnlySwipeFromEdge: true,
+                            backGestureDetectionWidth: 45,
+                            builder: (context) {
+                              return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider<InboxBloc>.value(value: inboxBloc),
+                                    BlocProvider<PostBloc>.value(value: postBloc),
+                                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                    BlocProvider<AccountBloc>.value(value: accountBloc),
+                                  ],
+                                  child: CreateCommentPage(
+                                    commentView: commentView,
+                                    comment: commentView.comment,
+                                    isEdit: isEdit,
+                                    previousDraftComment: previousDraftComment,
+                                    onUpdateDraft: (c) => newDraftComment = c,
+                                  ));
                             },
-                            icon: const Icon(
-                              Icons.check,
-                              semanticLabel: 'Mark as read',
-                            ),
-                            visualDensity: VisualDensity.compact,
-                          )
-                        : const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                          )
-                    : null,
-              ),
-            ],
-          );
-        },
-      ),
+                          ),
+                        )
+                            .whenComplete(() async {
+                          timer.cancel();
+
+                          if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
+                            await Future.delayed(const Duration(milliseconds: 300));
+                            showSnackbar(context, l10n.commentSavedAsDraft);
+                            prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+                          } else {
+                            prefs.remove(draftId);
+                          }
+                        });
+                      },
+                      isOwnComment: state.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
+                      child: state.replies[index].commentReply.read == false && !inboxRepliesMarkedAsRead.contains(state.replies[index].commentReply.id)
+                          ? inboxReplyMarkedAsRead != state.replies[index].commentReply.id
+                              ? IconButton(
+                                  onPressed: () {
+                                    setState(() => inboxReplyMarkedAsRead = state.replies[index].commentReply.id);
+                                    context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: state.replies[index].commentReply.id, read: true, showAll: widget.showAll));
+                                  },
+                                  icon: const Icon(
+                                    Icons.check,
+                                    semanticLabel: 'Mark as read',
+                                  ),
+                                  visualDensity: VisualDensity.compact,
+                                )
+                              : const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                                )
+                          : null,
+                    ),
+                  ],
+                );
+              },
+            ),
     );
   }
 

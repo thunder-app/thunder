@@ -45,10 +45,7 @@ class NotificationsReplyPage extends StatelessWidget {
                         Navigator.of(context).pop();
                       }
                     },
-                    builder: (context, state) => InboxRepliesView(
-                      replies: state.replies,
-                      showAll: false,
-                    ),
+                    builder: (context, state) => const InboxRepliesView(showAll: false),
                   ),
                 ),
               ),
