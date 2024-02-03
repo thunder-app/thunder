@@ -21,6 +21,7 @@ import 'package:thunder/core/models/version.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
+import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/utils/constants.dart';
 
 part 'thunder_event.dart';
@@ -140,6 +141,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+      List<PostCardMetadataItem> compactPostCardMetadataItems =
+          prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
+      List<PostCardMetadataItem> cardPostCardMetadataItems =
+          prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
 
       List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
@@ -270,6 +275,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         dimReadPosts: dimReadPosts,
         useAdvancedShareSheet: useAdvancedShareSheet,
         showCrossPosts: showCrossPosts,
+        compactPostCardMetadataItems: compactPostCardMetadataItems,
+        cardPostCardMetadataItems: cardPostCardMetadataItems,
         keywordFilters: keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------
