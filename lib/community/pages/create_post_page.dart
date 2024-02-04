@@ -13,11 +13,11 @@ import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -34,7 +34,6 @@ import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/debounce.dart';
-import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
@@ -218,7 +217,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        showSnackbar(AppLocalizations.of(GlobalContext.context)!.postSavedAsDraft);
+        showSnackbar(l10n.postSavedAsDraft);
       });
     } else {
       sharedPreferences?.remove(draftId);
