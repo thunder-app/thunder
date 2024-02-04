@@ -57,7 +57,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       //   languageId: languageId,
       // );
 
-      GetPostResponse getPostResponse = await lemmy.run(GetPost(id: 14462486));
+      GetPostResponse getPostResponse = await lemmy.run(GetPost(id: 1));
 
       // Parse the newly created post
       List<PostViewMedia> postViewMedias = await parsePostViews([getPostResponse.postView]);

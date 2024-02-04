@@ -15,6 +15,7 @@ import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
@@ -288,31 +289,6 @@ class FeedFAB extends StatelessWidget {
     }
 
     FeedBloc feedBloc = context.read<FeedBloc>();
-    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    AccountBloc accountBloc = context.read<AccountBloc>();
-
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
-    final bool reduceAnimations = thunderState.reduceAnimations;
-
-    Navigator.of(context).push(
-      SwipeablePageRoute(
-        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        canOnlySwipeFromEdge: true,
-        backGestureDetectionWidth: 45,
-        builder: (context) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider<FeedBloc>.value(value: feedBloc),
-              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-              BlocProvider<AccountBloc>.value(value: accountBloc),
-            ],
-            child: CreatePostPage(
-              communityId: feedBloc.state.communityId,
-              communityView: feedBloc.state.fullCommunityView?.communityView,
-            ),
-          );
-        },
-      ),
-    );
+    navigateToCreatePostPage(context, communityId: feedBloc.state.communityId, communityView: feedBloc.state.fullCommunityView?.communityView);
   }
 }

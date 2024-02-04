@@ -341,10 +341,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           child: IconButton(
                             onPressed: isSubmitButtonDisabled
                                 ? null
-                                : () async {
+                                : () {
                                     draftPost.saveAsDraft = false;
 
-                                    final int? postId = await context.read<CreatePostCubit>().createOrEditPost(
+                                    context.read<CreatePostCubit>().createOrEditPost(
                                           communityId: communityId!,
                                           name: _titleTextController.text,
                                           body: _bodyTextController.text,
@@ -353,16 +353,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           postIdBeingEdited: widget.postView?.post.id,
                                           languageId: languageId,
                                         );
-
-                                    if (widget.postView?.post.id == null && postId != null) {
-                                      showSnackbar(
-                                        l10n.postCreatedSuccessfully,
-                                        trailingIcon: Icons.remove_red_eye_rounded,
-                                        trailingAction: () {
-                                          navigateToPost(context, postId: postId);
-                                        },
-                                      );
-                                    }
                                   },
                             icon: Icon(
                               widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
