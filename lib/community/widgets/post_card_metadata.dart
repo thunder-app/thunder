@@ -79,12 +79,12 @@ class PostCardMetaData extends StatelessWidget {
             IconText(
               fontScale: state.metadataFontSizeScale,
               icon: Icon(
-                unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded : Icons.chat,
+                unreadComments > 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded : Icons.chat,
                 size: 18.0,
-                color: unreadComments != 0 && unreadComments != comments ? theme.primaryColor : readColor,
+                color: unreadComments > 0 && unreadComments != comments ? theme.primaryColor : readColor,
               ),
-              text: unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' : formatNumberToK(comments),
-              textColor: unreadComments != 0 && unreadComments != comments ? theme.primaryColor : readColor,
+              text: unreadComments > 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' : formatNumberToK(comments),
+              textColor: unreadComments > 0 && unreadComments != comments ? theme.primaryColor : readColor,
               padding: 5.0,
             ),
             const SizedBox(width: 8.0),
