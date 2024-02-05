@@ -18,6 +18,9 @@ class WebView extends StatefulWidget {
 class _WebViewState extends State<WebView> {
   late final WebViewController _controller;
 
+  // Keeps track of the URL that we are currently viewing, not necessarily the original
+  String? currentUrl;
+
   @override
   void initState() {
     super.initState();
@@ -40,7 +43,7 @@ class _WebViewState extends State<WebView> {
       ..setNavigationDelegate(NavigationDelegate())
       ..loadRequest(Uri.parse(widget.url))
       ..setNavigationDelegate(NavigationDelegate(
-        onUrlChange: (_) => setState(() {}),
+        onUrlChange: (urlChange) => setState(() => currentUrl = urlChange.url),
       ));
 
     if (controller.platform is AndroidWebViewController) {
@@ -64,7 +67,7 @@ class _WebViewState extends State<WebView> {
           actions: <Widget>[
             NavigationControls(
               webViewController: _controller,
-              url: widget.url,
+              url: currentUrl ?? widget.url,
             )
           ],
         ),

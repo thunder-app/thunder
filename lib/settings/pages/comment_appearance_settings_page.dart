@@ -35,11 +35,14 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   /// When toggled on, comments will show a row of actions to perform
   bool showCommentButtonActions = false;
 
-  /// When toggled on, user intance is displayed alongside the display name/username
+  /// When toggled on, user instance is displayed alongside the display name/username
   bool commentShowUserInstance = false;
 
   /// When toggled on, comment scores will be combined instead of having separate upvotes and downvotes
   bool combineCommentScores = false;
+
+  /// When toggled on, usernames in comments will be colorized.
+  bool commentUseColorizedUsername = false;
 
   /// Indicates the style of the nested comment indicator
   NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
@@ -64,6 +67,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
       combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
+      commentUseColorizedUsername = prefs.getBool(LocalSettings.commentUseColorizedUsername.name) ?? false;
       nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
     });
@@ -95,6 +99,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
         await prefs.setString(LocalSettings.nestedCommentIndicatorColor.name, value);
         setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
         break;
+      case LocalSettings.commentUseColorizedUsername:
+        await prefs.setBool(LocalSettings.commentUseColorizedUsername.name, value);
+        setState(() => commentUseColorizedUsername = value);
     }
 
     if (context.mounted) {
@@ -111,6 +118,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     await prefs.remove(LocalSettings.nestedCommentIndicatorStyle.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorColor.name);
     await prefs.remove(LocalSettings.commentShowUserInstance.name);
+    await prefs.remove(LocalSettings.commentUseColorizedUsername.name);
 
     await initPreferences();
 
@@ -345,6 +353,16 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               iconDisabled: Icons.dns_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
               highlightKey: settingToHighlight == LocalSettings.commentShowUserInstance ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.commentUseColorizedUsername,
+              value: commentUseColorizedUsername,
+              iconEnabled: Icons.brush_sharp,
+              iconDisabled: Icons.brush_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.commentUseColorizedUsername, value),
+              highlightKey: settingToHighlight == LocalSettings.commentUseColorizedUsername ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(

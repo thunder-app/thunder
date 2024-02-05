@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:expandable/expandable.dart';
@@ -16,11 +17,15 @@ import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/post.dart';
+import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/community/widgets/post_card_metadata.dart';
+import 'package:thunder/utils/constants.dart';
 
 class PostAppearanceSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -83,6 +88,14 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// Determines how post bodies are displayed
   PostBodyViewType postBodyViewType = PostBodyViewType.expanded;
 
+  /// List of compact post card metadata items to show on the post card
+  /// The order of the items is important as they will be displayed in that order
+  List<PostCardMetadataItem> compactPostCardMetadataItems = [];
+
+  /// List of card post card metadata items to show on the post card
+  /// The order of the items is important as they will be displayed in that order
+  List<PostCardMetadataItem> cardPostCardMetadataItems = [];
+
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
@@ -99,6 +112,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
 
       // Compact View Settings
+      compactPostCardMetadataItems =
+          prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
+      cardPostCardMetadataItems = prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
       showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
 
@@ -143,6 +159,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         setState(() => dimReadPosts = value);
         break;
 
+      case LocalSettings.compactPostCardMetadataItems:
+        await prefs.setStringList(LocalSettings.compactPostCardMetadataItems.name, value);
+        break;
       case LocalSettings.showThumbnailPreviewOnRight:
         await prefs.setBool(LocalSettings.showThumbnailPreviewOnRight.name, value);
         setState(() => showThumbnailPreviewOnRight = value);
@@ -150,6 +169,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.showTextPostIndicator:
         await prefs.setBool(LocalSettings.showTextPostIndicator.name, value);
         setState(() => showTextPostIndicator = value);
+        break;
+      case LocalSettings.cardPostCardMetadataItems:
+        await prefs.setStringList(LocalSettings.cardPostCardMetadataItems.name, value);
         break;
       case LocalSettings.showPostTitleFirst:
         await prefs.setBool(LocalSettings.showPostTitleFirst.name, value);
@@ -204,8 +226,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.showPostAuthor.name);
     await prefs.remove(LocalSettings.useDisplayNamesForUsers.name);
     await prefs.remove(LocalSettings.dimReadPosts.name);
+    await prefs.remove(LocalSettings.compactPostCardMetadataItems.name);
     await prefs.remove(LocalSettings.showThumbnailPreviewOnRight.name);
     await prefs.remove(LocalSettings.showTextPostIndicator.name);
+    await prefs.remove(LocalSettings.cardPostCardMetadataItems.name);
     await prefs.remove(LocalSettings.showPostTitleFirst.name);
     await prefs.remove(LocalSettings.showPostFullHeightImages.name);
     await prefs.remove(LocalSettings.showPostEdgeToEdgeImages.name);
@@ -498,13 +522,56 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   Text(
                     l10n.compactViewDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                     ),
                   ),
                 ],
               ),
             ),
           ),
+          SliverToBoxAdapter(
+            child: SmoothHighlight(
+              key: settingToHighlight == LocalSettings.compactPostCardMetadataItems ? settingToHighlightKey : null,
+              useInitialHighLight: settingToHighlight == LocalSettings.compactPostCardMetadataItems,
+              enabled: settingToHighlight == LocalSettings.compactPostCardMetadataItems,
+              color: theme.colorScheme.primaryContainer,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: buildCompactViewMetadataPreview(isDisabled: useCompactView == false),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+              child: Text(
+                l10n.postMetadataInstructions,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.all(8.0),
+              child: PostCardMetadataDraggableTarget(
+                isDisabled: useCompactView == false,
+                containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !compactPostCardMetadataItems.contains(element)).toList(),
+                onAcceptedData: (data) {
+                  List<PostCardMetadataItem> newCompactPostCardMetadataItems = List.from(compactPostCardMetadataItems)..remove(data);
+
+                  setState(() {
+                    compactPostCardMetadataItems = newCompactPostCardMetadataItems;
+                    setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
+                  });
+                },
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
           SliverToBoxAdapter(
             child: ToggleOption(
               description: l10n.showThumbnailPreviewOnRight,
@@ -543,6 +610,50 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ),
             ),
           ),
+          SliverToBoxAdapter(
+            child: SmoothHighlight(
+              key: settingToHighlight == LocalSettings.cardPostCardMetadataItems ? settingToHighlightKey : null,
+              useInitialHighLight: settingToHighlight == LocalSettings.cardPostCardMetadataItems,
+              enabled: settingToHighlight == LocalSettings.cardPostCardMetadataItems,
+              color: theme.colorScheme.primaryContainer,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: buildCardViewMetadataPreview(isDisabled: useCompactView == true),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+              child: Text(
+                l10n.postMetadataInstructions,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.all(8.0),
+              child: PostCardMetadataDraggableTarget(
+                isDisabled: useCompactView == true,
+                containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !cardPostCardMetadataItems.contains(element)).toList(),
+                onAcceptedData: (data) {
+                  List<PostCardMetadataItem> newCardPostCardMetadataItems = List.from(cardPostCardMetadataItems)..remove(data);
+
+                  setState(() {
+                    cardPostCardMetadataItems = newCardPostCardMetadataItems;
+                    setPreferences(LocalSettings.cardPostCardMetadataItems, cardPostCardMetadataItems.map((e) => e.name).toList());
+                  });
+                },
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
           SliverToBoxAdapter(
             child: ToggleOption(
               description: l10n.showPostTitleFirst,
@@ -663,6 +774,311 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),
         ],
+      ),
+    );
+  }
+
+  Widget buildCardViewMetadataPreview({bool isDisabled = false}) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (showTitleFirst) ...[
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 25,
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ), // Title
+          const SizedBox(height: 4.0),
+        ],
+        Container(
+          height: showFullHeightImages ? 150 : 100,
+          margin: const EdgeInsets.symmetric(vertical: 8.0),
+          decoration: BoxDecoration(
+            color: theme.dividerColor,
+            borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+          ),
+        ),
+        if (!showTitleFirst) ...[
+          const SizedBox(height: 4.0),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 25,
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ), // Title
+          const SizedBox(height: 6.0),
+        ],
+        if (showTextContent) ...[
+          ScalableText(
+            l10n.placeholderText,
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: readColor,
+            ),
+          ),
+          const SizedBox(height: 4.0),
+        ],
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      if (showCommunityIcons)
+                        Container(
+                          width: 25,
+                          height: 25,
+                          margin: const EdgeInsets.only(right: 6.0),
+                          decoration: BoxDecoration(
+                            color: theme.dividerColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      Expanded(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: theme.dividerColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8.0),
+                  PostCardMetadataDraggableTarget(
+                    isDisabled: useCompactView == true,
+                    containerHeight: 25.0,
+                    showEmptyTargetMessage: false,
+                    containedPostCardMetadataItems: cardPostCardMetadataItems,
+                    onAcceptedData: (data) {
+                      List<PostCardMetadataItem> newCardPostCardMetadataItems = List.from(cardPostCardMetadataItems)..add(data);
+
+                      setState(() {
+                        cardPostCardMetadataItems = newCardPostCardMetadataItems;
+                        setPreferences(LocalSettings.cardPostCardMetadataItems, cardPostCardMetadataItems.map((e) => e.name).toList());
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(6.0),
+              child: Icon(Icons.more_horiz_rounded),
+            ),
+            if (showVoteActions) ...[
+              const Padding(
+                padding: EdgeInsets.all(6.0),
+                child: Icon(Icons.arrow_upward_rounded),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(6.0),
+                child: Icon(Icons.arrow_downward_rounded),
+              ),
+            ],
+            if (showSaveAction)
+              const Padding(
+                padding: EdgeInsets.all(6.0),
+                child: Icon(Icons.star_outline_rounded),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget buildCompactViewMetadataPreview({bool isDisabled = false}) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.only(bottom: 8.0, top: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          !showThumbnailPreviewOnRight
+              ? Container(
+                  width: 75,
+                  height: 75,
+                  margin: const EdgeInsets.only(right: 8.0),
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor,
+                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                  ),
+                )
+              : const SizedBox(width: 0),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(right: showThumbnailPreviewOnRight ? 8.0 : 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  ), // Title
+                  const SizedBox(height: 6.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  ),
+                  const SizedBox(height: 6.0),
+                  PostCardMetadataDraggableTarget(
+                    isDisabled: useCompactView == false,
+                    containerHeight: 25.0,
+                    showEmptyTargetMessage: false,
+                    containedPostCardMetadataItems: compactPostCardMetadataItems,
+                    onAcceptedData: (data) {
+                      List<PostCardMetadataItem> newCompactPostCardMetadataItems = List.from(compactPostCardMetadataItems)..add(data);
+
+                      setState(() {
+                        compactPostCardMetadataItems = newCompactPostCardMetadataItems;
+                        setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          showThumbnailPreviewOnRight
+              ? Container(
+                  width: 75,
+                  height: 75,
+                  margin: const EdgeInsets.only(right: 8.0),
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor,
+                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                  ),
+                )
+              : const SizedBox(width: 0),
+        ],
+      ),
+    );
+  }
+}
+
+/// A draggable target for the post card metadata.
+///
+/// Held in this draggable target is a list of [PostCardMetadataItem]s. Each of these items can be dragged outside the target.
+class PostCardMetadataDraggableTarget extends StatelessWidget {
+  /// The items contained in the target
+  final List<PostCardMetadataItem> containedPostCardMetadataItems;
+
+  /// Callback when data is accepted
+  final void Function(PostCardMetadataItem) onAcceptedData;
+
+  /// The height of the target container, when empty
+  final double containerHeight;
+
+  /// Whether to display a message when the target is empty
+  final bool showEmptyTargetMessage;
+
+  /// Whether the target is disabled
+  final bool isDisabled;
+
+  const PostCardMetadataDraggableTarget({
+    super.key,
+    required this.containedPostCardMetadataItems,
+    required this.onAcceptedData,
+    this.containerHeight = 50.0,
+    this.showEmptyTargetMessage = true,
+    this.isDisabled = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return AbsorbPointer(
+      absorbing: isDisabled,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: DragTarget<PostCardMetadataItem>(
+          builder: (context, candidateData, rejectedData) => containedPostCardMetadataItems.isEmpty
+              ? SizedBox(
+                  height: containerHeight,
+                  child: Center(
+                    child: Text(
+                      showEmptyTargetMessage ? l10n.noItems : '',
+                      style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
+                    ),
+                  ),
+                )
+              : Container(
+                  constraints: BoxConstraints(minHeight: containerHeight),
+                  child: Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    children: containedPostCardMetadataItems
+                        .map(
+                          (item) => Draggable<PostCardMetadataItem>(
+                            key: ValueKey(item),
+                            data: item,
+                            feedback: buildDraggableItem(context, item: item, isFeedback: true),
+                            child: buildDraggableItem(context, item: item, isDisabled: isDisabled),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+          onLeave: (data) => HapticFeedback.mediumImpact(),
+          onWillAccept: (data) {
+            if (!containedPostCardMetadataItems.contains(data)) {
+              return true;
+            }
+            return false;
+          },
+          onAcceptWithDetails: (DragTargetDetails<PostCardMetadataItem> details) {
+            onAcceptedData(details.data);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildDraggableItem(context, {required PostCardMetadataItem item, bool isFeedback = false, bool isDisabled = false}) {
+    final theme = Theme.of(context);
+
+    return Material(
+      type: MaterialType.transparency,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        decoration: BoxDecoration(
+          color: isDisabled ? theme.cardColor : theme.dividerColor,
+          border: isDisabled ? Border.all(color: theme.dividerColor.withOpacity(0.4)) : null,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: switch (item) {
+          PostCardMetadataItem.score => const ScorePostCardMetaData(score: 1222),
+          PostCardMetadataItem.commentCount => const CommentCountPostCardMetaData(commentCount: 4124),
+          PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: DateTime.now().toIso8601String()),
+          PostCardMetadataItem.url => const UrlPostCardMetaData(url: 'https://github.com/thunder-app/thunder'),
+          PostCardMetadataItem.upvote => const UpvotePostCardMetaData(upvotes: 2412),
+          PostCardMetadataItem.downvote => const DownvotePostCardMetaData(downvotes: 532),
+        },
       ),
     );
   }

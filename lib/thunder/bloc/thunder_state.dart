@@ -56,6 +56,8 @@ class ThunderState extends Equatable {
     this.dimReadPosts = true,
     this.useAdvancedShareSheet = true,
     this.showCrossPosts = true,
+    this.compactPostCardMetadataItems = const [],
+    this.cardPostCardMetadataItems = const [],
     this.keywordFilters = const [],
     this.appLanguageCode = 'en',
 
@@ -68,6 +70,7 @@ class ThunderState extends Equatable {
     this.showCommentButtonActions = false,
     this.commentShowUserInstance = false,
     this.combineCommentScores = false,
+    this.commentUseColorizedUsername = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
@@ -185,6 +188,8 @@ class ThunderState extends Equatable {
   final bool dimReadPosts;
   final bool useAdvancedShareSheet;
   final bool showCrossPosts;
+  final List<PostCardMetadataItem> compactPostCardMetadataItems;
+  final List<PostCardMetadataItem> cardPostCardMetadataItems;
   final List<String> keywordFilters;
 
   /// -------------------------- Post Page Related Settings --------------------------
@@ -196,6 +201,7 @@ class ThunderState extends Equatable {
   final bool showCommentButtonActions;
   final bool commentShowUserInstance;
   final bool combineCommentScores;
+  final bool commentUseColorizedUsername;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
@@ -320,6 +326,8 @@ class ThunderState extends Equatable {
     bool? dimReadPosts,
     bool? useAdvancedShareSheet,
     bool? showCrossPosts,
+    List<PostCardMetadataItem>? compactPostCardMetadataItems,
+    List<PostCardMetadataItem>? cardPostCardMetadataItems,
     String? appLanguageCode = 'en',
     List<String>? keywordFilters,
 
@@ -330,6 +338,7 @@ class ThunderState extends Equatable {
     bool? showCommentButtonActions,
     bool? commentShowUserInstance,
     bool? combineCommentScores,
+    bool? commentUseColorizedUsername,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
@@ -449,6 +458,8 @@ class ThunderState extends Equatable {
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
       useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
       showCrossPosts: showCrossPosts ?? this.showCrossPosts,
+      compactPostCardMetadataItems: compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
+      cardPostCardMetadataItems: cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
@@ -460,6 +471,7 @@ class ThunderState extends Equatable {
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
+      commentUseColorizedUsername: commentUseColorizedUsername ?? this.commentUseColorizedUsername,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
@@ -582,6 +594,8 @@ class ThunderState extends Equatable {
         dimReadPosts,
         useAdvancedShareSheet,
         showCrossPosts,
+        compactPostCardMetadataItems,
+        cardPostCardMetadataItems,
         appLanguageCode,
         keywordFilters,
 
@@ -594,6 +608,7 @@ class ThunderState extends Equatable {
         showCommentButtonActions,
         commentShowUserInstance,
         combineCommentScores,
+        commentUseColorizedUsername,
 
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,

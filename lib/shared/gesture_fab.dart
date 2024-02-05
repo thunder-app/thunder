@@ -21,6 +21,7 @@ class GestureFab extends StatefulWidget {
     this.onLongPress,
     this.centered = false,
     this.heroTag,
+    this.fabBackgroundColor,
   });
 
   final bool? initialOpen;
@@ -34,6 +35,7 @@ class GestureFab extends StatefulWidget {
   final Function? onLongPress;
   final bool centered;
   final String? heroTag;
+  final Color? fabBackgroundColor;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -212,6 +214,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                   )
                 : FloatingActionButton(
                     heroTag: widget.heroTag,
+                    backgroundColor: widget.fabBackgroundColor,
                     onPressed: () {
                       widget.onPressed?.call();
                     },
@@ -231,12 +234,14 @@ class ActionButton extends StatelessWidget {
     this.title,
     required this.icon,
     this.centered = false,
+    this.backgroundColor,
   });
 
   final VoidCallback? onPressed;
   final Icon icon;
   final String? title;
   final bool centered;
+  final Color? backgroundColor;
 
   bool? first;
   bool? last;
@@ -330,7 +335,7 @@ class ActionButton extends StatelessWidget {
                 child: Material(
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                   clipBehavior: Clip.antiAlias,
-                  color: theme.colorScheme.primaryContainer,
+                  color: backgroundColor ?? theme.colorScheme.primaryContainer,
                   elevation: 4,
                   child: InkWell(
                     onTap: () {
