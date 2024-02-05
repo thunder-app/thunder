@@ -8,7 +8,7 @@ import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 
 /// A page for displaying the result of reply notifications
-class NotificationsReplyPage extends StatelessWidget {
+class NotificationsReplyPage extends StatefulWidget {
   final List<CommentReplyView> replies;
   late final InboxBloc inboxBloc;
 
@@ -17,13 +17,18 @@ class NotificationsReplyPage extends StatelessWidget {
   }
 
   @override
+  State<NotificationsReplyPage> createState() => _NotificationsReplyPageState();
+}
+
+class _NotificationsReplyPageState extends State<NotificationsReplyPage> {
+  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: inboxBloc),
+        BlocProvider.value(value: widget.inboxBloc),
         BlocProvider.value(value: PostBloc()),
       ],
       child: Container(
@@ -37,7 +42,7 @@ class NotificationsReplyPage extends StatelessWidget {
                 pinned: true,
                 title: ListTile(
                   title: Text(l10n.inbox, style: theme.textTheme.titleLarge),
-                  subtitle: Text(l10n.reply(replies.length)),
+                  subtitle: Text(l10n.reply(widget.replies.length)),
                 ),
               ),
               SliverToBoxAdapter(
