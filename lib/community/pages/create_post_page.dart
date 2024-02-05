@@ -215,10 +215,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
       sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
-
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        showSnackbar(l10n.postSavedAsDraft);
-      });
+      showSnackbar(l10n.postSavedAsDraft);
     } else {
       sharedPreferences?.remove(draftId);
     }
