@@ -220,7 +220,3 @@ class _ThunderSnackbarState extends State<ThunderSnackbar> {
     return snackBar;
   }
 }
-
-void hideSnackbar(BuildContext context) {
-  OverlaySupportEntry.of(context)?.dismiss();
-}

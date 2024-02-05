@@ -292,7 +292,6 @@ class BlockCommunityButton extends StatelessWidget {
             onPressed: isUserLoggedIn
                 ? () {
                     HapticFeedback.heavyImpact();
-                    hideSnackbar(context);
                     context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: communityView.community.id, value: !blocked));
                   }
                 : null,
