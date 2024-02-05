@@ -46,21 +46,18 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     emit(state.copyWith(status: CreatePostStatus.submitting));
 
     try {
-      final lemmy = LemmyClient.instance.lemmyApiV3;
-      // PostView postView = await createPost(
-      //   communityId: communityId,
-      //   name: name,
-      //   body: body,
-      //   url: url,
-      //   nsfw: nsfw,
-      //   postIdBeingEdited: postIdBeingEdited,
-      //   languageId: languageId,
-      // );
-
-      GetPostResponse getPostResponse = await lemmy.run(GetPost(id: 1));
+      PostView postView = await createPost(
+        communityId: communityId,
+        name: name,
+        body: body,
+        url: url,
+        nsfw: nsfw,
+        postIdBeingEdited: postIdBeingEdited,
+        languageId: languageId,
+      );
 
       // Parse the newly created post
-      List<PostViewMedia> postViewMedias = await parsePostViews([getPostResponse.postView]);
+      List<PostViewMedia> postViewMedias = await parsePostViews([postView]);
 
       emit(state.copyWith(status: CreatePostStatus.success, postViewMedia: postViewMedias.firstOrNull));
       return postViewMedias.firstOrNull?.postView.post.id;
