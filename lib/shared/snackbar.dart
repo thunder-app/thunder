@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:overlay_support/overlay_support.dart';
+
 import 'package:thunder/utils/global_context.dart';
 
 const Duration _snackBarTransitionDuration = Duration(milliseconds: 500);
@@ -30,17 +31,9 @@ void showSnackbar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (leadingIcon != null)
-                  Icon(
-                    leadingIcon,
-                    color: leadingIconColor,
-                  ),
+                if (leadingIcon != null) Icon(leadingIcon, color: leadingIconColor),
                 if (leadingIcon != null) const SizedBox(width: 8.0),
-                Expanded(
-                  child: Text(
-                    text,
-                  ),
-                ),
+                Expanded(child: Text(text)),
                 if (trailingIcon != null)
                   SizedBox(
                     height: 20,
@@ -72,7 +65,7 @@ void showSnackbar(
   });
 }
 
-/// Build the slide translation for the snack bar
+/// Builds a custom snackbar which attempts to match the Material 3 spec as closely as possible.
 class SnackbarNotification extends StatefulWidget {
   final WidgetBuilder builder;
 
@@ -156,58 +149,71 @@ class ThunderSnackbar extends StatefulWidget {
 }
 
 class _ThunderSnackbarState extends State<ThunderSnackbar> {
+  Widget child = Container();
+
   @override
-  Widget build(BuildContext context) {
-    const double horizontalPadding = 16.0;
-    const double singleLineVerticalPadding = 14.0;
+  void initState() {
+    super.initState();
 
-    final ThemeData theme = Theme.of(context);
-    final SnackBarThemeData snackBarTheme = theme.snackBarTheme;
+    // Initialize the widget here. We do this so that we can change the state of the widget to an empty Container when we dismiss the snackbar.
+    // Doing so prevents the snackbar from showing back up after it has been dismissed.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      const double horizontalPadding = 16.0;
+      const double singleLineVerticalPadding = 14.0;
 
-    final double elevation = snackBarTheme.elevation ?? 6.0;
-    final Color backgroundColor = theme.colorScheme.inverseSurface;
-    final ShapeBorder shape = snackBarTheme.shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0));
+      final ThemeData theme = Theme.of(context);
+      final SnackBarThemeData snackBarTheme = theme.snackBarTheme;
 
-    Widget snackBar = Dismissible(
-      key: UniqueKey(),
-      direction: DismissDirection.down,
-      behavior: HitTestBehavior.deferToChild,
-      onDismissed: (direction) {},
-      child: Container(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom + kBottomNavigationBarHeight + singleLineVerticalPadding),
-        child: ClipRect(
-          child: Align(
-            alignment: AlignmentDirectional.bottomStart,
-            child: Semantics(
-              container: true,
-              liveRegion: true,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(15.0, 5.0, 15.0, 10.0),
-                child: Material(
-                  shape: shape,
-                  elevation: elevation,
-                  color: backgroundColor,
-                  clipBehavior: Clip.none,
-                  child: Theme(
-                    data: theme,
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.only(start: horizontalPadding, end: horizontalPadding),
-                      child: Wrap(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: singleLineVerticalPadding),
-                                  child: DefaultTextStyle(
-                                    style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onInverseSurface),
-                                    child: widget.content,
+      final double elevation = snackBarTheme.elevation ?? 6.0;
+      final Color backgroundColor = theme.colorScheme.inverseSurface;
+      final ShapeBorder shape = snackBarTheme.shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0));
+
+      double snackbarBottomPadding = 0;
+
+      if (MediaQuery.of(context).viewInsets.bottom == 0) {
+        // If there is no inset padding, we'll add in some padding for the bottom navigation bar.
+        snackbarBottomPadding += MediaQuery.of(context).viewPadding.bottom + kBottomNavigationBarHeight + singleLineVerticalPadding;
+      } else {
+        snackbarBottomPadding += MediaQuery.of(context).viewInsets.bottom;
+      }
+
+      child = SafeArea(
+        child: Container(
+          padding: EdgeInsets.only(bottom: snackbarBottomPadding),
+          child: ClipRect(
+            child: Align(
+              alignment: AlignmentDirectional.bottomStart,
+              child: Semantics(
+                container: true,
+                liveRegion: true,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(15.0, 5.0, 15.0, 10.0),
+                  child: Material(
+                    shape: shape,
+                    elevation: elevation,
+                    color: backgroundColor,
+                    clipBehavior: Clip.none,
+                    child: Theme(
+                      data: theme,
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.only(start: horizontalPadding, end: horizontalPadding),
+                        child: Wrap(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: singleLineVerticalPadding),
+                                    child: DefaultTextStyle(
+                                      style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onInverseSurface),
+                                      child: widget.content,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -216,9 +222,20 @@ class _ThunderSnackbarState extends State<ThunderSnackbar> {
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
+  }
 
-    return snackBar;
+  @override
+  Widget build(BuildContext context) {
+    return Dismissible(
+      key: UniqueKey(),
+      direction: DismissDirection.down,
+      behavior: HitTestBehavior.deferToChild,
+      onDismissed: (direction) {
+        setState(() => child = Container());
+      },
+      child: child,
+    );
   }
 }
