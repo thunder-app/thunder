@@ -22,52 +22,54 @@ void showSnackbar(
   // Allows us to clear the previous overlay before showing the next one
   const key = TransientKey('transient');
 
-  showOverlay(
-    (context, progress) {
-      return SnackbarNotification(
-        builder: (context) => ThunderSnackbar(
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (leadingIcon != null)
-                Icon(
-                  leadingIcon,
-                  color: leadingIconColor,
-                ),
-              if (leadingIcon != null) const SizedBox(width: 8.0),
-              Expanded(
-                child: Text(
-                  text,
-                ),
-              ),
-              if (trailingIcon != null)
-                SizedBox(
-                  height: 20,
-                  child: IconButton(
-                    visualDensity: VisualDensity.compact,
-                    onPressed: trailingAction != null
-                        ? () {
-                            OverlaySupportEntry.of(context)?.dismiss();
-                            trailingAction();
-                          }
-                        : null,
-                    icon: Icon(
-                      trailingIcon,
-                      color: trailingIconColor ?? Theme.of(context).colorScheme.inversePrimary,
-                    ),
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    showOverlay(
+      (context, progress) {
+        return SnackbarNotification(
+          builder: (context) => ThunderSnackbar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (leadingIcon != null)
+                  Icon(
+                    leadingIcon,
+                    color: leadingIconColor,
+                  ),
+                if (leadingIcon != null) const SizedBox(width: 8.0),
+                Expanded(
+                  child: Text(
+                    text,
                   ),
                 ),
-            ],
+                if (trailingIcon != null)
+                  SizedBox(
+                    height: 20,
+                    child: IconButton(
+                      visualDensity: VisualDensity.compact,
+                      onPressed: trailingAction != null
+                          ? () {
+                              OverlaySupportEntry.of(context)?.dismiss();
+                              trailingAction();
+                            }
+                          : null,
+                      icon: Icon(
+                        trailingIcon,
+                        color: trailingIconColor ?? Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        progress: progress,
-      );
-    },
-    animationDuration: _snackBarTransitionDuration,
-    duration: duration ?? Duration(milliseconds: max(kNotificationDuration.inMilliseconds, max(4000, 1000 * wordCount))), // Assuming 60 WPM or 1 WPS
-    context: GlobalContext.context,
-    key: key,
-  );
+          progress: progress,
+        );
+      },
+      animationDuration: _snackBarTransitionDuration,
+      duration: duration ?? Duration(milliseconds: max(kNotificationDuration.inMilliseconds, max(4000, 1000 * wordCount))), // Assuming 60 WPM or 1 WPS
+      context: GlobalContext.context,
+      key: key,
+    );
+  });
 }
 
 /// Build the slide translation for the snack bar
