@@ -70,6 +70,7 @@ class ThunderState extends Equatable {
     this.showCommentButtonActions = false,
     this.commentShowUserInstance = false,
     this.combineCommentScores = false,
+    this.commentUseColorizedUsername = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
@@ -200,6 +201,7 @@ class ThunderState extends Equatable {
   final bool showCommentButtonActions;
   final bool commentShowUserInstance;
   final bool combineCommentScores;
+  final bool commentUseColorizedUsername;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
@@ -336,6 +338,7 @@ class ThunderState extends Equatable {
     bool? showCommentButtonActions,
     bool? commentShowUserInstance,
     bool? combineCommentScores,
+    bool? commentUseColorizedUsername,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
@@ -468,6 +471,7 @@ class ThunderState extends Equatable {
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
+      commentUseColorizedUsername: commentUseColorizedUsername ?? this.commentUseColorizedUsername,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
@@ -604,6 +608,7 @@ class ThunderState extends Equatable {
         showCommentButtonActions,
         commentShowUserInstance,
         combineCommentScores,
+        commentUseColorizedUsername,
 
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,
