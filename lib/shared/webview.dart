@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -50,6 +53,23 @@ class _WebViewState extends State<WebView> {
       (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
     _controller = controller;
+
+    BackButtonInterceptor.add(_handleBack);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(_handleBack);
+    super.dispose();
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (await _controller.canGoBack()) {
+      _controller.goBack();
+      return true;
+    }
+
+    return false;
   }
 
   @override
