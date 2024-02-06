@@ -107,6 +107,10 @@
   "@cantBlockAdmin": {},
   "cantBlockYourself": "You may not block yourself.",
   "@cantBlockYourself": {},
+  "cardPostCardMetadataItems": "Card View Metadata",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
   "cardView": "Card View",
   "@cardView": {
     "description": "Label for the card view option in Setting -> Appearance -> Posts"
@@ -222,6 +226,10 @@
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
+  },
+  "compactPostCardMetadataItems": "Compact View Metadata",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
   },
   "compactView": "Compact View",
   "@compactView": {
