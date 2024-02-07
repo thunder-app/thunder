@@ -1370,5 +1370,57 @@
   "unableToNavigateToInstance": "No se puede navegar a {instanceHost}. Puede que no sea una instancia Lemmy válida.",
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "commentUseColorizedUsername": "Nombres de usuario en color",
+  "@commentUseColorizedUsername": {
+    "description": "Setting used to toggle colorized comments creator display name."
+  },
+  "noItems": "Sin artículos",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "cardPostCardMetadataItems": "Metadatos de la vista de tarjetas",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "compactPostCardMetadataItems": "Metadatos de la vista compacta",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
+  },
+  "forward": "Adelante",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "postMetadataInstructions": "Puede personalizar la información de metadatos arrastrando y soltando la información deseada",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
+  "browserMode": "Gestión de enlaces",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "linkHandlingExternal": "Abrir externamente en el navegador del sistema",
+  "@linkHandlingExternal": {
+    "description": "Description for external link handling"
+  },
+  "linkHandlingExternalShort": "Externo",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "linkHandlingInApp": "Utiliza el navegador integrado en Thunder",
+  "@linkHandlingInApp": {
+    "description": "Description for in-app link handling"
+  },
+  "linkHandlingInAppShort": "En la aplicación",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "linkHandlingCustomTabs": "Abrir en el navegador del sistema integrado en la aplicación",
+  "@linkHandlingCustomTabs": {
+    "description": "Description for custom tabs link handling"
+  },
+  "linkHandlingCustomTabsShort": "Integrado en la aplicación",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
   }
 }
