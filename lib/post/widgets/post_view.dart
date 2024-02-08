@@ -55,9 +55,6 @@ class PostSubview extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
 
-  /// The messenger key back to the post page
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
-
   const PostSubview({
     super.key,
     this.selectedCommentId,
@@ -65,7 +62,6 @@ class PostSubview extends StatefulWidget {
     required this.postViewMedia,
     required this.moderators,
     required this.crossPosts,
-    this.scaffoldMessengerKey,
   });
 
   @override
@@ -179,7 +175,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               CrossPosts(
                 crossPosts: sortedCrossPosts,
                 originalPost: widget.postViewMedia,
-                scaffoldMessengerKey: widget.scaffoldMessengerKey,
               ),
             const SizedBox(height: 16.0),
             SizedBox(
@@ -402,7 +397,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     onPressed: isUserLoggedIn
                         ? () async {
                             if (postView.post.locked) {
-                              showSnackbar(context, l10n.postLocked);
+                              showSnackbar(l10n.postLocked);
                               return;
                             }
 
@@ -497,7 +492,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                 if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
                                   await Future.delayed(const Duration(milliseconds: 300));
                                   if (context.mounted) {
-                                    showSnackbar(context, l10n.commentSavedAsDraft);
+                                    showSnackbar(l10n.commentSavedAsDraft);
                                   }
                                   prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                                 } else {

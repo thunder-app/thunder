@@ -173,7 +173,7 @@ class InboxMentionsView extends StatelessWidget {
 
                             if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
                               await Future.delayed(const Duration(milliseconds: 300));
-                              showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+                              showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
                               prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                             } else {
                               prefs.remove(draftId);

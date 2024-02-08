@@ -135,7 +135,7 @@ class _UserPageState extends State<UserPage> {
             userBloc = context.read<UserBloc>();
 
             if (state.status == UserStatus.failedToBlock) {
-              showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+              showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
             }
 
             switch (state.status) {

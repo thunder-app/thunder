@@ -79,7 +79,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
 
                         if (context.mounted) {
                           context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
-                          showSnackbar(context, AppLocalizations.of(context)!.clearedUserPreferences);
+                          showSnackbar(AppLocalizations.of(context)!.clearedUserPreferences);
                         }
                       });
 
@@ -114,7 +114,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       await databaseFactory.deleteDatabase(path);
 
                       if (context.mounted) {
-                        showSnackbar(context, AppLocalizations.of(context)!.clearedDatabase);
+                        showSnackbar(AppLocalizations.of(context)!.clearedDatabase);
                         Navigator.of(context).pop();
                       }
                     },
@@ -149,7 +149,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       ),
                       onTap: () async {
                         await clearDiskCachedImages();
-                        if (context.mounted) showSnackbar(context, l10n.clearedCache);
+                        if (context.mounted) showSnackbar(l10n.clearedCache);
                         setState(() {}); // Trigger a rebuild to refresh the cache size
                       },
                     );

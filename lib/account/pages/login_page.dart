@@ -145,11 +145,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 isLoading = false;
               });
 
-              showSnackbar(context, AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
+              showSnackbar(AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
             } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
               context.pop();
 
-              showSnackbar(context, AppLocalizations.of(context)!.loginSucceeded);
+              showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
             }
           },
         ),

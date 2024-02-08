@@ -15,18 +15,16 @@ import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FeedFAB extends StatelessWidget {
-  const FeedFAB({super.key, this.heroTag, this.scaffoldMessengerKey});
+  const FeedFAB({super.key, this.heroTag});
 
   final String? heroTag;
-
-  /// The messenger key back to the main Thunder page
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
 
   @override
   build(BuildContext context) {
@@ -283,40 +281,14 @@ class FeedFAB extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     if (!context.read<AuthBloc>().state.isLoggedIn) {
-      return showSnackbar(context, l10n.mustBeLoggedInPost);
+      return showSnackbar(l10n.mustBeLoggedInPost);
     }
 
     if (isPostingLocked) {
-      return showSnackbar(context, l10n.onlyModsCanPostInCommunity);
+      return showSnackbar(l10n.onlyModsCanPostInCommunity);
     }
 
     FeedBloc feedBloc = context.read<FeedBloc>();
-    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    AccountBloc accountBloc = context.read<AccountBloc>();
-
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
-    final bool reduceAnimations = thunderState.reduceAnimations;
-
-    Navigator.of(context).push(
-      SwipeablePageRoute(
-        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        canOnlySwipeFromEdge: true,
-        backGestureDetectionWidth: 45,
-        builder: (context) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider<FeedBloc>.value(value: feedBloc),
-              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-              BlocProvider<AccountBloc>.value(value: accountBloc),
-            ],
-            child: CreatePostPage(
-              communityId: feedBloc.state.communityId,
-              communityView: feedBloc.state.fullCommunityView?.communityView,
-              scaffoldMessengerKey: scaffoldMessengerKey,
-            ),
-          );
-        },
-      ),
-    );
+    navigateToCreatePostPage(context, communityId: feedBloc.state.communityId, communityView: feedBloc.state.fullCommunityView?.communityView);
   }
 }
