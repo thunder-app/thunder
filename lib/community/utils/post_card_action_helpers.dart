@@ -61,6 +61,7 @@ class ExtendedPostCardActions {
   const ExtendedPostCardActions({
     required this.postCardAction,
     required this.icon,
+    this.trailingIcon,
     required this.label,
     this.color,
     this.getForegroundColor,
@@ -72,6 +73,7 @@ class ExtendedPostCardActions {
 
   final PostCardAction postCardAction;
   final IconData icon;
+  final IconData? trailingIcon;
   final String label;
   final Color? color;
   final Color? Function(PostView postView)? getForegroundColor;
@@ -193,6 +195,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
   ExtendedPostCardActions(
     postCardAction: PostCardAction.moderatorActions,
     icon: Icons.shield_rounded,
+    trailingIcon: Icons.chevron_right_rounded,
     label: l10n.moderatorActions,
   ),
   ExtendedPostCardActions(
@@ -316,6 +319,7 @@ void showPostActionBottomModalSheet(
                 return PickerItem(
                   label: postCardActionItemsToUse[index].getOverrideLabel?.call(postViewMedia.postView) ?? postCardActionItemsToUse[index].label,
                   icon: postCardActionItemsToUse[index].getOverrideIcon?.call(postViewMedia.postView) ?? postCardActionItemsToUse[index].icon,
+                  trailingIcon: postCardActionItemsToUse[index].trailingIcon,
                   onSelected: (postCardActionItemsToUse[index].shouldEnable?.call(isUserLoggedIn) ?? true)
                       ? () => onSelected(context, postCardActionItemsToUse[index].postCardAction, postViewMedia, useAdvancedShareSheet)
                       : null,
