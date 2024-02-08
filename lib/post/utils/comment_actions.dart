@@ -39,7 +39,7 @@ void triggerCommentAction({
       bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
 
       if (downvotesEnabled == false) {
-        showSnackbar(context, AppLocalizations.of(context)!.downvotesDisabled);
+        showSnackbar(AppLocalizations.of(context)!.downvotesDisabled);
         return;
       }
       onVoteAction(commentView.comment.id, voteType == -1 ? 0 : -1);
@@ -105,7 +105,7 @@ void triggerCommentAction({
 
         if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (swipeAction != SwipeAction.edit || commentView.comment.content != newDraftComment?.text)) {
           await Future.delayed(const Duration(milliseconds: 300));
-          showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+          showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
           prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
         } else {
           prefs.remove(draftId);

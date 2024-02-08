@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -14,23 +15,24 @@ import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FeedFAB extends StatelessWidget {
-  const FeedFAB({super.key, this.heroTag, this.scaffoldMessengerKey});
+  const FeedFAB({super.key, this.heroTag});
 
   final String? heroTag;
 
-  /// The messenger key back to the main Thunder page
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
-
   @override
   build(BuildContext context) {
+    final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
     final FeedState feedState = context.watch<FeedBloc>().state;
+    final AuthState authState = context.read<AuthBloc>().state;
+    final AccountState accountState = context.read<AccountBloc>().state;
 
     // A list of actions that are not supported through the general feed
     List<FeedFabAction> unsupportedGeneralFeedFabActions = [];
@@ -46,8 +48,17 @@ class FeedFAB extends StatelessWidget {
     // Check to see if we are in the general feeds
     bool isGeneralFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.general;
     bool isCommunityFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.community;
-
     bool isNavigatedFeed = Navigator.canPop(context);
+
+    bool isPostLocked = false;
+
+    if (authState.isLoggedIn && isCommunityFeed) {
+      final CommunityView communityView = feedState.fullCommunityView!.communityView;
+
+      if (communityView.community.postingRestrictedToMods && !accountState.moderates.any((CommunityModeratorView cmv) => cmv.community.id == communityView.community.id)) {
+        isPostLocked = true;
+      }
+    }
 
     // Check single-press action
     if (isGeneralFeed && unsupportedGeneralFeedFabActions.contains(singlePressAction)) {
@@ -77,8 +88,9 @@ class FeedFAB extends StatelessWidget {
           ? GestureFab(
               heroTag: heroTag,
               distance: 60,
+              fabBackgroundColor: (singlePressAction == FeedFabAction.newPost && isPostLocked) ? theme.colorScheme.errorContainer : null,
               icon: Icon(
-                singlePressAction.icon,
+                (singlePressAction == FeedFabAction.newPost && isPostLocked) ? Icons.lock : singlePressAction.icon,
                 semanticLabel: singlePressAction.title,
                 size: 35,
               ),
@@ -105,7 +117,7 @@ class FeedFAB extends StatelessWidget {
                     triggerScrollToTop(context);
                     break;
                   case FeedFabAction.newPost:
-                    triggerNewPost(context);
+                    triggerNewPost(context, isPostingLocked: isPostLocked);
                     break;
                   default:
                     break;
@@ -134,13 +146,13 @@ class FeedFAB extends StatelessWidget {
                     triggerScrollToTop(context);
                     break;
                   case FeedFabAction.newPost:
-                    triggerNewPost(context);
+                    triggerNewPost(context, isPostingLocked: isPostLocked);
                     break;
                   default:
                     break;
                 }
               },
-              children: getEnabledActions(context),
+              children: getEnabledActions(context, isPostingLocked: isPostLocked),
             )
           : Stack(
               // This creates an invisible touch target to summon the FAB
@@ -162,7 +174,8 @@ class FeedFAB extends StatelessWidget {
     );
   }
 
-  List<ActionButton> getEnabledActions(BuildContext context) {
+  List<ActionButton> getEnabledActions(BuildContext context, {bool isPostingLocked = false}) {
+    final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
 
     bool enableBackToTop = state.enableBackToTop;
@@ -221,10 +234,11 @@ class FeedFAB extends StatelessWidget {
       if (enableNewPost)
         ActionButton(
           title: FeedFabAction.newPost.title,
-          icon: Icon(FeedFabAction.newPost.icon),
+          icon: Icon(isPostingLocked ? Icons.lock : FeedFabAction.newPost.icon),
+          backgroundColor: isPostingLocked ? theme.colorScheme.errorContainer : null,
           onPressed: () {
             HapticFeedback.lightImpact();
-            triggerNewPost(context);
+            triggerNewPost(context, isPostingLocked: isPostingLocked);
           },
         ),
     ];
@@ -263,39 +277,18 @@ class FeedFAB extends StatelessWidget {
     context.read<FeedBloc>().add(ScrollToTopEvent());
   }
 
-  Future<void> triggerNewPost(BuildContext context) async {
-    FeedBloc feedBloc = context.read<FeedBloc>();
+  Future<void> triggerNewPost(BuildContext context, {bool isPostingLocked = false}) async {
+    final l10n = AppLocalizations.of(context)!;
 
     if (!context.read<AuthBloc>().state.isLoggedIn) {
-      showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInPost);
-    } else {
-      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-      AccountBloc accountBloc = context.read<AccountBloc>();
-
-      final ThunderState thunderState = context.read<ThunderBloc>().state;
-      final bool reduceAnimations = thunderState.reduceAnimations;
-
-      Navigator.of(context).push(
-        SwipeablePageRoute(
-          transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-          canOnlySwipeFromEdge: true,
-          backGestureDetectionWidth: 45,
-          builder: (context) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider<FeedBloc>.value(value: feedBloc),
-                BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                BlocProvider<AccountBloc>.value(value: accountBloc),
-              ],
-              child: CreatePostPage(
-                communityId: feedBloc.state.communityId,
-                communityView: feedBloc.state.fullCommunityView?.communityView,
-                scaffoldMessengerKey: scaffoldMessengerKey,
-              ),
-            );
-          },
-        ),
-      );
+      return showSnackbar(l10n.mustBeLoggedInPost);
     }
+
+    if (isPostingLocked) {
+      return showSnackbar(l10n.onlyModsCanPostInCommunity);
+    }
+
+    FeedBloc feedBloc = context.read<FeedBloc>();
+    navigateToCreatePostPage(context, communityId: feedBloc.state.communityId, communityView: feedBloc.state.fullCommunityView?.communityView);
   }
 }

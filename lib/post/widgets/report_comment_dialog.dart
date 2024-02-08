@@ -108,10 +108,7 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
                                 hasError = false;
                               });
                             case PostStatus.success:
-                              showSnackbar(
-                                context,
-                                AppLocalizations.of(context)!.commentReported,
-                              );
+                              showSnackbar(AppLocalizations.of(context)!.commentReported);
                               Navigator.of(context).pop();
                               break;
                             case PostStatus.failure:

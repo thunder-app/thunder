@@ -84,6 +84,7 @@ enum LocalSettings {
       subCategory: LocalSettingsSubCategories.linksBehaviourSettings,
       searchable: false),
   browserMode(name: 'setting_browser_mode', key: 'browserMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
+  openByDefault(name: 'setting_links_open_by_default', key: 'openByDefault', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   openLinksInReaderMode(
       name: 'setting_links_open_in_reader_mode', key: 'openLinksInReaderMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
@@ -119,6 +120,9 @@ enum LocalSettings {
   showCrossPosts(name: 'setting_show_cross_posts', key: 'showCrossPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   keywordFilters(name: 'setting_general_keyword_filters', key: 'keywordFilters', category: LocalSettingsCategories.filters, subCategory: LocalSettingsSubCategories.filters),
   hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', key: 'hideTopBarOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
+  compactPostCardMetadataItems(
+      name: 'setting_compact_post_card_metadata_items', key: 'compactPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  cardPostCardMetadataItems(name: 'setting_card_post_card_metadata_items', key: 'cardPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
 
   // Advanced Settings
   userFormat(name: 'user_format', key: 'userFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
@@ -131,8 +135,8 @@ enum LocalSettings {
   collapseParentCommentBodyOnGesture(
       name: 'setting_comments_collapse_parent_comment_on_gesture',
       key: 'collapseParentCommentBodyOnGesture',
-      category: LocalSettingsCategories.comments,
-      subCategory: LocalSettingsSubCategories.general),
+      category: LocalSettingsCategories.general,
+      subCategory: LocalSettingsSubCategories.comments),
   showCommentActionButtons(
       name: 'setting_general_show_comment_button_actions', key: 'showCommentActionButtons', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.general),
   commentShowUserInstance(name: 'settings_comment_show_user_instance', key: 'showUserInstance', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
@@ -141,6 +145,8 @@ enum LocalSettings {
       name: 'setting_general_nested_comment_indicator_style', key: 'nestedCommentIndicatorStyle', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   nestedCommentIndicatorColor(
       name: 'setting_general_nested_comment_indicator_color', key: 'nestedCommentIndicatorColor', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+  commentUseColorizedUsername(
+      name: 'settings_general_comments_colorized_usernames', key: 'commentUseColorizedUsername', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
 
   /// -------------------------- Accessibility Related Settings --------------------------
   reduceAnimations(name: 'setting_accessibility_reduce_animations', key: 'reduceAnimations', category: LocalSettingsCategories.accessibility, subCategory: LocalSettingsSubCategories.animations),
@@ -259,6 +265,7 @@ extension LocalizationExt on AppLocalizations {
       'scrapeMissingLinkPreviews': scrapeMissingLinkPreviews,
       'openLinksInExternalBrowser': openLinksInExternalBrowser,
       'browserMode': browserMode,
+      'openByDefault': openByDefault,
       'openLinksInReaderMode': openLinksInReaderMode,
       'showUserDisplayNames': showUserDisplayNames,
       'markPostAsReadOnMediaView': markPostAsReadOnMediaView,
@@ -284,6 +291,8 @@ extension LocalizationExt on AppLocalizations {
       'showCrossPosts': showCrossPosts,
       'keywordFilters': keywordFilters,
       'hideTopBarOnScroll': hideTopBarOnScroll,
+      'compactPostCardMetadataItems': compactPostCardMetadataItems,
+      'cardPostCardMetadataItems': cardPostCardMetadataItems,
       'userFormat': userFormat,
       'communityFormat': communityFormat,
       'defaultCommentSortType': defaultCommentSortType,
@@ -340,6 +349,7 @@ extension LocalizationExt on AppLocalizations {
       'feedTypeAndSorts': feedTypeAndSorts,
       'profiles': profiles,
       'animations': animations,
+      'commentUseColorizedUsername': commentUseColorizedUsername
     };
 
     if (localizationMap.containsKey(key)) {
