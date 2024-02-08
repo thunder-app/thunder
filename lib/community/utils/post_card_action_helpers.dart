@@ -66,6 +66,7 @@ class ExtendedPostCardActions {
     this.color,
     this.getForegroundColor,
     this.getOverrideIcon,
+    this.getOverrideLabel,
     this.shouldShow,
     this.shouldEnable,
   });
@@ -76,6 +77,7 @@ class ExtendedPostCardActions {
   final Color? color;
   final Color? Function(PostView postView)? getForegroundColor;
   final IconData? Function(PostView postView)? getOverrideIcon;
+  final String? Function(PostView postView)? getOverrideLabel;
   final bool Function(BuildContext context, PostView commentView)? shouldShow;
   final bool Function(bool isUserLoggedIn)? shouldEnable;
 }
@@ -183,24 +185,37 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     label: l10n.share,
   ),
   ExtendedPostCardActions(
+    postCardAction: PostCardAction.delete,
+    icon: Icons.delete_rounded,
+    label: l10n.delete,
+    getOverrideIcon: (postView) => postView.post.deleted ? Icons.restore_from_trash_rounded : Icons.delete_rounded,
+    getOverrideLabel: (postView) => postView.post.deleted ? l10n.restore : l10n.delete,
+  ),
+  ExtendedPostCardActions(
     postCardAction: PostCardAction.moderatorActions,
     icon: Icons.shield_rounded,
-    label: 'Moderator Actions',
+    label: l10n.moderatorActions,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.moderatorLockPost,
     icon: Icons.lock,
-    label: 'Lock Post',
+    label: l10n.lockPost,
+    getOverrideIcon: (postView) => postView.post.locked ? Icons.lock_open_rounded : Icons.lock,
+    getOverrideLabel: (postView) => postView.post.locked ? l10n.unlockPost : l10n.lockPost,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.moderatorPinCommunity,
     icon: Icons.push_pin_rounded,
-    label: 'Pin Community',
+    label: l10n.pinToCommunity,
+    getOverrideIcon: (postView) => postView.post.featuredCommunity ? Icons.push_pin_rounded : Icons.push_pin_outlined,
+    getOverrideLabel: (postView) => postView.post.featuredCommunity ? l10n.unpinFromCommunity : l10n.pinToCommunity,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.moderatorRemovePost,
-    icon: Icons.delete_rounded,
-    label: 'Remove Post',
+    icon: Icons.delete_forever_rounded,
+    label: l10n.removePost,
+    getOverrideIcon: (postView) => postView.post.removed ? Icons.restore_from_trash_rounded : Icons.delete_forever_rounded,
+    getOverrideLabel: (postView) => postView.post.removed ? l10n.restorePost : l10n.removePost,
   )
 ];
 
@@ -222,7 +237,6 @@ void showPostActionBottomModalSheet(
   final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
   final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
   final bool isOwnPost = postViewMedia.postView.creator.id == context.read<AuthBloc>().state.account?.userId;
-  final bool isDeleted = postViewMedia.postView.post.deleted;
 
   final bool isModerator =
       context.read<AccountBloc>().state.moderates.any((CommunityModeratorView communityModeratorView) => communityModeratorView.community.id == postViewMedia.postView.community.id);
@@ -241,11 +255,7 @@ void showPostActionBottomModalSheet(
 
   // Add the option to delete one's own posts
   if (isOwnPost && postActionBottomSheetPage == PostActionBottomSheetPage.general) {
-    postCardActionItemsToUse.add(ExtendedPostCardActions(
-      postCardAction: PostCardAction.delete,
-      icon: isDeleted ? Icons.restore_from_trash_rounded : Icons.delete_rounded,
-      label: isDeleted ? AppLocalizations.of(context)!.restore : AppLocalizations.of(context)!.delete,
-    ));
+    postCardActionItemsToUse.add(postCardActionItems.firstWhere((ExtendedPostCardActions extendedPostCardActions) => extendedPostCardActions.postCardAction == PostCardAction.delete));
   }
 
   if (isModerator && postActionBottomSheetPage == PostActionBottomSheetPage.general) {
@@ -305,8 +315,8 @@ void showPostActionBottomModalSheet(
                 }
 
                 return PickerItem(
-                  label: postCardActionItemsToUse[index].label,
-                  icon: postCardActionItemsToUse[index].icon,
+                  label: postCardActionItemsToUse[index].getOverrideLabel?.call(postViewMedia.postView) ?? postCardActionItemsToUse[index].label,
+                  icon: postCardActionItemsToUse[index].getOverrideIcon?.call(postViewMedia.postView) ?? postCardActionItemsToUse[index].icon,
                   onSelected: (postCardActionItemsToUse[index].shouldEnable?.call(isUserLoggedIn) ?? true)
                       ? () => onSelected(context, postCardActionItemsToUse[index].postCardAction, postViewMedia, useAdvancedShareSheet)
                       : null,
@@ -434,7 +444,7 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       // Show a dialog to add a reason for removing the post
       showThunderDialog(
         context: context,
-        title: l10n.removalReason,
+        title: postViewMedia.postView.post.removed ? l10n.restorePost : l10n.removalReason,
         // Use a stateful widget for the content so we can update the error message
         contentWidgetBuilder: (setPrimaryButtonEnabled) => StatefulBuilder(
           builder: (context, setState) {
@@ -453,7 +463,7 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
         ),
         secondaryButtonText: l10n.cancel,
         onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-        primaryButtonText: l10n.remove,
+        primaryButtonText: postViewMedia.postView.post.removed ? l10n.restore : l10n.remove,
         onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
           context.read<FeedBloc>().add(
                 FeedItemActionedEvent(

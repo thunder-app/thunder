@@ -665,6 +665,10 @@
   "@local": {},
   "localPosts": "Local Posts",
   "@localPosts": {},
+  "lockPost": "Lock Post",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
   "logOut": "Log out",
   "@logOut": {},
   "login": "Log in",
@@ -708,6 +712,10 @@
   "moderatedCommunities": "Moderated Communities",
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderatorActions": "Moderator Actions",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
@@ -857,6 +865,10 @@
   "@permissionDeniedMessage": {
     "description": "Explanation for error when user denies OS permissions"
   },
+  "pinToCommunity": "Pin to Community",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
   "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "@placeholderText": {
     "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
@@ -975,6 +987,10 @@
   "@removeKeywordFilter": {
     "description": "Title for dialig to remove keyword"
   },
+  "removePost": "Remove Post",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
   "@removedCommunityFromSubscriptions": {},
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
@@ -1009,6 +1025,10 @@
   },
   "restore": "Restore",
   "@restore": {},
+  "restorePost": "Restore Post",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
   "restoredCommentFromDraft": "Restored comment from draft",
   "@restoredCommentFromDraft": {},
   "restoredPostFromDraft": "Restored post from draft",
@@ -1359,6 +1379,14 @@
   },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
+  "unlockPost": "Unlock Post",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unpinFromCommunity": "Unpin from Community",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
   "unsubscribeFromCommunity": "Unsubscribe from Community",
