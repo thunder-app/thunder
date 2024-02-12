@@ -64,6 +64,7 @@ void main() async {
   /// Allows the top-level notification handlers to trigger actions farther down
   final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
 
+  bool startupDueToGroupNotification = false;
   if (!kIsWeb && Platform.isAndroid) {
     // Initialize local notifications. Note that this doesn't request permissions or actually send any notifications.
     // It's just hooking up callbacks and settings.
@@ -77,6 +78,7 @@ void main() async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse != null) {
       notificationsStreamController.add(notificationAppLaunchDetails.notificationResponse!);
+      startupDueToGroupNotification = notificationAppLaunchDetails.notificationResponse!.payload == repliesGroupKey;
     }
 
     // Initialize background fetch (this is async and can go run on its own).
@@ -91,8 +93,10 @@ void main() async {
   // Perform preference migrations
   performSharedPreferencesMigration();
 
-  // Do a notifications check on startup
-  pollRepliesAndShowNotifications();
+  // Do a notifications check on startup, if the user isn't clicking on a group notification
+  if (!startupDueToGroupNotification) {
+    pollRepliesAndShowNotifications();
+  }
 
   runApp(ThunderApp(notificationsStream: notificationsStreamController.stream));
 
