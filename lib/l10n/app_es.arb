@@ -563,8 +563,6 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "No hay ninguna publicación.",
-  "@noPosts": {},
   "noPostsFound": "No se ha encontrado ningún tema",
   "@noPostsFound": {},
   "noResultsFound": "No se han encontrado resultados.",

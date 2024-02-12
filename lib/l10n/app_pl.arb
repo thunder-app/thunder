@@ -231,8 +231,6 @@
   "@noComments": {},
   "noCommunityBlocks": "It looks like you have not blocked any communities.",
   "@noCommunityBlocks": {},
-  "noPosts": "Nie znaleziono wpisów.",
-  "@noPosts": {},
   "noUserBlocks": "It looks like you have not blocked anybody.",
   "@noUserBlocks": {},
   "notValidLemmyInstance": "{instance} wydaje się nie być odpowiednią instancją Lemmy",

@@ -535,8 +535,6 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "Neniuj afiŝoj trovitaj",
-  "@noPosts": {},
   "noPostsFound": "Neniuj afiŝoj trovitaj",
   "@noPostsFound": {},
   "noResultsFound": "Neniuj rezultoj trovitaj.",

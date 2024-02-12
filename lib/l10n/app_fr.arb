@@ -555,8 +555,6 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "Aucune publication trouvée",
-  "@noPosts": {},
   "noPostsFound": "Aucune publication trouvée",
   "@noPostsFound": {},
   "noResultsFound": "Aucun résultat trouvé.",
