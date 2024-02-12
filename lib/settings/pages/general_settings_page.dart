@@ -640,29 +640,30 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               highlightKey: settingToHighlight == LocalSettings.communityFormat ? settingToHighlightKey : null,
             ),
           ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.imageCachingMode,
-              value: ListPickerItem(
-                label: switch (imageCachingMode) {
-                  ImageCachingMode.aggressive => l10n.imageCachingModeAggressiveShort,
-                  ImageCachingMode.relaxed => l10n.imageCachingModeRelaxedShort,
+          if (!kIsWeb && Platform.isAndroid)
+            SliverToBoxAdapter(
+              child: ListOption(
+                description: l10n.imageCachingMode,
+                value: ListPickerItem(
+                  label: switch (imageCachingMode) {
+                    ImageCachingMode.aggressive => l10n.imageCachingModeAggressiveShort,
+                    ImageCachingMode.relaxed => l10n.imageCachingModeRelaxedShort,
+                  },
+                  payload: imageCachingMode,
+                  capitalizeLabel: false,
+                ),
+                options: [
+                  ListPickerItem(icon: Icons.broken_image, label: l10n.imageCachingModeAggressive, payload: ImageCachingMode.aggressive, capitalizeLabel: false),
+                  ListPickerItem(icon: Icons.broken_image_outlined, label: l10n.imageCachingModeRelaxed, payload: ImageCachingMode.relaxed, capitalizeLabel: false),
+                ],
+                icon: switch (imageCachingMode) {
+                  ImageCachingMode.aggressive => Icons.broken_image,
+                  ImageCachingMode.relaxed => Icons.broken_image_outlined,
                 },
-                payload: imageCachingMode,
-                capitalizeLabel: false,
+                onChanged: (value) => setPreferences(LocalSettings.imageCachingMode, value.payload.name),
+                highlightKey: settingToHighlight == LocalSettings.imageCachingMode ? settingToHighlightKey : null,
               ),
-              options: [
-                ListPickerItem(icon: Icons.broken_image, label: l10n.imageCachingModeAggressive, payload: ImageCachingMode.aggressive, capitalizeLabel: false),
-                ListPickerItem(icon: Icons.broken_image_outlined, label: l10n.imageCachingModeRelaxed, payload: ImageCachingMode.relaxed, capitalizeLabel: false),
-              ],
-              icon: switch (imageCachingMode) {
-                ImageCachingMode.aggressive => Icons.broken_image,
-                ImageCachingMode.relaxed => Icons.broken_image_outlined,
-              },
-              onChanged: (value) => setPreferences(LocalSettings.imageCachingMode, value.payload.name),
-              highlightKey: settingToHighlight == LocalSettings.imageCachingMode ? settingToHighlightKey : null,
             ),
-          ),
 
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
