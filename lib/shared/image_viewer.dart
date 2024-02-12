@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gal/gal.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -14,10 +15,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/shared/dialogs.dart';
 
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/image.dart';
 
 class ImageViewer extends StatefulWidget {
@@ -133,6 +136,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
+
     AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140), vsync: this);
     Function() animationListener = () {};
     Animation? animation;
@@ -251,8 +256,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       mode: ExtendedImageMode.gesture,
                                       extendedImageGestureKey: gestureKey,
                                       cache: true,
-                                      clearMemoryCacheWhenDispose: false,
-                                      cacheMaxAge: const Duration(minutes: 1),
+                                      clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
                                       initGestureConfigHandler: (ExtendedImageState state) {
                                         return GestureConfig(
                                           minScale: 0.8,

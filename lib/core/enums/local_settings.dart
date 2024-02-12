@@ -127,6 +127,7 @@ enum LocalSettings {
   // Advanced Settings
   userFormat(name: 'user_format', key: 'userFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
   communityFormat(name: 'community_format', key: 'communityFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  imageCachingMode(name: 'setting_advanced_image_caching_mode', key: 'imageCachingMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
@@ -295,6 +296,7 @@ extension LocalizationExt on AppLocalizations {
       'cardPostCardMetadataItems': cardPostCardMetadataItems,
       'userFormat': userFormat,
       'communityFormat': communityFormat,
+      'imageCachingMode': imageCachingMode,
       'defaultCommentSortType': defaultCommentSortType,
       'collapseParentCommentBodyOnGesture': collapseParentCommentBodyOnGesture,
       'showCommentActionButtons': showCommentActionButtons,
