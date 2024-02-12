@@ -18,6 +18,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/widgets/reason_bottom_sheet.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/picker_item.dart';
@@ -442,46 +443,33 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.post.featuredCommunity));
       break;
     case PostCardAction.moderatorRemovePost:
-      TextEditingController? textEditingController = TextEditingController();
-
-      // Show a dialog to add a reason for removing the post
-      showThunderDialog(
-        context: context,
-        title: postViewMedia.postView.post.removed ? l10n.restorePost : l10n.removalReason,
-        // Use a stateful widget for the content so we can update the error message
-        contentWidgetBuilder: (setPrimaryButtonEnabled) => StatefulBuilder(
-          builder: (context, setState) {
-            return TextField(
-              textInputAction: TextInputAction.done,
-              autocorrect: false,
-              controller: textEditingController,
-              decoration: InputDecoration(
-                isDense: true,
-                border: const OutlineInputBorder(),
-                labelText: l10n.reason,
-              ),
-              enableSuggestions: false,
-            );
-          },
-        ),
-        secondaryButtonText: l10n.cancel,
-        onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-        primaryButtonText: postViewMedia.postView.post.removed ? l10n.restore : l10n.remove,
-        onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-          context.read<FeedBloc>().add(
-                FeedItemActionedEvent(
-                  postAction: PostAction.remove,
-                  postId: postViewMedia.postView.post.id,
-                  value: {
-                    'remove': !postViewMedia.postView.post.removed,
-                    'reason': textEditingController.text,
-                  },
-                ),
-              );
-          Navigator.of(dialogContext).pop();
-        },
-      );
-
+      showRemovePostReasonBottomSheet(context, postViewMedia);
       break;
   }
+}
+
+void showRemovePostReasonBottomSheet(BuildContext context, PostViewMedia postViewMedia) {
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (_) => ReasonBottomSheet(
+      title: postViewMedia.postView.post.removed ? l10n.restorePost : l10n.removalReason,
+      submitLabel: postViewMedia.postView.post.removed ? l10n.restore : l10n.remove,
+      textHint: l10n.reason,
+      onSubmit: (String message) {
+        context.read<FeedBloc>().add(
+              FeedItemActionedEvent(
+                postAction: PostAction.remove,
+                postId: postViewMedia.postView.post.id,
+                value: {
+                  'remove': !postViewMedia.postView.post.removed,
+                  'reason': message,
+                },
+              ),
+            );
+        Navigator.of(context).pop();
+      },
+    ),
+  );
 }
