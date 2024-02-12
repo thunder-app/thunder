@@ -15,6 +15,7 @@ import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instance/instance_view.dart';
+import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -291,7 +292,6 @@ class BlockCommunityButton extends StatelessWidget {
             onPressed: isUserLoggedIn
                 ? () {
                     HapticFeedback.heavyImpact();
-                    hideSnackbar(context);
                     context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: communityView.community.id, value: !blocked));
                   }
                 : null,
@@ -332,33 +332,7 @@ class CommunityActions extends StatelessWidget {
             onPressed: isUserLoggedIn
                 ? () async {
                     HapticFeedback.mediumImpact();
-                    CommunityBloc communityBloc = context.read<CommunityBloc>();
-                    AccountBloc accountBloc = context.read<AccountBloc>();
-                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                    FeedBloc feedBloc = context.read<FeedBloc>();
-
-                    final ThunderState state = context.read<ThunderBloc>().state;
-                    final bool reduceAnimations = state.reduceAnimations;
-
-                    Navigator.of(context).push(SwipeablePageRoute(
-                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                      canOnlySwipeFromEdge: true,
-                      backGestureDetectionWidth: 45,
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider<CommunityBloc>.value(value: communityBloc),
-                            BlocProvider<AccountBloc>.value(value: accountBloc),
-                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                            BlocProvider<FeedBloc>.value(value: feedBloc),
-                          ],
-                          child: CreatePostPage(
-                            communityId: communityView.community.id,
-                            communityView: getCommunityResponse.communityView,
-                          ),
-                        );
-                      },
-                    ));
+                    navigateToCreatePostPage(context, communityId: communityView.community.id, communityView: getCommunityResponse.communityView);
                   }
                 : null,
             style: TextButton.styleFrom(

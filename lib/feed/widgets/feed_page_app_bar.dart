@@ -253,9 +253,9 @@ void _onSubscribeIconPressed(BuildContext context) {
 
   if (currentSubscriptions.contains(community.id)) {
     context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: {community.id}));
-    showSnackbar(context, AppLocalizations.of(context)!.unsubscribed);
+    showSnackbar(AppLocalizations.of(context)!.unsubscribed);
   } else {
     context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {community}));
-    showSnackbar(context, AppLocalizations.of(context)!.subscribed);
+    showSnackbar(AppLocalizations.of(context)!.subscribed);
   }
 }

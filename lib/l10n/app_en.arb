@@ -107,6 +107,10 @@
   "@cantBlockAdmin": {},
   "cantBlockYourself": "You may not block yourself.",
   "@cantBlockYourself": {},
+  "cardPostCardMetadataItems": "Card View Metadata",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
   "cardView": "Card View",
   "@cardView": {
     "description": "Label for the card view option in Setting -> Appearance -> Posts"
@@ -209,6 +213,10 @@
   },
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "@commentSwipeGesturesHint": {},
+  "commentUseColorizedUsername": "Colorized Usernames",
+  "@commentUseColorizedUsername": {
+    "description": "Setting used to toggle colorized comments creator display name."
+  },
   "comments": "Comments",
   "@comments": {},
   "communities": "Communities",
@@ -218,6 +226,10 @@
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
+  },
+  "compactPostCardMetadataItems": "Compact View Metadata",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
   },
   "compactView": "Compact View",
   "@compactView": {
@@ -747,6 +759,10 @@
   },
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
+  "noItems": "No items",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
   "noKeywordFilters": "No keyword filters added",
   "@noKeywordFilters": {
     "description": "Message for no keywords added"
@@ -839,6 +855,10 @@
   "@permissionDeniedMessage": {
     "description": "Explanation for error when user denies OS permissions"
   },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
   "postBehaviourSettings": "Posts",
   "@postBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
@@ -867,6 +887,10 @@
   },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
+  "postMetadataInstructions": "You can customize the metadata information by dragging and dropping the desired information",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
   "postNSFW": "Mark as NSFW",
   "@postNSFW": {},
   "postPreview": "Show a preview of the post with the given settings",

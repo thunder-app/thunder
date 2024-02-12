@@ -246,7 +246,7 @@ void onSelected(
       break;
     case CommentCardAction.copyText:
       Clipboard.setData(ClipboardData(text: commentView.comment.content)).then((_) {
-        showSnackbar(context, AppLocalizations.of(context)!.copiedToClipboard);
+        showSnackbar(AppLocalizations.of(context)!.copiedToClipboard);
       });
       break;
     case CommentCardAction.shareLink:

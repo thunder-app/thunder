@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -11,7 +14,9 @@ import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FilterSettingsPage extends StatefulWidget {
-  const FilterSettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const FilterSettingsPage({super.key, this.settingToHighlight});
 
   @override
   State<FilterSettingsPage> createState() => _FilterSettingsPageState();
@@ -20,6 +25,9 @@ class FilterSettingsPage extends StatefulWidget {
 class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTickerProviderStateMixin {
   /// The list of keyword filters to apply for posts
   List<String> keywordFilters = [];
+
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
 
   void setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -47,7 +55,30 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initPreferences();
+
+      if (widget.settingToHighlight != null) {
+        setState(() => settingToHighlight = widget.settingToHighlight);
+
+        // Need some delay to finish building, even though we're in a post-frame callback.
+        Timer(const Duration(milliseconds: 500), () {
+          if (settingToHighlightKey.currentContext != null) {
+            // Ensure that the selected setting is visible on the screen
+            Scrollable.ensureVisible(
+              settingToHighlightKey.currentContext!,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          // Give time for the highlighting to appear, then turn it off
+          Timer(const Duration(seconds: 1), () {
+            setState(() => settingToHighlight = null);
+          });
+        });
+      }
+    });
   }
 
   @override
@@ -76,27 +107,33 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(l10n.keywordFilters, style: theme.textTheme.titleMedium),
-                  IconButton(
-                    visualDensity: VisualDensity.compact,
-                    icon: Icon(
-                      Icons.add_rounded,
-                      semanticLabel: l10n.add,
+            child: SmoothHighlight(
+              key: settingToHighlight == LocalSettings.keywordFilters ? settingToHighlightKey : null,
+              useInitialHighLight: settingToHighlight == LocalSettings.keywordFilters,
+              enabled: settingToHighlight == LocalSettings.keywordFilters,
+              color: theme.colorScheme.primaryContainer,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(l10n.keywordFilters, style: theme.textTheme.titleMedium),
+                    IconButton(
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(
+                        Icons.add_rounded,
+                        semanticLabel: l10n.add,
+                      ),
+                      onPressed: () => showKeywordInputDialog(
+                        context,
+                        title: l10n.addKeywordFilter,
+                        onKeywordSelected: (keyword) {
+                          setPreferences(LocalSettings.keywordFilters, [...keywordFilters, keyword]);
+                        },
+                      ),
                     ),
-                    onPressed: () => showKeywordInputDialog(
-                      context,
-                      title: l10n.addKeywordFilter,
-                      onKeywordSelected: (keyword) {
-                        setPreferences(LocalSettings.keywordFilters, [...keywordFilters, keyword]);
-                      },
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

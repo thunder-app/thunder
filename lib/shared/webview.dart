@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
@@ -18,6 +21,9 @@ class WebView extends StatefulWidget {
 
 class _WebViewState extends State<WebView> {
   late final WebViewController _controller;
+
+  // Keeps track of the URL that we are currently viewing, not necessarily the original
+  String? currentUrl;
 
   @override
   void initState() {
@@ -41,13 +47,30 @@ class _WebViewState extends State<WebView> {
       ..setNavigationDelegate(NavigationDelegate())
       ..loadRequest(Uri.parse(widget.url))
       ..setNavigationDelegate(NavigationDelegate(
-        onUrlChange: (_) => setState(() {}),
+        onUrlChange: (urlChange) => setState(() => currentUrl = urlChange.url),
       ));
 
     if (controller.platform is AndroidWebViewController) {
       (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
     _controller = controller;
+
+    BackButtonInterceptor.add(_handleBack);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(_handleBack);
+    super.dispose();
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (await _controller.canGoBack()) {
+      _controller.goBack();
+      return true;
+    }
+
+    return false;
   }
 
   @override
@@ -65,7 +88,7 @@ class _WebViewState extends State<WebView> {
           actions: <Widget>[
             NavigationControls(
               webViewController: _controller,
-              url: widget.url,
+              url: currentUrl ?? widget.url,
             )
           ],
         ),

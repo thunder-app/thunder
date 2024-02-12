@@ -79,8 +79,6 @@ class _ThunderState extends State<Thunder> {
 
   final GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey<ScaffoldState>();
 
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-
   late final StreamSubscription mediaIntentDataStreamSubscription;
 
   late final StreamSubscription textIntentDataStreamSubscription;
@@ -123,7 +121,7 @@ class _ThunderState extends State<Thunder> {
       handleSharedImages();
       handleSharedText();
     } catch (e) {
-      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.unexpectedError);
+      if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
     }
   }
 
@@ -135,7 +133,6 @@ class _ThunderState extends State<Thunder> {
         context,
         image: File(initialMedia.first.path),
         prePopulated: true,
-        scaffoldMessengerKey: scaffoldMessengerKey,
       );
     }
     // For sharing images while the app is in the memory
@@ -147,7 +144,6 @@ class _ThunderState extends State<Thunder> {
           context,
           image: File(value.first.path),
           prePopulated: true,
-          scaffoldMessengerKey: scaffoldMessengerKey,
         );
       }
     });
@@ -163,14 +159,12 @@ class _ThunderState extends State<Thunder> {
           context,
           url: uri.toString(),
           prePopulated: true,
-          scaffoldMessengerKey: scaffoldMessengerKey,
         );
       } else {
         navigateToCreatePostPage(
           context,
           text: initialText,
           prePopulated: true,
-          scaffoldMessengerKey: scaffoldMessengerKey,
         );
       }
     }
@@ -186,30 +180,26 @@ class _ThunderState extends State<Thunder> {
             context,
             url: uri.toString(),
             prePopulated: true,
-            scaffoldMessengerKey: scaffoldMessengerKey,
           );
         } else {
           navigateToCreatePostPage(
             context,
             text: value,
             prePopulated: true,
-            scaffoldMessengerKey: scaffoldMessengerKey,
           );
         }
       }
     });
   }
 
-  void _showExitWarning(ScaffoldMessengerState? currentState) {
+  void _showExitWarning() {
     showSnackbar(
-      context,
       AppLocalizations.of(context)!.tapToExit,
       duration: const Duration(milliseconds: 3500),
-      customState: currentState,
     );
   }
 
-  Future<bool> _handleBackButtonPress(ScaffoldMessengerState? currentState) async {
+  Future<bool> _handleBackButtonPress() async {
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
@@ -229,7 +219,7 @@ class _ThunderState extends State<Thunder> {
 
     if (appExitCounter == 0) {
       appExitCounter++;
-      _showExitWarning(currentState);
+      _showExitWarning();
       Timer(const Duration(milliseconds: 3500), () {
         appExitCounter = 0;
       });
@@ -382,11 +372,9 @@ class _ThunderState extends State<Thunder> {
 
   void _showLinkProcessingError(BuildContext context, String error, String link) {
     showSnackbar(
-      context,
       error,
       trailingIcon: Icons.open_in_browser_rounded,
       duration: const Duration(seconds: 10),
-      clearSnackBars: false,
       trailingAction: () => handleLink(context, url: link),
     );
   }
@@ -402,7 +390,7 @@ class _ThunderState extends State<Thunder> {
         BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
       ],
       child: WillPopScope(
-        onWillPop: () async => _handleBackButtonPress(scaffoldMessengerKey.currentState),
+        onWillPop: () async => _handleBackButtonPress(),
         child: MultiBlocListener(
           listeners: [
             BlocListener<NotificationsCubit, NotificationsState>(
@@ -416,16 +404,11 @@ class _ThunderState extends State<Thunder> {
               listener: (context, state) {
                 switch (state.deepLinkStatus) {
                   case DeepLinkStatus.loading:
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      scaffoldMessengerKey.currentState?.showSnackBar(
-                        const SnackBar(content: CircularProgressIndicator.adaptive()),
-                      );
-                    });
-
+                    return;
                   case DeepLinkStatus.empty:
-                    showSnackbar(context, state.error ?? l10n.emptyUri);
+                    showSnackbar(state.error ?? l10n.emptyUri);
                   case DeepLinkStatus.error:
-                    showSnackbar(context, state.error ?? l10n.exceptionProcessingUri);
+                    showSnackbar(state.error ?? l10n.exceptionProcessingUri);
 
                   case DeepLinkStatus.success:
                     try {
@@ -435,7 +418,7 @@ class _ThunderState extends State<Thunder> {
                     }
 
                   case DeepLinkStatus.unknown:
-                    showSnackbar(context, state.error ?? l10n.uriNotSupported);
+                    showSnackbar(state.error ?? l10n.uriNotSupported);
                 }
               },
             ),
@@ -457,138 +440,135 @@ class _ThunderState extends State<Thunder> {
                   // Update the variable so that it can be used in _handleBackButtonPress
                   _isFabOpen = thunderBlocState.isFabOpen;
 
-                  return ScaffoldMessenger(
-                    key: scaffoldMessengerKey,
-                    child: Scaffold(
-                      key: scaffoldStateKey,
-                      drawer: selectedPageIndex == 0
-                          ? CommunityDrawer(
-                              navigateToAccount: () {
-                                Navigator.of(context).pop();
+                  return Scaffold(
+                    key: scaffoldStateKey,
+                    drawer: selectedPageIndex == 0
+                        ? CommunityDrawer(
+                            navigateToAccount: () {
+                              Navigator.of(context).pop();
 
-                                if (reduceAnimations) {
-                                  widget.pageController.jumpToPage(2);
-                                } else {
-                                  widget.pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                                }
-                              },
-                            )
-                          : null,
-                      floatingActionButton: thunderBlocState.enableFeedsFab
-                          ? AnimatedOpacity(
-                              opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
-                              duration: const Duration(milliseconds: 150),
-                              curve: Curves.easeIn,
-                              child: IgnorePointer(ignoring: selectedPageIndex != 0, child: FeedFAB(scaffoldMessengerKey: scaffoldMessengerKey)),
-                            )
-                          : null,
-                      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-                      bottomNavigationBar: CustomBottomNavigationBar(
-                        selectedPageIndex: selectedPageIndex,
-                        onPageChange: (int index) {
-                          setState(() {
-                            selectedPageIndex = index;
+                              if (reduceAnimations) {
+                                widget.pageController.jumpToPage(2);
+                              } else {
+                                widget.pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                              }
+                            },
+                          )
+                        : null,
+                    floatingActionButton: thunderBlocState.enableFeedsFab
+                        ? AnimatedOpacity(
+                            opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 150),
+                            curve: Curves.easeIn,
+                            child: IgnorePointer(ignoring: selectedPageIndex != 0, child: FeedFAB()),
+                          )
+                        : null,
+                    floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+                    bottomNavigationBar: CustomBottomNavigationBar(
+                      selectedPageIndex: selectedPageIndex,
+                      onPageChange: (int index) {
+                        setState(() {
+                          selectedPageIndex = index;
 
-                            if (reduceAnimations) {
-                              widget.pageController.jumpToPage(index);
-                            } else {
-                              widget.pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                            }
-                          });
-                        },
-                      ),
-                      body: BlocConsumer<AuthBloc, AuthState>(
-                        listenWhen: (AuthState previous, AuthState current) {
-                          if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
-                          return false;
-                        },
-                        buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
-                        listener: (context, state) {
-                          context.read<AccountBloc>().add(RefreshAccountInformation());
-
-                          // Add a bit of artificial delay to allow preferences to set the proper active profile
-                          Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
-                          if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
-                            context.read<FeedBloc>().add(
-                                  FeedFetchedEvent(
-                                    feedType: FeedType.general,
-                                    postListingType: thunderBlocState.defaultListingType,
-                                    sortType: thunderBlocState.defaultSortType,
-                                    reset: true,
-                                  ),
-                                );
+                          if (reduceAnimations) {
+                            widget.pageController.jumpToPage(index);
+                          } else {
+                            widget.pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
                           }
-                        },
-                        builder: (context, state) {
-                          switch (state.status) {
-                            case AuthStatus.initial:
-                              context.read<AuthBloc>().add(CheckAuth());
-                              return Scaffold(
-                                appBar: AppBar(),
-                                body: Center(
-                                  child: Container(),
+                        });
+                      },
+                    ),
+                    body: BlocConsumer<AuthBloc, AuthState>(
+                      listenWhen: (AuthState previous, AuthState current) {
+                        if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
+                        return false;
+                      },
+                      buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
+                      listener: (context, state) {
+                        context.read<AccountBloc>().add(RefreshAccountInformation());
+
+                        // Add a bit of artificial delay to allow preferences to set the proper active profile
+                        Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
+                        if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
+                          context.read<FeedBloc>().add(
+                                FeedFetchedEvent(
+                                  feedType: FeedType.general,
+                                  postListingType: thunderBlocState.defaultListingType,
+                                  sortType: thunderBlocState.defaultSortType,
+                                  reset: true,
                                 ),
                               );
-                            case AuthStatus.success:
-                              Version? version = thunderBlocState.version;
-                              bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
+                        }
+                      },
+                      builder: (context, state) {
+                        switch (state.status) {
+                          case AuthStatus.initial:
+                            context.read<AuthBloc>().add(CheckAuth());
+                            return Scaffold(
+                              appBar: AppBar(),
+                              body: Center(
+                                child: Container(),
+                              ),
+                            );
+                          case AuthStatus.success:
+                            Version? version = thunderBlocState.version;
+                            bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
 
-                              if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
-                                  showUpdateNotification(context, version);
-                                  setState(() => hasShownUpdateDialog = true);
-                                });
-                              }
+                            if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                showUpdateNotification(context, version);
+                                setState(() => hasShownUpdateDialog = true);
+                              });
+                            }
 
-                              return PageView(
-                                controller: widget.pageController,
-                                onPageChanged: (index) => setState(() => selectedPageIndex = index),
-                                physics: const NeverScrollableScrollPhysics(),
-                                children: <Widget>[
-                                  Stack(
-                                    children: [
-                                      FeedPage(
-                                        useGlobalFeedBloc: true,
-                                        feedType: FeedType.general,
-                                        postListingType: thunderBlocState.defaultListingType,
-                                        sortType: thunderBlocState.defaultSortType,
-                                        scaffoldStateKey: scaffoldStateKey,
-                                      ),
-                                      AnimatedOpacity(
-                                        opacity: _isFabOpen ? 1.0 : 0.0,
-                                        duration: const Duration(milliseconds: 150),
-                                        child: _isFabOpen
-                                            ? ModalBarrier(
-                                                color: theme.colorScheme.background.withOpacity(0.95),
-                                                dismissible: true,
-                                                onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                                              )
-                                            : null,
-                                      ),
-                                    ],
-                                  ),
-                                  const SearchPage(),
-                                  const AccountPage(),
-                                  const InboxPage(),
-                                  SettingsPage(),
-                                ],
-                              );
+                            return PageView(
+                              controller: widget.pageController,
+                              onPageChanged: (index) => setState(() => selectedPageIndex = index),
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: <Widget>[
+                                Stack(
+                                  children: [
+                                    FeedPage(
+                                      useGlobalFeedBloc: true,
+                                      feedType: FeedType.general,
+                                      postListingType: thunderBlocState.defaultListingType,
+                                      sortType: thunderBlocState.defaultSortType,
+                                      scaffoldStateKey: scaffoldStateKey,
+                                    ),
+                                    AnimatedOpacity(
+                                      opacity: _isFabOpen ? 1.0 : 0.0,
+                                      duration: const Duration(milliseconds: 150),
+                                      child: _isFabOpen
+                                          ? ModalBarrier(
+                                              color: theme.colorScheme.background.withOpacity(0.95),
+                                              dismissible: true,
+                                              onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                                            )
+                                          : null,
+                                    ),
+                                  ],
+                                ),
+                                const SearchPage(),
+                                const AccountPage(),
+                                const InboxPage(),
+                                SettingsPage(),
+                              ],
+                            );
 
-                            // Should never hit these, they're handled by the login page
-                            case AuthStatus.failure:
-                            case AuthStatus.loading:
-                              return Container();
-                            case AuthStatus.failureCheckingInstance:
-                              showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
-                              return ErrorMessage(
-                                title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
-                                message: AppLocalizations.of(context)!.internetOrInstanceIssues,
-                                actionText: AppLocalizations.of(context)!.accountSettings,
-                                action: () => showProfileModalSheet(context),
-                              );
-                          }
-                        },
-                      ),
+                          // Should never hit these, they're handled by the login page
+                          case AuthStatus.failure:
+                          case AuthStatus.loading:
+                            return Container();
+                          case AuthStatus.failureCheckingInstance:
+                            showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+                            return ErrorMessage(
+                              title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
+                              message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+                              actionText: AppLocalizations.of(context)!.accountSettings,
+                              action: () => showProfileModalSheet(context),
+                            );
+                        }
+                      },
                     ),
                   );
                 case ThunderStatus.failure:
