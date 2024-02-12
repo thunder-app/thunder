@@ -290,7 +290,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
                             onReportAction: (int commentId) {
                               if (widget.isAccountUser) {
-                                showSnackbar(context, AppLocalizations.of(context)!.cannotReportOwnComment);
+                                showSnackbar(AppLocalizations.of(context)!.cannotReportOwnComment);
                               } else {
                                 showReportCommentActionBottomSheet(
                                   context,
@@ -348,7 +348,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
 
                                   if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
                                     await Future.delayed(const Duration(milliseconds: 300));
-                                    showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+                                    showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
                                     prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                                   } else {
                                     prefs.remove(draftId);
@@ -399,7 +399,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
                             onReportAction: (int commentId) {
                               if (widget.isAccountUser) {
-                                showSnackbar(context, AppLocalizations.of(context)!.cannotReportOwnComment);
+                                showSnackbar(AppLocalizations.of(context)!.cannotReportOwnComment);
                               } else {
                                 showReportCommentActionBottomSheet(
                                   context,
@@ -457,7 +457,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                     // This delay gives time for the previous page to be dismissed,
                                     //so we don't show the snackbar during the transition
                                     await Future.delayed(const Duration(milliseconds: 300));
-                                    showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+                                    showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
                                     prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                                   } else {
                                     prefs.remove(draftId);
