@@ -138,44 +138,44 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: keywordFilters.isEmpty
-                    ? Text(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: keywordFilters.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                      child: Text(
                         l10n.noKeywordFilters,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                         ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: keywordFilters.length,
-                        itemBuilder: (context, index) {
-                          return SettingsListTile(
-                            description: keywordFilters[index],
-                            widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                            onTap: () async {
-                              showThunderDialog(
-                                context: context,
-                                title: l10n.removeKeywordFilter,
-                                contentText: l10n.removeKeyword(keywordFilters[index]),
-                                primaryButtonText: l10n.remove,
-                                onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-                                  setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
-                                  Navigator.of(dialogContext).pop();
-                                },
-                                secondaryButtonText: l10n.cancel,
-                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                              );
-                            },
-                          );
-                        },
                       ),
-              ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: keywordFilters.length,
+                      itemBuilder: (context, index) {
+                        return SettingsListTile(
+                          description: keywordFilters[index],
+                          widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                          onTap: () async {
+                            showThunderDialog(
+                              context: context,
+                              title: l10n.removeKeywordFilter,
+                              contentText: l10n.removeKeyword(keywordFilters[index]),
+                              primaryButtonText: l10n.remove,
+                              onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+                                setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
+                                Navigator.of(dialogContext).pop();
+                              },
+                              secondaryButtonText: l10n.cancel,
+                              onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                            );
+                          },
+                        );
+                      },
+                    ),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),
