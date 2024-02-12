@@ -110,7 +110,16 @@ class PostCardViewCompact extends StatelessWidget {
                             color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                           ),
                         ),
+                      if (postViewMedia.postView.post.removed)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.delete_forever_rounded,
+                            size: 16 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          ),
+                        ),
                       if (postViewMedia.postView.post.deleted ||
+                          postViewMedia.postView.post.removed ||
                           postViewMedia.postView.post.featuredCommunity ||
                           postViewMedia.postView.post.featuredLocal ||
                           postViewMedia.postView.saved ||
