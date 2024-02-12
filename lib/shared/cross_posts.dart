@@ -14,14 +14,12 @@ class CrossPosts extends StatefulWidget {
   final List<PostView> crossPosts;
   final PostViewMedia? originalPost;
   final bool? isNewPost;
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
 
   const CrossPosts({
     super.key,
     required this.crossPosts,
     this.originalPost,
     this.isNewPost,
-    this.scaffoldMessengerKey,
   }) : assert(originalPost != null || isNewPost == true);
 
   @override
@@ -176,7 +174,6 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                   context,
                                   title: widget.originalPost!.postView.post.name,
                                   url: widget.originalPost!.postView.post.url,
-                                  scaffoldMessengerKey: widget.scaffoldMessengerKey,
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                                 child: Padding(
@@ -210,7 +207,6 @@ void createCrossPost(
   String? url,
   String? text,
   String? postUrl,
-  GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey,
 }) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
@@ -227,6 +223,5 @@ void createCrossPost(
     url: url,
     text: text,
     prePopulated: true,
-    scaffoldMessengerKey: scaffoldMessengerKey,
   );
 }

@@ -91,6 +91,9 @@ void main() async {
   // Perform preference migrations
   performSharedPreferencesMigration();
 
+  // Do a notifications check on startup
+  pollRepliesAndShowNotifications();
+
   runApp(ThunderApp(notificationsStream: notificationsStreamController.stream));
 
   if (!kIsWeb && Platform.isAndroid) {

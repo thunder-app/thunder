@@ -308,20 +308,17 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
 
           if (media == null) {
             // Tell user we're downloading the image
-            showSnackbar(context, AppLocalizations.of(context)!.downloadingMedia);
+            showSnackbar(AppLocalizations.of(context)!.downloadingMedia);
 
             // Download
             mediaFile = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.mediaUrl!);
-
-            // Hide snackbar
-            hideSnackbar(context);
           }
 
           // Share
           await Share.shareXFiles([XFile(mediaFile!.path)]);
         } catch (e) {
           // Tell the user that the download failed
-          showSnackbar(context, AppLocalizations.of(context)!.errorDownloadingMedia(e));
+          showSnackbar(AppLocalizations.of(context)!.errorDownloadingMedia(e));
         }
       }
       break;

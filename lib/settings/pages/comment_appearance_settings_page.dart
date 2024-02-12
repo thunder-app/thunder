@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -20,7 +23,9 @@ import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/utils/constants.dart';
 
 class CommentAppearanceSettingsPage extends StatefulWidget {
-  const CommentAppearanceSettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const CommentAppearanceSettingsPage({super.key, this.settingToHighlight});
 
   @override
   State<CommentAppearanceSettingsPage> createState() => _CommentAppearanceSettingsPageState();
@@ -50,6 +55,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// An example comment for use with comment preview
   Future<CommentViewTree>? exampleCommentViewTree;
+
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
 
   /// Initialize the settings from the user's shared preferences
   Future<void> initPreferences() async {
@@ -168,7 +176,30 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => initPreferences());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initPreferences();
+
+      if (widget.settingToHighlight != null) {
+        setState(() => settingToHighlight = widget.settingToHighlight);
+
+        // Need some delay to finish building, even though we're in a post-frame callback.
+        Timer(const Duration(milliseconds: 500), () {
+          if (settingToHighlightKey.currentContext != null) {
+            // Ensure that the selected setting is visible on the screen
+            Scrollable.ensureVisible(
+              settingToHighlightKey.currentContext!,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          // Give time for the highlighting to appear, then turn it off
+          Timer(const Duration(seconds: 1), () {
+            setState(() => settingToHighlight = null);
+          });
+        });
+      }
+    });
   }
 
   @override
@@ -295,81 +326,69 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
           ),
           // Comment Settings
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: l10n.showCommentActionButtons,
-                value: showCommentButtonActions,
-                iconEnabled: Icons.mode_comment_rounded,
-                iconDisabled: Icons.mode_comment_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
-              ),
+            child: ToggleOption(
+              description: l10n.showCommentActionButtons,
+              value: showCommentButtonActions,
+              iconEnabled: Icons.mode_comment_rounded,
+              iconDisabled: Icons.mode_comment_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
+              highlightKey: settingToHighlight == LocalSettings.showCommentActionButtons ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: l10n.combineCommentScoresLabel,
-                value: combineCommentScores,
-                iconEnabled: Icons.onetwothree_rounded,
-                iconDisabled: Icons.onetwothree_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
-              ),
+            child: ToggleOption(
+              description: l10n.combineCommentScoresLabel,
+              value: combineCommentScores,
+              iconEnabled: Icons.onetwothree_rounded,
+              iconDisabled: Icons.onetwothree_rounded,
+              onToggle: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
+              highlightKey: settingToHighlight == LocalSettings.combineCommentScores ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: l10n.commentShowUserInstance,
-                value: commentShowUserInstance,
-                iconEnabled: Icons.dns_sharp,
-                iconDisabled: Icons.dns_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
-              ),
+            child: ToggleOption(
+              description: l10n.commentShowUserInstance,
+              value: commentShowUserInstance,
+              iconEnabled: Icons.dns_sharp,
+              iconDisabled: Icons.dns_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
+              highlightKey: settingToHighlight == LocalSettings.commentShowUserInstance ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: l10n.commentUseColorizedUsername,
-                value: commentUseColorizedUsername,
-                iconEnabled: Icons.brush_sharp,
-                iconDisabled: Icons.brush_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.commentUseColorizedUsername, value),
-              ),
+            child: ToggleOption(
+              description: l10n.commentUseColorizedUsername,
+              value: commentUseColorizedUsername,
+              iconEnabled: Icons.brush_sharp,
+              iconDisabled: Icons.brush_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.commentUseColorizedUsername, value),
+              highlightKey: settingToHighlight == LocalSettings.commentUseColorizedUsername ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListOption(
-                description: l10n.nestedCommentIndicatorStyle,
-                value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
-                options: [
-                  ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
-                  ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
-                ],
-                icon: Icons.format_list_bulleted_rounded,
-                onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
-              ),
+            child: ListOption(
+              description: l10n.nestedCommentIndicatorStyle,
+              value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
+              options: [
+                ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
+                ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
+              ],
+              icon: Icons.format_list_bulleted_rounded,
+              onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
+              highlightKey: settingToHighlight == LocalSettings.nestedCommentIndicatorStyle ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListOption(
-                description: l10n.nestedCommentIndicatorColor,
-                value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
-                options: [
-                  ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
-                  ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
-                ],
-                icon: Icons.color_lens_outlined,
-                onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
-              ),
+            child: ListOption(
+              description: l10n.nestedCommentIndicatorColor,
+              value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
+              options: [
+                ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
+                ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
+              ],
+              icon: Icons.color_lens_outlined,
+              onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+              highlightKey: settingToHighlight == LocalSettings.nestedCommentIndicatorColor ? settingToHighlightKey : null,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),

@@ -1,0 +1,46 @@
+name: Bug Report
+description: Did you experience an issue? Create a report to help improve Thunder.
+labels: bug
+body:
+  - type: textarea
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behaviour
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behaviour.
+      placeholder: "1. Step 1\n2. Step 2\n3. etc."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Add any other information or context about the problem here.
+  - type: input
+    attributes:
+      label: App Version
+      description: What version of Thunder are you using?
+      placeholder: e.g. 0.2.8
+  - type: input
+    attributes: 
+      label: Device
+      description: The device on which you are using Thunder
+      placeholder: e.g. Pixel 6 Pro, iPhone 14, etc.
+    validations: 
+      required: true
+  - type: input
+    attributes:
+      label: OS
+      description: The OS on your device, and its version.
+      placeholder: e.g. Android 13, iOS 17.2 etc. 
+    validations:
+      required: true

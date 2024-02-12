@@ -40,9 +40,6 @@ class PostPageSuccess extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
 
-  /// The messenger key back to the post page
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
-
   const PostPageSuccess({
     super.key,
     required this.postView,
@@ -57,7 +54,6 @@ class PostPageSuccess extends StatefulWidget {
     this.viewFullCommentsRefreshing = false,
     required this.moderators,
     required this.crossPosts,
-    this.scaffoldMessengerKey,
   });
 
   @override
@@ -158,7 +154,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
 
                 if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
                   await Future.delayed(const Duration(milliseconds: 300));
-                  showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+                  showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
                   prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                 } else {
                   prefs.remove(draftId);
@@ -167,7 +163,6 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             },
             moderators: widget.moderators,
             crossPosts: widget.crossPosts,
-            scaffoldMessengerKey: widget.scaffoldMessengerKey,
           ),
         ),
       ],
