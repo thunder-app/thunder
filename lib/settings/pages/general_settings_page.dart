@@ -641,28 +641,26 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListOption(
-                description: l10n.imageCachingMode,
-                value: ListPickerItem(
-                  label: switch (imageCachingMode) {
-                    ImageCachingMode.aggressive => l10n.imageCachingModeAggressiveShort,
-                    ImageCachingMode.relaxed => l10n.imageCachingModeRelaxedShort,
-                  },
-                  payload: imageCachingMode,
-                  capitalizeLabel: false,
-                ),
-                options: [
-                  ListPickerItem(icon: Icons.broken_image, label: l10n.imageCachingModeAggressive, payload: ImageCachingMode.aggressive, capitalizeLabel: false),
-                  ListPickerItem(icon: Icons.broken_image_outlined, label: l10n.imageCachingModeRelaxed, payload: ImageCachingMode.relaxed, capitalizeLabel: false),
-                ],
-                icon: switch (imageCachingMode) {
-                  ImageCachingMode.aggressive => Icons.broken_image,
-                  ImageCachingMode.relaxed => Icons.broken_image_outlined,
+            child: ListOption(
+              description: l10n.imageCachingMode,
+              value: ListPickerItem(
+                label: switch (imageCachingMode) {
+                  ImageCachingMode.aggressive => l10n.imageCachingModeAggressiveShort,
+                  ImageCachingMode.relaxed => l10n.imageCachingModeRelaxedShort,
                 },
-                onChanged: (value) => setPreferences(LocalSettings.imageCachingMode, value.payload.name),
+                payload: imageCachingMode,
+                capitalizeLabel: false,
               ),
+              options: [
+                ListPickerItem(icon: Icons.broken_image, label: l10n.imageCachingModeAggressive, payload: ImageCachingMode.aggressive, capitalizeLabel: false),
+                ListPickerItem(icon: Icons.broken_image_outlined, label: l10n.imageCachingModeRelaxed, payload: ImageCachingMode.relaxed, capitalizeLabel: false),
+              ],
+              icon: switch (imageCachingMode) {
+                ImageCachingMode.aggressive => Icons.broken_image,
+                ImageCachingMode.relaxed => Icons.broken_image_outlined,
+              },
+              onChanged: (value) => setPreferences(LocalSettings.imageCachingMode, value.payload.name),
+              highlightKey: settingToHighlight == LocalSettings.imageCachingMode ? settingToHighlightKey : null,
             ),
           ),
 
