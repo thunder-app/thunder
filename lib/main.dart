@@ -91,7 +91,7 @@ void main() async {
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
   // Perform preference migrations
-  performSharedPreferencesMigration();
+  await performSharedPreferencesMigration();
 
   // Do a notifications check on startup, if the user isn't clicking on a group notification
   if (!startupDueToGroupNotification) {
