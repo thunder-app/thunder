@@ -61,7 +61,7 @@ dependencies:
   webview_flutter: ^4.2.2
   webview_flutter_android: ^3.8.0
   webview_flutter_wkwebview: ^3.5.0
-  share_plus: ^7.0.2
+  share_plus: 7.1.0
   flex_color_scheme: ^7.1.2
   dynamic_color: ^1.6.5
   flutter_cache_manager: ^3.3.0

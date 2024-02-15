@@ -822,7 +822,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: readColor,
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.45),
             ),
           ),
           const SizedBox(height: 4.0),
