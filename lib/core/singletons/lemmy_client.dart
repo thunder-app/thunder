@@ -6,6 +6,8 @@ import 'package:version/version.dart';
 class LemmyClient {
   LemmyApiV3 lemmyApiV3 = const LemmyApiV3('');
 
+  LemmyClient();
+
   LemmyClient._initialize();
 
   void changeBaseUrl(String baseUrl) {
