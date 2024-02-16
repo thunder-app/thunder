@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -214,7 +215,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     child: Stack(
                       children: [
                         TextField(
-                          keyboardType: TextInputType.url,
+                          keyboardType: Platform.isIOS ? TextInputType.text : TextInputType.url,
                           focusNode: searchTextFieldFocus,
                           onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
                           controller: _controller,
