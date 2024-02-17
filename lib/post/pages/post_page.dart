@@ -27,6 +27,7 @@ import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -204,7 +205,7 @@ class _PostPageState extends State<PostPage> {
                 ),
                 PopupMenuButton(
                   itemBuilder: (context) => [
-                    PopupMenuItem(
+                    ThunderPopupMenuItem(
                       onTap: () => createCrossPost(
                         context,
                         title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
@@ -212,12 +213,8 @@ class _PostPageState extends State<PostPage> {
                         text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body,
                         postUrl: widget.postView?.postView.post.apId ?? state.postView?.postView.post.apId,
                       ),
-                      child: ListTile(
-                        dense: true,
-                        horizontalTitleGap: 5,
-                        leading: const Icon(Icons.repeat_rounded, size: 20),
-                        title: Text(l10n.createNewCrossPost),
-                      ),
+                      icon: Icons.repeat_rounded,
+                      title: l10n.createNewCrossPost,
                     ),
                   ],
                 ),

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
@@ -17,8 +18,11 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/search/bloc/search_bloc.dart';
+import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FeedPageAppBar extends StatelessWidget {
@@ -119,38 +123,51 @@ class FeedPageAppBar extends StatelessWidget {
               if (feedState.feedType == FeedType.community)
                 PopupMenuButton(
                   itemBuilder: (context) => [
-                    PopupMenuItem(
+                    ThunderPopupMenuItem(
                       onTap: () => triggerRefresh(context),
-                      child: ListTile(
-                        dense: true,
-                        horizontalTitleGap: 5,
-                        leading: const Icon(Icons.refresh_rounded, size: 20),
-                        title: Text(l10n.refresh),
-                      ),
+                      icon: Icons.refresh_rounded,
+                      title: l10n.refresh,
                     ),
                     if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
-                      PopupMenuItem(
+                      ThunderPopupMenuItem(
                         onTap: () async {
                           final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
                           bool isFavorite = _getFavoriteStatus(context);
                           await toggleFavoriteCommunity(context, community, isFavorite);
                         },
-                        child: ListTile(
-                          dense: true,
-                          horizontalTitleGap: 5,
-                          leading: Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
-                          title: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
-                        ),
+                        icon: _getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded,
+                        title: _getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites,
                       ),
                     if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
-                      PopupMenuItem(
+                      ThunderPopupMenuItem(
                         onTap: () => Share.share(feedBloc.state.fullCommunityView!.communityView.community.actorId),
-                        child: ListTile(
-                          dense: true,
-                          horizontalTitleGap: 5,
-                          leading: const Icon(Icons.share_rounded, size: 20),
-                          title: Text(l10n.share),
-                        ),
+                        icon: Icons.share_rounded,
+                        title: l10n.share,
+                      ),
+                    if (feedBloc.state.fullCommunityView?.communityView != null)
+                      ThunderPopupMenuItem(
+                        onTap: () async {
+                          final ThunderState state = context.read<ThunderBloc>().state;
+                          final bool reduceAnimations = state.reduceAnimations;
+
+                          await Navigator.of(context).push(
+                            SwipeablePageRoute(
+                              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                              backGestureDetectionWidth: 45,
+                              canOnlySwipeFromEdge: true,
+                              builder: (context) => MultiBlocProvider(
+                                providers: [
+                                  // Create a new SearchBloc so it doesn't conflict with the main one
+                                  BlocProvider.value(value: SearchBloc()),
+                                  BlocProvider.value(value: thunderBloc),
+                                ],
+                                child: SearchPage(communityToSearch: feedBloc.state.fullCommunityView!.communityView),
+                              ),
+                            ),
+                          );
+                        },
+                        icon: Icons.search_rounded,
+                        title: l10n.search,
                       ),
                   ],
                 ),

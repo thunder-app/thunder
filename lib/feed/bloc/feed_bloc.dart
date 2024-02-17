@@ -237,11 +237,83 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       case PostAction.report:
       // TODO: Handle this case.
       case PostAction.lock:
-      // TODO: Handle this case.
+        // Optimistically lock the post
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+        PostView originalPostView = postViewMedia.postView;
+
+        try {
+          PostView updatedPostView = optimisticallyLockPost(postViewMedia.postView, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+
+          // Emit the state to update UI immediately
+          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.fetching));
+
+          bool success = await lockPost(originalPostView.post.id, event.value);
+          if (success) return emit(state.copyWith(status: FeedStatus.success));
+
+          // Restore the original post contents if not successful
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        } catch (e) {
+          // Restore the original post contents
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        }
       case PostAction.pinCommunity:
-      // TODO: Handle this case.
+        // Optimistically pin the post to the community
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+        PostView originalPostView = postViewMedia.postView;
+
+        try {
+          PostView updatedPostView = optimisticallyPinPostToCommunity(postViewMedia.postView, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+
+          // Emit the state to update UI immediately
+          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.fetching));
+
+          bool success = await pinPostToCommunity(originalPostView.post.id, event.value);
+          if (success) return emit(state.copyWith(status: FeedStatus.success));
+
+          // Restore the original post contents if not successful
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        } catch (e) {
+          // Restore the original post contents
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        }
       case PostAction.remove:
-      // TODO: Handle this case.
+        // Optimistically remove the post from the community
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+        PostView originalPostView = postViewMedia.postView;
+
+        try {
+          PostView updatedPostView = optimisticallyRemovePost(postViewMedia.postView, event.value['remove']);
+          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+
+          // Emit the state to update UI immediately
+          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.fetching));
+
+          bool success = await removePost(originalPostView.post.id, event.value['remove'], event.value['reason']);
+          if (success) return emit(state.copyWith(status: FeedStatus.success));
+
+          // Restore the original post contents if not successful
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        } catch (e) {
+          // Restore the original post contents
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        }
       case PostAction.pinInstance:
       // TODO: Handle this case.
       case PostAction.purge:

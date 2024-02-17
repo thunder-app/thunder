@@ -572,6 +572,7 @@ class _ThunderState extends State<Thunder> {
                     ),
                   );
                 case ThunderStatus.failure:
+                  FlutterNativeSplash.remove();
                   return ErrorMessage(
                     message: thunderBlocState.errorMessage,
                     action: () => {context.read<AuthBloc>().add(CheckAuth())},

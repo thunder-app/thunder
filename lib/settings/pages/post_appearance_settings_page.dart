@@ -822,7 +822,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: readColor,
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.45),
             ),
           ),
           const SizedBox(height: 4.0),
@@ -1062,23 +1062,26 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
   Widget buildDraggableItem(context, {required PostCardMetadataItem item, bool isFeedback = false, bool isDisabled = false}) {
     final theme = Theme.of(context);
 
-    return Material(
-      type: MaterialType.transparency,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-        decoration: BoxDecoration(
-          color: isDisabled ? theme.cardColor : theme.dividerColor,
-          border: isDisabled ? Border.all(color: theme.dividerColor.withOpacity(0.4)) : null,
-          borderRadius: BorderRadius.circular(8),
+    return TooltipVisibility(
+      visible: false,
+      child: Material(
+        type: MaterialType.transparency,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          decoration: BoxDecoration(
+            color: isDisabled ? theme.cardColor : theme.dividerColor,
+            border: isDisabled ? Border.all(color: theme.dividerColor.withOpacity(0.4)) : null,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: switch (item) {
+            PostCardMetadataItem.score => const ScorePostCardMetaData(score: 1222),
+            PostCardMetadataItem.commentCount => const CommentCountPostCardMetaData(commentCount: 4124),
+            PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: DateTime.now().toIso8601String()),
+            PostCardMetadataItem.url => const UrlPostCardMetaData(url: 'https://github.com/thunder-app/thunder'),
+            PostCardMetadataItem.upvote => const UpvotePostCardMetaData(upvotes: 2412),
+            PostCardMetadataItem.downvote => const DownvotePostCardMetaData(downvotes: 532),
+          },
         ),
-        child: switch (item) {
-          PostCardMetadataItem.score => const ScorePostCardMetaData(score: 1222),
-          PostCardMetadataItem.commentCount => const CommentCountPostCardMetaData(commentCount: 4124),
-          PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: DateTime.now().toIso8601String()),
-          PostCardMetadataItem.url => const UrlPostCardMetaData(url: 'https://github.com/thunder-app/thunder'),
-          PostCardMetadataItem.upvote => const UpvotePostCardMetaData(upvotes: 2412),
-          PostCardMetadataItem.downvote => const DownvotePostCardMetaData(downvotes: 532),
-        },
       ),
     );
   }

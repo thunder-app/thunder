@@ -134,38 +134,29 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Text(l10n.general, style: theme.textTheme.titleMedium),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: ToggleOption(
-                        description: l10n.showReadPosts,
-                        value: showReadPosts,
-                        iconEnabled: Icons.fact_check_rounded,
-                        iconDisabled: Icons.fact_check_outlined,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
-                      ),
+                    ToggleOption(
+                      description: l10n.showReadPosts,
+                      value: showReadPosts,
+                      iconEnabled: Icons.fact_check_rounded,
+                      iconDisabled: Icons.fact_check_outlined,
+                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: ToggleOption(
-                        description: l10n.showScores,
-                        value: showScores,
-                        iconEnabled: Icons.onetwothree_rounded,
-                        iconDisabled: Icons.onetwothree_rounded,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
-                      ),
+                    ToggleOption(
+                      description: l10n.showScores,
+                      value: showScores,
+                      iconEnabled: Icons.onetwothree_rounded,
+                      iconDisabled: Icons.onetwothree_rounded,
+                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: ToggleOption(
-                        description: l10n.showBotAccounts,
-                        value: showBotAccounts,
-                        iconEnabled: Thunder.robot,
-                        iconEnabledSize: 18.0,
-                        iconDisabled: Thunder.robot,
-                        iconDisabledSize: 18.0,
-                        iconSpacing: 14.0,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
-                      ),
+                    ToggleOption(
+                      description: l10n.showBotAccounts,
+                      value: showBotAccounts,
+                      iconEnabled: Thunder.robot,
+                      iconEnabledSize: 18.0,
+                      iconDisabled: Thunder.robot,
+                      iconDisabledSize: 18.0,
+                      iconSpacing: 14.0,
+                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
                     ),
                     if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
                       Padding(
@@ -257,32 +248,29 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: SettingsListTile(
-                        icon: Icons.delete_forever_rounded,
-                        description: l10n.deleteAccount,
-                        widget: const SizedBox(
-                          height: 42.0,
-                          child: Icon(Icons.chevron_right_rounded),
-                        ),
-                        onTap: () async {
-                          showThunderDialog<void>(
-                            context: context,
-                            title: l10n.deleteAccount,
-                            contentText: l10n.deleteAccountDescription,
-                            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                            secondaryButtonText: l10n.cancel,
-                            onPrimaryButtonPressed: (dialogContext, _) async {
-                              if (context.mounted) {
-                                Navigator.of(context).pop();
-                                handleLink(context, url: 'https://${LemmyClient.instance.lemmyApiV3.host}/settings');
-                              }
-                            },
-                            primaryButtonText: l10n.confirm,
-                          );
-                        },
+                    SettingsListTile(
+                      icon: Icons.delete_forever_rounded,
+                      description: l10n.deleteAccount,
+                      widget: const SizedBox(
+                        height: 42.0,
+                        child: Icon(Icons.chevron_right_rounded),
                       ),
+                      onTap: () async {
+                        showThunderDialog<void>(
+                          context: context,
+                          title: l10n.deleteAccount,
+                          contentText: l10n.deleteAccountDescription,
+                          onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                          secondaryButtonText: l10n.cancel,
+                          onPrimaryButtonPressed: (dialogContext, _) async {
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                              handleLink(context, url: 'https://${LemmyClient.instance.lemmyApiV3.host}/settings');
+                            }
+                          },
+                          primaryButtonText: l10n.confirm,
+                        );
+                      },
                     ),
                     const SizedBox(height: 100.0),
                   ],

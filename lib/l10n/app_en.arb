@@ -559,6 +559,26 @@
   "@hot": {},
   "image": "Image",
   "@image": {},
+  "imageCachingMode": "Image Caching Mode",
+  "@imageCachingMode": {
+    "description": "Title for setting related to image caching mode"
+  },
+  "imageCachingModeAggressive": "Aggressively cache images (uses more memory)",
+  "@imageCachingModeAggressive": {
+    "description": "Long description for aggressive image caching mode"
+  },
+  "imageCachingModeAggressiveShort": "Aggressive",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "imageCachingModeRelaxed": "Let image caches expire (uses less memory but causes images to reload more often)",
+  "@imageCachingModeRelaxed": {
+    "description": "Long description for relaxed image caching mode"
+  },
+  "imageCachingModeRelaxedShort": "Relaxed",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
   "importExportSettings": "Import/Export Settings",
   "@importExportSettings": {
     "description": "Category for settings related to import and export."
@@ -665,6 +685,10 @@
   "@local": {},
   "localPosts": "Local Posts",
   "@localPosts": {},
+  "lockPost": "Lock Post",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
   "logOut": "Log out",
   "@logOut": {},
   "login": "Log in",
@@ -708,6 +732,10 @@
   "moderatedCommunities": "Moderated Communities",
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderatorActions": "Moderator Actions",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
@@ -771,9 +799,7 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "No posts found.",
-  "@noPosts": {},
-  "noPostsFound": "No posts found",
+  "noPostsFound": "No posts found.",
   "@noPostsFound": {},
   "noReplies": "No replies",
   "@noReplies": {
@@ -861,6 +887,10 @@
   "@permissionDeniedMessage": {
     "description": "Explanation for error when user denies OS permissions"
   },
+  "pinToCommunity": "Pin to Community",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
   "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "@placeholderText": {
     "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
@@ -943,6 +973,10 @@
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
+  "reason": "Reason",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
   "reduceAnimations": "Reduce Animations",
   "@reduceAnimations": {
     "description": "Toggle to reduce animations."
@@ -953,6 +987,10 @@
   "@refresh": {},
   "refreshContent": "Refresh Content",
   "@refreshContent": {},
+  "removalReason": "Removal Reason",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
   "remove": "Remove",
   "@remove": {},
   "removeAccount": "Remove Account",
@@ -970,6 +1008,10 @@
   "removeKeywordFilter": "Remove Keyword",
   "@removeKeywordFilter": {
     "description": "Title for dialig to remove keyword"
+  },
+  "removePost": "Remove Post",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
   },
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
   "@removedCommunityFromSubscriptions": {},
@@ -1005,6 +1047,10 @@
   },
   "restore": "Restore",
   "@restore": {},
+  "restorePost": "Restore Post",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
   "restoredCommentFromDraft": "Restored comment from draft",
   "@restoredCommentFromDraft": {},
   "restoredPostFromDraft": "Restored post from draft",
@@ -1355,6 +1401,14 @@
   },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
+  "unlockPost": "Unlock Post",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unpinFromCommunity": "Unpin from Community",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
   "unsubscribeFromCommunity": "Unsubscribe from Community",

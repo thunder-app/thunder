@@ -20,7 +20,6 @@ import 'package:thunder/utils/numbers.dart';
 
 const Color upVoteColor = Colors.orange;
 const Color downVoteColor = Colors.blue;
-Color readColor = Colors.grey.shade700;
 
 @Deprecated("Use [PostViewMetaData] instead")
 class PostCardMetaData extends StatelessWidget {
@@ -228,10 +227,12 @@ class ScorePostCardMetaData extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final state = context.read<ThunderBloc>().state;
 
+    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+
     final color = switch (voteType) {
       1 => upVoteColor,
       -1 => downVoteColor,
-      _ => hasBeenRead ? readColor : null,
+      _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
     return Wrap(
@@ -272,11 +273,13 @@ class UpvotePostCardMetaData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
+    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isUpvoted) {
       true => upVoteColor,
-      _ => hasBeenRead ? readColor : null,
+      _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
     return IconText(
@@ -309,11 +312,13 @@ class DownvotePostCardMetaData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
+    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isDownvoted) {
       true => downVoteColor,
-      _ => hasBeenRead ? readColor : null,
+      _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
     return IconText(
@@ -332,7 +337,7 @@ class CommentCountPostCardMetaData extends StatelessWidget {
   final int? commentCount;
 
   /// The number of unread comments on the post. Defaults to 0 if not specified.
-  final int? unreadCommentCount;
+  final int unreadCommentCount;
 
   /// Whether or not the post has been read. This is used to determine the color.
   final bool hasBeenRead;
@@ -348,18 +353,19 @@ class CommentCountPostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
+    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (hasBeenRead) {
-      true => (unreadCommentCount != 0 && unreadCommentCount != commentCount) ? theme.primaryColor : readColor,
-      _ => (unreadCommentCount != 0 && unreadCommentCount != commentCount) ? theme.primaryColor : null,
+      true => (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? theme.primaryColor : readColor,
+      _ => (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? theme.primaryColor : theme.textTheme.bodyMedium?.color,
     };
 
     return IconText(
       fontScale: state.metadataFontSizeScale,
-      text: (unreadCommentCount != 0 && unreadCommentCount != commentCount) ? '+${formatNumberToK(unreadCommentCount ?? 0)}' : formatNumberToK(commentCount ?? 0),
+      text: (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? '+${formatNumberToK(unreadCommentCount)}' : formatNumberToK(commentCount ?? 0),
       textColor: color,
       padding: 5.0,
-      icon: Icon(unreadCommentCount != 0 && unreadCommentCount != commentCount ? Icons.mark_unread_chat_alt_rounded : Icons.chat, size: 17.0, color: color),
+      icon: Icon(unreadCommentCount > 0 && unreadCommentCount != commentCount ? Icons.mark_unread_chat_alt_rounded : Icons.chat, size: 17.0, color: color),
     );
   }
 }
@@ -384,11 +390,13 @@ class DateTimePostCardMetaData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
+    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (hasBeenRead) {
       true => readColor,
-      _ => null,
+      _ => theme.textTheme.bodyMedium?.color,
     };
 
     return IconText(
@@ -417,11 +425,13 @@ class UrlPostCardMetaData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
+    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (hasBeenRead) {
       true => readColor,
-      _ => null,
+      _ => theme.textTheme.bodyMedium?.color,
     };
 
     if (url == null || url!.isEmpty == true) {
