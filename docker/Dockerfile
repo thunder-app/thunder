@@ -23,15 +23,9 @@ RUN \
         libglu1-mesa-dev \
         git-lfs \
         openssl \
-        wget &&\
-    # Flutter
-    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.19.0-stable.tar.xz -O /tmp/flutter.tar.xz &&\
-    mkdir -p /opt &&\
-    cd /opt &&\
-    tar xf /tmp/flutter.tar.xz &&\
-    rm /tmp/flutter.tar.xz &&\
-    git config --global --add safe.directory /opt/flutter &&\
-    dart pub global activate cider &&\
+        wget
+
+RUN \
     # Android SDK
     apt-get install -y --no-install-recommends \
         git \
@@ -60,10 +54,24 @@ RUN \
     sdkmanager --install "cmake;3.22.1" &&\
     sdkmanager --install platform-tools &&\
     sdkmanager --install emulator &&\
-    sdkmanager --install tools &&\
-    # Cleanup
-    apt-get autoremove && apt-get autoclean
+    sdkmanager --install tools
 
-# Set ownership for flutter
+
 ARG DEV_UID=0
-RUN chown -R ${DEV_UID} /opt/flutter
+RUN \
+    # Flutter
+    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.16.9-stable.tar.xz -O /tmp/flutter.tar.xz &&\
+    mkdir -p /opt &&\
+    cd /opt &&\
+    tar xf /tmp/flutter.tar.xz &&\
+    rm /tmp/flutter.tar.xz &&\
+    git config --global --add safe.directory /opt/flutter &&\
+    dart pub global activate cider &&\
+    chown -R ${DEV_UID} /opt/flutter
+
+# Optional add eo language pack
+# RUN apt install -y locales language-selector-common
+# RUN apt install -y $(check-language-support -l eo)
+
+# Optional cleanup if above is combined for push
+# RUN apt-get autoremove && apt-get autoclean
