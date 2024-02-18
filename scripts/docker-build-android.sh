@@ -33,7 +33,6 @@ fi
 
 
 # Build the APK
-# docker run --rm -ti --user "$(id -u)" -e "HOME=/home/builder" --name thunder-builder -v "${PWD}:${PWD}" -v "${PWD}/build/docker:/home/builder" -w "${PWD}" thunder-builder git config --global --add safe.directory /opt/flutter
 if [ ! -d ./build/docker/.pub-cache ]; then
     docker run --rm -ti --user "$(id -u)" -e "HOME=/home/builder" --name thunder-builder -v "${PWD}:${PWD}" -v "${PWD}/build/docker:/home/builder" -w "${PWD}" thunder-builder bash -ic 'flutter pub get'
     docker run --rm -ti --user "$(id -u)" -e "HOME=/home/builder" --name thunder-builder -v "${PWD}:${PWD}" -v "${PWD}/build/docker:/home/builder" -w "${PWD}" thunder-builder bash -ic 'flutter --disable-analytics'
