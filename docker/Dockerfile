@@ -1,6 +1,3 @@
-# Builder is not optimized for layer size on purpose
-# Allows for modification between layers
-
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -28,7 +25,7 @@ RUN \
         openssl \
         wget &&\
     # Flutter
-    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/beta/linux/flutter_linux_3.12.0-beta.tar.xz -O /tmp/flutter.tar.xz &&\
+    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.19.0-stable.tar.xz -O /tmp/flutter.tar.xz &&\
     mkdir -p /opt &&\
     cd /opt &&\
     tar xf /tmp/flutter.tar.xz &&\
@@ -51,7 +48,13 @@ RUN \
     apt-get install -y --no-install-recommends openjdk-18-jdk openjdk-18-jre &&\
     yes | sdkmanager --licenses &&\
     sdkmanager --update &&\
+    sdkmanager --install "platforms;android-28" &&\
+    sdkmanager --install "platforms;android-29" &&\
+    sdkmanager --install "platforms;android-30" &&\
+    sdkmanager --install "platforms;android-31" &&\
+    sdkmanager --install "platforms;android-32" &&\
     sdkmanager --install "platforms;android-33" &&\
+    sdkmanager --install "platforms;android-34" &&\
     sdkmanager --install "build-tools;30.0.3" &&\
     sdkmanager --install "ndk;23.1.7779620" &&\
     sdkmanager --install "cmake;3.22.1" &&\
@@ -61,19 +64,6 @@ RUN \
     # Cleanup
     apt-get autoremove && apt-get autoclean
 
-WORKDIR /build
-
-# Copy in prereq files
-COPY pubspec.* /build/
-
-# Get deps
-RUN flutter pub get
-
-# Add all files
-COPY . /build
-
-# Set up env
-RUN echo "# comment" > /build/.env
-
-# Build
-RUN dart scripts/build-android.dart
+# Set ownership for flutter
+ARG DEV_UID=0
+RUN chown -R ${DEV_UID} /opt/flutter
