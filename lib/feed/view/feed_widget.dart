@@ -70,17 +70,25 @@ class FeedPostList extends StatelessWidget {
                     context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
                   },
                   onUpAction: () {
-                    int past = tabletMode ? 10 : 5;
-                    if (isUserLoggedIn && index > past + 1) {
+                    // Past count tested on multiple devices to ensure posts marked read are above the 0 point
+                    // Reducing this will cause elements still on the screen to be marked read
+                    int past = 6;
+                    if (tabletMode && thunderState.useCompactView) {
+                      past = 22;
+                    } else if (tabletMode && !thunderState.useCompactView) {
+                      past = 12;
+                    } else if (!tabletMode && thunderState.useCompactView) {
+                      past = 11;
+                    }
+                    if (isUserLoggedIn && index > past) {
+                      List<int> markRead = [];
                       for (var i = 0; i < index - past; i++) {
                         if (postViewMedias[i].postView.read != true) {
-                          context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[i].postView.post.id, postAction: PostAction.read, value: true));
-                          // Debug
-                          bool read = postViewMedias[i].postView.read;
-                          int postId = postViewMedias[i].postView.post.id;
-                          print("marked read $i $read $postId");
-                          // /Debug
+                          markRead.add(postViewMedias[i].postView.post.id);
                         }
+                      }
+                      if (markRead.length > 0) {
+                        context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: markRead, postAction: PostAction.multiRead, value: true));
                       }
                     }
                   },

@@ -73,6 +73,8 @@ final class FeedItemActionedEvent extends FeedEvent {
   /// If both are provided, [postId] will take precedence
   final int? postId;
 
+  final List<int>? postIds;
+
   /// This indicates the relevant action to perform on the post
   final PostAction postAction;
 
@@ -80,7 +82,7 @@ final class FeedItemActionedEvent extends FeedEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  const FeedItemActionedEvent({this.postViewMedia, this.postId, required this.postAction, this.value});
+  const FeedItemActionedEvent({this.postViewMedia, this.postId, this.postIds, required this.postAction, this.value});
 }
 
 final class FeedClearMessageEvent extends FeedEvent {}

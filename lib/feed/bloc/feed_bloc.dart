@@ -208,6 +208,53 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
           return emit(state.copyWith(status: FeedStatus.failure));
         }
+      case PostAction.multiRead:
+        List<int> eventPostIds = event.postIds ?? [];
+        if (eventPostIds.length > 0) {
+          // Optimistically read the posts
+          List<int> existingPostViewMediaIndexes = [];
+          List<int> postIds = [];
+          List<PostViewMedia> postViewMedias = [];
+          List<PostView> originalPostViews = [];
+          for (int i = 0; i < state.postViewMedias.length; i++) {
+            if (eventPostIds.contains(state.postViewMedias[i].postView.post.id)) {
+              existingPostViewMediaIndexes.add(i);
+              postIds.add(state.postViewMedias[i].postView.post.id);
+              postViewMedias.add(state.postViewMedias[i]);
+              originalPostViews.add(state.postViewMedias[i].postView);
+            }
+          }
+
+          // Give a slight delay to have the UI perform any navigation first
+          await Future.delayed(const Duration(milliseconds: 250));
+
+          try {
+            for (int i = 0; i < existingPostViewMediaIndexes.length; i++) {
+              PostView updatedPostView = optimisticallyReadPost(postViewMedias[i], event.value);
+              state.postViewMedias[existingPostViewMediaIndexes[i]].postView = updatedPostView;
+            }
+
+            // Emit the state to update UI immediately
+            emit(state.copyWith(status: FeedStatus.success));
+            emit(state.copyWith(status: FeedStatus.fetching));
+
+            List<int> failed = await markPostsAsRead(postIds, event.value);
+            if (failed.length == 0) return emit(state.copyWith(status: FeedStatus.success));
+
+            // Restore the original post contents if not successful
+            for (int i = 0; i < failed.length; i++) {
+              state.postViewMedias[existingPostViewMediaIndexes[failed[i]]].postView = originalPostViews[failed[i]];
+            }
+            return emit(state.copyWith(status: FeedStatus.failure));
+          } catch (e) {
+            // Restore the original post contents
+            // They will all be restored, but this is an unlikely scenario
+            for (int i = 0; i < existingPostViewMediaIndexes.length; i++) {
+              state.postViewMedias[existingPostViewMediaIndexes[i]].postView = originalPostViews[i];
+            }
+            return emit(state.copyWith(status: FeedStatus.failure));
+          }
+        }
       case PostAction.delete:
         // Optimistically delete the post
         int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
