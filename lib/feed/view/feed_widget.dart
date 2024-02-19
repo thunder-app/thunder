@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:thunder/community/widgets/post_card.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -24,6 +25,7 @@ class FeedPostList extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThunderState thunderState = context.read<ThunderBloc>().state;
     final FeedState state = context.read<FeedBloc>().state;
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     // Widget representing the list of posts on the feed
     return SliverMasonryGrid.count(
@@ -66,6 +68,21 @@ class FeedPostList extends StatelessWidget {
                   },
                   onReadAction: (bool read) {
                     context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                  },
+                  onUpAction: () {
+                    int past = tabletMode ? 10 : 5;
+                    if (isUserLoggedIn && index > past + 1) {
+                      for (var i = 0; i < index - past; i++) {
+                        if (postViewMedias[i].postView.read != true) {
+                          context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[i].postView.post.id, postAction: PostAction.read, value: true));
+                          // Debug
+                          bool read = postViewMedias[i].postView.read;
+                          int postId = postViewMedias[i].postView.post.id;
+                          print("marked read $i $read $postId");
+                          // /Debug
+                        }
+                      }
+                    }
                   },
                   listingType: state.postListingType,
                   indicateRead: thunderState.dimReadPosts,

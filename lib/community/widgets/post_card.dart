@@ -24,6 +24,7 @@ class PostCard extends StatefulWidget {
   final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
   final Function(bool) onReadAction;
+  final Function() onUpAction;
 
   final ListingType? listingType;
 
@@ -34,6 +35,7 @@ class PostCard extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onReadAction,
+    required this.onUpAction,
     required this.listingType,
     required this.indicateRead,
   });
@@ -98,6 +100,8 @@ class _PostCardState extends State<PostCard> {
             postViewMedia: widget.postViewMedia,
           );
         }
+
+        widget.onUpAction();
       },
       onPointerCancel: (event) => {},
       onPointerMove: (PointerMoveEvent event) {
