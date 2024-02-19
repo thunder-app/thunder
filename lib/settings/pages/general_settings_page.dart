@@ -71,6 +71,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, posts will be marked as read when opening the image/media
   bool markPostReadOnMediaView = false;
 
+  /// When enabled, posts will be marked as read when scrolling
+  bool markPostReadOnScroll = false;
+
   /// When enabled, the top bar will be hidden on scroll
   bool hideTopBarOnScroll = false;
 
@@ -147,6 +150,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.markPostAsReadOnMediaView:
         await prefs.setBool(LocalSettings.markPostAsReadOnMediaView.name, value);
         setState(() => markPostReadOnMediaView = value);
+        break;
+      case LocalSettings.markPostAsReadOnScroll:
+        await prefs.setBool(LocalSettings.markPostAsReadOnScroll.name, value);
+        setState(() => markPostReadOnScroll = value);
         break;
       case LocalSettings.useTabletMode:
         await prefs.setBool(LocalSettings.useTabletMode.name, value);
@@ -235,6 +242,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
       markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
+      markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
       hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
@@ -449,6 +457,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconDisabled: Icons.remove_red_eye_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnMediaView, value),
               highlightKey: settingToHighlight == LocalSettings.markPostAsReadOnMediaView ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.markPostAsReadOnScroll,
+              value: markPostReadOnScroll,
+              iconEnabled: Icons.playlist_add_check,
+              iconDisabled: Icons.playlist_add,
+              onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnScroll, value),
+              highlightKey: settingToHighlight == LocalSettings.markPostAsReadOnScroll ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(

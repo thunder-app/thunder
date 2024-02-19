@@ -715,6 +715,10 @@
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
   },
+  "markPostAsReadOnScroll": "Mark Read On Scroll",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
   "medium": "Medium",
   "@medium": {
     "description": "Description for medium font scale"

@@ -11,6 +11,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FeedPostList extends StatelessWidget {
   final bool tabletMode;
+  final bool markPostReadOnScroll;
   final List<int>? queuedForRemoval;
   final List<PostViewMedia> postViewMedias;
 
@@ -18,6 +19,7 @@ class FeedPostList extends StatelessWidget {
     super.key,
     required this.postViewMedias,
     required this.tabletMode,
+    required this.markPostReadOnScroll,
     this.queuedForRemoval,
   });
 
@@ -70,25 +72,27 @@ class FeedPostList extends StatelessWidget {
                     context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
                   },
                   onUpAction: () {
-                    // Past count tested on multiple devices to ensure posts marked read are above the 0 point
-                    // Reducing this will cause elements still on the screen to be marked read
-                    int past = 6;
-                    if (tabletMode && thunderState.useCompactView) {
-                      past = 22;
-                    } else if (tabletMode && !thunderState.useCompactView) {
-                      past = 12;
-                    } else if (!tabletMode && thunderState.useCompactView) {
-                      past = 11;
-                    }
-                    if (isUserLoggedIn && index > past) {
-                      List<int> markRead = [];
-                      for (var i = 0; i < index - past; i++) {
-                        if (postViewMedias[i].postView.read != true) {
-                          markRead.add(postViewMedias[i].postView.post.id);
-                        }
+                    if (markPostReadOnScroll) {
+                      // Past count tested on multiple devices to ensure posts marked read are above the 0 point
+                      // Reducing this will cause elements still on the screen to be marked read
+                      int past = 6;
+                      if (tabletMode && thunderState.useCompactView) {
+                        past = 22;
+                      } else if (tabletMode && !thunderState.useCompactView) {
+                        past = 12;
+                      } else if (!tabletMode && thunderState.useCompactView) {
+                        past = 11;
                       }
-                      if (markRead.length > 0) {
-                        context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: markRead, postAction: PostAction.multiRead, value: true));
+                      if (isUserLoggedIn && index > past) {
+                        List<int> markRead = [];
+                        for (var i = 0; i < index - past; i++) {
+                          if (postViewMedias[i].postView.read != true) {
+                            markRead.add(postViewMedias[i].postView.post.id);
+                          }
+                        }
+                        if (markRead.length > 0) {
+                          context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: markRead, postAction: PostAction.multiRead, value: true));
+                        }
                       }
                     }
                   },

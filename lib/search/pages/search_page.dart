@@ -689,7 +689,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             child: CustomScrollView(
               controller: _scrollController,
               slivers: [
-                FeedPostList(postViewMedias: state.posts ?? [], tabletMode: tabletMode),
+                FeedPostList(postViewMedias: state.posts ?? [], tabletMode: tabletMode, markPostReadOnScroll: false),
                 if (state.status == SearchStatus.refreshing)
                   const SliverToBoxAdapter(
                     child: Center(
