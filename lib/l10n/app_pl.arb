@@ -3,7 +3,7 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility Profiles allow you to apply several settings at once with the goal of accommodating a particular accessibility requirement.",
   "@accessibilityProfilesDescription": {},
-  "account": "{count, plural, {Konta} zero {Kont} one {Konto} other {Konta} } ",
+  "account": "{count, plural, zero {Kont} one {Konto} other {Konta} } ",
   "@account": {},
   "accountSettings": "Ustawienia konta",
   "@accountSettings": {},
@@ -183,7 +183,7 @@
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "You may not be connected to the internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
-  "link": "{count, plural, {Linki} zero {Linków} one {Link} other {Linki} } ",
+  "link": "{count, plural, zero {Linków} one {Link} other {Linki} } ",
   "@link": {},
   "loadMorePlural": "Wczytaj {count} odpowiedzi więcej…",
   "@loadMorePlural": {},
@@ -205,7 +205,7 @@
   "@loginToSeeInbox": {},
   "manageAccounts": "Zarządzaj Kontami",
   "@manageAccounts": {},
-  "mention": "{count, plural,{Wzmianki} zero {Wzmianek} one {Wzmianka} other {Wzmianki} }",
+  "mention": "{count, plural, zero {Wzmianek} one {Wzmianka} other {Wzmianki} }",
   "@mention": {},
   "message": "{count, plural, zero {Wiadomości} one {Wiadomość} other {Wiadomości} }",
   "@message": {},
@@ -1001,7 +1001,7 @@
   "@displayUserScore": {
     "description": "Option for displaying user scores or karma."
   },
-  "notifications": "{count, plural,{Powiadomienia} zero {Powiadomień} one {Powiadomienie} other {Powiadomienia}}",
+  "notifications": "{count, plural, zero {Powiadomień} one {Powiadomienie} other {Powiadomienia}}",
   "@notifications": {
     "description": "Message formatting for notifications count."
   },
