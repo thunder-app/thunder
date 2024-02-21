@@ -183,8 +183,6 @@
   "@new_": {},
   "noCommunityBlocks": "Det ser ut til at du ikke har blokkert noen gemenskaper.",
   "@noCommunityBlocks": {},
-  "noPosts": "Fant ikke noen innlegg",
-  "@noPosts": {},
   "noUserBlocks": "Det ser ut til at du ikke har blokkert noen.",
   "@noUserBlocks": {},
   "notValidLemmyInstance": "{instance} ser ikke ut til å være en gyldig Lemmy-instans",
