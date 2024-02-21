@@ -398,7 +398,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               description: l10n.appLanguage,
               bottomSheetHeading: Align(alignment: Alignment.centerLeft, child: Text(l10n.translationsMayNotBeComplete)),
               value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
-              options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode, e.countryCode), icon: Icons.language_rounded, payload: e)).toList(),
+              options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode, e.toLanguageTag()), icon: Icons.language_rounded, payload: e)).toList(),
               icon: Icons.language_rounded,
               onChanged: (ListPickerItem<Locale> value) {
                 setPreferences(LocalSettings.appLanguageCode, value.payload);
@@ -406,7 +406,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               valueDisplay: Row(
                 children: [
                   Text(
-                    LanguageLocal.getDisplayLanguage(currentLocale.languageCode, currentLocale.countryCode),
+                    LanguageLocal.getDisplayLanguage(currentLocale.languageCode, currentLocale.toLanguageTag()),
                     style: theme.textTheme.titleSmall,
                   ),
                 ],
