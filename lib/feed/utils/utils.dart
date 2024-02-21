@@ -14,13 +14,17 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 
-String getCommunityName(FeedState state) {
+String getAppBarTitle(FeedState state) {
   if (state.status == FeedStatus.initial) {
     return '';
   }
 
   if (state.communityId != null || state.communityName != null) {
     return state.fullCommunityView?.communityView.community.title ?? '';
+  }
+
+  if (state.userId != null || state.username != null) {
+    return state.personView?.person.displayName ?? state.personView?.person.name ?? '';
   }
 
   return (state.postListingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.postListingType).label) : '';
@@ -55,7 +59,16 @@ IconData? getSortIcon(FeedState state) {
 /// If [feedType] is [FeedType.community], one of [communityId] or [communityName] must be provided
 ///
 /// The [context] parameter should contain the following blocs within its widget tree: [AccountBloc], [AuthBloc], [ThunderBloc]
-Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedType, ListingType? postListingType, SortType? sortType, String? communityName, int? communityId}) async {
+Future<void> navigateToFeedPage(
+  BuildContext context, {
+  required FeedType feedType,
+  ListingType? postListingType,
+  SortType? sortType,
+  String? communityName,
+  int? communityId,
+  String? username,
+  int? userId,
+}) async {
   // Push navigation
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
@@ -75,6 +88,8 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
             sortType: sortType ?? thunderBloc.state.defaultSortType,
             communityId: communityId,
             communityName: communityName,
+            userId: userId,
+            username: username,
             reset: true,
           ),
         );
@@ -100,6 +115,8 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
             sortType: sortType ?? thunderBloc.state.defaultSortType,
             communityName: communityName,
             communityId: communityId,
+            username: username,
+            userId: userId,
             postListingType: postListingType,
           ),
         ),

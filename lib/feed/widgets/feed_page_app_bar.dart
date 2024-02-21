@@ -60,10 +60,12 @@ class FeedPageAppBar extends StatelessWidget {
             : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
         onPressed: () {
           HapticFeedback.mediumImpact();
-          (scaffoldStateKey == null && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : scaffoldStateKey?.currentState?.openDrawer();
+          (scaffoldStateKey == null && (feedBloc.state.feedType == FeedType.community || feedBloc.state.feedType == FeedType.user))
+              ? Navigator.of(context).maybePop()
+              : scaffoldStateKey?.currentState?.openDrawer();
         },
       ),
-      actions: feedState.status != FeedStatus.failureLoadingCommunity
+      actions: feedState.status != FeedStatus.failureLoadingCommunity && feedState.status != FeedStatus.failureLoadingUser
           ? [
               if (feedState.feedType == FeedType.community) ...[
                 BlocListener<CommunityBloc, CommunityState>(
@@ -192,7 +194,7 @@ class FeedAppBarTitle extends StatelessWidget {
       opacity: visible ? 1.0 : 0.0,
       child: ListTile(
         title: Text(
-          getCommunityName(feedBloc.state),
+          getAppBarTitle(feedBloc.state),
           style: theme.textTheme.titleLarge,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,

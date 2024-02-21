@@ -14,7 +14,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/pages/user_page.dart';
+import 'package:thunder/user/pages/user_page_old.dart';
 import 'package:thunder/utils/swipe.dart';
 
 /// Navigates to a [UserPage] with a given [username] or [userId]
@@ -40,36 +40,38 @@ Future<void> navigateToUserPage(BuildContext context, {String? username, int? us
     _userId = getPersonDetailsResponse.personView.person.id;
   }
 
-  // Push navigation
-  AccountBloc accountBloc = context.read<AccountBloc>();
-  AuthBloc authBloc = context.read<AuthBloc>();
-  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-  InstanceBloc instanceBloc = context.read<InstanceBloc>();
-  AnonymousSubscriptionsBloc? anonymousSubscriptionsBloc;
-  try {
-    anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
-  } catch (e) {}
+  navigateToFeedPage(context, feedType: FeedType.user, userId: _userId, username: username);
 
-  ThunderState thunderState = thunderBloc.state;
-  final bool reduceAnimations = thunderState.reduceAnimations;
+  // // Push navigation
+  // AccountBloc accountBloc = context.read<AccountBloc>();
+  // AuthBloc authBloc = context.read<AuthBloc>();
+  // ThunderBloc thunderBloc = context.read<ThunderBloc>();
+  // InstanceBloc instanceBloc = context.read<InstanceBloc>();
+  // AnonymousSubscriptionsBloc? anonymousSubscriptionsBloc;
+  // try {
+  //   anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  // } catch (e) {}
 
-  Navigator.of(context).push(
-    SwipeablePageRoute(
-      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-      backGestureDetectionWidth: 45,
-      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: accountBloc),
-          BlocProvider.value(value: authBloc),
-          BlocProvider.value(value: thunderBloc),
-          BlocProvider.value(value: instanceBloc),
-          if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
-          BlocProvider<FeedBloc>(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
-          BlocProvider<CommunityBloc>(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
-        ],
-        child: UserPage(userId: userId, username: username),
-      ),
-    ),
-  );
+  // ThunderState thunderState = thunderBloc.state;
+  // final bool reduceAnimations = thunderState.reduceAnimations;
+
+  // Navigator.of(context).push(
+  //   SwipeablePageRoute(
+  //     transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+  //     backGestureDetectionWidth: 45,
+  //     canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
+  //     builder: (context) => MultiBlocProvider(
+  //       providers: [
+  //         BlocProvider.value(value: accountBloc),
+  //         BlocProvider.value(value: authBloc),
+  //         BlocProvider.value(value: thunderBloc),
+  //         BlocProvider.value(value: instanceBloc),
+  //         if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
+  //         BlocProvider<FeedBloc>(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
+  //         BlocProvider<CommunityBloc>(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
+  //       ],
+  //       child: UserPage(userId: userId, username: username),
+  //     ),
+  //   ),
+  // );
 }
