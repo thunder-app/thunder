@@ -7,7 +7,7 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Profile für Bedienungshilfen ermöglichen es, mehrere Einstellungen auf einmal zu übernehmen, um den bestimmten Anforderungen eines Nutzers gerecht zu werden.",
   "@accessibilityProfilesDescription": {},
-  "account": "Konto",
+  "account": "",
   "@account": {},
   "accountSettings": "Kontoeinstellungen",
   "@accountSettings": {},
@@ -370,5 +370,17 @@
   "floatingActionButton": "Schwebender Button",
   "@floatingActionButton": {
     "description": "Floating Action Button settings category."
+  },
+  "base": "Standard",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "clearCache": "Cache leeren ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "clearedCache": "Cache erfolgreich geleert.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
   }
 }
