@@ -6,7 +6,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/widgets/account_placeholder.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
-import 'package:thunder/user/pages/user_page_old.dart';
+import 'package:thunder/user/pages/user_page.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});

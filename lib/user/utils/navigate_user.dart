@@ -14,7 +14,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/pages/user_page_old.dart';
+import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/swipe.dart';
 
 /// Navigates to a [UserPage] with a given [username] or [userId]
