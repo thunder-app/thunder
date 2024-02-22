@@ -1,1 +1,378 @@
-{}
+{
+  "collapseParentCommentBodyOnGesture": "Skryť nadradený komentár pri zbalení",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "collapsePost": "Zbaliť príspevok",
+  "@collapsePost": {},
+  "collapsePostPreview": "Zbaliť náhľad príspevku",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "collapseSpoiler": "Zbaliť spoiler",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "condensed": "Zhustený",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "confirm": "Potvrdiť",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "confirmLogOutBody": "Ste si istý, že sa chcete odhlásiť?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "copiedToClipboard": "Skopírované do schránky",
+  "@copiedToClipboard": {},
+  "delete": "Odstrániť",
+  "@delete": {},
+  "deleteAccount": "Odstrániť účet",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "edit": "Upraviť",
+  "@edit": {},
+  "favorites": "Obľúbené",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "forward": "Vpred",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "general": "Všeobecné",
+  "@general": {
+    "description": "General settings category."
+  },
+  "generalSettings": "Všeobecné nastavenia",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
+  "logOut": "Odhlásiť sa",
+  "@logOut": {},
+  "noPostsFound": "Nenašli sa žiadne príspevky.",
+  "@noPostsFound": {},
+  "noResultsFound": "Nenašli sa žiadne výsledky.",
+  "@noResultsFound": {},
+  "password": "Heslo",
+  "@password": {},
+  "report": "Nahlásiť",
+  "@report": {},
+  "reportComment": "Nahlásiť komentár",
+  "@reportComment": {},
+  "retry": "Skúsiť znova",
+  "@retry": {},
+  "save": "Uložiť",
+  "@save": {},
+  "saved": "Uložené",
+  "@saved": {},
+  "search": "Hľadať",
+  "@search": {},
+  "selectLanguage": "Vyberte jazyk...",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "settings": "Nastavenia",
+  "@settings": {},
+  "share": "Zdieľať",
+  "@share": {},
+  "showAll": "Zobraziť všetky",
+  "@showAll": {},
+  "showMore": "Zobraziť viac",
+  "@showMore": {},
+  "sortBy": "Zoradiť podľa",
+  "@sortBy": {},
+  "submit": "Odoslať",
+  "@submit": {},
+  "subscribe": "Predplatiť",
+  "@subscribe": {},
+  "unsubscribe": "Odhlásiť",
+  "@unsubscribe": {},
+  "uploadImage": "Nahrať obrázok",
+  "@uploadImage": {},
+  "username": "Používateľské meno",
+  "@username": {},
+  "users": "Používatelia",
+  "@users": {},
+  "about": "O aplikácii",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accessibility": "Prístupnosť",
+  "@accessibility": {},
+  "accessibilityProfilesDescription": "Profile prístupnosti umožňujú aplikovať niekoľko nastavení naraz na prispôsobenie konkrétnej požiadavke na prístupnosť.",
+  "@accessibilityProfilesDescription": {},
+  "account": "{count, plural, zero {Účet} one {Účet} other {Účty} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
+  "accountSettings": "Nastavenia účtu",
+  "@accountSettings": {},
+  "actions": "Akcie",
+  "@actions": {},
+  "active": "Aktívny",
+  "@active": {},
+  "add": "Pridať",
+  "@add": {},
+  "addAccount": "Pridať účet",
+  "@addAccount": {},
+  "addAccountToSeeProfile": "Prihláste sa, aby ste videli svoj účet.",
+  "@addAccountToSeeProfile": {},
+  "addAnonymousInstance": "Pridať anonymnú inštanciu",
+  "@addAnonymousInstance": {},
+  "addKeywordFilter": "Pridať kľúčové slovo",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "Pridať do obľúbených",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addedCommunityToSubscriptions": "Odoberané komunity",
+  "@addedCommunityToSubscriptions": {},
+  "advanced": "Pokročilé",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "all": "Všetko",
+  "@all": {},
+  "allPosts": "Všetky príspevky",
+  "@allPosts": {},
+  "allowOpenSupportedLinks": "Povoliť aplikácii otvárať podporované odkazy.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "alreadyPostedTo": "Už pridané k",
+  "@alreadyPostedTo": {},
+  "andXMore": "a {count} ďalšie",
+  "@andXMore": {},
+  "animations": "Animácie",
+  "@animations": {},
+  "anonymous": "Anonymný",
+  "@anonymous": {},
+  "appLanguage": "Jazyk aplikácie",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "appearance": "Vzhľad",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "applied": "Použité",
+  "@applied": {},
+  "apply": "Použiť",
+  "@apply": {},
+  "back": "Späť",
+  "@back": {},
+  "backButton": "Tlačidlo Späť",
+  "@backButton": {},
+  "backToTop": "Späť nahor",
+  "@backToTop": {},
+  "backgroundCheckWarning": "Upozornenie: Kontroly upozornení budú spotrebúvať ďalšiu batériu",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "base": "Základný",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "blockCommunity": "Zablokovať komunitu",
+  "@blockCommunity": {},
+  "blockInstance": "Zablokovať inštanciu",
+  "@blockInstance": {},
+  "blockUser": "Zablokovať používateľa",
+  "@blockUser": {},
+  "blockedCommunities": "Zablokované komunity",
+  "@blockedCommunities": {},
+  "blockedInstances": "Zablokované inštancie",
+  "@blockedInstances": {},
+  "blockedUsers": "Zablokovaní používatelia",
+  "@blockedUsers": {},
+  "browserMode": "Režim prehliadača",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "browsingAnonymously": "Momentálne prezeráte {instance} anonymne.",
+  "@browsingAnonymously": {},
+  "cancel": "Zrušiť",
+  "@cancel": {},
+  "commentFontScale": "Mierka písma obsahu komentára",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
+  },
+  "cannotReportOwnComment": "Nemôžete podať správu o svojom vlastnom komentári.",
+  "@cannotReportOwnComment": {},
+  "cantBlockAdmin": "Nemôžete blokovať správcu inštancie.",
+  "@cantBlockAdmin": {},
+  "cantBlockYourself": "Nemôžete blokovať sami seba.",
+  "@cantBlockYourself": {},
+  "cardPostCardMetadataItems": "Metadáta v karte",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "cardView": "Zobrazenie karty",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "cardViewDescription": "Povoľte zobrazenie kariet na nastavenie",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "cardViewSettings": "Nastavenia zobrazenia karty",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "changeSort": "Zmeniť triedenie",
+  "@changeSort": {},
+  "clearCache": "Vyčistiť vyrovnávaciu pamäť ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "clearDatabase": "Vyčistiť databázu",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearPreferences": "Vymazať nastavenia",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "clearSearch": "Vyčistiť vyhľadávanie",
+  "@clearSearch": {},
+  "clearedCache": "Vyčistenie vyrovnávacej pamäte bolo úspešné.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "clearedDatabase": "Lokálna databáza vyčistená. Restartujte Thunder, aby sa zmeny prejavili.",
+  "@clearedDatabase": {},
+  "clearedUserPreferences": "Vymazali sa všetky používateľské preferencie",
+  "@clearedUserPreferences": {},
+  "close": "Zavrieť",
+  "@close": {},
+  "collapseCommentPreview": "Zbaliť náhľad komentára",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "collapseInformation": "Zbaliť informácie",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "combineCommentScores": "Kombinovať hodnotenie komentárov",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
+  "combineCommentScoresLabel": "Kombinovať hodnotenie komentárov",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "combineNavAndFab": "Kombinovať FAB a navigačné tlačidlá",
+  "@combineNavAndFab": {},
+  "combineNavAndFabDescription": "Plávajúce akčné tlačidlo bude zobrazené medzi navigačnými tlačidlami.",
+  "@combineNavAndFabDescription": {},
+  "comment": "Komentár",
+  "@comment": {},
+  "commentBehaviourSettings": "Komentáre",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "commentPreview": "Zobraziť náhľad komentárov s danými nastaveniami",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "commentReported": "Komentár bol označený na preskúmanie.",
+  "@commentReported": {},
+  "commentSavedAsDraft": "Komentár uložený ako návrh",
+  "@commentSavedAsDraft": {},
+  "commentShowUserInstance": "Zobraziť používateľskú inštanciu",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "commentSortType": "Typ triedenia komentárov",
+  "@commentSortType": {},
+  "commentSwipeActions": "Akcie ťahom na komentár",
+  "@commentSwipeActions": {
+    "description": "Setting for comment swipe actions"
+  },
+  "comments": "Komentáre",
+  "@comments": {},
+  "communities": "Komunity",
+  "@communities": {},
+  "community": "Komunita",
+  "@community": {},
+  "communityFormat": "Formát komunity",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "compactPostCardMetadataItems": "Metadáta kompaktného zobrazenia",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
+  },
+  "compactView": "Kompaktné zobrazenie",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "compactViewDescription": "Povoľte kompaktné zobrazenie pre zobrazenie viac obsahu na obrazovke.",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "compactViewSettings": "Nastavenia kompaktného zobrazenia",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "copy": "Kopírovať",
+  "@copy": {},
+  "createAccount": "Vytvoriť účet",
+  "@createAccount": {},
+  "createPost": "Vytvoriť príspevok",
+  "@createPost": {},
+  "disable": "Zakázať",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "editComment": "Upraviť komentár",
+  "@editComment": {},
+  "editPost": "Upraviť príspevok",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "filters": "Filtre",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "instance": "Inštancia",
+  "@instance": {},
+  "language": "Jazyk",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "login": "Prihlásiť sa",
+  "@login": {},
+  "mention": "Spomenúť",
+  "@mention": {},
+  "message": "Správa",
+  "@message": {},
+  "navigation": "Navigácia",
+  "@navigation": {},
+  "notifications": "Upozornenia",
+  "@notifications": {
+    "description": "Message formatting for notifications count."
+  },
+  "openInBrowser": "Otvoriť v prehliadači",
+  "@openInBrowser": {},
+  "posts": "Príspevky",
+  "@posts": {},
+  "profiles": "Profily",
+  "@profiles": {},
+  "refresh": "Obnoviť",
+  "@refresh": {},
+  "reply": "Odpovedať",
+  "@reply": {},
+  "commentUseColorizedUsername": "Farebné používateľské mená",
+  "@commentUseColorizedUsername": {
+    "description": "Setting used to toggle colorized comments creator display name."
+  },
+  "commentSwipeGesturesHint": "Chcete radšej používať tlačidlá? Zapnite ich v nastaveniach v sekcii komentárov.",
+  "@commentSwipeGesturesHint": {}
+}
