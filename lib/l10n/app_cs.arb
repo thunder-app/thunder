@@ -63,7 +63,7 @@
   "@clearPreferences": {
     "description": "Label for action to clear local user preferences in the dialog"
   },
-  "clearedCache": "Mezipaměť úspěšně vymazána.",
+  "clearedCache": "Mezipaměť úspěšně promazána.",
   "@clearedCache": {
     "description": "Message indicating that cache was cleared successfully"
   },
@@ -547,7 +547,7 @@
   "@clearCache": {
     "description": "Label for action to clear cache in the dialog"
   },
-  "clearDatabase": "Vymazat Databázi",
+  "clearDatabase": "Promazat Databázi",
   "@clearDatabase": {
     "description": "Label for action to clear local database in the dialog"
   },
@@ -820,5 +820,533 @@
     "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
   },
   "postLocked": "Příspěvek zamčen. Odpovědi nejsou povoleny.",
-  "@postLocked": {}
+  "@postLocked": {},
+  "applied": "Aplikováno",
+  "@applied": {},
+  "postNSFW": "Označit jako NSFW",
+  "@postNSFW": {},
+  "postSavedAsDraft": "Příspěvek uložen jako koncept",
+  "@postSavedAsDraft": {},
+  "postSwipeActions": "Možnosti Swipování u Příspěvku",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
+  "postSwipeGesturesHint": "Chcete spíš používat tlačítka? Změňte, jaká tlačítka se zobrazují na příspěvkových kartách v základním nastavení.",
+  "@postSwipeGesturesHint": {},
+  "postTitle": "Nadpis",
+  "@postTitle": {},
+  "postTogglePreview": "Ukázat Náhled",
+  "@postTogglePreview": {},
+  "postURL": "URL",
+  "@postURL": {},
+  "postUploadImageError": "Nebylo možné nahrát obrázek",
+  "@postUploadImageError": {},
+  "posts": "Příspěvky",
+  "@posts": {},
+  "preview": "Náhled",
+  "@preview": {},
+  "profileAppliedSuccessfully": "{profile} úspěšně použit!",
+  "@profileAppliedSuccessfully": {},
+  "profiles": "Profily",
+  "@profiles": {},
+  "pureBlack": "Čistá Černá",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "reachedTheBottom": "Hmmm. Vypadá to, že tu nic dalšího není.",
+  "@reachedTheBottom": {},
+  "readAll": "Přečíst Vše",
+  "@readAll": {},
+  "reason": "Důvod",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "reduceAnimations": "Omezit Animace",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "reducesAnimations": "Omezuje používání animací v Thunder",
+  "@reducesAnimations": {},
+  "refresh": "Obnovit",
+  "@refresh": {},
+  "refreshContent": "Obnovit Obsah",
+  "@refreshContent": {},
+  "removalReason": "Důvod Pro Odstranění",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
+  "remove": "Odstranit",
+  "@remove": {},
+  "removeAccount": "Odstranit Účet",
+  "@removeAccount": {},
+  "removeFromFavorites": "Odstranit z oblíbených",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "removeInstance": "Odstranit instanci",
+  "@removeInstance": {},
+  "removeKeyword": "Odstranit \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "removeKeywordFilter": "Odstranit Klíčové Slovo",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
+  "removedCommunityFromSubscriptions": "Odešli jste z komunity",
+  "@removedCommunityFromSubscriptions": {},
+  "replyNotSupported": "Odpovídat z tohoto zobrazení v tuto chvíli ještě není podporované",
+  "@replyNotSupported": {},
+  "replyToPost": "Odpovědět na Příspěvek",
+  "@replyToPost": {},
+  "replyingTo": "Odpovědět {author}",
+  "@replyingTo": {},
+  "report": "Nahlásit",
+  "@report": {},
+  "reportComment": "Nahlásit Komentář",
+  "@reportComment": {},
+  "reset": "Resetovat",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetCommentPreferences": "Resetovat nastavení komentářů",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "resetPostPreferences": "Resetovat nastavení příspěvků",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "resetPreferences": "Resetovat Nastavení",
+  "@resetPreferences": {},
+  "resetPreferencesAndData": "Resetovat Data a Nastavení",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
+  "restore": "Obnovit",
+  "@restore": {},
+  "restorePost": "Obnovit Příspěvek",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "restoredCommentFromDraft": "Obnovit komentář z konceptu",
+  "@restoredCommentFromDraft": {},
+  "restoredPostFromDraft": "Příspěvek obnoven z konceptu",
+  "@restoredPostFromDraft": {},
+  "retry": "Zkusit znovu",
+  "@retry": {},
+  "rightLongSwipe": "Dlouhý Pravý Swipe",
+  "@rightLongSwipe": {
+    "description": "Setting for right long swipe"
+  },
+  "rightShortSwipe": "Krátký Pravý Swipe",
+  "@rightShortSwipe": {
+    "description": "Setting for right short swipe"
+  },
+  "save": "Uložit",
+  "@save": {},
+  "saveSettings": "Uložit Nastavení",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "saved": "Uloženo",
+  "@saved": {},
+  "scaled": "Velikost změněna",
+  "@scaled": {},
+  "screenReaderProfileDescription": "Optimalizuje Thunder pro čtecí zařízení snížením počtu celkových prvků a odstraněním potenciálně protichůdných gest.",
+  "@screenReaderProfileDescription": {},
+  "screenReaderProfile": "Profil Čtecího Zařízení",
+  "@screenReaderProfile": {},
+  "search": "Hledat",
+  "@search": {},
+  "searchByText": "Hledat pomocí textu",
+  "@searchByText": {},
+  "searchByUrl": "Hledat pomocí URL",
+  "@searchByUrl": {},
+  "searchComments": "Hledat Komentáře",
+  "@searchComments": {},
+  "searchCommentsFederatedWith": "Hledat komentáře spojené s {instance}",
+  "@searchCommentsFederatedWith": {},
+  "searchCommunitiesFederatedWith": "Hledat komunity spojené s {instance}",
+  "@searchCommunitiesFederatedWith": {},
+  "searchInstance": "Hledat {instance}",
+  "@searchInstance": {},
+  "searchPostsFederatedWith": "Hledat příspěvky spojené s {instance}",
+  "@searchPostsFederatedWith": {},
+  "searchTerm": "Hledat termín",
+  "@searchTerm": {},
+  "searchUsersFederatedWith": "Hledat uživatelé spojené s {instance}",
+  "@searchUsersFederatedWith": {},
+  "selectCommunity": "Vybrat komunitu",
+  "@selectCommunity": {},
+  "selectFeedType": "Vybrat Typ Feedu",
+  "@selectFeedType": {},
+  "selectLanguage": "Vybrat Jazyk",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "serverErrorComments": "Při vyhledávání více komentářů jsme narazili na systémovou chybu: {message}",
+  "@serverErrorComments": {},
+  "setLongPress": "Nastavit akci na dlouhé podržení",
+  "@setLongPress": {},
+  "setShortPress": "Nastavit akci na krátké podržení",
+  "@setShortPress": {},
+  "settingTypeNotSupported": "Typ nastavení {settingType} ještě není podporován.",
+  "@settingTypeNotSupported": {},
+  "settings": "Nastavení",
+  "@settings": {},
+  "settingsFeedCards": "Toto nastavení ovlivňuje karty na hlavním feedu. Akce jsou vždy dostupné po otevření daného příspěvku.",
+  "@settingsFeedCards": {
+    "description": "Settings for controlling the display of cards in the main feed."
+  },
+  "shareLink": "Sdílet Odkaz",
+  "@shareLink": {},
+  "shareMedia": "Sdílet Médium",
+  "@shareMedia": {},
+  "sharePost": "Sdílet Příspěvek",
+  "@sharePost": {},
+  "showBotAccounts": "Zobrazit Bot Účty",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "showCommentActionButtons": "Zobrazit u Komentáře Tlačítka Akcí",
+  "@showCommentActionButtons": {
+    "description": "Toggle to show comment action buttons."
+  },
+  "showEdgeToEdgeImages": "Zobrazit Celoplošné Obrázky",
+  "@showEdgeToEdgeImages": {
+    "description": "Toggle to view edge to edge images."
+  },
+  "showFullHeightImages": "Zobrazit Obrázky v Plné Velikosti",
+  "@showFullHeightImages": {
+    "description": "Toggle to view full height images."
+  },
+  "showInAppUpdateNotifications": "Buďte upozorněni, když na GitHubu vyjdou nové verze",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
+  "showPassword": "Zobrazit heslo",
+  "@showPassword": {},
+  "showPostTextContentPreview": "Zobrazit Náhled Textu",
+  "@showPostTextContentPreview": {
+    "description": "Toggle to show text previews."
+  },
+  "showPostTitleFirst": "Zobrazovat Nadpis První",
+  "@showPostTitleFirst": {
+    "description": "Toggle to show post title first."
+  },
+  "showPostVoteActions": "Zobrazit Volící Tlačítka",
+  "@showPostVoteActions": {
+    "description": "Toggle to show vote buttons."
+  },
+  "showReadPosts": "Zobrazit Přečtené Příspěvky",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "showThumbnailPreviewOnRight": "Zobrazovat Náhledy Napravo",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Toggle to show thumbnails on the right side."
+  },
+  "showUserInstance": "Zobrazit Uživatelskou Instanci",
+  "@showUserInstance": {
+    "description": "Toggle to show user instance."
+  },
+  "sidebar": "Boční Panel",
+  "@sidebar": {},
+  "sidebarBottomNavDoubleTapDescription": "Dvoj-klikem na spodní navigaci otevřete boční panel",
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "sidebarBottomNavSwipeDescription": "Pro otevření bočního panelu swipněte na spodní navigaci",
+  "@sidebarBottomNavSwipeDescription": {},
+  "small": "Malé",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "somethingWentWrong": "Jejda, něco se nám pokazilo!",
+  "@somethingWentWrong": {},
+  "sortBy": "Seřadit Podle",
+  "@sortBy": {},
+  "sortByTop": "Seřadit od Nejlepšího",
+  "@sortByTop": {},
+  "sortOptions": "Nabídky Seřazení",
+  "@sortOptions": {},
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "submit": "Odeslat",
+  "@submit": {},
+  "subscribe": "Odebírat",
+  "@subscribe": {},
+  "subscribeToCommunity": "Odebírat Komunitu",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
+  "subscribed": "Odebíráno",
+  "@subscribed": {},
+  "subscriptions": "Odběry",
+  "@subscriptions": {},
+  "successfullyBlocked": "Zablokováno.",
+  "@successfullyBlocked": {},
+  "successfullyBlockedCommunity": "Zablokováno {communityName}",
+  "@successfullyBlockedCommunity": {},
+  "successfullyUnblocked": "Odblokováno.",
+  "@successfullyUnblocked": {},
+  "suggestedTitle": "Navrhovaný název",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "tabletMode": "Režim Tabletu (zobrazení 2 sloupců)",
+  "@tabletMode": {
+    "description": "Toggle to enable 2-column tablet mode."
+  },
+  "text": "Text",
+  "@text": {},
+  "theme": "Téma",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "themeAccentColor": "Barvy Zvýraznění",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "theming": "Témata",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "timeoutSaveComment": "Chyba: Při pokusu uložit komentář vypršel časový limit",
+  "@timeoutSaveComment": {},
+  "timeoutUpvoteComment": "Chyba: Při pokusu hodnocení komentáře vypršel časový limit",
+  "@timeoutUpvoteComment": {},
+  "timeoutVotingPost": "Chyba: Při pokusu hodnocení příspěvku vypršel časový limit.",
+  "@timeoutVotingPost": {},
+  "top": "Nejlepší",
+  "@top": {},
+  "topAll": "Nejlepší od počátku věků",
+  "@topAll": {},
+  "topDay": "Nejlepší Dnes",
+  "@topDay": {},
+  "topMonth": "Nejlepší za Tento Měsíc",
+  "@topMonth": {},
+  "topTwelveHour": "Nejlepší za Posledních 12 Hodin",
+  "@topTwelveHour": {},
+  "topYear": "Nejlepší za Rok",
+  "@topYear": {},
+  "translationsMayNotBeComplete": "Berte na vědomí, že překlady nemusí být dokončeny",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "trendingCommunities": "Populární Komunity",
+  "@trendingCommunities": {},
+  "trySearchingFor": "Zkuste hledat…",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
+  "unableToFindCommunity": "Nebylo možné najít komunitu",
+  "@unableToFindCommunity": {},
+  "unableToFindCommunityName": "Nebylo možné najít komunitu '{communityName}'",
+  "@unableToFindCommunityName": {
+    "description": "Error message for when we are unable to find a community, including the name"
+  },
+  "unableToFindInstance": "Nebylo možné najít instanci",
+  "@unableToFindInstance": {},
+  "unableToFindLanguage": "Nebylo možné dohledat jazyk",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
+  "unableToFindUser": "Nebylo možné najít uživatele",
+  "@unableToFindUser": {},
+  "unableToLoadImage": "Obrázek nebylo možné načíst",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "unableToLoadImageFrom": "Nebylo možné načíst obrázek z {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "unableToLoadInstance": "Nebylo možné načíst {instance}",
+  "@unableToLoadInstance": {},
+  "unableToLoadPostsFrominstance": "Nebylo možné načíst příspěvky z {instance}",
+  "@unableToLoadPostsFrominstance": {},
+  "unableToLoadReplies": "Nebylo možné načíst další odpovědi.",
+  "@unableToLoadReplies": {},
+  "unableToNavigateToInstance": "Nebylo možné se spojit s {instanceHost}. Je možné, že to není platná Lemmy instance.",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "unblockInstance": "Odblokovat Instanci",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "understandEnable": "Chápu, I Tak Pokračovat",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
+  },
+  "unexpectedError": "Neočekávaná Chyba",
+  "@unexpectedError": {},
+  "unlockPost": "Odblokovat Příspěvek",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unpinFromCommunity": "Odepnout z Komunity",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "unsubscribe": "Zrušit Odběr",
+  "@unsubscribe": {},
+  "unsubscribeFromCommunity": "Zrušit Odběr u Komunity",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
+  "unsubscribed": "Odběr Zrušen",
+  "@unsubscribed": {},
+  "updateReleased": "Aktualizace vydána: {version}",
+  "@updateReleased": {},
+  "uploadImage": "Nahrát obrázek",
+  "@uploadImage": {},
+  "upvote": "Souhlas",
+  "@upvote": {},
+  "uriNotSupported": "V tuto chvíli tento typ odkazu není podporován.",
+  "@uriNotSupported": {
+    "description": "Unsupported link type at the present time."
+  },
+  "url": "URL",
+  "@url": {},
+  "useCompactView": "Povolit pro malé příspěvky, zakázat pro velké.",
+  "@useCompactView": {
+    "description": "Option to enable or disable compact view for small posts."
+  },
+  "useMaterialYouTheme": "Použít Téma Material You",
+  "@useMaterialYouTheme": {
+    "description": "Toggle to use Material You theme."
+  },
+  "useMaterialYouThemeDescription": "Přepsat vybrané upravené téma",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
+  },
+  "useSuggestedTitle": "Použít navrhovaný název: {title}",
+  "@useSuggestedTitle": {},
+  "userFormat": "Uživatelský Formát",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "username": "Uživatelské Jméno",
+  "@username": {},
+  "users": "Uživatelé",
+  "@users": {},
+  "viewAllComments": "Zobrazit všechny komentáře",
+  "@viewAllComments": {},
+  "visitCommunity": "Navštívit Komunitu",
+  "@visitCommunity": {},
+  "visitInstance": "Navštívit Instanci",
+  "@visitInstance": {},
+  "visitUserProfile": "Navštívit Uživatelský Profil",
+  "@visitUserProfile": {},
+  "warning": "Varování",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "xDownvotes": "{x} nesouhlasů",
+  "@xDownvotes": {},
+  "removePost": "Odstranit Příspěvek",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "postPreview": "Zobrazit ukázku příspěvku s vybraným nastavením",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
+  "postTitleFontScale": "Velikost Fontu u Nadpisu Příspěvku",
+  "@postTitleFontScale": {
+    "description": "Setting for post title font scale"
+  },
+  "postViewType": "Typ Zobrazení Příspěvku",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
+  "tappableAuthorCommunity": "Proklikatelní Autoři & Komunity",
+  "@tappableAuthorCommunity": {
+    "description": "Toggle to make authors and communities tappable."
+  },
+  "timeoutSavingPost": "Chyba: Při pokusu uložit příspěvek vypršel časový limit.",
+  "@timeoutSavingPost": {},
+  "topHour": "Nejlepší za Poslední Hodinu",
+  "@topHour": {},
+  "topNineMonths": "Nejlepší za Posledních 9 Měsíců",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "topSixHour": "Nejlepší za Posledních 6 Hodin",
+  "@topSixHour": {},
+  "topSixMonths": "Nejlepší za Posledních 6 Měsíců",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "topThreeMonths": "Nejlepší za Poslední 3 Měsíce",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "topWeek": "Nejlepší za Týden",
+  "@topWeek": {},
+  "userNotLoggedIn": "Uživatel není přihlášen",
+  "@userNotLoggedIn": {},
+  "userSettingDescription": "Tato nastavení se synchronizují s Vašim Lemmy účtem a jsou použity jen u daného účtu.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
+  "userProfiles": "Uživatelské Profily",
+  "@userProfiles": {
+    "description": "Settings related to user profiles."
+  },
+  "xScore": "{x} skóre",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "xUpvotes": "{x} souhlasů",
+  "@xUpvotes": {},
+  "selectSearchType": "Vybrat Typ Vyhledávání",
+  "@selectSearchType": {},
+  "setAction": "Nastavit Akci",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "share": "Sdílet",
+  "@share": {},
+  "showAll": "Zobrazit Vše",
+  "@showAll": {},
+  "showCrossPosts": "Zobrazit Cross Příspěvek",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "showLess": "Zobrazit méně",
+  "@showLess": {},
+  "showPostAuthor": "Zobrazit Autora Příspěvku",
+  "@showPostAuthor": {
+    "description": "Toggle to show post author."
+  },
+  "showMore": "Zobrazit více",
+  "@showMore": {},
+  "showPostCommunityIcons": "Zobrazit Komunitní Ikony",
+  "@showPostCommunityIcons": {
+    "description": "Toggle to show community icons."
+  },
+  "showScoreCounters": "Zobrazit Uživatelská Skóre",
+  "@showScoreCounters": {
+    "description": "Toggle to display user scores."
+  },
+  "showPostSaveAction": "Zobrazit Tlačítko Ukládání",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "showScores": "Zobrazit Příspěvková/Komentářová Skóre",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "successfullyUnblockedCommunity": "Odblokováno {communityName}",
+  "@successfullyUnblockedCommunity": {},
+  "system": "Systém",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "tapToExit": "Pro odchod znovu zmáčkněte zpět",
+  "@tapToExit": {}
 }
