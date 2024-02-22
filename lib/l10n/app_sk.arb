@@ -103,7 +103,7 @@
   },
   "accessibility": "Prístupnosť",
   "@accessibility": {},
-  "accessibilityProfilesDescription": "Profile prístupnosti umožňujú aplikovať niekoľko nastavení naraz na prispôsobenie konkrétnej požiadavke na prístupnosť.",
+  "accessibilityProfilesDescription": "Umožňujú aplikovať viacero nastavení prístupnosti naraz.",
   "@accessibilityProfilesDescription": {},
   "account": "{count, plural, zero {Účet} one {Účet} other {Účty} } ",
   "@account": {
@@ -374,5 +374,1113 @@
     "description": "Setting used to toggle colorized comments creator display name."
   },
   "commentSwipeGesturesHint": "Chcete radšej používať tlačidlá? Zapnite ich v nastaveniach v sekcii komentárov.",
-  "@commentSwipeGesturesHint": {}
+  "@commentSwipeGesturesHint": {},
+  "confirmMarkAllAsReadTitle": "Označiť všetky ako prečítané?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "countUsers": "{count} používateľov",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "createComment": "Vytvoriť komentár",
+  "@createComment": {},
+  "dark": "Tmavý",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "defaultFeedSortType": "Predvolený typ triedenia kanálov",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  },
+  "defaultFeedType": "Default Feed Type",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
+  "deleteAccountDescription": "Ak chcete natrvalo vymazať svoje konto, budete presmerovaní na stránku svojej inštancie. \n\nUrčite chcete pokračovať?",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
+  "deleteLocalDatabase": "Odstrániť lokálnu databázu",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "deleteLocalDatabaseDescription": "Určite chcete pokračovať? Táto akcia odstráni lokálnu databázu a odhlási vás zo všetkých vašich účtov",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "dismissRead": "Uvoľniť čítanie",
+  "@dismissRead": {},
+  "empty": "Prázdne",
+  "@empty": {},
+  "emptyInbox": "Prázdna schránka",
+  "@emptyInbox": {},
+  "emptyUri": "Odkaz je prázdny. Ak chcete pokračovať, uveďte platný dynamický odkaz.",
+  "@emptyUri": {
+    "description": "Error message for empty link."
+  },
+  "enableCommentNavigation": "Povoliť navigáciu komentárov",
+  "@enableCommentNavigation": {
+    "description": "Setting for enable comment navigation"
+  },
+  "enableInboxNotifications": "Povoliť oznámenia v schránke (experimentálne)",
+  "@enableInboxNotifications": {
+    "description": "Setting name for inbox notifications"
+  },
+  "enablePostFab": "Povoliť plávajúce tlačidlo na príspevkoch",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "expandOptions": "Rozšíriť možnosti",
+  "@expandOptions": {},
+  "expandPost": "Expand post",
+  "@expandPost": {},
+  "floatingActionButtonLongPressDescription": "označuje akciu dlhého stlačenia PAT.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "floatingActionButtonSinglePressDescription": "označuje akciu FAB s jedným stlačením.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
+  },
+  "fullScreenNavigationSwipeDescription": "Potiahnite prstom kdekoľvek, aby ste sa vrátili späť, keď sú gestá zľava doprava zakázané",
+  "@fullScreenNavigationSwipeDescription": {},
+  "fullscreenSwipeGestures": "Gestá posúvania na celú obrazovku",
+  "@fullscreenSwipeGestures": {
+    "description": "Setting for fullscreen swipe gestures"
+  },
+  "gestures": "Gestá",
+  "@gestures": {},
+  "hideNsfwPreviews": "Skryť NSFW náhľady",
+  "@hideNsfwPreviews": {
+    "description": "Toggle to hide NSFW previews."
+  },
+  "inReplyTo": "V odpovedi na {post} v {community}",
+  "@inReplyTo": {},
+  "inbox": "Inbox",
+  "@inbox": {},
+  "linkHandlingCustomTabs": "Otvoriť v systémovom prehliadači vloženom v aplikácii",
+  "@linkHandlingCustomTabs": {
+    "description": "Description for custom tabs link handling"
+  },
+  "linkHandlingExternalShort": "External",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "linkHandlingInApp": "Použiť vstavaný prehliadač Thunder",
+  "@linkHandlingInApp": {
+    "description": "Description for in-app link handling"
+  },
+  "linkHandlingInAppShort": "In-app",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "linksBehaviourSettings": "Links",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "loadMorePlural": "Načítať {count} ďalších odpovedí…",
+  "@loadMorePlural": {},
+  "loginFailed": "Prihlásenie zlyhalo. Skúste to prosím znova: ({errorMessage})",
+  "@loginFailed": {},
+  "loginSucceeded": "Prihlásený.",
+  "@loginSucceeded": {},
+  "loginToPerformAction": "Na vykonanie tejto akcie musíte byť prihlásení.",
+  "@loginToPerformAction": {},
+  "noFavoritedCommunities": "Žiadne obľúbené komunity",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
+  "noInstanceBlocks": "Žiadne blokované inštancie.",
+  "@noInstanceBlocks": {},
+  "noItems": "Žiadne položky",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "noKeywordFilters": "Žiadne pridané filtre kľúčových slov",
+  "@noKeywordFilters": {
+    "description": "Message for no keywords added"
+  },
+  "notificationsBehaviourSettings": "Notifications",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "notificationsNotAllowed": "Oznámenia pre Thunder nie sú povolené v nastaveniach systému",
+  "@notificationsNotAllowed": {
+    "description": "Description for when notifications are now allowed for app"
+  },
+  "notificationsWarningDialog": "- Kontroly budú prebiehať každých ~15 minút a budú spotrebovávať ďalšiu batériu.\n\n- Vypnite optimalizáciu batérie pre vyššiu pravdepodobnosť úspešných oznámení.\n\nViac informácií nájdete na nasledujúcej stránke.",
+  "@notificationsWarningDialog": {
+    "description": "The content of the warning dialog for the notifications feature"
+  },
+  "off": "off",
+  "@off": {},
+  "ok": "OK",
+  "@ok": {},
+  "old": "Old",
+  "@old": {},
+  "on": "on",
+  "@on": {},
+  "open": "Open",
+  "@open": {},
+  "openLinksInReaderMode": "Otvoriť odkazy v režime čítačky",
+  "@openLinksInReaderMode": {
+    "description": "Toggle to open links in reader mode when available."
+  },
+  "openSettings": "Open Settings",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "overview": "Prehľad",
+  "@overview": {},
+  "pending": "Pending",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "permissionDenied": "Permission Denied",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "permissionDeniedMessage": "Thunder vyžaduje niektoré povolenia na uloženie tohto obrázka, ktoré boli zamietnuté.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "postBehaviourSettings": "Posts",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "postBody": "Post Body",
+  "@postBody": {},
+  "postNSFW": "Označiť ako NSFW",
+  "@postNSFW": {},
+  "postPreview": "Zobraziť náhľad príspevku s danými nastaveniami",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
+  "postTitle": "Nadpis",
+  "@postTitle": {},
+  "replyNotSupported": "Odpovedanie z tohto zobrazenia v súčasnosti ešte nie je podporované",
+  "@replyNotSupported": {},
+  "replyToPost": "Odpovedať na príspevok",
+  "@replyToPost": {},
+  "replyingTo": "Odpovedať na {autor}",
+  "@replyingTo": {},
+  "reset": "Reset",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetCommentPreferences": "Resetovať preferencie komentárov",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "resetPostPreferences": "Resetovať preferencie príspevkov",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "resetPreferences": "Resetovať predvoľby",
+  "@resetPreferences": {},
+  "restore": "Obnoviť",
+  "@restore": {},
+  "restoredPostFromDraft": "Obnovený príspevok z návrhu",
+  "@restoredPostFromDraft": {},
+  "rightLongSwipe": "Right Long Swipe",
+  "@rightLongSwipe": {
+    "description": "Setting for right long swipe"
+  },
+  "rightShortSwipe": "Right Short Swipe",
+  "@rightShortSwipe": {
+    "description": "Setting for right short swipe"
+  },
+  "saveSettings": "Save Settings",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "screenReaderProfile": "Profil čítačky obrazovky",
+  "@screenReaderProfile": {},
+  "screenReaderProfileDescription": "Optimalizuje hromozvod pre čítačky obrazovky znížením celkového počtu prvkov a odstránením potenciálne konfliktných gest.",
+  "@screenReaderProfileDescription": {},
+  "serverErrorComments": "Pri načítaní ďalších komentárov došlo k chybe servera: {message}",
+  "@serverErrorComments": {},
+  "setAction": "Set Action",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "setLongPress": "Nastaviť ako akciu dlhého stlačenia",
+  "@setLongPress": {},
+  "settingsFeedCards": "Tieto nastavenia sa vzťahujú na karty v hlavnom kanáli, akcie sú vždy k dispozícii pri skutočnom otváraní príspevkov.",
+  "@settingsFeedCards": {
+    "description": "Settings for controlling the display of cards in the main feed."
+  },
+  "shareLink": "Share Link",
+  "@shareLink": {},
+  "shareMedia": "Zdieľať médiá",
+  "@shareMedia": {},
+  "sharePost": "Zdieľať príspevok",
+  "@sharePost": {},
+  "showReadPosts": "Zobraziť prečítané príspevky",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "showScoreCounters": "Zobraziť skóre používateľov",
+  "@showScoreCounters": {
+    "description": "Toggle to display user scores."
+  },
+  "showScores": "Zobraziť skóre príspevkov/komentárov",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "sidebar": "Sidebar",
+  "@sidebar": {},
+  "sortByTop": "Sort by Top",
+  "@sortByTop": {},
+  "sortOptions": "Sort Options",
+  "@sortOptions": {},
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "subscribeToCommunity": "Prihlásiť sa ku komunite",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
+  "subscribed": "Subscribed",
+  "@subscribed": {},
+  "subscriptions": "Subscriptions",
+  "@subscriptions": {},
+  "successfullyBlocked": "Blocked.",
+  "@successfullyBlocked": {},
+  "successfullyBlockedCommunity": "Blocked {communityName}",
+  "@successfullyBlockedCommunity": {},
+  "successfullyUnblocked": "Unblocked.",
+  "@successfullyUnblocked": {},
+  "successfullyUnblockedCommunity": "Unblocked {communityName}",
+  "@successfullyUnblockedCommunity": {},
+  "system": "Systém",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "tabletMode": "Režim tabletu (zobrazenie v 2 stĺpcoch)",
+  "@tabletMode": {
+    "description": "Toggle to enable 2-column tablet mode."
+  },
+  "topHour": "Top za hodinu",
+  "@topHour": {},
+  "trendingCommunities": "Rastúce komunity",
+  "@trendingCommunities": {},
+  "trySearchingFor": "Skúste hľadať...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
+  "unlockPost": "Unlock Post",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unpinFromCommunity": "Unpin from Community",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "unsubscribeFromCommunity": "Zrušiť odber zo Spoločenstva",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
+  "confirmLogOutTitle": "Odhlásiť?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "confirmMarkAllAsReadBody": "Určite chcete označiť všetky správy ako prečítané?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "confirmResetCommentPreferences": "Toto vynuluje všetky predvoľby komentárov. Ste si istí, že chcete pokračovať?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "confirmResetPostPreferences": "Toto vynuluje všetky predvoľby príspevkov. Určite chcete pokračovať?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "controversial": "Kontroverzné",
+  "@controversial": {},
+  "copyText": "Kopírovať text",
+  "@copyText": {},
+  "couldNotDetermineCommentDelete": "Chyba: Nemožno určiť príspevok na vymazanie komentára.",
+  "@couldNotDetermineCommentDelete": {},
+  "couldNotDeterminePostComment": "Chyba: Nepodarilo sa určiť príspevok, ku ktorému sa má komentár pridať.",
+  "@couldNotDeterminePostComment": {},
+  "couldntCreateReport": "V tomto okamihu nebolo možné odoslať správu o vašom komentári. Prosím, skúste to neskôr.",
+  "@couldntCreateReport": {},
+  "countSubscribers": "Počet odberateľov",
+  "@countSubscribers": {},
+  "createNewCrossPost": "Vytvoriť nový cross-post",
+  "@createNewCrossPost": {},
+  "creator": "Autor",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "crossPostedFrom": "cross-postnuté z: {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
+  },
+  "crossPostedTo": "Cross-postnuté do",
+  "@crossPostedTo": {},
+  "currentLongPress": "Aktuálne nastavené ako dlhé tlačivo",
+  "@currentLongPress": {},
+  "currentSinglePress": "Currently set as single press",
+  "@currentSinglePress": {},
+  "customizeSwipeActions": "Prispôsobiť akcie potiahnutia (ťuknutím na položku sa zmení)",
+  "@customizeSwipeActions": {},
+  "dangerZone": "Nebezpečná zóna",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "debug": "Debug",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "debugDescription": "Nasledujúce nastavenia ladenia by sa mali používať len na účely riešenia problémov.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
+  "defaultCommentSortType": "Predvolený typ triedenia komentárov",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "deleteLocalPreferences": "Odstrániť miestne predvoľby",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "deleteLocalPreferencesDescription": "Chcete pokračovať?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
+  "dimReadPosts": "Stmaviť prečítané príspevky",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "displayUserScore": "Zobraziť skóre používateľa (Karma)",
+  "@displayUserScore": {
+    "description": "Option for displaying user scores or karma."
+  },
+  "downvote": "Zníženie počtu hlasov",
+  "@downvote": {},
+  "downvotesDisabled": "Downvotes sú v tejto inštancii vypnuté.",
+  "@downvotesDisabled": {},
+  "enableFeedFab": "Povoliť plávajúce tlačidlo na kanáloch",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "enableFloatingButtonOnFeeds": "Povoliť plávajúce tlačidlo na kanáloch",
+  "@enableFloatingButtonOnFeeds": {
+    "description": "Setting for enable floating button on feeds"
+  },
+  "enableFloatingButtonOnPosts": "Povoliť plávajúce tlačidlo na príspevkoch",
+  "@enableFloatingButtonOnPosts": {
+    "description": "Setting for enable floating button on posts"
+  },
+  "endSearch": "Ukončiť vyhľadávanie",
+  "@endSearch": {},
+  "errorDownloadingMedia": "Nepodarilo sa stiahnuť mediálny súbor na zdieľanie: {errorMessage}",
+  "@errorDownloadingMedia": {},
+  "exceptionProcessingUri": "Pri spracovaní odkazu došlo k chybe. Je možné, že vo vašej inštancii nie je k dispozícii.",
+  "@exceptionProcessingUri": {
+    "description": "An unspecified error during link processing."
+  },
+  "expandCommentPreview": "Rozšíriť náhľad komentára",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "expandInformation": "Rozšíriť informácie",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "expandPostPreview": "Expand Post Preview",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
+  "expandSpoiler": "Expand Spoiler",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "expanded": "Expanded",
+  "@expanded": {
+    "description": "Expanded post body view type"
+  },
+  "extraLarge": "Extra Large",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "failedToBlock": "Nepodarilo sa zablokovať: {errorMessage}",
+  "@failedToBlock": {},
+  "failedToLoadBlocks": "Nepodarilo sa načítať bloky: {errorMessage}",
+  "@failedToLoadBlocks": {},
+  "failedToUnblock": "Could not unblock: {errorMessage}",
+  "@failedToUnblock": {},
+  "feed": "Feed",
+  "@feed": {},
+  "feedBehaviourSettings": "Feed",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "feedTypeAndSorts": "Predvolený typ a triedenie krmiva",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "fetchAccountError": "Nepodarilo sa určiť účet",
+  "@fetchAccountError": {},
+  "filteringBy": "Filtrovanie podľa {entity}",
+  "@filteringBy": {
+    "description": "Filtering by a community or creator in search."
+  },
+  "floatingActionButton": "Plávajúce akčné tlačidlo (PAT)",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
+  },
+  "floatingActionButtonInformation": "Thunder má plne prispôsobiteľné prostredie PAT, ktoré podporuje niekoľko gest.\n- Potiahnutím nahor zobrazíte ďalšie akcie FAB\n- Potiahnutím nadol/nahor skryjete alebo odkryjete FAB\n\nAk chcete prispôsobiť hlavné a vedľajšie akcie pre FAB, dlho stlačte jednu z nižšie uvedených akcií.",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "gettingStarted": "Začíname",
+  "@gettingStarted": {},
+  "hideNsfwPostsFromFeed": "Skryť príspevky NSFW z kanála",
+  "@hideNsfwPostsFromFeed": {
+    "description": "Toggle to hide NSFW posts from the feed."
+  },
+  "hidePassword": "Skryť heslo",
+  "@hidePassword": {},
+  "hideTopBarOnScroll": "Skryť hornú lištu pri posúvaní",
+  "@hideTopBarOnScroll": {
+    "description": "Settings toggle to hide the top bar on scroll"
+  },
+  "hot": "Hot",
+  "@hot": {},
+  "image": "Image",
+  "@image": {},
+  "imageCachingMode": "Image Caching Mode",
+  "@imageCachingMode": {
+    "description": "Title for setting related to image caching mode"
+  },
+  "imageCachingModeAggressive": "Agresívne ukladanie obrázkov do vyrovnávacej pamäte (používa viac pamäte)",
+  "@imageCachingModeAggressive": {
+    "description": "Long description for aggressive image caching mode"
+  },
+  "imageCachingModeAggressiveShort": "Aggressive",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "imageCachingModeRelaxed": "Nechajte obrázky v medzipamäti vypršať (používa menej pamäte, ale spôsobuje častejšie načítanie obrázkov)",
+  "@imageCachingModeRelaxed": {
+    "description": "Long description for relaxed image caching mode"
+  },
+  "imageCachingModeRelaxedShort": "Relaxed",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
+  "importExportSettings": "Import/Export Settings",
+  "@importExportSettings": {
+    "description": "Category for settings related to import and export."
+  },
+  "importSettings": "Import Settings",
+  "@importSettings": {
+    "description": "Action to import application settings."
+  },
+  "includeCommunity": "Zahrnúť komunitu",
+  "@includeCommunity": {},
+  "includeExternalLink": "Zahrnúť externé prepojenie",
+  "@includeExternalLink": {},
+  "includeImage": "Include Image",
+  "@includeImage": {},
+  "includePostLink": "Include Post Link",
+  "@includePostLink": {},
+  "includeText": "Include Text",
+  "@includeText": {},
+  "includeTitle": "Include Title",
+  "@includeTitle": {},
+  "information": "Informácie",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
+  "instanceHasAlreadyBenAdded": "{instance} has already been added.",
+  "@instanceHasAlreadyBenAdded": {},
+  "internetOrInstanceIssues": "Možno nie ste pripojený k internetu alebo vaša inštancia je momentálne nedostupná.",
+  "@internetOrInstanceIssues": {},
+  "keywordFilterDescription": "Filtruje príspevky obsahujúce akékoľvek kľúčové slová v názve alebo tele",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "keywordFilters": "Filtre kľúčových slov",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "languageNotAllowed": "Komunita, do ktorej prispievate, nepovoľuje príspevky v jazyku, ktorý ste vybrali. Skúste iný jazyk.",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
+  },
+  "large": "Veľký",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "leftLongSwipe": "Dlhé potiahnutie vľavo",
+  "@leftLongSwipe": {
+    "description": "Setting for left long swipe"
+  },
+  "leftShortSwipe": "Krátke potiahnutie vľavo",
+  "@leftShortSwipe": {
+    "description": "Setting for left short swipe"
+  },
+  "light": "Light",
+  "@light": {
+    "description": "Describes using the light theme"
+  },
+  "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
+  "@link": {},
+  "linkActions": "Akcie odkazov",
+  "@linkActions": {},
+  "linkHandlingCustomTabsShort": "In-app embedded",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  },
+  "linkHandlingExternal": "Otvoriť v systémovom prehliadači externe",
+  "@linkHandlingExternal": {
+    "description": "Description for external link handling"
+  },
+  "loadMoreSingular": "Načítať {count} odpoveď…",
+  "@loadMoreSingular": {},
+  "local": "Local",
+  "@local": {},
+  "localPosts": "Miestne príspevky",
+  "@localPosts": {},
+  "lockPost": "Lock Post",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
+  "loginToSeeInbox": "Prihláste sa, aby ste videli svoju doručenú poštu",
+  "@loginToSeeInbox": {},
+  "malformedUri": "Odkaz, ktorý ste uviedli, je v nepodporovanom formáte. Uistite sa, že ide o platný odkaz.",
+  "@malformedUri": {
+    "description": "Error related to unsupported link format."
+  },
+  "manageAccounts": "Spravovať účty",
+  "@manageAccounts": {},
+  "markAllAsRead": "Označiť všetko ako prečítané",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "markPostAsReadOnMediaView": "Označiť ako prečítané po zobrazení médií",
+  "@markPostAsReadOnMediaView": {
+    "description": "Toggle to mark posts as read after viewing media."
+  },
+  "medium": "Medium",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "metadataFontScale": "Metadata Font Scale",
+  "@metadataFontScale": {
+    "description": "Setting for metadata font scale"
+  },
+  "missingErrorMessage": "Nie je k dispozícii žiadna chybová správa",
+  "@missingErrorMessage": {},
+  "moderatedCommunities": "Moderated Communities",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderatorActions": "Moderátorské akcie",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "mostComments": "Most Comments",
+  "@mostComments": {},
+  "mustBeLoggedInComment": "Musíte byť prihlásený, aby ste mohli komentovať",
+  "@mustBeLoggedInComment": {},
+  "mustBeLoggedInPost": "Musíte byť prihlásený, aby ste mohli vytvoriť príspevok",
+  "@mustBeLoggedInPost": {},
+  "navbarDoubleTapGestures": "Navbar Double Tap Gestures",
+  "@navbarDoubleTapGestures": {
+    "description": "Setting for navbar double tap gestures"
+  },
+  "navbarSwipeGestures": "Navbar Swipe Gestures",
+  "@navbarSwipeGestures": {
+    "description": "Setting for navbar swipe gestures"
+  },
+  "navigateDown": "Ďalší komentár",
+  "@navigateDown": {},
+  "navigateUp": "Predchádzajúci komentár",
+  "@navigateUp": {},
+  "nestedCommentIndicatorColor": "Farba indikátora vnoreného komentára",
+  "@nestedCommentIndicatorColor": {
+    "description": "Setting for nested comment indicator color"
+  },
+  "nestedCommentIndicatorStyle": "Nested Comment Indicator Style",
+  "@nestedCommentIndicatorStyle": {
+    "description": "Setting for nested comment indicator style"
+  },
+  "newComments": "Nové komentáre",
+  "@newComments": {},
+  "newPost": "Nový príspevok",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "new_": "Nový",
+  "@new_": {},
+  "noComments": "Nie sú žiadne komentáre.",
+  "@noComments": {},
+  "noCommentsFound": "Nenašli sa žiadne komentáre.",
+  "@noCommentsFound": {},
+  "noCommunitiesFound": "Nenašli sa žiadne komunity.",
+  "@noCommunitiesFound": {},
+  "noCommunityBlocks": "Žiadne zablokované komunity.",
+  "@noCommunityBlocks": {},
+  "noLanguage": "Žiadny jazyk",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
+  "noSubscriptions": "Žiadne odbery",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "noUserBlocks": "Žiadni blokovaní používatelia.",
+  "@noUserBlocks": {},
+  "noUsersFound": "Nenašli sa žiadni používatelia.",
+  "@noUsersFound": {},
+  "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
+  "@notValidLemmyInstance": {},
+  "notValidUrl": "Not valid URL",
+  "@notValidUrl": {},
+  "nothingToShare": "Nič na zdieľanie",
+  "@nothingToShare": {},
+  "onlyModsCanPostInCommunity": "V tejto komunite môžu písať len moderátori",
+  "@onlyModsCanPostInCommunity": {},
+  "openAccountSwitcher": "Otvorený prepínač účtov",
+  "@openAccountSwitcher": {},
+  "openByDefault": "Open by default",
+  "@openByDefault": {
+    "description": "Indicating the default behavior of opening links."
+  },
+  "openInstance": "Open Instance",
+  "@openInstance": {},
+  "openLinksInExternalBrowser": "Otvoriť odkazy v externom prehliadači",
+  "@openLinksInExternalBrowser": {
+    "description": "Toggle to open links in an external browser."
+  },
+  "pinToCommunity": "Pripnúť do komunity",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "postBodySettings": "Post Body Settings",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "postBodySettingsDescription": "Tieto nastavenia ovplyvňujú zobrazenie tela príspevku",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
+  "postBodyViewType": "Typ zobrazenia tela príspevku",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
+  },
+  "postContentFontScale": "Mierka písma obsahu príspevku",
+  "@postContentFontScale": {
+    "description": "Setting for post content font scale"
+  },
+  "postCreatedSuccessfully": "Post created successfully!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
+  },
+  "postLocked": "Post locked. Nie sú povolené žiadne odpovede.",
+  "@postLocked": {},
+  "postMetadataInstructions": "Informácie o metadátach môžete prispôsobiť pretiahnutím požadovaných informácií",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
+  "postSavedAsDraft": "Príspevok uložený ako koncept",
+  "@postSavedAsDraft": {},
+  "postSwipeActions": "Post Swipe Actions",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
+  "postSwipeGesturesHint": "Chcete namiesto toho použiť tlačidlá? Vo všeobecných nastaveniach zmeňte, aké tlačidlá sa zobrazujú na kartách príspevkov.",
+  "@postSwipeGesturesHint": {},
+  "postTitleFontScale": "Mierka písma nadpisu",
+  "@postTitleFontScale": {
+    "description": "Setting for post title font scale"
+  },
+  "postTogglePreview": "Toggle Preview",
+  "@postTogglePreview": {},
+  "postURL": "URL",
+  "@postURL": {},
+  "postUploadImageError": "Could not upload image",
+  "@postUploadImageError": {},
+  "postViewType": "Post View Type",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
+  "preview": "Preview",
+  "@preview": {},
+  "profileAppliedSuccessfully": "{profile} applied successfully!",
+  "@profileAppliedSuccessfully": {},
+  "pureBlack": "Pure Black",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "reachedTheBottom": "Hmmm. Zdá sa, že ste dosiahli dno.",
+  "@reachedTheBottom": {},
+  "readAll": "Čítaj všetko",
+  "@readAll": {},
+  "reason": "Dôvod",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "reduceAnimations": "Reduce Animations",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "reducesAnimations": "Redukuje animácie použité v rámci Thunder",
+  "@reducesAnimations": {},
+  "refreshContent": "Obnoviť obsah",
+  "@refreshContent": {},
+  "removalReason": "Removal Reason",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
+  "remove": "Odstrániť",
+  "@remove": {},
+  "removeAccount": "Odstrániť účet",
+  "@removeAccount": {},
+  "removeFromFavorites": "Odstrániť z obľúbených",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "removeInstance": "Odstrániť inštanciu",
+  "@removeInstance": {},
+  "removeKeyword": "Odstrániť \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "removeKeywordFilter": "Odstrániť kľúčové slovo",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
+  "removePost": "Odstrániť príspevok",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "removedCommunityFromSubscriptions": "Odhlásiť z odberov komunity",
+  "@removedCommunityFromSubscriptions": {},
+  "resetPreferencesAndData": "Resetovať predvoľby a údaje",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
+  "restorePost": "Obnoviť príspevok",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "restoredCommentFromDraft": "Obnovený komentár z návrhu",
+  "@restoredCommentFromDraft": {},
+  "scaled": "Scaled",
+  "@scaled": {},
+  "scrapeMissingLinkPreviews": "Scrape Missing Link Previews",
+  "@scrapeMissingLinkPreviews": {
+    "description": "Toggle to scrape missing external link previews."
+  },
+  "scrapeMissingPreviews": "Enabling will have a performance hit.",
+  "@scrapeMissingPreviews": {
+    "description": "Notice regarding potential performance impact when enabling link scrapping."
+  },
+  "searchByText": "Vyhľadávanie podľa textu",
+  "@searchByText": {},
+  "searchByUrl": "Vyhľadávanie podľa adresy URL",
+  "@searchByUrl": {},
+  "searchComments": "Vyhľadávanie v komentároch",
+  "@searchComments": {},
+  "searchCommentsFederatedWith": "Vyhľadať komentáre združené s {instance}",
+  "@searchCommentsFederatedWith": {},
+  "searchCommunitiesFederatedWith": "Vyhľadať komunity združené s {instance}",
+  "@searchCommunitiesFederatedWith": {},
+  "searchInstance": "Search {instance}",
+  "@searchInstance": {},
+  "searchPostSearchType": "Vyberte typ vyhľadávania príspevkov",
+  "@searchPostSearchType": {},
+  "searchPostsFederatedWith": "Vyhľadať príspevky združené s {instance}",
+  "@searchPostsFederatedWith": {},
+  "searchTerm": "Vyhľadávací termín",
+  "@searchTerm": {},
+  "searchUsersFederatedWith": "Hľadať používateľov združených s {instance}",
+  "@searchUsersFederatedWith": {},
+  "selectCommunity": "Vyberte komunitu",
+  "@selectCommunity": {},
+  "selectFeedType": "Select Feed Type",
+  "@selectFeedType": {},
+  "selectSearchType": "Select Search Type",
+  "@selectSearchType": {},
+  "setShortPress": "Nastaviť ako akciu krátkeho stlačenia",
+  "@setShortPress": {},
+  "settingTypeNotSupported": "Nastavenia typu {settingType} zatiaľ nie sú podporované.",
+  "@settingTypeNotSupported": {},
+  "showBotAccounts": "Zobraziť botové účty",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "showCommentActionButtons": "Zobraziť tlačidlá akcií komentárov",
+  "@showCommentActionButtons": {
+    "description": "Toggle to show comment action buttons."
+  },
+  "showCrossPosts": "Show Cross Posts",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "showEdgeToEdgeImages": "Zobraziť obrázky z okraja na okraj",
+  "@showEdgeToEdgeImages": {
+    "description": "Toggle to view edge to edge images."
+  },
+  "showFullHeightImages": "Zobraziť obrázky na celú výšku",
+  "@showFullHeightImages": {
+    "description": "Toggle to view full height images."
+  },
+  "showInAppUpdateNotifications": "Dostať upozornenie na nové vydania GitHub",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
+  "showLess": "Zobraziť menej",
+  "@showLess": {},
+  "showPassword": "Zobraziť heslo",
+  "@showPassword": {},
+  "showPostAuthor": "Zobraziť autora príspevku",
+  "@showPostAuthor": {
+    "description": "Toggle to show post author."
+  },
+  "showPostCommunityIcons": "Zobraziť ikony komunity",
+  "@showPostCommunityIcons": {
+    "description": "Toggle to show community icons."
+  },
+  "showPostSaveAction": "Show Save Button",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "showPostTextContentPreview": "Zobraziť náhľad textu",
+  "@showPostTextContentPreview": {
+    "description": "Toggle to show text previews."
+  },
+  "showPostTitleFirst": "Zobraziť nadpis ako prvý",
+  "@showPostTitleFirst": {
+    "description": "Toggle to show post title first."
+  },
+  "showPostVoteActions": "Show Vote Buttons",
+  "@showPostVoteActions": {
+    "description": "Toggle to show vote buttons."
+  },
+  "showTextPostIndicator": "Zobraziť indikátor textového príspevku",
+  "@showTextPostIndicator": {
+    "description": "Toggle to show text post indicator."
+  },
+  "showThumbnailPreviewOnRight": "Zobraziť miniatúry vpravo",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Toggle to show thumbnails on the right side."
+  },
+  "showUserDisplayNames": "Zobraziť názvy používateľov",
+  "@showUserDisplayNames": {
+    "description": "Toggle to show user display names."
+  },
+  "showUserInstance": "Zobraziť inštanciu používateľa",
+  "@showUserInstance": {
+    "description": "Toggle to show user instance."
+  },
+  "sidebarBottomNavDoubleTapDescription": "Dvojitým poklepaním na spodnú navigáciu otvoríte bočný panel",
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "sidebarBottomNavSwipeDescription": "Potiahnutím prstom po spodnej navigácii otvoríte bočný panel",
+  "@sidebarBottomNavSwipeDescription": {},
+  "small": "Small",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "somethingWentWrong": "Oops, something went wrong!",
+  "@somethingWentWrong": {},
+  "suggestedTitle": "Navrhovaný názov",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "tapToExit": "Stlačte späť pre ukončenie",
+  "@tapToExit": {},
+  "tappableAuthorCommunity": "Autori a komunity, na ktoré možno ťukať",
+  "@tappableAuthorCommunity": {
+    "description": "Toggle to make authors and communities tappable."
+  },
+  "text": "Text",
+  "@text": {},
+  "theme": "Téma",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "themeAccentColor": "Accent Colors",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "theming": "Theming",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "timeoutComments": "Error: Timeout pri pokuse o načítanie komentárov",
+  "@timeoutComments": {},
+  "timeoutErrorMessage": "Pri čakaní na odpoveď nastal časový limit.",
+  "@timeoutErrorMessage": {},
+  "timeoutSaveComment": "Error: Timeout when attempting to save a comment",
+  "@timeoutSaveComment": {},
+  "timeoutSavingPost": "Error: Timeout when attempting to save post.",
+  "@timeoutSavingPost": {},
+  "timeoutUpvoteComment": "Časový limit pri pokuse o hlasovanie o komentári",
+  "@timeoutUpvoteComment": {},
+  "timeoutVotingPost": "Error: Timeout when attempting to vote post.",
+  "@timeoutVotingPost": {},
+  "toggelRead": "Prepnúť čítanie",
+  "@toggelRead": {},
+  "top": "Top",
+  "@top": {},
+  "topAll": "Top všetkých čias",
+  "@topAll": {},
+  "topDay": "Top dnes",
+  "@topDay": {},
+  "topMonth": "Top mesiac",
+  "@topMonth": {},
+  "topNineMonths": "Top 9 mesiacov",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "topSixHour": "Top 6 hodín",
+  "@topSixHour": {},
+  "topSixMonths": "Top 6 mesiacov",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "topThreeMonths": "Top 3 mesiace",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "topTwelveHour": "Top 12 hodín",
+  "@topTwelveHour": {},
+  "topWeek": "Top týždeň",
+  "@topWeek": {},
+  "topYear": "Top rok",
+  "@topYear": {},
+  "totp": "TOTP (voliteľné)",
+  "@totp": {},
+  "translationsMayNotBeComplete": "Upozorňujeme, že preklady nemusia byť úplné",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "unableToFindCommunity": "Nie je možné nájsť komunitu",
+  "@unableToFindCommunity": {},
+  "unableToFindCommunityName": "Nie je možné nájsť komunitu '{communityName}'",
+  "@unableToFindCommunityName": {
+    "description": "Error message for when we are unable to find a community, including the name"
+  },
+  "unableToFindInstance": "Unable to find instance",
+  "@unableToFindInstance": {},
+  "unableToFindLanguage": "Unable to find language",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
+  "unableToFindUser": "Unable to find user",
+  "@unableToFindUser": {},
+  "unableToLoadImage": "Nie je možné načítať obrázok",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "unableToLoadImageFrom": "Unable to load image from {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "unableToLoadInstance": "Unable to load {instance}",
+  "@unableToLoadInstance": {},
+  "unableToLoadPostsFrominstance": "Nie je možné načítať príspevky z {instance})",
+  "@unableToLoadPostsFrominstance": {},
+  "unableToLoadReplies": "Nie je možné načítať ďalšie odpovede.",
+  "@unableToLoadReplies": {},
+  "unableToNavigateToInstance": "Unable to navigate to {instanceHost}. Možno to nie je platná inštancia Lemmy.",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "unblockInstance": "Odblokuj inštanciu",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "understandEnable": "Rozumiem, povoliť",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
+  },
+  "unexpectedError": "Unexpected Error",
+  "@unexpectedError": {},
+  "unsubscribePending": "Zrušiť odber (čaká sa na odber)",
+  "@unsubscribePending": {},
+  "unsubscribed": "Odhlásené",
+  "@unsubscribed": {},
+  "updateReleased": "Aktualizácia vydaná: {version}",
+  "@updateReleased": {},
+  "upvote": "Upvote",
+  "@upvote": {},
+  "uriNotSupported": "Tento typ odkazu nie je momentálne podporovaný.",
+  "@uriNotSupported": {
+    "description": "Unsupported link type at the present time."
+  },
+  "url": "URL",
+  "@url": {},
+  "useAdvancedShareSheet": "Použiť rozšírený zdieľací hárok",
+  "@useAdvancedShareSheet": {
+    "description": "Toggle to use advanced share sheet."
+  },
+  "useCompactView": "Zapnúť pre malé príspevky, vypnúť pre veľké.",
+  "@useCompactView": {
+    "description": "Option to enable or disable compact view for small posts."
+  },
+  "useMaterialYouTheme": "Použiť tému Material You",
+  "@useMaterialYouTheme": {
+    "description": "Toggle to use Material You theme."
+  },
+  "useMaterialYouThemeDescription": "Prepíše vybranú vlastnú tému",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
+  },
+  "useSuggestedTitle": "Použiť navrhovaný názov: {title}",
+  "@useSuggestedTitle": {},
+  "userFormat": "Formát používateľa",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "userNotLoggedIn": "Používateľ nie je prihlásený",
+  "@userNotLoggedIn": {},
+  "userProfiles": "Profily používateľov",
+  "@userProfiles": {
+    "description": "Settings related to user profiles."
+  },
+  "userSettingDescription": "Tieto nastavenia sa synchronizujú s vaším účtom Lemmy a uplatňujú sa len na základe jednotlivých účtov.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
+  "viewAllComments": "Zobraziť všetky komentáre",
+  "@viewAllComments": {},
+  "visitCommunity": "Navštíviť komunitu",
+  "@visitCommunity": {},
+  "visitInstance": "Navštíviť inštanciu",
+  "@visitInstance": {},
+  "visitUserProfile": "Navštíviť profil používateľa",
+  "@visitUserProfile": {},
+  "warning": "Varovanie",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "xDownvotes": "{x} downvotes",
+  "@xDownvotes": {},
+  "xScore": "{x} skóre",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "xUpvotes": "{x} upvotes",
+  "@xUpvotes": {},
+  "downloadingMedia": "Sťahujem média na zdieľanie…",
+  "@downloadingMedia": {},
+  "fonts": "Písma",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  }
 }
