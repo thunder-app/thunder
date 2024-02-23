@@ -3,11 +3,12 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -324,12 +325,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         emit(state.copyWith(status: FeedStatus.failure, message: 'Action is not supported'));
         break;
     }
+
+    // TODO: Add support for comment actions (for user profile)
   }
 
   /// Handles updating a given item within the feed
   Future<void> _onFeedItemUpdated(FeedItemUpdatedEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.fetching));
 
+    // TODO: Add support for updating comments (for user profile)
     for (final (index, postViewMedia) in state.postViewMedias.indexed) {
       if (postViewMedia.postView.post.id == event.postViewMedia.postView.post.id) {
         state.postViewMedias[index] = event.postViewMedia;
@@ -353,11 +357,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(const FeedState(
       status: FeedStatus.initial,
       postViewMedias: <PostViewMedia>[],
+      commentViews: <CommentView>[],
       hasReachedPostsEnd: false,
+      hasReachedCommentsEnd: false,
       feedType: FeedType.general,
       postListingType: null,
       sortType: null,
       fullCommunityView: null,
+      fullPersonView: null,
       communityId: null,
       communityName: null,
       userId: null,
@@ -441,7 +448,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         sortType: event.sortType,
         communityId: event.communityId,
         communityName: event.communityName,
-        userId: event.userId,
+        userId: event.userId ?? fullPersonView?.personView.person.id,
         username: event.username,
         feedTypeSubview: event.feedTypeSubview,
       );
@@ -466,7 +473,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         fullPersonView: fullPersonView,
         communityId: event.communityId,
         communityName: event.communityName,
-        userId: event.userId,
+        userId: event.userId ?? fullPersonView?.personView.person.id,
         username: event.username,
         currentPage: currentPage,
       ));

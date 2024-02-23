@@ -7,7 +7,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/feed/feed.dart';
+import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/post/utils/post.dart';
 
 /// Helper function which handles the logic of fetching items for the feed from the API

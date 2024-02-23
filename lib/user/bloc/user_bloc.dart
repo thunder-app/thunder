@@ -49,7 +49,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
 
-    // TODO: Check if the current account has permission to perform the UserAction
     switch (event.userAction) {
       case UserAction.block:
         try {

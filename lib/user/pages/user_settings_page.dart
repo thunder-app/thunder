@@ -24,7 +24,6 @@ import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 
 class UserSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -411,7 +410,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
-                navigateToUserPage(context, username: '${person.name}@${fetchInstanceNameFromUrl(person.actorId)}');
+                navigateToFeedPage(context, feedType: FeedType.user, username: '${person.name}@${fetchInstanceNameFromUrl(person.actorId)}');
               },
               child: ListTile(
                 leading: UserAvatar(person: person),

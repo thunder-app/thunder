@@ -1,7 +1,5 @@
 part of 'feed_bloc.dart';
 
-enum FeedTypeSubview { post, comment }
-
 sealed class FeedEvent extends Equatable {
   const FeedEvent();
 

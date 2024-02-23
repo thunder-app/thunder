@@ -172,12 +172,6 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                       FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
                       feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
                     } catch (e) {}
-
-                    // // Mark post as read when on the user page
-                    // try {
-                    //   UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-                    //   userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-                    // } catch (e) {}
                   }
                   // TODO: This could be refactored eventually
                   Navigator.of(context).push(

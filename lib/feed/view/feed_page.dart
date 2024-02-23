@@ -17,6 +17,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_comment_list.dart';
 import 'package:thunder/feed/view/feed_widget.dart';
@@ -172,8 +173,10 @@ class _FeedViewState extends State<FeedView> {
   /// Boolean which indicates whether the user sidebar should be shown
   bool showUserSidebar = false;
 
+  /// Indicates which "tab" is selected. This is used for user profiles, where we can switch between posts and comments
   List<bool> selectedUserOption = [true, false];
 
+  /// List of tabs for user profiles
   List<Widget> userOptionTypes = <Widget>[
     Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
     Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
@@ -392,6 +395,7 @@ class _FeedViewState extends State<FeedView> {
                           SliverStack(
                             children: [
                               selectedUserOption[1]
+                                  // Widget representing the list of user comments on the feed
                                   ? FeedCommentList(
                                       commentViews: commentViews,
                                       tabletMode: tabletMode,
@@ -432,7 +436,7 @@ class _FeedViewState extends State<FeedView> {
                                       : null,
                                 ),
                               ),
-                              // Contains the widget for the community sidebar
+                              // Contains the widget for the community/user sidebar
                               SliverToBoxAdapter(
                                 child: AnimatedSwitcher(
                                   switchInCurve: Curves.easeOut,

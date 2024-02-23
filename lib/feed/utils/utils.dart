@@ -57,6 +57,7 @@ IconData? getSortIcon(FeedState state) {
 /// [feedType] must be provided.
 /// If [feedType] is [FeedType.general], [postListingType] must be provided
 /// If [feedType] is [FeedType.community], one of [communityId] or [communityName] must be provided
+/// If [feedType] is [FeedType.user], one of [userId] or [username] must be provided
 ///
 /// The [context] parameter should contain the following blocs within its widget tree: [AccountBloc], [AuthBloc], [ThunderBloc]
 Future<void> navigateToFeedPage(
@@ -115,8 +116,8 @@ Future<void> navigateToFeedPage(
             sortType: sortType ?? thunderBloc.state.defaultSortType,
             communityName: communityName,
             communityId: communityId,
-            username: username,
             userId: userId,
+            username: username,
             postListingType: postListingType,
           ),
         ),
