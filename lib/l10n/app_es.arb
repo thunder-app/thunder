@@ -1420,5 +1420,25 @@
   "linkHandlingCustomTabsShort": "Integrado en la aplicación",
   "@linkHandlingCustomTabsShort": {
     "description": "Short description for custom tabs link handling"
+  },
+  "moderatorActions": "Acciones del moderador",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "imageCachingMode": "Modo de almacenamiento en caché de imágenes",
+  "@imageCachingMode": {
+    "description": "Title for setting related to image caching mode"
+  },
+  "imageCachingModeAggressiveShort": "Agresivos",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "imageCachingModeRelaxed": "Permitir que los cachés de imagen expiren (utiliza menos memoria pero hace que las imágenes se recarguen más a menudo)",
+  "@imageCachingModeRelaxed": {
+    "description": "Long description for relaxed image caching mode"
+  },
+  "removalReason": "Razón de la eliminación",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
   }
 }
