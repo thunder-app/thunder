@@ -1440,5 +1440,9 @@
   "removalReason": "Razón de la eliminación",
   "@removalReason": {
     "description": "Title for the dialog for removing a post"
+  },
+  "imageCachingModeAggressive": "Almacenamiento agresivo de imágenes en caché (utiliza más memoria)",
+  "@imageCachingModeAggressive": {
+    "description": "Long description for aggressive image caching mode"
   }
 }
