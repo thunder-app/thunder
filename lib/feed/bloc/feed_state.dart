@@ -11,7 +11,7 @@ final class FeedState extends Equatable {
     this.hasReachedCommentsEnd = false,
     this.feedType = FeedType.general,
     this.fullCommunityView,
-    this.personView,
+    this.fullPersonView,
     this.postListingType,
     this.sortType,
     this.communityId,
@@ -53,7 +53,7 @@ final class FeedState extends Equatable {
   final GetCommunityResponse? fullCommunityView;
 
   /// The person information if applicable
-  final PersonView? personView;
+  final GetPersonDetailsResponse? fullPersonView;
 
   /// The id of the community to display posts for.
   final int? communityId;
@@ -92,7 +92,7 @@ final class FeedState extends Equatable {
     ListingType? postListingType,
     SortType? sortType,
     GetCommunityResponse? fullCommunityView,
-    PersonView? personView,
+    GetPersonDetailsResponse? fullPersonView,
     int? communityId,
     String? communityName,
     int? userId,
@@ -113,7 +113,7 @@ final class FeedState extends Equatable {
       postListingType: postListingType ?? this.postListingType,
       sortType: sortType ?? this.sortType,
       fullCommunityView: fullCommunityView ?? this.fullCommunityView,
-      personView: personView ?? this.personView,
+      fullPersonView: fullPersonView ?? this.fullPersonView,
       communityId: communityId ?? this.communityId,
       communityName: communityName ?? this.communityName,
       userId: userId ?? this.userId,
@@ -135,7 +135,7 @@ final class FeedState extends Equatable {
   List<dynamic> get props => [
         status,
         fullCommunityView,
-        personView,
+        fullPersonView,
         postViewMedias,
         commentViews,
         hasReachedPostsEnd,

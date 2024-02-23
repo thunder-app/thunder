@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/full_name_separator.dart';
-import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
@@ -12,13 +11,13 @@ import 'package:thunder/utils/numbers.dart';
 
 class UserHeader extends StatefulWidget {
   final bool showUserSidebar;
-  final PersonView personView;
+  final GetPersonDetailsResponse getPersonDetailsResponse;
   final Function(bool toggled) onToggle;
 
   const UserHeader({
     super.key,
     required this.showUserSidebar,
-    required this.personView,
+    required this.getPersonDetailsResponse,
     required this.onToggle,
   });
 
@@ -44,8 +43,8 @@ class _UserHeaderState extends State<UserHeader> {
         },
         child: Stack(
           children: [
-            if (widget.personView.person.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.background)),
-            if (widget.personView.person.banner != null)
+            if (widget.getPersonDetailsResponse.personView.person.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.background)),
+            if (widget.getPersonDetailsResponse.personView.person.banner != null)
               Positioned.fill(
                 child: Row(
                   children: [
@@ -55,7 +54,7 @@ class _UserHeaderState extends State<UserHeader> {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(widget.personView.person.banner!),
+                            image: CachedNetworkImageProvider(widget.getPersonDetailsResponse.personView.person.banner!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -64,7 +63,7 @@ class _UserHeaderState extends State<UserHeader> {
                   ],
                 ),
               ),
-            if (widget.personView.person.banner != null)
+            if (widget.getPersonDetailsResponse.personView.person.banner != null)
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -93,7 +92,7 @@ class _UserHeaderState extends State<UserHeader> {
                       Row(
                         children: [
                           UserAvatar(
-                            person: widget.personView.person,
+                            person: widget.getPersonDetailsResponse.personView.person,
                             radius: 45.0,
                           ),
                           const SizedBox(width: 20.0),
@@ -103,21 +102,22 @@ class _UserHeaderState extends State<UserHeader> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  widget.personView.person.displayName ?? widget.personView.person.name,
+                                  widget.getPersonDetailsResponse.personView.person.displayName ?? widget.getPersonDetailsResponse.personView.person.name,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                 ),
-                                Text(generateUserFullName(context, widget.personView.person.name, fetchInstanceNameFromUrl(widget.personView.person.actorId) ?? 'N/A')),
+                                Text(generateUserFullName(
+                                    context, widget.getPersonDetailsResponse.personView.person.name, fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId) ?? 'N/A')),
                                 const SizedBox(height: 8.0),
                                 Row(
                                   children: [
                                     IconText(
                                       icon: const Icon(Icons.wysiwyg_rounded),
-                                      text: formatNumberToK(widget.personView.counts.postCount),
+                                      text: formatNumberToK(widget.getPersonDetailsResponse.personView.counts.postCount),
                                     ),
                                     const SizedBox(width: 8.0),
                                     IconText(
                                       icon: const Icon(Icons.chat_rounded),
-                                      text: formatNumberToK(widget.personView.counts.commentCount),
+                                      text: formatNumberToK(widget.getPersonDetailsResponse.personView.counts.commentCount),
                                     ),
                                   ],
                                 ),

@@ -393,7 +393,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       if (state.status != FeedStatus.initial) add(ResetFeedEvent());
 
       GetCommunityResponse? fullCommunityView;
-      GetPersonDetailsResponse? getPersonDetailsResponse;
+      GetPersonDetailsResponse? fullPersonView;
 
       switch (event.feedType) {
         case FeedType.community:
@@ -415,7 +415,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
             Account? account = await fetchActiveProfileAccount();
             LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-            getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
+            fullPersonView = await lemmy.run(GetPersonDetails(
               auth: account?.jwt,
               personId: event.userId,
               username: event.username,
@@ -463,7 +463,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         postListingType: event.postListingType,
         sortType: event.sortType,
         fullCommunityView: fullCommunityView,
-        personView: getPersonDetailsResponse?.personView,
+        fullPersonView: fullPersonView,
         communityId: event.communityId,
         communityName: event.communityName,
         userId: event.userId,

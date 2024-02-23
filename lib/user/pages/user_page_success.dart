@@ -20,7 +20,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_header_old.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc_old.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -527,7 +527,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           },
                           duration: const Duration(milliseconds: 300),
                           child: _displaySidebar
-                              ? UserSidebar(
+                              ? UserSidebarOld(
                                   userInfo: widget.personView,
                                   moderates: widget.moderates,
                                   isAccountUser: widget.isAccountUser,

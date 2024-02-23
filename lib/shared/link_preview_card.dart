@@ -11,7 +11,6 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
@@ -267,11 +266,11 @@ class LinkPreviewCard extends StatelessWidget {
         feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
       } catch (e) {}
 
-      // Mark post as read when on the user page
-      try {
-        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-        userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
-      } catch (e) {}
+      // // Mark post as read when on the user page
+      // try {
+      //   UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+      //   userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
+      // } catch (e) {}
     }
 
     if (originURL != null) {

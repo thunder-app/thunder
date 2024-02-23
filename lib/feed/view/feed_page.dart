@@ -29,6 +29,7 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/widgets/user_header.dart';
+import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -253,10 +254,8 @@ class _FeedViewState extends State<FeedView> {
         ),
         BlocListener<UserBloc, UserState>(
           listener: (context, state) {
-            if ((state.status == UserStatus.failure || state.status == UserStatus.failedToBlock) && state.errorMessage != null) {
-              showSnackbar(state.errorMessage!);
-            } else if (state.status == UserStatus.success && state.blockedPerson != null) {
-              showSnackbar(l10n.successfullyBlocked);
+            if (state.message != null) {
+              showSnackbar(state.message!);
             }
           },
         ),
@@ -345,14 +344,14 @@ class _FeedViewState extends State<FeedView> {
                                 ),
                               ),
                             ),
-                          if (state.personView != null)
+                          if (state.fullPersonView != null)
                             SliverToBoxAdapter(
                               child: Visibility(
                                 visible: state.feedType == FeedType.user,
                                 child: Column(
                                   children: [
                                     UserHeader(
-                                      personView: state.personView!,
+                                      getPersonDetailsResponse: state.fullPersonView!,
                                       showUserSidebar: showUserSidebar,
                                       onToggle: (bool toggled) {
                                         // Scroll to top first before showing the sidebar
@@ -361,7 +360,7 @@ class _FeedViewState extends State<FeedView> {
                                       },
                                     ),
                                     AnimatedSize(
-                                      duration: const Duration(milliseconds: 150),
+                                      duration: const Duration(milliseconds: 100),
                                       curve: Curves.easeInOut,
                                       child: Container(
                                         height: showUserSidebar ? 0 : null,
@@ -450,7 +449,12 @@ class _FeedViewState extends State<FeedView> {
                                           getCommunityResponse: state.fullCommunityView,
                                           onDismiss: () => setState(() => showCommunitySidebar = false),
                                         )
-                                      : Container(),
+                                      : showUserSidebar
+                                          ? UserSidebar(
+                                              getPersonDetailsResponse: state.fullPersonView,
+                                              onDismiss: () => setState(() => showUserSidebar = false),
+                                            )
+                                          : null,
                                 ),
                               ),
                             ],

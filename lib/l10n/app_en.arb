@@ -1263,10 +1263,18 @@
   "@successfullyBlocked": {},
   "successfullyBlockedCommunity": "Blocked {communityName}",
   "@successfullyBlockedCommunity": {},
+  "successfullyBlockedUser": "Blocked {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
   "successfullyUnblocked": "Unblocked.",
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "Unblocked {communityName}",
   "@successfullyUnblockedCommunity": {},
+  "successfullyUnblockedUser": "Unblocked {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
   "suggestedTitle": "Suggested title",
   "@suggestedTitle": {
     "description": "Suggested title for the post."

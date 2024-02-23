@@ -13,6 +13,7 @@ import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
@@ -273,7 +274,7 @@ void onSelected(
       navigateToUserPage(context, userId: commentView.creator.id);
       break;
     case CommentCardAction.blockUser:
-      context.read<UserBloc>().add(BlockUserEvent(personId: commentView.creator.id, blocked: true));
+      context.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: commentView.creator.id, value: true));
       break;
     case CommentCardAction.visitInstance:
       navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(commentView.creator.actorId)!, instanceId: commentView.community.instanceId);
