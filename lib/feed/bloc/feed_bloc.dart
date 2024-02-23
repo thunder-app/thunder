@@ -353,7 +353,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(const FeedState(
       status: FeedStatus.initial,
       postViewMedias: <PostViewMedia>[],
-      hasReachedEnd: false,
+      hasReachedPostsEnd: false,
       feedType: FeedType.general,
       postListingType: null,
       sortType: null,
@@ -443,19 +443,22 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         communityName: event.communityName,
         userId: event.userId,
         username: event.username,
+        feedTypeSubview: event.feedTypeSubview,
       );
 
       // Extract information from the response
       List<PostViewMedia> postViewMedias = feedItemResult['postViewMedias'];
       List<CommentView> commentViews = feedItemResult['commentViews'];
-      bool hasReachedEnd = feedItemResult['hasReachedEnd'];
+      bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
+      bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
       int currentPage = feedItemResult['currentPage'];
 
       return emit(state.copyWith(
         status: FeedStatus.success,
         postViewMedias: postViewMedias,
         commentViews: commentViews,
-        hasReachedEnd: hasReachedEnd,
+        hasReachedPostsEnd: hasReachedPostsEnd,
+        hasReachedCommentsEnd: hasReachedCommentsEnd,
         feedType: event.feedType,
         postListingType: event.postListingType,
         sortType: event.sortType,
@@ -486,12 +489,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       communityName: state.communityName,
       userId: state.userId,
       username: state.username,
+      feedTypeSubview: event.feedTypeSubview,
     );
 
     // Extract information from the response
     List<PostViewMedia> newPostViewMedias = feedItemResult['postViewMedias'];
     List<CommentView> newCommentViews = feedItemResult['commentViews'];
-    bool hasReachedEnd = feedItemResult['hasReachedEnd'];
+    bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
+    bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
     int currentPage = feedItemResult['currentPage'];
 
     Set<int> newInsertedPostIds = Set.from(state.insertedPostIds);
@@ -514,7 +519,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       insertedPostIds: newInsertedPostIds.toList(),
       postViewMedias: postViewMedias,
       commentViews: commentViews,
-      hasReachedEnd: hasReachedEnd,
+      hasReachedPostsEnd: hasReachedPostsEnd,
+      hasReachedCommentsEnd: hasReachedCommentsEnd,
       currentPage: currentPage,
     ));
   }

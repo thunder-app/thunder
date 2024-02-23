@@ -7,7 +7,8 @@ final class FeedState extends Equatable {
     this.status = FeedStatus.initial,
     this.postViewMedias = const <PostViewMedia>[],
     this.commentViews = const <CommentView>[],
-    this.hasReachedEnd = false,
+    this.hasReachedPostsEnd = false,
+    this.hasReachedCommentsEnd = false,
     this.feedType = FeedType.general,
     this.fullCommunityView,
     this.personView,
@@ -33,8 +34,11 @@ final class FeedState extends Equatable {
   /// The comments to display on the feed
   final List<CommentView> commentViews;
 
-  /// Determines if we have reached the end of the feed
-  final bool hasReachedEnd;
+  /// Determines if we have reached the end of the feed (posts)
+  final bool hasReachedPostsEnd;
+
+  /// Determines if we have reached the end of the feed (comments)
+  final bool hasReachedCommentsEnd;
 
   /// The type of feed to display.
   final FeedType? feedType;
@@ -82,7 +86,8 @@ final class FeedState extends Equatable {
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
     List<CommentView>? commentViews,
-    bool? hasReachedEnd,
+    bool? hasReachedPostsEnd,
+    bool? hasReachedCommentsEnd,
     FeedType? feedType,
     ListingType? postListingType,
     SortType? sortType,
@@ -102,7 +107,8 @@ final class FeedState extends Equatable {
       status: status ?? this.status,
       postViewMedias: postViewMedias ?? this.postViewMedias,
       commentViews: commentViews ?? this.commentViews,
-      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+      hasReachedPostsEnd: hasReachedPostsEnd ?? this.hasReachedPostsEnd,
+      hasReachedCommentsEnd: hasReachedCommentsEnd ?? this.hasReachedCommentsEnd,
       feedType: feedType ?? this.feedType,
       postListingType: postListingType ?? this.postListingType,
       sortType: sortType ?? this.sortType,
@@ -122,7 +128,7 @@ final class FeedState extends Equatable {
 
   @override
   String toString() {
-    return '''FeedState { status: $status, postViewMedias: ${postViewMedias.length}, hasReachedEnd: $hasReachedEnd }''';
+    return '''FeedState { status: $status, postViewMedias: ${postViewMedias.length}, hasReachedPostsEnd: $hasReachedPostsEnd, hasReachedCommentsEnd: $hasReachedCommentsEnd }''';
   }
 
   @override
@@ -132,7 +138,8 @@ final class FeedState extends Equatable {
         personView,
         postViewMedias,
         commentViews,
-        hasReachedEnd,
+        hasReachedPostsEnd,
+        hasReachedCommentsEnd,
         feedType,
         postListingType,
         sortType,

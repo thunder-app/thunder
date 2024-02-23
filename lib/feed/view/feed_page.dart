@@ -195,7 +195,7 @@ class _FeedViewState extends State<FeedView> {
 
       // Fetches new posts when the user has scrolled past 70% list
       if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
-        context.read<FeedBloc>().add(const FeedFetchedEvent());
+        context.read<FeedBloc>().add(FeedFetchedEvent(feedTypeSubview: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment));
       }
     });
 
@@ -281,7 +281,7 @@ class _FeedViewState extends State<FeedView> {
             listener: (context, state) {
               // Continue to fetch more items as long as the device view is not scrollable.
               // This is to avoid cases where more items cannot be fetched because the conditions are not met
-              if (state.status == FeedStatus.success && state.hasReachedEnd == false) {
+              if (state.status == FeedStatus.success && ((selectedUserOption[0] && state.hasReachedPostsEnd == false) || (selectedUserOption[1] && state.hasReachedCommentsEnd == false))) {
                 bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
                 if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
               }
@@ -360,23 +360,32 @@ class _FeedViewState extends State<FeedView> {
                                         setState(() => showUserSidebar = toggled);
                                       },
                                     ),
-                                    ToggleButtons(
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      direction: Axis.horizontal,
-                                      onPressed: (int index) {
-                                        setState(() {
-                                          // The button that is tapped is set to true, and the others to false.
-                                          for (int i = 0; i < selectedUserOption.length; i++) {
-                                            selectedUserOption[i] = i == index;
-                                          }
-                                        });
-                                      },
-                                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                      constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length)) - 12.0),
-                                      isSelected: selectedUserOption,
-                                      children: userOptionTypes,
+                                    AnimatedSize(
+                                      duration: const Duration(milliseconds: 150),
+                                      curve: Curves.easeInOut,
+                                      child: Container(
+                                        height: showUserSidebar ? 0 : null,
+                                        margin: showUserSidebar ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 8.0),
+                                        child: ToggleButtons(
+                                          constraints: showUserSidebar
+                                              ? const BoxConstraints(minHeight: 0.0, maxHeight: 0.0, minWidth: 0.0, maxWidth: 0.0)
+                                              : BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length)) - 12.0),
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          direction: Axis.horizontal,
+                                          onPressed: (int index) {
+                                            setState(() {
+                                              // The button that is tapped is set to true, and the others to false.
+                                              for (int i = 0; i < selectedUserOption.length; i++) {
+                                                selectedUserOption[i] = i == index;
+                                              }
+                                            });
+                                          },
+                                          borderRadius: showUserSidebar ? null : const BorderRadius.all(Radius.circular(8)),
+                                          isSelected: selectedUserOption,
+                                          children: userOptionTypes,
+                                        ),
+                                      ),
                                     ),
-                                    const SizedBox(height: 8.0),
                                   ],
                                 ),
                               ),
@@ -448,7 +457,7 @@ class _FeedViewState extends State<FeedView> {
                           ),
                           // Widget representing the bottom of the feed (reached end or loading more posts indicators)
                           SliverToBoxAdapter(
-                            child: state.hasReachedEnd
+                            child: ((selectedUserOption[0] && state.hasReachedPostsEnd) || (selectedUserOption[1] && state.hasReachedCommentsEnd))
                                 ? const FeedReachedEnd()
                                 : Container(
                                     height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust

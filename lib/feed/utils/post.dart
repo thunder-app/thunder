@@ -7,6 +7,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/utils/post.dart';
 
 /// Helper function which handles the logic of fetching items for the feed from the API
@@ -20,6 +21,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   String? communityName,
   int? userId,
   String? username,
+  FeedTypeSubview feedTypeSubview = FeedTypeSubview.post,
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -27,7 +29,8 @@ Future<Map<String, dynamic>> fetchFeedItems({
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
   List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
-  bool hasReachedEnd = false;
+  bool hasReachedPostsEnd = false;
+  bool hasReachedCommentsEnd = false;
 
   List<PostViewMedia> postViewMedias = [];
   List<CommentView> commentViews = [];
@@ -63,9 +66,9 @@ Future<Map<String, dynamic>> fetchFeedItems({
       List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
       postViewMedias.addAll(formattedPosts);
 
-      if (getPostsResponse.posts.isEmpty) hasReachedEnd = true;
+      if (getPostsResponse.posts.isEmpty) hasReachedPostsEnd = true;
       currentPage++;
-    } while (!hasReachedEnd && postViewMedias.length < limit);
+    } while (!hasReachedPostsEnd && postViewMedias.length < limit);
   }
 
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
@@ -91,12 +94,13 @@ Future<Map<String, dynamic>> fetchFeedItems({
 
       commentViews.addAll(getPersonDetailsResponse.comments);
 
-      if (getPersonDetailsResponse.posts.isEmpty && getPersonDetailsResponse.comments.isEmpty) hasReachedEnd = true;
+      if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
+      if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;
       currentPage++;
-    } while (!hasReachedEnd && (postViewMedias.length < limit || commentViews.length < limit));
+    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && postViewMedias.length < limit) : (!hasReachedCommentsEnd && commentViews.length < limit));
   }
 
-  return {'postViewMedias': postViewMedias, 'commentViews': commentViews, 'hasReachedEnd': hasReachedEnd, 'currentPage': currentPage};
+  return {'postViewMedias': postViewMedias, 'commentViews': commentViews, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'currentPage': currentPage};
 }
 
 /// Logic to create a post
