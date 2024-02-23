@@ -21,6 +21,7 @@ class UserState extends Equatable {
     this.hasReachedSavedCommentEnd = false,
     this.errorMessage,
     this.blockedPerson,
+    this.fullPersonView,
   });
 
   final UserStatus status;
@@ -49,6 +50,8 @@ class UserState extends Equatable {
   final String? errorMessage;
   final BlockPersonResponse? blockedPerson;
 
+  final GetPersonDetailsResponse? fullPersonView;
+
   UserState copyWith({
     required UserStatus status,
     int? userId,
@@ -67,6 +70,7 @@ class UserState extends Equatable {
     bool? hasReachedSavedCommentEnd,
     String? errorMessage,
     BlockPersonResponse? blockedPerson,
+    GetPersonDetailsResponse? fullPersonView,
   }) {
     return UserState(
       status: status,
@@ -86,6 +90,7 @@ class UserState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       personBlocks: personBlocks ?? this.personBlocks,
       blockedPerson: blockedPerson,
+      fullPersonView: fullPersonView ?? this.fullPersonView,
     );
   }
 
@@ -105,6 +110,7 @@ class UserState extends Equatable {
         hasReachedCommentEnd,
         hasReachedSavedCommentEnd,
         personBlocks,
-        blockedPerson
+        blockedPerson,
+        fullPersonView,
       ];
 }

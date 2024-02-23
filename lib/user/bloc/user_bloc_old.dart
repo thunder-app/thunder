@@ -115,6 +115,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                 page: 2,
                 hasReachedPostEnd: posts.length == fullPersonView?.personView.counts.postCount,
                 hasReachedCommentEnd: posts.isEmpty && (fullPersonView?.comments.isEmpty ?? true),
+                fullPersonView: fullPersonView,
               ),
             );
           }
@@ -163,6 +164,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             // For this reason we are marking hasReachedPostEnd as true when what was fetched last is under the max limit.
             hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount || posts.length < limit,
             hasReachedCommentEnd: posts.isEmpty && fullPersonView.comments.isEmpty,
+            fullPersonView: fullPersonView,
           ));
         } catch (e) {
           attemptCount++;

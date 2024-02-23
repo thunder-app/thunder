@@ -163,6 +163,7 @@ class _UserPageState extends State<UserPage> {
                   blockedPerson: state.blockedPerson,
                   selectedUserOption: widget.selectedUserOption,
                   savedToggle: widget.savedToggle,
+                  fullPersonView: state.fullPersonView,
                 );
               case UserStatus.empty:
                 return Container();
