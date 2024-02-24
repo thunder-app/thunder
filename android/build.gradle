@@ -3,8 +3,8 @@ buildscript {
     // Versions recommended/needed by flutter_local_notifications and background_fetch
     // These can be upgraded over time.
     ext {
-        compileSdkVersion   = 33
-        targetSdkVersion    = 33
+        compileSdkVersion   = 34
+        targetSdkVersion    = 34
         appCompatVersion    = "1.6.1"
     }
     repositories {

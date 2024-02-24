@@ -8,14 +8,18 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class FeedPostList extends StatelessWidget {
   final bool tabletMode;
   final bool markPostReadOnScroll;
   final List<int>? queuedForRemoval;
   final List<PostViewMedia> postViewMedias;
+  int prevLastTappedIndex = -1;
+  int lastTappedIndex = 0;
+  List<int> markReadPostIds = [];
 
-  const FeedPostList({
+  FeedPostList({
     super.key,
     required this.postViewMedias,
     required this.tabletMode,
@@ -28,6 +32,7 @@ class FeedPostList extends StatelessWidget {
     final ThunderState thunderState = context.read<ThunderBloc>().state;
     final FeedState state = context.read<FeedBloc>().state;
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    VisibilityDetectorController.instance.updateInterval = Duration.zero;
 
     // Widget representing the list of posts on the feed
     return SliverMasonryGrid.count(
@@ -59,45 +64,47 @@ class FeedPostList extends StatelessWidget {
             );
           },
           child: queuedForRemoval?.contains(postViewMedias[index].postView.post.id) != true
-              ? PostCard(
-                  postViewMedia: postViewMedias[index],
-                  communityMode: state.feedType == FeedType.community,
-                  onVoteAction: (int voteType) {
-                    context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
-                  },
-                  onSaveAction: (bool saved) {
-                    context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
-                  },
-                  onReadAction: (bool read) {
-                    context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
-                  },
-                  onUpAction: () {
-                    if (markPostReadOnScroll) {
-                      // Past count tested on multiple devices to ensure posts marked read are above the 0 point
-                      // Reducing this will cause elements still on the screen to be marked read
-                      int past = 6;
-                      if (tabletMode && thunderState.useCompactView) {
-                        past = 22;
-                      } else if (tabletMode && !thunderState.useCompactView) {
-                        past = 12;
-                      } else if (!tabletMode && thunderState.useCompactView) {
-                        past = 11;
-                      }
-                      if (isUserLoggedIn && index > past) {
-                        List<int> markRead = [];
-                        for (var i = 0; i < index - past; i++) {
-                          if (postViewMedias[i].postView.read != true) {
-                            markRead.add(postViewMedias[i].postView.post.id);
-                          }
-                        }
-                        if (markRead.length > 0) {
-                          context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: markRead, postAction: PostAction.multiRead, value: true));
+              ? VisibilityDetector(
+                  key: Key('post-card-vis-' + index.toString()),
+                  onVisibilityChanged: (info) {
+                    if (markPostReadOnScroll && isUserLoggedIn && index <= lastTappedIndex && postViewMedias[index].postView.read != true
+                          && lastTappedIndex > prevLastTappedIndex && info.visibleFraction < .25 && !markReadPostIds.contains(postViewMedias[index].postView.post.id)) {
+                      // Sometimes the event doesn't fire, so check all previous indexes up to the last one marked unread
+                      List<int> toAdd = [postViewMedias[index].postView.post.id];
+                      for (int i = index - 1; i >= 0; i--) {
+                        if (postViewMedias[i].postView.read) break;
+                        if (!markReadPostIds.contains(postViewMedias[index].postView.post.id)) {
+                          toAdd.add(postViewMedias[i].postView.post.id);
                         }
                       }
+                      markReadPostIds = [...markReadPostIds, ...toAdd];
                     }
                   },
-                  listingType: state.postListingType,
-                  indicateRead: thunderState.dimReadPosts,
+                  child: PostCard(
+                    postViewMedia: postViewMedias[index],
+                    communityMode: state.feedType == FeedType.community,
+                    onVoteAction: (int voteType) {
+                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+                    },
+                    onSaveAction: (bool saved) {
+                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
+                    },
+                    onReadAction: (bool read) {
+                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                    },
+                    onDownAction: () {
+                      prevLastTappedIndex = lastTappedIndex;
+                      lastTappedIndex = index;
+                    },
+                    onUpAction: () {
+                      if (markPostReadOnScroll && markReadPostIds.length > 0) {
+                        context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, value: true));
+                        markReadPostIds = [];
+                      }
+                    },
+                    listingType: state.postListingType,
+                    indicateRead: thunderState.dimReadPosts,
+                  )
                 )
               : null,
         );

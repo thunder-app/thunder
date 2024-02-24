@@ -166,6 +166,7 @@ class _PostCardListState extends State<PostCardList> {
                 onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                 onReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
                 onUpAction: () {},
+                onDownAction: () {},
                 listingType: widget.listingType,
                 indicateRead: widget.indicateRead,
               );

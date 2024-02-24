@@ -25,6 +25,7 @@ class PostCard extends StatefulWidget {
   final Function(bool) onSaveAction;
   final Function(bool) onReadAction;
   final Function() onUpAction;
+  final Function() onDownAction;
 
   final ListingType? listingType;
 
@@ -36,6 +37,7 @@ class PostCard extends StatefulWidget {
     required this.onSaveAction,
     required this.onReadAction,
     required this.onUpAction,
+    required this.onDownAction,
     required this.listingType,
     required this.indicateRead,
   });
@@ -83,7 +85,9 @@ class _PostCardState extends State<PostCard> {
 
     return Listener(
       behavior: HitTestBehavior.opaque,
-      onPointerDown: (event) => {},
+      onPointerDown: (event) {
+        widget.onDownAction();
+      },
       onPointerUp: (event) {
         setState(() => isOverridingSwipeGestureAction = false);
 
