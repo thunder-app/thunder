@@ -105,7 +105,13 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               ),
             );
 
-            int totalUnreadCount = getUnreadCount(privateMessagesResponse.privateMessages, getPersonMentionsResponse.mentions, getRepliesResponse.replies);
+            GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(
+              GetUnreadCount(
+                auth: account.jwt!,
+              ),
+            );
+
+            int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
             return emit(
               state.copyWith(
@@ -218,7 +224,13 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         replies.removeWhere(matchMarkedComment);
       }
 
-      int totalUnreadCount = getUnreadCount(state.privateMessages, state.mentions, replies);
+      GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(
+        GetUnreadCount(
+          auth: account.jwt!,
+        ),
+      );
+
+      int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
       emit(state.copyWith(
         status: InboxStatus.success,
@@ -385,25 +397,5 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       subscribed: mention.subscribed,
       myVote: mention.myVote,
     );
-  }
-
-  int getUnreadCount(List<PrivateMessageView> privateMessageViews, List<PersonMentionView> personMentionViews, List<CommentReplyView> commentViews) {
-    // Tally up how many unread messages/mentions/replies there are so far
-    // This will only tally up at most 20 for each type for a total of 60 unread counts
-    int totalUnreadCount = 0;
-
-    for (PrivateMessageView privateMessageView in privateMessageViews) {
-      if (privateMessageView.privateMessage.read == false) totalUnreadCount++;
-    }
-
-    for (PersonMentionView personMentionView in personMentionViews) {
-      if (personMentionView.personMention.read == false) totalUnreadCount++;
-    }
-
-    for (CommentReplyView commentView in commentViews) {
-      if (commentView.commentReply.read == false) totalUnreadCount++;
-    }
-
-    return totalUnreadCount;
   }
 }
