@@ -90,8 +90,7 @@ enum LocalSettings {
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   markPostAsReadOnMediaView(
       name: 'setting_general_mark_post_read_on_media_view', key: 'markPostAsReadOnMediaView', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
-  markPostAsReadOnScroll(
-      name: 'setting_general_mark_post_read_on_scroll', key: 'markPostAsReadOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
+  markPostAsReadOnScroll(name: 'setting_general_mark_post_read_on_scroll', key: 'markPostAsReadOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   showInAppUpdateNotification(
       name: 'setting_notifications_show_inapp_update', key: 'showInAppUpdateNotifications', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   scoreCounters(name: 'setting_score_counters', key: "showScoreCounters", category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),

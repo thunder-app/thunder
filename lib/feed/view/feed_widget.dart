@@ -67,8 +67,13 @@ class FeedPostList extends StatelessWidget {
               ? VisibilityDetector(
                   key: Key('post-card-vis-' + index.toString()),
                   onVisibilityChanged: (info) {
-                    if (markPostReadOnScroll && isUserLoggedIn && index <= lastTappedIndex && postViewMedias[index].postView.read != true
-                          && lastTappedIndex > prevLastTappedIndex && info.visibleFraction < .25 && !markReadPostIds.contains(postViewMedias[index].postView.post.id)) {
+                    if (markPostReadOnScroll &&
+                        isUserLoggedIn &&
+                        index <= lastTappedIndex &&
+                        postViewMedias[index].postView.read != true &&
+                        lastTappedIndex > prevLastTappedIndex &&
+                        info.visibleFraction < .25 &&
+                        !markReadPostIds.contains(postViewMedias[index].postView.post.id)) {
                       // Sometimes the event doesn't fire, so check all previous indexes up to the last one marked unread
                       List<int> toAdd = [postViewMedias[index].postView.post.id];
                       for (int i = index - 1; i >= 0; i--) {
@@ -104,8 +109,7 @@ class FeedPostList extends StatelessWidget {
                     },
                     listingType: state.postListingType,
                     indicateRead: thunderState.dimReadPosts,
-                  )
-                )
+                  ))
               : null,
         );
       },
