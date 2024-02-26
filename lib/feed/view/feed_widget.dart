@@ -72,7 +72,7 @@ class FeedPostList extends StatelessWidget {
                         index <= lastTappedIndex &&
                         postViewMedias[index].postView.read != true &&
                         lastTappedIndex > prevLastTappedIndex &&
-                        info.visibleFraction < .25 &&
+                        info.visibleFraction <= 0 &&
                         !markReadPostIds.contains(postViewMedias[index].postView.post.id)) {
                       // Sometimes the event doesn't fire, so check all previous indexes up to the last one marked unread
                       List<int> toAdd = [postViewMedias[index].postView.post.id];
@@ -101,8 +101,8 @@ class FeedPostList extends StatelessWidget {
                       prevLastTappedIndex = lastTappedIndex;
                       lastTappedIndex = index;
                     },
-                    onUpAction: () {
-                      if (markPostReadOnScroll && markReadPostIds.length > 0) {
+                    onUpAction: (double verticalDragDistance) {
+                      if (markPostReadOnScroll && verticalDragDistance < 0 && markReadPostIds.length > 0) {
                         context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, value: true));
                         markReadPostIds = [];
                       }

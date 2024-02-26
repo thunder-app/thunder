@@ -24,7 +24,7 @@ class PostCard extends StatefulWidget {
   final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
   final Function(bool) onReadAction;
-  final Function() onUpAction;
+  final Function(double) onUpAction;
   final Function() onDownAction;
 
   final ListingType? listingType;
@@ -68,6 +68,9 @@ class _PostCardState extends State<PostCard> {
   /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
   bool isOverridingSwipeGestureAction = false;
 
+  /// The vertical drag distance between moves
+  double verticalDragDistance = 0;
+
   @override
   void initState() {
     super.initState();
@@ -105,12 +108,15 @@ class _PostCardState extends State<PostCard> {
           );
         }
 
-        widget.onUpAction();
+        widget.onUpAction(verticalDragDistance);
       },
       onPointerCancel: (event) => {},
       onPointerMove: (PointerMoveEvent event) {
         // Get the horizontal drag distance
         double horizontalDragDistance = event.delta.dx;
+
+        // Set the vertical drag distance
+        verticalDragDistance = event.delta.dy;
 
         // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
         // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
