@@ -107,8 +107,15 @@ class _UserHeaderState extends State<UserHeader> {
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                   maxLines: 1,
                                 ),
-                                Text(generateUserFullName(
-                                    context, widget.getPersonDetailsResponse.personView.person.name, fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId) ?? 'N/A')),
+                                AutoSizeText(
+                                  generateUserFullName(
+                                    context,
+                                    widget.getPersonDetailsResponse.personView.person.name,
+                                    fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId) ?? 'N/A',
+                                  ),
+                                  style: theme.textTheme.bodyMedium,
+                                  maxLines: 1,
+                                ),
                                 const SizedBox(height: 8.0),
                                 Row(
                                   children: [
