@@ -256,11 +256,9 @@ class _InstancePageState extends State<InstancePage> {
                                 CommunityView? communityView = state.communities?[index];
                                 return Material(
                                   child: communityView != null
-                                      ? buildCommunityEntry(
-                                          context,
-                                          communityView,
-                                          false,
-                                          {},
+                                      ? CommunityListEntry(
+                                          communityView: communityView,
+                                          isUserLoggedIn: false,
                                           resolutionInstance: state.resolutionInstance,
                                         )
                                       : Container(),
@@ -276,9 +274,8 @@ class _InstancePageState extends State<InstancePage> {
                                 PersonView? user = state.users?[index];
                                 return Material(
                                   child: user != null
-                                      ? buildUserEntry(
-                                          context,
-                                          user,
+                                      ? UserListEntry(
+                                          personView: user,
                                           resolutionInstance: state.resolutionInstance,
                                         )
                                       : Container(),
@@ -298,7 +295,7 @@ class _InstancePageState extends State<InstancePage> {
                               (context, index) {
                                 var commentView = state.comments?[index];
                                 return Material(
-                                  child: commentView != null ? buildCommentEntry(context, commentView) : Container(),
+                                  child: commentView != null ? CommentListEntry(commentView: commentView) : Container(),
                                 );
                               },
                             ),

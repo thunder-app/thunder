@@ -502,11 +502,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           itemBuilder: (BuildContext context, int index) {
                             CommunityView communityView = context.read<AccountBloc>().state.favorites[index];
                             final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-                            return buildCommunityEntry(
-                              context,
-                              communityView,
-                              isUserLoggedIn,
-                              currentSubscriptions,
+                            return CommunityListEntry(
+                              communityView: communityView,
+                              isUserLoggedIn: isUserLoggedIn,
+                              currentSubscriptions: currentSubscriptions,
                               indicateFavorites: false,
                               getFavoriteStatus: _getFavoriteStatus,
                               getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
@@ -530,11 +529,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         itemBuilder: (BuildContext context, int index) {
                           CommunityView communityView = state.trendingCommunities![index];
                           final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-                          return buildCommunityEntry(
-                            context,
-                            communityView,
-                            isUserLoggedIn,
-                            currentSubscriptions,
+                          return CommunityListEntry(
+                            communityView: communityView,
+                            isUserLoggedIn: isUserLoggedIn,
+                            currentSubscriptions: currentSubscriptions,
                             getFavoriteStatus: _getFavoriteStatus,
                             getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
                             onSubscribeIconPressed: _onSubscribeIconPressed,
@@ -644,11 +642,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 } else {
                   CommunityView communityView = state.communities![index];
                   final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-                  return buildCommunityEntry(
-                    context,
-                    communityView,
-                    isUserLoggedIn,
-                    currentSubscriptions,
+                  return CommunityListEntry(
+                    communityView: communityView,
+                    isUserLoggedIn: isUserLoggedIn,
+                    currentSubscriptions: currentSubscriptions,
                     getFavoriteStatus: _getFavoriteStatus,
                     getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
                     onSubscribeIconPressed: _onSubscribeIconPressed,
@@ -675,7 +672,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                       : Container();
                 } else {
                   PersonView personView = state.users![index];
-                  return buildUserEntry(context, personView);
+                  return UserListEntry(personView: personView);
                 }
               },
             ),
@@ -709,9 +706,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           10,
                         ),
                       ),
-                      buildCommentEntry(
-                        context,
-                        commentView,
+                      CommentListEntry(
+                        commentView: commentView,
                         onVoteAction: (int commentId, int voteType) => context.read<SearchBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                         onSaveAction: (int commentId, bool save) => context.read<SearchBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                       ),
@@ -784,11 +780,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, CommunityView communityView, Set<int> currentSubscriptions) {
+  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, CommunityView communityView, Set<int>? currentSubscriptions) {
     if (isUserLoggedIn) {
       return communityView.subscribed;
     }
-    bool isSubscribed = newAnonymousSubscriptions.contains(communityView.community) || (currentSubscriptions.contains(communityView.community.id) && !removedSubs.contains(communityView.community.id));
+    bool isSubscribed =
+        newAnonymousSubscriptions.contains(communityView.community) || (currentSubscriptions?.contains(communityView.community.id) == true && !removedSubs.contains(communityView.community.id));
     return isSubscribed ? SubscribedType.subscribed : SubscribedType.notSubscribed;
   }
 
