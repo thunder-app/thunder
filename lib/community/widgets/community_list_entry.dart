@@ -12,6 +12,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
+/// Creates a widget that can display a single community entry for use within a list (e.g., search page, instance explorer)
 Widget buildCommunityEntry(
   BuildContext context,
   CommunityView communityView,

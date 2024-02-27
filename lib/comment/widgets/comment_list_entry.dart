@@ -17,6 +17,7 @@ import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+/// Creates a widget that can display a single comment entry for use within a list (e.g., search page, instance explorer)
 Widget buildCommentEntry(
   BuildContext context,
   CommentView commentView, {

@@ -6,6 +6,7 @@ import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/instance.dart';
 
+/// Creates a widget that can display a single user entry for use within a list (e.g., search page, instance explorer)
 Widget buildUserEntry(BuildContext context, PersonView personView, {String? resolutionInstance}) {
   return Tooltip(
     excludeFromSemantics: true,
