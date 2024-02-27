@@ -1,0 +1,98 @@
+{
+  "accountSettings": "账户设置",
+  "@accountSettings": {},
+  "active": "活跃",
+  "@active": {},
+  "addAnonymousInstance": "添加匿名实例",
+  "@addAnonymousInstance": {},
+  "addKeywordFilter": "添加关键字",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "advanced": "高级",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "apply": "应用",
+  "@apply": {},
+  "back": "后退",
+  "@back": {},
+  "blockCommunity": "屏蔽该社区",
+  "@blockCommunity": {},
+  "blockedCommunities": "已屏蔽社区",
+  "@blockedCommunities": {},
+  "blockedInstances": "已屏蔽实例",
+  "@blockedInstances": {},
+  "cantBlockYourself": "你不能屏蔽你自己。",
+  "@cantBlockYourself": {},
+  "clearedUserPreferences": "清除所有用户偏好",
+  "@clearedUserPreferences": {},
+  "about": "关于",
+  "@about": {
+    "description": "About settings category."
+  },
+  "addAccount": "添加账户",
+  "@addAccount": {},
+  "accessibility": "无障碍",
+  "@accessibility": {},
+  "allowOpenSupportedLinks": "允许应用打开支持的链接。",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "appearance": "外观",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "animations": "动画",
+  "@animations": {},
+  "appLanguage": "应用语言",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "backToTop": "回到顶部",
+  "@backToTop": {},
+  "commentReported": "该评论已被标记为等待审阅。",
+  "@commentReported": {},
+  "anonymous": "匿名",
+  "@anonymous": {},
+  "backgroundCheckWarning": "请注意，通知检查会消耗更多电量",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "blockInstance": "屏蔽该实例",
+  "@blockInstance": {},
+  "blockUser": "屏蔽该用户",
+  "@blockUser": {},
+  "blockedUsers": "已屏蔽用户",
+  "@blockedUsers": {},
+  "cancel": "取消",
+  "@cancel": {},
+  "cardView": "卡片样式",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "cardViewSettings": "卡片样式设置",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "cannotReportOwnComment": "你不能举报自己的评论。",
+  "@cannotReportOwnComment": {},
+  "clearCache": "清除({cacheSize})缓存",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "clearedCache": "成功清除缓存。",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "clearDatabase": "清除数据库",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearedDatabase": "已清除本地数据库。重启Thunder以生效。",
+  "@clearedDatabase": {},
+  "commentSavedAsDraft": "已保存评论为草稿",
+  "@commentSavedAsDraft": {},
+  "commentSortType": "评论排序方式",
+  "@commentSortType": {}
+}

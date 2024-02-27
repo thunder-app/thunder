@@ -5,7 +5,7 @@
 <h1 align="center">Thunder</h1>
 
 <p align="center">
-    An open source, cross-platform Lemmy client built with <a href="https://flutter.dev/" target="_blank">Flutter</a>
+    An open source, cross-platform (iOS & Android) Lemmy client built with <a href="https://flutter.dev/" target="_blank">Flutter</a>
 </p>
 
 <div align="center">
@@ -79,54 +79,59 @@ Pre-releases are available through [TestFlight](https://testflight.apple.com/joi
 
 Thunder is currently undergoing **active alpha development**, and it is possible that not all features have been fully implemented at this stage. Due to this, significant breaking changes may occur between versions.
 
-The next section summarizes the features that are currently implemented. This is not a full list of features
+This is a non-exhaustive list of features that Thunder currently supports:
 
-#### **Communities**
+#### 🏡 **Communities & Users**
+- Browse general feeds (All / Local / Subscribed)
+- View, subscribe, favorite, and block communities
+- View user posts/comments, and block unwanted users
 
-- Browse through feeds (All/Local/Subscribed) and communities
-- Subscribe, unsubscribe, and block specific communities
-- Search for communities that are federated with the current instance
-- Access subscriptions and blocked communities
+#### 🌎 **Instances**
+- View instance information and version
+- Block unwanted instances (on supported instances)
 
-#### **Posts & Comments**
+#### 🔎 **Search**
+- Show trending communities on the current instance
+- Search for communities, users, posts and comments
+- Apply advanced search filters (sort, feed, community, creator)
 
-- Vote, save, share, and create posts and comments
-- Customizable swipe actions for posts and comments
-- Infinitely scroll through feeds and posts
-- Customizable view options for posts (compact, card, full height)
-- Customizable defaults for post/comment sorting
+#### 🗒️ **Posts & Comments**
+- Create and edit posts and comments
+- Vote, save, and share posts and comments
+- Customize swipe actions for posts and comments
+- Filter posts based on keywords
 
-#### **Authentication**
+#### 🔑 **Accounts**
+- View profile information (posts/comments/saved)
+- View notifications including replies, mentions, and private messages
+- Synced account settings (show read posts, comment scores, bot accounts)
+- Support for multiple accounts, and guest accounts on different instances
 
-- Login to multiple accounts/instances, and switch between them
-- Basic inbox capabilities, view replies, mentions and private messages
-- View your own profile, including posts, comments, and saved content
+#### 🎨 **Customization**
+- Support for Material You theming (on applicable devices)
+- Support for light/dark/OLED/system mode, and preset accent colors
+- Custom font scaling of content
+- Customize and preview post/comment appearance (compact/card)
 
-#### **Theme & Customization**
-- Light, dark, OLED, and system theme options
-- Material You theming (Android)
-- Apply a preset theme/accent colour
-- Customizable font scaling to different content
-
-#### Feed
-- Two-column view for tablets
-- Customizable FAB actions
-
-#### Extras
-- In-app update notifications for new releases on GitHub
-- Opening links in external browser
+#### 🎉 **Extras**
+- Import and export app settings
+- In-app update notifications for new GitHub releases
+- Language support via community translations (Weblate)
 
 ## Roadmap
 
-The current focus is to continue to expand on the general functionality of Thunder. This includes but is not limited to:
+The current focus is to continue to expand on the general functionality and stability of Thunder. This includes but is not limited to:
 
-- Improvements to localization and more language support
-- Improvements to stability and performance
-- Initial support for moderation actions
+- Continued improvements to localization and language support via Weblate
+- Improvements to moderation/admin capabilities
+- Improvements to embedded content (video, images, etc.)
+- Improvements to push notification functionality
 
 ## Contributing
 
-Contributions are always welcome! To contribute potential features or bug-fixes:
+Contributions are always welcome, but please abide by our community [code of conduct](https://github.com/thunder-app/thunder/blob/develop/CODE_OF_CONDUCT.md)!
+
+To contribute potential features or bug-fixes:
 
 1. Fork this repository
 2. Base the feature or fix off the `develop` branch. This is to allow for pre-release versions without affecting the main general releases.
@@ -145,7 +150,7 @@ Thunder is developed with Flutter, and is built to support both iOS and Android.
 To build the app from source, a few steps are required.
 
 1. Set up and install Flutter. For more information, visit https://docs.flutter.dev/get-started/install.
-2. Ensure that you are on Flutter's `beta` channel using `flutter channel beta`.
+2. Ensure that you are on Flutter's `stable` channel using `flutter channel stable`.
 2. Clone this repository and fetch the dependencies using `flutter pub get`
 4. Run `flutter gen-l10n` to generate the localization files.
 5. Optional: Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions. This step is only required if you want to build a release version of the app.
@@ -164,14 +169,6 @@ You can also run your local development environment for Android via the Docker c
 
 ```
 ./scripts/docker-dev-android.sh
-```
-
-### Environment File
-
-This is an example of the `.env` that can be used for Thunder.
-
-```bash
-# Empty Environment File
 ```
 
 ## Conventions

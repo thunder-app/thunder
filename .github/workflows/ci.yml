@@ -18,6 +18,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.16.x' # lock it to 3.16.x temporarily
           channel: "stable"
           cache: true
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
@@ -28,7 +29,7 @@ jobs:
         run: flutter pub get
       
       - name: Install arb_utils to check sorting of translations
-        run: dart pub global activate arb_utils
+        run: dart pub global activate arb_utils 0.6.0 # temporarily force version 0.6.0 to fix build errors
 
       - name: Copy translation file
         run: cp ./lib/l10n/app_en.arb ./lib/l10n/app_en_tmp.arb

@@ -253,47 +253,34 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             state.imageProvider.evict();
 
             return Container(
-              color: theme.cardColor.darken(3),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                child: Material(
-                  clipBehavior: Clip.hardEdge,
-                  borderRadius: BorderRadius.circular(12),
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    fit: StackFit.passthrough,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: theme.colorScheme.secondary.withOpacity(0.4),
+              ),
+              child: InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                  child: Row(
                     children: [
-                      Container(
-                        color: theme.colorScheme.secondary.withOpacity(0.4),
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                        child: Row(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Icon(
-                                Icons.link,
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                widget.post?.url ?? '',
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                            ),
-                          ],
-                        ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Icon(Icons.link),
                       ),
-                      InkWell(
-                        onTap: () {
-                          if (widget.post?.url != null) {
-                            handleLink(context, url: widget.post!.url!);
-                          }
-                        },
+                      Expanded(
+                        child: Text(
+                          widget.post?.url ?? '',
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodyMedium,
+                        ),
                       ),
                     ],
                   ),
                 ),
+                onTap: () {
+                  if (widget.post?.url != null) {
+                    handleLink(context, url: widget.post!.url!);
+                  }
+                },
               ),
             );
         }
