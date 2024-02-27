@@ -249,16 +249,13 @@ class _InstancePageState extends State<InstancePage> {
                             ),
                           ),
                         if (viewType == SearchType.communities)
-                          SliverToBoxAdapter(
-                            child: Material(
-                              child: ListView.builder(
-                                padding: EdgeInsets.zero,
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: state.communities?.length,
-                                itemBuilder: (context, index) {
-                                  CommunityView? communityView = state.communities?[index];
-                                  return communityView != null
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              childCount: state.communities?.length,
+                              (context, index) {
+                                CommunityView? communityView = state.communities?[index];
+                                return Material(
+                                  child: communityView != null
                                       ? buildCommunityEntry(
                                           context,
                                           communityView,
@@ -266,30 +263,27 @@ class _InstancePageState extends State<InstancePage> {
                                           {},
                                           resolutionInstance: state.resolutionInstance,
                                         )
-                                      : Container();
-                                },
-                              ),
+                                      : Container(),
+                                );
+                              },
                             ),
                           ),
                         if (viewType == SearchType.users)
-                          SliverToBoxAdapter(
-                            child: Material(
-                              child: ListView.builder(
-                                padding: EdgeInsets.zero,
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: state.users?.length,
-                                itemBuilder: (context, index) {
-                                  PersonView? user = state.users?[index];
-                                  return user != null
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              childCount: state.users?.length,
+                              (context, index) {
+                                PersonView? user = state.users?[index];
+                                return Material(
+                                  child: user != null
                                       ? buildUserEntry(
                                           context,
                                           user,
                                           resolutionInstance: state.resolutionInstance,
                                         )
-                                      : Container();
-                                },
-                              ),
+                                      : Container(),
+                                );
+                              },
                             ),
                           ),
                         if (viewType == SearchType.posts)
@@ -298,18 +292,15 @@ class _InstancePageState extends State<InstancePage> {
                             tabletMode: tabletMode,
                           ),
                         if (viewType == SearchType.comments)
-                          SliverToBoxAdapter(
-                            child: Material(
-                              child: ListView.builder(
-                                padding: EdgeInsets.zero,
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: state.comments?.length,
-                                itemBuilder: (context, index) {
-                                  var commentView = state.comments?[index];
-                                  return commentView != null ? buildCommentEntry(context, commentView) : Container();
-                                },
-                              ),
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              childCount: state.comments?.length,
+                              (context, index) {
+                                var commentView = state.comments?[index];
+                                return Material(
+                                  child: commentView != null ? buildCommentEntry(context, commentView) : Container(),
+                                );
+                              },
                             ),
                           ),
                       ],
