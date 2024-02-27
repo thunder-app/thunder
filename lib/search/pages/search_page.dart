@@ -51,7 +51,10 @@ class SearchPage extends StatefulWidget {
   /// Allows the search page to limited to searching a specific community
   final CommunityView? communityToSearch;
 
-  const SearchPage({super.key, this.communityToSearch});
+  /// Whether the search field is initially focused upon opening this page
+  final bool isInitiallyFocused;
+
+  const SearchPage({super.key, this.communityToSearch, this.isInitiallyFocused = false});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -94,6 +97,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     initPrefs();
     fetchActiveProfileAccount().then((activeProfile) => _previousUserId = activeProfile?.userId);
     context.read<SearchBloc>().add(GetTrendingCommunitiesEvent());
+
+    if (widget.isInitiallyFocused) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => searchTextFieldFocus.requestFocus());
+    }
+
     super.initState();
   }
 
