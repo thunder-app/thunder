@@ -94,6 +94,10 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "browserMode": "Link handling",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
   "browsingAnonymously": "You are currently browsing {instance} anonymously.",
   "@browsingAnonymously": {},
   "cancel": "Cancel",
@@ -104,6 +108,10 @@
   "@cantBlockAdmin": {},
   "cantBlockYourself": "You may not block yourself.",
   "@cantBlockYourself": {},
+  "cardPostCardMetadataItems": "Card View Metadata",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
   "cardView": "Card View",
   "@cardView": {
     "description": "Label for the card view option in Setting -> Appearance -> Posts"
@@ -206,6 +214,10 @@
   },
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "@commentSwipeGesturesHint": {},
+  "commentUseColorizedUsername": "Colorized Usernames",
+  "@commentUseColorizedUsername": {
+    "description": "Setting used to toggle colorized comments creator display name."
+  },
   "comments": "Comments",
   "@comments": {},
   "communities": "Communities",
@@ -215,6 +227,10 @@
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
+  },
+  "compactPostCardMetadataItems": "Compact View Metadata",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
   },
   "compactView": "Compact View",
   "@compactView": {
@@ -504,6 +520,10 @@
   "@fonts": {
     "description": "Settings category for fonts"
   },
+  "forward": "Forward",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
   "fullscreenSwipeGestures": "Fullscreen Swipe Gestures",
@@ -540,6 +560,26 @@
   "@hot": {},
   "image": "Image",
   "@image": {},
+  "imageCachingMode": "Image Caching Mode",
+  "@imageCachingMode": {
+    "description": "Title for setting related to image caching mode"
+  },
+  "imageCachingModeAggressive": "Aggressively cache images (uses more memory)",
+  "@imageCachingModeAggressive": {
+    "description": "Long description for aggressive image caching mode"
+  },
+  "imageCachingModeAggressiveShort": "Aggressive",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "imageCachingModeRelaxed": "Let image caches expire (uses less memory but causes images to reload more often)",
+  "@imageCachingModeRelaxed": {
+    "description": "Long description for relaxed image caching mode"
+  },
+  "imageCachingModeRelaxedShort": "Relaxed",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
   "importExportSettings": "Import/Export Settings",
   "@importExportSettings": {
     "description": "Category for settings related to import and export."
@@ -610,6 +650,30 @@
   "@link": {},
   "linkActions": "Link Actions",
   "@linkActions": {},
+  "linkHandlingCustomTabs": "Open in system browser embedded in-app",
+  "@linkHandlingCustomTabs": {
+    "description": "Description for custom tabs link handling"
+  },
+  "linkHandlingCustomTabsShort": "In-app embedded",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  },
+  "linkHandlingExternal": "Open in system browser externally",
+  "@linkHandlingExternal": {
+    "description": "Description for external link handling"
+  },
+  "linkHandlingExternalShort": "External",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "linkHandlingInApp": "Use Thunder's built-in browser",
+  "@linkHandlingInApp": {
+    "description": "Description for in-app link handling"
+  },
+  "linkHandlingInAppShort": "In-app",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
   "linksBehaviourSettings": "Links",
   "@linksBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
@@ -622,6 +686,10 @@
   "@local": {},
   "localPosts": "Local Posts",
   "@localPosts": {},
+  "lockPost": "Lock Post",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
   "logOut": "Log out",
   "@logOut": {},
   "login": "Log in",
@@ -665,6 +733,10 @@
   "moderatedCommunities": "Moderated Communities",
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderatorActions": "Moderator Actions",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
@@ -716,6 +788,10 @@
   },
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
+  "noItems": "No items",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
   "noKeywordFilters": "No keyword filters added",
   "@noKeywordFilters": {
     "description": "Message for no keywords added"
@@ -724,9 +800,7 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "No posts found.",
-  "@noPosts": {},
-  "noPostsFound": "No posts found",
+  "noPostsFound": "No posts found.",
   "@noPostsFound": {},
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
@@ -810,6 +884,14 @@
   "@permissionDeniedMessage": {
     "description": "Explanation for error when user denies OS permissions"
   },
+  "pinToCommunity": "Pin to Community",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
   "postBehaviourSettings": "Posts",
   "@postBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
@@ -838,6 +920,10 @@
   },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
+  "postMetadataInstructions": "You can customize the metadata information by dragging and dropping the desired information",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
   "postNSFW": "Mark as NSFW",
   "@postNSFW": {},
   "postPreview": "Show a preview of the post with the given settings",
@@ -884,6 +970,10 @@
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
+  "reason": "Reason",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
   "reduceAnimations": "Reduce Animations",
   "@reduceAnimations": {
     "description": "Toggle to reduce animations."
@@ -894,6 +984,10 @@
   "@refresh": {},
   "refreshContent": "Refresh Content",
   "@refreshContent": {},
+  "removalReason": "Removal Reason",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
   "remove": "Remove",
   "@remove": {},
   "removeAccount": "Remove Account",
@@ -911,6 +1005,10 @@
   "removeKeywordFilter": "Remove Keyword",
   "@removeKeywordFilter": {
     "description": "Title for dialig to remove keyword"
+  },
+  "removePost": "Remove Post",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
   },
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
   "@removedCommunityFromSubscriptions": {},
@@ -946,6 +1044,10 @@
   },
   "restore": "Restore",
   "@restore": {},
+  "restorePost": "Restore Post",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
   "restoredCommentFromDraft": "Restored comment from draft",
   "@restoredCommentFromDraft": {},
   "restoredPostFromDraft": "Restored post from draft",
@@ -1296,6 +1398,14 @@
   },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
+  "unlockPost": "Unlock Post",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unpinFromCommunity": "Unpin from Community",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
   "unsubscribeFromCommunity": "Unsubscribe from Community",

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -47,7 +48,10 @@ import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  /// Allows the search page to limited to searching a specific community
+  final CommunityView? communityToSearch;
+
+  const SearchPage({super.key, this.communityToSearch});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -72,7 +76,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   int? _previousUserId;
   int? _previousFavoritesCount;
 
-  SearchType _currentSearchType = SearchType.communities;
+  late SearchType _currentSearchType;
   ListingType _currentFeedType = ListingType.all;
   IconData? _feedTypeIcon = Icons.grid_view_rounded;
   String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.all;
@@ -85,6 +89,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
   @override
   void initState() {
+    _currentSearchType = widget.communityToSearch == null ? SearchType.communities : SearchType.posts;
     _scrollController.addListener(_onScroll);
     initPrefs();
     fetchActiveProfileAccount().then((activeProfile) => _previousUserId = activeProfile?.userId);
@@ -124,7 +129,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               sortType: sortType,
               listingType: _currentFeedType,
               searchType: _getSearchTypeToUse(),
-              communityId: _currentCommunityFilter,
+              communityId: widget.communityToSearch?.community.id ?? _currentCommunityFilter,
               creatorId: _currentCreatorFilter,
               favoriteCommunities: context.read<AccountBloc>().state.favorites,
             ));
@@ -210,7 +215,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     child: Stack(
                       children: [
                         TextField(
-                          keyboardType: TextInputType.url,
+                          keyboardType: Platform.isIOS ? TextInputType.text : TextInputType.url,
                           focusNode: searchTextFieldFocus,
                           onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
                           controller: _controller,
@@ -219,7 +224,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           },
                           decoration: InputDecoration(
                             fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                            hintText: l10n.searchInstance((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                            hintText: l10n.searchInstance(widget.communityToSearch?.community.name ?? (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                             filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50),
@@ -279,8 +284,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   builder: (ctx) => BottomSheetListPicker(
                                     title: l10n.selectSearchType,
                                     items: [
-                                      ListPickerItem(label: l10n.communities, payload: SearchType.communities, icon: Icons.people_rounded),
-                                      ListPickerItem(label: l10n.users, payload: SearchType.users, icon: Icons.person_rounded),
+                                      if (widget.communityToSearch == null) ...[
+                                        ListPickerItem(label: l10n.communities, payload: SearchType.communities, icon: Icons.people_rounded),
+                                        ListPickerItem(label: l10n.users, payload: SearchType.users, icon: Icons.person_rounded),
+                                      ],
                                       ListPickerItem(label: l10n.posts, payload: SearchType.posts, icon: Icons.wysiwyg_rounded),
                                       ListPickerItem(label: l10n.comments, payload: SearchType.comments, icon: Icons.chat_rounded),
                                     ],
@@ -332,74 +339,76 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                               ],
                               onPressed: () => showSortBottomSheet(context),
                             ),
-                            const SizedBox(width: 10),
-                            SearchActionChip(
-                              children: [
-                                Icon(_feedTypeIcon, size: 15),
-                                const SizedBox(width: 5),
-                                Text(_feedTypeLabel ?? l10n.feed),
-                                const Icon(Icons.arrow_drop_down_rounded, size: 20),
-                              ],
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  showDragHandle: true,
-                                  builder: (ctx) => BottomSheetListPicker(
-                                    title: l10n.selectFeedType,
-                                    items: [
-                                      ListPickerItem(label: l10n.subscribed, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
-                                      ListPickerItem(label: l10n.local, payload: ListingType.local, icon: Icons.home_rounded),
-                                      ListPickerItem(label: l10n.all, payload: ListingType.all, icon: Icons.grid_view_rounded)
-                                    ],
-                                    onSelect: (value) {
-                                      setState(() {
-                                        if (value.payload == ListingType.subscribed) {
-                                          _feedTypeLabel = l10n.subscribed;
-                                          _feedTypeIcon = Icons.view_list_rounded;
-                                        } else if (value.payload == ListingType.local) {
-                                          _feedTypeLabel = l10n.local;
-                                          _feedTypeIcon = Icons.home_rounded;
-                                        } else if (value.payload == ListingType.all) {
-                                          _feedTypeLabel = l10n.all;
-                                          _feedTypeIcon = Icons.grid_view_rounded;
-                                        }
-                                        _currentFeedType = value.payload;
-                                      });
-                                      _doSearch();
-                                    },
-                                    previouslySelected: _currentFeedType,
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(width: 10),
-                            SearchActionChip(
-                              backgroundColor: _currentCommunityFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
-                              children: [
-                                const Icon(Icons.people_rounded, size: 15),
-                                const SizedBox(width: 5),
-                                Text(_currentCommunityFilter == null ? l10n.community : l10n.filteringBy(_currentCommunityFilterName ?? '')),
-                                if (_currentCommunityFilter != null) const SizedBox(width: 5),
-                                Icon(_currentCommunityFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: _currentCommunityFilter == null ? 20 : 15),
-                              ],
-                              onPressed: () {
-                                if (_currentCommunityFilter != null) {
-                                  setState(() {
-                                    _currentCommunityFilter = null;
-                                    _currentCommunityFilterName = null;
-                                  });
-                                  _doSearch();
-                                } else {
-                                  showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
+                            if (widget.communityToSearch == null) ...[
+                              const SizedBox(width: 10),
+                              SearchActionChip(
+                                children: [
+                                  Icon(_feedTypeIcon, size: 15),
+                                  const SizedBox(width: 5),
+                                  Text(_feedTypeLabel ?? l10n.feed),
+                                  const Icon(Icons.arrow_drop_down_rounded, size: 20),
+                                ],
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    showDragHandle: true,
+                                    builder: (ctx) => BottomSheetListPicker(
+                                      title: l10n.selectFeedType,
+                                      items: [
+                                        ListPickerItem(label: l10n.subscribed, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
+                                        ListPickerItem(label: l10n.local, payload: ListingType.local, icon: Icons.home_rounded),
+                                        ListPickerItem(label: l10n.all, payload: ListingType.all, icon: Icons.grid_view_rounded)
+                                      ],
+                                      onSelect: (value) {
+                                        setState(() {
+                                          if (value.payload == ListingType.subscribed) {
+                                            _feedTypeLabel = l10n.subscribed;
+                                            _feedTypeIcon = Icons.view_list_rounded;
+                                          } else if (value.payload == ListingType.local) {
+                                            _feedTypeLabel = l10n.local;
+                                            _feedTypeIcon = Icons.home_rounded;
+                                          } else if (value.payload == ListingType.all) {
+                                            _feedTypeLabel = l10n.all;
+                                            _feedTypeIcon = Icons.grid_view_rounded;
+                                          }
+                                          _currentFeedType = value.payload;
+                                        });
+                                        _doSearch();
+                                      },
+                                      previouslySelected: _currentFeedType,
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(width: 10),
+                              SearchActionChip(
+                                backgroundColor: _currentCommunityFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
+                                children: [
+                                  const Icon(Icons.people_rounded, size: 15),
+                                  const SizedBox(width: 5),
+                                  Text(_currentCommunityFilter == null ? l10n.community : l10n.filteringBy(_currentCommunityFilterName ?? '')),
+                                  if (_currentCommunityFilter != null) const SizedBox(width: 5),
+                                  Icon(_currentCommunityFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: _currentCommunityFilter == null ? 20 : 15),
+                                ],
+                                onPressed: () {
+                                  if (_currentCommunityFilter != null) {
                                     setState(() {
-                                      _currentCommunityFilter = communityView.community.id;
-                                      _currentCommunityFilterName = generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId));
+                                      _currentCommunityFilter = null;
+                                      _currentCommunityFilterName = null;
                                     });
                                     _doSearch();
-                                  });
-                                }
-                              },
-                            ),
+                                  } else {
+                                    showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
+                                      setState(() {
+                                        _currentCommunityFilter = communityView.community.id;
+                                        _currentCommunityFilterName = generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId));
+                                      });
+                                      _doSearch();
+                                    });
+                                  }
+                                },
+                              ),
+                            ],
                             const SizedBox(width: 10),
                             SearchActionChip(
                               backgroundColor: _currentCreatorFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
@@ -463,21 +472,23 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Icon(Icons.search_rounded, size: 80, color: theme.dividerColor),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                child: Text(
-                  switch (_currentSearchType) {
-                    SearchType.communities => l10n.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                    SearchType.users => l10n.searchUsersFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                    SearchType.comments => l10n.searchCommentsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                    SearchType.posts => l10n.searchPostsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                    _ => '',
-                  },
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
+              if (widget.communityToSearch == null) ...[
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Text(
+                    switch (_currentSearchType) {
+                      SearchType.communities => l10n.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      SearchType.users => l10n.searchUsersFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      SearchType.comments => l10n.searchCommentsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      SearchType.posts => l10n.searchPostsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      _ => '',
+                    },
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
           secondChild: state.trendingCommunities?.isNotEmpty == true
@@ -553,14 +564,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (_currentSearchType != SearchType.communities) ...[
+                    if (_currentSearchType != SearchType.communities && widget.communityToSearch == null) ...[
                       SearchActionChip(
                         children: [Text(l10n.communities)],
                         onPressed: () => _setCurrentSearchType(SearchType.communities),
                       ),
                       const SizedBox(width: 5),
                     ],
-                    if (_currentSearchType != SearchType.users)
+                    if (_currentSearchType != SearchType.users && widget.communityToSearch == null)
                       SearchActionChip(
                         children: [Text(l10n.users)],
                         onPressed: () => _setCurrentSearchType(SearchType.users),
@@ -742,7 +753,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           onPressed: () {
             SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
             _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
-            showSnackbar(context, subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
+            showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
             context.read<AccountBloc>().add(GetAccountSubscriptions());
           },
           icon: Icon(
@@ -862,7 +873,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
                 if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
                   await Future.delayed(const Duration(milliseconds: 300));
-                  if (context.mounted) showSnackbar(context, l10n.commentSavedAsDraft);
+                  if (context.mounted) showSnackbar(l10n.commentSavedAsDraft);
                   prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                 } else {
                   prefs.remove(draftId);
@@ -957,7 +968,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             sortType: sortType,
             listingType: _currentFeedType,
             searchType: _getSearchTypeToUse(),
-            communityId: _currentCommunityFilter,
+            communityId: widget.communityToSearch?.community.id ?? _currentCommunityFilter,
             creatorId: _currentCreatorFilter,
             favoriteCommunities: context.read<AccountBloc>().state.favorites,
           ));

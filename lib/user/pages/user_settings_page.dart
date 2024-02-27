@@ -8,6 +8,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/widgets/account_placeholder.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
@@ -26,7 +27,9 @@ import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/user/utils/navigate_user.dart';
 
 class UserSettingsPage extends StatefulWidget {
-  const UserSettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const UserSettingsPage({super.key, this.settingToHighlight});
 
   @override
   State<UserSettingsPage> createState() => _UserSettingsPageState();
@@ -60,18 +63,15 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
               if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) &&
                   (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                showSnackbar(
-                    context,
-                    state.status == UserSettingsStatus.failure
-                        ? l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage)
-                        : l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
+                showSnackbar(state.status == UserSettingsStatus.failure
+                    ? l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage)
+                    : l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
               } else if (state.status == UserSettingsStatus.failure) {
-                showSnackbar(context, l10n.failedToLoadBlocks(state.errorMessage ?? l10n.missingErrorMessage));
+                showSnackbar(l10n.failedToLoadBlocks(state.errorMessage ?? l10n.missingErrorMessage));
               }
 
               if (state.status == UserSettingsStatus.successBlock && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
                 showSnackbar(
-                  context,
                   l10n.successfullyUnblocked,
                   trailingIcon: Icons.undo_rounded,
                   trailingAction: () {
@@ -87,7 +87,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               }
 
               if (state.status == UserSettingsStatus.revert && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                showSnackbar(context, l10n.successfullyBlocked);
+                showSnackbar(l10n.successfullyBlocked);
               }
             },
             builder: (context, state) {
@@ -134,38 +134,29 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Text(l10n.general, style: theme.textTheme.titleMedium),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: ToggleOption(
-                        description: l10n.showReadPosts,
-                        value: showReadPosts,
-                        iconEnabled: Icons.fact_check_rounded,
-                        iconDisabled: Icons.fact_check_outlined,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
-                      ),
+                    ToggleOption(
+                      description: l10n.showReadPosts,
+                      value: showReadPosts,
+                      iconEnabled: Icons.fact_check_rounded,
+                      iconDisabled: Icons.fact_check_outlined,
+                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: ToggleOption(
-                        description: l10n.showScores,
-                        value: showScores,
-                        iconEnabled: Icons.onetwothree_rounded,
-                        iconDisabled: Icons.onetwothree_rounded,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
-                      ),
+                    ToggleOption(
+                      description: l10n.showScores,
+                      value: showScores,
+                      iconEnabled: Icons.onetwothree_rounded,
+                      iconDisabled: Icons.onetwothree_rounded,
+                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: ToggleOption(
-                        description: l10n.showBotAccounts,
-                        value: showBotAccounts,
-                        iconEnabled: Thunder.robot,
-                        iconEnabledSize: 18.0,
-                        iconDisabled: Thunder.robot,
-                        iconDisabledSize: 18.0,
-                        iconSpacing: 14.0,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
-                      ),
+                    ToggleOption(
+                      description: l10n.showBotAccounts,
+                      value: showBotAccounts,
+                      iconEnabled: Thunder.robot,
+                      iconEnabledSize: 18.0,
+                      iconDisabled: Thunder.robot,
+                      iconDisabledSize: 18.0,
+                      iconSpacing: 14.0,
+                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
                     ),
                     if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
                       Padding(
@@ -257,32 +248,29 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: SettingsListTile(
-                        icon: Icons.delete_forever_rounded,
-                        description: l10n.deleteAccount,
-                        widget: const SizedBox(
-                          height: 42.0,
-                          child: Icon(Icons.chevron_right_rounded),
-                        ),
-                        onTap: () async {
-                          showThunderDialog<void>(
-                            context: context,
-                            title: l10n.deleteAccount,
-                            contentText: l10n.deleteAccountDescription,
-                            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                            secondaryButtonText: l10n.cancel,
-                            onPrimaryButtonPressed: (dialogContext, _) async {
-                              if (context.mounted) {
-                                Navigator.of(context).pop();
-                                handleLink(context, url: 'https://${LemmyClient.instance.lemmyApiV3.host}/settings');
-                              }
-                            },
-                            primaryButtonText: l10n.confirm,
-                          );
-                        },
+                    SettingsListTile(
+                      icon: Icons.delete_forever_rounded,
+                      description: l10n.deleteAccount,
+                      widget: const SizedBox(
+                        height: 42.0,
+                        child: Icon(Icons.chevron_right_rounded),
                       ),
+                      onTap: () async {
+                        showThunderDialog<void>(
+                          context: context,
+                          title: l10n.deleteAccount,
+                          contentText: l10n.deleteAccountDescription,
+                          onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                          secondaryButtonText: l10n.cancel,
+                          onPrimaryButtonPressed: (dialogContext, _) async {
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                              handleLink(context, url: 'https://${LemmyClient.instance.lemmyApiV3.host}/settings');
+                            }
+                          },
+                          primaryButtonText: l10n.confirm,
+                        );
+                      },
                     ),
                     const SizedBox(height: 100.0),
                   ],

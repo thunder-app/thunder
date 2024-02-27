@@ -57,7 +57,10 @@ class InstanceView extends StatelessWidget {
           ],
         ),
         const Divider(),
-        CommonMarkdownBody(body: site.sidebar ?? ''),
+        CommonMarkdownBody(
+          body: site.sidebar ?? '',
+          allowHorizontalTranslation: false,
+        ),
       ],
     );
   }

@@ -38,6 +38,7 @@ import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:thunder/utils/notifications.dart';
+import 'package:thunder/utils/preferences.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -63,6 +64,7 @@ void main() async {
   /// Allows the top-level notification handlers to trigger actions farther down
   final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
 
+  bool startupDueToGroupNotification = false;
   if (!kIsWeb && Platform.isAndroid) {
     // Initialize local notifications. Note that this doesn't request permissions or actually send any notifications.
     // It's just hooking up callbacks and settings.
@@ -76,6 +78,7 @@ void main() async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse != null) {
       notificationsStreamController.add(notificationAppLaunchDetails.notificationResponse!);
+      startupDueToGroupNotification = notificationAppLaunchDetails.notificationResponse!.payload == repliesGroupKey;
     }
 
     // Initialize background fetch (this is async and can go run on its own).
@@ -86,6 +89,14 @@ void main() async {
 
   final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
   LemmyClient.instance.changeBaseUrl(initialInstance);
+
+  // Perform preference migrations
+  await performSharedPreferencesMigration();
+
+  // Do a notifications check on startup, if the user isn't clicking on a group notification
+  if (!startupDueToGroupNotification) {
+    pollRepliesAndShowNotifications();
+  }
 
   runApp(ThunderApp(notificationsStream: notificationsStreamController.stream));
 

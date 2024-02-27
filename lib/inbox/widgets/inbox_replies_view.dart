@@ -160,7 +160,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
 
                     if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
                       await Future.delayed(const Duration(milliseconds: 300));
-                      showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+                      showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
                       prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                     } else {
                       prefs.remove(draftId);

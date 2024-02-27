@@ -39,6 +39,22 @@ Future<bool> markPostAsRead(int postId, bool read) async {
   return markPostAsReadResponse.isSuccess();
 }
 
+/// Logic to delete post
+Future<bool> deletePost(int postId, bool delete) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  PostResponse postResponse = await lemmy.run(DeletePost(
+    auth: account!.jwt!,
+    postId: postId,
+    deleted: delete,
+  ));
+
+  return postResponse.postView.post.deleted == delete;
+}
+
 // Optimistically updates a post. This changes the value of the post locally, without sending the network request
 PostView optimisticallyVotePost(PostViewMedia postViewMedia, int voteType) {
   int newScore = postViewMedia.postView.counts.score;
@@ -72,6 +88,76 @@ PostView optimisticallySavePost(PostViewMedia postViewMedia, bool saved) {
 // Optimistically marks a post as read/unread. This changes the value of the post locally, without sending the network request
 PostView optimisticallyReadPost(PostViewMedia postViewMedia, bool read) {
   return postViewMedia.postView.copyWith(read: read);
+}
+
+// Optimistically deletes a post. This changes the value of the post locally, without sending the network request
+PostView optimisticallyDeletePost(PostView postView, bool delete) {
+  return postView.copyWith(post: postView.post.copyWith(deleted: delete));
+}
+
+// Optimistically locks a post. This changes the value of the post locally, without sending the network request
+PostView optimisticallyLockPost(PostView postView, bool lock) {
+  return postView.copyWith(post: postView.post.copyWith(locked: lock));
+}
+
+/// Logic to lock a post
+Future<bool> lockPost(int postId, bool lock) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  PostResponse postResponse = await lemmy.run(LockPost(
+    auth: account!.jwt!,
+    postId: postId,
+    locked: lock,
+  ));
+
+  return postResponse.postView.post.locked == lock;
+}
+
+// Optimistically pins a post to a community. This changes the value of the post locally, without sending the network request
+PostView optimisticallyPinPostToCommunity(PostView postView, bool pin) {
+  return postView.copyWith(post: postView.post.copyWith(featuredCommunity: pin));
+}
+
+/// Logic to pin a post to a community
+Future<bool> pinPostToCommunity(int postId, bool pin) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  PostResponse postResponse = await lemmy.run(FeaturePost(
+    auth: account!.jwt!,
+    postId: postId,
+    featured: pin,
+    featureType: PostFeatureType.community,
+  ));
+
+  return postResponse.postView.post.featuredCommunity == pin;
+}
+
+// Optimistically removes a post. This changes the value of the post locally, without sending the network request
+PostView optimisticallyRemovePost(PostView postView, bool remove) {
+  return postView.copyWith(post: postView.post.copyWith(removed: remove));
+}
+
+/// Logic to remove a post to a community (moderator action)
+Future<bool> removePost(int postId, bool remove, String reason) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  PostResponse postResponse = await lemmy.run(RemovePost(
+    auth: account!.jwt!,
+    postId: postId,
+    removed: remove,
+    reason: reason,
+  ));
+
+  return postResponse.postView.post.removed == remove;
 }
 
 /// Logic to vote on a post

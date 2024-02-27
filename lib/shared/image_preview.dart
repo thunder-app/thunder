@@ -4,7 +4,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/enums/image_caching_mode.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 import 'package:thunder/utils/image.dart';
 
@@ -82,6 +85,7 @@ class _ImagePreviewState extends State<ImagePreview> {
   Widget imagePreview(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     return Container(
       clipBehavior: Clip.hardEdge,
@@ -108,8 +112,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                   width: widget.width,
                   fit: BoxFit.cover,
                   cache: true,
-                  clearMemoryCacheWhenDispose: false,
-                  cacheMaxAge: const Duration(minutes: 1),
+                  clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
                   cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
                   loadStateChanged: (state) {
                     if (state.extendedImageLoadState == LoadState.loading) {
@@ -141,7 +144,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                   height: widget.height,
                   width: widget.width,
                   fit: BoxFit.cover,
-                  clearMemoryCacheWhenDispose: true,
+                  clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
                   cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
                   loadStateChanged: (state) {
                     if (state.extendedImageLoadState == LoadState.loading) {
