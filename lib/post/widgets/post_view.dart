@@ -356,7 +356,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         children: [
                           Icon(
                             Icons.arrow_downward,
-                            semanticLabel: postView.myVote == 1 ? 'Downvoted' : 'Downvote',
+                            semanticLabel: postView.myVote == -1 ? 'Downvoted' : 'Downvote',
                             color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                           ),
                           if (showScores) ...[
