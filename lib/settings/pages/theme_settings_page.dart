@@ -333,24 +333,6 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                             ListPickerItem(
                               icon: Icons.font_download_rounded,
-                              label: 'Montserrat',
-                              payload: 'Montserrat',
-                              textTheme: theme.textTheme.apply(fontFamily: 'Montserrat'),
-                            ),
-                            ListPickerItem(
-                              icon: Icons.font_download_rounded,
-                              label: 'Roboto Condensed',
-                              payload: 'RobotoCondensed',
-                              textTheme: theme.textTheme.apply(fontFamily: 'RobotoCondensed'),
-                            ),
-                            ListPickerItem(
-                              icon: Icons.font_download_rounded,
-                              label: 'Raleway',
-                              payload: 'Raleway',
-                              textTheme: theme.textTheme.apply(fontFamily: 'Raleway'),
-                            ),
-                            ListPickerItem(
-                              icon: Icons.font_download_rounded,
                               label: 'Noto Sans',
                               payload: 'NotoSans',
                               textTheme: theme.textTheme.apply(fontFamily: 'NotoSans'),
@@ -371,6 +353,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           icon: Icons.font_download_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.appFontFamily, value.payload),
                           closeOnSelect: false,
+                          highlightKey: settingToHighlight == LocalSettings.appFontFamily ? settingToHighlightKey : null,
                         ),
                         ListOption(
                           description: l10n.postTitleFontScale,
