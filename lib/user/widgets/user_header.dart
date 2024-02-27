@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -101,9 +102,10 @@ class _UserHeaderState extends State<UserHeader> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
+                                AutoSizeText(
                                   widget.getPersonDetailsResponse.personView.person.displayName ?? widget.getPersonDetailsResponse.personView.person.name,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                                  maxLines: 1,
                                 ),
                                 Text(generateUserFullName(
                                     context, widget.getPersonDetailsResponse.personView.person.name, fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId) ?? 'N/A')),
