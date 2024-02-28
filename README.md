@@ -166,14 +166,6 @@ You can also run your local development environment for Android via the Docker c
 ./scripts/docker-dev-android.sh
 ```
 
-### Environment File
-
-This is an example of the `.env` that can be used for Thunder.
-
-```bash
-# Empty Environment File
-```
-
 ## Conventions
 
 While there are no specific conventions that must be followed, do try to follow best practices whenever possible.
