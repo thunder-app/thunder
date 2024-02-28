@@ -40,6 +40,8 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
   }
 
   if (context.mounted) {
+    final NotificationsReplyPage notificationsReplyPage = NotificationsReplyPage(replies: specificReply == null ? allReplies : [specificReply]);
+
     Navigator.of(context)
         .push(
           SwipeablePageRoute(
@@ -50,7 +52,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
               providers: [
                 BlocProvider.value(value: thunderBloc),
               ],
-              child: NotificationsReplyPage(replies: specificReply == null ? allReplies : [specificReply]),
+              child: notificationsReplyPage,
             ),
           ),
         )
