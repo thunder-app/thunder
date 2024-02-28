@@ -47,4 +47,3 @@ app.*.map.json
 # Docker ignores
 key.properties
 keystore.jks
-.env

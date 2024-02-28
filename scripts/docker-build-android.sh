@@ -40,11 +40,6 @@ if [ ! -d ./build/docker/.pub-cache ]; then
     docker run --rm -ti --user "$(id -u)" -e "HOME=/home/builder" --name thunder-builder -v "${PWD}:${PWD}" -v "${PWD}/build/docker:/home/builder" -v "${PWD}/build/docker/flutter/gradle/build:/opt/flutter/packages/flutter_tools/gradle/build"  -v "${PWD}/build/docker/flutter/gradle/.gradle:/opt/flutter/packages/flutter_tools/gradle/.gradle" -w "${PWD}" thunder-builder bash -ic 'dart --disable-analytics'
 fi
 
-# Create env
-if [ ! -f ./.env ]; then
-    echo "# comment" > ./.env
-fi
-
 # Make path in container
 if [ ! -f ./build/docker/.bashrc ]; then
     echo '
