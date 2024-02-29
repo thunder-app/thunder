@@ -45,6 +45,3 @@ final class ModlogFeedChangeFilterTypeEvent extends ModlogEvent {
 
 /// Event for clearing the modlog feed snackbar message
 final class ModlogFeedClearMessageEvent extends ModlogEvent {}
-
-/// Event for scrolling to the top of the modlog feed
-final class ScrollToTopEvent extends ModlogEvent {}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -165,6 +166,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
                 label: item.label,
                 icon: item.icon,
                 onSelected: () {
+                  HapticFeedback.mediumImpact();
                   Navigator.of(context).pop();
                   widget.onSelect(item);
                 },
@@ -175,6 +177,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               label: l10n.posts,
               icon: Icons.splitscreen_rounded,
               onSelected: () {
+                HapticFeedback.mediumImpact();
                 setState(() => category = ModlogActionTypeFilterCategory.post);
               },
               isSelected: postModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
@@ -184,6 +187,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               label: l10n.comments,
               icon: Icons.comment_rounded,
               onSelected: () {
+                HapticFeedback.mediumImpact();
                 setState(() => category = ModlogActionTypeFilterCategory.comment);
               },
               isSelected: commentModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
@@ -193,6 +197,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               label: l10n.communities,
               icon: Icons.people_rounded,
               onSelected: () {
+                HapticFeedback.mediumImpact();
                 setState(() => category = ModlogActionTypeFilterCategory.community);
               },
               isSelected: communityModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
@@ -202,6 +207,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               label: AppLocalizations.of(GlobalContext.context)!.instance,
               icon: Icons.language_rounded,
               onSelected: () {
+                HapticFeedback.mediumImpact();
                 setState(() => category = ModlogActionTypeFilterCategory.instance);
               },
               isSelected: instanceModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
@@ -258,7 +264,10 @@ class ModlogSubFilterPicker extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
-                onTap: () => onNavigateBack(),
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  onNavigateBack();
+                },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(12.0, 10, 16.0, 10.0),
                   child: Align(
@@ -291,6 +300,7 @@ class ModlogSubFilterPicker extends StatelessWidget {
                     label: item.label,
                     icon: item.icon,
                     onSelected: () {
+                      HapticFeedback.mediumImpact();
                       Navigator.of(context).pop();
                       onSelect(item);
                     },

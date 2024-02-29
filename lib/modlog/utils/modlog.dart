@@ -1,9 +1,11 @@
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/modlog/modlog.dart';
+import 'package:thunder/utils/global_context.dart';
 
 /// Helper function which handles the logic of fetching modlog events from the API
 Future<Map<String, dynamic>> fetchModlogEvents({
@@ -81,6 +83,8 @@ Future<Map<String, dynamic>> fetchModlogEvents({
 /// The response from the Lemmy API returns different types of events for different actions.
 /// This function parses the event to a [ModlogEventItem]
 ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+
   switch (type) {
     case ModlogActionType.modRemovePost:
       ModRemovePostView modRemovePostView = (event as ModRemovePostView);
@@ -233,6 +237,6 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         actioned: modHideCommunityView.modHideCommunity.hidden,
       );
     default:
-      throw Exception('Unknown modlog event type: $type');
+      throw Exception(l10n.missingErrorMessage);
   }
 }

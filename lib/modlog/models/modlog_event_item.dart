@@ -81,14 +81,14 @@ class ModlogEventItem {
   String getModlogEventTypeDescription() {
     final l10n = AppLocalizations.of(GlobalContext.context)!;
 
-    String? moderatorName = moderator?.displayName ?? moderator?.name ?? 'Moderator';
-    String? userName = user?.displayName ?? user?.name ?? 'User';
+    String? moderatorName = moderator?.displayName ?? moderator?.name ?? l10n.moderator;
+    String? userName = user?.displayName ?? user?.name ?? l10n.user;
 
     String? communityFullName = community != null
         ? community?.title != null
             ? '"${community?.title}"'
             : generateCommunityFullName(null, community!.name, fetchInstanceNameFromUrl(community!.actorId), communitySeparator: FullNameSeparator.at)
-        : 'Community';
+        : l10n.community;
 
     return switch (type) {
       ModlogActionType.modRemovePost => actioned ? l10n.modRemovePostDescription(communityFullName, moderatorName) : l10n.modRestorePostDescription(communityFullName, moderatorName),

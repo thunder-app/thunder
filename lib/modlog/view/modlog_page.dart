@@ -1,21 +1,15 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/community/widgets/post_card_metadata.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/modlog/modlog.dart';
-import 'package:thunder/modlog/widgets/modlog_filter_picker.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -108,7 +102,6 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
   @override
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
-    final l10n = AppLocalizations.of(context)!;
 
     bool hideTopBarOnScroll = thunderBloc.state.hideTopBarOnScroll;
 
@@ -117,8 +110,10 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
         top: hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
         child: BlocConsumer<ModlogBloc, ModlogState>(
           listenWhen: (previous, current) {
-            if (current.status == ModlogStatus.initial) setState(() => showAppBarTitle = false);
-            if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+            if (current.status == ModlogStatus.initial) {
+              setState(() => showAppBarTitle = false);
+              _scrollController.jumpTo(0);
+            }
             return true;
           },
           listener: (context, state) {
@@ -148,9 +143,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                   CustomScrollView(
                     controller: _scrollController,
                     slivers: <Widget>[
-                      ModlogFeedPageAppBar(
-                        showAppBarTitle: state.status != ModlogStatus.initial ? true : showAppBarTitle,
-                      ),
+                      ModlogFeedPageAppBar(showAppBarTitle: state.status != ModlogStatus.initial ? true : showAppBarTitle),
                       // Display loading indicator until the feed is fetched
                       if (state.status == ModlogStatus.initial)
                         const SliverFillRemaining(
@@ -170,8 +163,8 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                 height: 1.0,
                                 thickness: 4.0,
                                 color: ElevationOverlay.applySurfaceTint(
-                                  Theme.of(context).colorScheme.surface,
-                                  Theme.of(context).colorScheme.surfaceTint,
+                                  theme.colorScheme.surface,
+                                  theme.colorScheme.surfaceTint,
                                   10,
                                 ),
                               ),
@@ -237,7 +230,25 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                         ),
                                         DateTimePostCardMetaData(dateTime: event.dateTime),
                                       ],
-                                    )
+                                    ),
+                                    const SizedBox(height: 12.0),
+                                    Wrap(
+                                      runSpacing: 4.0,
+                                      children: [
+                                        if (event.post != null) ModlogItemContextCard(title: event.post!.name, post: event.post),
+                                        if (event.comment != null) ModlogItemContextCard(title: event.comment!.content, comment: event.comment),
+                                        if (event.community != null)
+                                          ModlogItemContextCard(
+                                            title: generateCommunityFullName(context, event.community!.name, fetchInstanceNameFromUrl(event.community!.actorId)),
+                                            community: event.community,
+                                          ),
+                                        if (event.user != null)
+                                          ModlogItemContextCard(
+                                            title: generateUserFullName(context, event.user!.name, fetchInstanceNameFromUrl(event.user!.actorId)),
+                                            user: event.user,
+                                          ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
@@ -266,120 +277,6 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
           },
         ),
       ),
-    );
-  }
-}
-
-class ModlogFeedPageAppBar extends StatelessWidget {
-  const ModlogFeedPageAppBar({super.key, required this.showAppBarTitle});
-
-  /// Boolean which indicates whether the title on the app bar should be shown
-  final bool showAppBarTitle;
-
-  @override
-  Widget build(BuildContext context) {
-    final thunderBloc = context.read<ThunderBloc>();
-    final l10n = AppLocalizations.of(context)!;
-
-    return SliverAppBar(
-        pinned: !thunderBloc.state.hideTopBarOnScroll,
-        floating: true,
-        centerTitle: false,
-        toolbarHeight: 70.0,
-        surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
-        title: ModlogFeedAppBarTitle(visible: showAppBarTitle),
-        leading: IconButton(
-          icon: (!kIsWeb && Platform.isIOS
-              ? Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                )
-              : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip)),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            Navigator.of(context).maybePop();
-          },
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.filter_alt_rounded),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-
-              showModalBottomSheet<void>(
-                showDragHandle: true,
-                context: context,
-                isScrollControlled: true,
-                builder: (builderContext) => ModlogActionTypePicker(
-                  title: l10n.filters,
-                  onSelect: (selected) => context.read<ModlogBloc>().add(ModlogFeedChangeFilterTypeEvent(modlogActionType: selected.payload)),
-                  previouslySelected: context.read<ModlogBloc>().state.modlogActionType,
-                ),
-              );
-            },
-          ),
-        ]);
-  }
-}
-
-class ModlogFeedAppBarTitle extends StatelessWidget {
-  const ModlogFeedAppBarTitle({super.key, this.visible = true});
-
-  /// Boolean which indicates whether the title on the app bar should be shown
-  final bool visible;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final state = context.read<AuthBloc>().state;
-    final l10n = AppLocalizations.of(context)!;
-
-    final feedState = context.read<FeedBloc>().state;
-
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 200),
-      opacity: visible ? 1.0 : 0.0,
-      child: ListTile(
-        title: Text(
-          l10n.modlog,
-          style: theme.textTheme.titleLarge,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Text(
-          feedState.fullCommunityView != null
-              ? generateCommunityFullName(context, feedState.fullCommunityView!.communityView.community.name, fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId))
-              : fetchInstanceNameFromUrl(state.getSiteResponse!.siteView.site.actorId)!,
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-      ),
-    );
-  }
-}
-
-class FeedReachedEnd extends StatelessWidget {
-  const FeedReachedEnd({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          color: theme.dividerColor.withOpacity(0.1),
-          padding: const EdgeInsets.symmetric(vertical: 32.0),
-          child: ScalableText(
-            'Hmmm. It seems like you\'ve reached the bottom.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleSmall,
-            fontScale: state.metadataFontSizeScale,
-          ),
-        ),
-        const SizedBox(height: 160)
-      ],
     );
   }
 }

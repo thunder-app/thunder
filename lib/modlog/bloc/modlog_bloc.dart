@@ -46,17 +46,6 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
       _onModlogFeedClearMessage,
       transformer: throttleDroppable(Duration.zero),
     );
-
-    /// Handles scrolling to top of the feed
-    on<ScrollToTopEvent>(
-      _onModlogFeedScrollToTop,
-      transformer: throttleDroppable(Duration.zero),
-    );
-  }
-
-  /// Handles scrolling to top of the feed
-  Future<void> _onModlogFeedScrollToTop(ScrollToTopEvent event, Emitter<ModlogState> emit) async {
-    emit(state.copyWith(status: ModlogStatus.success, scrollId: state.scrollId + 1));
   }
 
   /// Handles clearing any messages from the state
@@ -74,7 +63,6 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
       moderatorId: null,
       hasReachedEnd: false,
       currentPage: 1,
-      scrollId: 0,
       message: null,
     ));
   }

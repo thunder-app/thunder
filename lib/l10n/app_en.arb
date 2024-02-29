@@ -897,6 +897,10 @@
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
   },
+  "moderator": "Moderator",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
   "moderatorActions": "Moderator Actions",
   "@moderatorActions": {
     "description": "Actions for moderators to perform on posts"
@@ -1331,6 +1335,10 @@
   },
   "selectSearchType": "Select Search Type",
   "@selectSearchType": {},
+  "sensitiveContentWarning": "May contain sensitive content. Tap to reveal.",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
   "setAction": "Set Action",
@@ -1587,6 +1595,10 @@
   "@unableToFindLanguage": {
     "description": "Error message when language cannot be found."
   },
+  "unableToFindPost": "Unable to find post",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
   "unableToFindUser": "Unable to find user",
   "@unableToFindUser": {},
   "unableToLoadImage": "Unable to load image",
@@ -1685,6 +1697,10 @@
   },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
+  "user": "User",
+  "@user": {
+    "description": "Role name for user"
+  },
   "userFormat": "User Format",
   "@userFormat": {
     "description": "Setting for user full name format"

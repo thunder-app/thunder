@@ -13,7 +13,6 @@ final class ModlogState extends Equatable {
     this.hasReachedEnd = false,
     this.currentPage = 1,
     this.message,
-    this.scrollId = 0,
   });
 
   /// The status of the modlog feed
@@ -43,9 +42,6 @@ final class ModlogState extends Equatable {
   /// The message to display on failure
   final String? message;
 
-  /// This id is used for scrolling back to the top
-  final int scrollId;
-
   ModlogState copyWith({
     ModlogStatus? status,
     ModlogActionType? modlogActionType,
@@ -56,7 +52,6 @@ final class ModlogState extends Equatable {
     bool? hasReachedEnd,
     int? currentPage,
     String? message,
-    int? scrollId,
   }) {
     return ModlogState(
       status: status ?? this.status,
@@ -68,7 +63,6 @@ final class ModlogState extends Equatable {
       hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       currentPage: currentPage ?? this.currentPage,
       message: message ?? this.message,
-      scrollId: scrollId ?? this.scrollId,
     );
   }
 
@@ -78,5 +72,5 @@ final class ModlogState extends Equatable {
   }
 
   @override
-  List<dynamic> get props => [status, modlogActionType, communityId, userId, moderatorId, modlogEventItems, hasReachedEnd, currentPage, message, scrollId];
+  List<dynamic> get props => [status, modlogActionType, communityId, userId, moderatorId, modlogEventItems, hasReachedEnd, currentPage, message];
 }
