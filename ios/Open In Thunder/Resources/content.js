@@ -7,6 +7,7 @@ let instances = [
     "discuss.online",
     "discuss.tchncs.de",
     "feddit.ch",
+    "feddit.cl",
     "feddit.de",
     "feddit.dk",
     "feddit.it",
@@ -21,7 +22,6 @@ let instances = [
     "leminal.space",
     "lemm.ee",
     "lemmings.world",
-    "lemmus.org",
     "lemmy.blahaj.zone",
     "lemmy.ca",
     "lemmy.dbzer0.com",
@@ -33,7 +33,6 @@ let instances = [
     "lemmy.sdf.org",
     "lemmy.today",
     "lemmy.world",
-    "lemmy.wtf",
     "lemmy.zip",
     "lemmygrad.ml",
     "lemmynsfw.com",
@@ -49,6 +48,7 @@ let instances = [
     "sopuli.xyz",
     "startrek.website",
     "szmer.info",
+    "thelemmy.club",
     "ttrpg.network"
 ];
 
