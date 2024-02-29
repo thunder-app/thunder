@@ -103,7 +103,7 @@ class _ModlogItemContextCardState extends State<ModlogItemContextCard> {
               color: Colors.transparent,
               child: InkWell(
                 splashColor: theme.colorScheme.primary.withOpacity(0.4),
-                onTap: (!showSensitiveContent && (widget.post != null || widget.comment != null))
+                onTap: (!showSensitiveContent && widget.comment != null)
                     ? () {
                         setState(() {
                           showSensitiveContent = !showSensitiveContent;
@@ -116,10 +116,12 @@ class _ModlogItemContextCardState extends State<ModlogItemContextCard> {
                           } else {
                             navigateToPost(context, postId: widget.post!.id);
                           }
-                        } else if (widget.comment != null) {
-                          navigateToPost(context, postId: widget.comment!.postId, selectedCommentId: widget.comment!.id);
                         } else if (widget.community != null) {
-                          navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community!.id);
+                          if (widget.community!.removed) {
+                            showSnackbar(l10n.unableToFindCommunity);
+                          } else {
+                            navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community!.id);
+                          }
                         } else if (widget.user != null) {
                           navigateToUserPage(context, userId: widget.user!.id);
                         }

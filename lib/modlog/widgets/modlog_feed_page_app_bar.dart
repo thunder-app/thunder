@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/modlog/bloc/modlog_bloc.dart';
 import 'package:thunder/modlog/widgets/modlog_filter_picker.dart';
@@ -95,7 +96,7 @@ class ModlogFeedAppBarTitle extends StatelessWidget {
         subtitle: Text(
           feedState.fullCommunityView != null
               ? generateCommunityFullName(context, feedState.fullCommunityView!.communityView.community.name, fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId))
-              : fetchInstanceNameFromUrl(state.getSiteResponse!.siteView.site.actorId)!,
+              : fetchInstanceNameFromUrl(state.getSiteResponse?.siteView.site.actorId ?? 'https://${LemmyClient.instance.lemmyApiV3.host}')!,
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       ),
