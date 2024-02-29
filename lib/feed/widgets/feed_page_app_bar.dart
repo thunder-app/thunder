@@ -18,12 +18,14 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/modlog/view/modlog_page.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/swipe.dart';
 
 class FeedPageAppBar extends StatelessWidget {
   const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
@@ -120,6 +122,35 @@ class FeedPageAppBar extends StatelessWidget {
                   );
                 },
               ),
+              if (feedState.feedType == FeedType.general)
+                IconButton(
+                  icon: Icon(Icons.shield_rounded, semanticLabel: l10n.sortBy),
+                  onPressed: () async {
+                    HapticFeedback.mediumImpact();
+
+                    AuthBloc authBloc = context.read<AuthBloc>();
+
+                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                    final ThunderState state = context.read<ThunderBloc>().state;
+                    final bool reduceAnimations = state.reduceAnimations;
+
+                    await Navigator.of(context).push(
+                      SwipeablePageRoute(
+                        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                        backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                        backGestureDetectionWidth: 45,
+                        canOnlySwipeFromEdge:
+                            disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        builder: (otherContext) {
+                          return MultiBlocProvider(
+                            providers: [BlocProvider.value(value: thunderBloc)],
+                            child: const ModlogFeedPage(),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               if (feedState.feedType == FeedType.community)
                 PopupMenuButton(
                   itemBuilder: (context) => [
@@ -168,6 +199,27 @@ class FeedPageAppBar extends StatelessWidget {
                         },
                         icon: Icons.search_rounded,
                         title: l10n.search,
+                      ),
+                    if (feedBloc.state.fullCommunityView?.communityView.community.id != null)
+                      ThunderPopupMenuItem(
+                        onTap: () async {
+                          final ThunderState state = context.read<ThunderBloc>().state;
+                          final bool reduceAnimations = state.reduceAnimations;
+
+                          await Navigator.of(context).push(
+                            SwipeablePageRoute(
+                              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                              backGestureDetectionWidth: 45,
+                              canOnlySwipeFromEdge: true,
+                              builder: (context) => MultiBlocProvider(
+                                providers: [BlocProvider.value(value: thunderBloc)],
+                                child: ModlogFeedPage(communityId: feedBloc.state.fullCommunityView!.communityView.community.id),
+                              ),
+                            ),
+                          );
+                        },
+                        icon: Icons.shield_rounded,
+                        title: l10n.modlog,
                       ),
                   ],
                 ),
