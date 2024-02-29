@@ -11,14 +11,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/modlog/bloc/modlog_bloc.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/modlog/modlog.dart';
-import 'package:thunder/modlog/utils/modlog.dart';
 import 'package:thunder/modlog/widgets/modlog_filter_picker.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 
 /// Creates a [ModlogPage] which holds a list of modlog events.
 class ModlogFeedPage extends StatefulWidget {
@@ -324,25 +325,31 @@ class ModlogFeedPageAppBar extends StatelessWidget {
 class ModlogFeedAppBarTitle extends StatelessWidget {
   const ModlogFeedAppBarTitle({super.key, this.visible = true});
 
+  /// Boolean which indicates whether the title on the app bar should be shown
   final bool visible;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = context.read<AuthBloc>().state;
+    final l10n = AppLocalizations.of(context)!;
+
+    final feedState = context.read<FeedBloc>().state;
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
       opacity: visible ? 1.0 : 0.0,
       child: ListTile(
         title: Text(
-          'Modlog',
+          l10n.modlog,
           style: theme.textTheme.titleLarge,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
-          state.getSiteResponse!.siteView.site.actorId,
+          feedState.fullCommunityView != null
+              ? generateCommunityFullName(context, feedState.fullCommunityView!.communityView.community.name, fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId))
+              : fetchInstanceNameFromUrl(state.getSiteResponse!.siteView.site.actorId)!,
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       ),

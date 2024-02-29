@@ -7,8 +7,10 @@ sealed class ModlogEvent extends Equatable {
   List<Object> get props => [];
 }
 
+/// Event for resetting the modlog
 final class ResetModlogEvent extends ModlogEvent {}
 
+/// Event for fetching the modlog feed
 final class ModlogFeedFetchedEvent extends ModlogEvent {
   /// The filtering to be applied to the feed.
   final ModlogActionType? modlogActionType;
@@ -34,12 +36,15 @@ final class ModlogFeedFetchedEvent extends ModlogEvent {
   });
 }
 
+/// Event for changing the filter type of the modlog feed
 final class ModlogFeedChangeFilterTypeEvent extends ModlogEvent {
   final ModlogActionType modlogActionType;
 
   const ModlogFeedChangeFilterTypeEvent({required this.modlogActionType});
 }
 
+/// Event for clearing the modlog feed snackbar message
 final class ModlogFeedClearMessageEvent extends ModlogEvent {}
 
+/// Event for scrolling to the top of the modlog feed
 final class ScrollToTopEvent extends ModlogEvent {}

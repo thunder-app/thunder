@@ -143,7 +143,10 @@ class FeedPageAppBar extends StatelessWidget {
                             disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
                         builder: (otherContext) {
                           return MultiBlocProvider(
-                            providers: [BlocProvider.value(value: thunderBloc)],
+                            providers: [
+                              BlocProvider.value(value: feedBloc),
+                              BlocProvider.value(value: thunderBloc),
+                            ],
                             child: const ModlogFeedPage(),
                           );
                         },
@@ -212,7 +215,10 @@ class FeedPageAppBar extends StatelessWidget {
                               backGestureDetectionWidth: 45,
                               canOnlySwipeFromEdge: true,
                               builder: (context) => MultiBlocProvider(
-                                providers: [BlocProvider.value(value: thunderBloc)],
+                                providers: [
+                                  BlocProvider.value(value: feedBloc),
+                                  BlocProvider.value(value: thunderBloc),
+                                ],
                                 child: ModlogFeedPage(communityId: feedBloc.state.fullCommunityView!.communityView.community.id),
                               ),
                             ),

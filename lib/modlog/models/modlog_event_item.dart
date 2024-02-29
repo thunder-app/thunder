@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 
 /// Represents a modlog event based on [ModlogActionType].
 /// This class is used to display modlog events in the UI.
@@ -58,22 +58,22 @@ class ModlogEventItem {
     final l10n = AppLocalizations.of(GlobalContext.context)!;
 
     return switch (type) {
-      ModlogActionType.modRemovePost => actioned ? 'Removed Post' : 'Restored Post',
-      ModlogActionType.modLockPost => actioned ? 'Locked Post' : 'Unlocked Post',
-      ModlogActionType.modFeaturePost => actioned ? 'Featured Post' : 'Unfeatured Post',
-      ModlogActionType.modRemoveComment => actioned ? 'Removed Comment' : 'Restored Comment',
-      ModlogActionType.modRemoveCommunity => actioned ? 'Removed Community' : 'Restored Community',
-      ModlogActionType.modBanFromCommunity => actioned ? 'Banned User from Community' : 'Unbanned User from Community',
-      ModlogActionType.modBan => actioned ? 'Banned User' : 'Unbanned User',
-      ModlogActionType.modAddCommunity => actioned ? 'Added Mod to Community' : 'Removed Mod from Community',
-      ModlogActionType.modTransferCommunity => 'Transferred Mod to Community',
-      ModlogActionType.modAdd => actioned ? 'Added Mod' : 'Removed Mod',
-      ModlogActionType.adminPurgePerson => 'Purged Person',
-      ModlogActionType.adminPurgeCommunity => 'Purged Community',
-      ModlogActionType.adminPurgePost => 'Purged Post',
-      ModlogActionType.adminPurgeComment => 'Purged Comment',
-      ModlogActionType.modHideCommunity => actioned ? 'Hid Community' : 'Unhid Community',
-      _ => 'Unknown Modlog Event Type',
+      ModlogActionType.modRemovePost => actioned ? l10n.removedPost : l10n.restoredPost,
+      ModlogActionType.modLockPost => actioned ? l10n.lockedPost : l10n.unlockedPost,
+      ModlogActionType.modFeaturePost => actioned ? l10n.featuredPost : l10n.unfeaturedPost,
+      ModlogActionType.modRemoveComment => actioned ? l10n.removedComment : l10n.restoredComment,
+      ModlogActionType.modRemoveCommunity => actioned ? l10n.removedCommunity : l10n.restoredCommunity,
+      ModlogActionType.modBanFromCommunity => actioned ? l10n.bannedUserFromCommunity : l10n.unbannedUserFromCommunity,
+      ModlogActionType.modBan => actioned ? l10n.bannedUser : l10n.unbannedUser,
+      ModlogActionType.modAddCommunity => actioned ? l10n.addedModToCommunity : l10n.removedModFromCommunity,
+      ModlogActionType.modTransferCommunity => l10n.transferredModToCommunity,
+      ModlogActionType.modAdd => actioned ? l10n.addedInstanceMod : l10n.removedInstanceMod,
+      ModlogActionType.adminPurgePerson => l10n.purgedPerson,
+      ModlogActionType.adminPurgeCommunity => l10n.purgedCommunity,
+      ModlogActionType.adminPurgePost => l10n.purgedPost,
+      ModlogActionType.adminPurgeComment => l10n.purgedComment,
+      ModlogActionType.modHideCommunity => actioned ? l10n.hidCommunity : l10n.unhidCommunity,
+      _ => l10n.missingErrorMessage,
     };
   }
 
@@ -108,7 +108,7 @@ class ModlogEventItem {
       ModlogActionType.adminPurgePost => l10n.adminPurgePostDescription,
       ModlogActionType.adminPurgeComment => l10n.adminPurgeCommentDescription,
       ModlogActionType.modHideCommunity => actioned ? l10n.modHideCommunityDescription(moderatorName, communityFullName) : l10n.modUnhideCommunityDescription(moderatorName, communityFullName),
-      _ => 'Unknown Modlog Event Type',
+      _ => l10n.missingErrorMessage,
     };
   }
 

@@ -35,145 +35,33 @@
   },
   "addedCommunityToSubscriptions": "Subscribed to community",
   "@addedCommunityToSubscriptions": {},
-  "advanced": "Advanced",
-  "@advanced": {
-    "description": "Heading for advanced settings"
+  "addedInstanceMod": "Added Instance Mod",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
   },
-  "modRemovePostDescription": "{moderator} removed post from {community}",
-  "@modRemovePostDescription": {
-    "description": "Description for modlog when a post is removed by a moderator"
-  },
-  "modRestorePostDescription": "{moderator} restored post from {community}",
-  "@modRestorePostDescription": {
-    "description": "Description for modlog when a post is restored by a moderator"
-  },
-  "modLockPostDescription": "{moderator} locked post in {community}",
-  "@modLockPostDescription": {
-    "description": "Description for modlog when a post is locked by a moderator"
-  },
-  "modUnlockPostDescription": "{moderator} unlocked post in {community}",
-  "@modUnlockPostDescription": {
-    "description": "Description for modlog when a post is unlocked by a moderator"
-  },
-  "modFeaturedPostDescription": "{moderator} featured post in {community}",
-  "@modFeaturedPostDescription": {
-    "description": "Description for modlog when a post is featured by a moderator"
-  },
-  "modUnfeaturedPostDescription": "{moderator} unfeatured post in {community}",
-  "@modUnfeaturedPostDescription": {
-    "description": "Description for modlog when a post is unfeatured by a moderator"
-  },
-  "modRemoveCommentDescription": "{moderator} removed comment by {user} in {post}",
-  "@modRemoveCommentDescription": {
-    "description": "Description for modlog when a comment is removed by a moderator"
-  },
-  "modRestoreCommentDescription": "{moderator} restored comment by {user} in {post}",
-  "@modRestoreCommentDescription": {
-    "description": "Description for modlog when a comment is restored by a moderator"
-  },
-  "modRemoveCommunityDescription": "{moderator} removed {community}",
-  "@modRemoveCommunityDescription": {
-    "description": "Description for modlog when a community is removed by a moderator"
-  },
-  "modRestoreCommunityDescription": "{moderator} restored {community}",
-  "@modRestoreCommunityDescription": {
-    "description": "Description for modlog when a community is restored by a moderator"
-  },
-  "modBanFromCommunityDescription": "{moderator} banned {user} from {community}",
-  "@modBanFromCommunityDescription": {
-    "description": "Description for modlog when a user is banned from a community"
-  },
-  "modUnbanFromCommunityDescription": "{moderator} unbanned {user} from {community}",
-  "@modUnbanFromCommunityDescription": {
-    "description": "Description for modlog when a user is unbanned from a community"
-  },
-  "modBanDescription": "{moderator} banned {user}",
-  "@modBanDescription": {
-    "description": "Description for modlog when a user is banned by a moderator"
-  },
-  "modUnbanDescription": "{moderator} unbanned {user}",
-  "@modUnbanDescription": {
-    "description": "Description for modlog when a user is unbanned by a moderator"
-  },
-  "modAddCommunityDescription": "{moderator} added {user} as a moderator to {community}",
-  "@modAddCommunityDescription": {
-    "description": "Description for modlog when a user is added as a moderator to a community"
-  },
-  "modTransferCommunityDescription": "{moderator} transferred {user} to {community}",
-  "@modTransferCommunityDescription": {
-    "description": "Description for modlog when a user is transferred to another community"
-  },
-  "modAddDescription": "{admin} added {user} as an admin",
-  "@modAddDescription": {
-    "description": "Description for modlog when admin adds a moderator"
-  },
-  "modRemoveDescription": "{admin} removed {user} as an admin",
-  "@modRemoveDescription": {
-    "description": "Description for modlog when an admin removes a moderator"
-  },
-  "adminPurgePersonDescription": "Purged user",
-  "@adminPurgePersonDescription": {
-    "description": "Description for purging a person"
-  },
-  "adminPurgeCommunityDescription": "Purged community",
-  "@adminPurgeCommunityDescription": {
-    "description": "Description for purging a community"
-  },
-  "adminPurgePostDescription": "Purged post",
-  "@adminPurgePostDescription": {
-    "description": "Description for purging a post"
+  "addedModToCommunity": "Added Mod to Community",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
   },
   "adminPurgeCommentDescription": "Purged comment",
   "@adminPurgeCommentDescription": {
     "description": "Description for purging a comment"
   },
-  "modHideCommunityDescription": "{moderator} hid {community}",
-  "@modHideCommunityDescription": {
-    "description": "Description for modlog when a community is hidden by a moderator"
+  "adminPurgeCommunityDescription": "Purged community",
+  "@adminPurgeCommunityDescription": {
+    "description": "Description for purging a community"
   },
-  "modUnhideCommunityDescription": "{moderator} unhidden {community}",
-  "@modUnhideCommunityDescription": {
-    "description": "Description for modlog when a community is unhidden by a moderator"
+  "adminPurgePersonDescription": "Purged user",
+  "@adminPurgePersonDescription": {
+    "description": "Description for purging a person"
   },
-  "modRemovePost": "Remove/Restore Posts",
-  "@modRemovePost": {
-    "description": "Description for modlog filter for actions that remove posts"
+  "adminPurgePostDescription": "Purged post",
+  "@adminPurgePostDescription": {
+    "description": "Description for purging a post"
   },
-  "modLockPost": "Lock/Unlock Posts",
-  "@modLockPost": {
-    "description": "Description for modlog filter for actions that lock posts"
-  },
-  "modFeaturePost": "Feature/Unfeature Posts",
-  "@modFeaturePost": {
-    "description": "Description for modlog filter for actions that feature posts"
-  },
-  "modRemoveComment": "Remove/Restore Comments",
-  "@modRemoveComment": {
-    "description": "Description for modlog filter for actions that remove comments"
-  },
-  "modRemoveCommunity": "Remove/Restore Communities",
-  "@modRemoveCommunity": {
-    "description": "Description for modlog filter for actions that remove communities"
-  },
-  "modBanFromCommunity": "Ban/Unban Users from Communities",
-  "@modBanFromCommunity": {
-    "description": "Description for modlog filter for actions that ban users from communities"
-  },
-  "modAddCommunity": "Add/Remove moderators to Communities",
-  "@modAddCommunity": {
-    "description": "Description for modlog filter for actions that add moderators to communities"
-  },
-  "modTransferCommunity": "Transferring Communities",
-  "@modTransferCommunity": {
-    "description": "Description for modlog filter for actions that transfer moderators to another community"
-  },
-  "modAdd": "Add/Remove instance moderators",
-  "@modAdd": {
-    "description": "Description for modlog filter for actions that add instance moderators"
-  },
-  "modBan": "Ban/Unban instance moderators",
-  "@modBan": {
-    "description": "Description for modlog filter for actions that ban instance moderators"
+  "advanced": "Advanced",
+  "@advanced": {
+    "description": "Heading for advanced settings"
   },
   "all": "All",
   "@all": {},
@@ -212,6 +100,14 @@
   "backgroundCheckWarning": "Note that notification checks will consume additional battery",
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
+  },
+  "bannedUser": "Banned User",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "bannedUserFromCommunity": "Banned User from Community",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
   },
   "base": "Base",
   "@base": {
@@ -615,6 +511,10 @@
   "@favorites": {
     "description": "The favorited communities on the drawer"
   },
+  "featuredPost": "Featured Post",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
+  },
   "feed": "Feed",
   "@feed": {},
   "feedBehaviourSettings": "Feed",
@@ -677,6 +577,10 @@
   "@gestures": {},
   "gettingStarted": "Getting Started",
   "@gettingStarted": {},
+  "hidCommunity": "Hid Community",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
   "hideNsfwPostsFromFeed": "Hide NSFW Posts from Feed",
   "@hideNsfwPostsFromFeed": {
     "description": "Toggle to hide NSFW posts from the feed."
@@ -825,6 +729,10 @@
   "@lockPost": {
     "description": "Action for locking a post (moderator action)"
   },
+  "lockedPost": "Locked Post",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
   "logOut": "Log out",
   "@logOut": {},
   "login": "Log in",
@@ -865,6 +773,126 @@
   },
   "missingErrorMessage": "No error message available",
   "@missingErrorMessage": {},
+  "modAdd": "Add/Remove instance moderators",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modAddCommunity": "Add/Remove moderators to Communities",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "modAddCommunityDescription": "{moderator} added {user} as a moderator to {community}",
+  "@modAddCommunityDescription": {
+    "description": "Description for modlog when a user is added as a moderator to a community"
+  },
+  "modAddDescription": "{admin} added {user} as an admin",
+  "@modAddDescription": {
+    "description": "Description for modlog when admin adds a moderator"
+  },
+  "modBan": "Ban/Unban instance moderators",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance moderators"
+  },
+  "modBanDescription": "{moderator} banned {user}",
+  "@modBanDescription": {
+    "description": "Description for modlog when a user is banned by a moderator"
+  },
+  "modBanFromCommunity": "Ban/Unban Users from Communities",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "modBanFromCommunityDescription": "{moderator} banned {user} from {community}",
+  "@modBanFromCommunityDescription": {
+    "description": "Description for modlog when a user is banned from a community"
+  },
+  "modFeaturePost": "Feature/Unfeature Posts",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modFeaturedPostDescription": "{moderator} featured post in {community}",
+  "@modFeaturedPostDescription": {
+    "description": "Description for modlog when a post is featured by a moderator"
+  },
+  "modHideCommunityDescription": "{moderator} hid {community}",
+  "@modHideCommunityDescription": {
+    "description": "Description for modlog when a community is hidden by a moderator"
+  },
+  "modLockPost": "Lock/Unlock Posts",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modLockPostDescription": "{moderator} locked post in {community}",
+  "@modLockPostDescription": {
+    "description": "Description for modlog when a post is locked by a moderator"
+  },
+  "modRemoveComment": "Remove/Restore Comments",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommentDescription": "{moderator} removed comment by {user} in {post}",
+  "@modRemoveCommentDescription": {
+    "description": "Description for modlog when a comment is removed by a moderator"
+  },
+  "modRemoveCommunity": "Remove/Restore Communities",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "modRemoveCommunityDescription": "{moderator} removed {community}",
+  "@modRemoveCommunityDescription": {
+    "description": "Description for modlog when a community is removed by a moderator"
+  },
+  "modRemoveDescription": "{admin} removed {user} as an admin",
+  "@modRemoveDescription": {
+    "description": "Description for modlog when an admin removes a moderator"
+  },
+  "modRemovePost": "Remove/Restore Posts",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "modRemovePostDescription": "{moderator} removed post from {community}",
+  "@modRemovePostDescription": {
+    "description": "Description for modlog when a post is removed by a moderator"
+  },
+  "modRestoreCommentDescription": "{moderator} restored comment by {user} in {post}",
+  "@modRestoreCommentDescription": {
+    "description": "Description for modlog when a comment is restored by a moderator"
+  },
+  "modRestoreCommunityDescription": "{moderator} restored {community}",
+  "@modRestoreCommunityDescription": {
+    "description": "Description for modlog when a community is restored by a moderator"
+  },
+  "modRestorePostDescription": "{moderator} restored post from {community}",
+  "@modRestorePostDescription": {
+    "description": "Description for modlog when a post is restored by a moderator"
+  },
+  "modTransferCommunity": "Transferring Communities",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
+  "modTransferCommunityDescription": "{moderator} transferred {user} to {community}",
+  "@modTransferCommunityDescription": {
+    "description": "Description for modlog when a user is transferred to another community"
+  },
+  "modUnbanDescription": "{moderator} unbanned {user}",
+  "@modUnbanDescription": {
+    "description": "Description for modlog when a user is unbanned by a moderator"
+  },
+  "modUnbanFromCommunityDescription": "{moderator} unbanned {user} from {community}",
+  "@modUnbanFromCommunityDescription": {
+    "description": "Description for modlog when a user is unbanned from a community"
+  },
+  "modUnfeaturedPostDescription": "{moderator} unfeatured post in {community}",
+  "@modUnfeaturedPostDescription": {
+    "description": "Description for modlog when a post is unfeatured by a moderator"
+  },
+  "modUnhideCommunityDescription": "{moderator} unhidden {community}",
+  "@modUnhideCommunityDescription": {
+    "description": "Description for modlog when a community is unhidden by a moderator"
+  },
+  "modUnlockPostDescription": "{moderator} unlocked post in {community}",
+  "@modUnlockPostDescription": {
+    "description": "Description for modlog when a post is unlocked by a moderator"
+  },
   "moderatedCommunities": "Moderated Communities",
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
@@ -872,6 +900,10 @@
   "moderatorActions": "Moderator Actions",
   "@moderatorActions": {
     "description": "Actions for moderators to perform on posts"
+  },
+  "modlog": "Modlog",
+  "@modlog": {
+    "description": "Option for viewing modlog."
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
@@ -1101,6 +1133,22 @@
   "@pureBlack": {
     "description": "Describes using the pure black theme"
   },
+  "purgedComment": "Purged Comment",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "purgedCommunity": "Purged Community",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "purgedPerson": "Purged Person",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "purgedPost": "Purged Post",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
@@ -1145,8 +1193,28 @@
   "@removePost": {
     "description": "Action to remove a post (moderator action)"
   },
+  "removedComment": "Removed Comment",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removedCommunity": "Removed Community",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
   "@removedCommunityFromSubscriptions": {},
+  "removedInstanceMod": "Removed Instance Mod",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "removedModFromCommunity": "Removed Mod from Community",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "removedPost": "Removed Post",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},
   "replyNotSupported": "Replying from this view is currently not supported yet",
@@ -1183,8 +1251,20 @@
   "@restorePost": {
     "description": "Action to restore a post (moderator action)"
   },
+  "restoredComment": "Restored Comment",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
   "restoredCommentFromDraft": "Restored comment from draft",
   "@restoredCommentFromDraft": {},
+  "restoredCommunity": "Restored Community",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "restoredPost": "Restored Post",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
   "restoredPostFromDraft": "Restored post from draft",
   "@restoredPostFromDraft": {},
   "retry": "Retry",
@@ -1415,10 +1495,6 @@
   "@tabletMode": {
     "description": "Toggle to enable 2-column tablet mode."
   },
-  "modlog": "Modlog",
-  "@modlog": {
-    "description": "Option for viewing modlog."
-  },
   "tapToExit": "Press back again to exit",
   "@tapToExit": {},
   "tappableAuthorCommunity": "Tappable Authors & Communities",
@@ -1485,6 +1561,10 @@
   "@topYear": {},
   "totp": "TOTP (optional)",
   "@totp": {},
+  "transferredModToCommunity": "Transferred Mod to Community",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a mod to a community"
+  },
   "translationsMayNotBeComplete": "Please note that the translations may not be complete",
   "@translationsMayNotBeComplete": {
     "description": "Warning that translations may not be complete when selecting a language in the settings"
@@ -1527,6 +1607,14 @@
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
   },
+  "unbannedUser": "Unbanned User",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "unbannedUserFromCommunity": "Unbanned User from Community",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
@@ -1537,9 +1625,21 @@
   },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
+  "unfeaturedPost": "Unfeatured Post",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "unhidCommunity": "Unhid Community",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
   "unlockPost": "Unlock Post",
   "@unlockPost": {
     "description": "Action for unlocking a post (moderator action)"
+  },
+  "unlockedPost": "Unlocked Post",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
   },
   "unpinFromCommunity": "Unpin from Community",
   "@unpinFromCommunity": {

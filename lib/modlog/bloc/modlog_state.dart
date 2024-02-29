@@ -49,11 +49,11 @@ final class ModlogState extends Equatable {
   ModlogState copyWith({
     ModlogStatus? status,
     ModlogActionType? modlogActionType,
-    bool? hasReachedEnd,
     int? communityId,
     int? userId,
     int? moderatorId,
     List<ModlogEventItem>? modlogEventItems,
+    bool? hasReachedEnd,
     int? currentPage,
     String? message,
     int? scrollId,
@@ -61,11 +61,11 @@ final class ModlogState extends Equatable {
     return ModlogState(
       status: status ?? this.status,
       modlogActionType: modlogActionType ?? this.modlogActionType,
-      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       communityId: communityId ?? this.communityId,
       userId: userId ?? this.userId,
       moderatorId: moderatorId ?? this.moderatorId,
       modlogEventItems: modlogEventItems ?? this.modlogEventItems,
+      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       currentPage: currentPage ?? this.currentPage,
       message: message ?? this.message,
       scrollId: scrollId ?? this.scrollId,
@@ -74,7 +74,7 @@ final class ModlogState extends Equatable {
 
   @override
   String toString() {
-    return '''ModlogState { status: $status, hasReachedEnd: $hasReachedEnd }''';
+    return '''ModlogState { status: $status, modlogActionType: $modlogActionType, communityId: $communityId, userId: $userId, moderatorId: $moderatorId, modlogEventItems: ${modlogEventItems.length}, hasReachedEnd: $hasReachedEnd }''';
   }
 
   @override

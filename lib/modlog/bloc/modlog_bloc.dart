@@ -110,18 +110,20 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
       int currentPage = fetchModlogEventsResult['currentPage'];
 
       // Sort the modlog events in descending order
-      modlogEventItems.sort((ModlogEventItem a, ModlogEventItem b) => b.dateTime!.compareTo(a.dateTime!));
+      modlogEventItems.sort((ModlogEventItem a, ModlogEventItem b) => b.dateTime.compareTo(a.dateTime));
 
-      return emit(state.copyWith(
-        status: ModlogStatus.success,
-        modlogActionType: event.modlogActionType,
-        hasReachedEnd: hasReachedEnd,
-        communityId: event.communityId,
-        userId: event.userId,
-        moderatorId: event.moderatorId,
-        modlogEventItems: modlogEventItems,
-        currentPage: currentPage,
-      ));
+      return emit(
+        state.copyWith(
+          status: ModlogStatus.success,
+          modlogActionType: event.modlogActionType,
+          hasReachedEnd: hasReachedEnd,
+          communityId: event.communityId,
+          userId: event.userId,
+          moderatorId: event.moderatorId,
+          modlogEventItems: modlogEventItems,
+          currentPage: currentPage,
+        ),
+      );
     }
 
     // If the feed is already being fetched but it is not a reset, then just wait
@@ -145,14 +147,17 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
     bool hasReachedEnd = fetchModlogEventsResult['hasReachedEnd'];
     int currentPage = fetchModlogEventsResult['currentPage'];
 
+    // Add the new modlog events and sort them in descending order
     modlogEventItems.addAll(newModLogEventItems);
     modlogEventItems.sort((ModlogEventItem a, ModlogEventItem b) => b.dateTime.compareTo(a.dateTime));
 
-    return emit(state.copyWith(
-      status: ModlogStatus.success,
-      modlogEventItems: modlogEventItems,
-      hasReachedEnd: hasReachedEnd,
-      currentPage: currentPage,
-    ));
+    return emit(
+      state.copyWith(
+        status: ModlogStatus.success,
+        modlogEventItems: modlogEventItems,
+        hasReachedEnd: hasReachedEnd,
+        currentPage: currentPage,
+      ),
+    );
   }
 }
