@@ -9,6 +9,14 @@ import 'package:thunder/utils/global_context.dart';
 
 enum ModlogActionTypeFilterCategory { all, post, comment, community, instance }
 
+List<ListPickerItem<ModlogActionType>> defaultModlogActionTypeItems = [
+  ListPickerItem(
+    payload: ModlogActionType.all,
+    icon: Icons.check_box_outline_blank,
+    label: AppLocalizations.of(GlobalContext.context)!.all,
+  ),
+];
+
 List<ListPickerItem<ModlogActionType>> postModlogActionTypeItems = [
   ListPickerItem(
     payload: ModlogActionType.modRemovePost,
@@ -74,46 +82,13 @@ List<ListPickerItem<ModlogActionType>> instanceModlogActionTypeItems = [
 /// Creates a [ModlogActionTypePicker] which holds a list of modlog action types.
 /// The modlog action type is used to filter the modlog events.
 class ModlogActionTypePicker extends BottomSheetListPicker<ModlogActionType> {
-  static List<ListPickerItem<ModlogActionType>> getDefaultModlogActionTypeItems() => [
-        ListPickerItem(
-          payload: ModlogActionType.all,
-          icon: Icons.check_box_outline_blank,
-          label: AppLocalizations.of(GlobalContext.context)!.all,
-        ),
-        // ListPickerItem(
-        //   payload: ModlogActionType.modHideCommunity,
-        //   icon: Icons.disabled_visible,
-        //   label: AppLocalizations.of(GlobalContext.context)!.modHideCommunity,
-        // ),
-        // ListPickerItem(
-        //   payload: ModlogActionType.adminPurgePerson,
-        //   icon: Icons.person_off,
-        //   label: AppLocalizations.of(GlobalContext.context)!.adminPurgePerson,
-        // ),
-        // ListPickerItem(
-        //   payload: ModlogActionType.adminPurgeCommunity,
-        //   icon: Icons.domain_disabled,
-        //   label: AppLocalizations.of(GlobalContext.context)!.adminPurgeCommunity,
-        // ),
-        // ListPickerItem(
-        //   payload: ModlogActionType.adminPurgePost,
-        //   icon: Icons.delete,
-        //   label: AppLocalizations.of(GlobalContext.context)!.adminPurgePost,
-        // ),
-        // ListPickerItem(
-        //   payload: ModlogActionType.adminPurgeComment,
-        //   icon: Icons.delete,
-        //   label: AppLocalizations.of(GlobalContext.context)!.adminPurgeComment,
-        // )
-      ];
-
   ModlogActionTypePicker({
     super.key,
     required super.onSelect,
     required super.title,
     List<ListPickerItem<ModlogActionType>>? items,
     super.previouslySelected,
-  }) : super(items: items ?? getDefaultModlogActionTypeItems());
+  }) : super(items: items ?? defaultModlogActionTypeItems);
 
   @override
   State<StatefulWidget> createState() => _ModlogActionTypePickerState();
@@ -125,23 +100,47 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 100),
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          child: switch (category) {
-            ModlogActionTypeFilterCategory.all => defaultModlogActionTypePicker(),
-            ModlogActionTypeFilterCategory.community => communityModlogActionTypePicker(),
-            ModlogActionTypeFilterCategory.instance => instanceModlogActionTypePicker(),
-            ModlogActionTypeFilterCategory.post => postModlogActionTypePicker(),
-            ModlogActionTypeFilterCategory.comment => commentModlogActionTypePicker(),
-          }),
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+        child: switch (category) {
+          ModlogActionTypeFilterCategory.all => defaultModlogActionTypePicker(),
+          ModlogActionTypeFilterCategory.post => ModlogSubFilterPicker(
+              title: AppLocalizations.of(GlobalContext.context)!.posts,
+              items: postModlogActionTypeItems,
+              onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
+              onSelect: (item) => widget.onSelect(item),
+              previouslySelectedItem: widget.previouslySelected,
+            ),
+          ModlogActionTypeFilterCategory.comment => ModlogSubFilterPicker(
+              title: AppLocalizations.of(GlobalContext.context)!.comments,
+              items: commentModlogActionTypeItems,
+              onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
+              onSelect: (item) => widget.onSelect(item),
+              previouslySelectedItem: widget.previouslySelected,
+            ),
+          ModlogActionTypeFilterCategory.community => ModlogSubFilterPicker(
+              title: AppLocalizations.of(GlobalContext.context)!.community,
+              items: communityModlogActionTypeItems,
+              onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
+              onSelect: (item) => widget.onSelect(item),
+              previouslySelectedItem: widget.previouslySelected,
+            ),
+          ModlogActionTypeFilterCategory.instance => ModlogSubFilterPicker(
+              title: AppLocalizations.of(GlobalContext.context)!.instance,
+              items: instanceModlogActionTypeItems,
+              onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
+              onSelect: (item) => widget.onSelect(item),
+              previouslySelectedItem: widget.previouslySelected,
+            ),
+        },
+      ),
     );
   }
 
   Widget defaultModlogActionTypePicker() {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -161,47 +160,49 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(ModlogActionTypePicker.getDefaultModlogActionTypeItems(), theme),
+            ...defaultModlogActionTypeItems.map(
+              (item) => PickerItem<ModlogActionType>(
+                label: item.label,
+                icon: item.icon,
+                onSelected: () {
+                  Navigator.of(context).pop();
+                  widget.onSelect(item);
+                },
+                isSelected: widget.previouslySelected == item.payload,
+              ),
+            ),
             PickerItem(
-              label: AppLocalizations.of(GlobalContext.context)!.posts,
-              icon: Icons.military_tech,
+              label: l10n.posts,
+              icon: Icons.splitscreen_rounded,
               onSelected: () {
-                setState(() {
-                  category = ModlogActionTypeFilterCategory.post;
-                });
+                setState(() => category = ModlogActionTypeFilterCategory.post);
               },
               isSelected: postModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
             ),
             PickerItem(
-              label: AppLocalizations.of(GlobalContext.context)!.comments,
-              icon: Icons.military_tech,
+              label: l10n.comments,
+              icon: Icons.comment_rounded,
               onSelected: () {
-                setState(() {
-                  category = ModlogActionTypeFilterCategory.comment;
-                });
+                setState(() => category = ModlogActionTypeFilterCategory.comment);
               },
               isSelected: commentModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
             ),
             PickerItem(
-              label: AppLocalizations.of(GlobalContext.context)!.communities,
-              icon: Icons.military_tech,
+              label: l10n.communities,
+              icon: Icons.people_rounded,
               onSelected: () {
-                setState(() {
-                  category = ModlogActionTypeFilterCategory.community;
-                });
+                setState(() => category = ModlogActionTypeFilterCategory.community);
               },
               isSelected: communityModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
             ),
             PickerItem(
               label: AppLocalizations.of(GlobalContext.context)!.instance,
-              icon: Icons.military_tech,
+              icon: Icons.language_rounded,
               onSelected: () {
-                setState(() {
-                  category = ModlogActionTypeFilterCategory.instance;
-                });
+                setState(() => category = ModlogActionTypeFilterCategory.instance);
               },
               isSelected: instanceModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
@@ -212,133 +213,93 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
       ],
     );
   }
+}
 
-  Widget postModlogActionTypePicker() {
+class ModlogSubFilterPicker extends StatelessWidget {
+  /// The title of the [ModlogSubFilterPicker].
+  final String title;
+
+  /// The list of modlog action types.
+  final List<ListPickerItem<ModlogActionType>> items;
+
+  /// The callback when the back button is pressed.
+  final VoidCallback onNavigateBack;
+
+  /// The callback when a modlog action type is selected.
+  final void Function(ListPickerItem<ModlogActionType>) onSelect;
+
+  /// The previously selected modlog action type.
+  final ModlogActionType? previouslySelectedItem;
+
+  const ModlogSubFilterPicker({
+    super.key,
+    required this.title,
+    required this.items,
+    required this.onNavigateBack,
+    required this.onSelect,
+    this.previouslySelectedItem,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              widget.title,
-              style: theme.textTheme.titleLarge,
+        Semantics(
+          label: '$title, ${l10n.backButton}',
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: Material(
+              borderRadius: BorderRadius.circular(50),
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(50),
+                onTap: () => onNavigateBack(),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12.0, 10, 16.0, 10.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.chevron_left, size: 30),
+                        const SizedBox(width: 12),
+                        Semantics(
+                          excludeSemantics: true,
+                          child: Text(
+                            title,
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
         ListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          children: [
-            ..._generateList(postModlogActionTypeItems, theme),
-          ],
+          children: items
+              .map(
+                (item) => PickerItem<ModlogActionType>(
+                    label: item.label,
+                    icon: item.icon,
+                    onSelected: () {
+                      Navigator.of(context).pop();
+                      onSelect(item);
+                    },
+                    isSelected: previouslySelectedItem == item.payload),
+              )
+              .toList(),
         ),
         const SizedBox(height: 16.0),
       ],
     );
-  }
-
-  Widget commentModlogActionTypePicker() {
-    final theme = Theme.of(context);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              widget.title,
-              style: theme.textTheme.titleLarge,
-            ),
-          ),
-        ),
-        ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            ..._generateList(commentModlogActionTypeItems, theme),
-          ],
-        ),
-        const SizedBox(height: 16.0),
-      ],
-    );
-  }
-
-  Widget communityModlogActionTypePicker() {
-    final theme = Theme.of(context);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              widget.title,
-              style: theme.textTheme.titleLarge,
-            ),
-          ),
-        ),
-        ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            ..._generateList(commentModlogActionTypeItems, theme),
-          ],
-        ),
-        const SizedBox(height: 16.0),
-      ],
-    );
-  }
-
-  Widget instanceModlogActionTypePicker() {
-    final theme = Theme.of(context);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              widget.title,
-              style: theme.textTheme.titleLarge,
-            ),
-          ),
-        ),
-        ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            ..._generateList(instanceModlogActionTypeItems, theme),
-          ],
-        ),
-        const SizedBox(height: 16.0),
-      ],
-    );
-  }
-
-  List<Widget> _generateList(List<ListPickerItem<ModlogActionType>> items, ThemeData theme) {
-    return items
-        .map((item) => PickerItem(
-            label: item.label,
-            icon: item.icon,
-            onSelected: () {
-              Navigator.of(context).pop();
-              widget.onSelect(item);
-            },
-            isSelected: widget.previouslySelected == item.payload))
-        .toList();
   }
 }

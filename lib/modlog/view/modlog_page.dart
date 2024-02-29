@@ -278,6 +278,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final thunderBloc = context.read<ThunderBloc>();
+    final l10n = AppLocalizations.of(context)!;
 
     return SliverAppBar(
         pinned: !thunderBloc.state.hideTopBarOnScroll,
@@ -300,7 +301,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.sort),
+            icon: const Icon(Icons.filter_alt_rounded),
             onPressed: () {
               HapticFeedback.mediumImpact();
 
@@ -309,7 +310,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
                 context: context,
                 isScrollControlled: true,
                 builder: (builderContext) => ModlogActionTypePicker(
-                  title: 'Filter',
+                  title: l10n.filters,
                   onSelect: (selected) => context.read<ModlogBloc>().add(ModlogFeedChangeFilterTypeEvent(modlogActionType: selected.payload)),
                   previouslySelected: context.read<ModlogBloc>().state.modlogActionType,
                 ),
