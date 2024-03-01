@@ -16,6 +16,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -36,7 +37,6 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/post/utils/navigate_post.dart';
 
 class CreatePostPage extends StatefulWidget {
   final int? communityId;
@@ -61,7 +61,7 @@ class CreatePostPage extends StatefulWidget {
   final PostView? postView;
 
   /// Callback function that is triggered whenever the post is successfully created or updated
-  final Function(PostViewMedia postViewMedia)? onPostSuccess;
+  final Function(PostViewMedia postViewMedia, bool userChanged)? onPostSuccess;
 
   const CreatePostPage({
     super.key,
@@ -138,6 +138,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   SharedPreferences? sharedPreferences;
 
   final imageBloc = ImageBloc();
+
+  bool userChanged = false;
 
   @override
   void initState() {
@@ -297,7 +299,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       child: BlocConsumer<CreatePostCubit, CreatePostState>(
         listener: (context, state) {
           if (state.status == CreatePostStatus.success && state.postViewMedia != null) {
-            widget.onPostSuccess?.call(state.postViewMedia!);
+            widget.onPostSuccess?.call(state.postViewMedia!, userChanged);
             Navigator.of(context).pop();
           }
 
@@ -380,7 +382,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               },
                             ),
                             const SizedBox(height: 4.0),
-                            const UserIndicator(),
+                            UserSelector(
+                              communityActorId: communityView?.community.actorId,
+                              onCommunityChanged: (CommunityView? cv) {
+                                if (cv == null) {
+                                  showSnackbar(l10n.unableToFindCommunityOnInstance);
+                                }
+
+                                setState(() {
+                                  communityId = cv?.community.id;
+                                  communityView = cv;
+                                });
+                                _validateSubmission();
+                              },
+                              onUserChanged: () => userChanged = true,
+                            ),
                             const SizedBox(height: 12.0),
                             TypeAheadField<String>(
                               suggestionsCallback: (String pattern) async {
@@ -635,6 +651,79 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 }
 
+/// Creates a widget which displays a preview of the currently selected account, with the ability to change accounts.
+///
+/// By passing in a [communityActorId], it will attempt to resolve the community to the new user's instance (if changed),
+/// and will invoke [onCommunityChanged]. If the community could not be resolved, the callback will pass [null].
+class UserSelector extends StatefulWidget {
+  final String? communityActorId;
+  final void Function(CommunityView?) onCommunityChanged;
+  final void Function() onUserChanged;
+
+  const UserSelector({
+    super.key,
+    required this.communityActorId,
+    required this.onCommunityChanged,
+    required this.onUserChanged,
+  });
+
+  @override
+  State<UserSelector> createState() => _UserSelectorState();
+}
+
+class _UserSelectorState extends State<UserSelector> {
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    return Transform.translate(
+      offset: const Offset(-8, 0),
+      child: InkWell(
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
+        onTap: () async {
+          final Account? originalUser = context.read<AuthBloc>().state.account;
+
+          await showProfileModalSheet(
+            context,
+            quickSelectMode: true,
+            customHeading: l10n.selectAccountToPostAs,
+            reloadOnSwitch: false,
+          );
+
+          // Wait slightly longer than the duration that is waited in the account switcher logic.
+          await Future.delayed(const Duration(milliseconds: 1500));
+
+          if (context.mounted) {
+            Account? newUser = context.read<AuthBloc>().state.account;
+
+            if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
+              // The user changed. Reload the widget.
+              setState(() {});
+              widget.onUserChanged();
+
+              //If there is a selected community, see if we can resolve it to the new user's instance.
+              if (widget.communityActorId?.isNotEmpty == true) {
+                CommunityView? resolvedCommunity;
+                try {
+                  final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: widget.communityActorId!));
+                  resolvedCommunity = resolveObjectResponse.community;
+                } catch (e) {
+                  // We'll just return null if we can't find it.
+                }
+                widget.onCommunityChanged(resolvedCommunity);
+              }
+            }
+          }
+        },
+        child: const Padding(
+          padding: EdgeInsets.only(left: 8, top: 4, bottom: 4),
+          child: UserIndicator(),
+        ),
+      ),
+    );
+  }
+}
+
 /// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language
 ///
 /// Passing in [languageId] will set the initial state of the widget to display that given language.
@@ -735,17 +824,6 @@ class CommunitySelector extends StatefulWidget {
 }
 
 class _CommunitySelectorState extends State<CommunitySelector> {
-  int? _communityId;
-  CommunityView? _communityView;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _communityId = widget.communityId;
-    _communityView = widget.communityView;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -758,30 +836,23 @@ class _CommunitySelectorState extends State<CommunitySelector> {
           showCommunityInputDialog(
             context,
             title: l10n.community,
-            onCommunitySelected: (cv) {
-              setState(() {
-                _communityId = cv.community.id;
-                _communityView = cv;
-              });
-
-              widget.onCommunitySelected(cv);
-            },
+            onCommunitySelected: widget.onCommunitySelected,
           );
         },
         borderRadius: const BorderRadius.all(Radius.circular(50)),
         child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
+          padding: const EdgeInsets.only(left: 8, top: 4, bottom: 4),
           child: Row(
             children: [
-              CommunityAvatar(community: _communityView?.community, radius: 16),
+              CommunityAvatar(community: widget.communityView?.community, radius: 16),
               const SizedBox(width: 12),
-              _communityId != null
+              widget.communityId != null
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${_communityView?.community.title} '),
+                        Text('${widget.communityView?.community.title} '),
                         FutureBuilder(
-                          future: getLemmyCommunity(_communityView?.community.actorId ?? ''),
+                          future: getLemmyCommunity(widget.communityView?.community.actorId ?? ''),
                           builder: (context, snapshot) {
                             return Text(
                               snapshot.data ?? '',
