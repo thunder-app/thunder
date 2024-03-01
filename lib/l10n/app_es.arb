@@ -1173,7 +1173,7 @@
   "@fullscreenSwipeGestures": {
     "description": "Setting for fullscreen swipe gestures"
   },
-  "hideNsfwPreviews": "Ocultar las vistas previas del NSFW",
+  "hideNsfwPreviews": "Desenfocar vistas previas NSFW",
   "@hideNsfwPreviews": {
     "description": "Toggle to hide NSFW previews."
   },
@@ -1476,5 +1476,9 @@
   "restorePost": "Restaurar el tema",
   "@restorePost": {
     "description": "Action to restore a post (moderator action)"
+  },
+  "exploreInstance": "Explorar instancia",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
   }
 }
