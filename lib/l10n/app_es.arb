@@ -563,7 +563,7 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPostsFound": "No se ha encontrado ningún tema",
+  "noPostsFound": "No se ha encontrado ningún tema.",
   "@noPostsFound": {},
   "noResultsFound": "No se han encontrado resultados.",
   "@noResultsFound": {},
@@ -1444,5 +1444,37 @@
   "imageCachingModeAggressive": "Almacenamiento agresivo de imágenes en caché (utiliza más memoria)",
   "@imageCachingModeAggressive": {
     "description": "Long description for aggressive image caching mode"
+  },
+  "reason": "Motivo",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "unlockPost": "Desbloquear el tema",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unpinFromCommunity": "Desvincular de la comunidad",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "lockPost": "Bloquear tema",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
+  "pinToCommunity": "Fijar a la comunidad",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
+  "imageCachingModeRelaxedShort": "Relajado",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
+  "removePost": "Eliminar el tema",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "restorePost": "Restaurar el tema",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
   }
 }
