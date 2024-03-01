@@ -465,6 +465,10 @@
   "@expanded": {
     "description": "Expanded post body view type"
   },
+  "exploreInstance": "Explore instance",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
   "extraLarge": "Extra Large",
   "@extraLarge": {
     "description": "Description for extra large font scale"

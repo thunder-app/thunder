@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
@@ -10,42 +9,34 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/comment/widgets/comment_list_entry.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
+import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/utils/utils.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/view/feed_widget.dart';
-import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
-import 'package:thunder/post/pages/create_comment_page.dart';
+import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/widgets/search_action_chip.dart';
 import 'package:thunder/search/utils/search_utils.dart';
-import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/input_dialogs.dart';
-import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
-import 'package:thunder/shared/avatars/community_avatar.dart';
-import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/widgets/user_list_entry.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
-import 'package:thunder/utils/numbers.dart';
 
 class SearchPage extends StatefulWidget {
   /// Allows the search page to limited to searching a specific community
@@ -519,7 +510,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           itemBuilder: (BuildContext context, int index) {
                             CommunityView communityView = context.read<AccountBloc>().state.favorites[index];
                             final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-                            return _buildCommunityEntry(communityView, isUserLoggedIn, currentSubscriptions, indicateFavorites: false);
+                            return CommunityListEntry(
+                              communityView: communityView,
+                              isUserLoggedIn: isUserLoggedIn,
+                              currentSubscriptions: currentSubscriptions,
+                              indicateFavorites: false,
+                              getFavoriteStatus: _getFavoriteStatus,
+                              getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
+                              onSubscribeIconPressed: _onSubscribeIconPressed,
+                            );
                           },
                         ),
                         const SizedBox(height: 20),
@@ -538,8 +537,32 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         itemBuilder: (BuildContext context, int index) {
                           CommunityView communityView = state.trendingCommunities![index];
                           final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-                          return _buildCommunityEntry(communityView, isUserLoggedIn, currentSubscriptions);
+                          return CommunityListEntry(
+                            communityView: communityView,
+                            isUserLoggedIn: isUserLoggedIn,
+                            currentSubscriptions: currentSubscriptions,
+                            getFavoriteStatus: _getFavoriteStatus,
+                            getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
+                            onSubscribeIconPressed: _onSubscribeIconPressed,
+                          );
                         },
+                      ),
+                      const SizedBox(height: 5),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
+                        child: TextButton(
+                          style: TextButton.styleFrom(backgroundColor: theme.dividerColor.withOpacity(0.25)),
+                          child: Row(
+                            children: [
+                              Text(l10n.exploreInstance, style: theme.textTheme.titleMedium),
+                              const SizedBox(width: 10),
+                              Icon(Icons.arrow_forward_rounded, size: 20, color: theme.textTheme.titleMedium?.color),
+                            ],
+                          ),
+                          onPressed: () {
+                            navigateToInstancePage(context, instanceHost: (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? '', instanceId: null);
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -627,7 +650,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 } else {
                   CommunityView communityView = state.communities![index];
                   final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-                  return _buildCommunityEntry(communityView, isUserLoggedIn, currentSubscriptions);
+                  return CommunityListEntry(
+                    communityView: communityView,
+                    isUserLoggedIn: isUserLoggedIn,
+                    currentSubscriptions: currentSubscriptions,
+                    getFavoriteStatus: _getFavoriteStatus,
+                    getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
+                    onSubscribeIconPressed: _onSubscribeIconPressed,
+                  );
                 }
               },
             ),
@@ -650,7 +680,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                       : Container();
                 } else {
                   PersonView personView = state.users![index];
-                  return _buildUserEntry(personView);
+                  return UserListEntry(personView: personView);
                 }
               },
             ),
@@ -684,7 +714,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           10,
                         ),
                       ),
-                      _buildCommentEntry(context, commentView),
+                      CommentListEntry(
+                        commentView: commentView,
+                        onVoteAction: (int commentId, int voteType) => context.read<SearchBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                        onSaveAction: (int commentId, bool save) => context.read<SearchBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                      ),
                     ],
                   );
                 }
@@ -724,175 +758,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
   }
 
-  Widget _buildCommunityEntry(CommunityView communityView, bool isUserLoggedIn, Set<int> currentSubscriptions, {bool indicateFavorites = true}) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-
-    return Tooltip(
-      excludeFromSemantics: true,
-      message: '${communityView.community.title}\n${generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId))}',
-      preferBelow: false,
-      child: ListTile(
-        leading: CommunityAvatar(community: communityView.community, radius: 25),
-        title: Text(
-          communityView.community.title,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Row(children: [
-          Flexible(
-            child: Text(
-              generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId)),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Text(
-            ' · ${formatLongNumber(communityView.counts.subscribers)}',
-            semanticsLabel: l10n.countSubscribers(communityView.counts.subscribers),
-          ),
-          const SizedBox(width: 4),
-          const Icon(Icons.people_rounded, size: 16.0),
-          if (indicateFavorites &&
-              _getFavoriteStatus(context, communityView.community) &&
-              _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions) == SubscribedType.subscribed) ...const [
-            Text(' · '),
-            Icon(Icons.star_rounded, size: 15),
-          ]
-        ]),
-        trailing: IconButton(
-          onPressed: () {
-            SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
-            _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
-            showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
-            context.read<AccountBloc>().add(GetAccountSubscriptions());
-          },
-          icon: Icon(
-            switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
-              SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-              SubscribedType.pending => Icons.pending_outlined,
-              SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-            },
-          ),
-          tooltip: switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
-            SubscribedType.notSubscribed => l10n.subscribe,
-            SubscribedType.pending => l10n.unsubscribePending,
-            SubscribedType.subscribed => l10n.unsubscribe,
-          },
-          visualDensity: VisualDensity.compact,
-        ),
-        onTap: () {
-          navigateToFeedPage(context, feedType: FeedType.community, communityId: communityView.community.id);
-        },
-      ),
-    );
-  }
-
   bool _getFavoriteStatus(BuildContext context, Community community) {
     final AccountState accountState = context.read<AccountBloc>().state;
     return accountState.favorites.any((communityView) => communityView.community.id == community.id);
-  }
-
-  Widget _buildUserEntry(PersonView personView) {
-    return Tooltip(
-      excludeFromSemantics: true,
-      message: '${personView.person.displayName ?? personView.person.name}\n${generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId))}',
-      preferBelow: false,
-      child: ListTile(
-        leading: UserAvatar(person: personView.person, radius: 25),
-        title: Text(
-          personView.person.displayName ?? personView.person.name,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Row(children: [
-          Flexible(
-            child: Text(
-              generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId)),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ]),
-        onTap: () {
-          navigateToUserPage(context, userId: personView.person.id);
-        },
-      ),
-    );
-  }
-
-  Widget _buildCommentEntry(BuildContext context, CommentView commentView) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final bool isOwnComment = commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
-
-    return BlocProvider<post_bloc.PostBloc>(
-      create: (BuildContext context) => post_bloc.PostBloc(),
-      child: CommentReference(
-        comment: commentView,
-        now: DateTime.now().toUtc(),
-        onVoteAction: (int commentId, int voteType) => context.read<SearchBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-        onSaveAction: (int commentId, bool save) => context.read<SearchBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-        // Only swipe actions are supported here, and delete is not one of those, so no implementation
-        onDeleteAction: (int commentId, bool deleted) {},
-        // Only swipe actions are supported here, and report is not one of those, so no implementation
-        onReportAction: (int commentId) {},
-        onReplyEditAction: (CommentView commentView, bool isEdit) async {
-          ThunderBloc thunderBloc = context.read<ThunderBloc>();
-          AccountBloc accountBloc = context.read<AccountBloc>();
-
-          final ThunderState state = context.read<ThunderBloc>().state;
-          final bool reduceAnimations = state.reduceAnimations;
-
-          SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-          DraftComment? newDraftComment;
-          DraftComment? previousDraftComment;
-          String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
-          String? draftCommentJson = prefs.getString(draftId);
-          if (draftCommentJson != null) {
-            previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-          }
-          Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-            if (newDraftComment?.isNotEmpty == true) {
-              prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-            }
-          });
-
-          if (context.mounted) {
-            Navigator.of(context)
-                .push(
-              SwipeablePageRoute(
-                transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                canOnlySwipeFromEdge: true,
-                backGestureDetectionWidth: 45,
-                builder: (context) {
-                  return MultiBlocProvider(
-                      providers: [
-                        BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                        BlocProvider<AccountBloc>.value(value: accountBloc),
-                      ],
-                      child: CreateCommentPage(
-                        commentView: commentView,
-                        isEdit: isEdit,
-                        parentCommentAuthor: commentView.creator.name,
-                        previousDraftComment: previousDraftComment,
-                        onUpdateDraft: (c) => newDraftComment = c,
-                      ));
-                },
-              ),
-            )
-                .whenComplete(
-              () async {
-                timer.cancel();
-
-                if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
-                  await Future.delayed(const Duration(milliseconds: 300));
-                  if (context.mounted) showSnackbar(l10n.commentSavedAsDraft);
-                  prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                } else {
-                  prefs.remove(draftId);
-                }
-              },
-            );
-          }
-        },
-        isOwnComment: isOwnComment,
-      ),
-    );
   }
 
   void showSortBottomSheet(BuildContext context) {
@@ -920,11 +788,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, CommunityView communityView, Set<int> currentSubscriptions) {
+  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, CommunityView communityView, Set<int>? currentSubscriptions) {
     if (isUserLoggedIn) {
       return communityView.subscribed;
     }
-    bool isSubscribed = newAnonymousSubscriptions.contains(communityView.community) || (currentSubscriptions.contains(communityView.community.id) && !removedSubs.contains(communityView.community.id));
+    bool isSubscribed =
+        newAnonymousSubscriptions.contains(communityView.community) || (currentSubscriptions?.contains(communityView.community.id) == true && !removedSubs.contains(communityView.community.id));
     return isSubscribed ? SubscribedType.subscribed : SubscribedType.notSubscribed;
   }
 
