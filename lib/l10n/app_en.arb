@@ -545,9 +545,9 @@
   "@hideNsfwPostsFromFeed": {
     "description": "Toggle to hide NSFW posts from the feed."
   },
-  "hideNsfwPreviews": "Hide NSFW Previews",
+  "hideNsfwPreviews": "Blur NSFW Previews",
   "@hideNsfwPreviews": {
-    "description": "Toggle to hide NSFW previews."
+    "description": "Toggle to blur NSFW previews."
   },
   "hidePassword": "Hide Password",
   "@hidePassword": {},
