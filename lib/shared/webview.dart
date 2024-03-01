@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
@@ -47,6 +49,22 @@ class _WebViewState extends State<WebView> {
       ..setNavigationDelegate(NavigationDelegate())
       ..loadRequest(Uri.parse(widget.url))
       ..setNavigationDelegate(NavigationDelegate(
+        onNavigationRequest: (navigationRequest) {
+          if (!kIsWeb && Platform.isAndroid) {
+            Uri? uri = Uri.tryParse(navigationRequest.url);
+
+            // Check if the scheme is not https, in which case the in-app browser can't handle it
+            if (uri != null && uri.scheme != 'https') {
+              // Although a non-https scheme is an indication that this link is intended for another app,
+              // we actually have to change it back to https in order for the intent to be properly passed to another app.
+              launchUrl(uri.replace(scheme: 'https'), mode: LaunchMode.externalApplication);
+
+              // Finally, navigate back to the previous URL.
+              return NavigationDecision.prevent;
+            }
+          }
+          return NavigationDecision.navigate;
+        },
         onUrlChange: (urlChange) => setState(() => currentUrl = urlChange.url),
       ));
 
