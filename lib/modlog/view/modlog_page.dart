@@ -41,14 +41,9 @@ class ModlogFeedPage extends StatefulWidget {
   State<ModlogFeedPage> createState() => _ModlogFeedPageState();
 }
 
-class _ModlogFeedPageState extends State<ModlogFeedPage> with AutomaticKeepAliveClientMixin<ModlogFeedPage> {
-  @override
-  bool get wantKeepAlive => true;
-
+class _ModlogFeedPageState extends State<ModlogFeedPage> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     return BlocProvider<ModlogBloc>(
       create: (_) => ModlogBloc(lemmyClient: LemmyClient.instance)
         ..add(ModlogFeedFetchedEvent(
@@ -170,85 +165,81 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                               ),
                               Container(
                                 padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
-                                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Wrap(
+                                  spacing: 8.0,
                                   children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: event.getModlogEventColor().withOpacity(0.2),
-                                        borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(right: 4.0),
-                                              child: Icon(
-                                                event.getModlogEventIcon(),
-                                                size: 16.0 * thunderBloc.state.metadataFontSizeScale.textScaleFactor,
-                                                color: theme.colorScheme.onBackground,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: event.getModlogEventColor().withOpacity(0.2),
+                                              borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: 4.0),
+                                                    child: Icon(
+                                                      event.getModlogEventIcon(),
+                                                      size: 16.0 * thunderBloc.state.metadataFontSizeScale.textScaleFactor,
+                                                      color: theme.colorScheme.onBackground,
+                                                    ),
+                                                  ),
+                                                  ScalableText(
+                                                    event.getModlogEventTypeName(),
+                                                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                                                    fontScale: thunderBloc.state.titleFontSizeScale,
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            ScalableText(
-                                              event.getModlogEventTypeName(),
-                                              style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                                              fontScale: thunderBloc.state.titleFontSizeScale,
+                                          ),
+                                          Wrap(
+                                            spacing: 8.0,
+                                            children: [
+                                              ScalableText(
+                                                event.moderator != null ? event.moderator?.name ?? 'Moderator' : event.admin?.name ?? 'Admin',
+                                                fontScale: thunderBloc.state.metadataFontSizeScale,
+                                                style: metaTextStyle,
+                                              ),
+                                              const Text('·'),
+                                              DateTimePostCardMetaData(dateTime: event.dateTime),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    ModlogItemContextCard(type: event.type, post: event.post, comment: event.comment, community: event.community, user: event.user),
+                                    if (event.reason != null)
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 6.0),
+                                              child: ScalableText(
+                                                'Reason: ${event.reason}',
+                                                maxLines: 4,
+                                                overflow: TextOverflow.ellipsis,
+                                                fontScale: thunderBloc.state.contentFontSizeScale,
+                                                style: theme.textTheme.bodyMedium?.copyWith(
+                                                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.90),
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    ScalableText(
-                                      event.getModlogEventTypeDescription(),
-                                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                                      fontScale: thunderBloc.state.titleFontSizeScale,
-                                    ),
-                                    const SizedBox(height: 6.0),
-                                    if (event.reason != null)
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 6.0, top: 4.0),
-                                        child: ScalableText(
-                                          event.reason!,
-                                          maxLines: 4,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontScale: thunderBloc.state.contentFontSizeScale,
-                                          style: theme.textTheme.bodyMedium?.copyWith(
-                                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.90),
-                                          ),
-                                        ),
-                                      ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        ScalableText(
-                                          event.moderator != null ? event.moderator?.name ?? 'Moderator' : event.admin?.name ?? 'Admin',
-                                          fontScale: thunderBloc.state.metadataFontSizeScale,
-                                          style: metaTextStyle,
-                                        ),
-                                        DateTimePostCardMetaData(dateTime: event.dateTime),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 12.0),
-                                    Wrap(
-                                      runSpacing: 4.0,
-                                      children: [
-                                        if (event.post != null) ModlogItemContextCard(title: event.post!.name, post: event.post),
-                                        if (event.comment != null) ModlogItemContextCard(title: event.comment!.content, comment: event.comment),
-                                        if (event.community != null)
-                                          ModlogItemContextCard(
-                                            title: generateCommunityFullName(context, event.community!.name, fetchInstanceNameFromUrl(event.community!.actorId)),
-                                            community: event.community,
-                                          ),
-                                        if (event.user != null)
-                                          ModlogItemContextCard(
-                                            title: generateUserFullName(context, event.user!.name, fetchInstanceNameFromUrl(event.user!.actorId)),
-                                            user: event.user,
-                                          ),
-                                      ],
-                                    ),
                                   ],
                                 ),
                               ),

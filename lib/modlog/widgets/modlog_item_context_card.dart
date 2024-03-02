@@ -1,21 +1,35 @@
 import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html_unescape/html_unescape_small.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/utils/navigate_user.dart';
+import 'package:thunder/utils/instance.dart';
 
 /// Provides some additional context for a [ModlogEventItem]
-class ModlogItemContextCard extends StatefulWidget {
-  const ModlogItemContextCard({super.key, required this.title, this.post, this.comment, this.community, this.user});
+class ModlogItemContextCard extends StatelessWidget {
+  const ModlogItemContextCard({
+    super.key,
+    required this.type,
+    this.post,
+    this.comment,
+    this.community,
+    this.user,
+  });
 
-  /// The title of the context card
-  final String title;
+  /// The type of event
+  final ModlogActionType type;
 
   /// The post related to the event
   final Post? post;
@@ -30,10 +44,131 @@ class ModlogItemContextCard extends StatefulWidget {
   final Person? user;
 
   @override
-  State<ModlogItemContextCard> createState() => _ModlogItemContextCardState();
+  Widget build(BuildContext context) {
+    switch (type) {
+      case ModlogActionType.modLockPost:
+      case ModlogActionType.modRemovePost:
+      case ModlogActionType.modFeaturePost:
+      case ModlogActionType.adminPurgePost:
+        return post != null ? ModlogPostItemContextCard(post: post!, community: community) : Container();
+      case ModlogActionType.modRemoveComment:
+      case ModlogActionType.adminPurgeComment:
+        return comment != null ? ModlogCommentItemContextCard(comment: comment!, user: user, post: post, community: community) : Container();
+      case ModlogActionType.modHideCommunity:
+      case ModlogActionType.adminPurgeCommunity:
+      case ModlogActionType.modRemoveCommunity:
+      case ModlogActionType.modTransferCommunity:
+        return Container();
+      case ModlogActionType.modAdd:
+      case ModlogActionType.modBan:
+      case ModlogActionType.adminPurgePerson:
+      case ModlogActionType.modAddCommunity:
+      case ModlogActionType.modBanFromCommunity:
+        return Container();
+      default:
+        return Container();
+    }
+  }
 }
 
-class _ModlogItemContextCardState extends State<ModlogItemContextCard> {
+/// Provides some additional context for a [Post] related modlog event
+///
+/// Displays the title and community of the post. If the post is not removed, tapping on the card will navigate to the post
+class ModlogPostItemContextCard extends StatelessWidget {
+  const ModlogPostItemContextCard({
+    super.key,
+    required this.post,
+    this.community,
+  });
+
+  /// The post related to the event
+  final Post post;
+
+  /// The community related to the event
+  final Community? community;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final state = context.watch<ThunderBloc>().state;
+
+    return InkWell(
+      onTap: () {
+        if (!post.removed) {
+          navigateToPost(context, postId: post.id);
+        } else {
+          showSnackbar(l10n.unableToFindPost);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 8.0, top: 6, left: 8.0, right: 8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ScalableText(
+                    HtmlUnescape().convert(post.name),
+                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                    fontScale: state.titleFontSizeScale,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 6.0, top: 6.0),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(6),
+                      onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: community?.id),
+                      child: ScalableText(
+                        generateCommunityFullName(context, community?.name, fetchInstanceNameFromUrl(community?.actorId)),
+                        fontScale: state.metadataFontSizeScale,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Provides some additional context for a [Comment] related modlog event
+///
+/// Displays the comment information, including post, user, and community.
+/// Hidden by default due to possibility of sensitive content.
+class ModlogCommentItemContextCard extends StatefulWidget {
+  const ModlogCommentItemContextCard({
+    super.key,
+    required this.comment,
+    this.post,
+    this.user,
+    this.community,
+  });
+
+  /// The comment related to the event
+  final Comment comment;
+
+  /// The post related to the event
+  final Post? post;
+
+  /// The user related to the event
+  final Person? user;
+
+  /// The community related to the event
+  final Community? community;
+
+  @override
+  State<ModlogCommentItemContextCard> createState() => _ModlogCommentItemContextCardState();
+}
+
+class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextCard> {
   /// Whether to show the sensitive content
   bool showSensitiveContent = false;
 
@@ -41,96 +176,121 @@ class _ModlogItemContextCardState extends State<ModlogItemContextCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final state = context.watch<ThunderBloc>().state;
 
-    IconData icon;
+    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
+      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+    );
 
-    if (widget.post != null) {
-      icon = Icons.article_rounded;
-    } else if (widget.comment != null) {
-      icon = Icons.comment_rounded;
-    } else if (widget.community != null) {
-      icon = Icons.people_rounded;
-    } else if (widget.user != null) {
-      icon = Icons.person_rounded;
-    } else {
-      icon = Icons.link;
-    }
-
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.0)),
-      child: Stack(
-        alignment: Alignment.bottomRight,
-        fit: StackFit.passthrough,
-        children: [
-          Container(
-            color: ElevationOverlay.applySurfaceTint(
-              theme.colorScheme.surface.withOpacity(0.8),
-              theme.colorScheme.surfaceTint,
-              10,
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Icon(
-                    icon,
-                    color: theme.colorScheme.onSecondaryContainer,
-                  ),
-                ),
-                Expanded(
-                  child: AnimatedSize(
-                    duration: const Duration(milliseconds: 100),
-                    child: (widget.comment != null && !showSensitiveContent)
-                        ? Text(
-                            l10n.sensitiveContentWarning,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: theme.colorScheme.secondary,
+    return InkWell(
+      onTap: () {
+        try {
+          if (widget.post == null) {
+            return showSnackbar(l10n.unableToFindPost);
+          }
+          navigateToPost(context, postId: widget.post!.id, selectedCommentId: widget.comment.id);
+        } catch (e) {
+          showSnackbar(l10n.unableToFindPost);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 8.0, top: 6, left: 8.0, right: 8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        WidgetSpan(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 4.0),
+                            child: Icon(
+                              Icons.article_rounded,
+                              size: MediaQuery.textScalerOf(context).scale(18 * state.titleFontSizeScale.textScaleFactor),
                             ),
-                          )
-                        : widget.comment != null
-                            ? CommonMarkdownBody(body: widget.comment!.content, isComment: true) // Use markdown for comments
-                            : Text(widget.title),
+                          ),
+                        ),
+                        TextSpan(
+                          text: HtmlUnescape().convert(widget.post!.name),
+                        )
+                      ],
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
+                      ),
+                    ),
+                    textScaler: TextScaler.noScaling,
                   ),
-                ),
-              ],
-            ),
-          ),
-          Positioned.fill(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                splashColor: theme.colorScheme.primary.withOpacity(0.4),
-                onTap: (!showSensitiveContent && widget.comment != null)
-                    ? () {
-                        setState(() {
-                          showSensitiveContent = !showSensitiveContent;
-                        });
-                      }
-                    : () {
-                        if (widget.post != null) {
-                          if (widget.post!.removed) {
-                            showSnackbar(l10n.unableToFindPost);
-                          } else {
-                            navigateToPost(context, postId: widget.post!.id);
-                          }
-                        } else if (widget.community != null) {
-                          if (widget.community!.removed) {
-                            showSnackbar(l10n.unableToFindCommunity);
-                          } else {
-                            navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community!.id);
-                          }
-                        } else if (widget.user != null) {
-                          navigateToUserPage(context, userId: widget.user!.id);
-                        }
-                      },
-                borderRadius: BorderRadius.circular(12.0),
+                  Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 100),
+                    child: showSensitiveContent
+                        ? CommonMarkdownBody(body: widget.comment.content, isComment: true)
+                        : InkWell(
+                            borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+                            onTap: () => setState(() {
+                              showSensitiveContent = !showSensitiveContent;
+                            }),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: ScalableText(
+                                l10n.sensitiveContentWarning,
+                                style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.secondary),
+                                fontScale: state.metadataFontSizeScale,
+                              ),
+                            ),
+                          ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 6.0, top: 8.0),
+                    child: Wrap(
+                      direction: Axis.horizontal,
+                      alignment: WrapAlignment.start,
+                      crossAxisAlignment: WrapCrossAlignment.end,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              borderRadius: BorderRadius.circular(6),
+                              onTap: () => navigateToUserPage(context, userId: widget.user?.id),
+                              child: ScalableText(
+                                '${widget.user?.displayName ?? widget.user?.name}',
+                                fontScale: state.metadataFontSizeScale,
+                                style: textStyleCommunityAndAuthor,
+                              ),
+                            ),
+                            ScalableText(
+                              ' in ',
+                              fontScale: state.metadataFontSizeScale,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(6),
+                          onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community?.id),
+                          child: ScalableText(
+                            generateCommunityFullName(context, widget.community?.name, fetchInstanceNameFromUrl(widget.community?.actorId)),
+                            fontScale: state.metadataFontSizeScale,
+                            style: textStyleCommunityAndAuthor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
