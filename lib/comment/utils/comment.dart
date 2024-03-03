@@ -185,23 +185,35 @@ bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentResponse m
 }
 
 CommentView cleanDeletedCommentView(CommentView commentView) {
-  if (!commentView.comment.deleted) {
-    return commentView;
+  if (commentView.comment.removed) {
+    return CommentView(
+      comment: convertToRemovedComment(commentView.comment),
+      creator: commentView.creator,
+      post: commentView.post,
+      community: commentView.community,
+      counts: commentView.counts,
+      creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
+      saved: commentView.saved,
+      creatorBlocked: commentView.creatorBlocked,
+      subscribed: commentView.subscribed,
+    );
   }
 
-  Comment deletedComment = convertToDeletedComment(commentView.comment);
+  if (commentView.comment.deleted) {
+    return CommentView(
+      comment: convertToDeletedComment(commentView.comment),
+      creator: commentView.creator,
+      post: commentView.post,
+      community: commentView.community,
+      counts: commentView.counts,
+      creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
+      saved: commentView.saved,
+      creatorBlocked: commentView.creatorBlocked,
+      subscribed: commentView.subscribed,
+    );
+  }
 
-  return CommentView(
-    comment: deletedComment,
-    creator: commentView.creator,
-    post: commentView.post,
-    community: commentView.community,
-    counts: commentView.counts,
-    creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
-    saved: commentView.saved,
-    creatorBlocked: commentView.creatorBlocked,
-    subscribed: commentView.subscribed,
-  );
+  return commentView;
 }
 
 Comment convertToDeletedComment(Comment comment) {
@@ -210,6 +222,23 @@ Comment convertToDeletedComment(Comment comment) {
     creatorId: comment.creatorId,
     postId: comment.postId,
     content: "_deleted by creator_",
+    removed: comment.removed,
+    distinguished: comment.distinguished,
+    published: comment.published,
+    deleted: comment.deleted,
+    apId: comment.apId,
+    local: comment.local,
+    languageId: comment.languageId,
+    path: comment.path,
+  );
+}
+
+Comment convertToRemovedComment(Comment comment) {
+  return Comment(
+    id: comment.id,
+    creatorId: comment.creatorId,
+    postId: comment.postId,
+    content: "_removed by moderator_",
     removed: comment.removed,
     distinguished: comment.distinguished,
     published: comment.published,
