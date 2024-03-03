@@ -183,6 +183,7 @@ class FeedPageAppBar extends StatelessWidget {
                         onTap: () async {
                           final ThunderState state = context.read<ThunderBloc>().state;
                           final bool reduceAnimations = state.reduceAnimations;
+                          final SearchBloc searchBloc = SearchBloc();
 
                           await Navigator.of(context).push(
                             SwipeablePageRoute(
@@ -192,10 +193,10 @@ class FeedPageAppBar extends StatelessWidget {
                               builder: (context) => MultiBlocProvider(
                                 providers: [
                                   // Create a new SearchBloc so it doesn't conflict with the main one
-                                  BlocProvider.value(value: SearchBloc()),
+                                  BlocProvider.value(value: searchBloc),
                                   BlocProvider.value(value: thunderBloc),
                                 ],
-                                child: SearchPage(communityToSearch: feedBloc.state.fullCommunityView!.communityView),
+                                child: SearchPage(communityToSearch: feedBloc.state.fullCommunityView!.communityView, isInitiallyFocused: true),
                               ),
                             ),
                           );

@@ -195,7 +195,7 @@ Future<PostView> savePost(int postId, bool save) async {
 }
 
 /// Parse a post with media
-Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
+Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? resolutionInstance}) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
   bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) == true && prefs.getBool(LocalSettings.useCompactView.name) != true;
@@ -203,8 +203,24 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
 
+  List<PostView> postViewsFinal = [];
+  if (resolutionInstance != null) {
+    final LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance)).lemmyApiV3;
+
+    for (PostView postView in postViews) {
+      try {
+        final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: postView.post.apId));
+        postViewsFinal.add(resolveObjectResponse.post!);
+      } catch (e) {
+        // If we can't resolve it, we won't even add it
+      }
+    }
+  } else {
+    postViewsFinal = postViews.toList();
+  }
+
   Iterable<Future<PostViewMedia>> postFutures =
-      postViews.expand((post) => [if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
+      postViewsFinal.expand((post) => [if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;

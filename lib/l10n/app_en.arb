@@ -497,6 +497,10 @@
   "@expanded": {
     "description": "Expanded post body view type"
   },
+  "exploreInstance": "Explore instance",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
   "extraLarge": "Extra Large",
   "@extraLarge": {
     "description": "Description for extra large font scale"
@@ -585,9 +589,9 @@
   "@hideNsfwPostsFromFeed": {
     "description": "Toggle to hide NSFW posts from the feed."
   },
-  "hideNsfwPreviews": "Hide NSFW Previews",
+  "hideNsfwPreviews": "Blur NSFW Previews",
   "@hideNsfwPreviews": {
-    "description": "Toggle to hide NSFW previews."
+    "description": "Toggle to blur NSFW previews."
   },
   "hidePassword": "Hide Password",
   "@hidePassword": {},

@@ -11,6 +11,7 @@
 ## Changed
 - Small UI adjustments for account switcher
 - Dynamic Maximum Zoom Level Based on Image Resolution - contribution from @Niranjan-Dorage
+- Update docker build scripts for API 34 and Flutter 3.16.9 - contribution from @Fmstrat
 
 ### Fixed
 - Fixed issue where Thunder was being locked to 60Hz on 120Hz displays on Android
