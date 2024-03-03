@@ -60,13 +60,13 @@ class ModlogItemContextCard extends StatelessWidget {
       case ModlogActionType.adminPurgeCommunity:
       case ModlogActionType.modRemoveCommunity:
       case ModlogActionType.modTransferCommunity:
-        return ModlogCommunityItemContextCard(community: community);
+        return community != null ? ModlogCommunityItemContextCard(community: community) : Container();
       case ModlogActionType.modAdd:
       case ModlogActionType.modBan:
       case ModlogActionType.adminPurgePerson:
       case ModlogActionType.modAddCommunity:
       case ModlogActionType.modBanFromCommunity:
-        return ModlogUserItemContextCard(user: user);
+        return user != null ? ModlogUserItemContextCard(user: user) : Container();
       default:
         return Container();
     }
@@ -338,7 +338,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
                       fontScale: state.titleFontSizeScale,
                     ),
                     ScalableText(
-                      generateUserFullName(context, user?.name, fetchInstanceNameFromUrl(user?.actorId)),
+                      user == null ? '-' : generateUserFullName(context, user?.name, fetchInstanceNameFromUrl(user?.actorId)),
                       fontScale: state.metadataFontSizeScale,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
