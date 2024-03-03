@@ -10,6 +10,8 @@ import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -58,13 +60,13 @@ class ModlogItemContextCard extends StatelessWidget {
       case ModlogActionType.adminPurgeCommunity:
       case ModlogActionType.modRemoveCommunity:
       case ModlogActionType.modTransferCommunity:
-        return Container();
+        return ModlogCommunityItemContextCard(community: community);
       case ModlogActionType.modAdd:
       case ModlogActionType.modBan:
       case ModlogActionType.adminPurgePerson:
       case ModlogActionType.modAddCommunity:
       case ModlogActionType.modBanFromCommunity:
-        return Container();
+        return ModlogUserItemContextCard(user: user);
       default:
         return Container();
     }
@@ -288,6 +290,120 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                   ),
                 ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Provides some additional context for a [Person] related modlog event
+class ModlogUserItemContextCard extends StatelessWidget {
+  const ModlogUserItemContextCard({super.key, this.user});
+
+  /// The user related to the event
+  final Person? user;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final state = context.watch<ThunderBloc>().state;
+
+    return InkWell(
+      onTap: () {
+        if (user != null) {
+          navigateToUserPage(context, userId: user!.id);
+        } else {
+          showSnackbar(l10n.unableToFindUser);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 8.0, top: 8.0, left: 8.0, right: 8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Wrap(
+              spacing: 8.0,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                UserAvatar(person: user),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ScalableText(
+                      HtmlUnescape().convert(user?.displayName ?? user?.name ?? l10n.user),
+                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                      fontScale: state.titleFontSizeScale,
+                    ),
+                    ScalableText(
+                      generateUserFullName(context, user?.name, fetchInstanceNameFromUrl(user?.actorId)),
+                      fontScale: state.metadataFontSizeScale,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Provides some additional context for a [Community] related modlog event
+class ModlogCommunityItemContextCard extends StatelessWidget {
+  const ModlogCommunityItemContextCard({super.key, this.community});
+
+  /// The community related to the event
+  final Community? community;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final state = context.watch<ThunderBloc>().state;
+
+    return InkWell(
+      onTap: () {
+        if (community != null && !community!.removed) {
+          navigateToFeedPage(context, feedType: FeedType.community, communityId: community!.id);
+        } else {
+          showSnackbar(l10n.unableToFindCommunity);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 8.0, top: 8.0, left: 8.0, right: 8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Wrap(
+              spacing: 8.0,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                CommunityAvatar(community: community),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ScalableText(
+                      HtmlUnescape().convert(community?.title ?? community?.name ?? l10n.community),
+                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                      fontScale: state.titleFontSizeScale,
+                    ),
+                    ScalableText(
+                      generateCommunityFullName(context, community?.name, fetchInstanceNameFromUrl(community?.actorId)),
+                      fontScale: state.metadataFontSizeScale,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
