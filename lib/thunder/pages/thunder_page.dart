@@ -485,6 +485,11 @@ class _ThunderState extends State<Thunder> {
                       },
                       buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
                       listener: (context, state) {
+                        // Although the buildWhen delegate exlcudes this state,
+                        // there seems to be a timing issue where we can end up here anyway.
+                        // So just return.
+                        if (state.status == AuthStatus.loading) return;
+
                         context.read<AccountBloc>().add(RefreshAccountInformation());
 
                         // Add a bit of artificial delay to allow preferences to set the proper active profile
