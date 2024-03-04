@@ -56,20 +56,10 @@ class SaveCommentEvent extends PostEvent {
   const SaveCommentEvent({required this.commentId, required this.save});
 }
 
-class CreateCommentEvent extends PostEvent {
-  final String content;
-  final int? parentCommentId;
-  final int? selectedCommentId;
-  final String? selectedCommentPath;
+final class CommentUpdatedEvent extends PostEvent {
+  final CommentView commentView;
 
-  const CreateCommentEvent({required this.content, this.parentCommentId, this.selectedCommentId, this.selectedCommentPath});
-}
-
-class EditCommentEvent extends PostEvent {
-  final String content;
-  final int commentId;
-
-  const EditCommentEvent({required this.content, required this.commentId});
+  const CommentUpdatedEvent({required this.commentView});
 }
 
 class DeleteCommentEvent extends PostEvent {

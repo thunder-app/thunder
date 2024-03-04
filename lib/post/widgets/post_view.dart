@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,13 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -23,15 +19,12 @@ import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -54,6 +47,7 @@ class PostSubview extends StatefulWidget {
   final int? selectedCommentId;
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
+  final bool showActionBar;
 
   const PostSubview({
     super.key,
@@ -62,6 +56,7 @@ class PostSubview extends StatefulWidget {
     required this.postViewMedia,
     required this.moderators,
     required this.crossPosts,
+    this.showActionBar = true,
   });
 
   @override
@@ -298,234 +293,184 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               ),
             ),
             const Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: TextButton(
-                    onPressed: isUserLoggedIn
-                        ? () {
-                            HapticFeedback.mediumImpact();
-                            context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == 1 ? 0 : 1));
-                          }
-                        : null,
-                    style: TextButton.styleFrom(
-                      fixedSize: const Size.fromHeight(40),
-                      foregroundColor: postView.myVote == 1 ? theme.textTheme.bodyMedium?.color : Colors.orange,
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.arrow_upward,
-                          semanticLabel: postView.myVote == 1 ? 'Upvoted' : 'Upvote',
-                          color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
-                        ),
-                        if (showScores) ...[
-                          const SizedBox(width: 4.0),
-                          Text(
-                            formatNumberToK(widget.postViewMedia.postView.counts.upvotes),
-                            style: TextStyle(
-                              color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
-                            ),
-                          ),
-                        ]
-                      ],
-                    ),
-                  ),
-                ),
-                if (downvotesEnabled)
+            if (widget.showActionBar)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
                   Expanded(
                     flex: 1,
                     child: TextButton(
                       onPressed: isUserLoggedIn
                           ? () {
                               HapticFeedback.mediumImpact();
-                              context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == -1 ? 0 : -1));
+                              context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == 1 ? 0 : 1));
                             }
                           : null,
                       style: TextButton.styleFrom(
                         fixedSize: const Size.fromHeight(40),
-                        foregroundColor: postView.myVote == -1 ? theme.textTheme.bodyMedium?.color : Colors.blue,
+                        foregroundColor: postView.myVote == 1 ? theme.textTheme.bodyMedium?.color : Colors.orange,
                         padding: EdgeInsets.zero,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.arrow_downward,
-                            semanticLabel: postView.myVote == -1 ? 'Downvoted' : 'Downvote',
-                            color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                            Icons.arrow_upward,
+                            semanticLabel: postView.myVote == 1 ? 'Upvoted' : 'Upvote',
+                            color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                           ),
                           if (showScores) ...[
                             const SizedBox(width: 4.0),
                             Text(
-                              formatNumberToK(widget.postViewMedia.postView.counts.downvotes),
+                              formatNumberToK(widget.postViewMedia.postView.counts.upvotes),
                               style: TextStyle(
-                                color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                                color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                               ),
                             ),
-                          ],
+                          ]
                         ],
                       ),
                     ),
                   ),
-                Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    onPressed: isUserLoggedIn
-                        ? () {
-                            HapticFeedback.mediumImpact();
-                            context.read<PostBloc>().add(SavePostEvent(postId: post.id, save: !postView.saved));
-                          }
-                        : null,
-                    icon: Icon(
-                      postView.saved ? Icons.star_rounded : Icons.star_border_rounded,
-                      semanticLabel: postView.saved ? 'Saved' : 'Save',
-                      color: isUserLoggedIn ? (postView.saved ? Colors.purple : theme.textTheme.bodyMedium?.color) : null,
+                  if (downvotesEnabled)
+                    Expanded(
+                      flex: 1,
+                      child: TextButton(
+                        onPressed: isUserLoggedIn
+                            ? () {
+                                HapticFeedback.mediumImpact();
+                                context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == -1 ? 0 : -1));
+                              }
+                            : null,
+                        style: TextButton.styleFrom(
+                          fixedSize: const Size.fromHeight(40),
+                          foregroundColor: postView.myVote == -1 ? theme.textTheme.bodyMedium?.color : Colors.blue,
+                          padding: EdgeInsets.zero,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.arrow_downward,
+                              semanticLabel: postView.myVote == -1 ? 'Downvoted' : 'Downvote',
+                              color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                            ),
+                            if (showScores) ...[
+                              const SizedBox(width: 4.0),
+                              Text(
+                                formatNumberToK(widget.postViewMedia.postView.counts.downvotes),
+                                style: TextStyle(
+                                  color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
-                    style: IconButton.styleFrom(
-                      foregroundColor: postView.saved ? null : Colors.purple,
+                  Expanded(
+                    flex: 1,
+                    child: IconButton(
+                      onPressed: isUserLoggedIn
+                          ? () {
+                              HapticFeedback.mediumImpact();
+                              context.read<PostBloc>().add(SavePostEvent(postId: post.id, save: !postView.saved));
+                            }
+                          : null,
+                      icon: Icon(
+                        postView.saved ? Icons.star_rounded : Icons.star_border_rounded,
+                        semanticLabel: postView.saved ? 'Saved' : 'Save',
+                        color: isUserLoggedIn ? (postView.saved ? Colors.purple : theme.textTheme.bodyMedium?.color) : null,
+                      ),
+                      style: IconButton.styleFrom(
+                        foregroundColor: postView.saved ? null : Colors.purple,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    onPressed: isUserLoggedIn
-                        ? () async {
-                            if (postView.post.locked) {
-                              showSnackbar(l10n.postLocked);
-                              return;
-                            }
-
-                            if (isOwnPost) {
-                              ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                              AccountBloc accountBloc = context.read<AccountBloc>();
-
-                              final ThunderState thunderState = context.read<ThunderBloc>().state;
-                              final bool reduceAnimations = thunderState.reduceAnimations;
-
-                              final Account? account = await fetchActiveProfileAccount();
-                              final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
-                                auth: account?.jwt,
-                                id: postViewMedia.postView.community.id,
-                              ));
-
-                              if (context.mounted) {
-                                Navigator.of(context).push(
-                                  SwipeablePageRoute(
-                                    transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                                    canOnlySwipeFromEdge: true,
-                                    backGestureDetectionWidth: 45,
-                                    builder: (context) {
-                                      return MultiBlocProvider(
-                                        providers: [
-                                          BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                          BlocProvider<AccountBloc>.value(value: accountBloc),
-                                        ],
-                                        child: CreatePostPage(
-                                          communityId: postViewMedia.postView.community.id,
-                                          communityView: getCommunityResponse.communityView,
-                                          postView: postViewMedia.postView,
-                                          onPostSuccess: (PostViewMedia pvm) {
-                                            setState(() => postViewMedia = pvm);
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
+                  Expanded(
+                    flex: 1,
+                    child: IconButton(
+                      onPressed: isUserLoggedIn
+                          ? () async {
+                              if (postView.post.locked) {
+                                showSnackbar(l10n.postLocked);
+                                return;
                               }
-                              return;
-                            }
 
-                            PostBloc postBloc = context.read<PostBloc>();
-                            ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                            account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
+                              if (isOwnPost) {
+                                ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                                AccountBloc accountBloc = context.read<AccountBloc>();
 
-                            final ThunderState state = context.read<ThunderBloc>().state;
-                            final bool reduceAnimations = state.reduceAnimations;
+                                final ThunderState thunderState = context.read<ThunderBloc>().state;
+                                final bool reduceAnimations = thunderState.reduceAnimations;
 
-                            SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                            DraftComment? newDraftComment;
-                            DraftComment? previousDraftComment;
-                            String draftId = '${LocalSettings.draftsCache.name}-${widget.postViewMedia.postView.post.id}';
-                            String? draftCommentJson = prefs.getString(draftId);
-                            if (draftCommentJson != null) {
-                              previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-                            }
-                            Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                              if (newDraftComment?.isNotEmpty == true) {
-                                prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                              }
-                            });
+                                final Account? account = await fetchActiveProfileAccount();
+                                final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+                                  auth: account?.jwt,
+                                  id: postViewMedia.postView.community.id,
+                                ));
 
-                            if (context.mounted) {
-                              Navigator.of(context)
-                                  .push(
-                                SwipeablePageRoute(
-                                  transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                                  canOnlySwipeFromEdge: true,
-                                  backGestureDetectionWidth: 45,
-                                  builder: (context) {
-                                    return MultiBlocProvider(
-                                      providers: [
-                                        BlocProvider<PostBloc>.value(value: postBloc),
-                                        BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                        BlocProvider<account_bloc.AccountBloc>.value(value: accountBloc),
-                                      ],
-                                      child: CreateCommentPage(
-                                        postView: widget.postViewMedia,
-                                        previousDraftComment: previousDraftComment,
-                                        onUpdateDraft: (c) => newDraftComment = c,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                                  .whenComplete(() async {
-                                timer.cancel();
-
-                                if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
-                                  await Future.delayed(const Duration(milliseconds: 300));
-                                  if (context.mounted) {
-                                    showSnackbar(l10n.commentSavedAsDraft);
-                                  }
-                                  prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                                } else {
-                                  prefs.remove(draftId);
+                                if (context.mounted) {
+                                  Navigator.of(context).push(
+                                    SwipeablePageRoute(
+                                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                      canOnlySwipeFromEdge: true,
+                                      backGestureDetectionWidth: 45,
+                                      builder: (context) {
+                                        return MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                            BlocProvider<AccountBloc>.value(value: accountBloc),
+                                          ],
+                                          child: CreatePostPage(
+                                            communityId: postViewMedia.postView.community.id,
+                                            communityView: getCommunityResponse.communityView,
+                                            postView: postViewMedia.postView,
+                                            onPostSuccess: (PostViewMedia pvm) {
+                                              setState(() => postViewMedia = pvm);
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
                                 }
-                              });
+                                return;
+                              }
+
+                              navigateToCreateCommentPage(
+                                context,
+                                postViewMedia: postViewMedia,
+                                onCommentSuccess: (CommentView commentView) {
+                                  context.read<PostBloc>().add(CommentUpdatedEvent(commentView: commentView));
+                                },
+                              );
                             }
-                          }
-                        : null,
-                    icon: postView.post.locked
-                        ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.orange.shade900)
-                        : isOwnPost
-                            ? Icon(Icons.edit_rounded, semanticLabel: AppLocalizations.of(context)!.edit)
-                            : Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
+                          : null,
+                      icon: postView.post.locked
+                          ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.orange.shade900)
+                          : isOwnPost
+                              ? Icon(Icons.edit_rounded, semanticLabel: AppLocalizations.of(context)!.edit)
+                              : Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
+                    ),
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                    onPressed: useAdvancedShareSheet
-                        ? () => showAdvancedShareSheet(context, widget.postViewMedia)
-                        : widget.postViewMedia.media.isEmpty
-                            ? () => Share.share(post.apId)
-                            : () => showPostActionBottomModalSheet(
-                                  context,
-                                  widget.postViewMedia,
-                                  actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
-                                ),
-                  ),
-                )
-              ],
-            ),
+                  Expanded(
+                    flex: 1,
+                    child: IconButton(
+                      icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
+                      onPressed: useAdvancedShareSheet
+                          ? () => showAdvancedShareSheet(context, widget.postViewMedia)
+                          : widget.postViewMedia.media.isEmpty
+                              ? () => Share.share(post.apId)
+                              : () => showPostActionBottomModalSheet(
+                                    context,
+                                    widget.postViewMedia,
+                                    actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
+                                  ),
+                    ),
+                  )
+                ],
+              ),
           ],
         ),
       ),

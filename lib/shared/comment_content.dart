@@ -14,6 +14,7 @@ class CommentContent extends StatefulWidget {
   final bool isOwnComment;
   final bool isHidden;
   final bool excludeSemantics;
+  final bool showActionBar;
 
   final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
@@ -39,6 +40,7 @@ class CommentContent extends StatefulWidget {
     this.moddingCommentId,
     this.moderators,
     this.excludeSemantics = false,
+    this.showActionBar = true,
   });
 
   @override
@@ -101,7 +103,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                         padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn) ? 0.0 : 8.0),
                         child: CommonMarkdownBody(body: widget.comment.comment.content, isComment: true),
                       ),
-                      if (state.showCommentButtonActions && widget.isUserLoggedIn)
+                      if (state.showCommentButtonActions && widget.isUserLoggedIn && widget.showActionBar)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
                           child: CommentCardActions(

@@ -61,13 +61,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _saveCommentEvent,
       transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
-    on<CreateCommentEvent>(
-      _createCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
-    on<EditCommentEvent>(
-      _editCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
+
+    /// Handles updating a given a comment within the post page
+    on<CommentUpdatedEvent>(
+      _onCommentUpdated,
+      transformer: throttleDroppable(Duration.zero),
     );
     on<DeleteCommentEvent>(
       _deleteCommentEvent,
@@ -466,91 +464,29 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
   }
 
-  Future<void> _createCommentEvent(CreateCommentEvent event, Emitter<PostState> emit) async {
-    try {
-      emit(state.copyWith(status: PostStatus.refreshing));
+  /// Handles updating a given comment within the post
+  Future<void> _onCommentUpdated(CommentUpdatedEvent event, Emitter<PostState> emit) async {
+    emit(state.copyWith(status: PostStatus.refreshing));
 
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+    List<CommentViewTree> updatedComments = state.comments;
 
-      if (account?.jwt == null) {
-        return emit(state.copyWith(
-          status: PostStatus.failure,
-          errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
-        ));
-      }
+    // Attempt to update the comment if it exists
+    bool updated = updateModifiedComment(state.comments, event.commentView);
+    int? newlyCreatedCommentId;
 
-      if (state.postView?.postView.post.id == null) {
-        return emit(state.copyWith(
-          status: PostStatus.failure,
-          errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDeterminePostComment,
-        ));
-      }
-
-      CommentResponse createComment = await lemmy.run(CreateComment(
-        auth: account!.jwt!,
-        content: event.content,
-        postId: state.postView!.postView.post.id,
-        parentId: event.parentCommentId,
-      ));
-
-      int? selectedCommentId = event.selectedCommentId;
-      String? selectedCommentPath = event.selectedCommentPath;
-
-      List<CommentViewTree> updatedComments = insertNewComment(state.comments, createComment.commentView);
-
-      if (event.parentCommentId == null) {
-        selectedCommentId = null;
-        selectedCommentPath = null;
-      }
-      return emit(state.copyWith(
-          status: PostStatus.success,
-          comments: updatedComments,
-          selectedCommentId: selectedCommentId,
-          selectedCommentPath: selectedCommentPath,
-          newlyCreatedCommentId: createComment.commentView.comment.id));
-    } catch (e) {
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    if (!updated) {
+      // If it doesn't exist, insert it instead
+      updatedComments = insertNewComment(state.comments, event.commentView);
+      newlyCreatedCommentId = event.commentView.comment.id;
     }
-  }
 
-  Future<void> _editCommentEvent(EditCommentEvent event, Emitter<PostState> emit) async {
-    try {
-      emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-      if (account?.jwt == null) {
-        return emit(state.copyWith(
-            status: PostStatus.failure,
-            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
-            moddingCommentId: event.commentId,
-            selectedCommentId: state.selectedCommentId,
-            selectedCommentPath: state.selectedCommentPath));
-      }
-
-      if (state.postView?.postView.post.id == null) {
-        return emit(state.copyWith(
-            status: PostStatus.failure,
-            errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDeterminePostComment,
-            moddingCommentId: event.commentId,
-            selectedCommentId: state.selectedCommentId,
-            selectedCommentPath: state.selectedCommentPath));
-      }
-
-      CommentResponse editComment = await lemmy.run(EditComment(
-        auth: account!.jwt!,
-        content: event.content,
-        commentId: event.commentId,
-      ));
-
-      updateModifiedComment(state.comments, editComment);
-
-      return emit(state.copyWith(status: PostStatus.success, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-    } catch (e) {
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
-    }
+    return emit(state.copyWith(
+      status: PostStatus.success,
+      comments: updatedComments,
+      selectedCommentPath: null,
+      selectedCommentId: null,
+      newlyCreatedCommentId: newlyCreatedCommentId,
+    ));
   }
 
   Future<void> _deleteCommentEvent(DeleteCommentEvent event, Emitter<PostState> emit) async {
@@ -577,7 +513,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       }
 
       CommentResponse deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
-      updateModifiedComment(state.comments, deletedComment);
+      updateModifiedComment(state.comments, deletedComment.commentView);
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
