@@ -126,7 +126,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Handles post related actions on a given item within the feed
   Future<void> _onFeedItemActioned(FeedItemActionedEvent event, Emitter<FeedState> emit) async {
-    assert(!(event.postViewMedia == null && event.postId == null));
+    assert(!(event.postViewMedia == null && event.postId == null && event.postIds == null));
     emit(state.copyWith(status: FeedStatus.fetching));
 
     // TODO: Check if the current account has permission to perform the PostAction
@@ -210,7 +210,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         }
       case PostAction.multiRead:
         List<int> eventPostIds = event.postIds ?? [];
-        if (eventPostIds.length > 0) {
+
+        if (eventPostIds.isNotEmpty) {
           // Optimistically read the posts
           List<int> existingPostViewMediaIndexes = [];
           List<int> postIds = [];
@@ -225,9 +226,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
             }
           }
 
-          // Give a slight delay to have the UI perform any navigation first
-          await Future.delayed(const Duration(milliseconds: 250));
-
           try {
             for (int i = 0; i < existingPostViewMediaIndexes.length; i++) {
               PostView updatedPostView = optimisticallyReadPost(postViewMedias[i], event.value);
@@ -239,7 +237,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
             emit(state.copyWith(status: FeedStatus.fetching));
 
             List<int> failed = await markPostsAsRead(postIds, event.value);
-            if (failed.length == 0) return emit(state.copyWith(status: FeedStatus.success));
+            if (failed.isEmpty) return emit(state.copyWith(status: FeedStatus.success));
 
             // Restore the original post contents if not successful
             for (int i = 0; i < failed.length; i++) {

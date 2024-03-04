@@ -88,7 +88,7 @@ class _PostCardState extends State<PostCard> {
 
     return Listener(
       behavior: HitTestBehavior.opaque,
-      onPointerDown: (event) {
+      onPointerDown: (PointerDownEvent event) {
         widget.onDownAction();
       },
       onPointerUp: (event) {

@@ -47,18 +47,30 @@ Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
   if (account?.jwt == null) throw Exception('User not logged in');
 
   List<int> failed = [];
-  // TODO: Lemmy 0.19 support postIds in MarkPostAsRead
-  //       Check what version the server is, and use that if we can
-  for (int i = 0; i < postIds.length; i++) {
+
+  if (LemmyClient.instance.supportsFeature(LemmyFeature.multiRead)) {
     MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
       auth: account!.jwt!,
-      postId: postIds[i],
+      postIds: postIds,
       read: read,
     ));
+
     if (!markPostAsReadResponse.isSuccess()) {
-      failed.add(i);
+      failed = List<int>.generate(postIds.length, (index) => index);
+    }
+  } else {
+    for (int i = 0; i < postIds.length; i++) {
+      MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
+        auth: account!.jwt!,
+        postId: postIds[i],
+        read: read,
+      ));
+      if (!markPostAsReadResponse.isSuccess()) {
+        failed.add(i);
+      }
     }
   }
+
   return failed;
 }
 
