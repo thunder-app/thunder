@@ -13,7 +13,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/instance/instance_view.dart';
+import 'package:thunder/instance/widgets/instance_view.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
