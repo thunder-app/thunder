@@ -15,8 +15,12 @@ import 'package:thunder/user/utils/logout_dialog.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+/// Creates a widget which can display a list of accounts and anonymous instances.
+/// By default, when logging out of an account, a confirmation dialog is shown. To suppress this, pass [showLogoutDialog] as `false`.
+/// To hide anonymous instances and the ability to add new accounts, pass [quickSelectMode] as `true`.
+/// To provide a custom heading for the top of the modal, pass a [customHeading].
+/// By default, Thunder will reload when a different account is selected. To suppress this behavior, pass [reloadOnSwitch] as `false`.
 class ProfileModalBody extends StatefulWidget {
-  final bool anonymous;
   final bool showLogoutDialog;
   final bool quickSelectMode;
   final String? customHeading;
@@ -24,7 +28,6 @@ class ProfileModalBody extends StatefulWidget {
 
   const ProfileModalBody({
     super.key,
-    this.anonymous = false,
     this.showLogoutDialog = false,
     this.quickSelectMode = false,
     this.customHeading,
