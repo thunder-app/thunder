@@ -1,33 +1,77 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 import 'package:thunder/community/widgets/post_card.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
-class FeedPostList extends StatelessWidget {
+class FeedPostList extends StatefulWidget {
+  /// Determines the number of columns to display
   final bool tabletMode;
+
+  /// Determines whether to mark posts as read on scroll
+  final bool markPostReadOnScroll;
+
+  /// The list of posts that have been queued for removal using the dismiss read action
   final List<int>? queuedForRemoval;
+
+  /// The list of posts to show on the feed
   final List<PostViewMedia> postViewMedias;
 
   const FeedPostList({
     super.key,
     required this.postViewMedias,
     required this.tabletMode,
+    required this.markPostReadOnScroll,
     this.queuedForRemoval,
   });
+
+  @override
+  State<FeedPostList> createState() => _FeedPostListState();
+}
+
+class _FeedPostListState extends State<FeedPostList> {
+  /// The index of the last tapped post.
+  /// This is used to calculate the read status of posts in the range [0, lastTappedIndex]
+  int lastTappedIndex = -1;
+
+  /// Whether the user is scrolling down or not. The logic for determining read posts will
+  /// only be applied when the user is scrolling down
+  bool isScrollingDown = false;
+
+  /// List of post ids to queue for being marked as read.
+  Set<int> markReadPostIds = <int>{};
+
+  /// List of post ids that have already previously been detected as read
+  Set<int> readPostIds = <int>{};
+
+  /// Timer for debouncing the read action
+  Timer? debounceTimer;
+
+  @override
+  void dispose() {
+    debounceTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final ThunderState thunderState = context.read<ThunderBloc>().state;
     final FeedState state = context.read<FeedBloc>().state;
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     // Widget representing the list of posts on the feed
     return SliverMasonryGrid.count(
-      crossAxisCount: tabletMode ? 2 : 1,
+      crossAxisCount: widget.tabletMode ? 2 : 1,
       crossAxisSpacing: 40,
       mainAxisSpacing: 0,
       itemBuilder: (BuildContext context, int index) {
@@ -54,26 +98,66 @@ class FeedPostList extends StatelessWidget {
               ),
             );
           },
-          child: queuedForRemoval?.contains(postViewMedias[index].postView.post.id) != true
-              ? PostCard(
-                  postViewMedia: postViewMedias[index],
-                  communityMode: state.feedType == FeedType.community,
-                  onVoteAction: (int voteType) {
-                    context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+          child: widget.queuedForRemoval?.contains(widget.postViewMedias[index].postView.post.id) != true
+              ? VisibilityDetector(
+                  key: Key('post-card-vis-$index'),
+                  onVisibilityChanged: (info) {
+                    if (!isUserLoggedIn || !widget.markPostReadOnScroll || !isScrollingDown) return;
+
+                    if (index <= lastTappedIndex && info.visibleFraction == 0) {
+                      for (int i = index; i >= 0; i--) {
+                        // If we already checked this post's read status, or we already marked it as read, skip it
+                        if (readPostIds.contains(widget.postViewMedias[i].postView.post.id)) continue;
+                        if (markReadPostIds.contains(widget.postViewMedias[i].postView.post.id)) continue;
+
+                        // Otherwise, check the post read status
+                        if (widget.postViewMedias[i].postView.read == false) {
+                          markReadPostIds.add(widget.postViewMedias[i].postView.post.id);
+                        } else {
+                          readPostIds.add(widget.postViewMedias[i].postView.post.id);
+                        }
+                      }
+
+                      // Debounce the read action to account for quick scrolling. This reduces the number of times the read action is triggered
+                      debounceTimer?.cancel();
+
+                      debounceTimer = Timer(const Duration(milliseconds: 500), () {
+                        if (markReadPostIds.isNotEmpty) {
+                          context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, value: true));
+                          markReadPostIds = <int>{};
+                        }
+                      });
+                    }
                   },
-                  onSaveAction: (bool saved) {
-                    context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
-                  },
-                  onReadAction: (bool read) {
-                    context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
-                  },
-                  listingType: state.postListingType,
-                  indicateRead: thunderState.dimReadPosts,
-                )
+                  child: PostCard(
+                    postViewMedia: widget.postViewMedias[index],
+                    communityMode: state.feedType == FeedType.community,
+                    onVoteAction: (int voteType) {
+                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: widget.postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+                    },
+                    onSaveAction: (bool saved) {
+                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: widget.postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
+                    },
+                    onReadAction: (bool read) {
+                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: widget.postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                    },
+                    onDownAction: () {
+                      if (lastTappedIndex != index) lastTappedIndex = index;
+                    },
+                    onUpAction: (double verticalDragDistance) {
+                      bool updatedIsScrollingDown = verticalDragDistance < 0;
+
+                      if (isScrollingDown != updatedIsScrollingDown) {
+                        isScrollingDown = updatedIsScrollingDown;
+                      }
+                    },
+                    listingType: state.postListingType,
+                    indicateRead: thunderState.dimReadPosts,
+                  ))
               : null,
         );
       },
-      childCount: postViewMedias.length,
+      childCount: widget.postViewMedias.length,
     );
   }
 }

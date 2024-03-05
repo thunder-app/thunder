@@ -39,6 +39,41 @@ Future<bool> markPostAsRead(int postId, bool read) async {
   return markPostAsReadResponse.isSuccess();
 }
 
+/// Logic to mark multiple posts as read
+Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  List<int> failed = [];
+
+  if (LemmyClient.instance.supportsFeature(LemmyFeature.multiRead)) {
+    MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
+      auth: account!.jwt!,
+      postIds: postIds,
+      read: read,
+    ));
+
+    if (!markPostAsReadResponse.isSuccess()) {
+      failed = List<int>.generate(postIds.length, (index) => index);
+    }
+  } else {
+    for (int i = 0; i < postIds.length; i++) {
+      MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
+        auth: account!.jwt!,
+        postId: postIds[i],
+        read: read,
+      ));
+      if (!markPostAsReadResponse.isSuccess()) {
+        failed.add(i);
+      }
+    }
+  }
+
+  return failed;
+}
+
 /// Logic to delete post
 Future<bool> deletePost(int postId, bool delete) async {
   Account? account = await fetchActiveProfileAccount();

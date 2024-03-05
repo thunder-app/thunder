@@ -244,6 +244,7 @@ class _FeedViewState extends State<FeedView> {
     final l10n = AppLocalizations.of(context)!;
 
     bool tabletMode = thunderBloc.state.tabletMode;
+    bool markPostReadOnScroll = thunderBloc.state.markPostReadOnScroll;
     bool hideTopBarOnScroll = thunderBloc.state.hideTopBarOnScroll;
 
     return MultiBlocListener(
@@ -405,6 +406,7 @@ class _FeedViewState extends State<FeedView> {
                                   FeedPostList(
                                       postViewMedias: postViewMedias,
                                       tabletMode: tabletMode,
+                                      markPostReadOnScroll: markPostReadOnScroll,
                                       queuedForRemoval: queuedForRemoval,
                                     ),
                               // Widgets to display on the feed when feedType == FeedType.community or feedType == FeedType.user
