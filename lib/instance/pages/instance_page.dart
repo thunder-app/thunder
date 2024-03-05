@@ -117,6 +117,9 @@ class _InstancePageState extends State<InstancePage> {
                         title: ListTile(
                           title: Text(
                             fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            softWrap: false,
                             style: theme.textTheme.titleLarge,
                           ),
                           subtitle: Text("v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.siteView.counts.users))}"),
