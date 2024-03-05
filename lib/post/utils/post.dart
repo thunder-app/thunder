@@ -39,6 +39,41 @@ Future<bool> markPostAsRead(int postId, bool read) async {
   return markPostAsReadResponse.isSuccess();
 }
 
+/// Logic to mark multiple posts as read
+Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  List<int> failed = [];
+
+  if (LemmyClient.instance.supportsFeature(LemmyFeature.multiRead)) {
+    MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
+      auth: account!.jwt!,
+      postIds: postIds,
+      read: read,
+    ));
+
+    if (!markPostAsReadResponse.isSuccess()) {
+      failed = List<int>.generate(postIds.length, (index) => index);
+    }
+  } else {
+    for (int i = 0; i < postIds.length; i++) {
+      MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
+        auth: account!.jwt!,
+        postId: postIds[i],
+        read: read,
+      ));
+      if (!markPostAsReadResponse.isSuccess()) {
+        failed.add(i);
+      }
+    }
+  }
+
+  return failed;
+}
+
 /// Logic to delete post
 Future<bool> deletePost(int postId, bool delete) async {
   Account? account = await fetchActiveProfileAccount();
@@ -195,7 +230,7 @@ Future<PostView> savePost(int postId, bool save) async {
 }
 
 /// Parse a post with media
-Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
+Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? resolutionInstance}) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
   bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) == true && prefs.getBool(LocalSettings.useCompactView.name) != true;
@@ -203,8 +238,24 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
 
+  List<PostView> postViewsFinal = [];
+  if (resolutionInstance != null) {
+    final LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance)).lemmyApiV3;
+
+    for (PostView postView in postViews) {
+      try {
+        final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: postView.post.apId));
+        postViewsFinal.add(resolveObjectResponse.post!);
+      } catch (e) {
+        // If we can't resolve it, we won't even add it
+      }
+    }
+  } else {
+    postViewsFinal = postViews.toList();
+  }
+
   Iterable<Future<PostViewMedia>> postFutures =
-      postViews.expand((post) => [if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
+      postViewsFinal.expand((post) => [if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;

@@ -17,11 +17,11 @@ import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc_old.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/utils/global_context.dart';
 
 import '../../post/pages/create_comment_page.dart';
@@ -51,6 +51,8 @@ class UserPageSuccess extends StatefulWidget {
   final List<bool>? selectedUserOption;
   final PrimitiveWrapper<bool>? savedToggle;
 
+  final GetPersonDetailsResponse? fullPersonView;
+
   const UserPageSuccess({
     super.key,
     required this.userId,
@@ -66,6 +68,7 @@ class UserPageSuccess extends StatefulWidget {
     this.blockedPerson,
     this.selectedUserOption,
     this.savedToggle,
+    this.fullPersonView,
   });
 
   @override
@@ -133,7 +136,9 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       });
                     }
                   },
-                  child: widget.personView != null ? UserHeader(userInfo: widget.personView) : const SizedBox(),
+                  child: widget.fullPersonView != null
+                      ? UserHeader(showUserSidebar: _displaySidebar, getPersonDetailsResponse: widget.fullPersonView!, onToggle: (value) => setState(() => _displaySidebar = value))
+                      : const SizedBox(),
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -493,9 +498,10 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               });
                             },
                             child: UserHeader(
-                              userInfo: widget.personView,
-                            ),
-                          )
+                              getPersonDetailsResponse: widget.fullPersonView!,
+                              onToggle: (value) => setState(() => _displaySidebar = value),
+                              showUserSidebar: _displaySidebar,
+                            ))
                         : null,
                   ),
                   Expanded(
@@ -528,10 +534,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           duration: const Duration(milliseconds: 300),
                           child: _displaySidebar
                               ? UserSidebar(
-                                  userInfo: widget.personView,
-                                  moderates: widget.moderates,
-                                  isAccountUser: widget.isAccountUser,
-                                  blockedPerson: widget.blockedPerson,
+                                  getPersonDetailsResponse: widget.fullPersonView,
+                                  onDismiss: () => setState(() => _displaySidebar = false),
                                 )
                               : null,
                         ),

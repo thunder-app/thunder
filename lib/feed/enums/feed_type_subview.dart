@@ -1,0 +1,1 @@
+enum FeedTypeSubview { post, comment }

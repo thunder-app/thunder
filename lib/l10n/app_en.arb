@@ -465,6 +465,10 @@
   "@expanded": {
     "description": "Expanded post body view type"
   },
+  "exploreInstance": "Explore instance",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
   "extraLarge": "Extra Large",
   "@extraLarge": {
     "description": "Description for extra large font scale"
@@ -714,6 +718,10 @@
   "markPostAsReadOnMediaView": "Mark Read After Viewing Media",
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
+  },
+  "markPostAsReadOnScroll": "Mark Read On Scroll",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
   },
   "medium": "Medium",
   "@medium": {
@@ -1267,10 +1275,18 @@
   "@successfullyBlocked": {},
   "successfullyBlockedCommunity": "Blocked {communityName}",
   "@successfullyBlockedCommunity": {},
+  "successfullyBlockedUser": "Blocked {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
   "successfullyUnblocked": "Unblocked.",
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "Unblocked {communityName}",
   "@successfullyUnblockedCommunity": {},
+  "successfullyUnblockedUser": "Unblocked {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
   "suggestedTitle": "Suggested title",
   "@suggestedTitle": {
     "description": "Suggested title for the post."

@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -13,10 +15,10 @@ import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 
 import '../../core/auth/bloc/auth_bloc.dart';
 
@@ -270,10 +272,10 @@ void onSelected(
       onReportAction(commentView.comment.id);
       break;
     case CommentCardAction.visitProfile:
-      navigateToUserPage(context, userId: commentView.creator.id);
+      navigateToFeedPage(context, feedType: FeedType.user, userId: commentView.creator.id);
       break;
     case CommentCardAction.blockUser:
-      context.read<UserBloc>().add(BlockUserEvent(personId: commentView.creator.id, blocked: true));
+      context.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: commentView.creator.id, value: true));
       break;
     case CommentCardAction.visitInstance:
       navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(commentView.creator.actorId)!, instanceId: commentView.community.instanceId);

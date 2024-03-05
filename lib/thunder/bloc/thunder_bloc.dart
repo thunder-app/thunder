@@ -112,6 +112,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
+      bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
@@ -250,6 +251,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         openInReaderMode: openInReaderMode,
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
+        markPostReadOnScroll: markPostReadOnScroll,
         showInAppUpdateNotification: showInAppUpdateNotification,
         enableInboxNotifications: enableInboxNotifications,
         appLanguageCode: appLanguageCode,

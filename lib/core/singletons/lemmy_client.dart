@@ -6,6 +6,8 @@ import 'package:version/version.dart';
 class LemmyClient {
   LemmyApiV3 lemmyApiV3 = const LemmyApiV3('');
 
+  LemmyClient();
+
   LemmyClient._initialize();
 
   void changeBaseUrl(String baseUrl) {
@@ -53,7 +55,8 @@ enum LemmyFeature {
   sortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
   sortTypeScaled(0, 19, 0, preRelease: ["rc", "1"]),
   commentSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
-  blockInstance(0, 19, 0, preRelease: ["rc", "1"]);
+  blockInstance(0, 19, 0, preRelease: ["rc", "1"]),
+  multiRead(0, 19, 0, preRelease: ["rc", "1"]);
 
   final int major;
   final int minor;

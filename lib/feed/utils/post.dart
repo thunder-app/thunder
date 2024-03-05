@@ -7,10 +7,12 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/post/utils/post.dart';
 
-/// Helper function which handles the logic of fetching posts from the API
-Future<Map<String, dynamic>> fetchPosts({
+/// Helper function which handles the logic of fetching items for the feed from the API
+/// This includes posts and user information (posts/comments)
+Future<Map<String, dynamic>> fetchFeedItems({
   int limit = 20,
   int page = 1,
   ListingType? postListingType,
@@ -19,6 +21,7 @@ Future<Map<String, dynamic>> fetchPosts({
   String? communityName,
   int? userId,
   String? username,
+  FeedTypeSubview feedTypeSubview = FeedTypeSubview.post,
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -26,45 +29,78 @@ Future<Map<String, dynamic>> fetchPosts({
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
   List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
-  bool hasReachedEnd = false;
+  bool hasReachedPostsEnd = false;
+  bool hasReachedCommentsEnd = false;
 
   List<PostViewMedia> postViewMedias = [];
+  List<CommentView> commentViews = [];
 
   int currentPage = page;
 
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
-  do {
-    GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
-      auth: account?.jwt,
-      page: currentPage,
-      sort: sortType,
-      type: postListingType,
-      communityId: communityId,
-      communityName: communityName,
-    ));
+  if (communityId != null || communityName != null || postListingType != null) {
+    do {
+      GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
+        auth: account?.jwt,
+        page: currentPage,
+        sort: sortType,
+        type: postListingType,
+        communityId: communityId,
+        communityName: communityName,
+      ));
 
-    // Remove deleted posts
-    getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
+      // Remove deleted posts
+      getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
 
-    // Remove posts that contain any of the keywords in the title or body
-    getPostsResponse = getPostsResponse.copyWith(
-      posts: getPostsResponse.posts.where((postView) {
-        final title = postView.post.name.toLowerCase();
-        final body = postView.post.body?.toLowerCase() ?? '';
+      // Remove posts that contain any of the keywords in the title or body
+      getPostsResponse = getPostsResponse.copyWith(
+        posts: getPostsResponse.posts.where((postView) {
+          final title = postView.post.name.toLowerCase();
+          final body = postView.post.body?.toLowerCase() ?? '';
 
-        return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()));
-      }).toList(),
-    );
+          return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()));
+        }).toList(),
+      );
 
-    // Parse the posts and add in media information which is used elsewhere in the app
-    List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
-    postViewMedias.addAll(formattedPosts);
+      // Parse the posts and add in media information which is used elsewhere in the app
+      List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
+      postViewMedias.addAll(formattedPosts);
 
-    if (getPostsResponse.posts.isEmpty) hasReachedEnd = true;
-    currentPage++;
-  } while (!hasReachedEnd && postViewMedias.length < limit);
+      if (getPostsResponse.posts.isEmpty) hasReachedPostsEnd = true;
+      currentPage++;
+    } while (!hasReachedPostsEnd && postViewMedias.length < limit);
+  }
 
-  return {'postViewMedias': postViewMedias, 'hasReachedEnd': hasReachedEnd, 'currentPage': currentPage};
+  // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
+  if (userId != null || username != null) {
+    do {
+      GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
+        auth: account?.jwt,
+        personId: userId,
+        username: username,
+        page: currentPage,
+        sort: sortType,
+      ));
+
+      // Remove deleted posts and comments
+      getPersonDetailsResponse = getPersonDetailsResponse.copyWith(
+        posts: getPersonDetailsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList(),
+        comments: getPersonDetailsResponse.comments.where((CommentView commentView) => commentView.comment.deleted == false).toList(),
+      );
+
+      // Parse the posts and add in media information which is used elsewhere in the app
+      List<PostViewMedia> formattedPosts = await parsePostViews(getPersonDetailsResponse.posts);
+      postViewMedias.addAll(formattedPosts);
+
+      commentViews.addAll(getPersonDetailsResponse.comments);
+
+      if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
+      if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;
+      currentPage++;
+    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && postViewMedias.length < limit) : (!hasReachedCommentsEnd && commentViews.length < limit));
+  }
+
+  return {'postViewMedias': postViewMedias, 'commentViews': commentViews, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'currentPage': currentPage};
 }
 
 /// Logic to create a post
