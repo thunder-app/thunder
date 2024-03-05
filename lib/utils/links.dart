@@ -27,7 +27,6 @@ import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 
 class LinkInfo {
   String? imageURL;
@@ -130,7 +129,7 @@ void handleLink(BuildContext context, {required String url}) async {
   if (username != null) {
     try {
       if (context.mounted) {
-        await navigateToUserPage(context, username: username);
+        await navigateToFeedPage(context, feedType: FeedType.user, username: username);
         return;
       }
     } catch (e) {

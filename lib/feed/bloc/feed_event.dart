@@ -11,6 +11,9 @@ final class FeedFetchedEvent extends FeedEvent {
   /// The type of feed to display.
   final FeedType? feedType;
 
+  /// The subtype of feed to display (if applicable). This is only used when [feedType] is [FeedType.user]
+  final FeedTypeSubview feedTypeSubview;
+
   /// The type of general feed to display: all, local, subscribed.
   final ListingType? postListingType;
 
@@ -34,6 +37,7 @@ final class FeedFetchedEvent extends FeedEvent {
 
   const FeedFetchedEvent({
     this.feedType,
+    this.feedTypeSubview = FeedTypeSubview.post,
     this.postListingType,
     this.sortType,
     this.communityId,

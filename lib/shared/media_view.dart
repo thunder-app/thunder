@@ -13,7 +13,6 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -172,12 +171,6 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                     try {
                       FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
                       feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
-                    } catch (e) {}
-
-                    // Mark post as read when on the user page
-                    try {
-                      UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-                      userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
                     } catch (e) {}
                   }
                   // TODO: This could be refactored eventually

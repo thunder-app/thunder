@@ -1,14 +1,17 @@
 part of 'feed_bloc.dart';
 
-enum FeedStatus { initial, fetching, success, failure, failureLoadingCommunity }
+enum FeedStatus { initial, fetching, success, failure, failureLoadingCommunity, failureLoadingUser }
 
 final class FeedState extends Equatable {
   const FeedState({
     this.status = FeedStatus.initial,
     this.postViewMedias = const <PostViewMedia>[],
-    this.hasReachedEnd = false,
+    this.commentViews = const <CommentView>[],
+    this.hasReachedPostsEnd = false,
+    this.hasReachedCommentsEnd = false,
     this.feedType = FeedType.general,
     this.fullCommunityView,
+    this.fullPersonView,
     this.postListingType,
     this.sortType,
     this.communityId,
@@ -28,8 +31,14 @@ final class FeedState extends Equatable {
   /// The posts to display on the feed
   final List<PostViewMedia> postViewMedias;
 
-  /// Determines if we have reached the end of the feed
-  final bool hasReachedEnd;
+  /// The comments to display on the feed
+  final List<CommentView> commentViews;
+
+  /// Determines if we have reached the end of the feed (posts)
+  final bool hasReachedPostsEnd;
+
+  /// Determines if we have reached the end of the feed (comments)
+  final bool hasReachedCommentsEnd;
 
   /// The type of feed to display.
   final FeedType? feedType;
@@ -42,6 +51,9 @@ final class FeedState extends Equatable {
 
   /// The community information if applicable
   final GetCommunityResponse? fullCommunityView;
+
+  /// The person information if applicable
+  final GetPersonDetailsResponse? fullPersonView;
 
   /// The id of the community to display posts for.
   final int? communityId;
@@ -73,11 +85,14 @@ final class FeedState extends Equatable {
   FeedState copyWith({
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
-    bool? hasReachedEnd,
+    List<CommentView>? commentViews,
+    bool? hasReachedPostsEnd,
+    bool? hasReachedCommentsEnd,
     FeedType? feedType,
     ListingType? postListingType,
     SortType? sortType,
     GetCommunityResponse? fullCommunityView,
+    GetPersonDetailsResponse? fullPersonView,
     int? communityId,
     String? communityName,
     int? userId,
@@ -91,11 +106,14 @@ final class FeedState extends Equatable {
     return FeedState(
       status: status ?? this.status,
       postViewMedias: postViewMedias ?? this.postViewMedias,
-      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+      commentViews: commentViews ?? this.commentViews,
+      hasReachedPostsEnd: hasReachedPostsEnd ?? this.hasReachedPostsEnd,
+      hasReachedCommentsEnd: hasReachedCommentsEnd ?? this.hasReachedCommentsEnd,
       feedType: feedType ?? this.feedType,
       postListingType: postListingType ?? this.postListingType,
       sortType: sortType ?? this.sortType,
       fullCommunityView: fullCommunityView ?? this.fullCommunityView,
+      fullPersonView: fullPersonView ?? this.fullPersonView,
       communityId: communityId ?? this.communityId,
       communityName: communityName ?? this.communityName,
       userId: userId ?? this.userId,
@@ -110,15 +128,18 @@ final class FeedState extends Equatable {
 
   @override
   String toString() {
-    return '''FeedState { status: $status, postViewMedias: ${postViewMedias.length}, hasReachedEnd: $hasReachedEnd }''';
+    return '''FeedState { status: $status, postViewMedias: ${postViewMedias.length}, commentViews: ${commentViews.length}, hasReachedPostsEnd: $hasReachedPostsEnd, hasReachedCommentsEnd: $hasReachedCommentsEnd }''';
   }
 
   @override
   List<dynamic> get props => [
         status,
         fullCommunityView,
+        fullPersonView,
         postViewMedias,
-        hasReachedEnd,
+        commentViews,
+        hasReachedPostsEnd,
+        hasReachedCommentsEnd,
         feedType,
         postListingType,
         sortType,

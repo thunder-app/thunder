@@ -10,7 +10,7 @@ import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc_old.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;

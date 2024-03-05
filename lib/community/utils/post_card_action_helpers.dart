@@ -25,9 +25,9 @@ import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -347,7 +347,7 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       onTapCommunityName(context, postViewMedia.postView.community.id);
       break;
     case PostCardAction.visitProfile:
-      navigateToUserPage(context, userId: postViewMedia.postView.post.creatorId);
+      navigateToFeedPage(context, feedType: FeedType.user, userId: postViewMedia.postView.post.creatorId);
       break;
     case PostCardAction.visitInstance:
       navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)!, instanceId: postViewMedia.postView.community.instanceId);
@@ -417,7 +417,7 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
                 );
       break;
     case PostCardAction.blockUser:
-      context.read<UserBloc>().add(BlockUserEvent(personId: postViewMedia.postView.creator.id, blocked: true));
+      context.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: postViewMedia.postView.creator.id, value: true));
       break;
     case PostCardAction.subscribeToCommunity:
       context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: postViewMedia.postView.community.id, value: true));

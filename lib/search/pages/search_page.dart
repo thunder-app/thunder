@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
@@ -36,7 +37,6 @@ import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchPage extends StatefulWidget {
   /// Allows the search page to limited to searching a specific community
