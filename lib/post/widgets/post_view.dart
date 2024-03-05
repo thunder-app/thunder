@@ -429,7 +429,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                           communityId: postViewMedia.postView.community.id,
                                           communityView: getCommunityResponse.communityView,
                                           postView: postViewMedia.postView,
-                                          onPostSuccess: (PostViewMedia pvm) {
+                                          onPostSuccess: (PostViewMedia pvm, _) {
                                             setState(() => postViewMedia = pvm);
                                           },
                                         ),
