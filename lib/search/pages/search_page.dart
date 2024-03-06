@@ -766,9 +766,13 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               itemCount: state.instances!.length,
               itemBuilder: (BuildContext context, int index) {
                 final GetInstanceInfoResponse instance = state.instances![index];
-                return AnimatedContainer(
+                return AnimatedCrossFade(
                   duration: const Duration(milliseconds: 250),
-                  child: InstanceListEntry(instance: instance),
+                  firstChild: InstanceListEntry(instance: GetInstanceInfoResponse(success: instance.success, domain: instance.domain, id: instance.id)),
+                  secondChild: InstanceListEntry(instance: instance),
+                  // If the instance metadata is not fully populated, show one widget, otherwise show the other.
+                  // This should allow the metadata to essentially "fade in".
+                  crossFadeState: instance.isMetadataPopulated() ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                 );
               },
             ),

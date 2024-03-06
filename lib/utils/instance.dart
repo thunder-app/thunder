@@ -166,6 +166,8 @@ class GetInstanceInfoResponse {
     this.users,
     this.id,
   });
+
+  bool isMetadataPopulated() => icon != null || version != null || name != null || users != null;
 }
 
 Future<GetInstanceInfoResponse> getInstanceInfo(String? url, {int? id, Duration? timeout}) async {
