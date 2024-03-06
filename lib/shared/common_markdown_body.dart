@@ -117,7 +117,7 @@ class CommonMarkdownBody extends StatelessWidget {
     return ExtendedMarkdownBody(
       data: body,
       extensionSet: customExtensionSet,
-      inlineSyntaxes: [LemmyLinkSyntax(), SpoilerInlineSyntax(), SubscriptInlineSyntax(), SuperscriptInlineSyntax()],
+      inlineSyntaxes: [LemmyLinkSyntax(), SubscriptInlineSyntax(), SuperscriptInlineSyntax()],
       builders: {
         'spoiler': SpoilerElementBuilder(allowHorizontalTranslation: allowHorizontalTranslation),
         'sub': SubscriptElementBuilder(),
@@ -236,6 +236,8 @@ class SuperscriptInlineSyntax extends md.InlineSyntax {
   }
 }
 
+/// Note: This is currently disabled as this is not an officially supported Lemmy Markdown syntax
+///
 /// A Markdown Extension to handle spoiler tags on Lemmy. This extends the [md.InlineSyntax]
 /// to allow for inline parsing of text for a given spoiler tag.
 ///
@@ -279,21 +281,22 @@ class SpoilerInlineSyntax extends md.InlineSyntax {
 
 /// A Markdown Extension to handle spoiler tags on Lemmy. This extends the [md.BlockSyntax]
 /// to allow for multi-line parsing of text for a given spoiler tag.
-///
-/// It parses the following syntax for a spoiler:
-///
-/// ```
-/// ::: spoiler spoiler_title
-/// spoiler_body
-/// :::
-/// ```
 class SpoilerBlockSyntax extends md.BlockSyntax {
   /// The pattern to match the end of a spoiler
-  static final RegExp _spoilerBlockEnd = RegExp(r'^:::');
+  /// This pattern checks for the following conditions:
+  /// - The line starts with 0-3 whitespace characters
+  /// - The line is followed by 3 or more colons
+  /// - The line ends without any other characters except optional whitespace
+  RegExp endPattern = RegExp(r'^\s{0,3}:{3,}\s*$');
 
   /// The pattern to match the beginning of a spoiler
+  /// This pattern checks for the following conditions:
+  /// - The line starts with 0-3 whitespace characters
+  /// - The line is followed by 3 or more colons
+  /// - The line contains optional whitespace between the colons and "spoiler"
+  /// - The line contains some non-whitespace character after the spoiler keyword
   @override
-  RegExp get pattern => RegExp(r'^::: spoiler\s+(.*)$');
+  RegExp get pattern => RegExp(r'^\s{0,3}:{3,}\s*spoiler\s+(\S.*)$');
 
   @override
   bool canParse(md.BlockParser parser) {
@@ -310,14 +313,16 @@ class SpoilerBlockSyntax extends md.BlockSyntax {
 
     final List<String> body = [];
 
-    // Accumulate lines of the body until the closing :::
+    // Accumulate lines of the body until the closing pattern
     while (!parser.isDone) {
-      if (_spoilerBlockEnd.hasMatch(parser.current.content)) {
+      // Stop parsing if the current line is one of the following:
+      if (endPattern.hasMatch(parser.current.content)) {
         parser.advance();
         break;
+      } else {
+        body.add(parser.current.content);
+        parser.advance();
       }
-      body.add(parser.current.content);
-      parser.advance();
     }
 
     // Create a custom Node which will be used to render the spoiler in [SpoilerElementBuilder]
@@ -326,9 +331,9 @@ class SpoilerBlockSyntax extends md.BlockSyntax {
       ///
       /// If the title and body are passed as separate elements into the [spoiler] tag, it causes
       /// the resulting [SpoilerWidget] to always show the second element. To work around this, the title and
-      /// body are placed together into a single node, separated by a ::: to distinguish the sections.
+      /// body are placed together into a single node, separated by a :::/-/::: to distinguish the sections.
       md.Element('spoiler', [
-        md.Text('${title ?? '_block'}:::${body.join('\n')}'),
+        md.Text('${title ?? '_block'}:::/-/:::${body.join('\n')}'),
       ]),
     ]);
 
@@ -347,7 +352,7 @@ class SpoilerElementBuilder extends MarkdownElementBuilder {
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     String rawText = element.textContent;
-    List<String> parts = rawText.split(':::');
+    List<String> parts = rawText.split(':::/-/:::');
 
     if (parts.length < 2) {
       // An invalid spoiler format
