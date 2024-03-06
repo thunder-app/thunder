@@ -215,7 +215,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       Account? account = (activeProfileId != null) ? await Account.fetchAccount(activeProfileId) : null;
 
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, getSiteResponse: getSiteResponse));
+      return emit(state.copyWith(
+        status: AuthStatus.success,
+        account: account,
+        isLoggedIn: activeProfileId?.isNotEmpty == true,
+        getSiteResponse: getSiteResponse,
+        reload: false,
+      ));
     });
   }
 }

@@ -16,7 +16,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/models/account.dart';
-import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -32,8 +31,9 @@ import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/link_preview_card.dart';
-import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/user/utils/restore_user.dart';
+import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
@@ -139,6 +139,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   final imageBloc = ImageBloc();
 
+  Account? originalUser;
   bool userChanged = false;
 
   @override
@@ -293,315 +294,324 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    originalUser ??= context.read<AuthBloc>().state.account;
 
-    return BlocProvider(
-      create: (context) => CreatePostCubit(),
-      child: BlocConsumer<CreatePostCubit, CreatePostState>(
-        listener: (context, state) {
-          if (state.status == CreatePostStatus.success && state.postViewMedia != null) {
-            widget.onPostSuccess?.call(state.postViewMedia!, userChanged);
-            Navigator.of(context).pop();
-          }
+    return PopScope(
+      onPopInvoked: (_) {
+        if (context.mounted) {
+          restoreUser(context, originalUser);
+        }
+      },
+      child: BlocProvider(
+        create: (context) => CreatePostCubit(),
+        child: BlocConsumer<CreatePostCubit, CreatePostState>(
+          listener: (context, state) {
+            if (state.status == CreatePostStatus.success && state.postViewMedia != null) {
+              widget.onPostSuccess?.call(state.postViewMedia!, userChanged);
+              Navigator.of(context).pop();
+            }
 
-          if (state.status == CreatePostStatus.error && state.message != null) {
-            showSnackbar(state.message!);
-            context.read<CreatePostCubit>().clearMessage();
-          }
+            if (state.status == CreatePostStatus.error && state.message != null) {
+              showSnackbar(state.message!);
+              context.read<CreatePostCubit>().clearMessage();
+            }
 
-          switch (state.status) {
-            case CreatePostStatus.imageUploadSuccess:
-              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
-              break;
-            case CreatePostStatus.postImageUploadSuccess:
-              _urlTextController.text = state.imageUrl ?? '';
-              break;
-            case CreatePostStatus.imageUploadFailure:
-            case CreatePostStatus.postImageUploadFailure:
-              showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
-            default:
-              break;
-          }
-        },
-        builder: (context, state) {
-          return KeyboardDismissOnTap(
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
-                toolbarHeight: 70.0,
-                centerTitle: false,
-                actions: [
-                  state.status == CreatePostStatus.submitting
-                      ? const Padding(
-                          padding: EdgeInsets.only(right: 20.0),
-                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: IconButton(
-                            onPressed: isSubmitButtonDisabled
-                                ? null
-                                : () {
-                                    draftPost.saveAsDraft = false;
+            switch (state.status) {
+              case CreatePostStatus.imageUploadSuccess:
+                _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+                break;
+              case CreatePostStatus.postImageUploadSuccess:
+                _urlTextController.text = state.imageUrl ?? '';
+                break;
+              case CreatePostStatus.imageUploadFailure:
+              case CreatePostStatus.postImageUploadFailure:
+                showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              default:
+                break;
+            }
+          },
+          builder: (context, state) {
+            return KeyboardDismissOnTap(
+              child: Scaffold(
+                appBar: AppBar(
+                  title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
+                  toolbarHeight: 70.0,
+                  centerTitle: false,
+                  actions: [
+                    state.status == CreatePostStatus.submitting
+                        ? const Padding(
+                            padding: EdgeInsets.only(right: 20.0),
+                            child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: IconButton(
+                              onPressed: isSubmitButtonDisabled
+                                  ? null
+                                  : () {
+                                      draftPost.saveAsDraft = false;
 
-                                    context.read<CreatePostCubit>().createOrEditPost(
-                                          communityId: communityId!,
-                                          name: _titleTextController.text,
-                                          body: _bodyTextController.text,
-                                          nsfw: isNSFW,
-                                          url: url,
-                                          postIdBeingEdited: widget.postView?.post.id,
-                                          languageId: languageId,
-                                        );
-                                  },
-                            icon: Icon(
-                              widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
-                              semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                                      context.read<CreatePostCubit>().createOrEditPost(
+                                            communityId: communityId!,
+                                            name: _titleTextController.text,
+                                            body: _bodyTextController.text,
+                                            nsfw: isNSFW,
+                                            url: url,
+                                            postIdBeingEdited: widget.postView?.post.id,
+                                            languageId: languageId,
+                                          );
+                                    },
+                              icon: Icon(
+                                widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                              ),
                             ),
                           ),
-                        ),
-                ],
-              ),
-              body: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                            CommunitySelector(
-                              communityId: communityId,
-                              communityView: communityView,
-                              onCommunitySelected: (CommunityView cv) {
-                                setState(() {
-                                  communityId = cv.community.id;
-                                  communityView = cv;
-                                });
-                                _validateSubmission();
-                              },
-                            ),
-                            const SizedBox(height: 4.0),
-                            UserSelector(
-                              communityActorId: communityView?.community.actorId,
-                              onCommunityChanged: (CommunityView? cv) {
-                                if (cv == null) {
-                                  showSnackbar(l10n.unableToFindCommunityOnInstance);
-                                }
-
-                                setState(() {
-                                  communityId = cv?.community.id;
-                                  communityView = cv;
-                                });
-                                _validateSubmission();
-                              },
-                              onUserChanged: () => userChanged = true,
-                            ),
-                            const SizedBox(height: 12.0),
-                            TypeAheadField<String>(
-                              suggestionsCallback: (String pattern) async {
-                                if (pattern.isEmpty) {
-                                  String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
-                                  if (linkTitle?.isNotEmpty == true) {
-                                    return [linkTitle!];
-                                  }
-                                }
-                                return const Iterable.empty();
-                              },
-                              itemBuilder: (BuildContext context, String itemData) {
-                                return ListTile(
-                                  title: Text(itemData),
-                                  subtitle: Text(l10n.suggestedTitle),
-                                );
-                              },
-                              onSuggestionSelected: (String suggestion) {
-                                _titleTextController.text = suggestion;
-                              },
-                              textFieldConfiguration: TextFieldConfiguration(
-                                controller: _titleTextController,
-                                decoration: InputDecoration(hintText: l10n.postTitle),
+                  ],
+                ),
+                body: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                              CommunitySelector(
+                                communityId: communityId,
+                                communityView: communityView,
+                                onCommunitySelected: (CommunityView cv) {
+                                  setState(() {
+                                    communityId = cv.community.id;
+                                    communityView = cv;
+                                  });
+                                  _validateSubmission();
+                                },
                               ),
-                              hideOnEmpty: true,
-                              hideOnLoading: true,
-                              hideOnError: true,
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _urlTextController,
-                              decoration: InputDecoration(
-                                hintText: l10n.postURL,
-                                errorText: urlError,
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    if (state.status == CreatePostStatus.postImageUploadInProgress) return;
+                              const SizedBox(height: 4.0),
+                              UserSelector(
+                                profileModalHeading: l10n.selectAccountToPostAs,
+                                communityActorId: communityView?.community.actorId,
+                                onCommunityChanged: (CommunityView? cv) {
+                                  if (cv == null) {
+                                    showSnackbar(l10n.unableToFindCommunityOnInstance);
+                                  }
 
-                                    String imagePath = await selectImageToUpload();
-                                    if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: true);
-                                  },
-                                  icon: state.status == CreatePostStatus.postImageUploadInProgress
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: Center(
-                                            child: SizedBox(
-                                              width: 18,
-                                              height: 18,
-                                              child: CircularProgressIndicator(),
+                                  setState(() {
+                                    communityId = cv?.community.id;
+                                    communityView = cv;
+                                  });
+                                  _validateSubmission();
+                                },
+                                onUserChanged: () => userChanged = true,
+                              ),
+                              const SizedBox(height: 12.0),
+                              TypeAheadField<String>(
+                                suggestionsCallback: (String pattern) async {
+                                  if (pattern.isEmpty) {
+                                    String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
+                                    if (linkTitle?.isNotEmpty == true) {
+                                      return [linkTitle!];
+                                    }
+                                  }
+                                  return const Iterable.empty();
+                                },
+                                itemBuilder: (BuildContext context, String itemData) {
+                                  return ListTile(
+                                    title: Text(itemData),
+                                    subtitle: Text(l10n.suggestedTitle),
+                                  );
+                                },
+                                onSuggestionSelected: (String suggestion) {
+                                  _titleTextController.text = suggestion;
+                                },
+                                textFieldConfiguration: TextFieldConfiguration(
+                                  controller: _titleTextController,
+                                  decoration: InputDecoration(hintText: l10n.postTitle),
+                                ),
+                                hideOnEmpty: true,
+                                hideOnLoading: true,
+                                hideOnError: true,
+                              ),
+                              const SizedBox(height: 20),
+                              TextFormField(
+                                controller: _urlTextController,
+                                decoration: InputDecoration(
+                                  hintText: l10n.postURL,
+                                  errorText: urlError,
+                                  suffixIcon: IconButton(
+                                    onPressed: () async {
+                                      if (state.status == CreatePostStatus.postImageUploadInProgress) return;
+
+                                      String imagePath = await selectImageToUpload();
+                                      if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: true);
+                                    },
+                                    icon: state.status == CreatePostStatus.postImageUploadInProgress
+                                        ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: Center(
+                                              child: SizedBox(
+                                                width: 18,
+                                                height: 18,
+                                                child: CircularProgressIndicator(),
+                                              ),
                                             ),
-                                          ),
-                                        )
-                                      : Icon(Icons.image, semanticLabel: l10n.uploadImage),
+                                          )
+                                        : Icon(Icons.image, semanticLabel: l10n.uploadImage),
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            Visibility(
-                              visible: url.isNotEmpty,
-                              child: LinkPreviewCard(
-                                hideNsfw: false,
-                                scrapeMissingPreviews: false,
-                                originURL: url,
-                                mediaURL: isImageUrl(url) ? url : null,
-                                mediaHeight: null,
-                                mediaWidth: null,
-                                showFullHeightImages: false,
-                                edgeToEdgeImages: false,
-                                viewMode: ViewMode.comfortable,
-                                postId: null,
-                                markPostReadOnMediaView: false,
-                                isUserLoggedIn: true,
-                              ),
-                            ),
-                            if (crossPosts.isNotEmpty && widget.postView == null)
+                              const SizedBox(height: 10),
                               Visibility(
                                 visible: url.isNotEmpty,
-                                child: CrossPosts(
-                                  crossPosts: crossPosts,
-                                  isNewPost: true,
+                                child: LinkPreviewCard(
+                                  hideNsfw: false,
+                                  scrapeMissingPreviews: false,
+                                  originURL: url,
+                                  mediaURL: isImageUrl(url) ? url : null,
+                                  mediaHeight: null,
+                                  mediaWidth: null,
+                                  showFullHeightImages: false,
+                                  edgeToEdgeImages: false,
+                                  viewMode: ViewMode.comfortable,
+                                  postId: null,
+                                  markPostReadOnMediaView: false,
+                                  isUserLoggedIn: true,
                                 ),
                               ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  child: LanguageSelector(
-                                    languageId: languageId,
-                                    onLanguageSelected: (Language? language) {
-                                      setState(() => languageId = language?.id);
-                                    },
+                              if (crossPosts.isNotEmpty && widget.postView == null)
+                                Visibility(
+                                  visible: url.isNotEmpty,
+                                  child: CrossPosts(
+                                    crossPosts: crossPosts,
+                                    isNewPost: true,
                                   ),
                                 ),
-                                Row(
-                                  children: [
-                                    Text(l10n.postNSFW),
-                                    const SizedBox(width: 10),
-                                    Switch(
-                                      value: isNSFW,
-                                      onChanged: (bool value) => setState(() => isNSFW = value),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: LanguageSelector(
+                                      languageId: languageId,
+                                      onLanguageSelected: (Language? language) {
+                                        setState(() => languageId = language?.id);
+                                      },
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            showPreview
-                                ? Container(
-                                    constraints: const BoxConstraints(minWidth: double.infinity),
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                                    padding: const EdgeInsets.all(12),
-                                    child: SingleChildScrollView(
-                                      child: CommonMarkdownBody(
-                                        body: _bodyTextController.text,
-                                        isComment: true,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(l10n.postNSFW),
+                                      const SizedBox(width: 10),
+                                      Switch(
+                                        value: isNSFW,
+                                        onChanged: (bool value) => setState(() => isNSFW = value),
                                       ),
-                                    ),
-                                  )
-                                : MarkdownTextInputField(
-                                    controller: _bodyTextController,
-                                    focusNode: _bodyFocusNode,
-                                    label: l10n.postBody,
-                                    minLines: 8,
-                                    maxLines: null,
-                                    textStyle: theme.textTheme.bodyLarge,
+                                    ],
                                   ),
-                          ]),
-                        ),
-                      ),
-                      const Divider(),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: MarkdownButtons(
-                              controller: _bodyTextController,
-                              focusNode: _bodyFocusNode,
-                              actions: const [
-                                MarkdownType.image,
-                                MarkdownType.link,
-                                MarkdownType.bold,
-                                MarkdownType.italic,
-                                MarkdownType.blockquote,
-                                MarkdownType.strikethrough,
-                                MarkdownType.title,
-                                MarkdownType.list,
-                                MarkdownType.separator,
-                                MarkdownType.code,
-                                MarkdownType.username,
-                                MarkdownType.community,
-                              ],
-                              customTapActions: {
-                                MarkdownType.username: () {
-                                  showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
-                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                        '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
-                                  });
-                                },
-                                MarkdownType.community: () {
-                                  showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                        '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
-                                  });
-                                },
-                              },
-                              imageIsLoading: state.status == CreatePostStatus.imageUploadInProgress,
-                              customImageButtonAction: () async {
-                                if (state.status == CreatePostStatus.imageUploadInProgress) return;
-
-                                String imagePath = await selectImageToUpload();
-                                if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: false);
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
-                            child: IconButton(
-                              onPressed: () {
-                                if (!showPreview) {
-                                  setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                }
-
-                                setState(() => showPreview = !showPreview);
-                                if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
-                              },
-                              icon: Icon(
-                                showPreview ? Icons.visibility_outlined : Icons.visibility,
-                                color: theme.colorScheme.onSecondary,
-                                semanticLabel: l10n.postTogglePreview,
+                                ],
                               ),
-                              visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
-                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
-                            ),
+                              const SizedBox(height: 10),
+                              showPreview
+                                  ? Container(
+                                      constraints: const BoxConstraints(minWidth: double.infinity),
+                                      decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
+                                      padding: const EdgeInsets.all(12),
+                                      child: SingleChildScrollView(
+                                        child: CommonMarkdownBody(
+                                          body: _bodyTextController.text,
+                                          isComment: true,
+                                        ),
+                                      ),
+                                    )
+                                  : MarkdownTextInputField(
+                                      controller: _bodyTextController,
+                                      focusNode: _bodyFocusNode,
+                                      label: l10n.postBody,
+                                      minLines: 8,
+                                      maxLines: null,
+                                      textStyle: theme.textTheme.bodyLarge,
+                                    ),
+                            ]),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const Divider(),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: MarkdownButtons(
+                                controller: _bodyTextController,
+                                focusNode: _bodyFocusNode,
+                                actions: const [
+                                  MarkdownType.image,
+                                  MarkdownType.link,
+                                  MarkdownType.bold,
+                                  MarkdownType.italic,
+                                  MarkdownType.blockquote,
+                                  MarkdownType.strikethrough,
+                                  MarkdownType.title,
+                                  MarkdownType.list,
+                                  MarkdownType.separator,
+                                  MarkdownType.code,
+                                  MarkdownType.username,
+                                  MarkdownType.community,
+                                ],
+                                customTapActions: {
+                                  MarkdownType.username: () {
+                                    showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
+                                      _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                          '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                    });
+                                  },
+                                  MarkdownType.community: () {
+                                    showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
+                                      _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                          '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                    });
+                                  },
+                                },
+                                imageIsLoading: state.status == CreatePostStatus.imageUploadInProgress,
+                                customImageButtonAction: () async {
+                                  if (state.status == CreatePostStatus.imageUploadInProgress) return;
+
+                                  String imagePath = await selectImageToUpload();
+                                  if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: false);
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+                              child: IconButton(
+                                onPressed: () {
+                                  if (!showPreview) {
+                                    setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
+                                    FocusManager.instance.primaryFocus?.unfocus();
+                                  }
+
+                                  setState(() => showPreview = !showPreview);
+                                  if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
+                                },
+                                icon: Icon(
+                                  showPreview ? Icons.visibility_outlined : Icons.visibility,
+                                  color: theme.colorScheme.onSecondary,
+                                  semanticLabel: l10n.postTogglePreview,
+                                ),
+                                visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
+                                style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -648,79 +658,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         });
       }
     }
-  }
-}
-
-/// Creates a widget which displays a preview of the currently selected account, with the ability to change accounts.
-///
-/// By passing in a [communityActorId], it will attempt to resolve the community to the new user's instance (if changed),
-/// and will invoke [onCommunityChanged]. If the community could not be resolved, the callback will pass [null].
-class UserSelector extends StatefulWidget {
-  final String? communityActorId;
-  final void Function(CommunityView?) onCommunityChanged;
-  final void Function() onUserChanged;
-
-  const UserSelector({
-    super.key,
-    required this.communityActorId,
-    required this.onCommunityChanged,
-    required this.onUserChanged,
-  });
-
-  @override
-  State<UserSelector> createState() => _UserSelectorState();
-}
-
-class _UserSelectorState extends State<UserSelector> {
-  @override
-  Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-
-    return Transform.translate(
-      offset: const Offset(-8, 0),
-      child: InkWell(
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
-        onTap: () async {
-          final Account? originalUser = context.read<AuthBloc>().state.account;
-
-          await showProfileModalSheet(
-            context,
-            quickSelectMode: true,
-            customHeading: l10n.selectAccountToPostAs,
-            reloadOnSwitch: false,
-          );
-
-          // Wait slightly longer than the duration that is waited in the account switcher logic.
-          await Future.delayed(const Duration(milliseconds: 1500));
-
-          if (context.mounted) {
-            Account? newUser = context.read<AuthBloc>().state.account;
-
-            if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
-              // The user changed. Reload the widget.
-              setState(() {});
-              widget.onUserChanged();
-
-              //If there is a selected community, see if we can resolve it to the new user's instance.
-              if (widget.communityActorId?.isNotEmpty == true) {
-                CommunityView? resolvedCommunity;
-                try {
-                  final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: widget.communityActorId!));
-                  resolvedCommunity = resolveObjectResponse.community;
-                } catch (e) {
-                  // We'll just return null if we can't find it.
-                }
-                widget.onCommunityChanged(resolvedCommunity);
-              }
-            }
-          }
-        },
-        child: const Padding(
-          padding: EdgeInsets.only(left: 8, top: 4, bottom: 4),
-          child: UserIndicator(),
-        ),
-      ),
-    );
   }
 }
 

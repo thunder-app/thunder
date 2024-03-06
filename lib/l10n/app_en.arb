@@ -123,6 +123,10 @@
   "@cardViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
+  "changeAccountSettingsFor": "Change account settings for",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
   "changeSort": "Change Sort",
   "@changeSort": {},
   "clearCache": "Clear Cache ({cacheSize})",

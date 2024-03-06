@@ -489,10 +489,10 @@ class _ThunderState extends State<Thunder> {
                         // So just return.
                         if (state.status == AuthStatus.loading) return;
 
-                        context.read<AccountBloc>().add(RefreshAccountInformation());
+                        context.read<AccountBloc>().add(RefreshAccountInformation(reload: state.reload));
 
                         // If we have not been requested to reload, don't!
-                        if (state.reload == false) return;
+                        if (!state.reload) return;
 
                         // Add a bit of artificial delay to allow preferences to set the proper active profile
                         Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
