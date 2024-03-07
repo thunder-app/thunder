@@ -1022,5 +1022,89 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} за",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "medium": "Средний",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "light": "Светлая",
+  "@light": {
+    "description": "Describes using the light theme"
+  },
+  "fonts": "Шрифты",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
+  "disable": "Отключить",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "deleteAccount": "Удалить аккаунт",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "forward": "Вперед",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "confirm": "Подтвердить",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "base": "База",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "dangerZone": "Опасная зона",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "dark": "Тёмная",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "large": "Большой",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "newPost": "Новый пост",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "small": "Маленький",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "reason": "Причина",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "theme": "Тема",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "warning": "Предупреждение",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "system": "Система",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "linkHandlingExternalShort": "Внешний",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "linkHandlingInAppShort": "В приложении",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "imageCachingModeAggressiveShort": "Агрессивный",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "imageCachingModeRelaxedShort": "Расслабление",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  }
 }
