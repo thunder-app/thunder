@@ -21,6 +21,7 @@ import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -851,14 +852,9 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('${widget.communityView?.community.title} '),
-                        FutureBuilder(
-                          future: getLemmyCommunity(widget.communityView?.community.actorId ?? ''),
-                          builder: (context, snapshot) {
-                            return Text(
-                              snapshot.data ?? '',
-                              style: theme.textTheme.bodySmall,
-                            );
-                          },
+                        Text(
+                          generateCommunityFullName(context, widget.communityView?.community.name, fetchInstanceNameFromUrl(widget.communityView?.community.actorId)),
+                          style: theme.textTheme.bodySmall,
                         ),
                       ],
                     )
