@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -94,7 +95,8 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
 
   @override
   Widget build(BuildContext context) {
-    ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+    final thunderBloc = context.watch<ThunderBloc>();
+    final l10n = AppLocalizations.of(context)!;
 
     bool hideTopBarOnScroll = thunderBloc.state.hideTopBarOnScroll;
 
@@ -202,7 +204,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                             spacing: 8.0,
                                             children: [
                                               ScalableText(
-                                                event.moderator != null ? event.moderator?.name ?? 'Moderator' : event.admin?.name ?? 'Admin',
+                                                event.moderator != null ? event.moderator?.name ?? l10n.moderator : event.admin?.name ?? l10n.admin,
                                                 fontScale: thunderBloc.state.metadataFontSizeScale,
                                                 style: metaTextStyle,
                                               ),

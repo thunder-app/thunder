@@ -16,7 +16,6 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/instance.dart';
 
 /// Provides some additional context for a [ModlogEventItem]
@@ -259,7 +258,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                           children: [
                             InkWell(
                               borderRadius: BorderRadius.circular(6),
-                              onTap: () => navigateToUserPage(context, userId: widget.user?.id),
+                              onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user?.id),
                               child: ScalableText(
                                 '${widget.user?.displayName ?? widget.user?.name}',
                                 fontScale: state.metadataFontSizeScale,
@@ -314,7 +313,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (user != null) {
-          navigateToUserPage(context, userId: user!.id);
+          navigateToFeedPage(context, feedType: FeedType.user, userId: user!.id);
         } else {
           showSnackbar(l10n.unableToFindUser);
         }

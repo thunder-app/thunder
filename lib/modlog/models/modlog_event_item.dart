@@ -4,8 +4,6 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/utils/instance.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 
 /// Represents a modlog event based on [ModlogActionType].
 /// This class is used to display modlog events in the UI.
@@ -73,41 +71,6 @@ class ModlogEventItem {
       ModlogActionType.adminPurgePost => l10n.purgedPost,
       ModlogActionType.adminPurgeComment => l10n.purgedComment,
       ModlogActionType.modHideCommunity => actioned ? l10n.hidCommunity : l10n.unhidCommunity,
-      _ => l10n.missingErrorMessage,
-    };
-  }
-
-  /// Generates a short description of the modlog event.
-  String getModlogEventTypeDescription() {
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
-
-    String? moderatorName = moderator?.displayName ?? moderator?.name ?? l10n.moderator;
-    String? userName = user?.displayName ?? user?.name ?? l10n.user;
-
-    String? communityFullName = community != null
-        ? community?.title != null
-            ? '"${community?.title}"'
-            : generateCommunityFullName(null, community!.name, fetchInstanceNameFromUrl(community!.actorId), communitySeparator: FullNameSeparator.at)
-        : l10n.community;
-
-    return switch (type) {
-      ModlogActionType.modRemovePost => actioned ? l10n.modRemovePostDescription(communityFullName, moderatorName) : l10n.modRestorePostDescription(communityFullName, moderatorName),
-      ModlogActionType.modLockPost => actioned ? l10n.modLockPostDescription(communityFullName, moderatorName) : l10n.modUnlockPostDescription(communityFullName, moderatorName),
-      ModlogActionType.modFeaturePost => actioned ? l10n.modFeaturedPostDescription(communityFullName, moderatorName) : l10n.modUnfeaturedPostDescription(communityFullName, moderatorName),
-      ModlogActionType.modRemoveComment =>
-        actioned ? l10n.modRemoveCommentDescription(moderatorName, '"${post!.name}"', userName) : l10n.modRestoreCommentDescription(moderatorName, '"${post!.name}"', userName),
-      ModlogActionType.modRemoveCommunity => l10n.modRemoveCommunityDescription(communityFullName, moderatorName),
-      ModlogActionType.modBanFromCommunity =>
-        actioned ? l10n.modBanFromCommunityDescription(communityFullName, moderatorName, userName) : l10n.modUnbanFromCommunityDescription(communityFullName, moderatorName, userName),
-      ModlogActionType.modBan => actioned ? l10n.modBanDescription(moderatorName, userName) : l10n.modUnbanDescription(moderatorName, userName),
-      ModlogActionType.modAddCommunity => l10n.modAddCommunityDescription(communityFullName, moderatorName, userName),
-      ModlogActionType.modTransferCommunity => l10n.modTransferCommunityDescription(moderatorName, communityFullName, userName),
-      ModlogActionType.modAdd => actioned ? l10n.modAddDescription(moderatorName, userName) : l10n.modRemoveDescription(moderatorName, userName),
-      ModlogActionType.adminPurgePerson => l10n.adminPurgePersonDescription,
-      ModlogActionType.adminPurgeCommunity => l10n.adminPurgeCommunityDescription,
-      ModlogActionType.adminPurgePost => l10n.adminPurgePostDescription,
-      ModlogActionType.adminPurgeComment => l10n.adminPurgeCommentDescription,
-      ModlogActionType.modHideCommunity => actioned ? l10n.modHideCommunityDescription(moderatorName, communityFullName) : l10n.modUnhideCommunityDescription(moderatorName, communityFullName),
       _ => l10n.missingErrorMessage,
     };
   }
