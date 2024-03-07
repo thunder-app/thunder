@@ -39,7 +39,7 @@ const List<PostCardMetadataItem> DEFAULT_CARD_POST_CARD_METADATA = [
   PostCardMetadataItem.url,
 ];
 
-const DEFAULT_DATE_FORMAT = 'yyyy-MM-dd';
+const DEFAULT_DATE_FORMAT = 'dd/MM/yyyy HH:mm:ss';
 
 ///  Settings Pages
 const String SETTINGS_GENERAL_PAGE = '/settings/general';

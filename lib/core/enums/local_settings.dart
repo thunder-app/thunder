@@ -292,6 +292,8 @@ extension LocalizationExt on AppLocalizations {
       'showPostTextContentPreview': showPostTextContentPreview,
       'showPostAuthor': showPostAuthor,
       'dimReadPosts': dimReadPosts,
+      'showFullPostDate': showFullDate,
+      'dateFormat': dateFormat,
       'useAdvancedShareSheet': useAdvancedShareSheet,
       'showCrossPosts': showCrossPosts,
       'keywordFilters': keywordFilters,
