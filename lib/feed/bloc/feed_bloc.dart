@@ -4,8 +4,11 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -126,7 +129,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Handles post related actions on a given item within the feed
   Future<void> _onFeedItemActioned(FeedItemActionedEvent event, Emitter<FeedState> emit) async {
-    assert(!(event.postViewMedia == null && event.postId == null));
+    assert(!(event.postViewMedia == null && event.postId == null && event.postIds == null));
     emit(state.copyWith(status: FeedStatus.fetching));
 
     // TODO: Check if the current account has permission to perform the PostAction
@@ -207,6 +210,51 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           // Restore the original post contents
           state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
           return emit(state.copyWith(status: FeedStatus.failure));
+        }
+      case PostAction.multiRead:
+        List<int> eventPostIds = event.postIds ?? [];
+
+        if (eventPostIds.isNotEmpty) {
+          // Optimistically read the posts
+          List<int> existingPostViewMediaIndexes = [];
+          List<int> postIds = [];
+          List<PostViewMedia> postViewMedias = [];
+          List<PostView> originalPostViews = [];
+          for (int i = 0; i < state.postViewMedias.length; i++) {
+            if (eventPostIds.contains(state.postViewMedias[i].postView.post.id)) {
+              existingPostViewMediaIndexes.add(i);
+              postIds.add(state.postViewMedias[i].postView.post.id);
+              postViewMedias.add(state.postViewMedias[i]);
+              originalPostViews.add(state.postViewMedias[i].postView);
+            }
+          }
+
+          try {
+            for (int i = 0; i < existingPostViewMediaIndexes.length; i++) {
+              PostView updatedPostView = optimisticallyReadPost(postViewMedias[i], event.value);
+              state.postViewMedias[existingPostViewMediaIndexes[i]].postView = updatedPostView;
+            }
+
+            // Emit the state to update UI immediately
+            emit(state.copyWith(status: FeedStatus.success));
+            emit(state.copyWith(status: FeedStatus.fetching));
+
+            List<int> failed = await markPostsAsRead(postIds, event.value);
+            if (failed.isEmpty) return emit(state.copyWith(status: FeedStatus.success));
+
+            // Restore the original post contents if not successful
+            for (int i = 0; i < failed.length; i++) {
+              state.postViewMedias[existingPostViewMediaIndexes[failed[i]]].postView = originalPostViews[failed[i]];
+            }
+            return emit(state.copyWith(status: FeedStatus.failure));
+          } catch (e) {
+            // Restore the original post contents
+            // They will all be restored, but this is an unlikely scenario
+            for (int i = 0; i < existingPostViewMediaIndexes.length; i++) {
+              state.postViewMedias[existingPostViewMediaIndexes[i]].postView = originalPostViews[i];
+            }
+            return emit(state.copyWith(status: FeedStatus.failure));
+          }
         }
       case PostAction.delete:
         // Optimistically delete the post
@@ -322,12 +370,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         emit(state.copyWith(status: FeedStatus.failure, message: 'Action is not supported'));
         break;
     }
+
+    // TODO: Add support for comment actions (for user profile)
   }
 
   /// Handles updating a given item within the feed
   Future<void> _onFeedItemUpdated(FeedItemUpdatedEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.fetching));
 
+    // TODO: Add support for updating comments (for user profile)
     for (final (index, postViewMedia) in state.postViewMedias.indexed) {
       if (postViewMedia.postView.post.id == event.postViewMedia.postView.post.id) {
         state.postViewMedias[index] = event.postViewMedia;
@@ -351,11 +402,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(const FeedState(
       status: FeedStatus.initial,
       postViewMedias: <PostViewMedia>[],
-      hasReachedEnd: false,
+      commentViews: <CommentView>[],
+      hasReachedPostsEnd: false,
+      hasReachedCommentsEnd: false,
       feedType: FeedType.general,
       postListingType: null,
       sortType: null,
       fullCommunityView: null,
+      fullPersonView: null,
       communityId: null,
       communityName: null,
       userId: null,
@@ -383,7 +437,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     // Assert any requirements
     if (event.reset) assert(event.feedType != null);
     if (event.reset && event.feedType == FeedType.community) assert(!(event.communityId == null && event.communityName == null));
-    if (event.reset && event.feedType == FeedType.user) assert(event.userId != null && event.username != null);
+    if (event.reset && event.feedType == FeedType.user) assert(!(event.userId != null && event.username != null));
     if (event.reset && event.feedType == FeedType.general) assert(event.postListingType != null);
 
     // Handle the initial fetch or reload of a feed
@@ -391,6 +445,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       if (state.status != FeedStatus.initial) add(ResetFeedEvent());
 
       GetCommunityResponse? fullCommunityView;
+      GetPersonDetailsResponse? fullPersonView;
 
       switch (event.feedType) {
         case FeedType.community:
@@ -408,6 +463,23 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           break;
         case FeedType.user:
           // Fetch user information
+          try {
+            Account? account = await fetchActiveProfileAccount();
+            LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+            fullPersonView = await lemmy.run(GetPersonDetails(
+              auth: account?.jwt,
+              personId: event.userId,
+              username: event.username,
+            ));
+          } catch (e) {
+            // If we are given a user feed, but we can't load the user, that's a problem! Emit an error.
+            return emit(state.copyWith(
+              status: FeedStatus.failureLoadingUser,
+              message: getExceptionErrorMessage(e, additionalInfo: event.username),
+              feedType: event.feedType,
+            ));
+          }
           break;
         case FeedType.general:
           break;
@@ -415,32 +487,38 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           break;
       }
 
-      Map<String, dynamic> postViewMediaResult = await fetchPosts(
+      Map<String, dynamic> feedItemResult = await fetchFeedItems(
         page: 1,
         postListingType: event.postListingType,
         sortType: event.sortType,
         communityId: event.communityId,
         communityName: event.communityName,
-        userId: event.userId,
+        userId: event.userId ?? fullPersonView?.personView.person.id,
         username: event.username,
+        feedTypeSubview: event.feedTypeSubview,
       );
 
       // Extract information from the response
-      List<PostViewMedia> postViewMedias = postViewMediaResult['postViewMedias'];
-      bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
-      int currentPage = postViewMediaResult['currentPage'];
+      List<PostViewMedia> postViewMedias = feedItemResult['postViewMedias'];
+      List<CommentView> commentViews = feedItemResult['commentViews'];
+      bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
+      bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
+      int currentPage = feedItemResult['currentPage'];
 
       return emit(state.copyWith(
         status: FeedStatus.success,
         postViewMedias: postViewMedias,
-        hasReachedEnd: hasReachedEnd,
+        commentViews: commentViews,
+        hasReachedPostsEnd: hasReachedPostsEnd,
+        hasReachedCommentsEnd: hasReachedCommentsEnd,
         feedType: event.feedType,
         postListingType: event.postListingType,
         sortType: event.sortType,
         fullCommunityView: fullCommunityView,
+        fullPersonView: fullPersonView,
         communityId: event.communityId,
         communityName: event.communityName,
-        userId: event.userId,
+        userId: event.userId ?? fullPersonView?.personView.person.id,
         username: event.username,
         currentPage: currentPage,
       ));
@@ -453,8 +531,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(state.copyWith(status: FeedStatus.fetching));
 
     List<PostViewMedia> postViewMedias = List.from(state.postViewMedias);
+    List<CommentView> commentViews = List.from(state.commentViews);
 
-    Map<String, dynamic> postViewMediaResult = await fetchPosts(
+    Map<String, dynamic> feedItemResult = await fetchFeedItems(
       page: state.currentPage,
       postListingType: state.postListingType,
       sortType: state.sortType,
@@ -462,12 +541,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       communityName: state.communityName,
       userId: state.userId,
       username: state.username,
+      feedTypeSubview: event.feedTypeSubview,
     );
 
     // Extract information from the response
-    List<PostViewMedia> newPostViewMedias = postViewMediaResult['postViewMedias'];
-    bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
-    int currentPage = postViewMediaResult['currentPage'];
+    List<PostViewMedia> newPostViewMedias = feedItemResult['postViewMedias'];
+    List<CommentView> newCommentViews = feedItemResult['commentViews'];
+    bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
+    bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
+    int currentPage = feedItemResult['currentPage'];
 
     Set<int> newInsertedPostIds = Set.from(state.insertedPostIds);
     List<PostViewMedia> filteredPostViewMedias = [];
@@ -482,12 +564,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     }
 
     postViewMedias.addAll(filteredPostViewMedias);
+    commentViews.addAll(newCommentViews);
 
     return emit(state.copyWith(
       status: FeedStatus.success,
       insertedPostIds: newInsertedPostIds.toList(),
       postViewMedias: postViewMedias,
-      hasReachedEnd: hasReachedEnd,
+      commentViews: commentViews,
+      hasReachedPostsEnd: hasReachedPostsEnd,
+      hasReachedCommentsEnd: hasReachedCommentsEnd,
       currentPage: currentPage,
     ));
   }

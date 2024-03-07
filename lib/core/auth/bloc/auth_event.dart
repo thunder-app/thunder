@@ -52,8 +52,9 @@ class RemoveAllAccounts extends AuthEvent {
 /// TODO: Consolidate logic so that anonymous accounts are also handled here.
 class SwitchAccount extends AuthEvent {
   final String accountId;
+  final bool reload;
 
-  const SwitchAccount({required this.accountId});
+  const SwitchAccount({required this.accountId, this.reload = true});
 }
 
 /// The [LogOutOfAllAccounts] event should be triggered whenever we want to clear the current logged in.

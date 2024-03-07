@@ -10,7 +10,7 @@ import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc_old.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
@@ -165,6 +165,8 @@ class _PostCardListState extends State<PostCardList> {
                 onVoteAction: (int voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                 onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                 onReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
+                onUpAction: (double verticalDragDistance) {},
+                onDownAction: () {},
                 listingType: widget.listingType,
                 indicateRead: widget.indicateRead,
               );

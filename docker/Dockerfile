@@ -60,7 +60,7 @@ RUN \
 ARG DEV_UID=0
 RUN \
     # Flutter
-    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.16.9-stable.tar.xz -O /tmp/flutter.tar.xz &&\
+    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.19.2-stable.tar.xz -O /tmp/flutter.tar.xz &&\
     mkdir -p /opt &&\
     cd /opt &&\
     tar xf /tmp/flutter.tar.xz &&\

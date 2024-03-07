@@ -763,6 +763,10 @@
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
   },
+  "markPostAsReadOnScroll": "Mark Read On Scroll",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
   "medium": "Medium",
   "@medium": {
     "description": "Description for medium font scale"
@@ -1329,6 +1333,10 @@
   "@searchTerm": {},
   "searchUsersFederatedWith": "Search for users federated with {instance}",
   "@searchUsersFederatedWith": {},
+  "selectAccountToPostAs": "Select account to post as",
+  "@selectAccountToPostAs": {
+    "description": "Heading for account selector when posting"
+  },
   "selectCommunity": "Select a community",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
@@ -1491,10 +1499,18 @@
   "@successfullyBlocked": {},
   "successfullyBlockedCommunity": "Blocked {communityName}",
   "@successfullyBlockedCommunity": {},
+  "successfullyBlockedUser": "Blocked {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
   "successfullyUnblocked": "Unblocked.",
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "Unblocked {communityName}",
   "@successfullyUnblockedCommunity": {},
+  "successfullyUnblockedUser": "Unblocked {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
   "suggestedTitle": "Suggested title",
   "@suggestedTitle": {
     "description": "Suggested title for the post."
@@ -1592,6 +1608,10 @@
   "unableToFindCommunityName": "Unable to find community '{communityName}'",
   "@unableToFindCommunityName": {
     "description": "Error message for when we are unable to find a community, including the name"
+  },
+  "unableToFindCommunityOnInstance": "Unable to find the selected community on the selected user's instance.",
+  "@unableToFindCommunityOnInstance": {
+    "description": "An error message for when we can't find a community on an instance"
   },
   "unableToFindInstance": "Unable to find instance",
   "@unableToFindInstance": {},

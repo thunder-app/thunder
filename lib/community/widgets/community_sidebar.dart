@@ -11,13 +11,14 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 
 const kSidebarWidthFactor = 0.8;
 
@@ -215,7 +216,7 @@ class CommunityModeratorList extends StatelessWidget {
         for (CommunityModeratorView mods in getCommunityResponse.moderators)
           Material(
             child: InkWell(
-              onTap: () => navigateToUserPage(context, userId: mods.moderator.id),
+              onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: mods.moderator.id),
               borderRadius: BorderRadius.circular(50),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

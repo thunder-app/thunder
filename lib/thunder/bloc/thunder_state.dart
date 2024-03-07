@@ -28,6 +28,7 @@ class ThunderState extends Equatable {
     this.openInReaderMode = false,
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
+    this.markPostReadOnScroll = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
     this.enableInboxNotifications = false,
@@ -160,6 +161,7 @@ class ThunderState extends Equatable {
   final bool openInReaderMode;
   final bool useDisplayNames;
   final bool markPostReadOnMediaView;
+  final bool markPostReadOnScroll;
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
   final bool enableInboxNotifications;
@@ -301,6 +303,7 @@ class ThunderState extends Equatable {
     bool? openInReaderMode,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
+    bool? markPostReadOnScroll,
     bool? showInAppUpdateNotification,
     bool? enableInboxNotifications,
     bool? scoreCounters,
@@ -432,6 +435,7 @@ class ThunderState extends Equatable {
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+      markPostReadOnScroll: markPostReadOnScroll ?? this.markPostReadOnScroll,
       disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       enableInboxNotifications: enableInboxNotifications ?? this.enableInboxNotifications,
@@ -572,6 +576,7 @@ class ThunderState extends Equatable {
         browserMode,
         useDisplayNames,
         markPostReadOnMediaView,
+        markPostReadOnScroll,
         disableFeedFab,
         showInAppUpdateNotification,
         enableInboxNotifications,

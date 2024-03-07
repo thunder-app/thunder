@@ -147,9 +147,8 @@ class ThunderApp extends StatelessWidget {
         BlocProvider(
           create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance),
         ),
-        // Used for global user events like block/unblock
         BlocProvider(
-          create: (context) => UserBloc(),
+          create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
         ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(

@@ -44,7 +44,6 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/shared/snackbar.dart';
 
@@ -199,7 +198,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           child: InkWell(
                             borderRadius: BorderRadius.circular(5),
                             onTap: () {
-                              navigateToUserPage(context, userId: postView.creator.id);
+                              navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id);
                             },
                             child: Padding(
                               padding: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? const EdgeInsets.symmetric(horizontal: 5.0) : EdgeInsets.zero,
@@ -430,7 +429,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                           communityId: postViewMedia.postView.community.id,
                                           communityView: getCommunityResponse.communityView,
                                           postView: postViewMedia.postView,
-                                          onPostSuccess: (PostViewMedia pvm) {
+                                          onPostSuccess: (PostViewMedia pvm, _) {
                                             setState(() => postViewMedia = pvm);
                                           },
                                         ),

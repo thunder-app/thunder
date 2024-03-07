@@ -285,6 +285,7 @@ class _InstancePageState extends State<InstancePage> {
                           ),
                         if (viewType == SearchType.posts)
                           FeedPostList(
+                            markPostReadOnScroll: false,
                             postViewMedias: state.posts ?? [],
                             tabletMode: tabletMode,
                           ),

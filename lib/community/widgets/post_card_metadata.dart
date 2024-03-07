@@ -15,7 +15,6 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 const Color upVoteColor = Colors.orange;
@@ -561,7 +560,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       children: [
                         InkWell(
                             borderRadius: BorderRadius.circular(6),
-                            onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToUserPage(context, userId: postView.creator.id),
+                            onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id),
                             child: ScalableText(
                               '$creatorName',
                               fontScale: state.metadataFontSizeScale,

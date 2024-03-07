@@ -17,7 +17,7 @@ class Account {
   });
 
   Map<String, dynamic> toMap() {
-    return {'accountId': id, 'username': username, 'jwt': jwt, 'instance': instance, 'userId': userId};
+    return {'accountId': id.toString(), 'username': username, 'jwt': jwt, 'instance': instance, 'userId': userId};
   }
 
   @override
@@ -46,7 +46,7 @@ class Account {
 
       return List.generate(maps.length, (i) {
         return Account(
-          id: maps[i]['accountId'],
+          id: maps[i]['accountId'].toString(),
           username: maps[i]['username'],
           jwt: maps[i]['jwt'],
           instance: maps[i]['instance'],
@@ -65,7 +65,7 @@ class Account {
     if (maps == null || maps.isEmpty) return null;
 
     return Account(
-      id: maps.first['accountId'],
+      id: maps.first['accountId'].toString(),
       username: maps.first['username'],
       jwt: maps.first['jwt'],
       instance: maps.first['instance'],

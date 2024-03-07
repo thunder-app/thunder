@@ -53,7 +53,6 @@ import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/notifications_navigation.dart';
 
 String? currentIntent;
@@ -358,7 +357,7 @@ class _ThunderState extends State<Thunder> {
     final String? username = await getLemmyUser(link);
     if (context.mounted && username != null) {
       try {
-        await navigateToUserPage(context, username: username);
+        await navigateToFeedPage(context, feedType: FeedType.user, username: username);
         return;
       } catch (e) {
         // Ignore exception, if it's not a valid comment, we'll perform the next fallback
@@ -491,6 +490,9 @@ class _ThunderState extends State<Thunder> {
                         if (state.status == AuthStatus.loading) return;
 
                         context.read<AccountBloc>().add(RefreshAccountInformation());
+
+                        // If we have not been requested to reload, don't!
+                        if (state.reload == false) return;
 
                         // Add a bit of artificial delay to allow preferences to set the proper active profile
                         Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
