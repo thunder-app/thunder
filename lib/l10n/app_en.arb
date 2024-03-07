@@ -347,6 +347,10 @@
   "@dark": {
     "description": "Describes using the dark theme"
   },
+  "dateFormat": "Date Format",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
   "debug": "Debug",
   "@debug": {
     "description": "Debug settings category."
@@ -1306,6 +1310,14 @@
   "showEdgeToEdgeImages": "Show Edge to Edge Images",
   "@showEdgeToEdgeImages": {
     "description": "Toggle to view edge to edge images."
+  },
+  "showFullDate": "Show Full Date",
+  "@showFullDate": {
+    "description": "Toggle to show full date on posts"
+  },
+  "showFullDateDescription": "Show full date on posts",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
   },
   "showFullHeightImages": "Show Full Height Images",
   "@showFullHeightImages": {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -400,7 +401,7 @@ class DateTimePostCardMetaData extends StatelessWidget {
 
     return IconText(
       fontScale: state.metadataFontSizeScale,
-      text: formatTimeToString(dateTime: dateTime),
+      text: state.showFullPostDate ? state.dateFormat?.format(DateTime.parse(dateTime)) : formatTimeToString(dateTime: dateTime),
       textColor: color,
       padding: 2.0,
       icon: Icon(hasBeenEdited ? Icons.edit : Icons.history_rounded, size: 17.0, color: color),

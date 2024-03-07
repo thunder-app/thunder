@@ -124,6 +124,8 @@ enum LocalSettings {
   compactPostCardMetadataItems(
       name: 'setting_compact_post_card_metadata_items', key: 'compactPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   cardPostCardMetadataItems(name: 'setting_card_post_card_metadata_items', key: 'cardPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  showFullPostDate(name: 'setting_general_show_full_post_date', key: 'showFullPostDate', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  dateFormat(name: 'setting_general_date_format', key: 'dateFormat', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
 
   // Advanced Settings
   userFormat(name: 'user_format', key: 'userFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
