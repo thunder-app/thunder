@@ -18,12 +18,14 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/modlog/view/modlog_page.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/swipe.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatelessWidget {
@@ -218,6 +220,29 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 icon: Icons.search_rounded,
                 title: l10n.search,
               ),
+            ThunderPopupMenuItem(
+              onTap: () async {
+                final state = context.read<ThunderBloc>().state;
+                final reduceAnimations = state.reduceAnimations;
+
+                await Navigator.of(context).push(
+                  SwipeablePageRoute(
+                    transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                    backGestureDetectionWidth: 45,
+                    canOnlySwipeFromEdge: true,
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(value: feedBloc),
+                        BlocProvider.value(value: thunderBloc),
+                      ],
+                      child: ModlogFeedPage(communityId: feedBloc.state.fullCommunityView!.communityView.community.id),
+                    ),
+                  ),
+                );
+              },
+              icon: Icons.shield_rounded,
+              title: l10n.modlog,
+            ),
           ],
         ),
       ],
@@ -304,6 +329,34 @@ class FeedAppBarGeneralActions extends StatelessWidget {
                 title: l10n.sortOptions,
                 onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
+              ),
+            );
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.shield_rounded, semanticLabel: l10n.modlog),
+          onPressed: () async {
+            HapticFeedback.mediumImpact();
+
+            AuthBloc authBloc = context.read<AuthBloc>();
+            ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+            await Navigator.of(context).push(
+              SwipeablePageRoute(
+                transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                backGestureDetectionWidth: 45,
+                canOnlySwipeFromEdge:
+                    disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                builder: (otherContext) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: feedBloc),
+                      BlocProvider.value(value: thunderBloc),
+                    ],
+                    child: const ModlogFeedPage(),
+                  );
+                },
               ),
             );
           },

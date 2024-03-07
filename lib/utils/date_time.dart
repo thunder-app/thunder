@@ -8,7 +8,7 @@
 /// mo - month
 /// y - year
 String formatTimeToString({required String dateTime}) {
-  DateTime date = DateTime.parse(dateTime);
+  DateTime date = DateTime.parse(dateTime.endsWith('Z') ? dateTime : '${dateTime}Z');
   DateTime now = DateTime.now().toUtc();
 
   Duration difference = now.difference(date);

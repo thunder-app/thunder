@@ -35,6 +35,18 @@
   },
   "addedCommunityToSubscriptions": "Subscribed to community",
   "@addedCommunityToSubscriptions": {},
+  "addedInstanceMod": "Added Instance Mod",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "addedModToCommunity": "Added Mod to Community",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "Role name for admin"
+  },
   "advanced": "Advanced",
   "@advanced": {
     "description": "Heading for advanced settings"
@@ -76,6 +88,14 @@
   "backgroundCheckWarning": "Note that notification checks will consume additional battery",
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
+  },
+  "bannedUser": "Banned User",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "bannedUserFromCommunity": "Banned User from Community",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
   },
   "base": "Base",
   "@base": {
@@ -373,6 +393,10 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
+  "detailedReason": "Reason: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
   "dimReadPosts": "Dim Read Posts",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
@@ -483,6 +507,10 @@
   "@favorites": {
     "description": "The favorited communities on the drawer"
   },
+  "featuredPost": "Featured Post",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
+  },
   "feed": "Feed",
   "@feed": {},
   "feedBehaviourSettings": "Feed",
@@ -545,6 +573,10 @@
   "@gestures": {},
   "gettingStarted": "Getting Started",
   "@gettingStarted": {},
+  "hidCommunity": "Hid Community",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
   "hideNsfwPostsFromFeed": "Hide NSFW Posts from Feed",
   "@hideNsfwPostsFromFeed": {
     "description": "Toggle to hide NSFW posts from the feed."
@@ -693,6 +725,10 @@
   "@lockPost": {
     "description": "Action for locking a post (moderator action)"
   },
+  "lockedPost": "Locked Post",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
   "logOut": "Log out",
   "@logOut": {},
   "login": "Log in",
@@ -737,13 +773,61 @@
   },
   "missingErrorMessage": "No error message available",
   "@missingErrorMessage": {},
+  "modAdd": "Add/Remove Instance Moderators",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modAddCommunity": "Add/Remove Moderators to Communities",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "modBan": "Ban/Unban Instance Moderators",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance moderators"
+  },
+  "modBanFromCommunity": "Ban/Unban Users from Communities",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "modFeaturePost": "Feature/Unfeature Posts",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modLockPost": "Lock/Unlock Posts",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modRemoveComment": "Remove/Restore Comments",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Remove/Restore Communities",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "modRemovePost": "Remove/Restore Posts",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "modTransferCommunity": "Transferring Communities",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
   "moderatedCommunities": "Moderated Communities",
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
   },
+  "moderator": "Moderator",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
   "moderatorActions": "Moderator Actions",
   "@moderatorActions": {
     "description": "Actions for moderators to perform on posts"
+  },
+  "modlog": "Modlog",
+  "@modlog": {
+    "description": "Option for viewing modlog."
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
@@ -973,6 +1057,22 @@
   "@pureBlack": {
     "description": "Describes using the pure black theme"
   },
+  "purgedComment": "Purged Comment",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "purgedCommunity": "Purged Community",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "purgedPerson": "Purged Person",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "purgedPost": "Purged Post",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
@@ -1017,8 +1117,28 @@
   "@removePost": {
     "description": "Action to remove a post (moderator action)"
   },
+  "removedComment": "Removed Comment",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removedCommunity": "Removed Community",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
   "@removedCommunityFromSubscriptions": {},
+  "removedInstanceMod": "Removed Instance Mod",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "removedModFromCommunity": "Removed Mod from Community",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "removedPost": "Removed Post",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},
   "replyNotSupported": "Replying from this view is currently not supported yet",
@@ -1055,8 +1175,20 @@
   "@restorePost": {
     "description": "Action to restore a post (moderator action)"
   },
+  "restoredComment": "Restored Comment",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
   "restoredCommentFromDraft": "Restored comment from draft",
   "@restoredCommentFromDraft": {},
+  "restoredCommunity": "Restored Community",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "restoredPost": "Restored Post",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
   "restoredPostFromDraft": "Restored post from draft",
   "@restoredPostFromDraft": {},
   "retry": "Retry",
@@ -1127,6 +1259,10 @@
   },
   "selectSearchType": "Select Search Type",
   "@selectSearchType": {},
+  "sensitiveContentWarning": "May contain sensitive content. Tap to reveal.",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
   "setAction": "Set Action",
@@ -1365,6 +1501,10 @@
   "@topYear": {},
   "totp": "TOTP (optional)",
   "@totp": {},
+  "transferredModToCommunity": "Transferred Community",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
   "translationsMayNotBeComplete": "Please note that the translations may not be complete",
   "@translationsMayNotBeComplete": {
     "description": "Warning that translations may not be complete when selecting a language in the settings"
@@ -1391,6 +1531,10 @@
   "@unableToFindLanguage": {
     "description": "Error message when language cannot be found."
   },
+  "unableToFindPost": "Unable to find post",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
   "unableToFindUser": "Unable to find user",
   "@unableToFindUser": {},
   "unableToLoadImage": "Unable to load image",
@@ -1411,6 +1555,14 @@
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
   },
+  "unbannedUser": "Unbanned User",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "unbannedUserFromCommunity": "Unbanned User from Community",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
@@ -1421,9 +1573,21 @@
   },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
+  "unfeaturedPost": "Unfeatured Post",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "unhidCommunity": "Unhid Community",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
   "unlockPost": "Unlock Post",
   "@unlockPost": {
     "description": "Action for unlocking a post (moderator action)"
+  },
+  "unlockedPost": "Unlocked Post",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
   },
   "unpinFromCommunity": "Unpin from Community",
   "@unpinFromCommunity": {
@@ -1469,6 +1633,10 @@
   },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
+  "user": "User",
+  "@user": {
+    "description": "Role name for user"
+  },
   "userFormat": "User Format",
   "@userFormat": {
     "description": "Setting for user full name format"
