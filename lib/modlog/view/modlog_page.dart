@@ -46,8 +46,10 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
     return BlocProvider<ModlogBloc>(
       create: (_) => ModlogBloc(lemmyClient: LemmyClient.instance)
         ..add(ModlogFeedFetchedEvent(
+          modlogActionType: widget.modlogActionType,
           communityId: widget.communityId,
           userId: widget.userId,
+          moderatorId: widget.moderatorId,
           reset: true,
         )),
       child: const ModlogFeedView(),
@@ -93,16 +95,37 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final thunderBloc = context.watch<ThunderBloc>();
+  /// Returns the name of the moderator or admin of the modlog event if it exists
+  String getModeratorName(ModlogEventItem modlogEventItem) {
     final l10n = AppLocalizations.of(context)!;
 
-    bool hideTopBarOnScroll = thunderBloc.state.hideTopBarOnScroll;
+    if (modlogEventItem.moderator != null) {
+      return modlogEventItem.moderator!.name;
+    }
+
+    if (modlogEventItem.admin != null) {
+      return modlogEventItem.admin!.name;
+    }
+
+    switch (modlogEventItem.type) {
+      case ModlogActionType.adminPurgeComment:
+      case ModlogActionType.adminPurgePost:
+      case ModlogActionType.adminPurgeCommunity:
+      case ModlogActionType.adminPurgePerson:
+        return l10n.admin;
+      default:
+        return l10n.moderator;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final thunderState = context.watch<ThunderBloc>().state;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
-        top: hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+        top: thunderState.hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
         child: BlocConsumer<ModlogBloc, ModlogState>(
           listenWhen: (previous, current) {
             if (current.status == ModlogStatus.initial) {
@@ -115,8 +138,11 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
             // Continue to fetch more modlog events as long as the device view is not scrollable.
             // This is to avoid cases where more modlog events cannot be fetched because the conditions are not met
             if (state.status == ModlogStatus.success && state.hasReachedEnd == false) {
-              bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
-              if (!isScrollable) context.read<ModlogBloc>().add(const ModlogFeedFetchedEvent());
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                // Wait until the layout is complete before performing check
+                bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+                if (!isScrollable) context.read<ModlogBloc>().add(const ModlogFeedFetchedEvent());
+              });
             }
 
             if ((state.status == ModlogStatus.failure) && state.message != null) {
@@ -130,7 +156,9 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
             return RefreshIndicator(
               onRefresh: () async {
                 HapticFeedback.mediumImpact();
-                context.read<ModlogBloc>().add(ModlogFeedFetchedEvent(communityId: state.communityId, userId: state.userId, moderatorId: state.moderatorId, reset: true));
+                context
+                    .read<ModlogBloc>()
+                    .add(ModlogFeedFetchedEvent(modlogActionType: state.modlogActionType, communityId: state.communityId, userId: state.userId, moderatorId: state.moderatorId, reset: true));
               },
               edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
               child: Stack(
@@ -146,7 +174,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                           child: Center(child: CircularProgressIndicator()),
                         ),
 
-                      // Widget representing the list of posts on the feed
+                      // Widget representing the list of modlog events on the feed
                       SliverList.builder(
                         itemBuilder: (context, index) {
                           TextStyle? metaTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75));
@@ -187,14 +215,14 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                                     padding: const EdgeInsets.only(right: 4.0),
                                                     child: Icon(
                                                       event.getModlogEventIcon(),
-                                                      size: 16.0 * thunderBloc.state.metadataFontSizeScale.textScaleFactor,
+                                                      size: 16.0 * thunderState.metadataFontSizeScale.textScaleFactor,
                                                       color: theme.colorScheme.onBackground,
                                                     ),
                                                   ),
                                                   ScalableText(
                                                     event.getModlogEventTypeName(),
                                                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                                                    fontScale: thunderBloc.state.titleFontSizeScale,
+                                                    fontScale: thunderState.titleFontSizeScale,
                                                   ),
                                                 ],
                                               ),
@@ -204,8 +232,8 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                             spacing: 8.0,
                                             children: [
                                               ScalableText(
-                                                event.moderator != null ? event.moderator?.name ?? l10n.moderator : event.admin?.name ?? l10n.admin,
-                                                fontScale: thunderBloc.state.metadataFontSizeScale,
+                                                getModeratorName(event),
+                                                fontScale: thunderState.metadataFontSizeScale,
                                                 style: metaTextStyle,
                                               ),
                                               const Text('·'),
@@ -228,10 +256,10 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                             Padding(
                                               padding: const EdgeInsets.only(bottom: 6.0),
                                               child: ScalableText(
-                                                'Reason: ${event.reason}',
+                                                l10n.detailedReason('${event.reason}'),
                                                 maxLines: 4,
                                                 overflow: TextOverflow.ellipsis,
-                                                fontScale: thunderBloc.state.contentFontSizeScale,
+                                                fontScale: thunderState.contentFontSizeScale,
                                                 style: theme.textTheme.bodyMedium?.copyWith(
                                                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.90),
                                                 ),
@@ -249,7 +277,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                         itemCount: state.modlogEventItems.length,
                       ),
 
-                      // Widget representing the bottom of the feed (reached end or loading more posts indicators)
+                      // Widget representing the bottom of the feed (reached end or loading more events indicators)
                       SliverToBoxAdapter(
                         child: state.hasReachedEnd
                             ? const FeedReachedEnd()

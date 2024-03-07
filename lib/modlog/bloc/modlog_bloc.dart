@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/modlog/utils/modlog.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 
 part 'modlog_event.dart';
 part 'modlog_state.dart';
@@ -61,6 +61,7 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
       communityId: null,
       userId: null,
       moderatorId: null,
+      modlogEventItems: [],
       hasReachedEnd: false,
       currentPage: 1,
       message: null,

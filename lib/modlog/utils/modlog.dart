@@ -38,6 +38,7 @@ Future<Map<String, dynamic>> fetchModlogEvents({
 
     List<ModlogEventItem> items = [];
 
+    // Convert the response to a list of modlog events
     List<ModlogEventItem> removedPosts = getModlogResponse.removedPosts.map((ModRemovePostView e) => parseModlogEvent(ModlogActionType.modRemovePost, e)).toList();
     List<ModlogEventItem> lockedPosts = getModlogResponse.lockedPosts.map((ModLockPostView e) => parseModlogEvent(ModlogActionType.modLockPost, e)).toList();
     List<ModlogEventItem> featuredPosts = getModlogResponse.featuredPosts.map((ModFeaturePostView e) => parseModlogEvent(ModlogActionType.modFeaturePost, e)).toList();
@@ -79,8 +80,7 @@ Future<Map<String, dynamic>> fetchModlogEvents({
   return {'modLogEventItems': modLogEventItems, 'hasReachedEnd': hasReachedEnd, 'currentPage': currentPage};
 }
 
-/// Given a modlog event, return a normalized [ModlogEventItem].
-/// The response from the Lemmy API returns different types of events for different actions.
+/// Given a modlog event, return a normalized [ModlogEventItem]. The response from the Lemmy API returns different types of events for different actions.
 /// This function parses the event to a [ModlogEventItem]
 ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
   final l10n = AppLocalizations.of(GlobalContext.context)!;

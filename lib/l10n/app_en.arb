@@ -393,6 +393,10 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
+  "detailedReason": "Reason: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
   "dimReadPosts": "Dim Read Posts",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
@@ -769,15 +773,15 @@
   },
   "missingErrorMessage": "No error message available",
   "@missingErrorMessage": {},
-  "modAdd": "Add/Remove instance moderators",
+  "modAdd": "Add/Remove Instance Moderators",
   "@modAdd": {
     "description": "Description for modlog filter for actions that add instance moderators"
   },
-  "modAddCommunity": "Add/Remove moderators to Communities",
+  "modAddCommunity": "Add/Remove Moderators to Communities",
   "@modAddCommunity": {
     "description": "Description for modlog filter for actions that add moderators to communities"
   },
-  "modBan": "Ban/Unban instance moderators",
+  "modBan": "Ban/Unban Instance Moderators",
   "@modBan": {
     "description": "Description for modlog filter for actions that ban instance moderators"
   },
@@ -1497,9 +1501,9 @@
   "@topYear": {},
   "totp": "TOTP (optional)",
   "@totp": {},
-  "transferredModToCommunity": "Transferred Mod to Community",
+  "transferredModToCommunity": "Transferred Community",
   "@transferredModToCommunity": {
-    "description": "Short decription for moderator action to transfer a mod to a community"
+    "description": "Short decription for moderator action to transfer a community"
   },
   "translationsMayNotBeComplete": "Please note that the translations may not be complete",
   "@translationsMayNotBeComplete": {

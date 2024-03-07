@@ -222,8 +222,8 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               ),
             ThunderPopupMenuItem(
               onTap: () async {
-                final ThunderState state = context.read<ThunderBloc>().state;
-                final bool reduceAnimations = state.reduceAnimations;
+                final state = context.read<ThunderBloc>().state;
+                final reduceAnimations = state.reduceAnimations;
 
                 await Navigator.of(context).push(
                   SwipeablePageRoute(
@@ -334,19 +334,16 @@ class FeedAppBarGeneralActions extends StatelessWidget {
           },
         ),
         IconButton(
-          icon: Icon(Icons.shield_rounded, semanticLabel: l10n.sortBy),
+          icon: Icon(Icons.shield_rounded, semanticLabel: l10n.modlog),
           onPressed: () async {
             HapticFeedback.mediumImpact();
 
             AuthBloc authBloc = context.read<AuthBloc>();
-
             ThunderBloc thunderBloc = context.read<ThunderBloc>();
-            final ThunderState state = context.read<ThunderBloc>().state;
-            final bool reduceAnimations = state.reduceAnimations;
 
             await Navigator.of(context).push(
               SwipeablePageRoute(
-                transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
                 backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
                 backGestureDetectionWidth: 45,
                 canOnlySwipeFromEdge:

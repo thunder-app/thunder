@@ -24,15 +24,15 @@ class ModlogFeedPageAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final thunderBloc = context.read<ThunderBloc>();
     final l10n = AppLocalizations.of(context)!;
+    final state = context.read<ThunderBloc>().state;
 
     return SliverAppBar(
-      pinned: !thunderBloc.state.hideTopBarOnScroll,
+      pinned: !state.hideTopBarOnScroll,
       floating: true,
       centerTitle: false,
       toolbarHeight: 70.0,
-      surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
+      surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
       title: ModlogFeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
         icon: (!kIsWeb && Platform.isIOS
@@ -78,9 +78,9 @@ class ModlogFeedAppBarTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = context.read<AuthBloc>().state;
     final l10n = AppLocalizations.of(context)!;
 
+    final state = context.read<AuthBloc>().state;
     final feedState = context.read<FeedBloc>().state;
 
     return AnimatedOpacity(

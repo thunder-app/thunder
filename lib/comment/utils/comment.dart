@@ -76,7 +76,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
 
     commentMap[commentView.comment.path] = CommentViewTree(
       datePostedOrEdited: formatTimeToString(dateTime: commentTime),
-      commentView: cleanDeletedCommentView(commentView),
+      commentView: cleanCommentView(commentView),
       replies: [],
       level: commentView.comment.path.split('.').length - 2,
     );
@@ -184,70 +184,24 @@ bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentResponse m
   return false;
 }
 
-CommentView cleanDeletedCommentView(CommentView commentView) {
+CommentView cleanCommentView(CommentView commentView) {
   if (commentView.comment.removed) {
-    return CommentView(
-      comment: convertToRemovedComment(commentView.comment),
-      creator: commentView.creator,
-      post: commentView.post,
-      community: commentView.community,
-      counts: commentView.counts,
-      creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
-      saved: commentView.saved,
-      creatorBlocked: commentView.creatorBlocked,
-      subscribed: commentView.subscribed,
+    return commentView.copyWith(
+      comment: commentView.comment.copyWith(
+        content: "_deleted by moderator_",
+      ),
     );
   }
 
   if (commentView.comment.deleted) {
-    return CommentView(
-      comment: convertToDeletedComment(commentView.comment),
-      creator: commentView.creator,
-      post: commentView.post,
-      community: commentView.community,
-      counts: commentView.counts,
-      creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
-      saved: commentView.saved,
-      creatorBlocked: commentView.creatorBlocked,
-      subscribed: commentView.subscribed,
+    return commentView.copyWith(
+      comment: commentView.comment.copyWith(
+        content: "_deleted by creator_",
+      ),
     );
   }
 
   return commentView;
-}
-
-Comment convertToDeletedComment(Comment comment) {
-  return Comment(
-    id: comment.id,
-    creatorId: comment.creatorId,
-    postId: comment.postId,
-    content: "_deleted by creator_",
-    removed: comment.removed,
-    distinguished: comment.distinguished,
-    published: comment.published,
-    deleted: comment.deleted,
-    apId: comment.apId,
-    local: comment.local,
-    languageId: comment.languageId,
-    path: comment.path,
-  );
-}
-
-Comment convertToRemovedComment(Comment comment) {
-  return Comment(
-    id: comment.id,
-    creatorId: comment.creatorId,
-    postId: comment.postId,
-    content: "_removed by moderator_",
-    removed: comment.removed,
-    distinguished: comment.distinguished,
-    published: comment.published,
-    deleted: comment.deleted,
-    apId: comment.apId,
-    local: comment.local,
-    languageId: comment.languageId,
-    path: comment.path,
-  );
 }
 
 /// Creates a placeholder comment from the given parameters. This is mainly used to display a preview of the comment

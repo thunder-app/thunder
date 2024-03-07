@@ -1,6 +1,6 @@
 part of 'modlog_bloc.dart';
 
-enum ModlogStatus { initial, fetching, success, failure, failureLoadingCommunity }
+enum ModlogStatus { initial, fetching, success, failure }
 
 final class ModlogState extends Equatable {
   const ModlogState({
