@@ -186,6 +186,7 @@ class PostCardMetadata extends StatelessWidget {
 
     return Wrap(
       spacing: 8.0,
+      runSpacing: 4.0,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: postCardMetadataItems.map(
         (PostCardMetadataItem postCardMetadataItem) {
@@ -396,7 +397,7 @@ class DateTimePostCardMetaData extends StatelessWidget {
 
     final color = switch (hasBeenRead) {
       true => readColor,
-      _ => theme.textTheme.bodyMedium?.color,
+      _ => state.showFullPostDate ? theme.textTheme.bodyMedium?.color?.withOpacity(0.75) : theme.textTheme.bodyMedium?.color,
     };
 
     return IconText(

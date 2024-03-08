@@ -144,7 +144,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       bool showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
-      DateFormat dateFormat = DateFormat(prefs.getString(LocalSettings.dateFormat.name) ?? DEFAULT_DATE_FORMAT);
+      DateFormat dateFormat = DateFormat(prefs.getString(LocalSettings.dateFormat.name) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
       bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       List<PostCardMetadataItem> compactPostCardMetadataItems =

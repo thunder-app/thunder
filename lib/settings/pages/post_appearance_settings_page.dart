@@ -88,6 +88,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// List of available date formats to select from
   List<DateFormat> dateFormats = [
+    DateFormat.yMMMMd(Intl.systemLocale).add_jm(),
     DateFormat('MMMM dd, yyyy HH:mm:ss'),
     DateFormat('E, dd MMM yyyy HH:mm:ss Z'),
     DateFormat('yyyy-MM-dd HH:mm:ss'),
@@ -128,7 +129,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
-      selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : DateFormat(DEFAULT_DATE_FORMAT);
+      selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : dateFormats.first;
 
       // Compact View Settings
       compactPostCardMetadataItems =
@@ -182,7 +183,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         setState(() => showFullPostDate = value);
         break;
       case LocalSettings.dateFormat:
-        await prefs.setString(LocalSettings.dateFormat.name, (value as DateFormat).pattern ?? DEFAULT_DATE_FORMAT);
+        await prefs.setString(LocalSettings.dateFormat.name, (value as DateFormat).pattern ?? dateFormats.first.pattern!);
         setState(() => selectedDateFormat = value);
         break;
 
@@ -556,13 +557,20 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               description: l10n.dateFormat,
               disabled: !showFullPostDate,
               value: ListPickerItem(
-                label: selectedDateFormat!.pattern!,
+                label: (selectedDateFormat == null || selectedDateFormat!.pattern == dateFormats.first.pattern) ? l10n.system : selectedDateFormat!.pattern!,
                 icon: Icons.access_time_filled_rounded,
                 payload: selectedDateFormat,
                 capitalizeLabel: false,
               ),
               options: dateFormats
-                  .map((DateFormat dateFormat) => ListPickerItem(icon: Icons.access_time_filled_rounded, label: dateFormat.format(DateTime.now()), payload: dateFormat, subtitle: dateFormat.pattern))
+                  .map(
+                    (DateFormat dateFormat) => ListPickerItem(
+                      icon: Icons.access_time_filled_rounded,
+                      label: dateFormat.format(DateTime.now()),
+                      payload: dateFormat,
+                      subtitle: dateFormat.pattern == dateFormats.first.pattern ? l10n.system : dateFormat.pattern,
+                    ),
+                  )
                   .toList(),
               icon: Icons.access_time_filled_rounded,
               onChanged: (value) => setPreferences(LocalSettings.dateFormat, value.payload),
