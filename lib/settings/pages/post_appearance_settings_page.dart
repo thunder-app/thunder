@@ -89,12 +89,12 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// List of available date formats to select from
   List<DateFormat> dateFormats = [
     DateFormat.yMMMMd(Intl.systemLocale).add_jm(),
-    DateFormat('MMMM dd, yyyy HH:mm:ss'),
-    DateFormat('E, dd MMM yyyy HH:mm:ss Z'),
-    DateFormat('yyyy-MM-dd HH:mm:ss'),
-    DateFormat('dd/MM/yyyy HH:mm:ss'),
-    DateFormat('MM/dd/yyyy HH:mm:ss'),
-    DateFormat('yyyy-MM-ddTHH:mm:ss'),
+    DateFormat('MMMM dd, yyyy HH:mm'),
+    DateFormat('E, dd MMM yyyy HH:mm Z'),
+    DateFormat('yyyy-MM-dd HH:mm'),
+    DateFormat('dd/MM/yyyy HH:mm'),
+    DateFormat('MM/dd/yyyy HH:mm'),
+    DateFormat('yyyy-MM-ddTHH:mm'),
   ];
 
   /// When enabled, cross posts will be shown on the post page
