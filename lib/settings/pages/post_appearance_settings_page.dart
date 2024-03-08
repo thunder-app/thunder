@@ -87,15 +87,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   DateFormat? selectedDateFormat;
 
   /// List of available date formats to select from
-  List<DateFormat> dateFormats = [
-    DateFormat.yMMMMd(Intl.systemLocale).add_jm(),
-    DateFormat('MMMM dd, yyyy HH:mm'),
-    DateFormat('E, dd MMM yyyy HH:mm Z'),
-    DateFormat('yyyy-MM-dd HH:mm'),
-    DateFormat('dd/MM/yyyy HH:mm'),
-    DateFormat('MM/dd/yyyy HH:mm'),
-    DateFormat('yyyy-MM-ddTHH:mm'),
-  ];
+  List<DateFormat> dateFormats = [DateFormat.yMMMMd(Intl.systemLocale).add_jm()];
 
   /// When enabled, cross posts will be shown on the post page
   bool showCrossPosts = true;
@@ -319,6 +311,23 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      DateTime date = DateTime.now();
+      DateFormat systemDateFormat = dateFormats.first;
+
+      // Add predefined date formats
+      for (DateFormat dateFormat in [
+        DateFormat('MMMM dd, yyyy HH:mm'),
+        DateFormat('E, dd MMM yyyy HH:mm Z'),
+        DateFormat('yyyy-MM-dd HH:mm'),
+        DateFormat('dd/MM/yyyy HH:mm'),
+        DateFormat('MM/dd/yyyy HH:mm'),
+        DateFormat('yyyy-MM-ddTHH:mm')
+      ]) {
+        if (systemDateFormat.format(date) != dateFormat.format(date)) {
+          dateFormats.add(dateFormat);
+        }
+      }
+
       initPreferences();
 
       if (widget.settingToHighlight != null) {
