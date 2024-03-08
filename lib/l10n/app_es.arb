@@ -1480,5 +1480,41 @@
   "exploreInstance": "Explorar instancia",
   "@exploreInstance": {
     "description": "Button for exploring an instance"
+  },
+  "addedModToCommunity": "Mod añadido a la Comunidad",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "admin": "Adm.",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "bannedUser": "Usuario baneado",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "bannedUserFromCommunity": "Usuario expulsado de la Comunidad",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "detailedReason": "Razón: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "hidCommunity": "Comunidad oculta",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
+  "lockedPost": "Tema bloqueado",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
+  "featuredPost": "Publicación destacada",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
+  },
+  "addedInstanceMod": "Añadido Instancia Mod",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
   }
 }
