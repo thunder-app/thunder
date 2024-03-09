@@ -451,7 +451,7 @@
   },
   "gestures": "Gestá",
   "@gestures": {},
-  "hideNsfwPreviews": "Skryť NSFW náhľady",
+  "hideNsfwPreviews": "Rozmazať NSFW náhľady",
   "@hideNsfwPreviews": {
     "description": "Toggle to hide NSFW previews."
   },
@@ -1482,5 +1482,197 @@
   "fonts": "Písma",
   "@fonts": {
     "description": "Settings category for fonts"
+  },
+  "markPostAsReadOnScroll": "Označiť ako prečítané skrolovaním",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "selectAccountToPostAs": "Vybrať účet pre zverejnenie príspevku",
+  "@selectAccountToPostAs": {
+    "description": "Heading for account selector when posting"
+  },
+  "addedInstanceMod": "Moderátor inštancie pridaný",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "addedModToCommunity": "Pridaný moderátor do komunity",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "admin": "Administrátor",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "bannedUser": "Zablokovaný používateľ",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "bannedUserFromCommunity": "Zablokovaný používateľ z komunity",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "detailedReason": "Dôvod: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "hidCommunity": "Skrytá komunita",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
+  "featuredPost": "Pripnutý príspevok",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
+  },
+  "lockedPost": "Zamknutý príspevok",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
+  "modAdd": "Pridať/Odstrániť moderátorov inštancie",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modAddCommunity": "Pridať/Odstrániť moderátorov komunít",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "modBan": "Zablokovať/Odblokovať moderátorov inštancie",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance moderators"
+  },
+  "modBanFromCommunity": "Zablokovať/Odblokovať používateľov z komunít",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "modlog": "Moderátorské záznamy",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "moderator": "Moderátor",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
+  "modLockPost": "Zamknúť/Odomknúť príspevky",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modRemoveComment": "Odstrániť/Obnoviť komentáre",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Odstrániť/Obnoviť komunity",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "modRemovePost": "Odstrániť/Obnoviť príspevky",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "modTransferCommunity": "Presúvané komunity",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
+  "modFeaturePost": "Pripnúť/Odopnúť príspevky",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "restoredComment": "Obnovený komentár",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
+  "removedPost": "Vymazaný príspevok",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
+  "removedModFromCommunity": "Odstránený moderátor z komunity",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "removedInstanceMod": "Odstránený moderátor inštancie",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "removedCommunity": "Odstránená komunita",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
+  "purgedPerson": "Prečistená osoba",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "purgedPost": "Prečistený príspevok",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
+  "purgedCommunity": "Prečistená komunita",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "restoredCommunity": "Obnovené komunity",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "restoredPost": "Obnovený príspevok",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
+  "sensitiveContentWarning": "Môže obsahovať citlivý obsah. Kliknite pre zobrazenie.",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
+  "successfullyBlockedUser": "{username} zablokovaný",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "successfullyUnblockedUser": "{username} odblokovaný",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "unableToFindCommunityOnInstance": "Nie je možné nájsť vybranú komunitu v inštancii vybraného používateľa.",
+  "@unableToFindCommunityOnInstance": {
+    "description": "An error message for when we can't find a community on an instance"
+  },
+  "unableToFindPost": "Nemožno nájsť príspevok",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
+  "unbannedUser": "Odblokovaný používateľ",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "unbannedUserFromCommunity": "Odblokovaný používateľ z komunity",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
+  "unfeaturedPost": "Odopnutý príspevok",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "unhidCommunity": "Odokrytá komunita",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
+  "removedComment": "Odstránený komentár",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "purgedComment": "Prečistený komentár",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "transferredModToCommunity": "Komunita presunutá",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
+  "unlockedPost": "Odomknutý príspevok",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
+  },
+  "user": "Používateľ",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "exploreInstance": "Preskúmať inštanciu",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
   }
 }
