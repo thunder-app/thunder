@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:expandable/expandable.dart';
 import 'package:collection/collection.dart';
@@ -79,6 +80,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// When enabled, posts that have been marked as read will be dimmed
   bool dimReadPosts = true;
 
+  /// When enabled, the full date will be shown
+  bool showFullPostDate = false;
+
+  /// The selected date format. This is only used when `showFullPostDate` is enabled
+  DateFormat? selectedDateFormat;
+
+  /// List of available date formats to select from
+  List<DateFormat> dateFormats = [DateFormat.yMMMMd(Intl.systemLocale).add_jm()];
+
   /// When enabled, cross posts will be shown on the post page
   bool showCrossPosts = true;
 
@@ -110,6 +120,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
+      showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
+      selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : dateFormats.first;
 
       // Compact View Settings
       compactPostCardMetadataItems =
@@ -157,6 +169,14 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.dimReadPosts:
         await prefs.setBool(LocalSettings.dimReadPosts.name, value);
         setState(() => dimReadPosts = value);
+        break;
+      case LocalSettings.showFullPostDate:
+        await prefs.setBool(LocalSettings.showFullPostDate.name, value);
+        setState(() => showFullPostDate = value);
+        break;
+      case LocalSettings.dateFormat:
+        await prefs.setString(LocalSettings.dateFormat.name, (value as DateFormat).pattern ?? dateFormats.first.pattern!);
+        setState(() => selectedDateFormat = value);
         break;
 
       case LocalSettings.compactPostCardMetadataItems:
@@ -226,6 +246,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.showPostAuthor.name);
     await prefs.remove(LocalSettings.useDisplayNamesForUsers.name);
     await prefs.remove(LocalSettings.dimReadPosts.name);
+    await prefs.remove(LocalSettings.showFullPostDate.name);
+    await prefs.remove(LocalSettings.dateFormat.name);
     await prefs.remove(LocalSettings.compactPostCardMetadataItems.name);
     await prefs.remove(LocalSettings.showThumbnailPreviewOnRight.name);
     await prefs.remove(LocalSettings.showTextPostIndicator.name);
@@ -289,6 +311,23 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      DateTime date = DateTime.now();
+      DateFormat systemDateFormat = dateFormats.first;
+
+      // Add predefined date formats
+      for (DateFormat dateFormat in [
+        DateFormat('MMMM dd, yyyy HH:mm'),
+        DateFormat('E, dd MMM yyyy HH:mm Z'),
+        DateFormat('yyyy-MM-dd HH:mm'),
+        DateFormat('dd/MM/yyyy HH:mm'),
+        DateFormat('MM/dd/yyyy HH:mm'),
+        DateFormat('yyyy-MM-ddTHH:mm')
+      ]) {
+        if (systemDateFormat.format(date) != dateFormat.format(date)) {
+          dateFormats.add(dateFormat);
+        }
+      }
+
       initPreferences();
 
       if (widget.settingToHighlight != null) {
@@ -509,6 +548,42 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               iconDisabled: Icons.chrome_reader_mode_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
               highlightKey: settingToHighlight == LocalSettings.dimReadPosts ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showFullDate,
+              subtitle: l10n.showFullDateDescription,
+              value: showFullPostDate,
+              iconEnabled: Icons.date_range_rounded,
+              iconDisabled: Icons.date_range_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.showFullPostDate, value),
+              highlightKey: settingToHighlight == LocalSettings.showFullPostDate ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ListOption(
+              description: l10n.dateFormat,
+              disabled: !showFullPostDate,
+              value: ListPickerItem(
+                label: (selectedDateFormat == null || selectedDateFormat!.pattern == dateFormats.first.pattern) ? l10n.system : selectedDateFormat!.pattern!,
+                icon: Icons.access_time_filled_rounded,
+                payload: selectedDateFormat,
+                capitalizeLabel: false,
+              ),
+              options: dateFormats
+                  .map(
+                    (DateFormat dateFormat) => ListPickerItem(
+                      icon: Icons.access_time_filled_rounded,
+                      label: dateFormat.format(DateTime.now()),
+                      payload: dateFormat,
+                      subtitle: dateFormat.pattern == dateFormats.first.pattern ? l10n.system : dateFormat.pattern,
+                    ),
+                  )
+                  .toList(),
+              icon: Icons.access_time_filled_rounded,
+              onChanged: (value) => setPreferences(LocalSettings.dateFormat, value.payload),
+              highlightKey: settingToHighlight == LocalSettings.dateFormat ? settingToHighlightKey : null,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 32.0)),

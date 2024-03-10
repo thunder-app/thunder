@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -142,6 +143,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
+      bool showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
+      DateFormat dateFormat = DateFormat(prefs.getString(LocalSettings.dateFormat.name) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
       bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       List<PostCardMetadataItem> compactPostCardMetadataItems =
@@ -279,6 +282,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showPostAuthor: showPostAuthor,
         scoreCounters: scoreCounters,
         dimReadPosts: dimReadPosts,
+        showFullPostDate: showFullPostDate,
+        dateFormat: dateFormat,
         useAdvancedShareSheet: useAdvancedShareSheet,
         showCrossPosts: showCrossPosts,
         compactPostCardMetadataItems: compactPostCardMetadataItems,
