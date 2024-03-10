@@ -333,33 +333,38 @@ class FeedAppBarGeneralActions extends StatelessWidget {
             );
           },
         ),
-        IconButton(
-          icon: Icon(Icons.shield_rounded, semanticLabel: l10n.modlog),
-          onPressed: () async {
-            HapticFeedback.mediumImpact();
+        PopupMenuButton(
+          itemBuilder: (context) => [
+            ThunderPopupMenuItem(
+              onTap: () async {
+                HapticFeedback.mediumImpact();
 
-            AuthBloc authBloc = context.read<AuthBloc>();
-            ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                AuthBloc authBloc = context.read<AuthBloc>();
+                ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-            await Navigator.of(context).push(
-              SwipeablePageRoute(
-                transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
-                backGestureDetectionWidth: 45,
-                canOnlySwipeFromEdge:
-                    disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                builder: (otherContext) {
-                  return MultiBlocProvider(
-                    providers: [
-                      BlocProvider.value(value: feedBloc),
-                      BlocProvider.value(value: thunderBloc),
-                    ],
-                    child: const ModlogFeedPage(),
-                  );
-                },
-              ),
-            );
-          },
+                await Navigator.of(context).push(
+                  SwipeablePageRoute(
+                    transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                    backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                    backGestureDetectionWidth: 45,
+                    canOnlySwipeFromEdge:
+                        disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                    builder: (otherContext) {
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: feedBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: const ModlogFeedPage(),
+                      );
+                    },
+                  ),
+                );
+              },
+              icon: Icons.shield_rounded,
+              title: l10n.modlog,
+            ),
+          ],
         ),
       ],
     );
