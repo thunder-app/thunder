@@ -341,7 +341,7 @@
   "@filters": {
     "description": "Category to describe various filters (user, community, instance blocking)"
   },
-  "instance": "{count, číslo, nula {Instance} jeden {Instance} ostatné {Instances} } ",
+  "instance": "{count, plural, zero {Inštancií} one {Inštancia} other {Inštancií} } ",
   "@instance": {},
   "language": "Jazyk",
   "@language": {
@@ -1682,5 +1682,25 @@
   "changeAccountSettingsFor": "Zmena nastavení účtu pre",
   "@changeAccountSettingsFor": {
     "description": "Heading for the profiler modal when changing account settings"
+  },
+  "showFullDateDescription": "Zobraziť celý dátum na príspevky",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
+  },
+  "searchInstancesFederatedWith": "Vyhľadať prípady kŕmené {instance}",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
+  "showFullDate": "Zobraziť celý dátum",
+  "@showFullDate": {
+    "description": "Toggle to show full date on posts"
+  },
+  "unreachable": "Nepochybné",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "viewAll": "Zobraziť všetko",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
   }
 }
