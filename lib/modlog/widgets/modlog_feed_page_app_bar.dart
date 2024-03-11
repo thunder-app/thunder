@@ -48,7 +48,10 @@ class ModlogFeedPageAppBar extends StatelessWidget {
       ),
       actions: <Widget>[
         IconButton(
-          icon: const Icon(Icons.filter_alt_rounded),
+          icon: Icon(
+            Icons.filter_alt_rounded,
+            semanticLabel: l10n.filters,
+          ),
           onPressed: () {
             HapticFeedback.mediumImpact();
 

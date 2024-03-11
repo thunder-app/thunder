@@ -70,29 +70,31 @@ class CommunityListEntry extends StatelessWidget {
             Icon(Icons.star_rounded, size: 15),
           ]
         ]),
-        trailing: IconButton(
-          onPressed: () {
-            SubscribedType? subscriptionStatus = getCurrentSubscriptionStatus?.call(isUserLoggedIn, communityView, currentSubscriptions);
-            onSubscribeIconPressed?.call(isUserLoggedIn, context, communityView);
-            showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
-            context.read<AccountBloc>().add(GetAccountSubscriptions());
-          },
-          icon: Icon(
-            switch (getCurrentSubscriptionStatus?.call(isUserLoggedIn, communityView, currentSubscriptions)) {
-              SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-              SubscribedType.pending => Icons.pending_outlined,
-              SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-              _ => null,
-            },
-          ),
-          tooltip: switch (getCurrentSubscriptionStatus?.call(isUserLoggedIn, communityView, currentSubscriptions)) {
-            SubscribedType.notSubscribed => l10n.subscribe,
-            SubscribedType.pending => l10n.unsubscribePending,
-            SubscribedType.subscribed => l10n.unsubscribe,
-            _ => null,
-          },
-          visualDensity: VisualDensity.compact,
-        ),
+        trailing: getCurrentSubscriptionStatus == null
+            ? null
+            : IconButton(
+                onPressed: () {
+                  SubscribedType? subscriptionStatus = getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions);
+                  onSubscribeIconPressed?.call(isUserLoggedIn, context, communityView);
+                  showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
+                  context.read<AccountBloc>().add(GetAccountSubscriptions());
+                },
+                icon: Icon(
+                  switch (getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions)) {
+                    SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                    SubscribedType.pending => Icons.pending_outlined,
+                    SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                    _ => null,
+                  },
+                ),
+                tooltip: switch (getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions)) {
+                  SubscribedType.notSubscribed => l10n.subscribe,
+                  SubscribedType.pending => l10n.unsubscribePending,
+                  SubscribedType.subscribed => l10n.unsubscribe,
+                  _ => null,
+                },
+                visualDensity: VisualDensity.compact,
+              ),
         onTap: () async {
           int? communityId = communityView.community.id;
           if (resolutionInstance != null) {
