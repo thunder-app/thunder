@@ -635,10 +635,31 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.userFormat,
-              value: ListPickerItem(label: userSeparator.label, icon: Icons.person_rounded, payload: userSeparator, capitalizeLabel: false),
+              value: ListPickerItem(
+                label: generateUserFullName(null, 'name', 'instance.tld', userSeparator: userSeparator),
+                icon: Icons.person_rounded,
+                payload: userSeparator,
+                capitalizeLabel: false,
+              ),
               options: [
-                ListPickerItem(icon: const IconData(0x2022), label: FullNameSeparator.dot.label, payload: FullNameSeparator.dot, capitalizeLabel: false),
-                ListPickerItem(icon: Icons.alternate_email_rounded, label: FullNameSeparator.at.label, payload: FullNameSeparator.at, capitalizeLabel: false),
+                ListPickerItem(
+                  icon: const IconData(0x2022),
+                  label: generateUserFullName(null, 'name', 'instance.tld', userSeparator: FullNameSeparator.dot),
+                  payload: FullNameSeparator.dot,
+                  capitalizeLabel: false,
+                ),
+                ListPickerItem(
+                  icon: Icons.alternate_email_rounded,
+                  label: generateUserFullName(null, 'name', 'instance.tld', userSeparator: FullNameSeparator.at),
+                  payload: FullNameSeparator.at,
+                  capitalizeLabel: false,
+                ),
+                ListPickerItem(
+                  icon: Icons.alternate_email_rounded,
+                  label: generateUserFullName(null, 'name', 'instance.tld', userSeparator: FullNameSeparator.lemmy),
+                  payload: FullNameSeparator.lemmy,
+                  capitalizeLabel: false,
+                ),
               ],
               icon: Icons.person_rounded,
               onChanged: (value) => setPreferences(LocalSettings.userFormat, value.payload.name),
@@ -648,10 +669,31 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.communityFormat,
-              value: ListPickerItem(label: communitySeparator.label, icon: Icons.person_rounded, payload: communitySeparator, capitalizeLabel: false),
+              value: ListPickerItem(
+                label: generateCommunityFullName(null, 'name', 'instance.tld', communitySeparator: communitySeparator),
+                icon: Icons.person_rounded,
+                payload: communitySeparator,
+                capitalizeLabel: false,
+              ),
               options: [
-                ListPickerItem(icon: const IconData(0x2022), label: FullNameSeparator.dot.label, payload: FullNameSeparator.dot, capitalizeLabel: false),
-                ListPickerItem(icon: Icons.alternate_email_rounded, label: FullNameSeparator.at.label, payload: FullNameSeparator.at, capitalizeLabel: false),
+                ListPickerItem(
+                  icon: const IconData(0x2022),
+                  label: generateCommunityFullName(null, 'name', 'instance.tld', communitySeparator: FullNameSeparator.dot),
+                  payload: FullNameSeparator.dot,
+                  capitalizeLabel: false,
+                ),
+                ListPickerItem(
+                  icon: Icons.alternate_email_rounded,
+                  label: generateCommunityFullName(null, 'name', 'instance.tld', communitySeparator: FullNameSeparator.at),
+                  payload: FullNameSeparator.at,
+                  capitalizeLabel: false,
+                ),
+                ListPickerItem(
+                  icon: Icons.priority_high_rounded,
+                  label: generateCommunityFullName(null, 'name', 'instance.tld', communitySeparator: FullNameSeparator.lemmy),
+                  payload: FullNameSeparator.lemmy,
+                  capitalizeLabel: false,
+                ),
               ],
               icon: Icons.people_rounded,
               onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),

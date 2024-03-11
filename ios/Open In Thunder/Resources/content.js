@@ -21,19 +21,16 @@ let instances = [
     "leminal.space",
     "lemm.ee",
     "lemmings.world",
-    "lemmus.org",
     "lemmy.blahaj.zone",
     "lemmy.ca",
     "lemmy.dbzer0.com",
     "lemmy.eco.br",
-    "lemmy.kya.moe",
     "lemmy.ml",
     "lemmy.nz",
     "lemmy.one",
     "lemmy.sdf.org",
     "lemmy.today",
     "lemmy.world",
-    "lemmy.wtf",
     "lemmy.zip",
     "lemmygrad.ml",
     "lemmynsfw.com",
@@ -49,6 +46,7 @@ let instances = [
     "sopuli.xyz",
     "startrek.website",
     "szmer.info",
+    "thelemmy.club",
     "ttrpg.network"
 ];
 

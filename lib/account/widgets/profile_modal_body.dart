@@ -15,11 +15,24 @@ import 'package:thunder/user/utils/logout_dialog.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+/// Creates a widget which can display a list of accounts and anonymous instances.
+/// By default, when logging out of an account, a confirmation dialog is shown. To suppress this, pass [showLogoutDialog] as `false`.
+/// To hide anonymous instances and the ability to add new accounts, pass [quickSelectMode] as `true`.
+/// To provide a custom heading for the top of the modal, pass a [customHeading].
+/// By default, Thunder will reload when a different account is selected. To suppress this behavior, pass [reloadOnSwitch] as `false`.
 class ProfileModalBody extends StatefulWidget {
-  final bool anonymous;
   final bool showLogoutDialog;
+  final bool quickSelectMode;
+  final String? customHeading;
+  final bool reloadOnSwitch;
 
-  const ProfileModalBody({super.key, this.anonymous = false, this.showLogoutDialog = false});
+  const ProfileModalBody({
+    super.key,
+    this.showLogoutDialog = false,
+    this.quickSelectMode = false,
+    this.customHeading,
+    this.reloadOnSwitch = true,
+  });
 
   static final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -46,6 +59,9 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
           child: ProfileSelect(
             pushRegister: pushRegister,
             showLogoutDialog: widget.showLogoutDialog,
+            quickSelectMode: widget.quickSelectMode,
+            customHeading: widget.customHeading,
+            reloadOnSave: widget.reloadOnSwitch,
           ),
         )
       ],
@@ -60,6 +76,9 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
         page = ProfileSelect(
           pushRegister: pushRegister,
           showLogoutDialog: widget.showLogoutDialog,
+          quickSelectMode: widget.quickSelectMode,
+          customHeading: widget.customHeading,
+          reloadOnSave: widget.reloadOnSwitch,
         );
         break;
 
@@ -80,11 +99,17 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
 class ProfileSelect extends StatefulWidget {
   final void Function({bool anonymous}) pushRegister;
   final bool showLogoutDialog;
+  final bool quickSelectMode;
+  final String? customHeading;
+  final bool reloadOnSave;
 
   const ProfileSelect({
     super.key,
     required this.pushRegister,
     this.showLogoutDialog = false,
+    this.quickSelectMode = false,
+    this.customHeading,
+    this.reloadOnSave = true,
   });
 
   @override
@@ -126,7 +151,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
       fetchAccounts();
     }
 
-    if (anonymousInstances == null) {
+    if (!widget.quickSelectMode && anonymousInstances == null) {
       fetchAnonymousInstances();
     }
 
@@ -142,29 +167,31 @@ class _ProfileSelectState extends State<ProfileSelect> {
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
-              title: Text(l10n.account(2)),
+              title: Text(widget.customHeading ?? l10n.account(2)),
               centerTitle: false,
               scrolledUnderElevation: 0,
               pinned: true,
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.person_add),
-                  tooltip: l10n.addAccount,
-                  onPressed: () => widget.pushRegister(),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  tooltip: l10n.addAnonymousInstance,
-                  onPressed: () => widget.pushRegister(anonymous: true),
-                ),
-                const SizedBox(width: 12.0),
-              ],
+              actions: !widget.quickSelectMode
+                  ? [
+                      IconButton(
+                        icon: const Icon(Icons.person_add),
+                        tooltip: l10n.addAccount,
+                        onPressed: () => widget.pushRegister(),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        tooltip: l10n.addAnonymousInstance,
+                        onPressed: () => widget.pushRegister(anonymous: true),
+                      ),
+                      const SizedBox(width: 12.0),
+                    ]
+                  : [],
             ),
             SliverList.builder(
               itemBuilder: (context, index) {
                 if (index < (accounts?.length ?? 0)) {
                   return Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Material(
                       color: currentAccountId == accounts![index].account.id ? selectedColor : null,
                       borderRadius: BorderRadius.circular(50),
@@ -172,7 +199,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                         onTap: (currentAccountId == accounts![index].account.id)
                             ? null
                             : () {
-                                context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id));
+                                context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id, reload: widget.reloadOnSave));
                                 context.pop();
                               },
                         borderRadius: BorderRadius.circular(50),
@@ -284,7 +311,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 ),
                               ],
                             ),
-                            trailing: (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
+                            trailing: !widget.quickSelectMode && (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
                                 ? (currentAccountId == accounts![index].account.id)
                                     ? IconButton(
                                         icon: loggingOutId == accounts![index].account.id
@@ -329,10 +356,10 @@ class _ProfileSelectState extends State<ProfileSelect> {
                       ),
                     ),
                   );
-                } else {
+                } else if (!widget.quickSelectMode) {
                   int realIndex = index - (accounts?.length ?? 0);
                   return Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Material(
                       color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
                       borderRadius: BorderRadius.circular(50),
@@ -462,7 +489,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 ),
                               ],
                             ),
-                            trailing: ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
+                            trailing: !widget.quickSelectMode && ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
                                 ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
                                     ? IconButton(
                                         icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.removeInstance),

@@ -343,59 +343,59 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     List<CommentReplyView> cleanedReplies = [];
 
     for (CommentReplyView reply in replies) {
-      if (!reply.comment.deleted) {
-        cleanedReplies.add(reply);
+      if (reply.comment.removed) {
+        cleanedReplies.add(reply.copyWith(
+          comment: reply.comment.copyWith(
+            content: "_deleted by moderator_",
+          ),
+        ));
         continue;
       }
 
-      Comment deletedComment = convertToDeletedComment(reply.comment);
-      CommentReplyView cleanedReply = reply.copyWith(comment: deletedComment);
-      cleanedReplies.add(cleanedReply);
+      if (reply.comment.deleted) {
+        cleanedReplies.add(reply.copyWith(
+          comment: reply.comment.copyWith(
+            content: "_deleted by creator_",
+          ),
+        ));
+        continue;
+      }
+
+      cleanedReplies.add(reply);
     }
 
     return cleanedReplies;
   }
 
   PrivateMessageView cleanDeletedPrivateMessage(PrivateMessageView message) {
-    if (!message.privateMessage.deleted) {
-      return message;
+    if (message.privateMessage.deleted) {
+      return message.copyWith(
+        privateMessage: message.privateMessage.copyWith(
+          content: "_deleted by creator_",
+        ),
+      );
     }
 
-    PrivateMessage privateMessage = PrivateMessage(
-      id: message.privateMessage.id,
-      creatorId: message.privateMessage.creatorId,
-      recipientId: message.privateMessage.recipientId,
-      content: "_deleted by creator_",
-      deleted: message.privateMessage.deleted,
-      read: message.privateMessage.read,
-      published: message.privateMessage.published,
-      apId: message.privateMessage.apId,
-      local: message.privateMessage.local,
-    );
-
-    return PrivateMessageView(privateMessage: privateMessage, creator: message.creator, recipient: message.recipient);
+    return message;
   }
 
   PersonMentionView cleanDeletedMention(PersonMentionView mention) {
-    if (!mention.comment.deleted) {
-      return mention;
+    if (mention.comment.removed) {
+      return mention.copyWith(
+        comment: mention.comment.copyWith(
+          content: "_deleted by moderator_",
+        ),
+      );
     }
 
-    Comment deletedComment = convertToDeletedComment(mention.comment);
+    if (mention.comment.deleted) {
+      return mention.copyWith(
+        comment: mention.comment.copyWith(
+          content: "_deleted by creator_",
+        ),
+      );
+    }
 
-    return PersonMentionView(
-      personMention: mention.personMention,
-      comment: deletedComment,
-      creator: mention.creator,
-      post: mention.post,
-      community: mention.community,
-      recipient: mention.recipient,
-      counts: mention.counts,
-      creatorBannedFromCommunity: mention.creatorBannedFromCommunity,
-      saved: mention.saved,
-      creatorBlocked: mention.creatorBlocked,
-      subscribed: mention.subscribed,
-      myVote: mention.myVote,
-    );
+    return mention;
   }
 }

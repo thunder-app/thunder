@@ -1,5 +1,5 @@
 PODS:
-  - background_fetch (1.2.2):
+  - background_fetch (1.2.4):
     - Flutter
   - device_info_plus (0.0.1):
     - Flutter
@@ -113,7 +113,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
-  background_fetch: ec64adecd504f2d0d333b4b11d31f47c8ee23d12
+  background_fetch: 11c8ee1b9fe31a5ffaf0078d4ee0cfa5bb293694
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_custom_tabs_ios: 62439c843b2691aae516fd50119a01eb9755fff7
@@ -132,7 +132,7 @@ SPEC CHECKSUMS:
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
-  url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
+  url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
   webview_flutter_wkwebview: be0f0d33777f1bfd0c9fdcb594786704dbf65f36
 
 PODFILE CHECKSUM: 8d23d5c4d896af3a5f2a08e0206462ca9882e556

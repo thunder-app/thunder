@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -185,6 +186,7 @@ class PostCardMetadata extends StatelessWidget {
 
     return Wrap(
       spacing: 8.0,
+      runSpacing: 4.0,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: postCardMetadataItems.map(
         (PostCardMetadataItem postCardMetadataItem) {
@@ -395,12 +397,12 @@ class DateTimePostCardMetaData extends StatelessWidget {
 
     final color = switch (hasBeenRead) {
       true => readColor,
-      _ => theme.textTheme.bodyMedium?.color,
+      _ => state.showFullPostDate ? theme.textTheme.bodyMedium?.color?.withOpacity(0.75) : theme.textTheme.bodyMedium?.color,
     };
 
     return IconText(
       fontScale: state.metadataFontSizeScale,
-      text: formatTimeToString(dateTime: dateTime),
+      text: state.showFullPostDate ? state.dateFormat?.format(DateTime.parse(dateTime)) : formatTimeToString(dateTime: dateTime),
       textColor: color,
       padding: 2.0,
       icon: Icon(hasBeenEdited ? Icons.edit : Icons.history_rounded, size: 17.0, color: color),

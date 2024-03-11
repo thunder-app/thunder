@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
@@ -38,7 +40,9 @@ Future<void> navigateToCreatePostPage(
     }
 
     final bool reduceAnimations = thunderBloc.state.reduceAnimations;
-    Navigator.of(context).push(SwipeablePageRoute(
+    final Account? originalUser = context.read<AuthBloc>().state.account;
+
+    await Navigator.of(context).push(SwipeablePageRoute(
       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
       canOnlySwipeFromEdge: true,
       backGestureDetectionWidth: 45,
@@ -57,23 +61,33 @@ Future<void> navigateToCreatePostPage(
             prePopulated: prePopulated,
             communityId: communityId,
             communityView: communityView,
-            onPostSuccess: (PostViewMedia postViewMedia) {
-              try {
-                showSnackbar(
-                  l10n.postCreatedSuccessfully,
-                  trailingIcon: Icons.remove_red_eye_rounded,
-                  trailingAction: () {
-                    navigateToPost(context, postId: postViewMedia.postView.post.id);
-                  },
-                );
+            onPostSuccess: (PostViewMedia postViewMedia, bool userChanged) {
+              if (!userChanged) {
+                try {
+                  showSnackbar(
+                    l10n.postCreatedSuccessfully,
+                    trailingIcon: Icons.remove_red_eye_rounded,
+                    trailingAction: () {
+                      navigateToPost(context, postId: postViewMedia.postView.post.id);
+                    },
+                  );
 
-                context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
-              } catch (e) {}
+                  context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
+                } catch (e) {}
+              }
             },
           ),
         );
       },
     ));
+
+    if (context.mounted) {
+      final Account? newUser = context.read<AuthBloc>().state.account;
+
+      if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
+        context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
+      }
+    }
   } catch (e) {
     if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
   }

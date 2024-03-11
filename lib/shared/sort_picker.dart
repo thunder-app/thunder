@@ -135,11 +135,9 @@ class _SortPickerState extends State<SortPicker> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: AnimatedSwitcher(
+      child: AnimatedSize(
         duration: const Duration(milliseconds: 100),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return FadeTransition(opacity: animation, child: child);
-        },
+        curve: Curves.easeInOut,
         child: topSelected ? topSortPicker() : defaultSortPicker(widget.includeVersionSpecificFeature),
       ),
     );
