@@ -152,21 +152,39 @@ class GetInstanceInfoResponse {
   final bool success;
   final String? icon;
   final String? version;
+  final String? name;
+  final String? domain;
+  final int? users;
+  final int? id;
 
-  const GetInstanceInfoResponse({required this.success, this.icon, this.version});
+  const GetInstanceInfoResponse({
+    required this.success,
+    this.icon,
+    this.version,
+    this.name,
+    this.domain,
+    this.users,
+    this.id,
+  });
+
+  bool isMetadataPopulated() => icon != null || version != null || name != null || users != null;
 }
 
-Future<GetInstanceInfoResponse> getInstanceInfo(String? url) async {
+Future<GetInstanceInfoResponse> getInstanceInfo(String? url, {int? id, Duration? timeout}) async {
   if (url?.isEmpty ?? true) {
     return const GetInstanceInfoResponse(success: false);
   }
 
   try {
-    final site = await LemmyApiV3(url!).run(const GetSite()).timeout(const Duration(seconds: 5));
+    final site = await LemmyApiV3(url!).run(const GetSite()).timeout(timeout ?? const Duration(seconds: 5));
     return GetInstanceInfoResponse(
       success: true,
       icon: site.siteView.site.icon,
       version: site.version,
+      name: site.siteView.site.name,
+      domain: fetchInstanceNameFromUrl(site.siteView.site.actorId),
+      users: site.siteView.counts.users,
+      id: id,
     );
   } catch (e) {
     // Bad instances will throw an exception, so no icon

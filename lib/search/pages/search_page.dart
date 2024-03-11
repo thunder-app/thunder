@@ -19,11 +19,13 @@ import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_widget.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/instance/widgets/instance_list_entry.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/widgets/search_action_chip.dart';
 import 'package:thunder/search/utils/search_utils.dart';
@@ -70,7 +72,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   int? _previousUserId;
   int? _previousFavoritesCount;
 
-  late SearchType _currentSearchType;
+  late MetaSearchType _currentSearchType;
   ListingType _currentFeedType = ListingType.all;
   IconData? _feedTypeIcon = Icons.grid_view_rounded;
   String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.all;
@@ -83,7 +85,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
   @override
   void initState() {
-    _currentSearchType = widget.communityToSearch == null ? SearchType.communities : SearchType.posts;
+    _currentSearchType = widget.communityToSearch == null ? MetaSearchType.communities : MetaSearchType.posts;
     _scrollController.addListener(_onScroll);
     initPrefs();
     fetchActiveProfileAccount().then((activeProfile) => _previousUserId = activeProfile?.userId);
@@ -142,7 +144,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   _onChange(BuildContext context, String value) {
-    if (_currentSearchType == SearchType.posts && Uri.tryParse(value)?.isAbsolute == true) {
+    if (_currentSearchType == MetaSearchType.posts && Uri.tryParse(value)?.isAbsolute == true) {
       setState(() {
         _searchByUrl = true;
         _searchUrlLabel = AppLocalizations.of(context)!.url;
@@ -284,11 +286,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                     title: l10n.selectSearchType,
                                     items: [
                                       if (widget.communityToSearch == null) ...[
-                                        ListPickerItem(label: l10n.communities, payload: SearchType.communities, icon: Icons.people_rounded),
-                                        ListPickerItem(label: l10n.users, payload: SearchType.users, icon: Icons.person_rounded),
+                                        ListPickerItem(label: l10n.communities, payload: MetaSearchType.communities, icon: Icons.people_rounded),
+                                        ListPickerItem(label: l10n.users, payload: MetaSearchType.users, icon: Icons.person_rounded),
                                       ],
-                                      ListPickerItem(label: l10n.posts, payload: SearchType.posts, icon: Icons.wysiwyg_rounded),
-                                      ListPickerItem(label: l10n.comments, payload: SearchType.comments, icon: Icons.chat_rounded),
+                                      ListPickerItem(label: l10n.posts, payload: MetaSearchType.posts, icon: Icons.wysiwyg_rounded),
+                                      ListPickerItem(label: l10n.comments, payload: MetaSearchType.comments, icon: Icons.chat_rounded),
+                                      if (widget.communityToSearch == null) ListPickerItem(label: l10n.instance(2), payload: MetaSearchType.instances, icon: Icons.language),
                                     ],
                                     onSelect: (value) => _setCurrentSearchType(value.payload),
                                     previouslySelected: _currentSearchType,
@@ -297,7 +300,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                               },
                             ),
                             const SizedBox(width: 10),
-                            if (_currentSearchType == SearchType.posts) ...[
+                            if (_currentSearchType == MetaSearchType.posts) ...[
                               SearchActionChip(
                                 children: [
                                   const Icon(Icons.link_rounded, size: 15),
@@ -329,78 +332,108 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                               ),
                               const SizedBox(width: 10),
                             ],
-                            SearchActionChip(
-                              children: [
-                                Icon(sortTypeIcon, size: 15),
-                                const SizedBox(width: 5),
-                                Text(sortTypeLabel ?? l10n.sortBy),
-                                const Icon(Icons.arrow_drop_down_rounded, size: 20),
-                              ],
-                              onPressed: () => showSortBottomSheet(context),
-                            ),
-                            if (widget.communityToSearch == null) ...[
-                              const SizedBox(width: 10),
+                            if (_currentSearchType != MetaSearchType.instances) ...[
                               SearchActionChip(
                                 children: [
-                                  Icon(_feedTypeIcon, size: 15),
+                                  Icon(sortTypeIcon, size: 15),
                                   const SizedBox(width: 5),
-                                  Text(_feedTypeLabel ?? l10n.feed),
+                                  Text(sortTypeLabel ?? l10n.sortBy),
                                   const Icon(Icons.arrow_drop_down_rounded, size: 20),
                                 ],
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    showDragHandle: true,
-                                    builder: (ctx) => BottomSheetListPicker(
-                                      title: l10n.selectFeedType,
-                                      items: [
-                                        ListPickerItem(label: l10n.subscribed, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
-                                        ListPickerItem(label: l10n.local, payload: ListingType.local, icon: Icons.home_rounded),
-                                        ListPickerItem(label: l10n.all, payload: ListingType.all, icon: Icons.grid_view_rounded)
-                                      ],
-                                      onSelect: (value) {
+                                onPressed: () => showSortBottomSheet(context),
+                              ),
+                              if (widget.communityToSearch == null) ...[
+                                const SizedBox(width: 10),
+                                SearchActionChip(
+                                  children: [
+                                    Icon(_feedTypeIcon, size: 15),
+                                    const SizedBox(width: 5),
+                                    Text(_feedTypeLabel ?? l10n.feed),
+                                    const Icon(Icons.arrow_drop_down_rounded, size: 20),
+                                  ],
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      showDragHandle: true,
+                                      builder: (ctx) => BottomSheetListPicker(
+                                        title: l10n.selectFeedType,
+                                        items: [
+                                          ListPickerItem(label: l10n.subscribed, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
+                                          ListPickerItem(label: l10n.local, payload: ListingType.local, icon: Icons.home_rounded),
+                                          ListPickerItem(label: l10n.all, payload: ListingType.all, icon: Icons.grid_view_rounded)
+                                        ],
+                                        onSelect: (value) {
+                                          setState(() {
+                                            if (value.payload == ListingType.subscribed) {
+                                              _feedTypeLabel = l10n.subscribed;
+                                              _feedTypeIcon = Icons.view_list_rounded;
+                                            } else if (value.payload == ListingType.local) {
+                                              _feedTypeLabel = l10n.local;
+                                              _feedTypeIcon = Icons.home_rounded;
+                                            } else if (value.payload == ListingType.all) {
+                                              _feedTypeLabel = l10n.all;
+                                              _feedTypeIcon = Icons.grid_view_rounded;
+                                            }
+                                            _currentFeedType = value.payload;
+                                          });
+                                          _doSearch();
+                                        },
+                                        previouslySelected: _currentFeedType,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(width: 10),
+                                SearchActionChip(
+                                  backgroundColor: _currentCommunityFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
+                                  children: [
+                                    const Icon(Icons.people_rounded, size: 15),
+                                    const SizedBox(width: 5),
+                                    Text(_currentCommunityFilter == null ? l10n.community : l10n.filteringBy(_currentCommunityFilterName ?? '')),
+                                    if (_currentCommunityFilter != null) const SizedBox(width: 5),
+                                    Icon(_currentCommunityFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: _currentCommunityFilter == null ? 20 : 15),
+                                  ],
+                                  onPressed: () {
+                                    if (_currentCommunityFilter != null) {
+                                      setState(() {
+                                        _currentCommunityFilter = null;
+                                        _currentCommunityFilterName = null;
+                                      });
+                                      _doSearch();
+                                    } else {
+                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
                                         setState(() {
-                                          if (value.payload == ListingType.subscribed) {
-                                            _feedTypeLabel = l10n.subscribed;
-                                            _feedTypeIcon = Icons.view_list_rounded;
-                                          } else if (value.payload == ListingType.local) {
-                                            _feedTypeLabel = l10n.local;
-                                            _feedTypeIcon = Icons.home_rounded;
-                                          } else if (value.payload == ListingType.all) {
-                                            _feedTypeLabel = l10n.all;
-                                            _feedTypeIcon = Icons.grid_view_rounded;
-                                          }
-                                          _currentFeedType = value.payload;
+                                          _currentCommunityFilter = communityView.community.id;
+                                          _currentCommunityFilterName = generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId));
                                         });
                                         _doSearch();
-                                      },
-                                      previouslySelected: _currentFeedType,
-                                    ),
-                                  );
-                                },
-                              ),
+                                      });
+                                    }
+                                  },
+                                ),
+                              ],
                               const SizedBox(width: 10),
                               SearchActionChip(
-                                backgroundColor: _currentCommunityFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
+                                backgroundColor: _currentCreatorFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
                                 children: [
-                                  const Icon(Icons.people_rounded, size: 15),
+                                  const Icon(Icons.person_rounded, size: 15),
                                   const SizedBox(width: 5),
-                                  Text(_currentCommunityFilter == null ? l10n.community : l10n.filteringBy(_currentCommunityFilterName ?? '')),
-                                  if (_currentCommunityFilter != null) const SizedBox(width: 5),
-                                  Icon(_currentCommunityFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: _currentCommunityFilter == null ? 20 : 15),
+                                  Text(_currentCreatorFilter == null ? l10n.creator : l10n.filteringBy(_currentCreatorFilterName ?? '')),
+                                  if (_currentCreatorFilter != null) const SizedBox(width: 5),
+                                  Icon(_currentCreatorFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: _currentCreatorFilter == null ? 20 : 15),
                                 ],
                                 onPressed: () {
-                                  if (_currentCommunityFilter != null) {
+                                  if (_currentCreatorFilter != null) {
                                     setState(() {
-                                      _currentCommunityFilter = null;
-                                      _currentCommunityFilterName = null;
+                                      _currentCreatorFilter = null;
+                                      _currentCreatorFilterName = null;
                                     });
                                     _doSearch();
                                   } else {
-                                    showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
+                                    showUserInputDialog(context, title: l10n.creator, onUserSelected: (personView) {
                                       setState(() {
-                                        _currentCommunityFilter = communityView.community.id;
-                                        _currentCommunityFilterName = generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId));
+                                        _currentCreatorFilter = personView.person.id;
+                                        _currentCreatorFilterName = generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId));
                                       });
                                       _doSearch();
                                     });
@@ -408,34 +441,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                 },
                               ),
                             ],
-                            const SizedBox(width: 10),
-                            SearchActionChip(
-                              backgroundColor: _currentCreatorFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
-                              children: [
-                                const Icon(Icons.person_rounded, size: 15),
-                                const SizedBox(width: 5),
-                                Text(_currentCreatorFilter == null ? l10n.creator : l10n.filteringBy(_currentCreatorFilterName ?? '')),
-                                if (_currentCreatorFilter != null) const SizedBox(width: 5),
-                                Icon(_currentCreatorFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: _currentCreatorFilter == null ? 20 : 15),
-                              ],
-                              onPressed: () {
-                                if (_currentCreatorFilter != null) {
-                                  setState(() {
-                                    _currentCreatorFilter = null;
-                                    _currentCreatorFilterName = null;
-                                  });
-                                  _doSearch();
-                                } else {
-                                  showUserInputDialog(context, title: l10n.creator, onUserSelected: (personView) {
-                                    setState(() {
-                                      _currentCreatorFilter = personView.person.id;
-                                      _currentCreatorFilterName = generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId));
-                                    });
-                                    _doSearch();
-                                  });
-                                }
-                              },
-                            ),
                           ],
                         ),
                       ),
@@ -465,7 +470,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       case SearchStatus.trending:
         return AnimatedCrossFade(
           duration: const Duration(milliseconds: 250),
-          crossFadeState: state.trendingCommunities?.isNotEmpty == true && _currentSearchType == SearchType.communities ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: state.trendingCommunities?.isNotEmpty == true && _currentSearchType == MetaSearchType.communities ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           firstChild: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -477,15 +482,23 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: Text(
                     switch (_currentSearchType) {
-                      SearchType.communities => l10n.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                      SearchType.users => l10n.searchUsersFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                      SearchType.comments => l10n.searchCommentsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                      SearchType.posts => l10n.searchPostsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      MetaSearchType.communities => l10n.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      MetaSearchType.users => l10n.searchUsersFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      MetaSearchType.comments => l10n.searchCommentsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      MetaSearchType.posts => l10n.searchPostsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      MetaSearchType.instances => l10n.searchInstancesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                       _ => '',
                     },
                     textAlign: TextAlign.center,
                     style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
                   ),
+                ),
+              ],
+              if (_currentSearchType == MetaSearchType.instances && _controller.text.isEmpty) ...[
+                const SizedBox(height: 30),
+                SearchActionChip(
+                  children: [Text(l10n.viewAll)],
+                  onPressed: () => _doSearch(force: true),
                 ),
               ],
             ],
@@ -582,10 +595,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               children: [
                 Text(
                   '${switch (_currentSearchType) {
-                    SearchType.communities => l10n.noCommunitiesFound,
-                    SearchType.users => l10n.noUsersFound,
-                    SearchType.comments => l10n.noCommentsFound,
-                    SearchType.posts => l10n.noPostsFound,
+                    MetaSearchType.communities => l10n.noCommunitiesFound,
+                    MetaSearchType.users => l10n.noUsersFound,
+                    MetaSearchType.comments => l10n.noCommentsFound,
+                    MetaSearchType.posts => l10n.noPostsFound,
                     _ => '',
                   }} ${l10n.trySearchingFor}',
                   textAlign: TextAlign.center,
@@ -595,17 +608,17 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (_currentSearchType != SearchType.communities && widget.communityToSearch == null) ...[
+                    if (_currentSearchType != MetaSearchType.communities && widget.communityToSearch == null) ...[
                       SearchActionChip(
                         children: [Text(l10n.communities)],
-                        onPressed: () => _setCurrentSearchType(SearchType.communities),
+                        onPressed: () => _setCurrentSearchType(MetaSearchType.communities),
                       ),
                       const SizedBox(width: 5),
                     ],
-                    if (_currentSearchType != SearchType.users && widget.communityToSearch == null)
+                    if (_currentSearchType != MetaSearchType.users && widget.communityToSearch == null)
                       SearchActionChip(
                         children: [Text(l10n.users)],
-                        onPressed: () => _setCurrentSearchType(SearchType.users),
+                        onPressed: () => _setCurrentSearchType(MetaSearchType.users),
                       ),
                   ],
                 ),
@@ -613,17 +626,17 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (_currentSearchType != SearchType.posts) ...[
+                    if (_currentSearchType != MetaSearchType.posts) ...[
                       SearchActionChip(
                         children: [Text(l10n.posts)],
-                        onPressed: () => _setCurrentSearchType(SearchType.posts),
+                        onPressed: () => _setCurrentSearchType(MetaSearchType.posts),
                       ),
                       const SizedBox(width: 5),
                     ],
-                    if (_currentSearchType != SearchType.comments)
+                    if (_currentSearchType != MetaSearchType.comments)
                       SearchActionChip(
                         children: [Text(l10n.comments)],
-                        onPressed: () => _setCurrentSearchType(SearchType.comments),
+                        onPressed: () => _setCurrentSearchType(MetaSearchType.comments),
                       ),
                   ],
                 ),
@@ -631,7 +644,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             ),
           );
         }
-        if (_currentSearchType == SearchType.communities) {
+        if (_currentSearchType == MetaSearchType.communities) {
           return FadingEdgeScrollView.fromScrollView(
             gradientFractionOnEnd: 0,
             child: ListView.builder(
@@ -662,7 +675,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               },
             ),
           );
-        } else if (_currentSearchType == SearchType.users) {
+        } else if (_currentSearchType == MetaSearchType.users) {
           return FadingEdgeScrollView.fromScrollView(
             gradientFractionOnEnd: 0,
             child: ListView.builder(
@@ -685,7 +698,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               },
             ),
           );
-        } else if (_currentSearchType == SearchType.comments) {
+        } else if (_currentSearchType == MetaSearchType.comments) {
           return FadingEdgeScrollView.fromScrollView(
             gradientFractionOnEnd: 0,
             child: ListView.builder(
@@ -725,7 +738,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               },
             ),
           );
-        } else if (_currentSearchType == SearchType.posts) {
+        } else if (_currentSearchType == MetaSearchType.posts) {
           return FadingEdgeScrollView.fromScrollView(
             gradientFractionOnEnd: 0,
             child: CustomScrollView(
@@ -742,6 +755,25 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     ),
                   ),
               ],
+            ),
+          );
+        } else if (_currentSearchType == MetaSearchType.instances) {
+          return FadingEdgeScrollView.fromScrollView(
+            gradientFractionOnEnd: 0,
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: state.instances!.length,
+              itemBuilder: (BuildContext context, int index) {
+                final GetInstanceInfoResponse instance = state.instances![index];
+                return AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 250),
+                  firstChild: InstanceListEntry(instance: GetInstanceInfoResponse(success: instance.success, domain: instance.domain, id: instance.id)),
+                  secondChild: InstanceListEntry(instance: instance),
+                  // If the instance metadata is not fully populated, show one widget, otherwise show the other.
+                  // This should allow the metadata to essentially "fade in".
+                  crossFadeState: instance.isMetadataPopulated() ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                );
+              },
             ),
           );
         } else {
@@ -831,15 +863,17 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
   }
 
-  SearchType _getSearchTypeToUse() {
-    if (_currentSearchType == SearchType.posts && _searchByUrl) {
-      return SearchType.url;
+  MetaSearchType _getSearchTypeToUse() {
+    if (_currentSearchType == MetaSearchType.posts && _searchByUrl) {
+      return MetaSearchType.url;
     }
     return _currentSearchType;
   }
 
-  void _doSearch() {
-    if (_controller.text.isNotEmpty) {
+  /// Performs a search with the current parameters.
+  /// Does not search when the query field is empty, unless [force] is `true`.
+  void _doSearch({bool force = false}) {
+    if (_controller.text.isNotEmpty || force) {
       context.read<SearchBloc>().add(StartSearchEvent(
             query: _controller.text,
             sortType: sortType,
@@ -848,19 +882,20 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             communityId: widget.communityToSearch?.community.id ?? _currentCommunityFilter,
             creatorId: _currentCreatorFilter,
             favoriteCommunities: context.read<AccountBloc>().state.favorites,
+            force: force,
           ));
     } else {
       context.read<SearchBloc>().add(ResetSearch());
     }
   }
 
-  void _setCurrentSearchType(SearchType newCurrentSearchType) {
+  void _setCurrentSearchType(MetaSearchType newCurrentSearchType) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     setState(() {
       _currentSearchType = newCurrentSearchType;
 
-      if (_currentSearchType == SearchType.posts && Uri.tryParse(_controller.text)?.isAbsolute == true) {
+      if (_currentSearchType == MetaSearchType.posts && Uri.tryParse(_controller.text)?.isAbsolute == true) {
         _searchByUrl = true;
         _searchUrlLabel = l10n.url;
       }

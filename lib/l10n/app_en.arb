@@ -647,8 +647,10 @@
   "@information": {
     "description": "Information heading - used in the FAB settings page"
   },
-  "instance": "Instance",
-  "@instance": {},
+  "instance": "{count, plural, zero {Instance} one {Instance} other {Instances} } ",
+  "@instance": {
+    "description": "Heading for an instance"
+  },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
@@ -1241,6 +1243,10 @@
   "@searchCommunitiesFederatedWith": {},
   "searchInstance": "Search {instance}",
   "@searchInstance": {},
+  "searchInstancesFederatedWith": "Search for instances federated with {instance}",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
   "searchPostSearchType": "Select Post Search Type",
   "@searchPostSearchType": {},
   "searchPostsFederatedWith": "Search for posts federated with {instance}",
@@ -1605,6 +1611,10 @@
   "@unpinFromCommunity": {
     "description": "Setting for unpinning a post from a community (moderator action)"
   },
+  "unreachable": "Unreachable",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
   "unsubscribeFromCommunity": "Unsubscribe from Community",
@@ -1667,6 +1677,10 @@
   "@username": {},
   "users": "Users",
   "@users": {},
+  "viewAll": "View all",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
   "visitCommunity": "Visit Community",

@@ -128,7 +128,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               previouslySelectedItem: widget.previouslySelected,
             ),
           ModlogActionTypeFilterCategory.instance => ModlogSubFilterPicker(
-              title: AppLocalizations.of(GlobalContext.context)!.instance,
+              title: AppLocalizations.of(GlobalContext.context)!.instance(1),
               items: instanceModlogActionTypeItems,
               onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
               onSelect: (item) => widget.onSelect(item),
@@ -204,7 +204,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               trailingIcon: Icons.chevron_right,
             ),
             PickerItem(
-              label: AppLocalizations.of(GlobalContext.context)!.instance,
+              label: AppLocalizations.of(GlobalContext.context)!.instance(1),
               icon: Icons.language_rounded,
               onSelected: () {
                 HapticFeedback.mediumImpact();

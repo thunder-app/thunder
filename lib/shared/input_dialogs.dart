@@ -271,7 +271,7 @@ void showInstanceInputDialog(
     showInputDialog<InstanceWithFederationState>(
       context: context,
       title: title,
-      inputLabel: AppLocalizations.of(context)!.instance,
+      inputLabel: AppLocalizations.of(context)!.instance(1),
       onSubmitted: onSubmitted,
       getSuggestions: (query) => getInstanceSuggestions(query, getFederatedInstancesResponse.federatedInstances?.linked),
       suggestionBuilder: (payload) => buildInstanceSuggestionWidget(payload, context: context),
