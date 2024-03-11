@@ -10,7 +10,7 @@ class AuthState extends Equatable {
     this.account,
     this.downvotesEnabled = true,
     this.getSiteResponse,
-    this.reload,
+    this.reload = true,
   });
 
   final AuthStatus status;
@@ -19,7 +19,7 @@ class AuthState extends Equatable {
   final Account? account;
   final bool downvotesEnabled;
   final GetSiteResponse? getSiteResponse;
-  final bool? reload;
+  final bool reload;
 
   AuthState copyWith({
     AuthStatus? status,

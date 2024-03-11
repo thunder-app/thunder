@@ -40,7 +40,6 @@ Future<void> navigateToCreatePostPage(
     }
 
     final bool reduceAnimations = thunderBloc.state.reduceAnimations;
-    final Account? originalUser = context.read<AuthBloc>().state.account;
 
     await Navigator.of(context).push(SwipeablePageRoute(
       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
@@ -80,14 +79,6 @@ Future<void> navigateToCreatePostPage(
         );
       },
     ));
-
-    if (context.mounted) {
-      final Account? newUser = context.read<AuthBloc>().state.account;
-
-      if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
-        context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
-      }
-    }
   } catch (e) {
     if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
   }
