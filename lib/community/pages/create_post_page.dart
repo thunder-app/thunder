@@ -36,7 +36,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/debounce.dart';
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/instance.dart';
 
 class CreatePostPage extends StatefulWidget {

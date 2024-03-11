@@ -213,7 +213,7 @@ class ThumbnailPreview extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
             child: MediaView(
               scrapeMissingPreviews: state.scrapeMissingPreviews,
-              postView: postViewMedia,
+              postViewMedia: postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
               markPostReadOnMediaView: markPostReadOnMediaView,

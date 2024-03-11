@@ -81,7 +81,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
     var mediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
-      postView: postViewMedia,
+      postViewMedia: postViewMedia,
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,
       edgeToEdgeImages: edgeToEdgeImages,
