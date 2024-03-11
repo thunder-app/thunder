@@ -51,6 +51,9 @@ class ToggleOption extends StatelessWidget {
   /// Override the default padding
   final EdgeInsets? padding;
 
+  /// Whether this setting can be changed by the user or not
+  final bool disabled;
+
   const ToggleOption({
     super.key,
     required this.description,
@@ -68,6 +71,7 @@ class ToggleOption extends StatelessWidget {
     this.onLongPress,
     this.highlightKey,
     this.padding,
+    this.disabled = false,
   });
 
   void onTapInkWell() {
@@ -93,8 +97,16 @@ class ToggleOption extends StatelessWidget {
           label: semanticLabel ?? description,
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(50)),
-            onTap: onToggle == null ? null : onTapInkWell,
-            onLongPress: onToggle == null ? null : () => onLongPress?.call(),
+            onTap: disabled
+                ? null
+                : onToggle == null
+                    ? null
+                    : onTapInkWell,
+            onLongPress: disabled
+                ? null
+                : onToggle == null
+                    ? null
+                    : () => onLongPress?.call(),
             child: Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Row(
@@ -140,12 +152,14 @@ class ToggleOption extends StatelessWidget {
                   if (value != null)
                     Switch(
                       value: value!,
-                      onChanged: onToggle == null
+                      onChanged: disabled
                           ? null
-                          : (bool value) {
-                              HapticFeedback.lightImpact();
-                              onToggle?.call(value);
-                            },
+                          : onToggle == null
+                              ? null
+                              : (bool value) {
+                                  HapticFeedback.lightImpact();
+                                  onToggle?.call(value);
+                                },
                     ),
                   if (value == null)
                     const SizedBox(

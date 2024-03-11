@@ -113,6 +113,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  buffer:
+    dependency: transitive
+    description:
+      name: buffer
+      sha256: "94f60815065a8f0fd4f05be51faf86cf86519327e039d5c2aac72e1d1cc1dad4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   build:
     dependency: transitive
     description:
@@ -293,10 +301,10 @@ packages:
     dependency: transitive
     description:
       name: csslib
-      sha256: "706b5707578e0c1b4b7550f64078f0a0f19dec3f50a178ffae7006b0a9ca58fb"
+      sha256: "831883fb353c8bdc1d71979e5b342c7d88acfbc643113c14ae51e2442ea0f20f"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "0.17.3"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -393,6 +401,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
+  executor:
+    dependency: transitive
+    description:
+      name: executor
+      sha256: "87d935b31b2bdf7fe2af0b77dd8ffe8864eaade25715e9c68bc49497e48c9851"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.3"
   exif:
     dependency: "direct main"
     description:
@@ -749,6 +765,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_widget_from_html_core:
+    dependency: transitive
+    description:
+      name: flutter_widget_from_html_core
+      sha256: "296485e685b44ad7c6883372aebc56038a28b84f75e7a668bcd8bf01de881739"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.1"
   freezed_annotation:
     dependency: transitive
     description:
@@ -765,6 +789,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
+  fwfh_text_style:
+    dependency: transitive
+    description:
+      name: fwfh_text_style
+      sha256: "5f8b587fd223a6bf14aad3d3da5e7ced0628becbd0768f8e7ae25ff6b9f3d2ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.23.8"
   gal:
     dependency: "direct main"
     description:
@@ -821,6 +853,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  http_client:
+    dependency: transitive
+    description:
+      name: http_client
+      sha256: f62a0ec75b41e75acb228eee759d4a838086449548f1dd78ac0751b551f9a632
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.3"
   http_client_helper:
     dependency: transitive
     description:
@@ -1855,6 +1895,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
+  xayn_readability:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "57004de3575084725173dbfeb60c57595c3721d3"
+      url: "https://github.com/xaynetwork/xayn_readability"
+    source: git
+    version: "0.0.1"
   xdg_directories:
     dependency: transitive
     description:
