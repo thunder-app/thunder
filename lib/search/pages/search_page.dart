@@ -497,7 +497,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               if (_currentSearchType == MetaSearchType.instances && _controller.text.isEmpty) ...[
                 const SizedBox(height: 30),
                 SearchActionChip(
-                  // todo
                   children: [Text(l10n.viewAll)],
                   onPressed: () => _doSearch(force: true),
                 ),
