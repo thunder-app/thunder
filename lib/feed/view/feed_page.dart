@@ -466,16 +466,17 @@ class _FeedViewState extends State<FeedView> {
                             ],
                           ),
                           // Widget representing the bottom of the feed (reached end or loading more posts indicators)
-                          SliverToBoxAdapter(
-                            child: ((selectedUserOption[0] && state.hasReachedPostsEnd) || (selectedUserOption[1] && state.hasReachedCommentsEnd))
-                                ? const FeedReachedEnd()
-                                : Container(
-                                    height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                    child: const CircularProgressIndicator(),
-                                  ),
-                          ),
+                          if (state.status != FeedStatus.failureLoadingCommunity && state.status != FeedStatus.failureLoadingUser)
+                            SliverToBoxAdapter(
+                              child: ((selectedUserOption[0] && state.hasReachedPostsEnd) || (selectedUserOption[1] && state.hasReachedCommentsEnd))
+                                  ? const FeedReachedEnd()
+                                  : Container(
+                                      height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                      child: const CircularProgressIndicator(),
+                                    ),
+                            ),
                         ],
                       ],
                     ),

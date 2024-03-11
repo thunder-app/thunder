@@ -30,6 +30,7 @@ String? getErrorMessage(BuildContext context, String lemmyApiErrorCode, {String?
     "couldnt_create_report" => l10n.couldntCreateReport,
     "language_not_allowed" => l10n.languageNotAllowed,
     "couldnt_find_community" => additionalInfo != null ? l10n.unableToFindCommunityName(additionalInfo) : l10n.unableToFindCommunity,
+    "couldnt_find_person" => additionalInfo != null ? l10n.unableToFindUserName(additionalInfo) : l10n.unableToFindUser,
     _ => lemmyApiErrorCode,
   };
 }

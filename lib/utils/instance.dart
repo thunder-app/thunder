@@ -39,17 +39,17 @@ Future<String?> getLemmyCommunity(String text) async {
   }
 
   final RegExpMatch? fullCommunityUrlMatch = fullCommunityUrl.firstMatch(text);
-  if (fullCommunityUrlMatch != null && fullCommunityUrlMatch.groupCount >= 4 && await isLemmyInstance(fullCommunityUrlMatch.group(4))) {
+  if (fullCommunityUrlMatch != null && fullCommunityUrlMatch.groupCount >= 4) {
     return '${fullCommunityUrlMatch.group(3)}@${fullCommunityUrlMatch.group(4)}';
   }
 
   final RegExpMatch? shortCommunityUrlMatch = shortCommunityUrl.firstMatch(text);
-  if (shortCommunityUrlMatch != null && shortCommunityUrlMatch.groupCount >= 3 && await isLemmyInstance(shortCommunityUrlMatch.group(2))) {
+  if (shortCommunityUrlMatch != null && shortCommunityUrlMatch.groupCount >= 3) {
     return '${shortCommunityUrlMatch.group(3)}@${shortCommunityUrlMatch.group(2)}';
   }
 
   final RegExpMatch? instanceNameMatch = instanceName.firstMatch(text);
-  if (instanceNameMatch != null && instanceNameMatch.groupCount >= 3 && await isLemmyInstance(instanceNameMatch.group(3))) {
+  if (instanceNameMatch != null && instanceNameMatch.groupCount >= 3) {
     return '${instanceNameMatch.group(2)}@${instanceNameMatch.group(3)}';
   }
 
