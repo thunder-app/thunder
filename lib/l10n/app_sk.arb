@@ -341,7 +341,7 @@
   "@filters": {
     "description": "Category to describe various filters (user, community, instance blocking)"
   },
-  "instance": "Inštancia",
+  "instance": "{count, číslo, nula {Instance} jeden {Instance} ostatné {Instances} } ",
   "@instance": {},
   "language": "Jazyk",
   "@language": {
@@ -1674,5 +1674,13 @@
   "exploreInstance": "Preskúmať inštanciu",
   "@exploreInstance": {
     "description": "Button for exploring an instance"
+  },
+  "dateFormat": "Dátum Formát",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
+  "changeAccountSettingsFor": "Zmena nastavení účtu pre",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
   }
 }
