@@ -96,11 +96,19 @@ void _openLink(BuildContext context, {required String url}) async {
       ),
     );
   } else if (state.browserMode == BrowserMode.inApp) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => WebView(url: url),
-      ),
-    );
+    // Check if the scheme is not https, in which case the in-app browser can't handle it
+    Uri? uri = Uri.tryParse(url);
+    if (uri != null && uri.scheme != 'https') {
+      // Although a non-https scheme is an indication that this link is intended for another app,
+      // we actually have to change it back to https in order for the intent to be properly passed to another app.
+      url_launcher.launchUrl(uri, mode: url_launcher.LaunchMode.externalApplication);
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => WebView(url: url),
+        ),
+      );
+    }
   }
 }
 
