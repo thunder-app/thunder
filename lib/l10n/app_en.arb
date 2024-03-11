@@ -647,14 +647,12 @@
   "@information": {
     "description": "Information heading - used in the FAB settings page"
   },
-  "instance": "Instance",
-  "@instance": {},
+  "instance": "{count, plural, zero {Instance} one {Instance} other {Instances} } ",
+  "@instance": {
+    "description": "Heading for an instance"
+  },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
-  "instances": "Instances",
-  "@instances": {
-    "description": "Title for searching for instances"
-  },
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
   "keywordFilterDescription": "Filters posts containing any keywords in the title or body",

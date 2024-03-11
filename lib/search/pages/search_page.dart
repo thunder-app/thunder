@@ -291,7 +291,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                       ],
                                       ListPickerItem(label: l10n.posts, payload: MetaSearchType.posts, icon: Icons.wysiwyg_rounded),
                                       ListPickerItem(label: l10n.comments, payload: MetaSearchType.comments, icon: Icons.chat_rounded),
-                                      if (widget.communityToSearch == null) ListPickerItem(label: l10n.instances, payload: MetaSearchType.instances, icon: Icons.language),
+                                      if (widget.communityToSearch == null) ListPickerItem(label: l10n.instance(2), payload: MetaSearchType.instances, icon: Icons.language),
                                     ],
                                     onSelect: (value) => _setCurrentSearchType(value.payload),
                                     previouslySelected: _currentSearchType,

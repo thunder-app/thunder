@@ -245,7 +245,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       decoration: InputDecoration(
                         isDense: true,
                         border: const OutlineInputBorder(),
-                        labelText: AppLocalizations.of(context)!.instance,
+                        labelText: AppLocalizations.of(context)!.instance(1),
                         errorText: instanceValidated ? null : instanceError,
                         errorMaxLines: 2,
                       ),

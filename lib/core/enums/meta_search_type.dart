@@ -19,7 +19,7 @@ class MetaSearchType {
   String get name =>
       searchType?.name ??
       switch (this) {
-        instances => AppLocalizations.of(GlobalContext.context)!.instances,
+        instances => AppLocalizations.of(GlobalContext.context)!.instance(2),
         _ => '',
       };
 
