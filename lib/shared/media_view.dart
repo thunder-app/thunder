@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -19,15 +20,34 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
 class MediaView extends StatefulWidget {
+  /// The post containing the media information
   final PostViewMedia postViewMedia;
+
+  /// Whether to show the full height for images
   final bool showFullHeightImages;
+
+  /// Whether to blur NSFW images
   final bool hideNsfwPreviews;
+
+  /// Whether to extend the image to the edge of the screen (ViewMode.comfortable)
   final bool edgeToEdgeImages;
+
+  /// Whether to mark the post as read when the media is viewed
   final bool markPostReadOnMediaView;
+
+  /// Whether the user is logged in
   final bool isUserLoggedIn;
+
+  /// Whether to scrape missing previews for thumbnails
   final bool? scrapeMissingPreviews;
+
+  /// The view mode of the media
   final ViewMode viewMode;
+
+  /// The function to navigate to the post
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
+
+  /// Whether the post has been read
   final bool? read;
 
   const MediaView({
@@ -63,12 +83,12 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     super.dispose();
   }
 
+  /// Creates a text preview for posts in compact mode
   Widget buildMediaText() {
     final theme = Theme.of(context);
 
     if (widget.viewMode == ViewMode.comfortable) return Container();
 
-    // This is used for previewing text posts in compact mde by showing a small version of the text
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -83,9 +103,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      widget.postViewMedia!.postView.post.body!,
+                      widget.postViewMedia.postView.post.body!,
                       style: TextStyle(
-                        fontSize: min(20, max(4.5, (20 * (1 / log(widget.postViewMedia!.postView.post.body!.length))))),
+                        fontSize: min(20, max(4.5, (20 * (1 / log(widget.postViewMedia.postView.post.body!.length))))),
                         color: widget.read == true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
                       ),
                     ),
@@ -105,83 +125,70 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  /// Creates an image preview
+  Widget buildMediaImage() {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
-    switch (widget.postViewMedia.media.firstOrNull?.mediaType) {
-      case MediaType.image:
-        return Material(
-          clipBehavior: Clip.hardEdge,
-          borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              ImageFiltered(
-                enabled: widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw,
-                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                child: previewImage(context),
-              ),
-              if (widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw)
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                      if (widget.viewMode != ViewMode.compact)
-                        const Text(
-                          "NSFW - Tap to reveal",
-                          textScaler: TextScaler.linear(1.5),
-                        ),
-                    ],
-                  ),
-                ),
-              Positioned.fill(
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    splashColor: theme.colorScheme.primary.withOpacity(0.4),
-                    borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-                    onTap: () {
-                      if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
-                        try {
-                          // Mark post as read when on the feed page
-                          int postId = widget.postViewMedia.postView.post.id;
+    final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
 
-                          FeedBloc feedBloc = context.read<FeedBloc>();
-                          feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
-                        } catch (e) {}
-                      }
-                      Navigator.of(context).push(
-                        PageRouteBuilder(
-                          opaque: false,
-                          transitionDuration: const Duration(milliseconds: 100),
-                          reverseTransitionDuration: const Duration(milliseconds: 50),
-                          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-                            return ImageViewer(
-                              url: widget.postViewMedia!.media.first.mediaUrl!,
-                              postId: widget.postViewMedia!.postView.post.id,
-                              navigateToPost: widget.navigateToPost,
-                            );
-                          },
-                          transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-                            return Align(
-                              child: FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
+    return InkWell(
+      splashColor: theme.colorScheme.primary.withOpacity(0.4),
+      borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+      onTap: () {
+        if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
+          try {
+            // Mark post as read when on the feed page
+            int postId = widget.postViewMedia.postView.post.id;
+            context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
+          } catch (e) {}
+        }
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            opaque: false,
+            transitionDuration: const Duration(milliseconds: 100),
+            transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+              return ImageViewer(
+                url: widget.postViewMedia.media.first.mediaUrl!,
+                postId: widget.postViewMedia.postView.post.id,
+                navigateToPost: widget.navigateToPost,
+              );
+            },
           ),
         );
+      },
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12))),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            ImageFiltered(
+              enabled: blurNSFWPreviews,
+              imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+              child: previewImage(context),
+            ),
+            if (blurNSFWPreviews)
+              Column(
+                children: [
+                  Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                  if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    switch (widget.postViewMedia.media.firstOrNull?.mediaType) {
+      case MediaType.image:
+        return buildMediaImage();
       case MediaType.link:
       case MediaType.video:
         return LinkPreviewCard(
@@ -208,9 +215,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   Widget previewImage(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
+    final state = context.read<ThunderBloc>().state;
 
-    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postViewMedia!.media.first.height : 150);
+    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postViewMedia.media.first.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
 
     return ExtendedImage.network(
@@ -221,7 +228,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
-      clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
+      clearMemoryCacheWhenDispose: state.imageCachingMode == ImageCachingMode.relaxed,
       cacheWidth: widget.viewMode == ViewMode.compact
           ? (75 * View.of(context).devicePixelRatio.ceil())
           : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
@@ -229,22 +236,31 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
             _controller.reset();
-
             return Container();
           case LoadState.completed:
-            if (state.wasSynchronouslyLoaded) {
-              return state.completedWidget;
-            }
-            _controller.forward();
+            if (state.wasSynchronouslyLoaded) return state.completedWidget;
 
-            return FadeTransition(
-              opacity: _controller,
-              child: state.completedWidget,
-            );
+            _controller.forward();
+            return FadeTransition(opacity: _controller, child: state.completedWidget);
           case LoadState.failed:
             _controller.reset();
 
             state.imageProvider.evict();
+
+            if (widget.viewMode == ViewMode.compact) {
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: theme.colorScheme.secondary.withOpacity(0.2),
+                ),
+                child: InkWell(
+                  child: const Icon(Icons.error_outline_sharp),
+                  onTap: () {
+                    handleLink(context, url: widget.postViewMedia.postView.post.url ?? '');
+                  },
+                ),
+              );
+            }
 
             return Container(
               decoration: BoxDecoration(
@@ -264,16 +280,13 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                         child: Text(
                           widget.postViewMedia.postView.post.url ?? '',
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodyMedium,
                         ),
                       ),
                     ],
                   ),
                 ),
                 onTap: () {
-                  if (widget.postViewMedia.postView.post.url != null) {
-                    handleLink(context, url: widget.postViewMedia.postView.post.url!);
-                  }
+                  handleLink(context, url: widget.postViewMedia.postView.post.url ?? '');
                 },
               ),
             );
