@@ -75,6 +75,9 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
       deepLinkStatus: DeepLinkStatus.loading,
     ));
     _uniLinksStreamSubscription = uriLinkStream.listen((Uri? uri) {
+      emit(state.copyWith(
+        deepLinkStatus: DeepLinkStatus.loading,
+      ));
       getLinkType(uri.toString());
     }, onError: (Object err) {
       if (err is FormatException) {
