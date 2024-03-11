@@ -1549,6 +1549,8 @@
   },
   "unableToFindUser": "Unable to find user",
   "@unableToFindUser": {},
+  "unableToFindUserName": "Unable to find user '{username}'",
+  "@unableToFindUserName": {},
   "unableToLoadImage": "Unable to load image",
   "@unableToLoadImage": {
     "description": "Placeholder for when we are unable to load a binary image"
