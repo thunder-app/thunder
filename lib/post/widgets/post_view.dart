@@ -148,8 +148,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 collapsed: Container(),
                 expanded: MediaView(
                   scrapeMissingPreviews: scrapeMissingPreviews,
-                  post: post,
-                  postView: widget.postViewMedia,
+                  postViewMedia: widget.postViewMedia,
                   hideNsfwPreviews: hideNsfwPreviews,
                   markPostReadOnMediaView: markPostReadOnMediaView,
                   isUserLoggedIn: isUserLoggedIn,
@@ -542,7 +541,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
           ),
           child: MediaView(
             scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
-            postView: postViewMedia,
+            postViewMedia: postViewMedia,
             showFullHeightImages: false,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,

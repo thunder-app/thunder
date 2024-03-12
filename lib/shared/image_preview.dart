@@ -9,7 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 
 class ImagePreview extends StatefulWidget {
   final String? url;

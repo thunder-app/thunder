@@ -18,7 +18,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/instance.dart';
 
 class CreateCommentPage extends StatefulWidget {
@@ -281,7 +281,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       ),
                                       MediaView(
                                         scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
-                                        postView: widget.postView,
+                                        postViewMedia: widget.postView!,
                                         hideNsfwPreviews: thunderState.hideNsfwPreviews,
                                         markPostReadOnMediaView: thunderState.markPostReadOnMediaView,
                                         isUserLoggedIn: true,

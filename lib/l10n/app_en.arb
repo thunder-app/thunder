@@ -935,6 +935,10 @@
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
   },
+  "nsfwWarning": "NSFW - Tap to reveal",
+  "@nsfwWarning": {
+    "description": "Warning for NSFW posts"
+  },
   "off": "off",
   "@off": {},
   "ok": "OK",
