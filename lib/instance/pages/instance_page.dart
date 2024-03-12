@@ -44,6 +44,7 @@ class InstancePage extends StatefulWidget {
 
 class _InstancePageState extends State<InstancePage> {
   final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
+  bool _isLoading = false;
 
   bool? isBlocked;
   bool currentlyTogglingBlock = false;
@@ -352,11 +353,13 @@ class _InstancePageState extends State<InstancePage> {
   }
 
   Future<void> _onScroll() async {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+    if (!_isLoading && _scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+      _isLoading = true;
       InstancePageState? instancePageState = buildContext?.read<InstancePageCubit>().state;
       if (instancePageState != null && instancePageState.status != InstancePageStatus.done) {
         await _doLoad(buildContext!, page: (instancePageState.page ?? 0) + 1);
       }
+      _isLoading = false;
     }
   }
 }
