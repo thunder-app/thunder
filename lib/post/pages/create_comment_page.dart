@@ -279,13 +279,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                           style: theme.textTheme.titleMedium,
                                         ),
                                       ),
-                                      MediaView(
-                                        scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
-                                        postViewMedia: widget.postView!,
-                                        hideNsfwPreviews: thunderState.hideNsfwPreviews,
-                                        markPostReadOnMediaView: thunderState.markPostReadOnMediaView,
-                                        isUserLoggedIn: true,
-                                      ),
+                                      if (widget.postView != null)
+                                        MediaView(
+                                          scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
+                                          postViewMedia: widget.postView!,
+                                          hideNsfwPreviews: thunderState.hideNsfwPreviews,
+                                          markPostReadOnMediaView: thunderState.markPostReadOnMediaView,
+                                          isUserLoggedIn: true,
+                                        ),
                                       const SizedBox(
                                         height: 12,
                                       ),
