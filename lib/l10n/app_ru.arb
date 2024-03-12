@@ -1106,5 +1106,129 @@
   "imageCachingModeRelaxedShort": "Расслабление",
   "@imageCachingModeRelaxedShort": {
     "description": "Short description for relaxed image caching mode"
+  },
+  "noItems": "Нет предметов",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "reduceAnimations": "Меньше анимаций",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "exploreInstance": "Просмотреть инстансы",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
+  "extraLarge": "Очень большой",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "pureBlack": "Чистый черный",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "themeAccentColor": "Акцентные цвета",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "admin": "Админ",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "commentUseColorizedUsername": "Цветные имена пользователей",
+  "@commentUseColorizedUsername": {
+    "description": "Setting used to toggle colorized comments creator display name."
+  },
+  "bannedUser": "Забанненый пользователь",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "moderator": "Модератор",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
+  "modTransferCommunity": "Передача сообщества",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
+  "browserMode": "Обработка ссылок",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "linkHandlingCustomTabsShort": "Прямо в приложении",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  },
+  "detailedReason": "Причина: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "removalReason": "Причина удаления",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
+  "removePost": "Удалить пост",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "user": "Пользователь",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "hidCommunity": "Скрыть сообщество",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
+  "lockPost": "Закрыть пост",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
+  "lockedPost": "Закрыть доступ к посту",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
+  "modLockPost": "Открыть/закрыть посты",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modlog": "Модлог",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "moderatedCommunities": "Управляемые сообщества",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderatorActions": "Действия модератора",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "modRemoveComment": "Удалить/вернуть комментарии",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Удалить/вернуть сообщества",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "successfullyBlockedUser": "Заблокирован {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "restorePost": "Вернуть пост",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "successfullyUnblockedUser": "Разблокирован {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "unreachable": "Недоступно",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "unlockPost": "Открыть пост",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
   }
 }
