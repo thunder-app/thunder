@@ -1695,6 +1695,10 @@
   "@userSettingDescription": {
     "description": "Description which explains that the settings are applied globally to the current user."
   },
+  "userStyle": "User Style",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  },
   "username": "Username",
   "@username": {},
   "usernameFormattingRedirect": "Looking for username formatting?",
@@ -1703,10 +1707,6 @@
   },
   "users": "Users",
   "@users": {},
-  "userStyle": "User Style",
-  "@userStyle": {
-    "description": "Heading for user style setting"
-  },
   "viewAll": "View all",
   "@viewAll": {
     "description": "A title for viewing all of something (e.g., instances)"
