@@ -195,6 +195,18 @@
   "@collapseSpoiler": {
     "description": "Label for collapsing spoiler"
   },
+  "colorizeCommunityName": "Colorize Community Name",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "colorizeInstanceName": "Colorize Instance Name",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "colorizeUserName": "Colorize User Name",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
   "combineCommentScores": "Combine Comment Scores",
   "@combineCommentScores": {
     "description": "Toggle to combine comment scores."
@@ -237,10 +249,6 @@
   },
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "@commentSwipeGesturesHint": {},
-  "commentUseColorizedUsername": "Colorized Usernames",
-  "@commentUseColorizedUsername": {
-    "description": "Setting used to toggle colorized comments creator display name."
-  },
   "comments": "Comments",
   "@comments": {},
   "communities": "Communities",
@@ -250,6 +258,10 @@
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
+  },
+  "communityStyle": "Community Style",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
   },
   "compactPostCardMetadataItems": "Compact View Metadata",
   "@compactPostCardMetadataItems": {
@@ -1685,8 +1697,16 @@
   },
   "username": "Username",
   "@username": {},
+  "usernameFormattingRedirect": "Looking for username formatting?",
+  "@usernameFormattingRedirect": {
+    "description": "Setting title for sending the user to the new formatting options"
+  },
   "users": "Users",
   "@users": {},
+  "userStyle": "User Style",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  },
   "viewAll": "View all",
   "@viewAll": {
     "description": "A title for viewing all of something (e.g., instances)"
@@ -1702,6 +1722,18 @@
   "warning": "Warning",
   "@warning": {
     "description": "Heading for warning dialogs"
+  },
+  "weightCommunityName": "Weight Community Name",
+  "@weightCommunityName": {
+    "description": "Setting for adding weight to the community name"
+  },
+  "weightInstanceName": "Weight Instance Name",
+  "@weightInstanceName": {
+    "description": "Setting for adding weight to the instance name"
+  },
+  "weightUserName": "Weight User Name",
+  "@weightUserName": {
+    "description": "Setting for adding weight to the username"
   },
   "xDownvotes": "{x} downvotes",
   "@xDownvotes": {},

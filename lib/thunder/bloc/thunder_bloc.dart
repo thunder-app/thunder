@@ -12,7 +12,7 @@ import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -118,7 +118,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
+      bool userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? true;
+      bool userFullNameWeightInstanceName = prefs.getBool(LocalSettings.userFullNameWeightInstanceName.name) ?? false;
+      bool userFullNameColorizeUserName = prefs.getBool(LocalSettings.userFullNameColorizeUserName.name) ?? false;
+      bool userFullNameColorizeInstanceName = prefs.getBool(LocalSettings.userFullNameColorizeInstanceName.name) ?? false;
       FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+      bool communityFullNameWeightCommunityName = prefs.getBool(LocalSettings.communityFullNameWeightCommunityName.name) ?? true;
+      bool communityFullNameWeightInstanceName = prefs.getBool(LocalSettings.communityFullNameWeightInstanceName.name) ?? false;
+      bool communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
+      bool communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
@@ -161,7 +169,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       bool commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
       bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
-      bool commentUseColorizedUsername = prefs.getBool(LocalSettings.commentUseColorizedUsername.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
           NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
@@ -259,7 +266,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         enableInboxNotifications: enableInboxNotifications,
         appLanguageCode: appLanguageCode,
         userSeparator: userSeparator,
+        userFullNameWeightUserName: userFullNameWeightUserName,
+        userFullNameWeightInstanceName: userFullNameWeightInstanceName,
+        userFullNameColorizeUserName: userFullNameColorizeUserName,
+        userFullNameColorizeInstanceName: userFullNameColorizeInstanceName,
         communitySeparator: communitySeparator,
+        communityFullNameWeightCommunityName: communityFullNameWeightCommunityName,
+        communityFullNameWeightInstanceName: communityFullNameWeightInstanceName,
+        communityFullNameColorizeCommunityName: communityFullNameColorizeCommunityName,
+        communityFullNameColorizeInstanceName: communityFullNameColorizeInstanceName,
         imageCachingMode: imageCachingMode,
         hideTopBarOnScroll: hideTopBarOnScroll,
 
@@ -299,7 +314,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         combineCommentScores: combineCommentScores,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,
-        commentUseColorizedUsername: commentUseColorizedUsername,
 
         /// -------------------------- Theme Related Settings --------------------------
         // Theme Settings

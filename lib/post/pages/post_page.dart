@@ -543,7 +543,7 @@ class _PostPageState extends State<PostPage> {
       context: context,
       builder: (builderContext) => CommentSortPicker(
         title: l10n.sortOptions,
-        onSelect: (selected) {
+        onSelect: (selected) async {
           setState(() {
             sortType = selected.payload;
             sortTypeLabel = selected.label;

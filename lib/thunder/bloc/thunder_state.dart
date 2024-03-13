@@ -34,7 +34,15 @@ class ThunderState extends Equatable {
     this.enableInboxNotifications = false,
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
+    this.userFullNameWeightUserName = true,
+    this.userFullNameWeightInstanceName = false,
+    this.userFullNameColorizeUserName = false,
+    this.userFullNameColorizeInstanceName = false,
     this.communitySeparator = FullNameSeparator.dot,
+    this.communityFullNameWeightCommunityName = false,
+    this.communityFullNameWeightInstanceName = false,
+    this.communityFullNameColorizeCommunityName = false,
+    this.communityFullNameColorizeInstanceName = false,
     this.imageCachingMode = ImageCachingMode.relaxed,
     this.hideTopBarOnScroll = false,
 
@@ -74,7 +82,6 @@ class ThunderState extends Equatable {
     this.showCommentButtonActions = false,
     this.commentShowUserInstance = false,
     this.combineCommentScores = false,
-    this.commentUseColorizedUsername = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
@@ -169,7 +176,15 @@ class ThunderState extends Equatable {
   final bool enableInboxNotifications;
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
+  final bool userFullNameWeightUserName;
+  final bool userFullNameWeightInstanceName;
+  final bool userFullNameColorizeUserName;
+  final bool userFullNameColorizeInstanceName;
   final FullNameSeparator communitySeparator;
+  final bool communityFullNameWeightCommunityName;
+  final bool communityFullNameWeightInstanceName;
+  final bool communityFullNameColorizeCommunityName;
+  final bool communityFullNameColorizeInstanceName;
   final ImageCachingMode imageCachingMode;
   final bool hideTopBarOnScroll;
 
@@ -209,7 +224,6 @@ class ThunderState extends Equatable {
   final bool showCommentButtonActions;
   final bool commentShowUserInstance;
   final bool combineCommentScores;
-  final bool commentUseColorizedUsername;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
@@ -312,7 +326,15 @@ class ThunderState extends Equatable {
     bool? enableInboxNotifications,
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
+    bool? userFullNameWeightUserName,
+    bool? userFullNameWeightInstanceName,
+    bool? userFullNameColorizeUserName,
+    bool? userFullNameColorizeInstanceName,
     FullNameSeparator? communitySeparator,
+    bool? communityFullNameWeightCommunityName,
+    bool? communityFullNameWeightInstanceName,
+    bool? communityFullNameColorizeCommunityName,
+    bool? communityFullNameColorizeInstanceName,
     ImageCachingMode? imageCachingMode,
     bool? hideTopBarOnScroll,
 
@@ -350,7 +372,6 @@ class ThunderState extends Equatable {
     bool? showCommentButtonActions,
     bool? commentShowUserInstance,
     bool? combineCommentScores,
-    bool? commentUseColorizedUsername,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
@@ -448,7 +469,15 @@ class ThunderState extends Equatable {
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
+      userFullNameWeightUserName: userFullNameWeightUserName ?? this.userFullNameWeightUserName,
+      userFullNameWeightInstanceName: userFullNameWeightInstanceName ?? this.userFullNameWeightInstanceName,
+      userFullNameColorizeUserName: userFullNameColorizeUserName ?? this.userFullNameColorizeUserName,
+      userFullNameColorizeInstanceName: userFullNameColorizeInstanceName ?? this.userFullNameColorizeInstanceName,
       communitySeparator: communitySeparator ?? this.communitySeparator,
+      communityFullNameWeightCommunityName: communityFullNameWeightCommunityName ?? this.communityFullNameWeightCommunityName,
+      communityFullNameWeightInstanceName: communityFullNameWeightInstanceName ?? this.communityFullNameWeightInstanceName,
+      communityFullNameColorizeCommunityName: communityFullNameColorizeCommunityName ?? this.communityFullNameColorizeCommunityName,
+      communityFullNameColorizeInstanceName: communityFullNameColorizeInstanceName ?? this.communityFullNameColorizeInstanceName,
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
@@ -487,7 +516,6 @@ class ThunderState extends Equatable {
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
-      commentUseColorizedUsername: commentUseColorizedUsername ?? this.commentUseColorizedUsername,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
@@ -589,7 +617,15 @@ class ThunderState extends Equatable {
         showInAppUpdateNotification,
         enableInboxNotifications,
         userSeparator,
+        userFullNameWeightUserName,
+        userFullNameWeightInstanceName,
+        userFullNameColorizeUserName,
+        userFullNameColorizeInstanceName,
         communitySeparator,
+        communityFullNameWeightCommunityName,
+        communityFullNameWeightInstanceName,
+        communityFullNameColorizeCommunityName,
+        communityFullNameColorizeInstanceName,
         imageCachingMode,
 
         /// -------------------------- Feed Post Related Settings --------------------------
@@ -628,7 +664,6 @@ class ThunderState extends Equatable {
         showCommentButtonActions,
         commentShowUserInstance,
         combineCommentScores,
-        commentUseColorizedUsername,
 
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,
