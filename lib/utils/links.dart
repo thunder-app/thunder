@@ -10,6 +10,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
+import 'package:thunder/instances.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/media/image.dart';
@@ -121,7 +122,7 @@ void handleLink(BuildContext context, {required String url}) async {
 
   // Try navigating to community
   String? communityName = await getLemmyCommunity(url);
-  if (communityName != null) {
+  if (communityName != null && await _testValidCommunity(url, communityName, communityName.split('@')[1])) {
     try {
       if (context.mounted) {
         await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
@@ -134,7 +135,7 @@ void handleLink(BuildContext context, {required String url}) async {
 
   // Try navigating to user
   String? username = await getLemmyUser(url);
-  if (username != null) {
+  if (username != null && await _testValidUser(url, username, username.split('@')[1])) {
     try {
       if (context.mounted) {
         await navigateToFeedPage(context, feedType: FeedType.user, username: username);
@@ -195,6 +196,58 @@ void handleLink(BuildContext context, {required String url}) async {
   if (context.mounted) {
     _openLink(context, url: url);
   }
+}
+
+/// This is a helper method which helps [handleLink] determine whether a link refers to a valid Lemmy community.
+/// If the passed in link is not a valid URI, then there's no point in doing any fallback, so assume it passes.
+/// If the passed in [instance] is a known Lemmy instance, then it passes.
+/// If we can retrieve the passed in object, then it passes.
+/// Otherwise it fails.
+Future<bool> _testValidCommunity(String link, String communityName, String instance) async {
+  Uri? uri = Uri.tryParse(link);
+  if (uri == null || !uri.hasScheme) {
+    return true;
+  }
+
+  if (instances.contains(instance)) {
+    return true;
+  }
+
+  try {
+    Account? account = await fetchActiveProfileAccount();
+    await LemmyClient.instance.lemmyApiV3.run(GetCommunity(name: communityName, auth: account?.jwt));
+    return true;
+  } catch (e) {
+    // Ignore and return false below.
+  }
+
+  return false;
+}
+
+/// This is a helper method which helps [handleLink] determine whether a link refers to a valid Lemmy user.
+/// If the passed in link is not a valid URI, then there's no point in doing any fallback, so assume it passes.
+/// If the passed in [instance] is a known Lemmy instance, then it passes.
+/// If we can retrieve the passed in object, then it passes.
+/// Otherwise it fails.
+Future<bool> _testValidUser(String link, String userName, String instance) async {
+  Uri? uri = Uri.tryParse(link);
+  if (uri == null || !uri.hasScheme) {
+    return true;
+  }
+
+  if (instances.contains(instance)) {
+    return true;
+  }
+
+  try {
+    Account? account = await fetchActiveProfileAccount();
+    await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(username: userName, auth: account?.jwt));
+    return true;
+  } catch (e) {
+    // Ignore and return false below.
+  }
+
+  return false;
 }
 
 void handleLinkLongPress(BuildContext context, ThunderState state, String text, String? url) {
