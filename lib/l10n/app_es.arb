@@ -819,11 +819,11 @@
   },
   "share": "Share",
   "@share": {},
-  "shareLink": "Share Link",
+  "shareLink": "Compartir enlace externo",
   "@shareLink": {},
-  "shareMedia": "Share Media",
+  "shareMedia": "Compartir medios",
   "@shareMedia": {},
-  "sharePost": "Share Post",
+  "sharePost": "Compartir enlace al tema",
   "@sharePost": {},
   "showAll": "Mostrar todo",
   "@showAll": {},
@@ -1544,5 +1544,125 @@
   "changeAccountSettingsFor": "Cambiar la configuración de la cuenta para",
   "@changeAccountSettingsFor": {
     "description": "Heading for the profiler modal when changing account settings"
+  },
+  "removedModFromCommunity": "Eliminado el moderador de la comunidad",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "restoredComment": "Comentario restaurado",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
+  "restoredCommunity": "Comunidad restaurada",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "restoredPost": "Tema restaurado",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
+  "markPostAsReadOnScroll": "Marcar como leído al desplazarse",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "moderator": "Moderador",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
+  "purgedCommunity": "Comunidad depurada",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "purgedPerson": "Persona depurada",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "shareUser": "Compartir usuario",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "sharePostLocal": "Compartir enlace de publicación (Mi instancia)",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareUserLink": "Compartir enlace del usuario",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "modAdd": "Añadir/eliminar moderadores de la instancia",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modAddCommunity": "Añadir/eliminar moderadores a las comunidades",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "modBanFromCommunity": "Bloquear/desbloquear usuarios de las comunidades",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "modFeaturePost": "Entradas destacadas/no destacadas",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modLockPost": "Bloquear/Desbloquear mensajes",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modBan": "Bloquear/Desbloquear moderadores de instancia",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance moderators"
+  },
+  "modRemoveComment": "Eliminar/restaurar comentarios",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Eliminar/restaurar comunidades",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "modRemovePost": "Eliminar/Restaurar mensajes",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "modlog": "Registros de moderadores",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "nsfwWarning": "NSFW - Toque para mostrar",
+  "@nsfwWarning": {
+    "description": "Warning for NSFW posts"
+  },
+  "purgedPost": "Tema depurado",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
+  "removedComment": "Comentario eliminado",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removedCommunity": "Comunidad eliminada",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
+  "removedPost": "Mensaje eliminado",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
+  "modTransferCommunity": "Transferir comunidades",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
+  "purgedComment": "Comentario depurado",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "removedInstanceMod": "Moderador de instancia eliminado",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
   }
 }
