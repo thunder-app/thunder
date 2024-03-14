@@ -73,6 +73,7 @@ class ExtendedPostCardActions {
     this.getForegroundColor,
     this.getOverrideIcon,
     this.getOverrideLabel,
+    this.getSubtitleLabel,
     this.shouldShow,
     this.shouldEnable,
   });
@@ -85,6 +86,7 @@ class ExtendedPostCardActions {
   final Color? Function(PostView postView)? getForegroundColor;
   final IconData? Function(PostView postView)? getOverrideIcon;
   final String? Function(BuildContext context, PostView postView)? getOverrideLabel;
+  final String? Function(BuildContext context, PostView postView)? getSubtitleLabel;
   final bool Function(BuildContext context, PostView commentView)? shouldShow;
   final bool Function(bool isUserLoggedIn)? shouldEnable;
 }
@@ -95,8 +97,8 @@ final List<ExtendedPostCardActions> postCardActionItems = [
   ExtendedPostCardActions(
     postCardAction: PostCardAction.userActions,
     icon: Icons.person_rounded,
-    label: '',
-    getOverrideLabel: (context, postView) => l10n.userEntry(generateUserFullName(context, postView.creator.name, fetchInstanceNameFromUrl(postView.creator.actorId))),
+    label: l10n.user,
+    getSubtitleLabel: (context, postView) => generateUserFullName(context, postView.creator.name, fetchInstanceNameFromUrl(postView.creator.actorId)),
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
@@ -113,8 +115,8 @@ final List<ExtendedPostCardActions> postCardActionItems = [
   ExtendedPostCardActions(
     postCardAction: PostCardAction.communityActions,
     icon: Icons.people_rounded,
-    label: '',
-    getOverrideLabel: (context, postView) => l10n.communityEntry(generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId))),
+    label: l10n.community,
+    getSubtitleLabel: (context, postView) => generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId)),
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
@@ -143,8 +145,8 @@ final List<ExtendedPostCardActions> postCardActionItems = [
   ExtendedPostCardActions(
     postCardAction: PostCardAction.instanceActions,
     icon: Icons.language_rounded,
-    label: '',
-    getOverrideLabel: (context, postView) => l10n.instanceEntry(fetchInstanceNameFromUrl(postView.community.actorId) ?? ''),
+    label: l10n.instance(1),
+    getSubtitleLabel: (context, postView) => fetchInstanceNameFromUrl(postView.community.actorId) ?? '',
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
@@ -509,6 +511,7 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                     return PickerItem(
                       label: widget.postCardActions[page ?? widget.page]![index].getOverrideLabel?.call(context, widget.postViewMedia.postView) ??
                           widget.postCardActions[page ?? widget.page]![index].label,
+                      subtitle: widget.postCardActions[page ?? widget.page]![index].getSubtitleLabel?.call(context, widget.postViewMedia.postView),
                       icon: widget.postCardActions[page ?? widget.page]![index].getOverrideIcon?.call(widget.postViewMedia.postView) ?? widget.postCardActions[page ?? widget.page]![index].icon,
                       trailingIcon: widget.postCardActions[page ?? widget.page]![index].trailingIcon,
                       onSelected: (widget.postCardActions[page ?? widget.page]![index].shouldEnable?.call(isUserLoggedIn) ?? true)

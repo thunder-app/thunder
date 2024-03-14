@@ -54,6 +54,7 @@ class ExtendedCommentCardActions {
     this.getForegroundColor,
     this.getOverrideIcon,
     this.getOverrideLabel,
+    this.getSubtitleLabel,
     this.shouldShow,
     this.shouldEnable,
   });
@@ -66,6 +67,7 @@ class ExtendedCommentCardActions {
   final Color? Function(CommentView commentView)? getForegroundColor;
   final IconData? Function(CommentView commentView)? getOverrideIcon;
   final String Function(BuildContext context, CommentView commentView)? getOverrideLabel;
+  final String Function(BuildContext context, CommentView commentView)? getSubtitleLabel;
   final bool Function(BuildContext context, CommentView commentView)? shouldShow;
   final bool Function(bool isUserLoggedIn)? shouldEnable;
 }
@@ -76,8 +78,8 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.userActions,
     icon: Icons.person_rounded,
-    label: '',
-    getOverrideLabel: (context, commentView) => l10n.userEntry(generateUserFullName(context, commentView.creator.name, fetchInstanceNameFromUrl(commentView.creator.actorId))),
+    label: l10n.user,
+    getSubtitleLabel: (context, commentView) => generateUserFullName(context, commentView.creator.name, fetchInstanceNameFromUrl(commentView.creator.actorId)),
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
@@ -94,8 +96,8 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.instanceActions,
     icon: Icons.language_rounded,
-    label: '',
-    getOverrideLabel: (context, postView) => l10n.instanceEntry(fetchInstanceNameFromUrl(postView.creator.actorId) ?? ''),
+    label: l10n.instance(1),
+    getSubtitleLabel: (context, postView) => fetchInstanceNameFromUrl(postView.creator.actorId) ?? '',
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
@@ -388,6 +390,7 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                   itemBuilder: (BuildContext itemBuilderContext, int index) {
                     return PickerItem(
                       label: widget.commentCardActions[page]![index].getOverrideLabel?.call(context, widget.commentView) ?? widget.commentCardActions[page]![index].label,
+                      subtitle: widget.commentCardActions[page]![index].getSubtitleLabel?.call(context, widget.commentView),
                       icon: widget.commentCardActions[page]![index].getOverrideIcon?.call(widget.commentView) ?? widget.commentCardActions[page]![index].icon,
                       trailingIcon: widget.commentCardActions[page]![index].trailingIcon,
                       onSelected:
