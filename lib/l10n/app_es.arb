@@ -459,7 +459,7 @@
   "@information": {
     "description": "Information heading - used in the FAB settings page"
   },
-  "instance": "Instancia",
+  "instance": "{count, plural, zero {Instancia} one {Instancias} other {Instancias} } ",
   "@instance": {},
   "instanceHasAlreadyBenAdded": "{instance} ya ha sido añadido.",
   "@instanceHasAlreadyBenAdded": {},
@@ -825,7 +825,7 @@
   "@shareMedia": {},
   "sharePost": "Share Post",
   "@sharePost": {},
-  "showAll": "Show All",
+  "showAll": "Mostrar todo",
   "@showAll": {},
   "showBotAccounts": "Mostrar las cuentas de los bots",
   "@showBotAccounts": {
@@ -1516,5 +1516,33 @@
   "addedInstanceMod": "Añadido Instancia Mod",
   "@addedInstanceMod": {
     "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "shareUserLinkLocal": "Compartir el enlace del usuario (Mi Instancia)",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
+  "communityEntry": "Comunidad '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "instanceEntry": "Instancia '{username}'",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
+  },
+  "communityActions": "Acciones comunitarias",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "instanceActions": "Acciones de la instancia",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "dateFormat": "Formato de la fecha",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
+  "changeAccountSettingsFor": "Cambiar la configuración de la cuenta para",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
   }
 }
