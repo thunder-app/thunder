@@ -247,6 +247,14 @@
   "@communities": {},
   "community": "Community",
   "@community": {},
+  "communityActions": "Community Actions",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "Community '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
@@ -654,6 +662,14 @@
   "instance": "{count, plural, zero {Instance} one {Instance} other {Instances} } ",
   "@instance": {
     "description": "Heading for an instance"
+  },
+  "instanceActions": "Instance Actions",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "instanceEntry": "Instance '{username}'",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
   },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
@@ -1668,6 +1684,14 @@
   "user": "User",
   "@user": {
     "description": "Role name for user"
+  },
+  "userActions": "User Actions",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "userEntry": "User '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
   },
   "userFormat": "User Format",
   "@userFormat": {

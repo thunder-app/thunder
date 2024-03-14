@@ -510,17 +510,14 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 Expanded(
                   flex: 1,
                   child: IconButton(
-                    icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                    onPressed: useAdvancedShareSheet
-                        ? () => showAdvancedShareSheet(context, widget.postViewMedia)
-                        : widget.postViewMedia.media.isEmpty
-                            ? () => Share.share(post.apId)
-                            : () => showPostActionBottomModalSheet(
-                                  context,
-                                  widget.postViewMedia,
-                                  actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
-                                ),
-                  ),
+                      icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
+                      onPressed: () {
+                        if (useAdvancedShareSheet) {
+                          showAdvancedShareSheet(context, widget.postViewMedia);
+                        } else {
+                          showPostActionBottomModalSheet(context, widget.postViewMedia, page: PostActionBottomSheetPage.share);
+                        }
+                      }),
                 )
               ],
             ),
