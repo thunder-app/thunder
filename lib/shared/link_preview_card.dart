@@ -267,31 +267,7 @@ class LinkPreviewCard extends StatelessWidget {
     }
 
     if (originURL != null) {
-      String? communityName = await getLemmyCommunity(originURL!);
-
-      if (communityName != null) {
-        try {
-          await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
-          return;
-        } catch (e) {
-          // Ignore exception, if it's not a valid community we'll perform the next fallback
-        }
-      }
-
-      String? username = await getLemmyUser(originURL!);
-
-      if (username != null) {
-        try {
-          await navigateToFeedPage(context, feedType: FeedType.user, username: username);
-          return;
-        } catch (e) {
-          // Ignore exception, if it's not a valid user, we'll perform the next fallback
-        }
-      }
-
-      if (context.mounted) {
-        handleLink(context, url: originURL!);
-      }
+      handleLink(context, url: originURL!);
     }
   }
 
