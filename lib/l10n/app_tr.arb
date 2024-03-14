@@ -1563,7 +1563,7 @@
   },
   "unableToFindUser": "Kullanıcı bulunamıyor",
   "@unableToFindUser": {},
-  "unableToFindUserName": "'{ kullanıcı adı }' kullanıcısı bulunamıyor",
+  "unableToFindUserName": "'{username}' kullanıcısı bulunamıyor",
   "@unableToFindUserName": {},
   "unableToLoadImage": "Görüntü yüklenemiyor",
   "@unableToLoadImage": {
