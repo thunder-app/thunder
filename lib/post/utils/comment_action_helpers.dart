@@ -29,7 +29,9 @@ import '../../core/auth/bloc/auth_bloc.dart';
 enum CommentCardAction {
   save,
   copyText,
+  share,
   shareLink,
+  shareLinkLocal,
   delete,
   upvote,
   downvote,
@@ -122,6 +124,18 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     label: AppLocalizations.of(GlobalContext.context)!.reportComment,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.shareLink,
+    icon: Icons.share_rounded,
+    label: l10n.shareComment,
+    getSubtitleLabel: (context, commentView) => commentView.comment.apId,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.shareLinkLocal,
+    icon: Icons.share_rounded,
+    label: l10n.shareCommentLocal,
+    getSubtitleLabel: (context, commentView) => LemmyClient.instance.generateCommentUrl(commentView.comment.id),
+  ),
 ];
 
 final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
@@ -165,9 +179,9 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedCommentCardActions(
-    commentCardAction: CommentCardAction.shareLink,
+    commentCardAction: CommentCardAction.share,
     icon: Icons.share_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.shareLink,
+    label: l10n.share,
   ),
 ];
 
@@ -175,6 +189,7 @@ enum CommentActionBottomSheetPage {
   general,
   user,
   instance,
+  share,
 }
 
 void showCommentActionBottomModalSheet(
@@ -230,6 +245,14 @@ void showCommentActionBottomModalSheet(
           ].contains(extendedAction.commentCardAction))
       .toList();
 
+  // Generate the list of share actions
+  final List<ExtendedCommentCardActions> shareActions = commentCardDefaultActionItems
+      .where((extendedAction) => [
+            CommentCardAction.shareLink,
+            if (commentView.comment.apId != LemmyClient.instance.generateCommentUrl(commentView.comment.id)) CommentCardAction.shareLinkLocal,
+          ].contains(extendedAction.commentCardAction))
+      .toList();
+
   showModalBottomSheet<void>(
     showDragHandle: true,
     isScrollControlled: true,
@@ -241,12 +264,14 @@ void showCommentActionBottomModalSheet(
         CommentActionBottomSheetPage.general: l10n.actions,
         CommentActionBottomSheetPage.user: l10n.userActions,
         CommentActionBottomSheetPage.instance: l10n.instanceActions,
+        CommentActionBottomSheetPage.share: l10n.share,
       },
       multiCommentCardActions: {CommentActionBottomSheetPage.general: commentCardDefaultMultiActionItems},
       commentCardActions: {
         CommentActionBottomSheetPage.general: defaultCommentCardActions,
         CommentActionBottomSheetPage.user: userActions,
         CommentActionBottomSheetPage.instance: instanceActions,
+        CommentActionBottomSheetPage.share: shareActions,
       },
       onSaveAction: onSaveAction,
       onDeleteAction: onDeleteAction,
@@ -419,8 +444,15 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
               showSnackbar(AppLocalizations.of(widget.outerContext)!.copiedToClipboard);
             });
         break;
+      case CommentCardAction.share:
+        pop = false;
+        action = () => setState(() => page = CommentActionBottomSheetPage.share);
+        break;
       case CommentCardAction.shareLink:
         action = () => Share.share(widget.commentView.comment.apId);
+        break;
+      case CommentCardAction.shareLinkLocal:
+        action = () => Share.share(LemmyClient.instance.generateCommentUrl(widget.commentView.comment.id));
         break;
       case CommentCardAction.delete:
         action = () => widget.onDeleteAction(widget.commentView.comment.id, !(widget.commentView.comment.deleted));

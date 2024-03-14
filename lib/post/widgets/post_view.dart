@@ -83,7 +83,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-    final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
     final bool showCrossPosts = context.read<ThunderBloc>().state.showCrossPosts;
 
     PostView postView = postViewMedia.postView;
@@ -511,13 +510,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   flex: 1,
                   child: IconButton(
                       icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                      onPressed: () {
-                        if (useAdvancedShareSheet) {
-                          showAdvancedShareSheet(context, widget.postViewMedia);
-                        } else {
-                          showPostActionBottomModalSheet(context, widget.postViewMedia, page: PostActionBottomSheetPage.share);
-                        }
-                      }),
+                      onPressed: () => showPostActionBottomModalSheet(context, widget.postViewMedia, page: PostActionBottomSheetPage.share)),
                 )
               ],
             ),

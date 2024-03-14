@@ -92,9 +92,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, user scores will be shown in the user sidebar
   bool scoreCounters = false;
 
-  /// When enabled, sharing posts will use the advanced share sheet
-  bool useAdvancedShareSheet = true;
-
   /// When enabled, the parent comment body will be hidden if the parent comment is collapsed
   bool collapseParentCommentOnGesture = true;
 
@@ -163,12 +160,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.hideTopBarOnScroll.name, value);
         setState(() => hideTopBarOnScroll = value);
         break;
-
-      case LocalSettings.useAdvancedShareSheet:
-        await prefs.setBool(LocalSettings.useAdvancedShareSheet.name, value);
-        setState(() => useAdvancedShareSheet = value);
-        break;
-
       case LocalSettings.collapseParentCommentBodyOnGesture:
         await prefs.setBool(LocalSettings.collapseParentCommentBodyOnGesture.name, value);
         setState(() => collapseParentCommentOnGesture = value);
@@ -245,8 +236,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
       hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
-
-      useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
 
       collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
@@ -487,24 +476,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconDisabled: Icons.app_settings_alt_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.hideTopBarOnScroll, value),
               highlightKey: settingToHighlight == LocalSettings.hideTopBarOnScroll ? settingToHighlightKey : null,
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
-          // Posts behaviour
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.postBehaviourSettings, style: theme.textTheme.titleMedium),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.useAdvancedShareSheet,
-              value: useAdvancedShareSheet,
-              iconEnabled: Icons.screen_share_rounded,
-              iconDisabled: Icons.screen_share_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.useAdvancedShareSheet, value),
-              highlightKey: settingToHighlight == LocalSettings.useAdvancedShareSheet ? settingToHighlightKey : null,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),

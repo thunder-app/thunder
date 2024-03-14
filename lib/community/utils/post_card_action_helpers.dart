@@ -25,7 +25,6 @@ import 'package:thunder/post/widgets/reason_bottom_sheet.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
@@ -49,8 +48,10 @@ enum PostCardAction {
   visitInstance,
   blockInstance,
   sharePost,
+  sharePostLocal,
   shareMedia,
   shareLink,
+  shareAdvanced,
   upvote,
   downvote,
   save,
@@ -86,7 +87,7 @@ class ExtendedPostCardActions {
   final Color? Function(PostView postView)? getForegroundColor;
   final IconData? Function(PostView postView)? getOverrideIcon;
   final String? Function(BuildContext context, PostView postView)? getOverrideLabel;
-  final String? Function(BuildContext context, PostView postView)? getSubtitleLabel;
+  final String? Function(BuildContext context, PostViewMedia postViewMedia)? getSubtitleLabel;
   final bool Function(BuildContext context, PostView commentView)? shouldShow;
   final bool Function(bool isUserLoggedIn)? shouldEnable;
 }
@@ -98,7 +99,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.userActions,
     icon: Icons.person_rounded,
     label: l10n.user,
-    getSubtitleLabel: (context, postView) => generateUserFullName(context, postView.creator.name, fetchInstanceNameFromUrl(postView.creator.actorId)),
+    getSubtitleLabel: (context, postViewMedia) => generateUserFullName(context, postViewMedia.postView.creator.name, fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId)),
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
@@ -116,7 +117,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.communityActions,
     icon: Icons.people_rounded,
     label: l10n.community,
-    getSubtitleLabel: (context, postView) => generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId)),
+    getSubtitleLabel: (context, postViewMedia) => generateCommunityFullName(context, postViewMedia.postView.community.name, fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)),
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
@@ -146,7 +147,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.instanceActions,
     icon: Icons.language_rounded,
     label: l10n.instance(1),
-    getSubtitleLabel: (context, postView) => fetchInstanceNameFromUrl(postView.community.actorId) ?? '',
+    getSubtitleLabel: (context, postViewMedia) => fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId) ?? '',
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
@@ -164,16 +165,31 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.sharePost,
     icon: Icons.share_rounded,
     label: l10n.sharePost,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.postView.post.apId,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.sharePostLocal,
+    icon: Icons.share_rounded,
+    label: l10n.sharePostLocal,
+    getSubtitleLabel: (context, postViewMedia) => LemmyClient.instance.generatePostUrl(postViewMedia.postView.post.id),
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.shareMedia,
     icon: Icons.image_rounded,
     label: l10n.shareMedia,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.mediaUrl,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.shareLink,
     icon: Icons.link_rounded,
     label: l10n.shareLink,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.originalUrl,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.shareAdvanced,
+    icon: Icons.screen_share_rounded,
+    label: l10n.advanced,
+    getSubtitleLabel: (context, postViewMedia) => l10n.useAdvancedShareSheet,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.upvote,
@@ -262,7 +278,7 @@ enum PostActionBottomSheetPage {
 void showPostActionBottomModalSheet(
   BuildContext context,
   PostViewMedia postViewMedia, {
-  PostActionBottomSheetPage page = PostActionBottomSheetPage.general, // todo: is this needed?
+  PostActionBottomSheetPage page = PostActionBottomSheetPage.general,
 }) {
   final bool isOwnPost = postViewMedia.postView.creator.id == context.read<AuthBloc>().state.account?.userId;
 
@@ -308,19 +324,29 @@ void showPostActionBottomModalSheet(
   final List<ExtendedPostCardActions> sharePostCardActions = postCardActionItems
       .where((extendedAction) => [
             PostCardAction.sharePost,
+            PostCardAction.sharePostLocal,
             PostCardAction.shareMedia,
             PostCardAction.shareLink,
+            PostCardAction.shareAdvanced,
           ].contains(extendedAction.postCardAction))
       .toList();
 
   // Remove the share link option if there is no link
-  if (postViewMedia.media.isEmpty || (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image)) {
+  // Or if the media link is the same as the external link
+  if (postViewMedia.media.isEmpty ||
+      (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image) ||
+      postViewMedia.media.first.originalUrl == postViewMedia.media.first.mediaUrl) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareLink);
   }
 
   // Remove the share media option if there is no media
   if (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl == null) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareMedia);
+  }
+
+  // Remove the share local option if it is the same as the original
+  if (postViewMedia.postView.post.apId == LemmyClient.instance.generatePostUrl(postViewMedia.postView.post.id)) {
+    sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.sharePostLocal);
   }
 
   // Generate the list of user actions
@@ -511,7 +537,7 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                     return PickerItem(
                       label: widget.postCardActions[page ?? widget.page]![index].getOverrideLabel?.call(context, widget.postViewMedia.postView) ??
                           widget.postCardActions[page ?? widget.page]![index].label,
-                      subtitle: widget.postCardActions[page ?? widget.page]![index].getSubtitleLabel?.call(context, widget.postViewMedia.postView),
+                      subtitle: widget.postCardActions[page ?? widget.page]![index].getSubtitleLabel?.call(context, widget.postViewMedia),
                       icon: widget.postCardActions[page ?? widget.page]![index].getOverrideIcon?.call(widget.postViewMedia.postView) ?? widget.postCardActions[page ?? widget.page]![index].icon,
                       trailingIcon: widget.postCardActions[page ?? widget.page]![index].trailingIcon,
                       onSelected: (widget.postCardActions[page ?? widget.page]![index].shouldEnable?.call(isUserLoggedIn) ?? true)
@@ -550,6 +576,9 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
       case PostCardAction.sharePost:
         action = () => Share.share(widget.postViewMedia.postView.post.apId);
         break;
+      case PostCardAction.sharePostLocal:
+        action = () => Share.share(LemmyClient.instance.generatePostUrl(widget.postViewMedia.postView.post.id));
+        break;
       case PostCardAction.shareMedia:
         action = () async {
           if (widget.postViewMedia.media.first.mediaUrl != null) {
@@ -579,6 +608,9 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
         action = () {
           if (widget.postViewMedia.media.first.originalUrl != null) Share.share(widget.postViewMedia.media.first.originalUrl!);
         };
+        break;
+      case PostCardAction.shareAdvanced:
+        action = () => showAdvancedShareSheet(widget.outerContext, widget.postViewMedia);
         break;
       case PostCardAction.instanceActions:
         action = () => setState(() => page = PostActionBottomSheetPage.instance);
@@ -619,13 +651,8 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
             widget.outerContext.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postViewMedia.postView.post.id, value: !widget.postViewMedia.postView.read));
         break;
       case PostCardAction.share:
-        final bool useAdvancedShareSheet = widget.outerContext.read<ThunderBloc>().state.useAdvancedShareSheet;
-        if (useAdvancedShareSheet) {
-          action = () => showAdvancedShareSheet(widget.outerContext, widget.postViewMedia);
-        } else {
-          pop = false;
-          action = () => setState(() => page = PostActionBottomSheetPage.share);
-        }
+        pop = false;
+        action = () => setState(() => page = PostActionBottomSheetPage.share);
         break;
       case PostCardAction.blockUser:
         action = () => widget.outerContext.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: widget.postViewMedia.postView.creator.id, value: true));

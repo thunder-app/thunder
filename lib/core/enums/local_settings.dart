@@ -117,7 +117,6 @@ enum LocalSettings {
   showPostTextContentPreview(name: 'setting_general_show_text_content', key: 'showPostTextContentPreview', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.cardView),
   showPostAuthor(name: 'setting_general_show_post_author', key: 'showPostAuthor', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   dimReadPosts(name: 'setting_dim_read_posts', key: 'dimReadPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
-  useAdvancedShareSheet(name: 'setting_use_advanced_share_sheet', key: 'useAdvancedShareSheet', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.posts),
   showCrossPosts(name: 'setting_show_cross_posts', key: 'showCrossPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   keywordFilters(name: 'setting_general_keyword_filters', key: 'keywordFilters', category: LocalSettingsCategories.filters, subCategory: LocalSettingsSubCategories.filters),
   hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', key: 'hideTopBarOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
@@ -220,6 +219,7 @@ enum LocalSettings {
   anonymousInstances(name: 'setting_anonymous_instances', key: ''),
   currentAnonymousInstance(name: 'setting_current_anonymous_instance', key: ''),
 
+  // This setting exists purely to save/load the user's selected advanced share options
   advancedShareOptions(name: 'advanced_share_options', key: ''),
   // import export settings
   importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings);
@@ -294,7 +294,6 @@ extension LocalizationExt on AppLocalizations {
       'dimReadPosts': dimReadPosts,
       'showFullPostDate': showFullDate,
       'dateFormat': dateFormat,
-      'useAdvancedShareSheet': useAdvancedShareSheet,
       'showCrossPosts': showCrossPosts,
       'keywordFilters': keywordFilters,
       'hideTopBarOnScroll': hideTopBarOnScroll,
