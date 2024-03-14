@@ -1317,12 +1317,52 @@
   },
   "share": "Share",
   "@share": {},
-  "shareLink": "Share Link",
+  "shareComment": "Share Comment Link",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "shareCommentLocal": "Share Comment Link (My Instance)",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "shareCommunity": "Share Community",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "shareCommunityLink": "Share Community Link",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "shareCommunityLinkLocal": "Share Community Link (My Instance)",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "shareLemmyLink": "Share Lemmy Link",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
+  },
+  "shareLink": "Share External Link",
   "@shareLink": {},
   "shareMedia": "Share Media",
   "@shareMedia": {},
-  "sharePost": "Share Post",
+  "sharePost": "Share Post Link",
   "@sharePost": {},
+  "sharePostLocal": "Share Post Link (My Instance)",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareUser": "Share User",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "shareUserLink": "Share User Link",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "shareUserLinkLocal": "Share User Link (My Instance)",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
   "showAll": "Show All",
   "@showAll": {},
   "showBotAccounts": "Show Bot Accounts",

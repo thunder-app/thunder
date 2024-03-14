@@ -58,7 +58,6 @@ class ThunderState extends Equatable {
     this.dimReadPosts = true,
     this.showFullPostDate = false,
     this.dateFormat,
-    this.useAdvancedShareSheet = true,
     this.showCrossPosts = true,
     this.compactPostCardMetadataItems = const [],
     this.cardPostCardMetadataItems = const [],
@@ -194,7 +193,6 @@ class ThunderState extends Equatable {
   final bool dimReadPosts;
   final bool showFullPostDate;
   final DateFormat? dateFormat;
-  final bool useAdvancedShareSheet;
   final bool showCrossPosts;
   final List<PostCardMetadataItem> compactPostCardMetadataItems;
   final List<PostCardMetadataItem> cardPostCardMetadataItems;
@@ -336,7 +334,6 @@ class ThunderState extends Equatable {
     bool? dimReadPosts,
     bool? showFullPostDate,
     DateFormat? dateFormat,
-    bool? useAdvancedShareSheet,
     bool? showCrossPosts,
     List<PostCardMetadataItem>? compactPostCardMetadataItems,
     List<PostCardMetadataItem>? cardPostCardMetadataItems,
@@ -472,7 +469,6 @@ class ThunderState extends Equatable {
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
       showFullPostDate: showFullPostDate ?? this.showFullPostDate,
       dateFormat: dateFormat ?? this.dateFormat,
-      useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
       showCrossPosts: showCrossPosts ?? this.showCrossPosts,
       compactPostCardMetadataItems: compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
       cardPostCardMetadataItems: cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
@@ -612,7 +608,6 @@ class ThunderState extends Equatable {
         dimReadPosts,
         showFullPostDate,
         dateFormat,
-        useAdvancedShareSheet,
         showCrossPosts,
         compactPostCardMetadataItems,
         cardPostCardMetadataItems,

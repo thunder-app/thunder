@@ -49,6 +49,8 @@ class PickerItem<T> extends StatelessWidget {
                     style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
                       color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(0.5),
                     ),
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
                   )
                 : null,
             leading: icon != null ? Icon(icon) : this.leading,

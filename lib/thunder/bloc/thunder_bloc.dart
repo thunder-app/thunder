@@ -145,7 +145,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       bool showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
       DateFormat dateFormat = DateFormat(prefs.getString(LocalSettings.dateFormat.name) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
-      bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       List<PostCardMetadataItem> compactPostCardMetadataItems =
           prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
@@ -284,7 +283,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         dimReadPosts: dimReadPosts,
         showFullPostDate: showFullPostDate,
         dateFormat: dateFormat,
-        useAdvancedShareSheet: useAdvancedShareSheet,
         showCrossPosts: showCrossPosts,
         compactPostCardMetadataItems: compactPostCardMetadataItems,
         cardPostCardMetadataItems: cardPostCardMetadataItems,
