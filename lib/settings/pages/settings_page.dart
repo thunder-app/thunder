@@ -159,19 +159,9 @@ class _SettingsPageState extends State<SettingsPage> {
             hasScrollBody: false,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: FutureBuilder(
-                future: getCurrentVersion(removeInternalBuildNumber: true),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        'Thunder ${snapshot.data ?? 'N/A'}',
-                      ),
-                    );
-                  }
-                  return Container();
-                },
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Text('Thunder ${getCurrentVersion(removeInternalBuildNumber: true)}'),
               ),
             ),
           )

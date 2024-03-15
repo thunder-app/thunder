@@ -115,6 +115,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
+      bool showChangelogsAfterUpdate = prefs.getBool(LocalSettings.showChangelogsAfterUpdate.name) ?? true;
       bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
@@ -255,6 +256,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         markPostReadOnMediaView: markPostReadOnMediaView,
         markPostReadOnScroll: markPostReadOnScroll,
         showInAppUpdateNotification: showInAppUpdateNotification,
+        showChangelogsAfterUpdate: showChangelogsAfterUpdate,
         enableInboxNotifications: enableInboxNotifications,
         appLanguageCode: appLanguageCode,
         userSeparator: userSeparator,

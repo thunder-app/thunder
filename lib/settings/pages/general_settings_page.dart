@@ -80,6 +80,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, an app update notification will be shown when an update is available
   bool showInAppUpdateNotification = false;
 
+  /// When enabled, an in-app "notification" will be shown that lets the user view the changelog
+  bool showChangelogsAfterUpdate = true;
+
   /// When enabled, system-level notifications will be displayed for new inbox messages
   bool enableInboxNotifications = false;
 
@@ -190,6 +193,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
         setState(() => showInAppUpdateNotification = value);
         break;
+      case LocalSettings.showChangelogsAfterUpdate:
+        await prefs.setBool(LocalSettings.showChangelogsAfterUpdate.name, value);
+        setState(() => showChangelogsAfterUpdate = value);
+        break;
       case LocalSettings.enableInboxNotifications:
         await prefs.setBool(LocalSettings.enableInboxNotifications.name, value);
         setState(() => enableInboxNotifications = value);
@@ -251,6 +258,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
 
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
+      showChangelogsAfterUpdate = prefs.getBool(LocalSettings.showChangelogsAfterUpdate.name) ?? true;
       enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
     });
   }
@@ -711,6 +719,17 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconDisabled: Icons.update_disabled_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.showInAppUpdateNotification, value),
               highlightKey: settingToHighlight == LocalSettings.showInAppUpdateNotification ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showChangelogsAfterUpdate,
+              subtitle: l10n.showChangelogsAfterUpdateSubtitle,
+              value: showChangelogsAfterUpdate,
+              iconEnabled: Icons.featured_play_list_rounded,
+              iconDisabled: Icons.featured_play_list_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.showChangelogsAfterUpdate, value),
+              highlightKey: settingToHighlight == LocalSettings.showChangelogsAfterUpdate ? settingToHighlightKey : null,
             ),
           ),
           if (!kIsWeb && Platform.isAndroid)
