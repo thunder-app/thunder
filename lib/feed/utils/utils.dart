@@ -9,6 +9,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -96,34 +97,39 @@ Future<void> navigateToFeedPage(
         );
   }
 
-  Navigator.of(context).push(
-    SwipeablePageRoute(
-      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-      backGestureDetectionWidth: 45,
-      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: accountBloc),
-          BlocProvider.value(value: authBloc),
-          BlocProvider.value(value: thunderBloc),
-          BlocProvider.value(value: instanceBloc),
-          BlocProvider.value(value: anonymousSubscriptionsBloc),
-          BlocProvider.value(value: communityBloc),
-        ],
-        child: Material(
-          child: FeedPage(
-            feedType: feedType,
-            sortType: sortType ?? thunderBloc.state.defaultSortType,
-            communityName: communityName,
-            communityId: communityId,
-            userId: userId,
-            username: username,
-            postListingType: postListingType,
-          ),
+  SwipeablePageRoute route = SwipeablePageRoute(
+    transitionDuration: isLoadingPageShown
+        ? Duration.zero
+        : reduceAnimations
+            ? const Duration(milliseconds: 100)
+            : null,
+    reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+    backGestureDetectionWidth: 45,
+    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
+    builder: (context) => MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: accountBloc),
+        BlocProvider.value(value: authBloc),
+        BlocProvider.value(value: thunderBloc),
+        BlocProvider.value(value: instanceBloc),
+        BlocProvider.value(value: anonymousSubscriptionsBloc),
+        BlocProvider.value(value: communityBloc),
+      ],
+      child: Material(
+        child: FeedPage(
+          feedType: feedType,
+          sortType: sortType ?? thunderBloc.state.defaultSortType,
+          communityName: communityName,
+          communityId: communityId,
+          userId: userId,
+          username: username,
+          postListingType: postListingType,
         ),
       ),
     ),
   );
+
+  pushOnTopOfLoadingPage(context, route);
 }
 
 Future<void> triggerRefresh(BuildContext context) async {

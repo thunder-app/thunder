@@ -318,22 +318,6 @@ class PostCardViewComfortable extends StatelessWidget {
                       showPostActionBottomModalSheet(
                         context,
                         postViewMedia,
-                        actionsToInclude: [
-                          PostCardAction.visitInstance,
-                          PostCardAction.visitProfile,
-                          PostCardAction.blockUser,
-                          PostCardAction.blockInstance,
-                          PostCardAction.visitCommunity,
-                          postViewMedia.postView.subscribed == SubscribedType.notSubscribed ? PostCardAction.subscribeToCommunity : PostCardAction.unsubscribeFromCommunity,
-                          PostCardAction.blockCommunity,
-                        ],
-                        multiActionsToInclude: [
-                          PostCardAction.upvote,
-                          PostCardAction.downvote,
-                          PostCardAction.save,
-                          PostCardAction.toggleRead,
-                          PostCardAction.share,
-                        ],
                       );
                       HapticFeedback.mediumImpact();
                     }),

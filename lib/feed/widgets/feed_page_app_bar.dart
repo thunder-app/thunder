@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -16,6 +15,8 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/community.dart';
+import 'package:thunder/feed/utils/community_share.dart';
+import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/modlog/view/modlog_page.dart';
@@ -190,7 +191,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               ),
             if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
               ThunderPopupMenuItem(
-                onTap: () => Share.share(feedBloc.state.fullCommunityView!.communityView.community.actorId),
+                onTap: () => showCommunityShareSheet(context, feedBloc.state.fullCommunityView!.communityView),
                 icon: Icons.share_rounded,
                 title: l10n.share,
               ),
@@ -287,7 +288,7 @@ class FeedAppBarUserActions extends StatelessWidget {
             ),
             if (feedBloc.state.fullPersonView?.personView.person.actorId != null)
               ThunderPopupMenuItem(
-                onTap: () => Share.share(feedBloc.state.fullPersonView!.personView.person.actorId),
+                onTap: () => showUserShareSheet(context, feedBloc.state.fullPersonView!.personView),
                 icon: Icons.share_rounded,
                 title: l10n.share,
               ),

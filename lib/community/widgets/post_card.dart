@@ -236,22 +236,6 @@ class _PostCardState extends State<PostCard> {
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
                 widget.postViewMedia,
-                actionsToInclude: [
-                  PostCardAction.visitInstance,
-                  PostCardAction.visitProfile,
-                  PostCardAction.blockUser,
-                  PostCardAction.blockInstance,
-                  PostCardAction.visitCommunity,
-                  widget.postViewMedia.postView.subscribed == SubscribedType.notSubscribed ? PostCardAction.subscribeToCommunity : PostCardAction.unsubscribeFromCommunity,
-                  PostCardAction.blockCommunity,
-                ],
-                multiActionsToInclude: [
-                  PostCardAction.upvote,
-                  PostCardAction.downvote,
-                  PostCardAction.save,
-                  PostCardAction.toggleRead,
-                  PostCardAction.share,
-                ],
               ),
               onTap: () async {
                 PostView postView = widget.postViewMedia.postView;

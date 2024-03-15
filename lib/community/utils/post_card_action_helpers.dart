@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 
 import 'package:share_plus/share_plus.dart';
@@ -9,6 +11,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -20,10 +23,8 @@ import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/reason_bottom_sheet.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
-import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
@@ -35,17 +36,22 @@ import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/utils/global_context.dart';
 
 enum PostCardAction {
+  userActions,
   visitProfile,
   blockUser,
+  communityActions,
   visitCommunity,
   subscribeToCommunity,
   unsubscribeFromCommunity,
   blockCommunity,
+  instanceActions,
   visitInstance,
   blockInstance,
   sharePost,
+  sharePostLocal,
   shareMedia,
   shareLink,
+  shareAdvanced,
   upvote,
   downvote,
   save,
@@ -68,6 +74,7 @@ class ExtendedPostCardActions {
     this.getForegroundColor,
     this.getOverrideIcon,
     this.getOverrideLabel,
+    this.getSubtitleLabel,
     this.shouldShow,
     this.shouldEnable,
   });
@@ -79,7 +86,8 @@ class ExtendedPostCardActions {
   final Color? color;
   final Color? Function(PostView postView)? getForegroundColor;
   final IconData? Function(PostView postView)? getOverrideIcon;
-  final String? Function(PostView postView)? getOverrideLabel;
+  final String? Function(BuildContext context, PostView postView)? getOverrideLabel;
+  final String? Function(BuildContext context, PostViewMedia postViewMedia)? getSubtitleLabel;
   final bool Function(BuildContext context, PostView commentView)? shouldShow;
   final bool Function(bool isUserLoggedIn)? shouldEnable;
 }
@@ -87,6 +95,13 @@ class ExtendedPostCardActions {
 final l10n = AppLocalizations.of(GlobalContext.context)!;
 
 final List<ExtendedPostCardActions> postCardActionItems = [
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.userActions,
+    icon: Icons.person_rounded,
+    label: l10n.user,
+    getSubtitleLabel: (context, postViewMedia) => generateUserFullName(context, postViewMedia.postView.creator.name, fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId)),
+    trailingIcon: Icons.chevron_right_rounded,
+  ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.visitProfile,
     icon: Icons.person_search_rounded,
@@ -97,6 +112,13 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     icon: Icons.block,
     label: l10n.blockUser,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.communityActions,
+    icon: Icons.people_rounded,
+    label: l10n.community,
+    getSubtitleLabel: (context, postViewMedia) => generateCommunityFullName(context, postViewMedia.postView.community.name, fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)),
+    trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.visitCommunity,
@@ -122,6 +144,13 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
+    postCardAction: PostCardAction.instanceActions,
+    icon: Icons.language_rounded,
+    label: l10n.instance(1),
+    getSubtitleLabel: (context, postViewMedia) => fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId) ?? '',
+    trailingIcon: Icons.chevron_right_rounded,
+  ),
+  ExtendedPostCardActions(
     postCardAction: PostCardAction.visitInstance,
     icon: Icons.language,
     label: l10n.visitInstance,
@@ -136,16 +165,31 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.sharePost,
     icon: Icons.share_rounded,
     label: l10n.sharePost,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.postView.post.apId,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.sharePostLocal,
+    icon: Icons.share_rounded,
+    label: l10n.sharePostLocal,
+    getSubtitleLabel: (context, postViewMedia) => LemmyClient.instance.generatePostUrl(postViewMedia.postView.post.id),
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.shareMedia,
     icon: Icons.image_rounded,
     label: l10n.shareMedia,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.mediaUrl,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.shareLink,
     icon: Icons.link_rounded,
     label: l10n.shareLink,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.originalUrl,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.shareAdvanced,
+    icon: Icons.screen_share_rounded,
+    label: l10n.advanced,
+    getSubtitleLabel: (context, postViewMedia) => l10n.useAdvancedShareSheet,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.upvote,
@@ -191,7 +235,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     icon: Icons.delete_rounded,
     label: l10n.delete,
     getOverrideIcon: (postView) => postView.post.deleted ? Icons.restore_from_trash_rounded : Icons.delete_rounded,
-    getOverrideLabel: (postView) => postView.post.deleted ? l10n.restore : l10n.delete,
+    getOverrideLabel: (context, postView) => postView.post.deleted ? l10n.restore : l10n.delete,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.moderatorActions,
@@ -204,21 +248,21 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     icon: Icons.lock,
     label: l10n.lockPost,
     getOverrideIcon: (postView) => postView.post.locked ? Icons.lock_open_rounded : Icons.lock,
-    getOverrideLabel: (postView) => postView.post.locked ? l10n.unlockPost : l10n.lockPost,
+    getOverrideLabel: (context, postView) => postView.post.locked ? l10n.unlockPost : l10n.lockPost,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.moderatorPinCommunity,
     icon: Icons.push_pin_rounded,
     label: l10n.pinToCommunity,
     getOverrideIcon: (postView) => postView.post.featuredCommunity ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-    getOverrideLabel: (postView) => postView.post.featuredCommunity ? l10n.unpinFromCommunity : l10n.pinToCommunity,
+    getOverrideLabel: (context, postView) => postView.post.featuredCommunity ? l10n.unpinFromCommunity : l10n.pinToCommunity,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.moderatorRemovePost,
     icon: Icons.delete_forever_rounded,
     label: l10n.removePost,
     getOverrideIcon: (postView) => postView.post.removed ? Icons.restore_from_trash_rounded : Icons.delete_forever_rounded,
-    getOverrideLabel: (postView) => postView.post.removed ? l10n.restorePost : l10n.removePost,
+    getOverrideLabel: (context, postView) => postView.post.removed ? l10n.restorePost : l10n.removePost,
   )
 ];
 
@@ -226,226 +270,444 @@ enum PostActionBottomSheetPage {
   general,
   share,
   moderator,
+  user,
+  community,
+  instance,
 }
 
 void showPostActionBottomModalSheet(
   BuildContext context,
   PostViewMedia postViewMedia, {
-  List<PostCardAction>? actionsToInclude,
-  List<PostCardAction>? multiActionsToInclude,
-  PostActionBottomSheetPage postActionBottomSheetPage = PostActionBottomSheetPage.general,
+  PostActionBottomSheetPage page = PostActionBottomSheetPage.general,
 }) {
-  final theme = Theme.of(context);
-
-  final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-  final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
   final bool isOwnPost = postViewMedia.postView.creator.id == context.read<AuthBloc>().state.account?.userId;
 
   final bool isModerator =
       context.read<AccountBloc>().state.moderates.any((CommunityModeratorView communityModeratorView) => communityModeratorView.community.id == postViewMedia.postView.community.id);
 
-  actionsToInclude ??= [];
-  List<ExtendedPostCardActions> postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
+  // Generate the list of default actions for the general page
+  final List<ExtendedPostCardActions> defaultPostCardActions = postCardActionItems
+      .where((extendedAction) => [
+            PostCardAction.userActions,
+            PostCardAction.communityActions,
+            PostCardAction.instanceActions,
+          ].contains(extendedAction.postCardAction))
+      .toList();
 
-  if (actionsToInclude.contains(PostCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
-    postCardActionItemsToUse.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockInstance);
+  // Add the moderator actions submenu
+  if (isModerator) {
+    defaultPostCardActions.add(postCardActionItems.firstWhere((ExtendedPostCardActions extendedPostCardActions) => extendedPostCardActions.postCardAction == PostCardAction.moderatorActions));
   }
+
+  // Generate the list of default multi actions
+  final List<ExtendedPostCardActions> defaultMultiPostCardActions = postCardActionItems
+      .where((extendedAction) => [
+            PostCardAction.upvote,
+            PostCardAction.downvote,
+            PostCardAction.save,
+            PostCardAction.toggleRead,
+            PostCardAction.share,
+            if (isOwnPost) PostCardAction.delete,
+          ].contains(extendedAction.postCardAction))
+      .toList();
+
+  // Generate the list of moderator actions
+  final List<ExtendedPostCardActions> moderatorPostCardActions = postCardActionItems
+      .where((extendedAction) => [
+            PostCardAction.moderatorLockPost,
+            PostCardAction.moderatorPinCommunity,
+            PostCardAction.moderatorRemovePost,
+          ].contains(extendedAction.postCardAction))
+      .toList();
+
+  // Generate the list of share actions
+  final List<ExtendedPostCardActions> sharePostCardActions = postCardActionItems
+      .where((extendedAction) => [
+            PostCardAction.sharePost,
+            PostCardAction.sharePostLocal,
+            PostCardAction.shareMedia,
+            PostCardAction.shareLink,
+            PostCardAction.shareAdvanced,
+          ].contains(extendedAction.postCardAction))
+      .toList();
+
+  // Remove the share link option if there is no link
+  // Or if the media link is the same as the external link
+  if (postViewMedia.media.isEmpty ||
+      (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image) ||
+      postViewMedia.media.first.originalUrl == postViewMedia.media.first.mediaUrl) {
+    sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareLink);
+  }
+
+  // Remove the share media option if there is no media
+  if (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl == null) {
+    sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareMedia);
+  }
+
+  // Remove the share local option if it is the same as the original
+  if (postViewMedia.postView.post.apId == LemmyClient.instance.generatePostUrl(postViewMedia.postView.post.id)) {
+    sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.sharePostLocal);
+  }
+
+  // Generate the list of user actions
+  final List<ExtendedPostCardActions> userActions = postCardActionItems
+      .where((extendedAction) => [
+            PostCardAction.visitProfile,
+            PostCardAction.blockUser,
+          ].contains(extendedAction.postCardAction))
+      .toList();
+
+  // Generate the list of community actions
+  final List<ExtendedPostCardActions> communityActions = postCardActionItems
+      .where((extendedAction) => [
+            PostCardAction.visitCommunity,
+            postViewMedia.postView.subscribed == SubscribedType.notSubscribed ? PostCardAction.subscribeToCommunity : PostCardAction.unsubscribeFromCommunity,
+            PostCardAction.blockCommunity,
+          ].contains(extendedAction.postCardAction))
+      .toList();
 
   // Hide the option to block a community if the user is subscribed to it
-  if (actionsToInclude.contains(PostCardAction.blockCommunity) && postViewMedia.postView.subscribed != SubscribedType.notSubscribed) {
-    postCardActionItemsToUse.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockCommunity);
+  if (communityActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.blockCommunity) && postViewMedia.postView.subscribed != SubscribedType.notSubscribed) {
+    communityActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockCommunity);
   }
 
-  // Add the option to delete one's own posts
-  if (isOwnPost && postActionBottomSheetPage == PostActionBottomSheetPage.general) {
-    postCardActionItemsToUse.add(postCardActionItems.firstWhere((ExtendedPostCardActions extendedPostCardActions) => extendedPostCardActions.postCardAction == PostCardAction.delete));
-  }
+  // Generate the list of instance actions
+  final List<ExtendedPostCardActions> instanceActions = postCardActionItems
+      .where((extendedAction) => [
+            PostCardAction.visitInstance,
+            PostCardAction.blockInstance,
+          ].contains(extendedAction.postCardAction))
+      .toList();
 
-  if (isModerator && postActionBottomSheetPage == PostActionBottomSheetPage.general) {
-    postCardActionItemsToUse.add(postCardActionItems.firstWhere((ExtendedPostCardActions extendedPostCardActions) => extendedPostCardActions.postCardAction == PostCardAction.moderatorActions));
+// Remove block if unsupported
+  if (instanceActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
+    instanceActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockInstance);
   }
-
-  multiActionsToInclude ??= [];
-  final multiPostCardActionItemsToUse = postCardActionItems.where((extendedAction) => multiActionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
 
   showModalBottomSheet<void>(
     showDragHandle: true,
     isScrollControlled: true,
     context: context,
-    builder: (BuildContext bottomSheetContext) {
-      return SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  AppLocalizations.of(context)!.actions,
-                  style: theme.textTheme.titleLarge!.copyWith(),
+    builder: (builderContext) => PostCardActionPicker(
+      postViewMedia: postViewMedia,
+      page: page,
+      postCardActions: {
+        PostActionBottomSheetPage.general: defaultPostCardActions,
+        PostActionBottomSheetPage.moderator: moderatorPostCardActions,
+        PostActionBottomSheetPage.share: sharePostCardActions,
+        PostActionBottomSheetPage.user: userActions,
+        PostActionBottomSheetPage.community: communityActions,
+        PostActionBottomSheetPage.instance: instanceActions,
+      },
+      multiPostCardActions: {PostActionBottomSheetPage.general: defaultMultiPostCardActions},
+      titles: {
+        PostActionBottomSheetPage.general: l10n.actions,
+        PostActionBottomSheetPage.moderator: l10n.moderatorActions,
+        PostActionBottomSheetPage.share: l10n.share,
+        PostActionBottomSheetPage.user: l10n.userActions,
+        PostActionBottomSheetPage.community: l10n.communityActions,
+        PostActionBottomSheetPage.instance: l10n.instanceActions,
+      },
+      outerContext: context,
+    ),
+  );
+}
+
+class PostCardActionPicker extends StatefulWidget {
+  /// The post
+  final PostViewMedia postViewMedia;
+
+  /// This is the list of quick actions that are shown horizontally across the top of the sheet
+  final Map<PostActionBottomSheetPage, List<ExtendedPostCardActions>> multiPostCardActions;
+
+  /// This is the set of full actions to display vertically in a list
+  final Map<PostActionBottomSheetPage, List<ExtendedPostCardActions>> postCardActions;
+
+  /// This is the set of titles to show for each page
+  final Map<PostActionBottomSheetPage, String> titles;
+
+  /// The current page
+  final PostActionBottomSheetPage page;
+
+  /// The context from whoever invoked this sheet (useful for blocs that would otherwise be missing)
+  final BuildContext outerContext;
+
+  const PostCardActionPicker({
+    super.key,
+    required this.postViewMedia,
+    required this.page,
+    required this.postCardActions,
+    required this.multiPostCardActions,
+    required this.titles,
+    required this.outerContext,
+  });
+
+  @override
+  State<StatefulWidget> createState() => _PostCardActionPickerState();
+}
+
+class _PostCardActionPickerState extends State<PostCardActionPicker> {
+  PostActionBottomSheetPage? page;
+
+  @override
+  void initState() {
+    super.initState();
+
+    BackButtonInterceptor.add(_handleBack);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(_handleBack);
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+
+    return SingleChildScrollView(
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Semantics(
+                label: '${widget.titles[page ?? widget.page] ?? l10n.actions}, ${(page ?? widget.page) == PostActionBottomSheetPage.general ? '' : l10n.backButton}',
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Material(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: (page ?? widget.page) == PostActionBottomSheetPage.general ? null : () => setState(() => page = PostActionBottomSheetPage.general),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12.0, 10, 16.0, 10.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              if ((page ?? widget.page) != PostActionBottomSheetPage.general) ...[
+                                const Icon(Icons.chevron_left, size: 30),
+                                const SizedBox(width: 12),
+                              ],
+                              Semantics(
+                                excludeSemantics: true,
+                                child: Text(
+                                  widget.titles[page ?? widget.page] ?? l10n.actions,
+                                  style: theme.textTheme.titleLarge,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-            MultiPickerItem(
-              pickerItems: [
-                ...multiPostCardActionItemsToUse.where((a) => a.shouldShow?.call(context, postViewMedia.postView) ?? true).map(
-                  (a) {
-                    return PickerItemData(
-                      label: a.label,
-                      icon: a.getOverrideIcon?.call(postViewMedia.postView) ?? a.icon,
-                      backgroundColor: a.color,
-                      foregroundColor: a.getForegroundColor?.call(postViewMedia.postView),
-                      onSelected: (a.shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(context, a.postCardAction, postViewMedia, useAdvancedShareSheet) : null,
+              if (widget.multiPostCardActions[page ?? widget.page]?.isNotEmpty == true)
+                MultiPickerItem(
+                  pickerItems: [
+                    ...widget.multiPostCardActions[page ?? widget.page]!.where((a) => a.shouldShow?.call(context, widget.postViewMedia.postView) ?? true).map(
+                      (a) {
+                        return PickerItemData(
+                          label: a.label,
+                          icon: a.getOverrideIcon?.call(widget.postViewMedia.postView) ?? a.icon,
+                          backgroundColor: a.color,
+                          foregroundColor: a.getForegroundColor?.call(widget.postViewMedia.postView),
+                          onSelected: (a.shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(a.postCardAction) : null,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              if (widget.postCardActions[page ?? widget.page]?.isNotEmpty == true)
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: widget.postCardActions[page ?? widget.page]!.length,
+                  itemBuilder: (BuildContext itemBuilderContext, int index) {
+                    return PickerItem(
+                      label: widget.postCardActions[page ?? widget.page]![index].getOverrideLabel?.call(context, widget.postViewMedia.postView) ??
+                          widget.postCardActions[page ?? widget.page]![index].label,
+                      subtitle: widget.postCardActions[page ?? widget.page]![index].getSubtitleLabel?.call(context, widget.postViewMedia),
+                      icon: widget.postCardActions[page ?? widget.page]![index].getOverrideIcon?.call(widget.postViewMedia.postView) ?? widget.postCardActions[page ?? widget.page]![index].icon,
+                      trailingIcon: widget.postCardActions[page ?? widget.page]![index].trailingIcon,
+                      onSelected: (widget.postCardActions[page ?? widget.page]![index].shouldEnable?.call(isUserLoggedIn) ?? true)
+                          ? () => onSelected(widget.postCardActions[page ?? widget.page]![index].postCardAction)
+                          : null,
                     );
                   },
                 ),
-              ],
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: postCardActionItemsToUse.length,
-              itemBuilder: (BuildContext itemBuilderContext, int index) {
-                if (postCardActionItemsToUse[index].postCardAction == PostCardAction.shareLink &&
-                    (postViewMedia.media.isEmpty || (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image))) {
-                  return Container();
-                }
-
-                if (postCardActionItemsToUse[index].postCardAction == PostCardAction.shareMedia && (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl == null)) {
-                  return Container();
-                }
-
-                return PickerItem(
-                  label: postCardActionItemsToUse[index].getOverrideLabel?.call(postViewMedia.postView) ?? postCardActionItemsToUse[index].label,
-                  icon: postCardActionItemsToUse[index].getOverrideIcon?.call(postViewMedia.postView) ?? postCardActionItemsToUse[index].icon,
-                  trailingIcon: postCardActionItemsToUse[index].trailingIcon,
-                  onSelected: (postCardActionItemsToUse[index].shouldEnable?.call(isUserLoggedIn) ?? true)
-                      ? () => onSelected(context, postCardActionItemsToUse[index].postCardAction, postViewMedia, useAdvancedShareSheet)
-                      : null,
-                );
-              },
-            ),
-            const SizedBox(height: 16.0),
-          ],
+              const SizedBox(height: 16.0),
+            ],
+          ),
         ),
-      );
-    },
-  );
+      ),
+    );
+  }
+
+  void onSelected(PostCardAction postCardAction) async {
+    bool pop = true;
+    void Function() action;
+
+    switch (postCardAction) {
+      case PostCardAction.visitCommunity:
+        action = () => onTapCommunityName(widget.outerContext, widget.postViewMedia.postView.community.id);
+        break;
+      case PostCardAction.userActions:
+        action = () => setState(() => page = PostActionBottomSheetPage.user);
+        pop = false;
+        break;
+      case PostCardAction.visitProfile:
+        action = () => navigateToFeedPage(widget.outerContext, feedType: FeedType.user, userId: widget.postViewMedia.postView.post.creatorId);
+        break;
+      case PostCardAction.visitInstance:
+        action = () => navigateToInstancePage(widget.outerContext,
+            instanceHost: fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId)!, instanceId: widget.postViewMedia.postView.community.instanceId);
+        break;
+      case PostCardAction.sharePost:
+        action = () => Share.share(widget.postViewMedia.postView.post.apId);
+        break;
+      case PostCardAction.sharePostLocal:
+        action = () => Share.share(LemmyClient.instance.generatePostUrl(widget.postViewMedia.postView.post.id));
+        break;
+      case PostCardAction.shareMedia:
+        action = () async {
+          if (widget.postViewMedia.media.first.mediaUrl != null) {
+            try {
+              // Try to get the cached image first
+              var media = await DefaultCacheManager().getFileFromCache(widget.postViewMedia.media.first.mediaUrl!);
+              File? mediaFile = media?.file;
+
+              if (media == null) {
+                // Tell user we're downloading the image
+                showSnackbar(AppLocalizations.of(widget.outerContext)!.downloadingMedia);
+
+                // Download
+                mediaFile = await DefaultCacheManager().getSingleFile(widget.postViewMedia.media.first.mediaUrl!);
+              }
+
+              // Share
+              await Share.shareXFiles([XFile(mediaFile!.path)]);
+            } catch (e) {
+              // Tell the user that the download failed
+              showSnackbar(AppLocalizations.of(widget.outerContext)!.errorDownloadingMedia(e));
+            }
+          }
+        };
+        break;
+      case PostCardAction.shareLink:
+        action = () {
+          if (widget.postViewMedia.media.first.originalUrl != null) Share.share(widget.postViewMedia.media.first.originalUrl!);
+        };
+        break;
+      case PostCardAction.shareAdvanced:
+        action = () => showAdvancedShareSheet(widget.outerContext, widget.postViewMedia);
+        break;
+      case PostCardAction.instanceActions:
+        action = () => setState(() => page = PostActionBottomSheetPage.instance);
+        pop = false;
+        break;
+      case PostCardAction.blockInstance:
+        action = () => widget.outerContext.read<InstanceBloc>().add(InstanceActionEvent(
+              instanceAction: InstanceAction.block,
+              instanceId: widget.postViewMedia.postView.community.instanceId,
+              domain: fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId),
+              value: true,
+            ));
+        break;
+      case PostCardAction.communityActions:
+        action = () => setState(() => page = PostActionBottomSheetPage.community);
+        pop = false;
+        break;
+      case PostCardAction.blockCommunity:
+        action =
+            () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: widget.postViewMedia.postView.community.id, value: true));
+        break;
+      case PostCardAction.upvote:
+        action = () => widget.outerContext
+            .read<FeedBloc>()
+            .add(FeedItemActionedEvent(postAction: PostAction.vote, postId: widget.postViewMedia.postView.post.id, value: widget.postViewMedia.postView.myVote == 1 ? 0 : 1));
+        break;
+      case PostCardAction.downvote:
+        action = () => widget.outerContext
+            .read<FeedBloc>()
+            .add(FeedItemActionedEvent(postAction: PostAction.vote, postId: widget.postViewMedia.postView.post.id, value: widget.postViewMedia.postView.myVote == -1 ? 0 : -1));
+        break;
+      case PostCardAction.save:
+        action = () =>
+            widget.outerContext.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.save, postId: widget.postViewMedia.postView.post.id, value: !widget.postViewMedia.postView.saved));
+        break;
+      case PostCardAction.toggleRead:
+        action = () =>
+            widget.outerContext.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postViewMedia.postView.post.id, value: !widget.postViewMedia.postView.read));
+        break;
+      case PostCardAction.share:
+        pop = false;
+        action = () => setState(() => page = PostActionBottomSheetPage.share);
+        break;
+      case PostCardAction.blockUser:
+        action = () => widget.outerContext.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: widget.postViewMedia.postView.creator.id, value: true));
+        break;
+      case PostCardAction.subscribeToCommunity:
+        action =
+            () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: widget.postViewMedia.postView.community.id, value: true));
+        break;
+      case PostCardAction.unsubscribeFromCommunity:
+        action =
+            () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: widget.postViewMedia.postView.community.id, value: false));
+        break;
+      case PostCardAction.delete:
+        action = () => widget.outerContext
+            .read<FeedBloc>()
+            .add(FeedItemActionedEvent(postAction: PostAction.delete, postId: widget.postViewMedia.postView.post.id, value: !widget.postViewMedia.postView.post.deleted));
+        break;
+      case PostCardAction.moderatorActions:
+        action = () => setState(() => page = PostActionBottomSheetPage.moderator);
+        pop = false;
+        break;
+      case PostCardAction.moderatorLockPost:
+        action = () => widget.outerContext
+            .read<FeedBloc>()
+            .add(FeedItemActionedEvent(postAction: PostAction.lock, postId: widget.postViewMedia.postView.post.id, value: !widget.postViewMedia.postView.post.locked));
+        break;
+      case PostCardAction.moderatorPinCommunity:
+        action = () => widget.outerContext
+            .read<FeedBloc>()
+            .add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: widget.postViewMedia.postView.post.id, value: !widget.postViewMedia.postView.post.featuredCommunity));
+        break;
+      case PostCardAction.moderatorRemovePost:
+        action = () => showRemovePostReasonBottomSheet(widget.outerContext, widget.postViewMedia);
+        break;
+    }
+
+    if (pop) {
+      Navigator.of(context).pop();
+    }
+
+    action();
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo routeInfo) {
+    if ((page ?? widget.page) != PostActionBottomSheetPage.general) {
+      setState(() => page = PostActionBottomSheetPage.general);
+      return true;
+    }
+
+    return false;
+  }
 }
 
 void onTapCommunityName(BuildContext context, int communityId) {
   navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId);
-}
-
-void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMedia postViewMedia, bool useAdvancedShareSheet) async {
-  Navigator.of(context).pop();
-
-  switch (postCardAction) {
-    case PostCardAction.visitCommunity:
-      onTapCommunityName(context, postViewMedia.postView.community.id);
-      break;
-    case PostCardAction.visitProfile:
-      navigateToFeedPage(context, feedType: FeedType.user, userId: postViewMedia.postView.post.creatorId);
-      break;
-    case PostCardAction.visitInstance:
-      navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)!, instanceId: postViewMedia.postView.community.instanceId);
-      break;
-    case PostCardAction.sharePost:
-      Share.share(postViewMedia.postView.post.apId);
-      break;
-    case PostCardAction.shareMedia:
-      if (postViewMedia.media.first.mediaUrl != null) {
-        try {
-          // Try to get the cached image first
-          var media = await DefaultCacheManager().getFileFromCache(postViewMedia.media.first.mediaUrl!);
-          File? mediaFile = media?.file;
-
-          if (media == null) {
-            // Tell user we're downloading the image
-            showSnackbar(AppLocalizations.of(context)!.downloadingMedia);
-
-            // Download
-            mediaFile = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.mediaUrl!);
-          }
-
-          // Share
-          await Share.shareXFiles([XFile(mediaFile!.path)]);
-        } catch (e) {
-          // Tell the user that the download failed
-          showSnackbar(AppLocalizations.of(context)!.errorDownloadingMedia(e));
-        }
-      }
-      break;
-    case PostCardAction.shareLink:
-      if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
-      break;
-    case PostCardAction.blockInstance:
-      context.read<InstanceBloc>().add(InstanceActionEvent(
-            instanceAction: InstanceAction.block,
-            instanceId: postViewMedia.postView.community.instanceId,
-            domain: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId),
-            value: true,
-          ));
-      break;
-    case PostCardAction.blockCommunity:
-      context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: postViewMedia.postView.community.id, value: true));
-      break;
-    case PostCardAction.upvote:
-      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == 1 ? 0 : 1));
-      break;
-    case PostCardAction.downvote:
-      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == -1 ? 0 : -1));
-      break;
-    case PostCardAction.save:
-      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.save, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.saved));
-      break;
-    case PostCardAction.toggleRead:
-      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.read));
-      break;
-    case PostCardAction.share:
-      useAdvancedShareSheet
-          ? showAdvancedShareSheet(context, postViewMedia)
-          : postViewMedia.media.isEmpty
-              ? Share.share(postViewMedia.postView.post.apId)
-              : showPostActionBottomModalSheet(
-                  context,
-                  postViewMedia,
-                  postActionBottomSheetPage: PostActionBottomSheetPage.share,
-                  actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
-                );
-      break;
-    case PostCardAction.blockUser:
-      context.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: postViewMedia.postView.creator.id, value: true));
-      break;
-    case PostCardAction.subscribeToCommunity:
-      context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: postViewMedia.postView.community.id, value: true));
-      break;
-    case PostCardAction.unsubscribeFromCommunity:
-      context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: postViewMedia.postView.community.id, value: false));
-      break;
-    case PostCardAction.delete:
-      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.post.deleted));
-      break;
-    case PostCardAction.moderatorActions:
-      showPostActionBottomModalSheet(
-        context,
-        postViewMedia,
-        postActionBottomSheetPage: PostActionBottomSheetPage.moderator,
-        actionsToInclude: [PostCardAction.moderatorLockPost, PostCardAction.moderatorPinCommunity, PostCardAction.moderatorRemovePost],
-      );
-      break;
-    case PostCardAction.moderatorLockPost:
-      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.post.locked));
-      break;
-    case PostCardAction.moderatorPinCommunity:
-      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.post.featuredCommunity));
-      break;
-    case PostCardAction.moderatorRemovePost:
-      showRemovePostReasonBottomSheet(context, postViewMedia);
-      break;
-  }
 }
 
 void showRemovePostReasonBottomSheet(BuildContext context, PostViewMedia postViewMedia) {

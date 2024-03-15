@@ -255,6 +255,14 @@
   "@communities": {},
   "community": "Community",
   "@community": {},
+  "communityActions": "Community Actions",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "Community '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
@@ -666,6 +674,14 @@
   "instance": "{count, plural, zero {Instance} one {Instance} other {Instances} } ",
   "@instance": {
     "description": "Heading for an instance"
+  },
+  "instanceActions": "Instance Actions",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "instanceEntry": "Instance '{username}'",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
   },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
@@ -1313,12 +1329,52 @@
   },
   "share": "Share",
   "@share": {},
-  "shareLink": "Share Link",
+  "shareComment": "Share Comment Link",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "shareCommentLocal": "Share Comment Link (My Instance)",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "shareCommunity": "Share Community",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "shareCommunityLink": "Share Community Link",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "shareCommunityLinkLocal": "Share Community Link (My Instance)",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "shareLemmyLink": "Share Lemmy Link",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
+  },
+  "shareLink": "Share External Link",
   "@shareLink": {},
   "shareMedia": "Share Media",
   "@shareMedia": {},
-  "sharePost": "Share Post",
+  "sharePost": "Share Post Link",
   "@sharePost": {},
+  "sharePostLocal": "Share Post Link (My Instance)",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareUser": "Share User",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "shareUserLink": "Share User Link",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "shareUserLinkLocal": "Share User Link (My Instance)",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
   "showAll": "Show All",
   "@showAll": {},
   "showBotAccounts": "Show Bot Accounts",
@@ -1680,6 +1736,14 @@
   "user": "User",
   "@user": {
     "description": "Role name for user"
+  },
+  "userActions": "User Actions",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "userEntry": "User '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
   },
   "userFormat": "User Format",
   "@userFormat": {
