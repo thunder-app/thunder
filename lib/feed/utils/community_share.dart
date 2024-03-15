@@ -48,7 +48,7 @@ Future<void> showCommunityShareSheet(BuildContext context, CommunityView communi
             icon: Icons.share_rounded,
           ),
         ],
-        onSelect: (selection) {
+        onSelect: (selection) async {
           switch (selection.payload) {
             case CommunityShareOptions.link:
               Share.share(communityView.community.actorId);
