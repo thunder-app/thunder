@@ -1664,5 +1664,111 @@
   "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "@placeholderText": {
     "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "unbannedUserFromCommunity": "Usuario no expulsado de la comunidad",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
+  "user": "Usuario",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "userActions": "Acciones del usuario",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "shareCommentLocal": "Compartir enlace del comentario (Mi instancia)",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "shareCommunityLink": "Compartir enlace a la comunidad",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "shareCommunityLinkLocal": "Compartir enlace comunitario (Mi instancia)",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "selectAccountToPostAs": "Seleccione la cuenta para publicar como",
+  "@selectAccountToPostAs": {
+    "description": "Heading for account selector when posting"
+  },
+  "searchInstancesFederatedWith": "Buscar instancias federadas con {instance}",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
+  "successfullyBlockedUser": "{username} bloqueado",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "sensitiveContentWarning": "Puede contener contenido sensible. Toque para revelar.",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
+  "successfullyUnblockedUser": "{username} desbloqueado",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "transferredModToCommunity": "Comunidad transferida",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
+  "unableToFindCommunityOnInstance": "No se puede encontrar la comunidad seleccionada en la instancia del usuario seleccionado.",
+  "@unableToFindCommunityOnInstance": {
+    "description": "An error message for when we can't find a community on an instance"
+  },
+  "unableToFindPost": "No se encuentra el mensaje",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
+  "unableToFindUserName": "No se puede encontrar el usuario '{username}'",
+  "@unableToFindUserName": {},
+  "shareCommunity": "Compartir la comunidad",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "shareLemmyLink": "Compartir enlace Lemmy",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
+  },
+  "unfeaturedPost": "Tema sin categoría",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "unhidCommunity": "Comunidad sin ocultar",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
+  "unlockedPost": "Tema desbloqueado",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
+  },
+  "unreachable": "Inaccesible",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "userEntry": "Usuario '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
+  },
+  "viewAll": "Ver todo",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
+  "showFullDate": "Mostrar la fecha completa",
+  "@showFullDate": {
+    "description": "Toggle to show full date on posts"
+  },
+  "showFullDateDescription": "Mostrar la fecha completa en los mensajes",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
+  },
+  "shareComment": "Compartir enlace del comentario",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "unbannedUser": "Usuario no bloqueado",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
   }
 }
