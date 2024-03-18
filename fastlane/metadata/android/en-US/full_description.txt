@@ -1,0 +1,8 @@
+Thunder is a fully open source, cross-platform, community-driven project available on GitHub. Fully free of advertisements and trackers.
+
+Here's a peek at what Thunder offers:
+- Multi-account support: Login to all your accounts, and switch between them at ease
+- Fully customizable settings: Choose your own splash of accent, customize your own gestures, and much more
+- Swipe gestures: Navigate and interact with your favourite communities, posts, and comments all through customizable swipe gestures.
+
+Thunder is still very early on in development and many more features are yet to be available!

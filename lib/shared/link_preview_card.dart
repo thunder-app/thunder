@@ -11,12 +11,10 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 
 class LinkPreviewCard extends StatelessWidget {
   const LinkPreviewCard({
@@ -266,40 +264,10 @@ class LinkPreviewCard extends StatelessWidget {
         FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
         feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
       } catch (e) {}
-
-      // Mark post as read when on the user page
-      try {
-        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-        userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
-      } catch (e) {}
     }
 
     if (originURL != null) {
-      String? communityName = await getLemmyCommunity(originURL!);
-
-      if (communityName != null) {
-        try {
-          await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
-          return;
-        } catch (e) {
-          // Ignore exception, if it's not a valid community we'll perform the next fallback
-        }
-      }
-
-      String? username = await getLemmyUser(originURL!);
-
-      if (username != null) {
-        try {
-          await navigateToUserPage(context, username: username);
-          return;
-        } catch (e) {
-          // Ignore exception, if it's not a valid user, we'll perform the next fallback
-        }
-      }
-
-      if (context.mounted) {
-        handleLink(context, url: originURL!);
-      }
+      handleLink(context, url: originURL!);
     }
   }
 

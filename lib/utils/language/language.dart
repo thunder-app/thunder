@@ -1,5 +1,5 @@
 class LanguageLocal {
-  static String getDisplayLanguage(key) {
+  static String getDisplayLanguage(key, String? code) {
     final languageLabels = {
       "ab": {"name": "Abkhaz", "nativeName": "аҧсуа"},
       "aa": {"name": "Afar", "nativeName": "Afaraf"},
@@ -186,7 +186,7 @@ class LanguageLocal {
     };
 
     if (languageLabels.containsKey(key)) {
-      return languageLabels[key]?["nativeName"] ?? "N/A";
+      return "${languageLabels[key]?["nativeName"]}${code != null ? " ($code)" : ""}";
     } else {
       throw Exception("Language key incorrect");
     }

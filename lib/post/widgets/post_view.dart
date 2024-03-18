@@ -44,7 +44,6 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/shared/snackbar.dart';
 
@@ -55,9 +54,6 @@ class PostSubview extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
 
-  /// The messenger key back to the post page
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
-
   const PostSubview({
     super.key,
     this.selectedCommentId,
@@ -65,7 +61,6 @@ class PostSubview extends StatefulWidget {
     required this.postViewMedia,
     required this.moderators,
     required this.crossPosts,
-    this.scaffoldMessengerKey,
   });
 
   @override
@@ -88,7 +83,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-    final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
     final bool showCrossPosts = context.read<ThunderBloc>().state.showCrossPosts;
 
     PostView postView = postViewMedia.postView;
@@ -153,8 +147,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 collapsed: Container(),
                 expanded: MediaView(
                   scrapeMissingPreviews: scrapeMissingPreviews,
-                  post: post,
-                  postView: widget.postViewMedia,
+                  postViewMedia: widget.postViewMedia,
                   hideNsfwPreviews: hideNsfwPreviews,
                   markPostReadOnMediaView: markPostReadOnMediaView,
                   isUserLoggedIn: isUserLoggedIn,
@@ -179,7 +172,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               CrossPosts(
                 crossPosts: sortedCrossPosts,
                 originalPost: widget.postViewMedia,
-                scaffoldMessengerKey: widget.scaffoldMessengerKey,
               ),
             const SizedBox(height: 16.0),
             SizedBox(
@@ -204,7 +196,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           child: InkWell(
                             borderRadius: BorderRadius.circular(5),
                             onTap: () {
-                              navigateToUserPage(context, userId: postView.creator.id);
+                              navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id);
                             },
                             child: Padding(
                               padding: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? const EdgeInsets.symmetric(horizontal: 5.0) : EdgeInsets.zero,
@@ -361,7 +353,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         children: [
                           Icon(
                             Icons.arrow_downward,
-                            semanticLabel: postView.myVote == 1 ? 'Downvoted' : 'Downvote',
+                            semanticLabel: postView.myVote == -1 ? 'Downvoted' : 'Downvote',
                             color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                           ),
                           if (showScores) ...[
@@ -402,7 +394,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     onPressed: isUserLoggedIn
                         ? () async {
                             if (postView.post.locked) {
-                              showSnackbar(context, l10n.postLocked);
+                              showSnackbar(l10n.postLocked);
                               return;
                             }
 
@@ -435,7 +427,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                           communityId: postViewMedia.postView.community.id,
                                           communityView: getCommunityResponse.communityView,
                                           postView: postViewMedia.postView,
-                                          onPostSuccess: (PostViewMedia pvm) {
+                                          onPostSuccess: (PostViewMedia pvm, _) {
                                             setState(() => postViewMedia = pvm);
                                           },
                                         ),
@@ -497,7 +489,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                 if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
                                   await Future.delayed(const Duration(milliseconds: 300));
                                   if (context.mounted) {
-                                    showSnackbar(context, l10n.commentSavedAsDraft);
+                                    showSnackbar(l10n.commentSavedAsDraft);
                                   }
                                   prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                                 } else {
@@ -517,17 +509,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 Expanded(
                   flex: 1,
                   child: IconButton(
-                    icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                    onPressed: useAdvancedShareSheet
-                        ? () => showAdvancedShareSheet(context, widget.postViewMedia)
-                        : widget.postViewMedia.media.isEmpty
-                            ? () => Share.share(post.apId)
-                            : () => showPostActionBottomModalSheet(
-                                  context,
-                                  widget.postViewMedia,
-                                  actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
-                                ),
-                  ),
+                      icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
+                      onPressed: () => showPostActionBottomModalSheet(context, widget.postViewMedia, page: PostActionBottomSheetPage.share)),
                 )
               ],
             ),
@@ -548,7 +531,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
           ),
           child: MediaView(
             scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
-            postView: postViewMedia,
+            postViewMedia: postViewMedia,
             showFullHeightImages: false,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,

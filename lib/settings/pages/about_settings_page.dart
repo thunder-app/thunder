@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -6,7 +7,9 @@ import 'package:thunder/utils/links.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 
 class AboutSettingsPage extends StatelessWidget {
-  const AboutSettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const AboutSettingsPage({super.key, this.settingToHighlight});
 
   @override
   Widget build(BuildContext context) {

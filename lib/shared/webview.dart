@@ -1,5 +1,11 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
@@ -17,6 +23,9 @@ class WebView extends StatefulWidget {
 
 class _WebViewState extends State<WebView> {
   late final WebViewController _controller;
+
+  // Keeps track of the URL that we are currently viewing, not necessarily the original
+  String? currentUrl;
 
   @override
   void initState() {
@@ -40,13 +49,46 @@ class _WebViewState extends State<WebView> {
       ..setNavigationDelegate(NavigationDelegate())
       ..loadRequest(Uri.parse(widget.url))
       ..setNavigationDelegate(NavigationDelegate(
-        onUrlChange: (_) => setState(() {}),
+        onNavigationRequest: (navigationRequest) {
+          if (!kIsWeb && Platform.isAndroid) {
+            Uri? uri = Uri.tryParse(navigationRequest.url);
+
+            // Check if the scheme is not https, in which case the in-app browser can't handle it
+            if (uri != null && uri.scheme != 'https') {
+              // Although a non-https scheme is an indication that this link is intended for another app,
+              // we actually have to change it back to https in order for the intent to be properly passed to another app.
+              launchUrl(uri.replace(scheme: 'https'), mode: LaunchMode.externalApplication);
+
+              // Finally, navigate back to the previous URL.
+              return NavigationDecision.prevent;
+            }
+          }
+          return NavigationDecision.navigate;
+        },
+        onUrlChange: (urlChange) => setState(() => currentUrl = urlChange.url),
       ));
 
     if (controller.platform is AndroidWebViewController) {
       (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
     _controller = controller;
+
+    BackButtonInterceptor.add(_handleBack);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(_handleBack);
+    super.dispose();
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (await _controller.canGoBack()) {
+      _controller.goBack();
+      return true;
+    }
+
+    return false;
   }
 
   @override
@@ -64,7 +106,7 @@ class _WebViewState extends State<WebView> {
           actions: <Widget>[
             NavigationControls(
               webViewController: _controller,
-              url: widget.url,
+              url: currentUrl ?? widget.url,
             )
           ],
         ),
@@ -105,32 +147,20 @@ class NavigationControls extends StatelessWidget {
             ),
             PopupMenuButton(
               itemBuilder: (BuildContext context) => [
-                PopupMenuItem(
+                ThunderPopupMenuItem(
                   onTap: () async => await webViewController.reload(),
-                  child: ListTile(
-                    dense: true,
-                    horizontalTitleGap: 5,
-                    leading: const Icon(Icons.replay_rounded, size: 20),
-                    title: Text(l10n.refresh),
-                  ),
+                  icon: Icons.replay_rounded,
+                  title: l10n.refresh,
                 ),
-                PopupMenuItem(
+                ThunderPopupMenuItem(
                   onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
-                  child: ListTile(
-                    dense: true,
-                    horizontalTitleGap: 5,
-                    leading: const Icon(Icons.open_in_browser_rounded, size: 20),
-                    title: Text(l10n.openInBrowser),
-                  ),
+                  icon: Icons.open_in_browser_rounded,
+                  title: l10n.openInBrowser,
                 ),
-                PopupMenuItem(
+                ThunderPopupMenuItem(
                   onTap: () => Share.share(url),
-                  child: ListTile(
-                    dense: true,
-                    horizontalTitleGap: 5,
-                    leading: const Icon(Icons.share_rounded, size: 20),
-                    title: Text(l10n.share),
-                  ),
+                  icon: Icons.share_rounded,
+                  title: l10n.share,
                 ),
               ],
             ),

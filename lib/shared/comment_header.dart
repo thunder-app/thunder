@@ -7,12 +7,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 import '../utils/date_time.dart';
@@ -71,7 +72,7 @@ class CommentHeader extends StatelessWidget {
                           onTap: isHidden && collapseParentCommentOnGesture
                               ? null
                               : () {
-                                  navigateToUserPage(context, userId: comment.creator.id);
+                                  navigateToFeedPage(context, feedType: FeedType.user, userId: comment.creator.id);
                                 },
                           child: Padding(
                               padding: const EdgeInsets.only(left: 5, right: 5),
@@ -157,6 +158,7 @@ class CommentHeader extends StatelessWidget {
                                       TextSpan(
                                           style: theme.textTheme.bodyMedium?.copyWith(
                                             fontWeight: FontWeight.w500,
+                                            color: state.commentUseColorizedUsername ? theme.colorScheme.secondary : theme.textTheme.bodyLarge?.color,
                                             fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.metadataFontSizeScale.textScaleFactor),
                                           ),
                                           text: comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
@@ -166,6 +168,7 @@ class CommentHeader extends StatelessWidget {
                                                 text: generateUserFullNameSuffix(context, fetchInstanceNameFromUrl(comment.creator.actorId)),
                                                 style: theme.textTheme.bodyMedium?.copyWith(
                                                   fontWeight: FontWeight.w300,
+                                                  color: state.commentUseColorizedUsername ? theme.colorScheme.secondary : theme.textTheme.bodyLarge?.color,
                                                   fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.metadataFontSizeScale.textScaleFactor),
                                                 ),
                                               )

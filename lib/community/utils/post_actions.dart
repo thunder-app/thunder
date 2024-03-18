@@ -28,7 +28,7 @@ void triggerPostAction({
       bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
 
       if (downvotesEnabled == false) {
-        showSnackbar(context, AppLocalizations.of(context)!.downvotesDisabled);
+        showSnackbar(AppLocalizations.of(context)!.downvotesDisabled);
         return;
       }
 
@@ -36,7 +36,7 @@ void triggerPostAction({
       return;
     case SwipeAction.reply:
     case SwipeAction.edit:
-      showSnackbar(context, AppLocalizations.of(context)!.replyNotSupported);
+      showSnackbar(AppLocalizations.of(context)!.replyNotSupported);
       break;
     case SwipeAction.save:
       onSaveAction(postViewMedia.postView.post.id, !(saved ?? false));

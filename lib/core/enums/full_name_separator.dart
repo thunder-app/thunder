@@ -3,12 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 enum FullNameSeparator {
-  dot('name · instance.tld'),
-  at('name@instance.tld');
-
-  final String label;
-
-  const FullNameSeparator(this.label);
+  dot, // name · instance.tld
+  at, // name@instance.tld
+  lemmy; // '@name@instance.tld or !name@instance.tld'
 }
 
 String generateUserFullName(BuildContext? context, name, instance, {FullNameSeparator? userSeparator}) {
@@ -17,6 +14,7 @@ String generateUserFullName(BuildContext? context, name, instance, {FullNameSepa
   return switch (userSeparator) {
     FullNameSeparator.dot => '$name · $instance',
     FullNameSeparator.at => '$name@$instance',
+    FullNameSeparator.lemmy => '@$name@$instance',
   };
 }
 
@@ -26,6 +24,7 @@ String generateUserFullNameSuffix(BuildContext? context, instance, {FullNameSepa
   return switch (userSeparator) {
     FullNameSeparator.dot => ' · $instance',
     FullNameSeparator.at => '@$instance',
+    FullNameSeparator.lemmy => '@$instance',
   };
 }
 
@@ -35,5 +34,6 @@ String generateCommunityFullName(BuildContext? context, name, instance, {FullNam
   return switch (communitySeparator) {
     FullNameSeparator.dot => '$name · $instance',
     FullNameSeparator.at => '$name@$instance',
+    FullNameSeparator.lemmy => '!$name@$instance',
   };
 }

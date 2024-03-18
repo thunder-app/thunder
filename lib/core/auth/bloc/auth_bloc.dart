@@ -53,7 +53,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account.jwt));
       bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
 
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
+      return emit(state.copyWith(
+        status: AuthStatus.success,
+        account: account,
+        isLoggedIn: true,
+        downvotesEnabled: downvotesEnabled,
+        getSiteResponse: getSiteResponse,
+        reload: event.reload,
+      ));
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
@@ -208,7 +215,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       Account? account = (activeProfileId != null) ? await Account.fetchAccount(activeProfileId) : null;
 
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, getSiteResponse: getSiteResponse));
+      return emit(state.copyWith(
+        status: AuthStatus.success,
+        account: account,
+        isLoggedIn: activeProfileId?.isNotEmpty == true,
+        getSiteResponse: getSiteResponse,
+        reload: false,
+      ));
     });
   }
 }

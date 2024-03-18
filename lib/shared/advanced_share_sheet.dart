@@ -55,7 +55,7 @@ bool _hasImage(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty &&
 
 bool _hasText(PostViewMedia postViewMedia) => postViewMedia.postView.post.body?.isNotEmpty == true;
 
-bool _hasExternalLink(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty && postViewMedia.media.first.originalUrl != null;
+bool _hasExternalLink(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty && postViewMedia.media.first.originalUrl?.isNotEmpty == true;
 
 bool _canShare(AdvancedShareSheetOptions options, PostViewMedia postViewMedia) {
   return options.includePostLink || (options.includeExternalLink && _hasExternalLink(postViewMedia)) || _canShareImage(options, postViewMedia);
@@ -168,15 +168,18 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                 }
 
                 return Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
+                  padding: const EdgeInsets.only(left: 14, right: 14, bottom: 30),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          AppLocalizations.of(context)!.preview,
-                          style: theme.textTheme.titleLarge,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.preview,
+                            style: theme.textTheme.titleLarge,
+                          ),
                         ),
                       ),
                       if (!_canShare(options, postViewMedia))
@@ -213,9 +216,12 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                       const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          AppLocalizations.of(context)!.image,
-                          style: theme.textTheme.titleLarge,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.image,
+                            style: theme.textTheme.titleLarge,
+                          ),
                         ),
                       ),
                       ToggleOption(
@@ -263,9 +269,12 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                       const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          AppLocalizations.of(context)!.link(0),
-                          style: theme.textTheme.titleLarge,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.link(0),
+                            style: theme.textTheme.titleLarge,
+                          ),
                         ),
                       ),
                       ToggleOption(

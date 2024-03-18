@@ -43,9 +43,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   }
 
   Future<void> _refreshAccountInformation(RefreshAccountInformation event, Emitter<AccountState> emit) async {
-    await _getAccountInformation(GetAccountInformation(), emit);
-    await _getAccountSubscriptions(GetAccountSubscriptions(), emit);
-    await _getFavoritedCommunities(GetFavoritedCommunities(), emit);
+    await _getAccountInformation(GetAccountInformation(reload: event.reload), emit);
+    await _getAccountSubscriptions(GetAccountSubscriptions(reload: event.reload), emit);
+    await _getFavoritedCommunities(GetFavoritedCommunities(reload: event.reload), emit);
   }
 
   /// Fetches the current account's information. This updates [personView] which holds moderated community information.
@@ -53,11 +53,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     Account? account = await fetchActiveProfileAccount();
 
     if (account == null || account.jwt == null) {
-      return emit(state.copyWith(status: AccountStatus.success, personView: null, moderates: []));
+      return emit(state.copyWith(status: AccountStatus.success, personView: null, moderates: [], reload: event.reload));
     }
 
     try {
-      emit(state.copyWith(status: AccountStatus.loading));
+      emit(state.copyWith(status: AccountStatus.loading, reload: event.reload));
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       GetPersonDetailsResponse? getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
@@ -70,12 +70,17 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       // This eliminates an issue which has plagued me a lot which is that there's a race condition
       // with so many calls to GetAccountInformation, we can return success for the new and old account.
       if (getPersonDetailsResponse?.personView.person.id == account.userId) {
-        return emit(state.copyWith(status: AccountStatus.success, personView: getPersonDetailsResponse?.personView, moderates: getPersonDetailsResponse?.moderates));
+        return emit(state.copyWith(
+          status: AccountStatus.success,
+          personView: getPersonDetailsResponse?.personView,
+          moderates: getPersonDetailsResponse?.moderates,
+          reload: event.reload,
+        ));
       } else {
-        return emit(state.copyWith(status: AccountStatus.success, personView: null));
+        return emit(state.copyWith(status: AccountStatus.success, personView: null, reload: event.reload));
       }
     } catch (e) {
-      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString(), reload: event.reload));
     }
   }
 
@@ -84,11 +89,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     Account? account = await fetchActiveProfileAccount();
 
     if (account == null || account.jwt == null) {
-      return emit(state.copyWith(status: AccountStatus.success, subsciptions: [], personView: null));
+      return emit(state.copyWith(status: AccountStatus.success, subsciptions: [], personView: null, reload: event.reload));
     }
 
     try {
-      emit(state.copyWith(status: AccountStatus.loading));
+      emit(state.copyWith(status: AccountStatus.loading, reload: event.reload));
 
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       List<CommunityView> subscriptions = [];
@@ -113,9 +118,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
       // Sort subscriptions by their name
       subscriptions.sort((CommunityView a, CommunityView b) => a.community.title.toLowerCase().compareTo(b.community.title.toLowerCase()));
-      return emit(state.copyWith(status: AccountStatus.success, subsciptions: subscriptions));
+      return emit(state.copyWith(status: AccountStatus.success, subsciptions: subscriptions, reload: event.reload));
     } catch (e) {
-      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString(), reload: event.reload));
     }
   }
 
@@ -124,13 +129,13 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     Account? account = await fetchActiveProfileAccount();
 
     if (account == null || account.jwt == null) {
-      return emit(state.copyWith(status: AccountStatus.success));
+      return emit(state.copyWith(status: AccountStatus.success, reload: event.reload));
     }
 
     List<Favorite> favorites = await Favorite.favorites(account.id);
     List<CommunityView> favoritedCommunities =
         state.subsciptions.where((CommunityView communityView) => favorites.any((Favorite favorite) => favorite.communityId == communityView.community.id)).toList();
 
-    return emit(state.copyWith(status: AccountStatus.success, favorites: favoritedCommunities));
+    return emit(state.copyWith(status: AccountStatus.success, favorites: favoritedCommunities, reload: event.reload));
   }
 }

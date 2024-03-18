@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,7 @@ import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
@@ -21,6 +23,7 @@ import 'package:thunder/core/models/version.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
+import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/utils/constants.dart';
 
 part 'thunder_event.dart';
@@ -110,11 +113,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
+      bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+      ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
@@ -138,8 +143,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
-      bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
+      bool showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
+      DateFormat dateFormat = DateFormat(prefs.getString(LocalSettings.dateFormat.name) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+      List<PostCardMetadataItem> compactPostCardMetadataItems =
+          prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
+      List<PostCardMetadataItem> cardPostCardMetadataItems =
+          prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
 
       List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
@@ -150,6 +160,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       bool commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
       bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
+      bool commentUseColorizedUsername = prefs.getBool(LocalSettings.commentUseColorizedUsername.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
           NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
@@ -242,11 +253,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         openInReaderMode: openInReaderMode,
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
+        markPostReadOnScroll: markPostReadOnScroll,
         showInAppUpdateNotification: showInAppUpdateNotification,
         enableInboxNotifications: enableInboxNotifications,
         appLanguageCode: appLanguageCode,
         userSeparator: userSeparator,
         communitySeparator: communitySeparator,
+        imageCachingMode: imageCachingMode,
         hideTopBarOnScroll: hideTopBarOnScroll,
 
         /// -------------------------- Feed Post Related Settings --------------------------
@@ -268,8 +281,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showPostAuthor: showPostAuthor,
         scoreCounters: scoreCounters,
         dimReadPosts: dimReadPosts,
-        useAdvancedShareSheet: useAdvancedShareSheet,
+        showFullPostDate: showFullPostDate,
+        dateFormat: dateFormat,
         showCrossPosts: showCrossPosts,
+        compactPostCardMetadataItems: compactPostCardMetadataItems,
+        cardPostCardMetadataItems: cardPostCardMetadataItems,
         keywordFilters: keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------
@@ -281,6 +297,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         combineCommentScores: combineCommentScores,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,
+        commentUseColorizedUsername: commentUseColorizedUsername,
 
         /// -------------------------- Theme Related Settings --------------------------
         // Theme Settings

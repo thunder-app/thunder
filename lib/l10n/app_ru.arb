@@ -7,7 +7,7 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Специальные возможности позволяют одновременно применять несколько настроек для удовлетворения конкретного требования доступности.",
   "@accessibilityProfilesDescription": {},
-  "account": "Аккаунт",
+  "account": "{count, plural, zero {Аккаунтов} one {Аккаунт} other {Аккаунта} } ",
   "@account": {},
   "accountSettings": "Настройки аккаунта",
   "@accountSettings": {},
@@ -555,8 +555,6 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "Нет постов",
-  "@noPosts": {},
   "noPostsFound": "Нет постов",
   "@noPostsFound": {},
   "noResultsFound": "Результаты не найдены.",

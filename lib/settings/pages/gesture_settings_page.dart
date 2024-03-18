@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
@@ -12,7 +15,9 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
 class GestureSettingsPage extends StatefulWidget {
-  const GestureSettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const GestureSettingsPage({super.key, this.settingToHighlight});
 
   @override
   State<GestureSettingsPage> createState() => _GestureSettingsPageState();
@@ -59,6 +64,9 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
     ListPickerItem(icon: SwipeAction.reply.getIcon(), label: SwipeAction.reply.label, payload: SwipeAction.reply),
     ListPickerItem(icon: SwipeAction.none.getIcon(), label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
+
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
 
   void setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -173,7 +181,30 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initPreferences();
+
+      if (widget.settingToHighlight != null) {
+        setState(() => settingToHighlight = widget.settingToHighlight);
+
+        // Need some delay to finish building, even though we're in a post-frame callback.
+        Timer(const Duration(milliseconds: 500), () {
+          if (settingToHighlightKey.currentContext != null) {
+            // Ensure that the selected setting is visible on the screen
+            Scrollable.ensureVisible(
+              settingToHighlightKey.currentContext!,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          // Give time for the highlighting to appear, then turn it off
+          Timer(const Duration(seconds: 1), () {
+            setState(() => settingToHighlight = null);
+          });
+        });
+      }
+    });
     super.initState();
   }
 
@@ -190,13 +221,13 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                           child: Text(
                             l10n.navigation,
                             style: theme.textTheme.titleLarge,
@@ -209,18 +240,19 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           iconEnabled: Icons.swipe_left_rounded,
                           iconDisabled: Icons.swipe_left_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.enableFullScreenSwipeNavigationGesture, value),
+                          highlightKey: settingToHighlight == LocalSettings.enableFullScreenSwipeNavigationGesture ? settingToHighlightKey : null,
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                           child: Text(
                             l10n.sidebar,
                             style: theme.textTheme.titleLarge,
@@ -233,6 +265,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           iconEnabled: Icons.swipe_right_rounded,
                           iconDisabled: Icons.swipe_right_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.sidebarBottomNavBarSwipeGesture, value),
+                          highlightKey: settingToHighlight == LocalSettings.sidebarBottomNavBarSwipeGesture ? settingToHighlightKey : null,
                         ),
                         ToggleOption(
                           description: l10n.navbarDoubleTapGestures,
@@ -241,25 +274,26 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           iconEnabled: Icons.touch_app_rounded,
                           iconDisabled: Icons.touch_app_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.sidebarBottomNavBarDoubleTapGesture, value),
+                          highlightKey: settingToHighlight == LocalSettings.sidebarBottomNavBarDoubleTapGesture ? settingToHighlightKey : null,
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                           child: Text(
                             l10n.posts,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(6.0),
+                          padding: const EdgeInsets.fromLTRB(18.0, 6.0, 22.0, 6.0),
                           child: Text(
                             l10n.postSwipeGesturesHint,
                             style: TextStyle(
@@ -273,6 +307,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           iconEnabled: Icons.swipe_rounded,
                           iconDisabled: Icons.swipe_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.enablePostGestures, value),
+                          highlightKey: settingToHighlight == LocalSettings.enablePostGestures ? settingToHighlightKey : null,
                         ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
@@ -288,7 +323,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                               ? Column(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(6.0),
+                                      padding: const EdgeInsets.fromLTRB(18.0, 6.0, 22.0, 6.0),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
@@ -299,42 +334,48 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                         ),
                                       ),
                                     ),
-                                    SwipePicker(
-                                      side: SwipePickerSide.left,
-                                      items: [
-                                        SwipePickerItem(
-                                          label: l10n.leftShortSwipe,
-                                          options: postGestureOptions,
-                                          value: leftPrimaryPostGesture,
-                                          onChanged: (value) => setPreferences(LocalSettings.postGestureLeftPrimary, value.payload),
-                                        ),
-                                        SwipePickerItem(
-                                          label: l10n.leftLongSwipe,
-                                          options: postGestureOptions,
-                                          value: leftSecondaryPostGesture,
-                                          onChanged: (value) => setPreferences(LocalSettings.postGestureLeftSecondary, value.payload),
-                                        ),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                                      child: SwipePicker(
+                                        side: SwipePickerSide.left,
+                                        items: [
+                                          SwipePickerItem(
+                                            label: l10n.leftShortSwipe,
+                                            options: postGestureOptions,
+                                            value: leftPrimaryPostGesture,
+                                            onChanged: (value) => setPreferences(LocalSettings.postGestureLeftPrimary, value.payload),
+                                          ),
+                                          SwipePickerItem(
+                                            label: l10n.leftLongSwipe,
+                                            options: postGestureOptions,
+                                            value: leftSecondaryPostGesture,
+                                            onChanged: (value) => setPreferences(LocalSettings.postGestureLeftSecondary, value.payload),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 5,
                                     ),
-                                    SwipePicker(
-                                      side: SwipePickerSide.right,
-                                      items: [
-                                        SwipePickerItem(
-                                          label: l10n.rightShortSwipe,
-                                          options: postGestureOptions,
-                                          value: rightPrimaryPostGesture,
-                                          onChanged: (value) => setPreferences(LocalSettings.postGestureRightPrimary, value.payload),
-                                        ),
-                                        SwipePickerItem(
-                                          label: l10n.rightLongSwipe,
-                                          options: postGestureOptions,
-                                          value: rightSecondaryPostGesture,
-                                          onChanged: (value) => setPreferences(LocalSettings.postGestureRightSecondary, value.payload),
-                                        ),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                                      child: SwipePicker(
+                                        side: SwipePickerSide.right,
+                                        items: [
+                                          SwipePickerItem(
+                                            label: l10n.rightShortSwipe,
+                                            options: postGestureOptions,
+                                            value: rightPrimaryPostGesture,
+                                            onChanged: (value) => setPreferences(LocalSettings.postGestureRightPrimary, value.payload),
+                                          ),
+                                          SwipePickerItem(
+                                            label: l10n.rightLongSwipe,
+                                            options: postGestureOptions,
+                                            value: rightSecondaryPostGesture,
+                                            onChanged: (value) => setPreferences(LocalSettings.postGestureRightSecondary, value.payload),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 )
@@ -344,20 +385,20 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                           child: Text(
                             l10n.comments,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(6.0),
+                          padding: const EdgeInsets.fromLTRB(18.0, 6.0, 22.0, 6.0),
                           child: Text(
                             l10n.commentSwipeGesturesHint,
                             style: TextStyle(
@@ -371,6 +412,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           iconEnabled: Icons.swipe_rounded,
                           iconDisabled: Icons.swipe_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.enableCommentGestures, value),
+                          highlightKey: settingToHighlight == LocalSettings.enableCommentGestures ? settingToHighlightKey : null,
                         ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
@@ -386,7 +428,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                               ? Column(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(6.0),
+                                      padding: const EdgeInsets.fromLTRB(18.0, 6.0, 22.0, 6.0),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
@@ -397,42 +439,48 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                         ),
                                       ),
                                     ),
-                                    SwipePicker(
-                                      side: SwipePickerSide.left,
-                                      items: [
-                                        SwipePickerItem(
-                                          label: l10n.leftShortSwipe,
-                                          options: commentGestureOptions,
-                                          value: leftPrimaryCommentGesture,
-                                          onChanged: (value) => setPreferences(LocalSettings.commentGestureLeftPrimary, value.payload),
-                                        ),
-                                        SwipePickerItem(
-                                          label: l10n.leftLongSwipe,
-                                          options: commentGestureOptions,
-                                          value: leftSecondaryCommentGesture,
-                                          onChanged: (value) => setPreferences(LocalSettings.commentGestureLeftSecondary, value.payload),
-                                        ),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                                      child: SwipePicker(
+                                        side: SwipePickerSide.left,
+                                        items: [
+                                          SwipePickerItem(
+                                            label: l10n.leftShortSwipe,
+                                            options: commentGestureOptions,
+                                            value: leftPrimaryCommentGesture,
+                                            onChanged: (value) => setPreferences(LocalSettings.commentGestureLeftPrimary, value.payload),
+                                          ),
+                                          SwipePickerItem(
+                                            label: l10n.leftLongSwipe,
+                                            options: commentGestureOptions,
+                                            value: leftSecondaryCommentGesture,
+                                            onChanged: (value) => setPreferences(LocalSettings.commentGestureLeftSecondary, value.payload),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 5,
                                     ),
-                                    SwipePicker(
-                                      side: SwipePickerSide.right,
-                                      items: [
-                                        SwipePickerItem(
-                                          label: l10n.rightShortSwipe,
-                                          options: commentGestureOptions,
-                                          value: rightPrimaryCommentGesture,
-                                          onChanged: (value) => setPreferences(LocalSettings.commentGestureRightPrimary, value.payload),
-                                        ),
-                                        SwipePickerItem(
-                                          label: l10n.rightLongSwipe,
-                                          options: commentGestureOptions,
-                                          value: rightSecondaryCommentGesture,
-                                          onChanged: (value) => setPreferences(LocalSettings.commentGestureRightSecondary, value.payload),
-                                        ),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+                                      child: SwipePicker(
+                                        side: SwipePickerSide.right,
+                                        items: [
+                                          SwipePickerItem(
+                                            label: l10n.rightShortSwipe,
+                                            options: commentGestureOptions,
+                                            value: rightPrimaryCommentGesture,
+                                            onChanged: (value) => setPreferences(LocalSettings.commentGestureRightPrimary, value.payload),
+                                          ),
+                                          SwipePickerItem(
+                                            label: l10n.rightLongSwipe,
+                                            options: commentGestureOptions,
+                                            value: rightSecondaryCommentGesture,
+                                            onChanged: (value) => setPreferences(LocalSettings.commentGestureRightSecondary, value.payload),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 )

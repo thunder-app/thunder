@@ -28,12 +28,14 @@ class ThunderState extends Equatable {
     this.openInReaderMode = false,
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
+    this.markPostReadOnScroll = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
     this.enableInboxNotifications = false,
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
     this.communitySeparator = FullNameSeparator.dot,
+    this.imageCachingMode = ImageCachingMode.relaxed,
     this.hideTopBarOnScroll = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
@@ -54,8 +56,11 @@ class ThunderState extends Equatable {
     this.showTextContent = false,
     this.showPostAuthor = false,
     this.dimReadPosts = true,
-    this.useAdvancedShareSheet = true,
+    this.showFullPostDate = false,
+    this.dateFormat,
     this.showCrossPosts = true,
+    this.compactPostCardMetadataItems = const [],
+    this.cardPostCardMetadataItems = const [],
     this.keywordFilters = const [],
     this.appLanguageCode = 'en',
 
@@ -68,6 +73,7 @@ class ThunderState extends Equatable {
     this.showCommentButtonActions = false,
     this.commentShowUserInstance = false,
     this.combineCommentScores = false,
+    this.commentUseColorizedUsername = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
@@ -156,12 +162,14 @@ class ThunderState extends Equatable {
   final bool openInReaderMode;
   final bool useDisplayNames;
   final bool markPostReadOnMediaView;
+  final bool markPostReadOnScroll;
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
   final bool enableInboxNotifications;
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
   final FullNameSeparator communitySeparator;
+  final ImageCachingMode imageCachingMode;
   final bool hideTopBarOnScroll;
 
   /// -------------------------- Feed Post Related Settings --------------------------
@@ -183,8 +191,11 @@ class ThunderState extends Equatable {
   final bool showPostAuthor;
   final bool scoreCounters;
   final bool dimReadPosts;
-  final bool useAdvancedShareSheet;
+  final bool showFullPostDate;
+  final DateFormat? dateFormat;
   final bool showCrossPosts;
+  final List<PostCardMetadataItem> compactPostCardMetadataItems;
+  final List<PostCardMetadataItem> cardPostCardMetadataItems;
   final List<String> keywordFilters;
 
   /// -------------------------- Post Page Related Settings --------------------------
@@ -196,6 +207,7 @@ class ThunderState extends Equatable {
   final bool showCommentButtonActions;
   final bool commentShowUserInstance;
   final bool combineCommentScores;
+  final bool commentUseColorizedUsername;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
@@ -293,11 +305,13 @@ class ThunderState extends Equatable {
     bool? openInReaderMode,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
+    bool? markPostReadOnScroll,
     bool? showInAppUpdateNotification,
     bool? enableInboxNotifications,
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
     FullNameSeparator? communitySeparator,
+    ImageCachingMode? imageCachingMode,
     bool? hideTopBarOnScroll,
 
     /// -------------------------- Feed Post Related Settings --------------------------
@@ -318,8 +332,11 @@ class ThunderState extends Equatable {
     bool? showTextContent,
     bool? showPostAuthor,
     bool? dimReadPosts,
-    bool? useAdvancedShareSheet,
+    bool? showFullPostDate,
+    DateFormat? dateFormat,
     bool? showCrossPosts,
+    List<PostCardMetadataItem>? compactPostCardMetadataItems,
+    List<PostCardMetadataItem>? cardPostCardMetadataItems,
     String? appLanguageCode = 'en',
     List<String>? keywordFilters,
 
@@ -330,6 +347,7 @@ class ThunderState extends Equatable {
     bool? showCommentButtonActions,
     bool? commentShowUserInstance,
     bool? combineCommentScores,
+    bool? commentUseColorizedUsername,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
@@ -420,6 +438,7 @@ class ThunderState extends Equatable {
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+      markPostReadOnScroll: markPostReadOnScroll ?? this.markPostReadOnScroll,
       disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       enableInboxNotifications: enableInboxNotifications ?? this.enableInboxNotifications,
@@ -427,6 +446,7 @@ class ThunderState extends Equatable {
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
       communitySeparator: communitySeparator ?? this.communitySeparator,
+      imageCachingMode: imageCachingMode ?? this.imageCachingMode,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
       /// -------------------------- Feed Post Related Settings --------------------------
@@ -447,8 +467,11 @@ class ThunderState extends Equatable {
       showTextContent: showTextContent ?? this.showTextContent,
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
-      useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
+      showFullPostDate: showFullPostDate ?? this.showFullPostDate,
+      dateFormat: dateFormat ?? this.dateFormat,
       showCrossPosts: showCrossPosts ?? this.showCrossPosts,
+      compactPostCardMetadataItems: compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
+      cardPostCardMetadataItems: cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
@@ -460,6 +483,7 @@ class ThunderState extends Equatable {
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
+      commentUseColorizedUsername: commentUseColorizedUsername ?? this.commentUseColorizedUsername,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
@@ -556,11 +580,13 @@ class ThunderState extends Equatable {
         browserMode,
         useDisplayNames,
         markPostReadOnMediaView,
+        markPostReadOnScroll,
         disableFeedFab,
         showInAppUpdateNotification,
         enableInboxNotifications,
         userSeparator,
         communitySeparator,
+        imageCachingMode,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings
@@ -580,8 +606,11 @@ class ThunderState extends Equatable {
         showTextContent,
         showPostAuthor,
         dimReadPosts,
-        useAdvancedShareSheet,
+        showFullPostDate,
+        dateFormat,
         showCrossPosts,
+        compactPostCardMetadataItems,
+        cardPostCardMetadataItems,
         appLanguageCode,
         keywordFilters,
 
@@ -594,6 +623,7 @@ class ThunderState extends Equatable {
         showCommentButtonActions,
         commentShowUserInstance,
         combineCommentScores,
+        commentUseColorizedUsername,
 
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,

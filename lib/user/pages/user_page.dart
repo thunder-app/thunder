@@ -7,12 +7,13 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc_old.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 
 class UserPage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _UserPageState extends State<UserPage> {
     final bool reduceAnimations = state.reduceAnimations;
 
     return BlocProvider<UserBloc>(
-      create: (BuildContext context) => UserBloc(),
+      create: (BuildContext context) => UserBloc(lemmyClient: LemmyClient.instance),
       child: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
           if (userActorId == null && state.personView?.person.actorId != null) {
@@ -135,7 +136,7 @@ class _UserPageState extends State<UserPage> {
             userBloc = context.read<UserBloc>();
 
             if (state.status == UserStatus.failedToBlock) {
-              showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+              showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
             }
 
             switch (state.status) {
@@ -162,6 +163,7 @@ class _UserPageState extends State<UserPage> {
                   blockedPerson: state.blockedPerson,
                   selectedUserOption: widget.selectedUserOption,
                   savedToggle: widget.savedToggle,
+                  fullPersonView: state.fullPersonView,
                 );
               case UserStatus.empty:
                 return Container();

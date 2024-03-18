@@ -64,6 +64,7 @@ void main() async {
   /// Allows the top-level notification handlers to trigger actions farther down
   final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
 
+  bool startupDueToGroupNotification = false;
   if (!kIsWeb && Platform.isAndroid) {
     // Initialize local notifications. Note that this doesn't request permissions or actually send any notifications.
     // It's just hooking up callbacks and settings.
@@ -77,6 +78,7 @@ void main() async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse != null) {
       notificationsStreamController.add(notificationAppLaunchDetails.notificationResponse!);
+      startupDueToGroupNotification = notificationAppLaunchDetails.notificationResponse!.payload == repliesGroupKey;
     }
 
     // Initialize background fetch (this is async and can go run on its own).
@@ -89,7 +91,12 @@ void main() async {
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
   // Perform preference migrations
-  performSharedPreferencesMigration();
+  await performSharedPreferencesMigration();
+
+  // Do a notifications check on startup, if the user isn't clicking on a group notification
+  if (!startupDueToGroupNotification) {
+    pollRepliesAndShowNotifications();
+  }
 
   runApp(ThunderApp(notificationsStream: notificationsStreamController.stream));
 
@@ -140,9 +147,8 @@ class ThunderApp extends StatelessWidget {
         BlocProvider(
           create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance),
         ),
-        // Used for global user events like block/unblock
         BlocProvider(
-          create: (context) => UserBloc(),
+          create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
         ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(

@@ -535,8 +535,6 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "Neniuj afiŝoj trovitaj",
-  "@noPosts": {},
   "noPostsFound": "Neniuj afiŝoj trovitaj",
   "@noPostsFound": {},
   "noResultsFound": "Neniuj rezultoj trovitaj.",
@@ -988,5 +986,91 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} suprenvoĉdonoj",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "base": "Baza",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "dark": "Malhela",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "confirm": "Konfirmi",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "dangerZone": "Danĝera Zono",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "collapseSpoiler": "Maletendi Intrigmalkaŝon",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "countUsers": "{count} uzantoj",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "clearCache": "Viŝi kaŝmemoron ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "clearedCache": "Viŝis kaŝmemoron sukcese.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "combineCommentScores": "Kombini Komentajn Poentojn",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
+  "commentSwipeActions": "Komentaj Ŝovumaj Agoj",
+  "@commentSwipeActions": {
+    "description": "Setting for comment swipe actions"
+  },
+  "crossPostedFrom": "transafiŝis de:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
+  },
+  "defaultFeedType": "Defaŭlta Flua Tipo",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
+  "defaultFeedSortType": "Defaŭlta Flua Ordiga Tipo",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  },
+  "deleteAccount": "Viŝi Konton",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "backgroundCheckWarning": "Atentu, ke sciigaj kontroloj konsumos plian baterion",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "collapseParentCommentBodyOnGesture": "Kaŝi Gepatran Komenton kiam ĝi estas maletenda",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "combineNavAndFabDescription": "Flosanta Ago-Butono estos montrita inter navigaj butonoj.",
+  "@combineNavAndFabDescription": {},
+  "commentFontScale": "Komento-Enhava Tipara Grandeco",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
+  },
+  "condensed": "Kondensita",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "defaultCommentSortType": "Defaŭlta Komenta Ordiga Tipo",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "deleteAccountDescription": "Por permanente viŝi vian konton, vi estos redirektita al via instanca retejo.\n\nĈu vi certas, ke vi volas daŭrigi?",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
+  "disable": "Malebligi",
+  "@disable": {
+    "description": "Action for disabling something"
+  }
 }

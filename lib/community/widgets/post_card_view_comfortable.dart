@@ -11,6 +11,7 @@ import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
@@ -84,7 +85,7 @@ class PostCardViewComfortable extends StatelessWidget {
     Widget mediaView;
     Widget defaultMediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
-      postView: postViewMedia,
+      postViewMedia: postViewMedia,
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,
       edgeToEdgeImages: edgeToEdgeImages,
@@ -159,7 +160,16 @@ class PostCardViewComfortable extends StatelessWidget {
                           color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                         ),
                       ),
+                    if (postViewMedia.postView.post.removed)
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.delete_forever_rounded,
+                          size: 16 * textScaleFactor,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                        ),
+                      ),
                     if (postViewMedia.postView.post.deleted ||
+                        postViewMedia.postView.post.removed ||
                         postViewMedia.postView.post.featuredCommunity ||
                         postViewMedia.postView.post.featuredLocal ||
                         (!useSaveButton && postViewMedia.postView.saved) ||
@@ -233,7 +243,16 @@ class PostCardViewComfortable extends StatelessWidget {
                             color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                           ),
                         ),
+                      if (postViewMedia.postView.post.removed)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.delete_forever_rounded,
+                            size: 16 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          ),
+                        ),
                       if (postViewMedia.postView.post.deleted ||
+                          postViewMedia.postView.post.removed ||
                           postViewMedia.postView.post.featuredCommunity ||
                           postViewMedia.postView.post.featuredLocal ||
                           (!useSaveButton && postViewMedia.postView.saved) ||
@@ -291,16 +310,19 @@ class PostCardViewComfortable extends StatelessWidget {
                         showCommunitySubscription: showCommunitySubscription,
                       ),
                       const SizedBox(height: 8.0),
-                      PostCardMetaData(
-                        readColor: readColor,
-                        hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                      PostCardMetadata(
+                        postCardViewType: ViewMode.comfortable,
                         score: postViewMedia.postView.counts.score,
+                        upvoteCount: postViewMedia.postView.counts.upvotes,
+                        downvoteCount: postViewMedia.postView.counts.downvotes,
                         voteType: postViewMedia.postView.myVote ?? 0,
-                        comments: postViewMedia.postView.counts.comments,
-                        unreadComments: postViewMedia.postView.unreadComments,
+                        commentCount: postViewMedia.postView.counts.comments,
+                        unreadCommentCount: postViewMedia.postView.unreadComments,
+                        dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
                         hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                        published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
-                      )
+                        url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                        hasBeenRead: indicateRead && postViewMedia.postView.read,
+                      ),
                     ],
                   ),
                 ),
@@ -314,22 +336,6 @@ class PostCardViewComfortable extends StatelessWidget {
                       showPostActionBottomModalSheet(
                         context,
                         postViewMedia,
-                        actionsToInclude: [
-                          PostCardAction.visitInstance,
-                          PostCardAction.visitProfile,
-                          PostCardAction.blockUser,
-                          PostCardAction.blockInstance,
-                          PostCardAction.visitCommunity,
-                          postViewMedia.postView.subscribed == SubscribedType.notSubscribed ? PostCardAction.subscribeToCommunity : PostCardAction.unsubscribeFromCommunity,
-                          PostCardAction.blockCommunity,
-                        ],
-                        multiActionsToInclude: [
-                          PostCardAction.upvote,
-                          PostCardAction.downvote,
-                          PostCardAction.save,
-                          PostCardAction.toggleRead,
-                          PostCardAction.share,
-                        ],
                       );
                       HapticFeedback.mediumImpact();
                     }),

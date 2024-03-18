@@ -6,6 +6,8 @@ import 'package:version/version.dart';
 class LemmyClient {
   LemmyApiV3 lemmyApiV3 = const LemmyApiV3('');
 
+  LemmyClient();
+
   LemmyClient._initialize();
 
   void changeBaseUrl(String baseUrl) {
@@ -46,6 +48,14 @@ class LemmyClient {
     return instanceVersion > feature.minSupportedVersion;
   }
 
+  String generatePostUrl(int id) => 'https://${lemmyApiV3.host}/post/$id';
+
+  String generateCommentUrl(int id) => 'https://${lemmyApiV3.host}/comment/$id';
+
+  String generateCommunityUrl(String community) => 'https://${lemmyApiV3.host}/c/$community';
+
+  String generateUserUrl(String community) => 'https://${lemmyApiV3.host}/u/$community';
+
   static final Map<String, GetSiteResponse> _lemmySites = <String, GetSiteResponse>{};
 }
 
@@ -53,7 +63,8 @@ enum LemmyFeature {
   sortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
   sortTypeScaled(0, 19, 0, preRelease: ["rc", "1"]),
   commentSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
-  blockInstance(0, 19, 0, preRelease: ["rc", "1"]);
+  blockInstance(0, 19, 0, preRelease: ["rc", "1"]),
+  multiRead(0, 19, 0, preRelease: ["rc", "1"]);
 
   final int major;
   final int minor;

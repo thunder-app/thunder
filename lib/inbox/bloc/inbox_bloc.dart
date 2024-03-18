@@ -105,7 +105,13 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               ),
             );
 
-            int totalUnreadCount = getUnreadCount(privateMessagesResponse.privateMessages, getPersonMentionsResponse.mentions, getRepliesResponse.replies);
+            GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(
+              GetUnreadCount(
+                auth: account.jwt!,
+              ),
+            );
+
+            int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
             return emit(
               state.copyWith(
@@ -218,7 +224,13 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         replies.removeWhere(matchMarkedComment);
       }
 
-      int totalUnreadCount = getUnreadCount(state.privateMessages, state.mentions, replies);
+      GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(
+        GetUnreadCount(
+          auth: account.jwt!,
+        ),
+      );
+
+      int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
       emit(state.copyWith(
         status: InboxStatus.success,
@@ -331,79 +343,59 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     List<CommentReplyView> cleanedReplies = [];
 
     for (CommentReplyView reply in replies) {
-      if (!reply.comment.deleted) {
-        cleanedReplies.add(reply);
+      if (reply.comment.removed) {
+        cleanedReplies.add(reply.copyWith(
+          comment: reply.comment.copyWith(
+            content: "_deleted by moderator_",
+          ),
+        ));
         continue;
       }
 
-      Comment deletedComment = convertToDeletedComment(reply.comment);
-      CommentReplyView cleanedReply = reply.copyWith(comment: deletedComment);
-      cleanedReplies.add(cleanedReply);
+      if (reply.comment.deleted) {
+        cleanedReplies.add(reply.copyWith(
+          comment: reply.comment.copyWith(
+            content: "_deleted by creator_",
+          ),
+        ));
+        continue;
+      }
+
+      cleanedReplies.add(reply);
     }
 
     return cleanedReplies;
   }
 
   PrivateMessageView cleanDeletedPrivateMessage(PrivateMessageView message) {
-    if (!message.privateMessage.deleted) {
-      return message;
+    if (message.privateMessage.deleted) {
+      return message.copyWith(
+        privateMessage: message.privateMessage.copyWith(
+          content: "_deleted by creator_",
+        ),
+      );
     }
 
-    PrivateMessage privateMessage = PrivateMessage(
-      id: message.privateMessage.id,
-      creatorId: message.privateMessage.creatorId,
-      recipientId: message.privateMessage.recipientId,
-      content: "_deleted by creator_",
-      deleted: message.privateMessage.deleted,
-      read: message.privateMessage.read,
-      published: message.privateMessage.published,
-      apId: message.privateMessage.apId,
-      local: message.privateMessage.local,
-    );
-
-    return PrivateMessageView(privateMessage: privateMessage, creator: message.creator, recipient: message.recipient);
+    return message;
   }
 
   PersonMentionView cleanDeletedMention(PersonMentionView mention) {
-    if (!mention.comment.deleted) {
-      return mention;
+    if (mention.comment.removed) {
+      return mention.copyWith(
+        comment: mention.comment.copyWith(
+          content: "_deleted by moderator_",
+        ),
+      );
     }
 
-    Comment deletedComment = convertToDeletedComment(mention.comment);
-
-    return PersonMentionView(
-      personMention: mention.personMention,
-      comment: deletedComment,
-      creator: mention.creator,
-      post: mention.post,
-      community: mention.community,
-      recipient: mention.recipient,
-      counts: mention.counts,
-      creatorBannedFromCommunity: mention.creatorBannedFromCommunity,
-      saved: mention.saved,
-      creatorBlocked: mention.creatorBlocked,
-      subscribed: mention.subscribed,
-      myVote: mention.myVote,
-    );
-  }
-
-  int getUnreadCount(List<PrivateMessageView> privateMessageViews, List<PersonMentionView> personMentionViews, List<CommentReplyView> commentViews) {
-    // Tally up how many unread messages/mentions/replies there are so far
-    // This will only tally up at most 20 for each type for a total of 60 unread counts
-    int totalUnreadCount = 0;
-
-    for (PrivateMessageView privateMessageView in privateMessageViews) {
-      if (privateMessageView.privateMessage.read == false) totalUnreadCount++;
+    if (mention.comment.deleted) {
+      return mention.copyWith(
+        comment: mention.comment.copyWith(
+          content: "_deleted by creator_",
+        ),
+      );
     }
 
-    for (PersonMentionView personMentionView in personMentionViews) {
-      if (personMentionView.personMention.read == false) totalUnreadCount++;
-    }
-
-    for (CommentReplyView commentView in commentViews) {
-      if (commentView.commentReply.read == false) totalUnreadCount++;
-    }
-
-    return totalUnreadCount;
+    return mention;
   }
 }

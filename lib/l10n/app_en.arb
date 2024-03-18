@@ -35,6 +35,18 @@
   },
   "addedCommunityToSubscriptions": "Subscribed to community",
   "@addedCommunityToSubscriptions": {},
+  "addedInstanceMod": "Added Instance Mod",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "addedModToCommunity": "Added Mod to Community",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "Role name for admin"
+  },
   "advanced": "Advanced",
   "@advanced": {
     "description": "Heading for advanced settings"
@@ -77,6 +89,14 @@
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
   },
+  "bannedUser": "Banned User",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "bannedUserFromCommunity": "Banned User from Community",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
   "base": "Base",
   "@base": {
     "description": "Description for base font scale"
@@ -107,6 +127,10 @@
   "@cantBlockAdmin": {},
   "cantBlockYourself": "You may not block yourself.",
   "@cantBlockYourself": {},
+  "cardPostCardMetadataItems": "Card View Metadata",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
   "cardView": "Card View",
   "@cardView": {
     "description": "Label for the card view option in Setting -> Appearance -> Posts"
@@ -118,6 +142,10 @@
   "cardViewSettings": "Card View Settings",
   "@cardViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "changeAccountSettingsFor": "Change account settings for",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
   },
   "changeSort": "Change Sort",
   "@changeSort": {},
@@ -209,15 +237,31 @@
   },
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "@commentSwipeGesturesHint": {},
+  "commentUseColorizedUsername": "Colorized Usernames",
+  "@commentUseColorizedUsername": {
+    "description": "Setting used to toggle colorized comments creator display name."
+  },
   "comments": "Comments",
   "@comments": {},
   "communities": "Communities",
   "@communities": {},
   "community": "Community",
   "@community": {},
+  "communityActions": "Community Actions",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "Community '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
+  },
+  "compactPostCardMetadataItems": "Compact View Metadata",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
   },
   "compactView": "Compact View",
   "@compactView": {
@@ -315,6 +359,10 @@
   "@dark": {
     "description": "Describes using the dark theme"
   },
+  "dateFormat": "Date Format",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
   "debug": "Debug",
   "@debug": {
     "description": "Debug settings category."
@@ -360,6 +408,10 @@
   "deleteLocalPreferencesDescription": "This will clear all your user preferences and settings in Thunder.\n\nDo you want to continue?",
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
+  },
+  "detailedReason": "Reason: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
   },
   "dimReadPosts": "Dim Read Posts",
   "@dimReadPosts": {
@@ -453,6 +505,10 @@
   "@expanded": {
     "description": "Expanded post body view type"
   },
+  "exploreInstance": "Explore instance",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
   "extraLarge": "Extra Large",
   "@extraLarge": {
     "description": "Description for extra large font scale"
@@ -466,6 +522,10 @@
   "favorites": "Favorites",
   "@favorites": {
     "description": "The favorited communities on the drawer"
+  },
+  "featuredPost": "Featured Post",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
   },
   "feed": "Feed",
   "@feed": {},
@@ -529,13 +589,17 @@
   "@gestures": {},
   "gettingStarted": "Getting Started",
   "@gettingStarted": {},
+  "hidCommunity": "Hid Community",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
   "hideNsfwPostsFromFeed": "Hide NSFW Posts from Feed",
   "@hideNsfwPostsFromFeed": {
     "description": "Toggle to hide NSFW posts from the feed."
   },
-  "hideNsfwPreviews": "Hide NSFW Previews",
+  "hideNsfwPreviews": "Blur NSFW Previews",
   "@hideNsfwPreviews": {
-    "description": "Toggle to hide NSFW previews."
+    "description": "Toggle to blur NSFW previews."
   },
   "hidePassword": "Hide Password",
   "@hidePassword": {},
@@ -547,6 +611,26 @@
   "@hot": {},
   "image": "Image",
   "@image": {},
+  "imageCachingMode": "Image Caching Mode",
+  "@imageCachingMode": {
+    "description": "Title for setting related to image caching mode"
+  },
+  "imageCachingModeAggressive": "Aggressively cache images (uses more memory)",
+  "@imageCachingModeAggressive": {
+    "description": "Long description for aggressive image caching mode"
+  },
+  "imageCachingModeAggressiveShort": "Aggressive",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "imageCachingModeRelaxed": "Let image caches expire (uses less memory but causes images to reload more often)",
+  "@imageCachingModeRelaxed": {
+    "description": "Long description for relaxed image caching mode"
+  },
+  "imageCachingModeRelaxedShort": "Relaxed",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
   "importExportSettings": "Import/Export Settings",
   "@importExportSettings": {
     "description": "Category for settings related to import and export."
@@ -575,8 +659,18 @@
   "@information": {
     "description": "Information heading - used in the FAB settings page"
   },
-  "instance": "Instance",
-  "@instance": {},
+  "instance": "{count, plural, zero {Instance} one {Instance} other {Instances} } ",
+  "@instance": {
+    "description": "Heading for an instance"
+  },
+  "instanceActions": "Instance Actions",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "instanceEntry": "Instance '{username}'",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
+  },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
@@ -653,6 +747,14 @@
   "@local": {},
   "localPosts": "Local Posts",
   "@localPosts": {},
+  "lockPost": "Lock Post",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
+  "lockedPost": "Locked Post",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
   "logOut": "Log out",
   "@logOut": {},
   "login": "Log in",
@@ -679,6 +781,10 @@
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
   },
+  "markPostAsReadOnScroll": "Mark Read On Scroll",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
   "medium": "Medium",
   "@medium": {
     "description": "Description for medium font scale"
@@ -693,9 +799,61 @@
   },
   "missingErrorMessage": "No error message available",
   "@missingErrorMessage": {},
+  "modAdd": "Add/Remove Instance Moderators",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modAddCommunity": "Add/Remove Moderators to Communities",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "modBan": "Ban/Unban Instance Moderators",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance moderators"
+  },
+  "modBanFromCommunity": "Ban/Unban Users from Communities",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "modFeaturePost": "Feature/Unfeature Posts",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modLockPost": "Lock/Unlock Posts",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modRemoveComment": "Remove/Restore Comments",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Remove/Restore Communities",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "modRemovePost": "Remove/Restore Posts",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "modTransferCommunity": "Transferring Communities",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
   "moderatedCommunities": "Moderated Communities",
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderator": "Moderator",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
+  "moderatorActions": "Moderator Actions",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "modlog": "Modlog",
+  "@modlog": {
+    "description": "Option for viewing modlog."
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
@@ -747,6 +905,10 @@
   },
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
+  "noItems": "No items",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
   "noKeywordFilters": "No keyword filters added",
   "@noKeywordFilters": {
     "description": "Message for no keywords added"
@@ -755,9 +917,7 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "No posts found.",
-  "@noPosts": {},
-  "noPostsFound": "No posts found",
+  "noPostsFound": "No posts found.",
   "@noPostsFound": {},
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
@@ -790,6 +950,10 @@
   "notificationsWarningDialog": "Notifications are an experimental feature which may not function correctly on all devices.\n\n· Checks will occur every ~15 minutes and will consume additional battery.\n\n· Disable battery optimizations for a higher likelihood of successful notifications.\n\nSee the following page for more information.",
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
+  },
+  "nsfwWarning": "NSFW - Tap to reveal",
+  "@nsfwWarning": {
+    "description": "Warning for NSFW posts"
   },
   "off": "off",
   "@off": {},
@@ -841,6 +1005,14 @@
   "@permissionDeniedMessage": {
     "description": "Explanation for error when user denies OS permissions"
   },
+  "pinToCommunity": "Pin to Community",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
   "postBehaviourSettings": "Posts",
   "@postBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
@@ -869,6 +1041,10 @@
   },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
+  "postMetadataInstructions": "You can customize the metadata information by dragging and dropping the desired information",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
   "postNSFW": "Mark as NSFW",
   "@postNSFW": {},
   "postPreview": "Show a preview of the post with the given settings",
@@ -911,10 +1087,30 @@
   "@pureBlack": {
     "description": "Describes using the pure black theme"
   },
+  "purgedComment": "Purged Comment",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "purgedCommunity": "Purged Community",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "purgedPerson": "Purged Person",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "purgedPost": "Purged Post",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
+  "reason": "Reason",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
   "reduceAnimations": "Reduce Animations",
   "@reduceAnimations": {
     "description": "Toggle to reduce animations."
@@ -925,6 +1121,10 @@
   "@refresh": {},
   "refreshContent": "Refresh Content",
   "@refreshContent": {},
+  "removalReason": "Removal Reason",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
   "remove": "Remove",
   "@remove": {},
   "removeAccount": "Remove Account",
@@ -943,8 +1143,32 @@
   "@removeKeywordFilter": {
     "description": "Title for dialig to remove keyword"
   },
+  "removePost": "Remove Post",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "removedComment": "Removed Comment",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removedCommunity": "Removed Community",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
   "@removedCommunityFromSubscriptions": {},
+  "removedInstanceMod": "Removed Instance Mod",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "removedModFromCommunity": "Removed Mod from Community",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "removedPost": "Removed Post",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},
   "replyNotSupported": "Replying from this view is currently not supported yet",
@@ -977,8 +1201,24 @@
   },
   "restore": "Restore",
   "@restore": {},
+  "restorePost": "Restore Post",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "restoredComment": "Restored Comment",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
   "restoredCommentFromDraft": "Restored comment from draft",
   "@restoredCommentFromDraft": {},
+  "restoredCommunity": "Restored Community",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "restoredPost": "Restored Post",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
   "restoredPostFromDraft": "Restored post from draft",
   "@restoredPostFromDraft": {},
   "retry": "Retry",
@@ -1027,6 +1267,10 @@
   "@searchCommunitiesFederatedWith": {},
   "searchInstance": "Search {instance}",
   "@searchInstance": {},
+  "searchInstancesFederatedWith": "Search for instances federated with {instance}",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
   "searchPostSearchType": "Select Post Search Type",
   "@searchPostSearchType": {},
   "searchPostsFederatedWith": "Search for posts federated with {instance}",
@@ -1035,6 +1279,10 @@
   "@searchTerm": {},
   "searchUsersFederatedWith": "Search for users federated with {instance}",
   "@searchUsersFederatedWith": {},
+  "selectAccountToPostAs": "Select account to post as",
+  "@selectAccountToPostAs": {
+    "description": "Heading for account selector when posting"
+  },
   "selectCommunity": "Select a community",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
@@ -1045,6 +1293,10 @@
   },
   "selectSearchType": "Select Search Type",
   "@selectSearchType": {},
+  "sensitiveContentWarning": "May contain sensitive content. Tap to reveal.",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
   "setAction": "Set Action",
@@ -1065,12 +1317,52 @@
   },
   "share": "Share",
   "@share": {},
-  "shareLink": "Share Link",
+  "shareComment": "Share Comment Link",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "shareCommentLocal": "Share Comment Link (My Instance)",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "shareCommunity": "Share Community",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "shareCommunityLink": "Share Community Link",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "shareCommunityLinkLocal": "Share Community Link (My Instance)",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "shareLemmyLink": "Share Lemmy Link",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
+  },
+  "shareLink": "Share External Link",
   "@shareLink": {},
   "shareMedia": "Share Media",
   "@shareMedia": {},
-  "sharePost": "Share Post",
+  "sharePost": "Share Post Link",
   "@sharePost": {},
+  "sharePostLocal": "Share Post Link (My Instance)",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareUser": "Share User",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "shareUserLink": "Share User Link",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "shareUserLinkLocal": "Share User Link (My Instance)",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
   "showAll": "Show All",
   "@showAll": {},
   "showBotAccounts": "Show Bot Accounts",
@@ -1088,6 +1380,14 @@
   "showEdgeToEdgeImages": "Show Edge to Edge Images",
   "@showEdgeToEdgeImages": {
     "description": "Toggle to view edge to edge images."
+  },
+  "showFullDate": "Show Full Date",
+  "@showFullDate": {
+    "description": "Toggle to show full date on posts"
+  },
+  "showFullDateDescription": "Show full date on posts",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
   },
   "showFullHeightImages": "Show Full Height Images",
   "@showFullHeightImages": {
@@ -1193,10 +1493,18 @@
   "@successfullyBlocked": {},
   "successfullyBlockedCommunity": "Blocked {communityName}",
   "@successfullyBlockedCommunity": {},
+  "successfullyBlockedUser": "Blocked {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
   "successfullyUnblocked": "Unblocked.",
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "Unblocked {communityName}",
   "@successfullyUnblockedCommunity": {},
+  "successfullyUnblockedUser": "Unblocked {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
   "suggestedTitle": "Suggested title",
   "@suggestedTitle": {
     "description": "Suggested title for the post."
@@ -1275,6 +1583,10 @@
   "@topYear": {},
   "totp": "TOTP (optional)",
   "@totp": {},
+  "transferredModToCommunity": "Transferred Community",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
   "translationsMayNotBeComplete": "Please note that the translations may not be complete",
   "@translationsMayNotBeComplete": {
     "description": "Warning that translations may not be complete when selecting a language in the settings"
@@ -1291,14 +1603,24 @@
   "@unableToFindCommunityName": {
     "description": "Error message for when we are unable to find a community, including the name"
   },
+  "unableToFindCommunityOnInstance": "Unable to find the selected community on the selected user's instance.",
+  "@unableToFindCommunityOnInstance": {
+    "description": "An error message for when we can't find a community on an instance"
+  },
   "unableToFindInstance": "Unable to find instance",
   "@unableToFindInstance": {},
   "unableToFindLanguage": "Unable to find language",
   "@unableToFindLanguage": {
     "description": "Error message when language cannot be found."
   },
+  "unableToFindPost": "Unable to find post",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
   "unableToFindUser": "Unable to find user",
   "@unableToFindUser": {},
+  "unableToFindUserName": "Unable to find user '{username}'",
+  "@unableToFindUserName": {},
   "unableToLoadImage": "Unable to load image",
   "@unableToLoadImage": {
     "description": "Placeholder for when we are unable to load a binary image"
@@ -1317,6 +1639,14 @@
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
   },
+  "unbannedUser": "Unbanned User",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "unbannedUserFromCommunity": "Unbanned User from Community",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
@@ -1327,6 +1657,30 @@
   },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
+  "unfeaturedPost": "Unfeatured Post",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "unhidCommunity": "Unhid Community",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
+  "unlockPost": "Unlock Post",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unlockedPost": "Unlocked Post",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
+  },
+  "unpinFromCommunity": "Unpin from Community",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "unreachable": "Unreachable",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
   "unsubscribeFromCommunity": "Unsubscribe from Community",
@@ -1367,6 +1721,18 @@
   },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
+  "user": "User",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "userActions": "User Actions",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "userEntry": "User '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
+  },
   "userFormat": "User Format",
   "@userFormat": {
     "description": "Setting for user full name format"
@@ -1385,6 +1751,10 @@
   "@username": {},
   "users": "Users",
   "@users": {},
+  "viewAll": "View all",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
   "visitCommunity": "Visit Community",

@@ -43,7 +43,11 @@ class TypeBadge extends StatelessWidget {
       MediaType.image: MediaTypeBadgeItem(
         baseColor: Colors.red,
         icon: Icon(size: 17, Icons.image_outlined, color: getIconColor(theme, Colors.red)),
-      )
+      ),
+      MediaType.video: MediaTypeBadgeItem(
+        baseColor: Colors.purple,
+        icon: Icon(size: 17, Icons.play_arrow_rounded, color: getIconColor(theme, Colors.purple)),
+      ),
     };
 
     return SizedBox(
@@ -60,6 +64,7 @@ class TypeBadge extends StatelessWidget {
             MediaType.text => typeBadgeItem(context, mediaTypeItems[MediaType.text]!),
             MediaType.link => typeBadgeItem(context, mediaTypeItems[MediaType.link]!),
             MediaType.image => typeBadgeItem(context, mediaTypeItems[MediaType.image]!),
+            MediaType.video => typeBadgeItem(context, mediaTypeItems[MediaType.video]!),
             _ => typeBadgeItem(context, mediaTypeItems[MediaType.text]!),
           },
         ),

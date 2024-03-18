@@ -110,7 +110,16 @@ class PostCardViewCompact extends StatelessWidget {
                             color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                           ),
                         ),
+                      if (postViewMedia.postView.post.removed)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.delete_forever_rounded,
+                            size: 16 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          ),
+                        ),
                       if (postViewMedia.postView.post.deleted ||
+                          postViewMedia.postView.post.removed ||
                           postViewMedia.postView.post.featuredCommunity ||
                           postViewMedia.postView.post.featuredLocal ||
                           postViewMedia.postView.saved ||
@@ -141,15 +150,18 @@ class PostCardViewCompact extends StatelessWidget {
                   showCommunitySubscription: showCommunitySubscription,
                 ),
                 const SizedBox(height: 6.0),
-                PostCardMetaData(
-                  readColor: readColor,
+                PostCardMetadata(
+                  postCardViewType: ViewMode.compact,
                   score: postViewMedia.postView.counts.score,
+                  upvoteCount: postViewMedia.postView.counts.upvotes,
+                  downvoteCount: postViewMedia.postView.counts.downvotes,
                   voteType: postViewMedia.postView.myVote ?? 0,
-                  comments: postViewMedia.postView.counts.comments,
-                  unreadComments: postViewMedia.postView.unreadComments,
+                  commentCount: postViewMedia.postView.counts.comments,
+                  unreadCommentCount: postViewMedia.postView.unreadComments,
+                  dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
                   hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                  published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
-                  hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                  url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                  hasBeenRead: indicateRead && postViewMedia.postView.read,
                 ),
               ],
             ),
@@ -201,7 +213,7 @@ class ThumbnailPreview extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
             child: MediaView(
               scrapeMissingPreviews: state.scrapeMissingPreviews,
-              postView: postViewMedia,
+              postViewMedia: postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
               markPostReadOnMediaView: markPostReadOnMediaView,

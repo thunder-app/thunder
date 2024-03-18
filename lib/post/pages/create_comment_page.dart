@@ -18,7 +18,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/instance.dart';
 
 class CreateCommentPage extends StatefulWidget {
@@ -123,7 +123,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         await Future.delayed(const Duration(milliseconds: 300));
-        showSnackbar(context, AppLocalizations.of(context)!.restoredCommentFromDraft);
+        showSnackbar(AppLocalizations.of(context)!.restoredCommentFromDraft);
       });
     }
   }
@@ -163,7 +163,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
               setState(() {
                 isLoading = false;
               });
-              showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
             }
           },
         ),
@@ -185,7 +185,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
               if (state.status == InboxStatus.failure) {
                 setState(() {
                   isLoading = false;
-                  showSnackbar(context, AppLocalizations.of(context)!.unexpectedError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+                  showSnackbar(AppLocalizations.of(context)!.unexpectedError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
                 });
               }
             },
@@ -201,7 +201,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
               setState(() => imageUploading = true);
             }
             if (state.status == ImageStatus.failure) {
-              showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              showSnackbar(AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
               setState(() => imageUploading = false);
             }
           },
@@ -279,13 +279,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                           style: theme.textTheme.titleMedium,
                                         ),
                                       ),
-                                      MediaView(
-                                        scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
-                                        postView: widget.postView,
-                                        hideNsfwPreviews: thunderState.hideNsfwPreviews,
-                                        markPostReadOnMediaView: thunderState.markPostReadOnMediaView,
-                                        isUserLoggedIn: true,
-                                      ),
+                                      if (widget.postView != null)
+                                        MediaView(
+                                          scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
+                                          postViewMedia: widget.postView!,
+                                          hideNsfwPreviews: thunderState.hideNsfwPreviews,
+                                          markPostReadOnMediaView: thunderState.markPostReadOnMediaView,
+                                          isUserLoggedIn: true,
+                                        ),
                                       const SizedBox(
                                         height: 12,
                                       ),

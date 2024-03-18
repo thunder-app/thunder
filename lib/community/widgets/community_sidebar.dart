@@ -4,24 +4,21 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
-import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/instance/instance_view.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/instance/widgets/instance_view.dart';
+import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
-import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 
 const kSidebarWidthFactor = 0.8;
 
@@ -219,7 +216,7 @@ class CommunityModeratorList extends StatelessWidget {
         for (CommunityModeratorView mods in getCommunityResponse.moderators)
           Material(
             child: InkWell(
-              onTap: () => navigateToUserPage(context, userId: mods.moderator.id),
+              onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: mods.moderator.id),
               borderRadius: BorderRadius.circular(50),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -291,7 +288,6 @@ class BlockCommunityButton extends StatelessWidget {
             onPressed: isUserLoggedIn
                 ? () {
                     HapticFeedback.heavyImpact();
-                    hideSnackbar(context);
                     context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: communityView.community.id, value: !blocked));
                   }
                 : null,
@@ -332,33 +328,7 @@ class CommunityActions extends StatelessWidget {
             onPressed: isUserLoggedIn
                 ? () async {
                     HapticFeedback.mediumImpact();
-                    CommunityBloc communityBloc = context.read<CommunityBloc>();
-                    AccountBloc accountBloc = context.read<AccountBloc>();
-                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                    FeedBloc feedBloc = context.read<FeedBloc>();
-
-                    final ThunderState state = context.read<ThunderBloc>().state;
-                    final bool reduceAnimations = state.reduceAnimations;
-
-                    Navigator.of(context).push(SwipeablePageRoute(
-                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                      canOnlySwipeFromEdge: true,
-                      backGestureDetectionWidth: 45,
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider<CommunityBloc>.value(value: communityBloc),
-                            BlocProvider<AccountBloc>.value(value: accountBloc),
-                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                            BlocProvider<FeedBloc>.value(value: feedBloc),
-                          ],
-                          child: CreatePostPage(
-                            communityId: communityView.community.id,
-                            communityView: getCommunityResponse.communityView,
-                          ),
-                        );
-                      },
-                    ));
+                    navigateToCreatePostPage(context, communityId: communityView.community.id, communityView: getCommunityResponse.communityView);
                   }
                 : null,
             style: TextButton.styleFrom(

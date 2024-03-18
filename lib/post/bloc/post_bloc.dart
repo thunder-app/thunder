@@ -289,13 +289,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             if (!state.hasReachedCommentEnd && state.commentCount == state.postView!.postView.counts.comments) {
               emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
             }
-            if (event.commentParentId != null) {
-              // If we come here, we've determined that we've already loaded all of the comments.
-              // But we're currently being asked to load some children.
-              // Therefore we will treat this as an error.
-              throw Exception(AppLocalizations.of(GlobalContext.context)!.unableToLoadReplies);
+            if (event.commentParentId == null) {
+              return;
             }
-            return;
           }
           emit(state.copyWith(status: PostStatus.refreshing, newlyCreatedCommentId: state.newlyCreatedCommentId));
 

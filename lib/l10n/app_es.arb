@@ -11,13 +11,13 @@
   "@account": {},
   "accountSettings": "Ajustes de la cuenta",
   "@accountSettings": {},
-  "actions": "Actions",
+  "actions": "Acciones",
   "@actions": {},
-  "active": "Active",
+  "active": "Activo",
   "@active": {},
-  "add": "Add",
+  "add": "Agregar",
   "@add": {},
-  "addAccount": "Add Account",
+  "addAccount": "Agregar cuenta",
   "@addAccount": {},
   "addAccountToSeeProfile": "Inicia sesión para ver tu cuenta.",
   "@addAccountToSeeProfile": {},
@@ -71,11 +71,11 @@
   "@backButton": {},
   "backToTop": "Volver arriba",
   "@backToTop": {},
-  "blockCommunity": "Bloquear Comunidad",
+  "blockCommunity": "Bloquear comunidad",
   "@blockCommunity": {},
   "blockInstance": "Bloquear la instancia",
   "@blockInstance": {},
-  "blockUser": "Block User",
+  "blockUser": "Bloquear usuario",
   "@blockUser": {},
   "blockedCommunities": "Comunidades bloqueadas",
   "@blockedCommunities": {},
@@ -145,7 +145,7 @@
   "@combineCommentScoresLabel": {
     "description": "Label for setting to combine comment scores"
   },
-  "combineNavAndFab": "El botón de acción flotante se mostrará entre los botones de navegación.",
+  "combineNavAndFab": "Combinar botones FAB y de navegación",
   "@combineNavAndFab": {},
   "comment": "Comentario",
   "@comment": {},
@@ -289,7 +289,7 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
-  "dimReadPosts": "Los mensajes leídos aparecerán en gris",
+  "dimReadPosts": "Publicaciones de lectura oscura",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
   },
@@ -563,8 +563,6 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "No hay ninguna publicación.",
-  "@noPosts": {},
   "noPostsFound": "No se ha encontrado ningún tema",
   "@noPostsFound": {},
   "noResultsFound": "No se han encontrado resultados.",
@@ -889,7 +887,7 @@
   "@suggestedTitle": {
     "description": "Suggested title for the post."
   },
-  "tapToExit": "Retroceder dos veces para salir",
+  "tapToExit": "Vuelve a pulsar atrás para salir",
   "@tapToExit": {},
   "text": "Texto",
   "@text": {},
@@ -1048,5 +1046,379 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "confirm": "Confirmar",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "showPostCommunityIcons": "Mostrar iconos de la comunidad",
+  "@showPostCommunityIcons": {
+    "description": "Toggle to show community icons."
+  },
+  "showPostVoteActions": "Mostrar los botones de votación",
+  "@showPostVoteActions": {
+    "description": "Toggle to show vote buttons."
+  },
+  "collapseParentCommentBodyOnGesture": "Ocultar comentario principal cuando está contraído",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "combineNavAndFabDescription": "El botón de acción flotante se mostrará entre los botones de navegación.",
+  "@combineNavAndFabDescription": {},
+  "commentFontScale": "Tamaño de la fuente del comentario",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
+  },
+  "showScoreCounters": "Visualizar las puntuaciones de los usuarios",
+  "@showScoreCounters": {
+    "description": "Toggle to display user scores."
+  },
+  "defaultCommentSortType": "Tipo de clasificación de comentarios predeterminado",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "defaultFeedSortType": "Tipo de clasificación del feed predeterminado",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  },
+  "deleteAccountDescription": "Para eliminar definitivamente su cuenta, será redirigido al sitio de su instancia. \n\n¿Está seguro de que desea continuar?",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
+  "enableFloatingButtonOnFeeds": "Activar el botón flotante en los feeds",
+  "@enableFloatingButtonOnFeeds": {
+    "description": "Setting for enable floating button on feeds"
+  },
+  "hideNsfwPostsFromFeed": "Ocultar publicaciones NSFW del Feed",
+  "@hideNsfwPostsFromFeed": {
+    "description": "Toggle to hide NSFW posts from the feed."
+  },
+  "openLinksInReaderMode": "Abrir enlaces en modo lectura",
+  "@openLinksInReaderMode": {
+    "description": "Toggle to open links in reader mode when available."
+  },
+  "rightLongSwipe": "Deslizamiento largo hacia la derecha",
+  "@rightLongSwipe": {
+    "description": "Setting for right long swipe"
+  },
+  "showCommentActionButtons": "Mostrar botones de acción del comentario",
+  "@showCommentActionButtons": {
+    "description": "Toggle to show comment action buttons."
+  },
+  "showInAppUpdateNotifications": "Recibe notificaciones de las nuevas versiones de GitHub",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
+  "leftShortSwipe": "Deslizamiento corto a la izquierda",
+  "@leftShortSwipe": {
+    "description": "Setting for left short swipe"
+  },
+  "showFullHeightImages": "Mostrar imágenes a tamaño completo",
+  "@showFullHeightImages": {
+    "description": "Toggle to view full height images."
+  },
+  "nestedCommentIndicatorColor": "Color del indicador del comentario fijado",
+  "@nestedCommentIndicatorColor": {
+    "description": "Setting for nested comment indicator color"
+  },
+  "markPostAsReadOnMediaView": "Marcar como leído después de ver los medios",
+  "@markPostAsReadOnMediaView": {
+    "description": "Toggle to mark posts as read after viewing media."
+  },
+  "showUserDisplayNames": "Mostrar los nombres de usuario",
+  "@showUserDisplayNames": {
+    "description": "Toggle to show user display names."
+  },
+  "themeAccentColor": "Colores del acento",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "tabletMode": "Modo tableta (vista en 2 columnas)",
+  "@tabletMode": {
+    "description": "Toggle to enable 2-column tablet mode."
+  },
+  "useAdvancedShareSheet": "Utilice el formulario para compartir avanzado",
+  "@useAdvancedShareSheet": {
+    "description": "Toggle to use advanced share sheet."
+  },
+  "combineCommentScores": "Combinar notas de comentarios",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
+  "commentSwipeActions": "Acciones de deslizar los comentarios",
+  "@commentSwipeActions": {
+    "description": "Setting for comment swipe actions"
+  },
+  "dangerZone": "Zona peligrosa",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "defaultFeedType": "Tipo de feed predeterminado",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
+  "deleteAccount": "Eliminar cuenta",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "enableCommentNavigation": "Activar la navegación por comentarios",
+  "@enableCommentNavigation": {
+    "description": "Setting for enable comment navigation"
+  },
+  "enableFloatingButtonOnPosts": "Habilitar el botón flotante en los mensajes",
+  "@enableFloatingButtonOnPosts": {
+    "description": "Setting for enable floating button on posts"
+  },
+  "fullscreenSwipeGestures": "Gestos de deslizamiento a pantalla completa",
+  "@fullscreenSwipeGestures": {
+    "description": "Setting for fullscreen swipe gestures"
+  },
+  "hideNsfwPreviews": "Ocultar las vistas previas del NSFW",
+  "@hideNsfwPreviews": {
+    "description": "Toggle to hide NSFW previews."
+  },
+  "leftLongSwipe": "Deslizamiento largo a la izquierda",
+  "@leftLongSwipe": {
+    "description": "Setting for left long swipe"
+  },
+  "metadataFontScale": "Escala de las fuentes de metadatos",
+  "@metadataFontScale": {
+    "description": "Setting for metadata font scale"
+  },
+  "navbarDoubleTapGestures": "Gestos de doble toque en la barra de navegación",
+  "@navbarDoubleTapGestures": {
+    "description": "Setting for navbar double tap gestures"
+  },
+  "navbarSwipeGestures": "Gestos de deslizar en la barra de navegación",
+  "@navbarSwipeGestures": {
+    "description": "Setting for navbar swipe gestures"
+  },
+  "nestedCommentIndicatorStyle": "Estilo del indicador del comentario fijado",
+  "@nestedCommentIndicatorStyle": {
+    "description": "Setting for nested comment indicator style"
+  },
+  "newPost": "Nuevo tema",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "openLinksInExternalBrowser": "Abrir enlaces en un navegador externo",
+  "@openLinksInExternalBrowser": {
+    "description": "Toggle to open links in an external browser."
+  },
+  "postContentFontScale": "Tamaño de las fuentes del contenido de la entrada",
+  "@postContentFontScale": {
+    "description": "Setting for post content font scale"
+  },
+  "postSwipeActions": "Acciones posteriores al deslizamiento",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
+  "postTitleFontScale": "Tamaño de la fuente del título de la publicación",
+  "@postTitleFontScale": {
+    "description": "Setting for post title font scale"
+  },
+  "reduceAnimations": "Reducir las animaciones",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "rightShortSwipe": "Deslizamiento corto hacia la derecha",
+  "@rightShortSwipe": {
+    "description": "Setting for right short swipe"
+  },
+  "scrapeMissingLinkPreviews": "Eliminación de las vistas previas de los enlaces borrados",
+  "@scrapeMissingLinkPreviews": {
+    "description": "Toggle to scrape missing external link previews."
+  },
+  "showCrossPosts": "Mostrar publicaciones cruzadas",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "showEdgeToEdgeImages": "Mostrar imágenes de borde a borde",
+  "@showEdgeToEdgeImages": {
+    "description": "Toggle to view edge to edge images."
+  },
+  "showPostAuthor": "Mostrar el autor del mensaje",
+  "@showPostAuthor": {
+    "description": "Toggle to show post author."
+  },
+  "showPostSaveAction": "Mostrar el botón guardar",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "showPostTextContentPreview": "Mostrar vista previa del texto",
+  "@showPostTextContentPreview": {
+    "description": "Toggle to show text previews."
+  },
+  "showPostTitleFirst": "Mostrar el título primero",
+  "@showPostTitleFirst": {
+    "description": "Toggle to show post title first."
+  },
+  "showTextPostIndicator": "Mostrar indicador de la publicación del texto",
+  "@showTextPostIndicator": {
+    "description": "Toggle to show text post indicator."
+  },
+  "showThumbnailPreviewOnRight": "Mostrar miniaturas a la derecha",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Toggle to show thumbnails on the right side."
+  },
+  "showUserInstance": "Mostrar la instancia del usuario",
+  "@showUserInstance": {
+    "description": "Toggle to show user instance."
+  },
+  "tappableAuthorCommunity": "Autores y comunidades de Tappable",
+  "@tappableAuthorCommunity": {
+    "description": "Toggle to make authors and communities tappable."
+  },
+  "theme": "Tema",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "useMaterialYouTheme": "Utilizar en el tema Material You",
+  "@useMaterialYouTheme": {
+    "description": "Toggle to use Material You theme."
+  },
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "clearedCache": "Borrado de la caché con éxito.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "dark": "Oscuro",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "fonts": "Fuentes",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
+  "large": "Grande",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "medium": "Medio",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "pureBlack": "Negro puro",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "small": "Pequeño",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "system": "Sistema",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "clearCache": "Borrar la caché ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "useMaterialYouThemeDescription": "Anula el tema personalizado seleccionado",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
+  },
+  "extraLarge": "Extra grande",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "light": "Claro",
+  "@light": {
+    "description": "Describes using the light theme"
+  },
+  "postCreatedSuccessfully": "¡Publicación creada exitosamente!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
+  },
+  "understandEnable": "Comprendo, Activar",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
+  },
+  "disable": "Desactivar",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "warning": "Advertencia",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "enableInboxNotifications": "Activar las notificaciones de la bandeja de entrada (experimental)",
+  "@enableInboxNotifications": {
+    "description": "Setting name for inbox notifications"
+  },
+  "moderatedCommunities": "Comunidades moderadas",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "notificationsNotAllowed": "Las notificaciones no están permitidas para Thunder en la configuración del sistema",
+  "@notificationsNotAllowed": {
+    "description": "Description for when notifications are now allowed for app"
+  },
+  "backgroundCheckWarning": "Tenga en cuenta que las comprobaciones de notificaciones consumirán más batería",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "notificationsWarningDialog": "Las notificaciones son una función experimental que puede no funcionar correctamente en todos los dispositivos.\n\n· Las omprobaciones se producirán cada ~15 minutos y consumirán batería adicional.\n\n· Desactiva las optimizaciones de batería para una mayor probabilidad de éxito de las notificaciones.\n\nConsulte la siguiente página para obtener más información.",
+  "@notificationsWarningDialog": {
+    "description": "The content of the warning dialog for the notifications feature"
+  },
+  "unableToNavigateToInstance": "No se puede navegar a {instanceHost}. Puede que no sea una instancia Lemmy válida.",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "commentUseColorizedUsername": "Nombres de usuario en color",
+  "@commentUseColorizedUsername": {
+    "description": "Setting used to toggle colorized comments creator display name."
+  },
+  "noItems": "Sin artículos",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "cardPostCardMetadataItems": "Metadatos de la vista de tarjetas",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "compactPostCardMetadataItems": "Metadatos de la vista compacta",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
+  },
+  "forward": "Adelante",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "postMetadataInstructions": "Puede personalizar la información de metadatos arrastrando y soltando la información deseada",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
+  "browserMode": "Gestión de enlaces",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "linkHandlingExternal": "Abrir externamente en el navegador del sistema",
+  "@linkHandlingExternal": {
+    "description": "Description for external link handling"
+  },
+  "linkHandlingExternalShort": "Externo",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "linkHandlingInApp": "Utiliza el navegador integrado en Thunder",
+  "@linkHandlingInApp": {
+    "description": "Description for in-app link handling"
+  },
+  "linkHandlingInAppShort": "En la aplicación",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "linkHandlingCustomTabs": "Abrir en el navegador del sistema integrado en la aplicación",
+  "@linkHandlingCustomTabs": {
+    "description": "Description for custom tabs link handling"
+  },
+  "linkHandlingCustomTabsShort": "Integrado en la aplicación",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  }
 }

@@ -39,17 +39,17 @@ Future<String?> getLemmyCommunity(String text) async {
   }
 
   final RegExpMatch? fullCommunityUrlMatch = fullCommunityUrl.firstMatch(text);
-  if (fullCommunityUrlMatch != null && fullCommunityUrlMatch.groupCount >= 4 && await isLemmyInstance(fullCommunityUrlMatch.group(4))) {
+  if (fullCommunityUrlMatch != null && fullCommunityUrlMatch.groupCount >= 4) {
     return '${fullCommunityUrlMatch.group(3)}@${fullCommunityUrlMatch.group(4)}';
   }
 
   final RegExpMatch? shortCommunityUrlMatch = shortCommunityUrl.firstMatch(text);
-  if (shortCommunityUrlMatch != null && shortCommunityUrlMatch.groupCount >= 3 && await isLemmyInstance(shortCommunityUrlMatch.group(2))) {
+  if (shortCommunityUrlMatch != null && shortCommunityUrlMatch.groupCount >= 3) {
     return '${shortCommunityUrlMatch.group(3)}@${shortCommunityUrlMatch.group(2)}';
   }
 
   final RegExpMatch? instanceNameMatch = instanceName.firstMatch(text);
-  if (instanceNameMatch != null && instanceNameMatch.groupCount >= 3 && await isLemmyInstance(instanceNameMatch.group(3))) {
+  if (instanceNameMatch != null && instanceNameMatch.groupCount >= 3) {
     return '${instanceNameMatch.group(2)}@${instanceNameMatch.group(3)}';
   }
 
@@ -152,21 +152,39 @@ class GetInstanceInfoResponse {
   final bool success;
   final String? icon;
   final String? version;
+  final String? name;
+  final String? domain;
+  final int? users;
+  final int? id;
 
-  const GetInstanceInfoResponse({required this.success, this.icon, this.version});
+  const GetInstanceInfoResponse({
+    required this.success,
+    this.icon,
+    this.version,
+    this.name,
+    this.domain,
+    this.users,
+    this.id,
+  });
+
+  bool isMetadataPopulated() => icon != null || version != null || name != null || users != null;
 }
 
-Future<GetInstanceInfoResponse> getInstanceInfo(String? url) async {
+Future<GetInstanceInfoResponse> getInstanceInfo(String? url, {int? id, Duration? timeout}) async {
   if (url?.isEmpty ?? true) {
     return const GetInstanceInfoResponse(success: false);
   }
 
   try {
-    final site = await LemmyApiV3(url!).run(const GetSite()).timeout(const Duration(seconds: 5));
+    final site = await LemmyApiV3(url!).run(const GetSite()).timeout(timeout ?? const Duration(seconds: 5));
     return GetInstanceInfoResponse(
       success: true,
       icon: site.siteView.site.icon,
       version: site.version,
+      name: site.siteView.site.name,
+      domain: fetchInstanceNameFromUrl(site.siteView.site.actorId),
+      users: site.siteView.counts.users,
+      id: id,
     );
   } catch (e) {
     // Bad instances will throw an exception, so no icon

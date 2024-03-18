@@ -9,10 +9,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
+import 'package:thunder/instances.dart';
+import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -27,7 +30,6 @@ import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 
 class LinkInfo {
   String? imageURL;
@@ -71,9 +73,11 @@ void _openLink(BuildContext context, {required String url}) async {
   ThunderState state = context.read<ThunderBloc>().state;
 
   if (state.browserMode == BrowserMode.external || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
+    hideLoadingPage(context, delay: true);
     url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
   } else if (state.browserMode == BrowserMode.customTabs) {
-    await launchUrl(
+    hideLoadingPage(context, delay: true);
+    launchUrl(
       Uri.parse(url),
       customTabsOptions: CustomTabsOptions(
         browser: const CustomTabsBrowserConfiguration(
@@ -97,11 +101,30 @@ void _openLink(BuildContext context, {required String url}) async {
       ),
     );
   } else if (state.browserMode == BrowserMode.inApp) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
+    // Check if the scheme is not https, in which case the in-app browser can't handle it
+    Uri? uri = Uri.tryParse(url);
+    if (uri != null && uri.scheme != 'https') {
+      // Although a non-https scheme is an indication that this link is intended for another app,
+      // we actually have to change it back to https in order for the intent to be properly passed to another app.
+      hideLoadingPage(context, delay: true);
+      url_launcher.launchUrl(uri, mode: url_launcher.LaunchMode.externalApplication);
+    } else {
+      final bool reduceAnimations = state.reduceAnimations;
+
+      SwipeablePageRoute route = SwipeablePageRoute(
+        transitionDuration: isLoadingPageShown
+            ? Duration.zero
+            : reduceAnimations
+                ? const Duration(milliseconds: 100)
+                : null,
+        reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+        backGestureDetectionWidth: 45,
+        canOnlySwipeFromEdge: true,
         builder: (context) => WebView(url: url),
-      ),
-    );
+      );
+
+      pushOnTopOfLoadingPage(context, route);
+    }
   }
 }
 
@@ -114,7 +137,7 @@ void handleLink(BuildContext context, {required String url}) async {
 
   // Try navigating to community
   String? communityName = await getLemmyCommunity(url);
-  if (communityName != null) {
+  if (communityName != null && (!context.mounted || await _testValidCommunity(context, url, communityName, communityName.split('@')[1]))) {
     try {
       if (context.mounted) {
         await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
@@ -127,10 +150,10 @@ void handleLink(BuildContext context, {required String url}) async {
 
   // Try navigating to user
   String? username = await getLemmyUser(url);
-  if (username != null) {
+  if (username != null && (!context.mounted || await _testValidUser(context, url, username, username.split('@')[1]))) {
     try {
       if (context.mounted) {
-        await navigateToUserPage(context, username: username);
+        await navigateToFeedPage(context, feedType: FeedType.user, username: username);
         return;
       }
     } catch (e) {
@@ -188,6 +211,64 @@ void handleLink(BuildContext context, {required String url}) async {
   if (context.mounted) {
     _openLink(context, url: url);
   }
+}
+
+/// This is a helper method which helps [handleLink] determine whether a link refers to a valid Lemmy community.
+/// If the passed in link is not a valid URI, then there's no point in doing any fallback, so assume it passes.
+/// If the passed in [instance] is a known Lemmy instance, then it passes.
+/// If we can retrieve the passed in object, then it passes.
+/// Otherwise it fails.
+Future<bool> _testValidCommunity(BuildContext context, String link, String communityName, String instance) async {
+  Uri? uri = Uri.tryParse(link);
+  if (uri == null || !uri.hasScheme) {
+    return true;
+  }
+
+  if (instances.contains(instance)) {
+    return true;
+  }
+
+  try {
+    // Since this may take a while, show a loading page.
+    showLoadingPage(context);
+
+    Account? account = await fetchActiveProfileAccount();
+    await LemmyClient.instance.lemmyApiV3.run(GetCommunity(name: communityName, auth: account?.jwt));
+    return true;
+  } catch (e) {
+    // Ignore and return false below.
+  }
+
+  return false;
+}
+
+/// This is a helper method which helps [handleLink] determine whether a link refers to a valid Lemmy user.
+/// If the passed in link is not a valid URI, then there's no point in doing any fallback, so assume it passes.
+/// If the passed in [instance] is a known Lemmy instance, then it passes.
+/// If we can retrieve the passed in object, then it passes.
+/// Otherwise it fails.
+Future<bool> _testValidUser(BuildContext context, String link, String userName, String instance) async {
+  Uri? uri = Uri.tryParse(link);
+  if (uri == null || !uri.hasScheme) {
+    return true;
+  }
+
+  if (instances.contains(instance)) {
+    return true;
+  }
+
+  try {
+    // Since this may take a while, show a loading page.
+    showLoadingPage(context);
+
+    Account? account = await fetchActiveProfileAccount();
+    await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(username: userName, auth: account?.jwt));
+    return true;
+  } catch (e) {
+    // Ignore and return false below.
+  }
+
+  return false;
 }
 
 void handleLinkLongPress(BuildContext context, ThunderState state, String text, String? url) {

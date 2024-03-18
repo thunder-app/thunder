@@ -1,6 +1,3 @@
-# Builder is not optimized for layer size on purpose
-# Allows for modification between layers
-
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -26,15 +23,9 @@ RUN \
         libglu1-mesa-dev \
         git-lfs \
         openssl \
-        wget &&\
-    # Flutter
-    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/beta/linux/flutter_linux_3.12.0-beta.tar.xz -O /tmp/flutter.tar.xz &&\
-    mkdir -p /opt &&\
-    cd /opt &&\
-    tar xf /tmp/flutter.tar.xz &&\
-    rm /tmp/flutter.tar.xz &&\
-    git config --global --add safe.directory /opt/flutter &&\
-    dart pub global activate cider &&\
+        wget
+
+RUN \
     # Android SDK
     apt-get install -y --no-install-recommends \
         git \
@@ -51,29 +42,36 @@ RUN \
     apt-get install -y --no-install-recommends openjdk-18-jdk openjdk-18-jre &&\
     yes | sdkmanager --licenses &&\
     sdkmanager --update &&\
+    sdkmanager --install "platforms;android-28" &&\
+    sdkmanager --install "platforms;android-29" &&\
+    sdkmanager --install "platforms;android-30" &&\
+    sdkmanager --install "platforms;android-31" &&\
+    sdkmanager --install "platforms;android-32" &&\
     sdkmanager --install "platforms;android-33" &&\
+    sdkmanager --install "platforms;android-34" &&\
     sdkmanager --install "build-tools;30.0.3" &&\
     sdkmanager --install "ndk;23.1.7779620" &&\
     sdkmanager --install "cmake;3.22.1" &&\
     sdkmanager --install platform-tools &&\
     sdkmanager --install emulator &&\
-    sdkmanager --install tools &&\
-    # Cleanup
-    apt-get autoremove && apt-get autoclean
+    sdkmanager --install tools
 
-WORKDIR /build
 
-# Copy in prereq files
-COPY pubspec.* /build/
+ARG DEV_UID=0
+RUN \
+    # Flutter
+    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.19.2-stable.tar.xz -O /tmp/flutter.tar.xz &&\
+    mkdir -p /opt &&\
+    cd /opt &&\
+    tar xf /tmp/flutter.tar.xz &&\
+    rm /tmp/flutter.tar.xz &&\
+    git config --global --add safe.directory /opt/flutter &&\
+    dart pub global activate cider &&\
+    chown -R ${DEV_UID} /opt/flutter
 
-# Get deps
-RUN flutter pub get
+# Optional add eo language pack
+# RUN apt install -y locales language-selector-common
+# RUN apt install -y $(check-language-support -l eo)
 
-# Add all files
-COPY . /build
-
-# Set up env
-RUN echo "# comment" > /build/.env
-
-# Build
-RUN dart scripts/build-android.dart
+# Optional cleanup if above is combined for push
+# RUN apt-get autoremove && apt-get autoclean
