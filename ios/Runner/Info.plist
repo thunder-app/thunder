@@ -55,7 +55,12 @@
 		<string>We need Photos access to allow you to save media.</string>
  		<key>NSPhotoLibraryAddUsageDescription</key>
     	<string>We need Photos access to allow you to save media.</string>
-
+		<!--Load media from external sources -->
+		<key>NSAppTransportSecurity</key>
+			<dict>
+				<key>NSAllowsArbitraryLoads</key>
+				<true/>
+			</dict>
 		<!-- Security compliance -->
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false/>

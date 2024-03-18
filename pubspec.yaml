@@ -107,8 +107,15 @@ dependencies:
   flutter_local_notifications: ^16.2.0
   background_fetch: ^1.2.1
   gal: ^2.2.0
+  flutter_vlc_player: ^7.4.1
+  visibility_detector: ^0.4.0+2
+  youtube_player_iframe: ^4.0.4
+  youtube_player_flutter: ^8.1.2
+  video_player: ^2.8.2
+  chewie: ^1.7.4
   smooth_highlight: ^0.1.1
   visibility_detector: ^0.4.0+2
+
 
 dev_dependencies:
   build_runner: ^2.4.6
