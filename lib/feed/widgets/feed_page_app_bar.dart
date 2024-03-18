@@ -19,6 +19,7 @@ import 'package:thunder/feed/utils/community_share.dart';
 import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/moderator/view/report_page.dart';
 import 'package:thunder/modlog/view/modlog_page.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
@@ -335,6 +336,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
           },
         ),
         PopupMenuButton(
+          onOpened: () => HapticFeedback.mediumImpact(),
           itemBuilder: (context) => [
             ThunderPopupMenuItem(
               onTap: () async {
@@ -364,6 +366,32 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               },
               icon: Icons.shield_rounded,
               title: l10n.modlog,
+            ),
+            ThunderPopupMenuItem(
+              onTap: () async {
+                HapticFeedback.mediumImpact();
+                ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                await Navigator.of(context).push(
+                  SwipeablePageRoute(
+                    transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                    backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                    backGestureDetectionWidth: 45,
+                    canOnlySwipeFromEdge: true,
+                    builder: (otherContext) {
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: feedBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: const ReportFeedPage(),
+                      );
+                    },
+                  ),
+                );
+              },
+              icon: Icons.report_rounded,
+              title: l10n.report(2),
             ),
           ],
         ),

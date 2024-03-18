@@ -33,8 +33,8 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
   void initState() {
     super.initState();
 
-    context.read<AccountBloc>().add(GetAccountSubscriptions());
-    context.read<AccountBloc>().add(GetFavoritedCommunities());
+    context.read<AccountBloc>().add(const GetAccountSubscriptions());
+    context.read<AccountBloc>().add(const GetFavoritedCommunities());
   }
 
   @override

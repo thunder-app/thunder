@@ -1177,7 +1177,7 @@
   "@replyToPost": {},
   "replyingTo": "Replying to {author}",
   "@replyingTo": {},
-  "report": "Report",
+  "report": "{count, plural, zero {Report} one {Report} other {Reports} } ",
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},

@@ -23,6 +23,7 @@ class PostCardViewCompact extends StatelessWidget {
   final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool? indicateRead;
+  final bool showMedia;
 
   const PostCardViewCompact({
     super.key,
@@ -32,6 +33,7 @@ class PostCardViewCompact extends StatelessWidget {
     required this.listingType,
     this.navigateToPost,
     this.indicateRead,
+    this.showMedia = true,
   });
 
   @override
@@ -58,11 +60,11 @@ class PostCardViewCompact extends StatelessWidget {
 
     return Container(
       color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
-      padding: const EdgeInsets.only(bottom: 8.0, top: 6),
+      padding: showMedia ? const EdgeInsets.only(bottom: 8.0, top: 6) : const EdgeInsets.only(left: 4.0, top: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          !showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
+          !showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
               ? ThumbnailPreview(
                   postViewMedia: postViewMedia,
                   navigateToPost: navigateToPost,
@@ -166,7 +168,7 @@ class PostCardViewCompact extends StatelessWidget {
               ],
             ),
           ),
-          showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
+          showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
               ? ThumbnailPreview(
                   postViewMedia: postViewMedia,
                   navigateToPost: navigateToPost,
