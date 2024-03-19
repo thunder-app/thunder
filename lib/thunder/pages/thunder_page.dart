@@ -551,7 +551,7 @@ class _ThunderState extends State<Thunder> {
                                 // Immediately update the current version for next time.
                                 prefs.setString('current_version', currentVersion);
 
-                                if (lastKnownVersion != null && lastKnownVersion != currentVersion && thunderBlocState.showChangelogsAfterUpdate) {
+                                if (lastKnownVersion != null && lastKnownVersion != currentVersion && thunderBlocState.showUpdateChangelogs) {
                                   final String changelog = await fetchCurrentVersionChangelog();
 
                                   if (context.mounted) {
@@ -610,7 +610,7 @@ class _ThunderState extends State<Thunder> {
                                                           FilledButton.tonal(
                                                             onPressed: () {
                                                               Navigator.of(context).pop();
-                                                              prefs.setBool(LocalSettings.showChangelogsAfterUpdate.name, false);
+                                                              prefs.setBool(LocalSettings.showUpdateChangelogs.name, false);
                                                             },
                                                             child: Text(l10n.doNotShowAgain),
                                                           ),

@@ -31,7 +31,7 @@ class ThunderState extends Equatable {
     this.markPostReadOnScroll = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
-    this.showChangelogsAfterUpdate = true,
+    this.showUpdateChangelogs = true,
     this.enableInboxNotifications = false,
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
@@ -166,7 +166,7 @@ class ThunderState extends Equatable {
   final bool markPostReadOnScroll;
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
-  final bool showChangelogsAfterUpdate;
+  final bool showUpdateChangelogs;
   final bool enableInboxNotifications;
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
@@ -309,7 +309,7 @@ class ThunderState extends Equatable {
     bool? markPostReadOnMediaView,
     bool? markPostReadOnScroll,
     bool? showInAppUpdateNotification,
-    bool? showChangelogsAfterUpdate,
+    bool? showUpdateChangelogs,
     bool? enableInboxNotifications,
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
@@ -444,7 +444,7 @@ class ThunderState extends Equatable {
       markPostReadOnScroll: markPostReadOnScroll ?? this.markPostReadOnScroll,
       disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
-      showChangelogsAfterUpdate: showChangelogsAfterUpdate ?? this.showChangelogsAfterUpdate,
+      showUpdateChangelogs: showUpdateChangelogs ?? this.showUpdateChangelogs,
       enableInboxNotifications: enableInboxNotifications ?? this.enableInboxNotifications,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
@@ -587,7 +587,7 @@ class ThunderState extends Equatable {
         markPostReadOnScroll,
         disableFeedFab,
         showInAppUpdateNotification,
-        showChangelogsAfterUpdate,
+        showUpdateChangelogs,
         enableInboxNotifications,
         userSeparator,
         communitySeparator,

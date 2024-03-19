@@ -1381,12 +1381,12 @@
   "@showBotAccounts": {
     "description": "Option to show bot accounts."
   },
-  "showChangelogsAfterUpdate": "Show Changelogs after Update",
-  "@showChangelogsAfterUpdate": {
+  "showUpdateChangelogs": "Show Update Changelogs",
+  "@showUpdateChangelogs": {
     "description": "Setting for showing changelogs after updates"
   },
-  "showChangelogsAfterUpdateSubtitle": "Display a list of changes after an update",
-  "@showChangelogsAfterUpdateSubtitle": {
+  "showUpdateChangelogsSubtitle": "Display a list of changes after an update",
+  "@showUpdateChangelogsSubtitle": {
     "description": "Subtitle for setting for showing changelogs after updates"
   },
   "showCommentActionButtons": "Show Comment Action Buttons",
