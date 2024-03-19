@@ -55,7 +55,7 @@ bool _hasImage(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty &&
 
 bool _hasText(PostViewMedia postViewMedia) => postViewMedia.postView.post.body?.isNotEmpty == true;
 
-bool _hasExternalLink(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty && postViewMedia.media.first.originalUrl != null;
+bool _hasExternalLink(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty && postViewMedia.media.first.originalUrl?.isNotEmpty == true;
 
 bool _canShare(AdvancedShareSheetOptions options, PostViewMedia postViewMedia) {
   return options.includePostLink || (options.includeExternalLink && _hasExternalLink(postViewMedia)) || _canShareImage(options, postViewMedia);
