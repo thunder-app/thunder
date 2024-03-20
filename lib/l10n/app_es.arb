@@ -1791,7 +1791,7 @@
   "@showUpdateChangelogsSubtitle": {
     "description": "Subtitle for setting for showing changelogs after updates"
   },
-  "thunderHasBeenUpdated": "¡Thunder ha sido actualizado a la versión {version}!",
+  "thunderHasBeenUpdated": "¡Thunder actualizado a {version}!",
   "@thunderHasBeenUpdated": {
     "description": "Heading for changelog when Thunder has been updated"
   },
