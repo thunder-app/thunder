@@ -1557,7 +1557,7 @@
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
   },
-  "thunderHasBeenUpdated": "Thunder has been updated to version {version}!",
+  "thunderHasBeenUpdated": "Thunder updated to {version}!",
   "@thunderHasBeenUpdated": {
     "description": "Heading for changelog when Thunder has been updated"
   },
