@@ -17,10 +17,13 @@ import 'package:thunder/utils/instance.dart';
 
 /// The app bar for the modlog feed page
 class ModlogFeedPageAppBar extends StatelessWidget {
-  const ModlogFeedPageAppBar({super.key, required this.showAppBarTitle});
+  const ModlogFeedPageAppBar({super.key, required this.showAppBarTitle, required this.lemmyClient});
 
   /// Boolean which indicates whether the title on the app bar should be shown
   final bool showAppBarTitle;
+
+  /// The current Lemmy client
+  final LemmyClient lemmyClient;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
       centerTitle: false,
       toolbarHeight: 70.0,
       surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: ModlogFeedAppBarTitle(visible: showAppBarTitle),
+      title: ModlogFeedAppBarTitle(visible: showAppBarTitle, lemmyClient: lemmyClient),
       leading: IconButton(
         icon: (!kIsWeb && Platform.isIOS
             ? Icon(
@@ -73,17 +76,19 @@ class ModlogFeedPageAppBar extends StatelessWidget {
 }
 
 class ModlogFeedAppBarTitle extends StatelessWidget {
-  const ModlogFeedAppBarTitle({super.key, this.visible = true});
+  const ModlogFeedAppBarTitle({super.key, this.visible = true, required this.lemmyClient});
 
   /// Boolean which indicates whether the title on the app bar should be shown
   final bool visible;
+
+  /// The current Lemmy client
+  final LemmyClient lemmyClient;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    final state = context.read<AuthBloc>().state;
     final feedState = context.read<FeedBloc>().state;
 
     return AnimatedOpacity(
@@ -99,7 +104,7 @@ class ModlogFeedAppBarTitle extends StatelessWidget {
         subtitle: Text(
           feedState.fullCommunityView != null
               ? generateCommunityFullName(context, feedState.fullCommunityView!.communityView.community.name, fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId))
-              : fetchInstanceNameFromUrl(state.getSiteResponse?.siteView.site.actorId ?? 'https://${LemmyClient.instance.lemmyApiV3.host}')!,
+              : lemmyClient.lemmyApiV3.host,
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       ),
