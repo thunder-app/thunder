@@ -17,13 +17,14 @@ void showSnackbar(
   Color? trailingIconColor,
   IconData? trailingIcon,
   void Function()? trailingAction,
+  bool usePostFrameCallback = true,
 }) {
   int wordCount = RegExp(r'[\w-]+').allMatches(text).length;
 
   // Allows us to clear the previous overlay before showing the next one
   const key = TransientKey('transient');
 
-  WidgetsBinding.instance.addPostFrameCallback((_) {
+  void showSnackbarInternal() {
     showOverlay(
       (context, progress) {
         return SnackbarNotification(
@@ -62,7 +63,13 @@ void showSnackbar(
       context: GlobalContext.context,
       key: key,
     );
-  });
+  }
+
+  if (usePostFrameCallback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => showSnackbarInternal());
+  } else {
+    showSnackbarInternal();
+  }
 }
 
 /// Builds a custom snackbar which attempts to match the Material 3 spec as closely as possible.

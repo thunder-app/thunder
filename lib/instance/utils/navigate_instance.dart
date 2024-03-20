@@ -51,7 +51,7 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
         ),
       );
     } else {
-      showSnackbar(l10n.unableToNavigateToInstance(instanceHost));
+      showSnackbar(l10n.unableToNavigateToInstance(instanceHost), usePostFrameCallback: false);
     }
   }
 }
