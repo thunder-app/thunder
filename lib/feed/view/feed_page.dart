@@ -303,7 +303,7 @@ class _FeedViewState extends State<FeedView> {
 
               if (state.status == FeedStatus.initial) {
                 final GetSiteResponse? site = context.read<AuthBloc>().state.getSiteResponse;
-                tagline = site?.taglines[Random().nextInt(site.taglines.length)].content;
+                tagline = site?.taglines.isNotEmpty == true ? site?.taglines[Random().nextInt(site.taglines.length)].content : null;
               }
 
               return RefreshIndicator(
