@@ -115,7 +115,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 children: [
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.firstOrNull?.originalUrl?.isNotEmpty == true)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
                   Expanded(
                     child: ScalableText(
@@ -124,9 +124,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.firstOrNull?.originalUrl?.isNotEmpty == true)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
-                  if (thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.isEmpty)
+                  if (thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.firstOrNull?.originalUrl?.isNotEmpty != true)
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: Icon(
@@ -153,7 +153,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   isUserLoggedIn: isUserLoggedIn,
                 ),
               ),
-            if (widget.postViewMedia.postView.post.body != null)
+            if (widget.postViewMedia.postView.post.body?.isNotEmpty == true)
               Expandable(
                 controller: expandableController,
                 collapsed: PostBodyPreview(
