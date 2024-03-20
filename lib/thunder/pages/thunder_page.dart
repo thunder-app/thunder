@@ -536,102 +536,102 @@ class _ThunderState extends State<Thunder> {
                             }
 
                             WidgetsBinding.instance.addPostFrameCallback((_) async {
-                              if (!hasShownChangelogDialog) {
-                                // Only ever come in here once per run
-                                hasShownChangelogDialog = true;
+                              if (hasShownChangelogDialog) return;
 
-                                // Check the last known version and the current version.
-                                // If the last known version is not null (meaning we've run before)
-                                // and the current version is different (meaning we've updated)
-                                // show the changelog (if we are configured to do so).
-                                SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                                String? lastKnownVersion = prefs.getString('current_version');
-                                String currentVersion = getCurrentVersion(removeInternalBuildNumber: true, trimV: true);
+                              // Only ever come in here once per run
+                              hasShownChangelogDialog = true;
 
-                                // Immediately update the current version for next time.
-                                prefs.setString('current_version', currentVersion);
+                              // Check the last known version and the current version.
+                              // If the last known version is not null (meaning we've run before)
+                              // and the current version is different (meaning we've updated)
+                              // show the changelog (if we are configured to do so).
+                              SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                              String? lastKnownVersion = prefs.getString('current_version');
+                              String currentVersion = getCurrentVersion(removeInternalBuildNumber: true, trimV: true);
 
-                                if (lastKnownVersion != null && lastKnownVersion != currentVersion && thunderBlocState.showUpdateChangelogs) {
-                                  final String changelog = await fetchCurrentVersionChangelog();
+                              // Immediately update the current version for next time.
+                              prefs.setString('current_version', currentVersion);
 
-                                  if (context.mounted) {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      showDragHandle: true,
-                                      isScrollControlled: true,
-                                      builder: (context) {
-                                        bool isChangelogExpanded = false;
+                              if (lastKnownVersion != null && lastKnownVersion != currentVersion && thunderBlocState.showUpdateChangelogs) {
+                                final String changelog = await fetchCurrentVersionChangelog();
 
-                                        return StatefulBuilder(
-                                          builder: (context, setState) {
-                                            return AnimatedSize(
-                                              duration: const Duration(milliseconds: 100),
-                                              child: FractionallySizedBox(
-                                                heightFactor: isChangelogExpanded ? 0.9 : 0.4,
-                                                child: Container(
-                                                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.max,
-                                                    children: [
-                                                      Align(
-                                                        alignment: Alignment.centerLeft,
-                                                        child: Text(
-                                                          l10n.thunderHasBeenUpdated(currentVersion),
-                                                          style: theme.textTheme.titleLarge,
+                                if (context.mounted) {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    showDragHandle: true,
+                                    isScrollControlled: true,
+                                    builder: (context) {
+                                      bool isChangelogExpanded = false;
+
+                                      return StatefulBuilder(
+                                        builder: (context, setState) {
+                                          return AnimatedSize(
+                                            duration: const Duration(milliseconds: 100),
+                                            child: FractionallySizedBox(
+                                              heightFactor: isChangelogExpanded ? 0.9 : 0.4,
+                                              child: Container(
+                                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.max,
+                                                  children: [
+                                                    Align(
+                                                      alignment: Alignment.centerLeft,
+                                                      child: Text(
+                                                        l10n.thunderHasBeenUpdated(currentVersion),
+                                                        style: theme.textTheme.titleLarge,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 24.0),
+                                                    Expanded(
+                                                      child: FadingEdgeScrollView.fromSingleChildScrollView(
+                                                        gradientFractionOnStart: 0.1,
+                                                        gradientFractionOnEnd: 0.1,
+                                                        child: SingleChildScrollView(
+                                                          controller: _changelogScrollController,
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            mainAxisSize: MainAxisSize.max,
+                                                            children: [
+                                                              CommonMarkdownBody(body: changelog),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
-                                                      const SizedBox(height: 24.0),
-                                                      Expanded(
-                                                        child: FadingEdgeScrollView.fromSingleChildScrollView(
-                                                          gradientFractionOnStart: 0.1,
-                                                          gradientFractionOnEnd: 0.1,
-                                                          child: SingleChildScrollView(
-                                                            controller: _changelogScrollController,
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              children: [
-                                                                CommonMarkdownBody(body: changelog),
-                                                              ],
-                                                            ),
-                                                          ),
+                                                    ),
+                                                    const SizedBox(height: 16.0),
+                                                    Wrap(
+                                                      alignment: WrapAlignment.end,
+                                                      children: [
+                                                        TextButton(
+                                                          onPressed: () => setState(() => isChangelogExpanded = !isChangelogExpanded),
+                                                          child: Text(isChangelogExpanded ? l10n.collapse : l10n.expand),
                                                         ),
-                                                      ),
-                                                      const SizedBox(height: 16.0),
-                                                      Wrap(
-                                                        alignment: WrapAlignment.end,
-                                                        children: [
-                                                          TextButton(
-                                                            onPressed: () => setState(() => isChangelogExpanded = !isChangelogExpanded),
-                                                            child: Text(isChangelogExpanded ? l10n.collapse : l10n.expand),
-                                                          ),
-                                                          const SizedBox(width: 6.0),
-                                                          FilledButton.tonal(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                              prefs.setBool(LocalSettings.showUpdateChangelogs.name, false);
-                                                            },
-                                                            child: Text(l10n.doNotShowAgain),
-                                                          ),
-                                                          const SizedBox(width: 6.0),
-                                                          FilledButton(
-                                                            onPressed: () => Navigator.of(context).pop(),
-                                                            child: Text(l10n.close),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(height: 24.0),
-                                                    ],
-                                                  ),
+                                                        const SizedBox(width: 6.0),
+                                                        FilledButton.tonal(
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop();
+                                                            prefs.setBool(LocalSettings.showUpdateChangelogs.name, false);
+                                                          },
+                                                          child: Text(l10n.doNotShowAgain),
+                                                        ),
+                                                        const SizedBox(width: 6.0),
+                                                        FilledButton(
+                                                          onPressed: () => Navigator.of(context).pop(),
+                                                          child: Text(l10n.close),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 24.0),
+                                                  ],
                                                 ),
                                               ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                    );
-                                  }
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
                                 }
                               }
                             });
