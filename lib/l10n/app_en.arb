@@ -1381,14 +1381,6 @@
   "@showBotAccounts": {
     "description": "Option to show bot accounts."
   },
-  "showUpdateChangelogs": "Show Update Changelogs",
-  "@showUpdateChangelogs": {
-    "description": "Setting for showing changelogs after updates"
-  },
-  "showUpdateChangelogsSubtitle": "Display a list of changes after an update",
-  "@showUpdateChangelogsSubtitle": {
-    "description": "Subtitle for setting for showing changelogs after updates"
-  },
   "showCommentActionButtons": "Show Comment Action Buttons",
   "@showCommentActionButtons": {
     "description": "Toggle to show comment action buttons."
@@ -1466,6 +1458,14 @@
   "showThumbnailPreviewOnRight": "Show Thumbnails on the Right",
   "@showThumbnailPreviewOnRight": {
     "description": "Toggle to show thumbnails on the right side."
+  },
+  "showUpdateChangelogs": "Show Update Changelogs",
+  "@showUpdateChangelogs": {
+    "description": "Setting for showing changelogs after updates"
+  },
+  "showUpdateChangelogsSubtitle": "Display a list of changes after an update",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Subtitle for setting for showing changelogs after updates"
   },
   "showUserDisplayNames": "Show User Display Names",
   "@showUserDisplayNames": {
