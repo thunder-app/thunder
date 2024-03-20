@@ -566,6 +566,7 @@ class _ThunderState extends State<Thunder> {
                                       return StatefulBuilder(
                                         builder: (context, setState) {
                                           return AnimatedSize(
+                                            alignment: Alignment.bottomCenter,
                                             duration: const Duration(milliseconds: 100),
                                             child: FractionallySizedBox(
                                               heightFactor: isChangelogExpanded ? 0.9 : 0.6,
