@@ -568,7 +568,7 @@ class _ThunderState extends State<Thunder> {
                                           return AnimatedSize(
                                             duration: const Duration(milliseconds: 100),
                                             child: FractionallySizedBox(
-                                              heightFactor: isChangelogExpanded ? 0.9 : 0.4,
+                                              heightFactor: isChangelogExpanded ? 0.9 : 0.6,
                                               child: Container(
                                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
                                                 child: Column(
@@ -600,15 +600,10 @@ class _ThunderState extends State<Thunder> {
                                                       ),
                                                     ),
                                                     const SizedBox(height: 16.0),
-                                                    Wrap(
-                                                      alignment: WrapAlignment.end,
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
                                                       children: [
                                                         TextButton(
-                                                          onPressed: () => setState(() => isChangelogExpanded = !isChangelogExpanded),
-                                                          child: Text(isChangelogExpanded ? l10n.collapse : l10n.expand),
-                                                        ),
-                                                        const SizedBox(width: 6.0),
-                                                        FilledButton.tonal(
                                                           onPressed: () {
                                                             Navigator.of(context).pop();
                                                             prefs.setBool(LocalSettings.showUpdateChangelogs.name, false);
