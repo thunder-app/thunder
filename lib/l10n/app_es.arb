@@ -1770,5 +1770,37 @@
   "unbannedUser": "Usuario no bloqueado",
   "@unbannedUser": {
     "description": "Short decription for moderator action to unban a user"
+  },
+  "collapse": "Contraer",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "doNotShowAgain": "No volver a mostrar",
+  "@doNotShowAgain": {
+    "description": "Action for hiding something permanently"
+  },
+  "expand": "Expandir",
+  "@expand": {
+    "description": "Action to expand something"
+  },
+  "showUpdateChangelogs": "Mostrar los registros de cambios de la actualización",
+  "@showUpdateChangelogs": {
+    "description": "Setting for showing changelogs after updates"
+  },
+  "showUpdateChangelogsSubtitle": "Mostrar una lista con los cambios después de actualizar",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Subtitle for setting for showing changelogs after updates"
+  },
+  "thunderHasBeenUpdated": "¡Thunder ha sido actualizado a la versión {version}!",
+  "@thunderHasBeenUpdated": {
+    "description": "Heading for changelog when Thunder has been updated"
+  },
+  "unableToRetrieveChangelog": "No se ha podido recuperar el registro de cambios para la versión {version}.",
+  "@unableToRetrieveChangelog": {
+    "description": "Error message for when we are unable to retrieve the changelog."
+  },
+  "versionNumber": "Versión {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
   }
 }
