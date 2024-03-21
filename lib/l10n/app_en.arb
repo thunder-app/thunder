@@ -113,6 +113,18 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "boldCommunityName": "Bold Community Name",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "boldInstanceName": "Bold Instance Name",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "Bold User Name",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
   "browserMode": "Link handling",
   "@browserMode": {
     "description": "Title for link handling setting (called browserMode internally)"
@@ -1818,18 +1830,6 @@
   "warning": "Warning",
   "@warning": {
     "description": "Heading for warning dialogs"
-  },
-  "weightCommunityName": "Weight Community Name",
-  "@weightCommunityName": {
-    "description": "Setting for adding weight to the community name"
-  },
-  "weightInstanceName": "Weight Instance Name",
-  "@weightInstanceName": {
-    "description": "Setting for adding weight to the instance name"
-  },
-  "weightUserName": "Weight User Name",
-  "@weightUserName": {
-    "description": "Setting for adding weight to the username"
   },
   "xDownvotes": "{x} downvotes",
   "@xDownvotes": {},

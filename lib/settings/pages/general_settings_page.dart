@@ -757,13 +757,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               options: [
                 ListPickerItem(
                   icon: Icons.format_bold_rounded,
-                  label: l10n.weightUserName,
+                  label: l10n.boldUserName,
                   payload: LocalSettings.userFullNameWeightUserName,
                   isChecked: userFullNameWeightUserName,
                 ),
                 ListPickerItem(
                   icon: Icons.format_bold_rounded,
-                  label: l10n.weightInstanceName,
+                  label: l10n.boldInstanceName,
                   payload: LocalSettings.userFullNameWeightInstanceName,
                   isChecked: userFullNameWeightInstanceName,
                 ),
@@ -893,13 +893,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               options: [
                 ListPickerItem(
                   icon: Icons.format_bold_rounded,
-                  label: l10n.weightCommunityName,
+                  label: l10n.boldCommunityName,
                   payload: LocalSettings.communityFullNameWeightCommunityName,
                   isChecked: communityFullNameWeightCommunityName,
                 ),
                 ListPickerItem(
                   icon: Icons.format_bold_rounded,
-                  label: l10n.weightInstanceName,
+                  label: l10n.boldInstanceName,
                   payload: LocalSettings.communityFullNameWeightInstanceName,
                   isChecked: communityFullNameWeightInstanceName,
                 ),
