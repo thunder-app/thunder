@@ -1135,10 +1135,6 @@
   "@admin": {
     "description": "Role name for admin"
   },
-  "commentUseColorizedUsername": "Цветные имена пользователей",
-  "@commentUseColorizedUsername": {
-    "description": "Setting used to toggle colorized comments creator display name."
-  },
   "bannedUser": "Забанненый пользователь",
   "@bannedUser": {
     "description": "Short decription for moderator action to ban a user"

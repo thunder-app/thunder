@@ -1369,10 +1369,6 @@
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
   },
-  "commentUseColorizedUsername": "Nombres de usuario en color",
-  "@commentUseColorizedUsername": {
-    "description": "Setting used to toggle colorized comments creator display name."
-  },
   "noItems": "Sin artículos",
   "@noItems": {
     "description": "Generic text when there are no items"

@@ -469,10 +469,6 @@
   "@commentSavedAsDraft": {},
   "commentSwipeGesturesHint": "Chcete využívat tlačítka? Povolte je v sekci komentářů v základním nastavení.",
   "@commentSwipeGesturesHint": {},
-  "commentUseColorizedUsername": "Barevné Přezdívky",
-  "@commentUseColorizedUsername": {
-    "description": "Setting used to toggle colorized comments creator display name."
-  },
   "community": "Komunita",
   "@community": {},
   "compactView": "Kompaktní Zobrazení",

@@ -369,10 +369,6 @@
   "@refresh": {},
   "reply": "{count, plural, zero {Odpovedí} one {Odpoveď} other {Odpovede} }",
   "@reply": {},
-  "commentUseColorizedUsername": "Farebné používateľské mená",
-  "@commentUseColorizedUsername": {
-    "description": "Setting used to toggle colorized comments creator display name."
-  },
   "commentSwipeGesturesHint": "Chcete radšej používať tlačidlá? Zapnete ich vo všeobecných nastaveniach v sekcii komentárov.",
   "@commentSwipeGesturesHint": {},
   "confirmMarkAllAsReadTitle": "Označiť všetky ako prečítané?",
