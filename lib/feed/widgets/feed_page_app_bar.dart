@@ -308,6 +308,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final feedBloc = context.read<FeedBloc>();
+    final authBloc = context.read<AuthBloc>();
 
     return Row(
       children: [
@@ -366,32 +367,6 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               },
               icon: Icons.shield_rounded,
               title: l10n.modlog,
-            ),
-            ThunderPopupMenuItem(
-              onTap: () async {
-                HapticFeedback.mediumImpact();
-                ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                await Navigator.of(context).push(
-                  SwipeablePageRoute(
-                    transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                    backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
-                    backGestureDetectionWidth: 45,
-                    canOnlySwipeFromEdge: true,
-                    builder: (otherContext) {
-                      return MultiBlocProvider(
-                        providers: [
-                          BlocProvider.value(value: feedBloc),
-                          BlocProvider.value(value: thunderBloc),
-                        ],
-                        child: const ReportFeedPage(),
-                      );
-                    },
-                  ),
-                );
-              },
-              icon: Icons.report_rounded,
-              title: l10n.report(2),
             ),
           ],
         ),

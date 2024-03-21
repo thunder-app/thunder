@@ -1,16 +1,21 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/moderator/view/report_page.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -149,9 +154,11 @@ class FeedDrawerItems extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final feedBloc = context.watch<FeedBloc>();
 
-    FeedState feedState = context.watch<FeedBloc>().state;
+    FeedState feedState = feedBloc.state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
+    AccountState accountState = context.watch<AccountBloc>().state;
 
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
 
@@ -178,6 +185,36 @@ class FeedDrawerItems extends StatelessWidget {
             },
           ).toList(),
         ),
+        if (accountState.moderates.isNotEmpty)
+          DrawerItem(
+            label: l10n.report(2),
+            onTap: () async {
+              HapticFeedback.mediumImpact();
+              ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+              await Navigator.of(context).push(
+                SwipeablePageRoute(
+                  transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                  backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                  backGestureDetectionWidth: 45,
+                  canOnlySwipeFromEdge: true,
+                  builder: (otherContext) {
+                    return MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(value: feedBloc),
+                        BlocProvider.value(value: thunderBloc),
+                      ],
+                      child: const ReportFeedPage(),
+                    );
+                  },
+                ),
+              );
+            },
+            icon: Icons.report_rounded,
+            trailing: const Icon(Icons.arrow_forward_rounded),
+            disabled: false,
+            isSelected: false,
+          ),
       ],
     );
   }
@@ -409,6 +446,7 @@ class DrawerItem extends StatelessWidget {
   final VoidCallback onTap;
   final String label;
   final IconData icon;
+  final Widget? trailing;
 
   final bool disabled;
   final bool isSelected;
@@ -418,6 +456,7 @@ class DrawerItem extends StatelessWidget {
     required this.onTap,
     required this.label,
     required this.icon,
+    this.trailing,
     this.disabled = false,
     required this.isSelected,
   });
@@ -450,6 +489,11 @@ class DrawerItem extends StatelessWidget {
                       label,
                       style: disabled ? theme.textTheme.bodyMedium?.copyWith(color: theme.dividerColor) : null,
                     ),
+                    if (trailing != null) ...[
+                      const Spacer(),
+                      trailing!,
+                      const SizedBox(width: 16),
+                    ]
                   ],
                 ),
               ],
