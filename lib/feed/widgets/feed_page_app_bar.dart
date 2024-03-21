@@ -167,7 +167,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
               ),
             );
@@ -274,7 +274,7 @@ class FeedAppBarUserActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
               ),
             );
@@ -329,7 +329,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
               ),
             );

@@ -16,7 +16,7 @@ import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/feed/utils/community.dart';
 
 class CommunityDrawer extends StatefulWidget {

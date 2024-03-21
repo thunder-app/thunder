@@ -64,7 +64,7 @@ class PostCardViewCompact extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          !showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
+          !showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
               ? ThumbnailPreview(
                   postViewMedia: postViewMedia,
                   navigateToPost: navigateToPost,
@@ -168,7 +168,7 @@ class PostCardViewCompact extends StatelessWidget {
               ],
             ),
           ),
-          showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
+          showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
               ? ThumbnailPreview(
                   postViewMedia: postViewMedia,
                   navigateToPost: navigateToPost,

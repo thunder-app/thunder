@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/comment/widgets/comment_list_entry.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -11,16 +16,19 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
+import 'package:thunder/modlog/view/modlog_page.dart';
 import 'package:thunder/search/widgets/search_action_chip.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/persistent_header.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_list_entry.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/numbers.dart';
+import 'package:thunder/utils/swipe.dart';
 
 class InstancePage extends StatefulWidget {
   final GetSiteResponse getSiteResponse;
@@ -152,6 +160,40 @@ class _InstancePageState extends State<InstancePage> {
                               Icons.open_in_browser_rounded,
                               semanticLabel: l10n.openInBrowser,
                             ),
+                          ),
+                          PopupMenuButton(
+                            itemBuilder: (context) => [
+                              ThunderPopupMenuItem(
+                                onTap: () async {
+                                  HapticFeedback.mediumImpact();
+
+                                  AuthBloc authBloc = context.read<AuthBloc>();
+                                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                                  FeedBloc feedBloc = context.read<FeedBloc>();
+
+                                  await Navigator.of(context).push(
+                                    SwipeablePageRoute(
+                                      transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                      backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                                      backGestureDetectionWidth: 45,
+                                      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) ||
+                                          !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                                      builder: (otherContext) {
+                                        return MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider.value(value: feedBloc),
+                                            BlocProvider.value(value: thunderBloc),
+                                          ],
+                                          child: ModlogFeedPage(lemmyClient: feedBloc.lemmyClient),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                icon: Icons.shield_rounded,
+                                title: l10n.modlog,
+                              ),
+                            ],
                           ),
                         ],
                       ),

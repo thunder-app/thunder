@@ -285,7 +285,7 @@ class FeedFAB extends StatelessWidget {
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
         title: l10n.sortOptions,
-        onSelect: (selected) => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
+        onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
         previouslySelected: context.read<FeedBloc>().state.sortType,
       ),
     );

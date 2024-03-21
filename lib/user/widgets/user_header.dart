@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';

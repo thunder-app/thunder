@@ -113,6 +113,18 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "boldCommunityName": "Bold Community Name",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "boldInstanceName": "Bold Instance Name",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "Bold User Name",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
   "browserMode": "Link handling",
   "@browserMode": {
     "description": "Title for link handling setting (called browserMode internally)"
@@ -199,6 +211,18 @@
   "@collapseSpoiler": {
     "description": "Label for collapsing spoiler"
   },
+  "colorizeCommunityName": "Colorize Community Name",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "colorizeInstanceName": "Colorize Instance Name",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "colorizeUserName": "Colorize User Name",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
   "combineCommentScores": "Combine Comment Scores",
   "@combineCommentScores": {
     "description": "Toggle to combine comment scores."
@@ -241,10 +265,6 @@
   },
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "@commentSwipeGesturesHint": {},
-  "commentUseColorizedUsername": "Colorized Usernames",
-  "@commentUseColorizedUsername": {
-    "description": "Setting used to toggle colorized comments creator display name."
-  },
   "comments": "Comments",
   "@comments": {},
   "communities": "Communities",
@@ -262,6 +282,10 @@
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
+  },
+  "communityStyle": "Community Style",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
   },
   "compactPostCardMetadataItems": "Compact View Metadata",
   "@compactPostCardMetadataItems": {
@@ -1775,8 +1799,16 @@
   "@userSettingDescription": {
     "description": "Description which explains that the settings are applied globally to the current user."
   },
+  "userStyle": "User Style",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  },
   "username": "Username",
   "@username": {},
+  "usernameFormattingRedirect": "Looking for username formatting?",
+  "@usernameFormattingRedirect": {
+    "description": "Setting title for sending the user to the new formatting options"
+  },
   "users": "Users",
   "@users": {},
   "versionNumber": "Version {version}",

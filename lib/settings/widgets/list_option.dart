@@ -16,7 +16,7 @@ class ListOption<T> extends StatelessWidget {
   final List<ListPickerItem<T>> options;
 
   // Callback
-  final void Function(ListPickerItem<T>) onChanged;
+  final Future<void> Function(ListPickerItem<T>) onChanged;
 
   final BottomSheetListPicker? customListPicker;
   final bool? isBottomModalScrollControlled;
@@ -24,6 +24,7 @@ class ListOption<T> extends StatelessWidget {
   final bool disabled;
   final Widget? valueDisplay;
   final bool closeOnSelect;
+  final Widget Function()? onUpdateHeading;
 
   /// A key to assign to this widget when it should be highlighted
   final GlobalKey? highlightKey;
@@ -42,6 +43,7 @@ class ListOption<T> extends StatelessWidget {
     this.valueDisplay,
     this.closeOnSelect = true,
     this.highlightKey,
+    this.onUpdateHeading,
   });
 
   @override
@@ -69,10 +71,9 @@ class ListOption<T> extends StatelessWidget {
                         BottomSheetListPicker(
                           title: description,
                           heading: bottomSheetHeading,
+                          onUpdateHeading: onUpdateHeading,
                           items: options,
-                          onSelect: (value) {
-                            onChanged(value);
-                          },
+                          onSelect: onChanged,
                           previouslySelected: value.payload,
                           closeOnSelect: closeOnSelect,
                         ),

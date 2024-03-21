@@ -22,7 +22,7 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
@@ -115,7 +115,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 children: [
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
                   Expanded(
                     child: ScalableText(
@@ -124,9 +124,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
-                  if (thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.isEmpty)
+                  if (thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.first.mediaType == MediaType.text)
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: Icon(
@@ -153,7 +153,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   isUserLoggedIn: isUserLoggedIn,
                 ),
               ),
-            if (widget.postViewMedia.postView.post.body != null)
+            if (widget.postViewMedia.postView.post.body?.isNotEmpty == true)
               Expandable(
                 controller: expandableController,
                 collapsed: PostBodyPreview(
