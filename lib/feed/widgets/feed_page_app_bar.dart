@@ -19,7 +19,6 @@ import 'package:thunder/feed/utils/community_share.dart';
 import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/moderator/view/report_page.dart';
 import 'package:thunder/modlog/view/modlog_page.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
