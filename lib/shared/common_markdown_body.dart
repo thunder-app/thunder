@@ -476,7 +476,7 @@ class SuperscriptSubscriptWidget extends StatelessWidget {
         children: [
           WidgetSpan(
             child: Transform.translate(
-              offset: Offset(0.0, type == CustomMarkdownType.subscript ? 3.0 : -10.0),
+              offset: Offset(0.0, type == CustomMarkdownType.subscript ? 3.0 : -5.0),
               child: ScalableText(
                 text,
                 fontScale: state.contentFontSizeScale,

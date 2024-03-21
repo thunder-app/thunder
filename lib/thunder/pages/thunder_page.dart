@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter
+import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,15 +22,18 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:collection/collection.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 
 // Internal
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
@@ -71,6 +75,7 @@ class _ThunderState extends State<Thunder> {
   int appExitCounter = 0;
 
   bool hasShownUpdateDialog = false;
+  bool hasShownChangelogDialog = false;
 
   bool _isFabOpen = false;
 
@@ -81,6 +86,8 @@ class _ThunderState extends State<Thunder> {
   late final StreamSubscription mediaIntentDataStreamSubscription;
 
   late final StreamSubscription textIntentDataStreamSubscription;
+
+  final ScrollController _changelogScrollController = ScrollController();
 
   @override
   void initState() {
@@ -527,6 +534,103 @@ class _ThunderState extends State<Thunder> {
                                 setState(() => hasShownUpdateDialog = true);
                               });
                             }
+
+                            WidgetsBinding.instance.addPostFrameCallback((_) async {
+                              if (hasShownChangelogDialog) return;
+
+                              // Only ever come in here once per run
+                              hasShownChangelogDialog = true;
+
+                              // Check the last known version and the current version.
+                              // If the last known version is not null (meaning we've run before)
+                              // and the current version is different (meaning we've updated)
+                              // show the changelog (if we are configured to do so).
+                              SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                              String? lastKnownVersion = prefs.getString('current_version');
+                              String currentVersion = getCurrentVersion(removeInternalBuildNumber: true, trimV: true);
+
+                              // Immediately update the current version for next time.
+                              prefs.setString('current_version', currentVersion);
+
+                              if (lastKnownVersion != null && lastKnownVersion != currentVersion && thunderBlocState.showUpdateChangelogs) {
+                                final String changelog = await fetchCurrentVersionChangelog();
+
+                                if (context.mounted) {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    showDragHandle: true,
+                                    isScrollControlled: true,
+                                    builder: (context) {
+                                      bool isChangelogExpanded = false;
+
+                                      return StatefulBuilder(
+                                        builder: (context, setState) {
+                                          return AnimatedSize(
+                                            alignment: Alignment.bottomCenter,
+                                            duration: const Duration(milliseconds: 100),
+                                            child: FractionallySizedBox(
+                                              heightFactor: isChangelogExpanded ? 0.9 : 0.6,
+                                              child: Container(
+                                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.max,
+                                                  children: [
+                                                    Align(
+                                                      alignment: Alignment.centerLeft,
+                                                      child: Text(
+                                                        l10n.thunderHasBeenUpdated(currentVersion),
+                                                        style: theme.textTheme.titleLarge,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 24.0),
+                                                    Expanded(
+                                                      child: FadingEdgeScrollView.fromSingleChildScrollView(
+                                                        gradientFractionOnStart: 0.1,
+                                                        gradientFractionOnEnd: 0.1,
+                                                        child: SingleChildScrollView(
+                                                          controller: _changelogScrollController,
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            mainAxisSize: MainAxisSize.max,
+                                                            children: [
+                                                              CommonMarkdownBody(body: changelog),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 16.0),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop();
+                                                            prefs.setBool(LocalSettings.showUpdateChangelogs.name, false);
+                                                          },
+                                                          child: Text(l10n.doNotShowAgain),
+                                                        ),
+                                                        const SizedBox(width: 6.0),
+                                                        FilledButton(
+                                                          onPressed: () => Navigator.of(context).pop(),
+                                                          child: Text(l10n.close),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 24.0),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+                                }
+                              }
+                            });
 
                             return PageView(
                               controller: widget.pageController,

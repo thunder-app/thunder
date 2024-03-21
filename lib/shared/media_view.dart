@@ -147,6 +147,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           PageRouteBuilder(
             opaque: false,
             transitionDuration: const Duration(milliseconds: 100),
+            reverseTransitionDuration: const Duration(milliseconds: 100),
             transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
               return FadeTransition(opacity: animation, child: child);
             },

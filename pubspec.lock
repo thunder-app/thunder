@@ -655,12 +655,13 @@ packages:
     source: hosted
     version: "1.0.0"
   flutter_launcher_icons:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
-      name: flutter_launcher_icons
-      sha256: "526faf84284b86a4cb36d20a5e45147747b7563d921373d4ee0559c54fcdbcea"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "006cb1ed53f969bf11816cde5b16dd520e1ee40e"
+      url: "https://github.com/fluttercommunity/flutter_launcher_icons.git"
+    source: git
     version: "0.13.1"
   flutter_lints:
     dependency: "direct dev"

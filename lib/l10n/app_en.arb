@@ -173,6 +173,10 @@
   "@clearedUserPreferences": {},
   "close": "Close",
   "@close": {},
+  "collapse": "Collapse",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
   "collapseCommentPreview": "Collapse Comment Preview",
   "@collapseCommentPreview": {
     "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
@@ -427,6 +431,10 @@
   "@displayUserScore": {
     "description": "Option for displaying user scores or karma."
   },
+  "doNotShowAgain": "Do Not Show Again",
+  "@doNotShowAgain": {
+    "description": "Action for hiding something permanently"
+  },
   "downloadingMedia": "Downloading media to share…",
   "@downloadingMedia": {},
   "downvote": "Downvote",
@@ -480,6 +488,10 @@
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
+  },
+  "expand": "Expand",
+  "@expand": {
+    "description": "Action to expand something"
   },
   "expandCommentPreview": "Expand Comment Preview",
   "@expandCommentPreview": {
@@ -1447,6 +1459,14 @@
   "@showThumbnailPreviewOnRight": {
     "description": "Toggle to show thumbnails on the right side."
   },
+  "showUpdateChangelogs": "Show Update Changelogs",
+  "@showUpdateChangelogs": {
+    "description": "Setting for showing changelogs after updates"
+  },
+  "showUpdateChangelogsSubtitle": "Display a list of changes after an update",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Subtitle for setting for showing changelogs after updates"
+  },
   "showUserDisplayNames": "Show User Display Names",
   "@showUserDisplayNames": {
     "description": "Toggle to show user display names."
@@ -1536,6 +1556,10 @@
   "theming": "Theming",
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "thunderHasBeenUpdated": "Thunder updated to {version}!",
+  "@thunderHasBeenUpdated": {
+    "description": "Heading for changelog when Thunder has been updated"
   },
   "timeoutComments": "Error: Timeout when attempting to fetch comments",
   "@timeoutComments": {},
@@ -1638,6 +1662,10 @@
   "unableToNavigateToInstance": "Unable to navigate to {instanceHost}. It may not be a valid Lemmy instance.",
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "unableToRetrieveChangelog": "Unable to retrieve changelog for version {version}.",
+  "@unableToRetrieveChangelog": {
+    "description": "Error message for when we are unable to retrieve the changelog."
   },
   "unbannedUser": "Unbanned User",
   "@unbannedUser": {
@@ -1751,6 +1779,10 @@
   "@username": {},
   "users": "Users",
   "@users": {},
+  "versionNumber": "Version {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
+  },
   "viewAll": "View all",
   "@viewAll": {
     "description": "A title for viewing all of something (e.g., instances)"
