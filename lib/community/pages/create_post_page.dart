@@ -20,7 +20,7 @@ import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';

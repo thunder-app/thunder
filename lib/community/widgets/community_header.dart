@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';

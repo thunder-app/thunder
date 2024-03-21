@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/modlog/bloc/modlog_bloc.dart';
@@ -61,7 +61,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => ModlogActionTypePicker(
                 title: l10n.filters,
-                onSelect: (selected) => context.read<ModlogBloc>().add(ModlogFeedChangeFilterTypeEvent(modlogActionType: selected.payload)),
+                onSelect: (selected) async => context.read<ModlogBloc>().add(ModlogFeedChangeFilterTypeEvent(modlogActionType: selected.payload)),
                 previouslySelected: context.read<ModlogBloc>().state.modlogActionType,
               ),
             );

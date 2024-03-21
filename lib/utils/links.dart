@@ -328,7 +328,7 @@ void handleLinkLongPress(BuildContext context, ThunderState state, String text, 
             ListPickerItem(label: l10n.copy, payload: 'copy', icon: Icons.copy_rounded),
             ListPickerItem(label: l10n.share, payload: 'share', icon: Icons.share_rounded),
           ],
-          onSelect: (value) {
+          onSelect: (value) async {
             switch (value.payload) {
               case 'open':
                 handleLinkTap(context, state, text, url);

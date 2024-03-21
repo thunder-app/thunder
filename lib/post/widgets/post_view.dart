@@ -22,7 +22,7 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';

@@ -11,8 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
-import 'package:smooth_highlight/smooth_highlight.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
@@ -107,8 +106,20 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// Defines the separator used to denote full usernames
   FullNameSeparator userSeparator = FullNameSeparator.at;
 
+  /// Defines the style used to denote full usernames
+  bool userFullNameWeightUserName = true;
+  bool userFullNameWeightInstanceName = false;
+  bool userFullNameColorizeUserName = false;
+  bool userFullNameColorizeInstanceName = false;
+
   /// Defines the separator used to denote full commuity names
   FullNameSeparator communitySeparator = FullNameSeparator.dot;
+
+  /// Defines the style used to denote full community names
+  bool communityFullNameWeightCommunityName = false;
+  bool communityFullNameWeightInstanceName = false;
+  bool communityFullNameColorizeCommunityName = false;
+  bool communityFullNameColorizeInstanceName = false;
 
   /// Defines the image caching mode
   ImageCachingMode imageCachingMode = ImageCachingMode.relaxed;
@@ -118,7 +129,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
-  void setPreferences(attribute, value) async {
+  Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
@@ -206,9 +217,41 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setString(LocalSettings.userFormat.name, value);
         setState(() => userSeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.at));
         break;
+      case LocalSettings.userFullNameWeightUserName:
+        await prefs.setBool(LocalSettings.userFullNameWeightUserName.name, value);
+        setState(() => userFullNameWeightUserName = value);
+        break;
+      case LocalSettings.userFullNameWeightInstanceName:
+        await prefs.setBool(LocalSettings.userFullNameWeightInstanceName.name, value);
+        setState(() => userFullNameWeightInstanceName = value);
+        break;
+      case LocalSettings.userFullNameColorizeUserName:
+        await prefs.setBool(LocalSettings.userFullNameColorizeUserName.name, value);
+        setState(() => userFullNameColorizeUserName = value);
+        break;
+      case LocalSettings.userFullNameColorizeInstanceName:
+        await prefs.setBool(LocalSettings.userFullNameColorizeInstanceName.name, value);
+        setState(() => userFullNameColorizeInstanceName = value);
+        break;
       case LocalSettings.communityFormat:
         await prefs.setString(LocalSettings.communityFormat.name, value);
         setState(() => communitySeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.dot));
+        break;
+      case LocalSettings.communityFullNameWeightCommunityName:
+        await prefs.setBool(LocalSettings.communityFullNameWeightCommunityName.name, value);
+        setState(() => communityFullNameWeightCommunityName = value);
+        break;
+      case LocalSettings.communityFullNameWeightInstanceName:
+        await prefs.setBool(LocalSettings.communityFullNameWeightInstanceName.name, value);
+        setState(() => communityFullNameWeightInstanceName = value);
+        break;
+      case LocalSettings.communityFullNameColorizeCommunityName:
+        await prefs.setBool(LocalSettings.communityFullNameColorizeCommunityName.name, value);
+        setState(() => communityFullNameColorizeCommunityName = value);
+        break;
+      case LocalSettings.communityFullNameColorizeInstanceName:
+        await prefs.setBool(LocalSettings.communityFullNameColorizeInstanceName.name, value);
+        setState(() => communityFullNameColorizeInstanceName = value);
         break;
       case LocalSettings.imageCachingMode:
         await prefs.setString(LocalSettings.imageCachingMode.name, value);
@@ -254,7 +297,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
       userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
+      userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? true;
+      userFullNameWeightInstanceName = prefs.getBool(LocalSettings.userFullNameWeightInstanceName.name) ?? false;
+      userFullNameColorizeUserName = prefs.getBool(LocalSettings.userFullNameColorizeUserName.name) ?? false;
+      userFullNameColorizeInstanceName = prefs.getBool(LocalSettings.userFullNameColorizeInstanceName.name) ?? false;
       communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+      communityFullNameWeightCommunityName = prefs.getBool(LocalSettings.communityFullNameWeightCommunityName.name) ?? false;
+      communityFullNameWeightInstanceName = prefs.getBool(LocalSettings.communityFullNameWeightInstanceName.name) ?? false;
+      communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
+      communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
       imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
 
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
@@ -341,12 +392,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
               options: [...SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never), ...topSortTypeItems],
               icon: Icons.sort_rounded,
-              onChanged: (_) {},
+              onChanged: (_) async {},
               isBottomModalScrollControlled: true,
               customListPicker: SortPicker(
                 includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
                 title: l10n.defaultFeedSortType,
-                onSelect: (value) {
+                onSelect: (value) async {
                   setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
                 },
                 previouslySelected: defaultSortType,
@@ -370,11 +421,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
               options: CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never),
               icon: Icons.comment_bank_rounded,
-              onChanged: (_) {},
+              onChanged: (_) async {},
               customListPicker: CommentSortPicker(
                 includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
                 title: l10n.commentSortType,
-                onSelect: (value) {
+                onSelect: (value) async {
                   setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
                 },
                 previouslySelected: defaultCommentSortType,
@@ -405,7 +456,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
               options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode, e.toLanguageTag()), icon: Icons.language_rounded, payload: e)).toList(),
               icon: Icons.language_rounded,
-              onChanged: (ListPickerItem<Locale> value) {
+              onChanged: (ListPickerItem<Locale> value) async {
                 setPreferences(LocalSettings.appLanguageCode, value.payload);
               },
               valueDisplay: Row(
@@ -603,7 +654,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               highlightKey: settingToHighlight == LocalSettings.scrapeMissingPreviews ? settingToHighlightKey : null,
             ),
           ),
-
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
@@ -615,7 +665,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ListOption(
               description: l10n.userFormat,
               value: ListPickerItem(
-                label: generateUserFullName(null, 'name', 'instance.tld', userSeparator: userSeparator),
+                label: generateSampleUserFullName(userSeparator),
+                labelWidget: generateSampleUserFullNameWidget(
+                  userSeparator,
+                  weightUserName: userFullNameWeightUserName,
+                  weightInstanceName: userFullNameWeightInstanceName,
+                  colorizeUserName: userFullNameColorizeUserName,
+                  colorizeInstanceName: userFullNameColorizeInstanceName,
+                  textStyle: theme.textTheme.bodyMedium,
+                  colorScheme: theme.colorScheme,
+                ),
                 icon: Icons.person_rounded,
                 payload: userSeparator,
                 capitalizeLabel: false,
@@ -623,19 +682,46 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               options: [
                 ListPickerItem(
                   icon: const IconData(0x2022),
-                  label: generateUserFullName(null, 'name', 'instance.tld', userSeparator: FullNameSeparator.dot),
+                  label: generateSampleUserFullName(FullNameSeparator.dot),
+                  labelWidget: generateSampleUserFullNameWidget(
+                    FullNameSeparator.dot,
+                    weightUserName: userFullNameWeightUserName,
+                    weightInstanceName: userFullNameWeightInstanceName,
+                    colorizeUserName: userFullNameColorizeUserName,
+                    colorizeInstanceName: userFullNameColorizeInstanceName,
+                    textStyle: theme.textTheme.bodyMedium,
+                    colorScheme: theme.colorScheme,
+                  ),
                   payload: FullNameSeparator.dot,
                   capitalizeLabel: false,
                 ),
                 ListPickerItem(
                   icon: Icons.alternate_email_rounded,
-                  label: generateUserFullName(null, 'name', 'instance.tld', userSeparator: FullNameSeparator.at),
+                  label: generateSampleUserFullName(FullNameSeparator.at),
+                  labelWidget: generateSampleUserFullNameWidget(
+                    FullNameSeparator.at,
+                    weightUserName: userFullNameWeightUserName,
+                    weightInstanceName: userFullNameWeightInstanceName,
+                    colorizeUserName: userFullNameColorizeUserName,
+                    colorizeInstanceName: userFullNameColorizeInstanceName,
+                    textStyle: theme.textTheme.bodyMedium,
+                    colorScheme: theme.colorScheme,
+                  ),
                   payload: FullNameSeparator.at,
                   capitalizeLabel: false,
                 ),
                 ListPickerItem(
                   icon: Icons.alternate_email_rounded,
-                  label: generateUserFullName(null, 'name', 'instance.tld', userSeparator: FullNameSeparator.lemmy),
+                  label: generateSampleUserFullName(FullNameSeparator.lemmy),
+                  labelWidget: generateSampleUserFullNameWidget(
+                    FullNameSeparator.lemmy,
+                    weightUserName: userFullNameWeightUserName,
+                    weightInstanceName: userFullNameWeightInstanceName,
+                    colorizeUserName: userFullNameColorizeUserName,
+                    colorizeInstanceName: userFullNameColorizeInstanceName,
+                    textStyle: theme.textTheme.bodyMedium,
+                    colorScheme: theme.colorScheme,
+                  ),
                   payload: FullNameSeparator.lemmy,
                   capitalizeLabel: false,
                 ),
@@ -647,29 +733,131 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           ),
           SliverToBoxAdapter(
             child: ListOption(
+              closeOnSelect: false,
+              description: l10n.userStyle,
+              value: const ListPickerItem(label: '', payload: null),
+              bottomSheetHeading: generateSampleUserFullNameWidget(
+                userSeparator,
+                weightUserName: userFullNameWeightUserName,
+                weightInstanceName: userFullNameWeightInstanceName,
+                colorizeUserName: userFullNameColorizeUserName,
+                colorizeInstanceName: userFullNameColorizeInstanceName,
+                textStyle: theme.textTheme.bodyMedium,
+                colorScheme: theme.colorScheme,
+              ),
+              onUpdateHeading: () => generateSampleUserFullNameWidget(
+                userSeparator,
+                weightUserName: userFullNameWeightUserName,
+                weightInstanceName: userFullNameWeightInstanceName,
+                colorizeUserName: userFullNameColorizeUserName,
+                colorizeInstanceName: userFullNameColorizeInstanceName,
+                textStyle: theme.textTheme.bodyMedium,
+                colorScheme: theme.colorScheme,
+              ),
+              options: [
+                ListPickerItem(
+                  icon: Icons.format_bold_rounded,
+                  label: l10n.boldUserName,
+                  payload: LocalSettings.userFullNameWeightUserName,
+                  isChecked: userFullNameWeightUserName,
+                ),
+                ListPickerItem(
+                  icon: Icons.format_bold_rounded,
+                  label: l10n.boldInstanceName,
+                  payload: LocalSettings.userFullNameWeightInstanceName,
+                  isChecked: userFullNameWeightInstanceName,
+                ),
+                ListPickerItem(
+                  icon: Icons.color_lens_rounded,
+                  label: l10n.colorizeUserName,
+                  payload: LocalSettings.userFullNameColorizeUserName,
+                  isChecked: userFullNameColorizeUserName,
+                ),
+                ListPickerItem(
+                  icon: Icons.color_lens_rounded,
+                  label: l10n.colorizeInstanceName,
+                  payload: LocalSettings.userFullNameColorizeInstanceName,
+                  isChecked: userFullNameColorizeInstanceName,
+                ),
+              ],
+              icon: Icons.person_rounded,
+              onChanged: (value) async {
+                bool? newValue = switch (value.payload) {
+                  LocalSettings.userFullNameWeightUserName => !userFullNameWeightUserName,
+                  LocalSettings.userFullNameWeightInstanceName => !userFullNameWeightInstanceName,
+                  LocalSettings.userFullNameColorizeUserName => !userFullNameColorizeUserName,
+                  LocalSettings.userFullNameColorizeInstanceName => !userFullNameColorizeInstanceName,
+                  _ => null,
+                };
+
+                if (newValue != null) {
+                  await setPreferences(value.payload, newValue);
+                }
+              },
+              highlightKey: settingToHighlight == LocalSettings.userStyle ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ListOption(
               description: l10n.communityFormat,
               value: ListPickerItem(
-                label: generateCommunityFullName(null, 'name', 'instance.tld', communitySeparator: communitySeparator),
-                icon: Icons.person_rounded,
+                label: generateSampleCommunityFullName(communitySeparator),
+                labelWidget: generateSampleCommunityFullNameWidget(
+                  communitySeparator,
+                  weightCommunityName: communityFullNameWeightCommunityName,
+                  weightInstanceName: communityFullNameWeightInstanceName,
+                  colorizeCommunityName: communityFullNameColorizeCommunityName,
+                  colorizeInstanceName: communityFullNameColorizeInstanceName,
+                  textStyle: theme.textTheme.bodyMedium,
+                  colorScheme: theme.colorScheme,
+                ),
+                icon: Icons.people_rounded,
                 payload: communitySeparator,
                 capitalizeLabel: false,
               ),
               options: [
                 ListPickerItem(
                   icon: const IconData(0x2022),
-                  label: generateCommunityFullName(null, 'name', 'instance.tld', communitySeparator: FullNameSeparator.dot),
+                  label: generateSampleCommunityFullName(FullNameSeparator.dot),
+                  labelWidget: generateSampleCommunityFullNameWidget(
+                    FullNameSeparator.dot,
+                    weightCommunityName: communityFullNameWeightCommunityName,
+                    weightInstanceName: communityFullNameWeightInstanceName,
+                    colorizeCommunityName: communityFullNameColorizeCommunityName,
+                    colorizeInstanceName: communityFullNameColorizeInstanceName,
+                    textStyle: theme.textTheme.bodyMedium,
+                    colorScheme: theme.colorScheme,
+                  ),
                   payload: FullNameSeparator.dot,
                   capitalizeLabel: false,
                 ),
                 ListPickerItem(
                   icon: Icons.alternate_email_rounded,
-                  label: generateCommunityFullName(null, 'name', 'instance.tld', communitySeparator: FullNameSeparator.at),
+                  label: generateSampleCommunityFullName(FullNameSeparator.at),
+                  labelWidget: generateSampleCommunityFullNameWidget(
+                    FullNameSeparator.at,
+                    weightCommunityName: communityFullNameWeightCommunityName,
+                    weightInstanceName: communityFullNameWeightInstanceName,
+                    colorizeCommunityName: communityFullNameColorizeCommunityName,
+                    colorizeInstanceName: communityFullNameColorizeInstanceName,
+                    textStyle: theme.textTheme.bodyMedium,
+                    colorScheme: theme.colorScheme,
+                  ),
                   payload: FullNameSeparator.at,
                   capitalizeLabel: false,
                 ),
                 ListPickerItem(
-                  icon: Icons.priority_high_rounded,
-                  label: generateCommunityFullName(null, 'name', 'instance.tld', communitySeparator: FullNameSeparator.lemmy),
+                  icon: Icons.alternate_email_rounded,
+                  label: generateSampleCommunityFullName(FullNameSeparator.lemmy),
+                  labelWidget: generateSampleCommunityFullNameWidget(
+                    FullNameSeparator.lemmy,
+                    weightCommunityName: communityFullNameWeightCommunityName,
+                    weightInstanceName: communityFullNameWeightInstanceName,
+                    colorizeCommunityName: communityFullNameColorizeCommunityName,
+                    colorizeInstanceName: communityFullNameColorizeInstanceName,
+                    textStyle: theme.textTheme.bodyMedium,
+                    colorScheme: theme.colorScheme,
+                  ),
                   payload: FullNameSeparator.lemmy,
                   capitalizeLabel: false,
                 ),
@@ -677,6 +865,72 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               icon: Icons.people_rounded,
               onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),
               highlightKey: settingToHighlight == LocalSettings.communityFormat ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ListOption(
+              closeOnSelect: false,
+              description: l10n.communityStyle,
+              value: const ListPickerItem(label: '', payload: null),
+              bottomSheetHeading: generateSampleCommunityFullNameWidget(
+                communitySeparator,
+                weightCommunityName: communityFullNameWeightCommunityName,
+                weightInstanceName: communityFullNameWeightInstanceName,
+                colorizeCommunityName: communityFullNameColorizeCommunityName,
+                colorizeInstanceName: communityFullNameColorizeInstanceName,
+                textStyle: theme.textTheme.bodyMedium,
+                colorScheme: theme.colorScheme,
+              ),
+              onUpdateHeading: () => generateSampleCommunityFullNameWidget(
+                communitySeparator,
+                weightCommunityName: communityFullNameWeightCommunityName,
+                weightInstanceName: communityFullNameWeightInstanceName,
+                colorizeCommunityName: communityFullNameColorizeCommunityName,
+                colorizeInstanceName: communityFullNameColorizeInstanceName,
+                textStyle: theme.textTheme.bodyMedium,
+                colorScheme: theme.colorScheme,
+              ),
+              options: [
+                ListPickerItem(
+                  icon: Icons.format_bold_rounded,
+                  label: l10n.boldCommunityName,
+                  payload: LocalSettings.communityFullNameWeightCommunityName,
+                  isChecked: communityFullNameWeightCommunityName,
+                ),
+                ListPickerItem(
+                  icon: Icons.format_bold_rounded,
+                  label: l10n.boldInstanceName,
+                  payload: LocalSettings.communityFullNameWeightInstanceName,
+                  isChecked: communityFullNameWeightInstanceName,
+                ),
+                ListPickerItem(
+                  icon: Icons.color_lens_rounded,
+                  label: l10n.colorizeCommunityName,
+                  payload: LocalSettings.communityFullNameColorizeCommunityName,
+                  isChecked: communityFullNameColorizeCommunityName,
+                ),
+                ListPickerItem(
+                  icon: Icons.color_lens_rounded,
+                  label: l10n.colorizeInstanceName,
+                  payload: LocalSettings.communityFullNameColorizeInstanceName,
+                  isChecked: communityFullNameColorizeInstanceName,
+                ),
+              ],
+              icon: Icons.person_rounded,
+              onChanged: (value) async {
+                bool? newValue = switch (value.payload) {
+                  LocalSettings.communityFullNameWeightCommunityName => !communityFullNameWeightCommunityName,
+                  LocalSettings.communityFullNameWeightInstanceName => !communityFullNameWeightInstanceName,
+                  LocalSettings.communityFullNameColorizeCommunityName => !communityFullNameColorizeCommunityName,
+                  LocalSettings.communityFullNameColorizeInstanceName => !communityFullNameColorizeInstanceName,
+                  _ => null,
+                };
+
+                if (newValue != null) {
+                  await setPreferences(value.payload, newValue);
+                }
+              },
+              highlightKey: settingToHighlight == LocalSettings.communityStyle ? settingToHighlightKey : null,
             ),
           ),
           if (!kIsWeb && Platform.isAndroid)

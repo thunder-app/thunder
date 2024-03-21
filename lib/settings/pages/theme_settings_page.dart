@@ -227,7 +227,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
                           options: themeOptions,
                           icon: Icons.wallpaper_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.appTheme, value.payload.index),
+                          onChanged: (value) async => setPreferences(LocalSettings.appTheme, value.payload.index),
                           highlightKey: settingToHighlight == LocalSettings.appTheme ? settingToHighlightKey : null,
                         ),
                         ListOption(
@@ -274,7 +274,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ),
                           options: customThemeOptions,
                           icon: Icons.wallpaper_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
+                          onChanged: (value) async => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
                           closeOnSelect: false,
                           highlightKey: settingToHighlight == LocalSettings.appThemeAccentColor ? settingToHighlightKey : null,
                         ),
@@ -307,7 +307,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
+                          onChanged: (value) async => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
                           highlightKey: settingToHighlight == LocalSettings.titleFontSizeScale ? settingToHighlightKey : null,
                         ),
                         ListOption(
@@ -315,7 +315,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
+                          onChanged: (value) async => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
                           highlightKey: settingToHighlight == LocalSettings.contentFontSizeScale ? settingToHighlightKey : null,
                         ),
                         ListOption(
@@ -323,7 +323,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
+                          onChanged: (value) async => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
                           highlightKey: settingToHighlight == LocalSettings.commentFontSizeScale ? settingToHighlightKey : null,
                         ),
                         ListOption(
@@ -331,7 +331,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
+                          onChanged: (value) async => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
                           highlightKey: settingToHighlight == LocalSettings.metadataFontSizeScale ? settingToHighlightKey : null,
                         ),
                       ],

@@ -60,7 +60,7 @@ class SwipePicker<T> extends StatelessWidget {
                           builder: (context) => BottomSheetListPicker(
                             title: items[0].label,
                             items: items[0].options,
-                            onSelect: (value) {
+                            onSelect: (value) async {
                               items[0].onChanged(value);
                             },
                             previouslySelected: items[0].value,
@@ -88,7 +88,7 @@ class SwipePicker<T> extends StatelessWidget {
                           builder: (context) => BottomSheetListPicker(
                             title: items[1].label,
                             items: items[1].options,
-                            onSelect: (value) {
+                            onSelect: (value) async {
                               items[1].onChanged(value);
                             },
                             previouslySelected: items[1].value,
@@ -123,7 +123,7 @@ class SwipePicker<T> extends StatelessWidget {
                           builder: (context) => BottomSheetListPicker(
                             title: items[1].label,
                             items: items[1].options,
-                            onSelect: (value) {
+                            onSelect: (value) async {
                               items[1].onChanged(value);
                             },
                             previouslySelected: items[1].value,
@@ -159,7 +159,7 @@ class SwipePicker<T> extends StatelessWidget {
                           builder: (context) => BottomSheetListPicker(
                             title: items[0].label,
                             items: items[0].options,
-                            onSelect: (value) {
+                            onSelect: (value) async {
                               items[0].onChanged(value);
                             },
                             previouslySelected: items[0].value,
