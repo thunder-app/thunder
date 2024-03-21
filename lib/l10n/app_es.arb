@@ -1798,5 +1798,41 @@
   "versionNumber": "Versión {version}",
   "@versionNumber": {
     "description": "String for describing the current version"
+  },
+  "usernameFormattingRedirect": "¿Buscas el formato de un nombre de usuario?",
+  "@usernameFormattingRedirect": {
+    "description": "Setting title for sending the user to the new formatting options"
+  },
+  "boldCommunityName": "Nombre de la comunidad en negrita",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "boldInstanceName": "Nombre de la instancia en negrita",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "Nombre del usuario en negrita",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "colorizeCommunityName": "Colorear el nombre de la comunidad",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "colorizeUserName": "Colorear el nombre del usuario",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
+  "colorizeInstanceName": "Colorear el nombre de la instancia",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "communityStyle": "Estilo de la comunidad",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "userStyle": "Estilo del usuario",
+  "@userStyle": {
+    "description": "Heading for user style setting"
   }
 }
