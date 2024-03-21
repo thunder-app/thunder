@@ -115,6 +115,7 @@ class _InstancePageState extends State<InstancePage> {
                     slivers: [
                       SliverAppBar(
                         pinned: true,
+                        toolbarHeight: 70.0,
                         title: ListTile(
                           title: Text(
                             fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',

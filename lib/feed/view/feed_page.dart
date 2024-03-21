@@ -185,6 +185,8 @@ class _FeedViewState extends State<FeedView> {
   /// List of post ids to queue for removal. The ids in this list allow us to remove posts in a staggered method
   List<int> queuedForRemoval = [];
 
+  String? tagline;
+
   @override
   void initState() {
     super.initState();
@@ -299,6 +301,11 @@ class _FeedViewState extends State<FeedView> {
               List<PostViewMedia> postViewMedias = state.postViewMedias;
               List<CommentView> commentViews = state.commentViews;
 
+              if (state.status == FeedStatus.initial) {
+                final GetSiteResponse? site = context.read<AuthBloc>().state.getSiteResponse;
+                tagline = site?.taglines.isNotEmpty == true ? site?.taglines[Random().nextInt(site.taglines.length)].content : null;
+              }
+
               return RefreshIndicator(
                 onRefresh: () async {
                   HapticFeedback.mediumImpact();
@@ -330,7 +337,7 @@ class _FeedViewState extends State<FeedView> {
                           SliverToBoxAdapter(
                             child: Visibility(
                               visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
-                              child: const TagLine(),
+                              child: tagline?.isNotEmpty == true ? TagLine(tagline: tagline!) : Container(),
                             ),
                           ),
                           if (state.fullCommunityView != null)
@@ -593,20 +600,13 @@ class FeedHeader extends StatelessWidget {
 }
 
 class TagLine extends StatelessWidget {
-  const TagLine({super.key});
+  final String tagline;
+
+  const TagLine({super.key, required this.tagline});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final taglineToShowCache = Cache<String>();
-
-    final fullSiteView = context.read<AuthBloc>().state.getSiteResponse;
-    if (fullSiteView == null || fullSiteView.taglines.isEmpty) return Container();
-
-    String tagline = taglineToShowCache.getOrSet(() {
-      String tagline = fullSiteView.taglines[Random().nextInt(fullSiteView.taglines.length)].content;
-      return tagline;
-    }, const Duration(seconds: 1));
 
     final bool taglineIsLong = tagline.length > 200;
 
