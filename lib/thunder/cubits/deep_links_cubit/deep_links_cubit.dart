@@ -43,6 +43,12 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
           link: link,
           linkType: LinkType.community,
         ));
+      } else if (link.contains("/modlog")) {
+        emit(state.copyWith(
+          deepLinkStatus: DeepLinkStatus.success,
+          link: link,
+          linkType: LinkType.modlog,
+        ));
       } else if (Uri.tryParse(link)?.pathSegments.isEmpty == true) {
         emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,

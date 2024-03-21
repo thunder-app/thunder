@@ -32,6 +32,7 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
+import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -263,6 +264,8 @@ class _ThunderState extends State<Thunder> {
         if (context.mounted) await _navigateToPost(_link);
       case LinkType.community:
         if (context.mounted) await _navigateToCommunity(_link);
+      case LinkType.modlog:
+        if (context.mounted) await _navigateToModlog(_link);
       case LinkType.instance:
         if (context.mounted) await _navigateToInstance(_link);
       case LinkType.unknown:
@@ -328,6 +331,31 @@ class _ThunderState extends State<Thunder> {
 
     // community not found or could not resolve link.
     // show a snackbar with option to open link
+    if (context.mounted) {
+      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+    }
+  }
+
+  Future<void> _navigateToModlog(String link) async {
+    try {
+      Uri? uri = Uri.tryParse(link);
+      if (uri != null) {
+        final LemmyClient lemmyClient = LemmyClient()..changeBaseUrl(uri.host);
+        FeedBloc feedBloc = FeedBloc(lemmyClient: lemmyClient);
+        await navigateToModlogPage(
+          context,
+          feedBloc: feedBloc,
+          modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
+          communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
+          userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
+          moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),
+          lemmyClient: lemmyClient,
+        );
+        return;
+      }
+    } catch (e) {}
+
+    // Show an error for any issues processing the link
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
     }
