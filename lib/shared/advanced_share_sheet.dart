@@ -10,6 +10,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -55,7 +56,7 @@ bool _hasImage(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty &&
 
 bool _hasText(PostViewMedia postViewMedia) => postViewMedia.postView.post.body?.isNotEmpty == true;
 
-bool _hasExternalLink(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty && postViewMedia.media.first.originalUrl?.isNotEmpty == true;
+bool _hasExternalLink(PostViewMedia postViewMedia) => postViewMedia.media.first.mediaType != MediaType.text;
 
 bool _canShare(AdvancedShareSheetOptions options, PostViewMedia postViewMedia) {
   return options.includePostLink || (options.includeExternalLink && _hasExternalLink(postViewMedia)) || _canShareImage(options, postViewMedia);
