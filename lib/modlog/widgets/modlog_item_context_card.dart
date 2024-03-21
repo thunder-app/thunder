@@ -6,7 +6,7 @@ import 'package:html_unescape/html_unescape_small.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/utils/navigate_post.dart';

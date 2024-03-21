@@ -6,10 +6,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class BottomSheetListPicker<T> extends StatefulWidget {
   final String title;
   final List<ListPickerItem<T>> items;
-  final void Function(ListPickerItem<T>) onSelect;
+  final Future<void> Function(ListPickerItem<T>) onSelect;
   final T? previouslySelected;
   final bool closeOnSelect;
   final Widget? heading;
+  final Widget Function()? onUpdateHeading;
 
   const BottomSheetListPicker({
     super.key,
@@ -19,6 +20,7 @@ class BottomSheetListPicker<T> extends StatefulWidget {
     this.previouslySelected,
     this.closeOnSelect = true,
     this.heading,
+    this.onUpdateHeading,
   });
 
   @override
@@ -27,6 +29,15 @@ class BottomSheetListPicker<T> extends StatefulWidget {
 
 class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
   T? currentlySelected;
+  late final Map<ListPickerItem<T>, bool?> checkedItems;
+  Widget? heading;
+
+  @override
+  void initState() {
+    super.initState();
+
+    checkedItems = Map.fromEntries(widget.items.map((item) => MapEntry(item, item.isChecked)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,84 +52,98 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      widget.title,
-                      style: theme.textTheme.titleLarge!.copyWith(),
+                if (widget.title.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        widget.title,
+                        style: theme.textTheme.titleLarge!.copyWith(),
+                      ),
                     ),
                   ),
-                ),
-                if (widget.heading != null)
+                if ((heading ?? widget.heading) != null)
                   Padding(
                     padding: const EdgeInsets.only(left: 24, right: 24, bottom: 10),
-                    child: widget.heading!,
+                    child: (heading ?? widget.heading)!,
                   ),
                 ListView(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  children: widget.items
-                      .map(
-                        (item) => PickerItem(
-                          label: item.capitalizeLabel ? item.label.capitalize : item.label,
-                          subtitle: item.subtitle,
-                          icon: item.icon,
-                          textTheme: item.textTheme,
-                          onSelected: () {
-                            if (widget.closeOnSelect) {
-                              Navigator.of(context).pop();
-                            } else {
-                              setState(() {
+                  children: widget.items.map(
+                    (item) {
+                      return PickerItem(
+                        label: item.capitalizeLabel ? item.label.capitalize : item.label,
+                        labelWidget: item.labelWidget,
+                        subtitle: item.subtitle,
+                        icon: item.icon,
+                        textTheme: item.textTheme,
+                        onSelected: () async {
+                          if (widget.closeOnSelect) {
+                            Navigator.of(context).pop();
+                          } else {
+                            setState(() {
+                              if (checkedItems[item] == null) {
                                 currentlySelected = item.payload;
-                              });
-                            }
-                            widget.onSelect(item);
-                          },
-                          isSelected: currentlySelected != null ? currentlySelected == item.payload : widget.previouslySelected == item.payload,
-                          leading: Stack(
-                            children: [
-                              Container(
-                                height: 32,
-                                width: 32,
+                              } else {
+                                setState(() {
+                                  checkedItems[item] = !checkedItems[item]!;
+                                });
+                              }
+                            });
+                          }
+                          await widget.onSelect(item);
+                          setState(() => heading = widget.onUpdateHeading?.call());
+                        },
+                        isSelected: currentlySelected != null ? currentlySelected == item.payload : widget.previouslySelected == item.payload,
+                        leading: Stack(
+                          children: [
+                            Container(
+                              height: 32,
+                              width: 32,
+                              decoration: BoxDecoration(
+                                color: item.colors?[0],
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              child: Container(
+                                height: 16,
+                                width: 16,
                                 decoration: BoxDecoration(
-                                  color: item.colors?[0],
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                child: Container(
-                                  height: 16,
-                                  width: 16,
-                                  decoration: BoxDecoration(
-                                    color: item.colors?[1],
-                                    borderRadius: const BorderRadius.only(
-                                      bottomLeft: Radius.circular(100),
-                                    ),
+                                  color: item.colors?[1],
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(100),
                                   ),
                                 ),
                               ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  height: 16,
-                                  width: 16,
-                                  decoration: BoxDecoration(
-                                    color: item.colors?[2],
-                                    borderRadius: const BorderRadius.only(
-                                      bottomRight: Radius.circular(100),
-                                    ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                height: 16,
+                                width: 16,
+                                decoration: BoxDecoration(
+                                  color: item.colors?[2],
+                                  borderRadius: const BorderRadius.only(
+                                    bottomRight: Radius.circular(100),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      )
-                      .toList(),
+                        trailingIcon: switch (checkedItems[item]) {
+                          true => Icons.check_box_rounded,
+                          false => Icons.check_box_outline_blank_rounded,
+                          null => null,
+                        },
+                      );
+                    },
+                  ).toList(),
                 ),
                 const SizedBox(height: 16.0),
               ],
@@ -155,17 +180,21 @@ class ListPickerItem<T> {
   final List<Color>? colors;
   final String label;
   final String? subtitle;
+  final Widget? labelWidget;
   final T payload;
   final bool capitalizeLabel;
   final TextTheme? textTheme;
+  final bool? isChecked;
 
   const ListPickerItem({
     this.icon,
     this.colors,
     required this.label,
     this.subtitle,
+    this.labelWidget,
     required this.payload,
     this.capitalizeLabel = true,
     this.textTheme,
+    this.isChecked,
   });
 }

@@ -93,6 +93,7 @@ enum LocalSettings {
   markPostAsReadOnScroll(name: 'setting_general_mark_post_read_on_scroll', key: 'markPostAsReadOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   showInAppUpdateNotification(
       name: 'setting_notifications_show_inapp_update', key: 'showInAppUpdateNotifications', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
+  showUpdateChangelogs(name: 'setting_show_update_changelogs', key: 'showUpdateChangelogs', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   scoreCounters(name: 'setting_score_counters', key: "showScoreCounters", category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   appLanguageCode(name: 'setting_app_language_code', key: 'appLanguage', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
   enableInboxNotifications(
@@ -128,7 +129,19 @@ enum LocalSettings {
 
   // Advanced Settings
   userFormat(name: 'user_format', key: 'userFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  // This setting exists purely for the searching function
+  userStyle(name: '', key: 'userStyle', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  userFullNameWeightUserName(name: 'user_fullname_weight_user_name', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  userFullNameWeightInstanceName(name: 'user_fullname_instance_name', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  userFullNameColorizeUserName(name: 'user_fullname_colorize_user_name', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  userFullNameColorizeInstanceName(name: 'user_fullname_colorize_instance_name', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  // This setting exists purely for the searching function
+  communityStyle(name: '', key: 'communityStyle', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
   communityFormat(name: 'community_format', key: 'communityFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  communityFullNameWeightCommunityName(name: 'community_fullname_weight_user_name', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  communityFullNameWeightInstanceName(name: 'community_fullname_instance_name', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  communityFullNameColorizeCommunityName(name: 'community_fullname_colorize_user_name', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  communityFullNameColorizeInstanceName(name: 'community_fullname_colorize_instance_name', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
   imageCachingMode(name: 'setting_advanced_image_caching_mode', key: 'imageCachingMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
 
   /// -------------------------- Post Page Related Settings --------------------------
@@ -148,8 +161,14 @@ enum LocalSettings {
       name: 'setting_general_nested_comment_indicator_style', key: 'nestedCommentIndicatorStyle', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   nestedCommentIndicatorColor(
       name: 'setting_general_nested_comment_indicator_color', key: 'nestedCommentIndicatorColor', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+  // Deprecated, use userFullNameColorizeUserName
   commentUseColorizedUsername(
-      name: 'settings_general_comments_colorized_usernames', key: 'commentUseColorizedUsername', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+    name: 'settings_general_comments_colorized_usernames',
+    key: 'commentUseColorizedUsername',
+    category: LocalSettingsCategories.comments,
+    subCategory: LocalSettingsSubCategories.comments,
+    searchable: false,
+  ),
 
   /// -------------------------- Accessibility Related Settings --------------------------
   reduceAnimations(name: 'setting_accessibility_reduce_animations', key: 'reduceAnimations', category: LocalSettingsCategories.accessibility, subCategory: LocalSettingsSubCategories.animations),
@@ -275,6 +294,7 @@ extension LocalizationExt on AppLocalizations {
       'markPostAsReadOnMediaView': markPostAsReadOnMediaView,
       'markPostAsReadOnScroll': markPostAsReadOnScroll,
       'showInAppUpdateNotifications': showInAppUpdateNotifications,
+      'showUpdateChangelogs': showUpdateChangelogs,
       'enableInboxNotifications': enableInboxNotifications,
       'showScoreCounters': showScoreCounters,
       'appLanguage': appLanguage,
@@ -300,7 +320,9 @@ extension LocalizationExt on AppLocalizations {
       'compactPostCardMetadataItems': compactPostCardMetadataItems,
       'cardPostCardMetadataItems': cardPostCardMetadataItems,
       'userFormat': userFormat,
+      'userStyle': userStyle,
       'communityFormat': communityFormat,
+      'communityStyle': communityStyle,
       'imageCachingMode': imageCachingMode,
       'defaultCommentSortType': defaultCommentSortType,
       'collapseParentCommentBodyOnGesture': collapseParentCommentBodyOnGesture,
@@ -356,7 +378,6 @@ extension LocalizationExt on AppLocalizations {
       'feedTypeAndSorts': feedTypeAndSorts,
       'profiles': profiles,
       'animations': animations,
-      'commentUseColorizedUsername': commentUseColorizedUsername
     };
 
     if (localizationMap.containsKey(key)) {

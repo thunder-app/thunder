@@ -41,7 +41,7 @@ class SettingsListTile extends StatelessWidget {
       enabled: highlightKey != null,
       color: theme.colorScheme.primaryContainer,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
+        padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: Semantics(
           label: semanticLabel ?? description,
           child: InkWell(
