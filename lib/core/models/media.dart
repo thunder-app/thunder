@@ -7,7 +7,7 @@ class Media {
     this.originalUrl,
     this.width,
     this.height,
-    this.mediaType,
+    required this.mediaType,
   });
 
   /// The original URL of the media - this applies if the original URL of the media originates from a external link
@@ -23,7 +23,7 @@ class Media {
   double? height;
 
   /// Indicates the type of media it holds
-  MediaType? mediaType;
+  MediaType mediaType;
 
   @override
   String toString() {
