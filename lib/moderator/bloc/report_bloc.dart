@@ -119,8 +119,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
     // If the feed is already being fetched but it is not a reset, then just wait
     if (state.status == ReportStatus.fetching) return;
-    if (state.hasReachedPostReportsEnd && state.reportFeedType == ReportFeedType.post) return;
-    if (state.hasReachedCommentReportsEnd && state.reportFeedType == ReportFeedType.comment) return;
+    if (state.hasReachedPostReportsEnd && event.reportFeedType == ReportFeedType.post) return;
+    if (state.hasReachedCommentReportsEnd && event.reportFeedType == ReportFeedType.comment) return;
 
     // Handle fetching the next page of the feed
     emit(state.copyWith(status: ReportStatus.fetching));
@@ -129,7 +129,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     List<CommentReportView> commentReportViews = List.from(state.commentReports);
 
     Map<String, dynamic> fetchReportsResult = await fetchReports(
-      page: state.currentPage + 1,
+      page: state.currentPage,
       unresolved: !state.showResolved, // todo
       communityId: null, // todo
       postId: null, // todo
@@ -150,6 +150,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     return emit(
       state.copyWith(
         status: ReportStatus.success,
+        reportFeedType: event.reportFeedType,
         postReports: postReportViews,
         commentReports: commentReportViews,
         hasReachedPostReportsEnd: hasReachedPostReportsEnd,

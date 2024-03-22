@@ -8,7 +8,7 @@ import 'package:thunder/moderator/view/report_page.dart';
 /// Helper function which handles the logic of fetching post/comment reports
 Future<Map<String, dynamic>> fetchReports({
   int page = 1,
-  int limit = 20,
+  int limit = 10,
   bool unresolved = false,
   int? communityId,
   int? postId,
@@ -28,7 +28,6 @@ Future<Map<String, dynamic>> fetchReports({
 
   // Guarantee that we fetch at least x post and comment reports (unless we reach the end of the feed)
   do {
-    print('Fetching report feed page $currentPage');
     ListPostReportsResponse listPostReportsResponse = await lemmy.run(ListPostReports(
       auth: account?.jwt,
       page: currentPage,
