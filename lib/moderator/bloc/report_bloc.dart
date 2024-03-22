@@ -76,7 +76,9 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   /// Changes the current filter type of the report feed
   Future<void> _onReportFeedChangeFilterType(ReportFeedChangeFilterTypeEvent event, Emitter<ReportState> emit) async {
     add(ReportFeedFetchedEvent(
-      reportFeedType: event.reportFeedType,
+      reportFeedType: state.reportFeedType,
+      showResolved: event.showResolved,
+      communityId: event.communityId,
       reset: true,
     ));
   }
@@ -89,8 +91,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
       Map<String, dynamic> fetchReportsResult = await fetchReports(
         page: 1,
-        unresolved: !event.showResolved, // todo
-        communityId: null, // todo
+        unresolved: !event.showResolved,
+        communityId: event.communityId,
         postId: null, // todo
         commentId: null, // todo
         reportFeedType: event.reportFeedType,
@@ -108,6 +110,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           status: ReportStatus.success,
           reportFeedType: event.reportFeedType,
           showResolved: event.showResolved,
+          communityId: event.communityId,
           postReports: postReportViews,
           commentReports: commentReportViews,
           hasReachedPostReportsEnd: hasReachedPostReportsEnd,
@@ -131,7 +134,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     Map<String, dynamic> fetchReportsResult = await fetchReports(
       page: state.currentPage,
       unresolved: !state.showResolved, // todo
-      communityId: null, // todo
+      communityId: state.communityId, // todo
       postId: null, // todo
       commentId: null, // todo
       reportFeedType: state.reportFeedType,

@@ -1521,6 +1521,10 @@
   "@spoiler": {
     "description": "Placeholder label for spoiler"
   },
+  "status": "Status",
+  "@status": {
+    "description": "Status of the action"
+  },
   "submit": "Submit",
   "@submit": {},
   "subscribe": "Subscribe",
@@ -1732,6 +1736,10 @@
   "unreachable": "Unreachable",
   "@unreachable": {
     "description": "Describes an instance that is currently unreachable"
+  },
+  "unresolved": "Unresolved",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
   },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},

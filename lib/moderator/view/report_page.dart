@@ -8,7 +8,6 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/create_post_page.dart';
 
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/media_type.dart';
@@ -17,6 +16,8 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/moderator/bloc/report_bloc.dart';
+import 'package:thunder/moderator/enums/report_action.dart';
+import 'package:thunder/moderator/widgets/report_page_filter_bottom_sheet.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -61,11 +62,8 @@ class _ReportFeedViewState extends State<ReportFeedView> {
   /// Boolean which indicates whether resolved reports should be shown
   bool showResolved = false;
 
-  /// List of tabs for user profiles
-  List<String> reportOptionTypes = [
-    AppLocalizations.of(GlobalContext.context)!.posts,
-    AppLocalizations.of(GlobalContext.context)!.comments,
-  ];
+  /// List of tabs for the report page
+  List<String> reportOptionTypes = [AppLocalizations.of(GlobalContext.context)!.posts, AppLocalizations.of(GlobalContext.context)!.comments];
 
   @override
   void initState() {
@@ -94,7 +92,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
         body: NestedScrollView(
           key: globalKey,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
+            return [
               SliverOverlapAbsorber(
                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
@@ -113,6 +111,20 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                   ),
                   actions: [
                     IconButton(
+                      onPressed: () {
+                        HapticFeedback.mediumImpact();
+                        ReportBloc reportBloc = context.read<ReportBloc>();
+
+                        reportBloc.add(ReportFeedFetchedEvent(
+                          reportFeedType: reportFeedType,
+                          showResolved: showResolved,
+                          communityId: reportBloc.state.communityId,
+                          reset: true,
+                        ));
+                      },
+                      icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
+                    ),
+                    IconButton(
                       icon: const Icon(Icons.filter_alt_rounded),
                       onPressed: () {
                         HapticFeedback.mediumImpact();
@@ -121,8 +133,15 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           showDragHandle: true,
                           context: context,
                           builder: (builderContext) => ReportFilterBottomSheet(
-                            onSubmit: () async => {
-                              // TODO: apply filter logic
+                            status: showResolved ? ReportResolveStatus.all : ReportResolveStatus.unresolved,
+                            onSubmit: (ReportResolveStatus status, CommunityView? communityView) async => {
+                              HapticFeedback.mediumImpact(),
+                              Navigator.of(context).maybePop(),
+                              setState(() => showResolved = status != ReportResolveStatus.unresolved),
+                              BlocProvider.of<ReportBloc>(context).add(ReportFeedChangeFilterTypeEvent(
+                                showResolved: status != ReportResolveStatus.unresolved,
+                                communityId: communityView?.community.id,
+                              ))
                             },
                           ),
                         );
@@ -187,11 +206,11 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   community: state.postReports[index].community,
                                   creatorBannedFromCommunity: state.postReports[index].creatorBannedFromCommunity,
                                   counts: state.postReports[index].counts,
-                                  subscribed: SubscribedType.notSubscribed,
-                                  saved: false,
-                                  read: false,
-                                  creatorBlocked: false,
-                                  unreadComments: 0,
+                                  subscribed: SubscribedType.notSubscribed, // Not available
+                                  saved: false, // Not available
+                                  read: false, // Not available
+                                  creatorBlocked: false, // Not available
+                                  unreadComments: 0, // Not available
                                 );
 
                                 return Column(
@@ -201,12 +220,15 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                       children: [
                                         InkWell(
                                           onTap: () => navigateToPost(context, postId: state.postReports[index].post.id),
-                                          child: PostCardViewCompact(
-                                            showMedia: false,
-                                            postViewMedia: PostViewMedia(postView: postView, media: [Media(mediaType: MediaType.text)]),
-                                            communityMode: false,
-                                            isUserLoggedIn: false,
-                                            listingType: ListingType.all,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                            child: PostCardViewCompact(
+                                              showMedia: false,
+                                              postViewMedia: PostViewMedia(postView: postView, media: [Media(mediaType: MediaType.text)]),
+                                              communityMode: false,
+                                              isUserLoggedIn: false,
+                                              listingType: ListingType.all,
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -232,7 +254,12 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                   IconButton(
                                                     visualDensity: VisualDensity.compact,
                                                     onPressed: () {
-                                                      // context.read<ReportBloc>().add(ReportPostResolvedEvent(index: index));
+                                                      HapticFeedback.mediumImpact();
+                                                      context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
+                                                            reportAction: ReportAction.resolvePost,
+                                                            postReportView: state.postReports[index],
+                                                            value: !state.postReports[index].postReport.resolved,
+                                                          ));
                                                     },
                                                     icon: Icon(state.postReports[index].postReport.resolved ? Icons.undo_rounded : Icons.check_rounded),
                                                   ),
@@ -307,7 +334,13 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                   IconButton(
                                                     visualDensity: VisualDensity.compact,
                                                     onPressed: () {
-                                                      // context.read<ReportBloc>().add(ReportPostResolvedEvent(index: index));
+                                                      HapticFeedback.mediumImpact();
+
+                                                      context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
+                                                            reportAction: ReportAction.resolveComment,
+                                                            commentReportView: state.commentReports[index],
+                                                            value: !state.commentReports[index].commentReport.resolved,
+                                                          ));
                                                     },
                                                     icon: Icon(state.commentReports[index].commentReport.resolved ? Icons.undo_rounded : Icons.check_rounded),
                                                   ),
@@ -357,120 +390,3 @@ class _ReportFeedViewState extends State<ReportFeedView> {
     );
   }
 }
-
-enum ReportResolveStatus { resolved, unresolved, all }
-
-class ReportFilterBottomSheet extends StatefulWidget {
-  const ReportFilterBottomSheet({super.key, this.onSubmit});
-
-  final void Function()? onSubmit;
-
-  @override
-  State<ReportFilterBottomSheet> createState() => _ReportFilterBottomSheetState();
-}
-
-class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
-  /// The status to filter by
-  ReportResolveStatus _reportResolveStatus = ReportResolveStatus.all;
-
-  /// The community to filter by
-  CommunityView? communityView;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.filters,
-              style: theme.textTheme.titleLarge,
-            ),
-            const SizedBox(height: 32.0),
-            SegmentedButton<ReportResolveStatus>(
-              showSelectedIcon: false,
-              style: SegmentedButton.styleFrom(
-                visualDensity: VisualDensity.compact,
-                minimumSize: Size.zero,
-              ),
-              segments: const <ButtonSegment<ReportResolveStatus>>[
-                ButtonSegment<ReportResolveStatus>(
-                  value: ReportResolveStatus.unresolved,
-                  label: Text('Unresolved'),
-                  icon: Icon(Icons.remove_done_rounded),
-                ),
-                ButtonSegment<ReportResolveStatus>(
-                  value: ReportResolveStatus.all,
-                  label: Text('All'),
-                  icon: Icon(Icons.list_alt_rounded),
-                ),
-              ],
-              selected: <ReportResolveStatus>{_reportResolveStatus},
-              onSelectionChanged: (Set<ReportResolveStatus> newSelection) {
-                setState(() {
-                  _reportResolveStatus = newSelection.first;
-                });
-              },
-            ),
-            const SizedBox(height: 16.0),
-            const Text('Community', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8.0),
-            CommunitySelector(
-              communityId: communityView?.community.id,
-              communityView: communityView,
-              onCommunitySelected: (community) {
-                setState(() {
-                  communityView = community;
-                });
-              },
-            ),
-            const Padding(padding: EdgeInsets.only(bottom: 128.0)),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: ElevatedButton(
-                onPressed: widget.onSubmit,
-                child: Text(l10n.apply),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-// TypeAheadField<CommunityView>(
-//             textFieldConfiguration: TextFieldConfiguration(
-//               controller: _controller,
-//               onChanged: (value) {},
-//               autofocus: false,
-//               decoration: InputDecoration(
-//                 isDense: true,
-//                 border: const OutlineInputBorder(),
-//                 labelText: l10n.community,
-//               ),
-//               onSubmitted: (text) async {
-//                 // final String? submitError = await onSubmitted(value: text);
-//                 _controller.text = text;
-//               },
-//             ),
-//             suggestionsCallback: (query) {
-//               return getCommunitySuggestions(context, query, null);
-//             },
-//             itemBuilder: (context, payload) => buildCommunitySuggestionWidget(context, payload),
-//             onSuggestionSelected: (payload) async {
-//               // final String? submitError = await onSubmitted(payload: payload);
-//               _controller.text = payload.community.name;
-//             },
-//             hideOnEmpty: true,
-//             hideOnLoading: true,
-//             hideOnError: true,
-//           ),

@@ -7,6 +7,7 @@ final class ReportState extends Equatable {
     this.status = ReportStatus.initial,
     this.reportFeedType = ReportFeedType.post,
     this.showResolved = false,
+    this.communityId,
     this.postReports = const [],
     this.commentReports = const [],
     this.hasReachedPostReportsEnd = false,
@@ -23,6 +24,9 @@ final class ReportState extends Equatable {
 
   /// Whether to show resolved reports
   final bool showResolved;
+
+  /// The id of the community
+  final int? communityId;
 
   /// The list of post reports
   final List<PostReportView> postReports;
@@ -46,6 +50,7 @@ final class ReportState extends Equatable {
     ReportStatus? status,
     ReportFeedType? reportFeedType,
     bool? showResolved,
+    int? communityId,
     List<PostReportView>? postReports,
     List<CommentReportView>? commentReports,
     bool? hasReachedPostReportsEnd,
@@ -57,6 +62,7 @@ final class ReportState extends Equatable {
       status: status ?? this.status,
       reportFeedType: reportFeedType ?? this.reportFeedType,
       showResolved: showResolved ?? this.showResolved,
+      communityId: communityId ?? this.communityId,
       postReports: postReports ?? this.postReports,
       commentReports: commentReports ?? this.commentReports,
       hasReachedPostReportsEnd: hasReachedPostReportsEnd ?? this.hasReachedPostReportsEnd,
@@ -72,5 +78,5 @@ final class ReportState extends Equatable {
   }
 
   @override
-  List<dynamic> get props => [status, reportFeedType, showResolved, postReports, commentReports, hasReachedPostReportsEnd, hasReachedCommentReportsEnd, currentPage, message];
+  List<dynamic> get props => [status, reportFeedType, showResolved, communityId, postReports, commentReports, hasReachedPostReportsEnd, hasReachedCommentReportsEnd, currentPage, message];
 }

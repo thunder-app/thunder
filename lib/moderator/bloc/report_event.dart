@@ -18,22 +18,29 @@ final class ReportFeedFetchedEvent extends ReportEvent {
   /// Boolean which indicates whether or not to show resolved reports
   final bool showResolved;
 
+  /// The community id to filter the report feed on
+  final int? communityId;
+
   /// Boolean which indicates whether or not to reset the feed
   final bool reset;
 
   const ReportFeedFetchedEvent({
     this.reportFeedType = ReportFeedType.post,
     this.showResolved = false,
+    this.communityId,
     this.reset = false,
   });
 }
 
 /// Event for changing the filter type of the report feed
 final class ReportFeedChangeFilterTypeEvent extends ReportEvent {
-  /// The type of report feed
-  final ReportFeedType reportFeedType;
+  /// Boolean which indicates whether or not to show resolved reports
+  final bool showResolved;
 
-  const ReportFeedChangeFilterTypeEvent({this.reportFeedType = ReportFeedType.post});
+  /// The community id to filter the report feed on
+  final int? communityId;
+
+  const ReportFeedChangeFilterTypeEvent({this.showResolved = false, this.communityId});
 }
 
 final class ReportFeedItemActionedEvent extends ReportEvent {
