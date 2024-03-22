@@ -52,9 +52,10 @@ class CommunityListEntry extends StatelessWidget {
         ),
         subtitle: Row(children: [
           Flexible(
-            child: Text(
-              generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId)),
-              overflow: TextOverflow.ellipsis,
+            child: generateCommunityFullNameWidget(
+              context,
+              communityView.community.name,
+              fetchInstanceNameFromUrl(communityView.community.actorId),
             ),
           ),
           Text(

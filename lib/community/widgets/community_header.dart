@@ -106,8 +106,11 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                   widget.getCommunityResponse.communityView.community.title,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                 ),
-                                Text(generateCommunityFullName(
-                                    context, widget.getCommunityResponse.communityView.community.name, fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A')),
+                                generateCommunityFullNameWidget(
+                                  context,
+                                  widget.getCommunityResponse.communityView.community.name,
+                                  fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A',
+                                ),
                                 const SizedBox(height: 8.0),
                                 Row(
                                   children: [

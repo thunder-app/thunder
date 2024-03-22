@@ -74,10 +74,10 @@ class _UserIndicatorState extends State<UserIndicator> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(person!.displayName ?? person!.name),
-                          Text(
-                            generateUserFullName(context, person!.name, fetchInstanceNameFromUrl(person!.actorId) ?? '-'),
-                            style: theme.textTheme.bodySmall,
-                            overflow: TextOverflow.ellipsis,
+                          generateUserFullNameWidget(
+                            context,
+                            person!.name,
+                            fetchInstanceNameFromUrl(person!.actorId) ?? '-',
                           ),
                         ],
                       ),

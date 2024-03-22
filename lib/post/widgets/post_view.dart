@@ -180,8 +180,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 alignment: WrapAlignment.spaceBetween,
                 runSpacing: 8.0,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
                     children: [
                       Tooltip(
                         excludeFromSemantics: true,
@@ -203,10 +203,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  ScalableText(
+                                  generateUserFullNameWidget(
+                                    context,
                                     postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
+                                    fetchInstanceNameFromUrl(postView.creator.actorId),
+                                    includeInstance: thunderState.postBodyShowUserInstance,
                                     fontScale: thunderState.metadataFontSizeScale,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                    textStyle: theme.textTheme.bodyMedium?.copyWith(
                                       color: (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
                                           ?.withOpacity(0.75),
                                     ),
@@ -272,10 +275,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           excludeFromSemantics: true,
                           message: generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'),
                           preferBelow: false,
-                          child: ScalableText(
+                          child: generateCommunityFullNameWidget(
+                            context,
                             postView.community.name,
+                            fetchInstanceNameFromUrl(postView.community.actorId),
+                            includeInstance: thunderState.postBodyShowCommunityInstance,
                             fontScale: thunderState.metadataFontSizeScale,
-                            style: theme.textTheme.bodyMedium?.copyWith(
+                            textStyle: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                             ),
                           ),

@@ -789,10 +789,12 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('${widget.communityView?.community.title} '),
-                        Text(
-                          generateCommunityFullName(context, widget.communityView?.community.name, fetchInstanceNameFromUrl(widget.communityView?.community.actorId)),
-                          style: theme.textTheme.bodySmall,
-                        ),
+                        generateCommunityFullNameWidget(
+                          context,
+                          widget.communityView?.community.name,
+                          fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                          textStyle: theme.textTheme.bodySmall,
+                        )
                       ],
                     )
                   : SizedBox(

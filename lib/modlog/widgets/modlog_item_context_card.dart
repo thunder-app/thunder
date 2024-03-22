@@ -121,10 +121,12 @@ class ModlogPostItemContextCard extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(6),
                       onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: community?.id),
-                      child: ScalableText(
-                        generateCommunityFullName(context, community?.name, fetchInstanceNameFromUrl(community?.actorId)),
+                      child: generateCommunityFullNameWidget(
+                        context,
+                        community?.name,
+                        fetchInstanceNameFromUrl(community?.actorId),
                         fontScale: state.metadataFontSizeScale,
-                        style: theme.textTheme.bodyMedium?.copyWith(
+                        textStyle: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                         ),
                       ),
@@ -278,10 +280,12 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                         InkWell(
                           borderRadius: BorderRadius.circular(6),
                           onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community?.id),
-                          child: ScalableText(
-                            generateCommunityFullName(context, widget.community?.name, fetchInstanceNameFromUrl(widget.community?.actorId)),
+                          child: generateCommunityFullNameWidget(
+                            context,
+                            widget.community?.name,
+                            fetchInstanceNameFromUrl(widget.community?.actorId),
                             fontScale: state.metadataFontSizeScale,
-                            style: textStyleCommunityAndAuthor,
+                            textStyle: textStyleCommunityAndAuthor,
                           ),
                         ),
                       ],
@@ -336,10 +340,11 @@ class ModlogUserItemContextCard extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
-                    ScalableText(
-                      user == null ? '-' : generateUserFullName(context, user?.name, fetchInstanceNameFromUrl(user?.actorId)),
-                      fontScale: state.metadataFontSizeScale,
-                      style: theme.textTheme.bodyMedium?.copyWith(
+                    generateUserFullNameWidget(
+                      context,
+                      user?.name,
+                      fetchInstanceNameFromUrl(user?.actorId),
+                      textStyle: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
                     ),
@@ -393,10 +398,12 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
-                    ScalableText(
-                      generateCommunityFullName(context, community?.name, fetchInstanceNameFromUrl(community?.actorId)),
+                    generateCommunityFullNameWidget(
+                      context,
+                      community?.name,
+                      fetchInstanceNameFromUrl(community?.actorId),
                       fontScale: state.metadataFontSizeScale,
-                      style: theme.textTheme.bodyMedium?.copyWith(
+                      textStyle: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
                     ),

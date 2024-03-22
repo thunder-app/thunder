@@ -238,10 +238,11 @@ class UserModeratorList extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        Text(
-                          generateCommunityFullName(context, mods.community.name, fetchInstanceNameFromUrl(mods.community.actorId)),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                        generateCommunityFullNameWidget(
+                          context,
+                          mods.community.name,
+                          fetchInstanceNameFromUrl(mods.community.actorId),
+                          textStyle: TextStyle(
                             color: theme.colorScheme.onBackground.withOpacity(0.6),
                             fontSize: 13,
                           ),

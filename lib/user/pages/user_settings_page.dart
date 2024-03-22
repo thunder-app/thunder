@@ -379,10 +379,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   community.title,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(
-                  generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                subtitle: generateCommunityFullNameWidget(
+                  context,
+                  community.name,
+                  fetchInstanceNameFromUrl(community.actorId) ?? '-',
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
@@ -433,10 +433,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   person.displayName ?? person.name,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(
-                  generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                subtitle: generateUserFullNameWidget(
+                  context,
+                  person.name,
+                  fetchInstanceNameFromUrl(person.actorId) ?? '-',
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id

@@ -135,10 +135,12 @@ class _CommentReferenceState extends State<CommentReference> {
                                 ),
                               ),
                               ExcludeSemantics(
-                                child: ScalableText(
-                                  generateCommunityFullName(context, widget.comment.community.name, fetchInstanceNameFromUrl(widget.comment.community.actorId)),
+                                child: generateCommunityFullNameWidget(
+                                  context,
+                                  widget.comment.community.name,
+                                  fetchInstanceNameFromUrl(widget.comment.community.actorId),
                                   fontScale: state.contentFontSizeScale,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                  textStyle: theme.textTheme.bodyMedium?.copyWith(
                                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                                   ),
                                 ),

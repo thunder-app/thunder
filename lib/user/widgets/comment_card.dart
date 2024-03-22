@@ -112,9 +112,11 @@ class CommentCard extends StatelessWidget {
                 ],
               ),
               GestureDetector(
-                child: Text(
-                  generateCommunityFullName(context, comment.community.name, fetchInstanceNameFromUrl(comment.community.actorId)),
-                  style: theme.textTheme.bodyMedium?.copyWith(
+                child: generateCommunityFullNameWidget(
+                  context,
+                  comment.community.name,
+                  fetchInstanceNameFromUrl(comment.community.actorId),
+                  textStyle: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                   ),
                 ),

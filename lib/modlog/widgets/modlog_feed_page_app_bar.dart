@@ -101,11 +101,13 @@ class ModlogFeedAppBarTitle extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: Text(
-          feedState.fullCommunityView != null
-              ? generateCommunityFullName(context, feedState.fullCommunityView!.communityView.community.name, fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId))
-              : lemmyClient.lemmyApiV3.host,
-        ),
+        subtitle: feedState.fullCommunityView != null
+            ? generateCommunityFullNameWidget(
+                context,
+                feedState.fullCommunityView!.communityView.community.name,
+                fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId),
+              )
+            : Text(lemmyClient.lemmyApiV3.host),
         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       ),
     );

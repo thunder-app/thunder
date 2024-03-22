@@ -28,9 +28,10 @@ class UserListEntry extends StatelessWidget {
         ),
         subtitle: Row(children: [
           Flexible(
-            child: Text(
-              generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId)),
-              overflow: TextOverflow.ellipsis,
+            child: generateUserFullNameWidget(
+              context,
+              personView.person.name,
+              fetchInstanceNameFromUrl(personView.person.actorId),
             ),
           ),
         ]),

@@ -561,13 +561,17 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         InkWell(
-                            borderRadius: BorderRadius.circular(6),
-                            onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id),
-                            child: ScalableText(
-                              '$creatorName',
-                              fontScale: state.metadataFontSizeScale,
-                              style: textStyleAuthor,
-                            )),
+                          borderRadius: BorderRadius.circular(6),
+                          onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id),
+                          child: generateUserFullNameWidget(
+                            context,
+                            creatorName,
+                            fetchInstanceNameFromUrl(postView.creator.actorId),
+                            includeInstance: state.postShowUserInstance,
+                            fontScale: state.metadataFontSizeScale,
+                            textStyle: textStyleAuthor,
+                          ),
+                        ),
                         if (!communityMode)
                           ScalableText(
                             ' to ',
@@ -585,10 +589,12 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (!communityMode)
-                          ScalableText(
-                            generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId)),
+                          generateCommunityFullNameWidget(
+                            context,
+                            postView.community.name,
+                            fetchInstanceNameFromUrl(postView.community.actorId),
                             fontScale: state.metadataFontSizeScale,
-                            style: textStyleCommunity,
+                            textStyle: textStyleCommunity,
                           ),
                         if (showCommunitySubscription)
                           Padding(

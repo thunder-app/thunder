@@ -240,10 +240,11 @@ class CommunityModeratorList extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        Text(
-                          generateUserFullName(context, mods.moderator.name, fetchInstanceNameFromUrl(mods.moderator.actorId)),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                        generateUserFullNameWidget(
+                          context,
+                          mods.moderator.name,
+                          fetchInstanceNameFromUrl(mods.moderator.actorId),
+                          textStyle: TextStyle(
                             color: theme.colorScheme.onBackground.withOpacity(0.6),
                             fontSize: 13,
                           ),

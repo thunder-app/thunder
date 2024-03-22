@@ -96,9 +96,11 @@ class InboxMentionsView extends StatelessWidget {
                     ],
                   ),
                   GestureDetector(
-                    child: Text(
-                      generateCommunityFullName(context, mentions[index].community.name, fetchInstanceNameFromUrl(mentions[index].community.actorId)),
-                      style: theme.textTheme.bodyMedium?.copyWith(
+                    child: generateCommunityFullNameWidget(
+                      context,
+                      mentions[index].community.name,
+                      fetchInstanceNameFromUrl(mentions[index].community.actorId),
+                      textStyle: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
                     ),
