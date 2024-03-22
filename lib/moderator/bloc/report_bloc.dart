@@ -3,11 +3,13 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/moderator/enums/report_action.dart';
 import 'package:thunder/moderator/utils/report.dart';
 import 'package:thunder/moderator/view/report_page.dart';
+import 'package:thunder/utils/global_context.dart';
 
 part 'report_event.dart';
 part 'report_state.dart';
@@ -62,15 +64,20 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
   /// Resets the ReportState to its initial state
   Future<void> _onResetReportFeed(ResetReportEvent event, Emitter<ReportState> emit) async {
-    emit(const ReportState(
-      status: ReportStatus.initial,
-      postReports: [],
-      commentReports: [],
-      hasReachedPostReportsEnd: false,
-      hasReachedCommentReportsEnd: false,
-      currentPage: 1,
-      message: null,
-    ));
+    emit(
+      const ReportState(
+        status: ReportStatus.initial,
+        reportFeedType: ReportFeedType.post,
+        showResolved: false,
+        communityId: null,
+        postReports: [],
+        commentReports: [],
+        hasReachedPostReportsEnd: false,
+        hasReachedCommentReportsEnd: false,
+        currentPage: 1,
+        message: null,
+      ),
+    );
   }
 
   /// Changes the current filter type of the report feed
@@ -93,8 +100,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         page: 1,
         unresolved: !event.showResolved,
         communityId: event.communityId,
-        postId: null, // todo
-        commentId: null, // todo
+        postId: null, // TODO: This is introduced in 0.19.4
+        commentId: null, // TODO: This is introduced in 0.19.4
         reportFeedType: event.reportFeedType,
       );
 
@@ -133,10 +140,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
     Map<String, dynamic> fetchReportsResult = await fetchReports(
       page: state.currentPage,
-      unresolved: !state.showResolved, // todo
-      communityId: state.communityId, // todo
-      postId: null, // todo
-      commentId: null, // todo
+      unresolved: !state.showResolved,
+      communityId: state.communityId,
+      postId: null, // TODO: This is introduced in 0.19.4
+      commentId: null, // TODO: This is introduced in 0.19.4
       reportFeedType: state.reportFeedType,
     );
 
@@ -187,7 +194,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           bool success = await resolvePostReport(originalPostReport.id, event.value);
           if (success) return emit(state.copyWith(status: ReportStatus.success));
 
-          return emit(state.copyWith(status: ReportStatus.failure, message: 'Failed to resolve report'));
+          state.postReports[existingPostReportViewIndex] = postReportView;
+          return emit(state.copyWith(status: ReportStatus.failure, message: AppLocalizations.of(GlobalContext.context)!.unableToResolveReport));
         } catch (e) {
           // Restore the original post report contents
           state.postReports[existingPostReportViewIndex] = postReportView;
@@ -211,7 +219,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           bool success = await resolveCommentReport(originalCommentReport.id, event.value);
           if (success) return emit(state.copyWith(status: ReportStatus.success));
 
-          return emit(state.copyWith(status: ReportStatus.failure, message: 'Failed to resolve report'));
+          state.commentReports[existingCommentReportViewIndex] = commentReportView;
+          return emit(state.copyWith(status: ReportStatus.failure, message: AppLocalizations.of(GlobalContext.context)!.unableToResolveReport));
         } catch (e) {
           // Restore the original comment report contents
           state.commentReports[existingCommentReportViewIndex] = commentReportView;

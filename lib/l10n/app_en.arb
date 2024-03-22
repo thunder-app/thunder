@@ -1691,6 +1691,10 @@
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
   },
+  "unableToResolveReport": "Unable to resolve report",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
+  },
   "unableToRetrieveChangelog": "Unable to retrieve changelog for version {version}.",
   "@unableToRetrieveChangelog": {
     "description": "Error message for when we are unable to retrieve the changelog."

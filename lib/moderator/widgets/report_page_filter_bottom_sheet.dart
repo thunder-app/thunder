@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/community/pages/create_post_page.dart';
 
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/community/pages/create_post_page.dart';
 
 enum ReportResolveStatus { unresolved, all }
 
+/// A [BottomSheet] that allows the user to filter reports by status and community
+/// When the submit button is pressed, the [onSubmit] function is called with the selected [ReportResolveStatus] and [CommunityView] if any.
 class ReportFilterBottomSheet extends StatefulWidget {
   const ReportFilterBottomSheet({super.key, required this.status, required this.onSubmit});
 
@@ -24,7 +26,7 @@ class ReportFilterBottomSheet extends StatefulWidget {
 
 class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
   /// The status to filter by
-  ReportResolveStatus _reportResolveStatus = ReportResolveStatus.all;
+  ReportResolveStatus status = ReportResolveStatus.all;
 
   /// The community to filter by
   CommunityView? communityView;
@@ -32,7 +34,7 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _reportResolveStatus = widget.status;
+    status = widget.status;
   }
 
   @override
@@ -48,19 +50,13 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.filters,
-              style: theme.textTheme.titleLarge,
-            ),
+            Text(l10n.filters, style: theme.textTheme.titleLarge),
             const SizedBox(height: 16.0),
             Text(l10n.status, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             SegmentedButton<ReportResolveStatus>(
               showSelectedIcon: false,
-              style: SegmentedButton.styleFrom(
-                visualDensity: VisualDensity.compact,
-                minimumSize: Size.zero,
-              ),
+              style: SegmentedButton.styleFrom(visualDensity: VisualDensity.compact, minimumSize: Size.zero),
               segments: <ButtonSegment<ReportResolveStatus>>[
                 ButtonSegment<ReportResolveStatus>(
                   value: ReportResolveStatus.unresolved,
@@ -73,12 +69,10 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
                   icon: const Icon(Icons.list_alt_rounded),
                 ),
               ],
-              selected: <ReportResolveStatus>{_reportResolveStatus},
+              selected: <ReportResolveStatus>{status},
               onSelectionChanged: (Set<ReportResolveStatus> newSelection) {
                 HapticFeedback.mediumImpact();
-                setState(() {
-                  _reportResolveStatus = newSelection.first;
-                });
+                setState(() => status = newSelection.first);
               },
             ),
             const SizedBox(height: 16.0),
@@ -87,16 +81,14 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
             CommunitySelector(
               communityId: communityView?.community.id,
               communityView: communityView,
-              onCommunitySelected: (community) {
-                setState(() {
-                  communityView = community;
-                });
+              onCommunitySelected: (CommunityView cv) {
+                setState(() => communityView = cv);
               },
             ),
             Align(
               alignment: Alignment.bottomRight,
               child: TextButton(
-                onPressed: () => widget.onSubmit(_reportResolveStatus, communityView),
+                onPressed: () => widget.onSubmit(status, communityView),
                 child: Text(l10n.apply),
               ),
             ),

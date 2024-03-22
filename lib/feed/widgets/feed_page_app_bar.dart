@@ -307,7 +307,6 @@ class FeedAppBarGeneralActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final feedBloc = context.read<FeedBloc>();
-    final authBloc = context.read<AuthBloc>();
 
     return Row(
       children: [

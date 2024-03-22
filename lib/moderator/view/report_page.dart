@@ -7,8 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
@@ -63,6 +63,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
   bool showResolved = false;
 
   /// List of tabs for the report page
+  /// TODO: Add support for private messages
   List<String> reportOptionTypes = [AppLocalizations.of(GlobalContext.context)!.posts, AppLocalizations.of(GlobalContext.context)!.comments];
 
   @override
