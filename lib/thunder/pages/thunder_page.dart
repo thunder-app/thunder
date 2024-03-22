@@ -219,6 +219,12 @@ class _ThunderState extends State<Thunder> {
       return Future.value(false);
     }
 
+    // If any modal is open (i.e., community drawer) close it now
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+      return Future.value(false);
+    }
+
     if (_isFabOpen == true) {
       return Future.value(false);
     }
