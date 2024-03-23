@@ -37,7 +37,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
       ));
 
       emit(state.copyWith(
-        status: searchResponse.communities.isEmpty ? InstancePageStatus.done : InstancePageStatus.success,
+        status: searchResponse.communities.isEmpty || searchResponse.communities.length < 15 ? InstancePageStatus.done : InstancePageStatus.success,
         communities: [...(state.communities ?? []), ...searchResponse.communities],
         page: page ?? 1,
       ));
@@ -64,7 +64,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
       ));
 
       emit(state.copyWith(
-        status: searchResponse.users.isEmpty ? InstancePageStatus.done : InstancePageStatus.success,
+        status: searchResponse.users.isEmpty || searchResponse.users.length < 15 ? InstancePageStatus.done : InstancePageStatus.success,
         users: [...(state.users ?? []), ...searchResponse.users],
         page: page ?? 1,
       ));
@@ -91,7 +91,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
       ));
 
       emit(state.copyWith(
-        status: searchResponse.posts.isEmpty ? InstancePageStatus.done : InstancePageStatus.success,
+        status: searchResponse.posts.isEmpty || searchResponse.posts.length < 15 ? InstancePageStatus.done : InstancePageStatus.success,
         posts: [...(state.posts ?? []), ...(await parsePostViews(searchResponse.posts, resolutionInstance: state.resolutionInstance))],
         page: page ?? 1,
       ));
@@ -130,7 +130,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
       }
 
       emit(state.copyWith(
-        status: searchResponse.comments.isEmpty ? InstancePageStatus.done : InstancePageStatus.success,
+        status: searchResponse.comments.isEmpty || searchResponse.comments.length < 15 ? InstancePageStatus.done : InstancePageStatus.success,
         comments: commentsFinal,
         page: page ?? 1,
       ));
