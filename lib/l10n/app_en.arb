@@ -1083,6 +1083,14 @@
   "@postBodySettingsDescription": {
     "description": "Description of post body settings"
   },
+  "postBodyShowCommunityInstance": "Show Community Instance",
+  "@postBodyShowCommunityInstance": {
+    "description": "Whether to show the community instance for post bodies"
+  },
+  "postBodyShowUserInstance": "Show User Instance",
+  "@postBodyShowUserInstance": {
+    "description": "Whether to show the user instance for post bodies"
+  },
   "postBodyViewType": "Post Body View Type",
   "@postBodyViewType": {
     "description": "Setting name for the post body view type setting"
@@ -1109,6 +1117,10 @@
   },
   "postSavedAsDraft": "Post saved as draft",
   "@postSavedAsDraft": {},
+  "postShowUserInstance": "Show User Instance",
+  "@postShowUserInstance": {
+    "description": "Whether to show the user instance for post listings"
+  },
   "postSwipeActions": "Post Swipe Actions",
   "@postSwipeActions": {
     "description": "Setting for post swipe actions"

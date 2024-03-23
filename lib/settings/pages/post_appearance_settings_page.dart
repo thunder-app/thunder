@@ -80,6 +80,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// When enabled, the author of the post will be shown on the post
   bool showPostAuthor = false;
 
+  /// When toggled on, user instance is displayed alongside the display name/username
+  bool postShowUserInstance = false;
+
   /// When enabled, posts that have been marked as read will be dimmed
   bool dimReadPosts = true;
 
@@ -107,6 +110,12 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// Determines how post bodies are displayed
   PostBodyViewType postBodyViewType = PostBodyViewType.expanded;
 
+  /// When enabled, shows the instance of the user in posts
+  bool postBodyShowUserInstance = false;
+
+  /// When enabled, shows the instance of the community in posts
+  bool postBodyShowCommunityInstance = false;
+
   /// List of compact post card metadata items to show on the post card
   /// The order of the items is important as they will be displayed in that order
   List<PostCardMetadataItem> compactPostCardMetadataItems = [];
@@ -128,6 +137,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
+      postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
       selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : dateFormats.first;
@@ -153,6 +163,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       // Post body settings
       showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
+      postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
+      postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
     });
   }
 
@@ -176,6 +188,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.useDisplayNamesForUsers:
         await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
         setState(() => useDisplayNames = value);
+        break;
+      case LocalSettings.postShowUserInstance:
+        await prefs.setBool(LocalSettings.postShowUserInstance.name, value);
+        setState(() => postShowUserInstance = value);
         break;
       case LocalSettings.dimReadPosts:
         await prefs.setBool(LocalSettings.dimReadPosts.name, value);
@@ -249,6 +265,14 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setString(LocalSettings.postBodyViewType.name, (value as PostBodyViewType).name);
         setState(() => postBodyViewType = value);
         break;
+      case LocalSettings.postBodyShowUserInstance:
+        await prefs.setBool(LocalSettings.postBodyShowUserInstance.name, value);
+        setState(() => postBodyShowUserInstance = value);
+        break;
+      case LocalSettings.postBodyShowCommunityInstance:
+        await prefs.setBool(LocalSettings.postBodyShowCommunityInstance.name, value);
+        setState(() => postBodyShowCommunityInstance = value);
+        break;
     }
 
     if (context.mounted) {
@@ -264,6 +288,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.hideNsfwPreviews.name);
     await prefs.remove(LocalSettings.showPostAuthor.name);
     await prefs.remove(LocalSettings.useDisplayNamesForUsers.name);
+    await prefs.remove(LocalSettings.postShowUserInstance.name);
     await prefs.remove(LocalSettings.dimReadPosts.name);
     await prefs.remove(LocalSettings.showFullPostDate.name);
     await prefs.remove(LocalSettings.dateFormat.name);
@@ -282,6 +307,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.showPostCommunityIcons.name);
     await prefs.remove(LocalSettings.showCrossPosts.name);
     await prefs.remove(LocalSettings.postBodyViewType.name);
+    await prefs.remove(LocalSettings.postBodyShowUserInstance.name);
+    await prefs.remove(LocalSettings.postBodyShowCommunityInstance.name);
 
     await initPreferences();
 
@@ -295,6 +322,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     PostViewMedia? postViewMediaText = await createExamplePost(
       postTitle: 'Example Text Post',
       personName: 'Lightning',
+      personInstance: 'lemmy.world',
       communityName: 'Thunder',
       postBody: 'Thunder is an open source, cross platform app for interacting, and exploring Lemmy communities.',
       read: dimReadPosts,
@@ -306,6 +334,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       postTitle: 'Example Image Post',
       personName: 'Lightning',
       personDisplayName: 'User',
+      personInstance: 'lemmy.world',
       communityName: 'Thunder',
       postUrl: 'https://lemmy.ml/pictrs/image/4ff0a2f3-970c-4493-b143-a6d46d378c95.jpeg',
       nsfw: true,
@@ -318,6 +347,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       postTitle: 'Example Link Post',
       personName: 'Lightning',
       personDisplayName: 'User',
+      personInstance: 'lemmy.world',
       communityName: 'Thunder',
       postUrl: 'https://github.com/thunder-app/thunder',
       read: false,
@@ -558,6 +588,16 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               iconDisabled: Icons.person_off_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
               highlightKey: settingToHighlight == LocalSettings.useDisplayNamesForUsers ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showUserInstance,
+              value: postShowUserInstance,
+              iconEnabled: Icons.dns_sharp,
+              iconDisabled: Icons.dns_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.postShowUserInstance, value),
+              highlightKey: settingToHighlight == LocalSettings.postShowUserInstance ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
@@ -958,6 +998,26 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               icon: Icons.view_list_rounded,
               onChanged: (value) async => setPreferences(LocalSettings.postBodyViewType, value.payload),
               highlightKey: settingToHighlight == LocalSettings.postBodyViewType ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showUserInstance,
+              value: postBodyShowUserInstance,
+              iconEnabled: Icons.dns_sharp,
+              iconDisabled: Icons.dns_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowUserInstance, value),
+              highlightKey: settingToHighlight == LocalSettings.postBodyShowUserInstance ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.postBodyShowCommunityInstance,
+              value: postBodyShowCommunityInstance,
+              iconEnabled: Icons.dns_sharp,
+              iconDisabled: Icons.dns_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityInstance, value),
+              highlightKey: settingToHighlight == LocalSettings.postBodyShowCommunityInstance ? settingToHighlightKey : null,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),

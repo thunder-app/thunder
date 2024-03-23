@@ -35,7 +35,7 @@ class ThunderState extends Equatable {
     this.enableInboxNotifications = false,
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
-    this.userFullNameWeightUserName = true,
+    this.userFullNameWeightUserName = false,
     this.userFullNameWeightInstanceName = false,
     this.userFullNameColorizeUserName = false,
     this.userFullNameColorizeInstanceName = false,
@@ -54,7 +54,6 @@ class ThunderState extends Equatable {
     this.showThumbnailPreviewOnRight = false,
     this.showTextPostIndicator = false,
     this.tappableAuthorCommunity = false,
-    this.postBodyViewType = PostBodyViewType.expanded,
 
     // General Settings
     this.showVoteActions = true,
@@ -64,16 +63,22 @@ class ThunderState extends Equatable {
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
     this.showPostAuthor = false,
+    this.postShowUserInstance = false,
     this.dimReadPosts = true,
     this.showFullPostDate = false,
     this.dateFormat,
     this.feedCardDividerThickness = FeedCardDividerThickness.compact,
     this.feedCardDividerColor = Colors.transparent,
-    this.showCrossPosts = true,
     this.compactPostCardMetadataItems = const [],
     this.cardPostCardMetadataItems = const [],
     this.keywordFilters = const [],
     this.appLanguageCode = 'en',
+
+    // Post body settings
+    this.showCrossPosts = true,
+    this.postBodyViewType = PostBodyViewType.expanded,
+    this.postBodyShowUserInstance = false,
+    this.postBodyShowCommunityInstance = false,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -198,7 +203,6 @@ class ThunderState extends Equatable {
   final bool showThumbnailPreviewOnRight;
   final bool showTextPostIndicator;
   final bool tappableAuthorCommunity;
-  final PostBodyViewType postBodyViewType;
 
   // General Settings
   final bool showVoteActions;
@@ -208,16 +212,22 @@ class ThunderState extends Equatable {
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
   final bool showPostAuthor;
+  final bool postShowUserInstance;
   final bool scoreCounters;
   final bool dimReadPosts;
   final bool showFullPostDate;
   final DateFormat? dateFormat;
   final FeedCardDividerThickness feedCardDividerThickness;
   final Color feedCardDividerColor;
-  final bool showCrossPosts;
   final List<PostCardMetadataItem> compactPostCardMetadataItems;
   final List<PostCardMetadataItem> cardPostCardMetadataItems;
   final List<String> keywordFilters;
+
+  // Post body settings
+  final bool showCrossPosts;
+  final PostBodyViewType postBodyViewType;
+  final bool postBodyShowUserInstance;
+  final bool postBodyShowCommunityInstance;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -350,7 +360,6 @@ class ThunderState extends Equatable {
     bool? showThumbnailPreviewOnRight,
     bool? showTextPostIndicator,
     bool? tappableAuthorCommunity,
-    PostBodyViewType? postBodyViewType,
 
     // General Settings
     bool? showVoteActions,
@@ -360,15 +369,23 @@ class ThunderState extends Equatable {
     bool? showEdgeToEdgeImages,
     bool? showTextContent,
     bool? showPostAuthor,
+    bool? postShowUserInstance,
     bool? dimReadPosts,
     bool? showFullPostDate,
     DateFormat? dateFormat,
     FeedCardDividerThickness? feedCardDividerThickness,
     Color? feedCardDividerColor,
-    bool? showCrossPosts,
     List<PostCardMetadataItem>? compactPostCardMetadataItems,
     List<PostCardMetadataItem>? cardPostCardMetadataItems,
     String? appLanguageCode = 'en',
+
+    // Post body settings
+    bool? showCrossPosts,
+    PostBodyViewType? postBodyViewType,
+    bool? postBodyShowUserInstance,
+    bool? postBodyShowCommunityInstance,
+
+    // Keyword filters
     List<String>? keywordFilters,
 
     /// -------------------------- Post Page Related Settings --------------------------
@@ -495,7 +512,6 @@ class ThunderState extends Equatable {
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
       showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
       tappableAuthorCommunity: tappableAuthorCommunity ?? this.tappableAuthorCommunity,
-      postBodyViewType: postBodyViewType ?? this.postBodyViewType,
 
       // General Settings
       showVoteActions: showVoteActions ?? this.showVoteActions,
@@ -505,14 +521,21 @@ class ThunderState extends Equatable {
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
+      postShowUserInstance: postShowUserInstance ?? this.postShowUserInstance,
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
       showFullPostDate: showFullPostDate ?? this.showFullPostDate,
       dateFormat: dateFormat ?? this.dateFormat,
       feedCardDividerThickness: feedCardDividerThickness ?? this.feedCardDividerThickness,
       feedCardDividerColor: feedCardDividerColor ?? this.feedCardDividerColor,
-      showCrossPosts: showCrossPosts ?? this.showCrossPosts,
       compactPostCardMetadataItems: compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
       cardPostCardMetadataItems: cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
+
+      // Post body settings
+      showCrossPosts: showCrossPosts ?? this.showCrossPosts,
+      postBodyViewType: postBodyViewType ?? this.postBodyViewType,
+      postBodyShowUserInstance: postBodyShowUserInstance ?? this.postBodyShowUserInstance,
+      postBodyShowCommunityInstance: postBodyShowCommunityInstance ?? this.postBodyShowCommunityInstance,
+
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
@@ -644,7 +667,6 @@ class ThunderState extends Equatable {
         showThumbnailPreviewOnRight,
         showTextPostIndicator,
         tappableAuthorCommunity,
-        postBodyViewType,
 
         // General Settings
         showVoteActions,
@@ -654,15 +676,22 @@ class ThunderState extends Equatable {
         showEdgeToEdgeImages,
         showTextContent,
         showPostAuthor,
+        postShowUserInstance,
         dimReadPosts,
         showFullPostDate,
         dateFormat,
         feedCardDividerThickness,
         feedCardDividerColor,
-        showCrossPosts,
         compactPostCardMetadataItems,
         cardPostCardMetadataItems,
         appLanguageCode,
+
+        // Post body settings
+        showCrossPosts,
+        postBodyViewType,
+        postBodyShowUserInstance,
+        postBodyShowCommunityInstance,
+
         keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------

@@ -4,8 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/instance.dart';
 
 class UserIndicator extends StatefulWidget {
@@ -74,10 +74,10 @@ class _UserIndicatorState extends State<UserIndicator> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(person!.displayName ?? person!.name),
-                          Text(
-                            generateUserFullName(context, person!.name, fetchInstanceNameFromUrl(person!.actorId) ?? '-'),
-                            style: theme.textTheme.bodySmall,
-                            overflow: TextOverflow.ellipsis,
+                          UserFullNameWidget(
+                            context,
+                            person!.name,
+                            fetchInstanceNameFromUrl(person!.actorId) ?? '-',
                           ),
                         ],
                       ),
