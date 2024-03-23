@@ -16,17 +16,26 @@ class InstanceView extends StatelessWidget {
       children: [
         Row(
           children: [
-            CircleAvatar(
-              backgroundColor: site.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-              foregroundImage: site.icon != null ? CachedNetworkImageProvider(site.icon!) : null,
-              maxRadius: 24,
+            SizedBox(
+              width: 48,
               child: site.icon == null
-                  ? Text(
-                      site.name[0],
-                      semanticsLabel: '',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ? CircleAvatar(
+                      backgroundColor: theme.colorScheme.secondaryContainer,
+                      maxRadius: 24,
+                      child: Text(
+                        site.name[0],
+                        semanticsLabel: '',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
                     )
-                  : null,
+                  : CachedNetworkImage(
+                      imageUrl: site.icon!,
+                      imageBuilder: (context, imageProvider) => CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        foregroundImage: imageProvider,
+                        maxRadius: 24,
+                      ),
+                    ),
             ),
             const SizedBox(width: 16.0),
             Expanded(
