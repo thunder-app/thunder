@@ -25,6 +25,7 @@ const List<String> instances = [
   'lemmy.ca',
   'lemmy.dbzer0.com',
   'lemmy.eco.br',
+  'lemmy.kya.moe',
   'lemmy.ml',
   'lemmy.nz',
   'lemmy.one',
