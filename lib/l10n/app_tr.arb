@@ -237,10 +237,6 @@
   },
   "commentSwipeGesturesHint": "Bunun yerine düğmeler mi kullanmak istiyorsunuz? Bunları genel ayarlardaki yorumlar bölümünde etkinleştirin.",
   "@commentSwipeGesturesHint": {},
-  "commentUseColorizedUsername": "Renkli Kullanıcı Adları",
-  "@commentUseColorizedUsername": {
-    "description": "Renklendirilmiş yorumlar oluşturucunun görünen adını değiştirmek için kullanılan ayar."
-  },
   "comments": "Yorumlar",
   "@comments": {},
   "communities": "Topluluklar",
