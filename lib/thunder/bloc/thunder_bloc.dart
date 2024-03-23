@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 
@@ -11,6 +12,7 @@ import 'package:thunder/core/enums/browser_mode.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
@@ -154,6 +156,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       bool showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
       DateFormat dateFormat = DateFormat(prefs.getString(LocalSettings.dateFormat.name) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
+      FeedCardDividerThickness feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
+      Color feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.value);
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       List<PostCardMetadataItem> compactPostCardMetadataItems =
           prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
@@ -300,6 +304,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         dimReadPosts: dimReadPosts,
         showFullPostDate: showFullPostDate,
         dateFormat: dateFormat,
+        feedCardDividerThickness: feedCardDividerThickness,
+        feedCardDividerColor: feedCardDividerColor,
         showCrossPosts: showCrossPosts,
         compactPostCardMetadataItems: compactPostCardMetadataItems,
         cardPostCardMetadataItems: cardPostCardMetadataItems,

@@ -12,6 +12,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/widgets/widgets.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
@@ -132,15 +133,6 @@ class _PostCardState extends State<PostCard> {
       },
       child: Column(
         children: [
-          Divider(
-            height: 1.0,
-            thickness: 4.0,
-            color: ElevationOverlay.applySurfaceTint(
-              Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.surfaceTint,
-              10,
-            ),
-          ),
           Dismissible(
             direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
             key: ObjectKey(widget.postViewMedia.postView.post.id),
@@ -244,6 +236,7 @@ class _PostCardState extends State<PostCard> {
               },
             ),
           ),
+          const FeedCardDivider(),
         ],
       ),
     );

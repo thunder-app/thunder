@@ -110,28 +110,28 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               title: AppLocalizations.of(GlobalContext.context)!.posts,
               items: postModlogActionTypeItems,
               onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
-              onSelect: (item) => widget.onSelect(item),
+              onSelect: (item) => widget.onSelect?.call(item),
               previouslySelectedItem: widget.previouslySelected,
             ),
           ModlogActionTypeFilterCategory.comment => ModlogSubFilterPicker(
               title: AppLocalizations.of(GlobalContext.context)!.comments,
               items: commentModlogActionTypeItems,
               onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
-              onSelect: (item) => widget.onSelect(item),
+              onSelect: (item) => widget.onSelect?.call(item),
               previouslySelectedItem: widget.previouslySelected,
             ),
           ModlogActionTypeFilterCategory.community => ModlogSubFilterPicker(
               title: AppLocalizations.of(GlobalContext.context)!.community,
               items: communityModlogActionTypeItems,
               onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
-              onSelect: (item) => widget.onSelect(item),
+              onSelect: (item) => widget.onSelect?.call(item),
               previouslySelectedItem: widget.previouslySelected,
             ),
           ModlogActionTypeFilterCategory.instance => ModlogSubFilterPicker(
               title: AppLocalizations.of(GlobalContext.context)!.instance(1),
               items: instanceModlogActionTypeItems,
               onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
-              onSelect: (item) => widget.onSelect(item),
+              onSelect: (item) => widget.onSelect?.call(item),
               previouslySelectedItem: widget.previouslySelected,
             ),
         },
@@ -168,7 +168,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
                 onSelected: () {
                   HapticFeedback.mediumImpact();
                   Navigator.of(context).pop();
-                  widget.onSelect(item);
+                  widget.onSelect?.call(item);
                 },
                 isSelected: widget.previouslySelected == item.payload,
               ),

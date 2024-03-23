@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class BottomSheetListPicker<T> extends StatefulWidget {
   final String title;
   final List<ListPickerItem<T>> items;
-  final Future<void> Function(ListPickerItem<T>) onSelect;
+  final Future<void> Function(ListPickerItem<T>)? onSelect;
   final T? previouslySelected;
   final bool closeOnSelect;
   final Widget? heading;
@@ -16,7 +16,7 @@ class BottomSheetListPicker<T> extends StatefulWidget {
     super.key,
     required this.title,
     required this.items,
-    required this.onSelect,
+    this.onSelect,
     this.previouslySelected,
     this.closeOnSelect = true,
     this.heading,
@@ -73,6 +73,10 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                   physics: const NeverScrollableScrollPhysics(),
                   children: widget.items.map(
                     (item) {
+                      if (item.customWidget != null) {
+                        return item.customWidget!;
+                      }
+
                       return PickerItem(
                         label: item.capitalizeLabel ? item.label.capitalize : item.label,
                         labelWidget: item.labelWidget,
@@ -93,7 +97,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                               }
                             });
                           }
-                          await widget.onSelect(item);
+                          await widget.onSelect?.call(item);
                           setState(() => heading = widget.onUpdateHeading?.call());
                         },
                         isSelected: currentlySelected != null ? currentlySelected == item.payload : widget.previouslySelected == item.payload,
@@ -176,25 +180,46 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
 }
 
 class ListPickerItem<T> {
+  /// Icon shown on the left
   final IconData? icon;
+
+  /// When passed in, the left icon will show a color palette
   final List<Color>? colors;
+
+  /// The label of the item
   final String label;
-  final String? subtitle;
-  final Widget? labelWidget;
-  final T payload;
-  final bool capitalizeLabel;
+
+  /// The theme of the label
   final TextTheme? textTheme;
+
+  /// The subtitle of the item
+  final String? subtitle;
+
+  /// Whether to capitalize the label
+  final bool capitalizeLabel;
+
+  /// A custom widget to show instead of the label
+  final Widget? labelWidget;
+
+  /// A custom widget to use instead of the default
+  final Widget? customWidget;
+
+  /// The payload of the item
+  final T payload;
+
+  /// Whether the item is selected
   final bool? isChecked;
 
   const ListPickerItem({
     this.icon,
     this.colors,
-    required this.label,
-    this.subtitle,
-    this.labelWidget,
-    required this.payload,
-    this.capitalizeLabel = true,
+    this.label = "",
     this.textTheme,
+    this.subtitle,
+    this.capitalizeLabel = true,
+    this.labelWidget,
+    this.customWidget,
+    required this.payload,
     this.isChecked,
   });
 }
