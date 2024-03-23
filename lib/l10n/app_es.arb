@@ -1834,5 +1834,45 @@
   "userStyle": "Estilo del usuario",
   "@userStyle": {
     "description": "Heading for user style setting"
+  },
+  "comfortable": "Cómodo",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "compact": "Compacto",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "dividerAppearance": "Aspecto del divisor",
+  "@dividerAppearance": {
+    "description": "Divider appearance category"
+  },
+  "color": "Color",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "feedSettings": "Configuración del feed",
+  "@feedSettings": {
+    "description": "Feed settings category."
+  },
+  "postBodyShowCommunityInstance": "Mostrar instancia de comunidad",
+  "@postBodyShowCommunityInstance": {
+    "description": "Whether to show the community instance for post bodies"
+  },
+  "postShowUserInstance": "Mostrar instancia de usuario",
+  "@postShowUserInstance": {
+    "description": "Whether to show the user instance for post listings"
+  },
+  "postBodyShowUserInstance": "Mostrar la instancia del usuario",
+  "@postBodyShowUserInstance": {
+    "description": "Whether to show the user instance for post bodies"
+  },
+  "standard": "Estándar",
+  "@standard": {
+    "description": "Describes a standard visual density"
+  },
+  "thickness": "Espesor",
+  "@thickness": {
+    "description": "Describes a thickness (e.g., divider)"
   }
 }
