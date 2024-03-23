@@ -6,13 +6,13 @@ import 'package:html_unescape/html_unescape_small.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -121,7 +121,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(6),
                       onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: community?.id),
-                      child: generateCommunityFullNameWidget(
+                      child: CommunityFullNameWidget(
                         context,
                         community?.name,
                         fetchInstanceNameFromUrl(community?.actorId),
@@ -280,7 +280,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                         InkWell(
                           borderRadius: BorderRadius.circular(6),
                           onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community?.id),
-                          child: generateCommunityFullNameWidget(
+                          child: CommunityFullNameWidget(
                             context,
                             widget.community?.name,
                             fetchInstanceNameFromUrl(widget.community?.actorId),
@@ -340,7 +340,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
-                    generateUserFullNameWidget(
+                    UserFullNameWidget(
                       context,
                       user?.name,
                       fetchInstanceNameFromUrl(user?.actorId),
@@ -398,7 +398,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
-                    generateCommunityFullNameWidget(
+                    CommunityFullNameWidget(
                       context,
                       community?.name,
                       fetchInstanceNameFromUrl(community?.actorId),

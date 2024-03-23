@@ -8,7 +8,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,8 +31,8 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
-import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -203,7 +202,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  generateUserFullNameWidget(
+                                  UserFullNameWidget(
                                     context,
                                     postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
                                     fetchInstanceNameFromUrl(postView.creator.actorId),
@@ -275,7 +274,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           excludeFromSemantics: true,
                           message: generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'),
                           preferBelow: false,
-                          child: generateCommunityFullNameWidget(
+                          child: CommunityFullNameWidget(
                             context,
                             postView.community.name,
                             fetchInstanceNameFromUrl(postView.community.actorId),

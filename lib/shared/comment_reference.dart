@@ -6,10 +6,10 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/shared/comment_content.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
@@ -135,7 +135,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                 ),
                               ),
                               ExcludeSemantics(
-                                child: generateCommunityFullNameWidget(
+                                child: CommunityFullNameWidget(
                                   context,
                                   widget.comment.community.name,
                                   fetchInstanceNameFromUrl(widget.comment.community.actorId),

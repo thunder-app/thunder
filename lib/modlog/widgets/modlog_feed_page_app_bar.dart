@@ -6,12 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/modlog/bloc/modlog_bloc.dart';
 import 'package:thunder/modlog/widgets/modlog_filter_picker.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -102,7 +101,7 @@ class ModlogFeedAppBarTitle extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: feedState.fullCommunityView != null
-            ? generateCommunityFullNameWidget(
+            ? CommunityFullNameWidget(
                 context,
                 feedState.fullCommunityView!.communityView.community.name,
                 fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId),

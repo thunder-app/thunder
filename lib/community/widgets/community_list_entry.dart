@@ -8,6 +8,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -52,7 +53,7 @@ class CommunityListEntry extends StatelessWidget {
         ),
         subtitle: Row(children: [
           Flexible(
-            child: generateCommunityFullNameWidget(
+            child: CommunityFullNameWidget(
               context,
               communityView.community.name,
               fetchInstanceNameFromUrl(communityView.community.actorId),

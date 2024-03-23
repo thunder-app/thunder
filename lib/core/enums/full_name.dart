@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/shared/text/scalable_text.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 enum FullNameSeparator {
@@ -23,7 +22,7 @@ Widget generateSampleUserFullNameWidget(
   TextStyle? textStyle,
   ColorScheme? colorScheme,
 }) =>
-    generateUserFullNameWidget(
+    UserFullNameWidget(
       null,
       'name',
       'instance.tld',
@@ -47,7 +46,7 @@ Widget generateSampleCommunityFullNameWidget(
   TextStyle? textStyle,
   ColorScheme? colorScheme,
 }) =>
-    generateCommunityFullNameWidget(
+    CommunityFullNameWidget(
       null,
       'name',
       'instance.tld',
@@ -90,68 +89,6 @@ String generateUserFullName(BuildContext? context, name, instance, {FullNameSepa
   return '$prefix$suffix';
 }
 
-Text generateUserFullNameWidget(
-  BuildContext? context,
-  name,
-  instance, {
-  FullNameSeparator? userSeparator,
-  bool? weightUserName,
-  bool? weightInstanceName,
-  bool? colorizeUserName,
-  bool? colorizeInstanceName,
-  TextStyle? textStyle,
-  ColorScheme? colorScheme,
-  bool includeInstance = true,
-  FontScale? fontScale,
-}) {
-  assert(context != null || (userSeparator != null && weightUserName != null && weightInstanceName != null && colorizeUserName != null && colorizeInstanceName != null));
-  assert(context != null || (textStyle != null && colorScheme != null));
-  String prefix = generateUserFullNamePrefix(context, name, userSeparator: userSeparator);
-  String suffix = generateUserFullNameSuffix(context, instance, userSeparator: userSeparator);
-  weightUserName ??= context!.read<ThunderBloc>().state.userFullNameWeightUserName;
-  weightInstanceName ??= context!.read<ThunderBloc>().state.userFullNameWeightInstanceName;
-  colorizeUserName ??= context!.read<ThunderBloc>().state.userFullNameColorizeUserName;
-  colorizeInstanceName ??= context!.read<ThunderBloc>().state.userFullNameColorizeInstanceName;
-  textStyle ??= Theme.of(context!).textTheme.bodyMedium;
-  colorScheme ??= Theme.of(context!).colorScheme;
-
-  return Text.rich(
-    softWrap: false,
-    overflow: TextOverflow.fade,
-    style: textStyle,
-    textScaler: TextScaler.noScaling,
-    TextSpan(
-      children: [
-        TextSpan(
-          text: prefix,
-          style: textStyle!.copyWith(
-            fontWeight: weightUserName
-                ? FontWeight.w500
-                : weightInstanceName
-                    ? FontWeight.w300
-                    : null,
-            color: colorizeUserName ? colorScheme.primary : null,
-            fontSize: context == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
-          ),
-        ),
-        if (includeInstance == true)
-          TextSpan(
-            text: suffix,
-            style: textStyle.copyWith(
-              fontWeight: weightInstanceName
-                  ? FontWeight.w500
-                  : weightUserName
-                      ? FontWeight.w300
-                      : null,
-              color: colorizeInstanceName ? colorScheme.primary : null,
-              fontSize: context == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
-            ),
-          ),
-      ],
-    ),
-  );
-}
-
 /// --- COMMUNITIES ---
 
 String generateCommunityFullNamePrefix(BuildContext? context, name, {FullNameSeparator? communitySeparator}) {
@@ -180,66 +117,4 @@ String generateCommunityFullName(BuildContext? context, name, instance, {FullNam
   String prefix = generateCommunityFullNamePrefix(context, name, communitySeparator: communitySeparator);
   String suffix = generateCommunityFullNameSuffix(context, instance, communitySeparator: communitySeparator);
   return '$prefix$suffix';
-}
-
-Text generateCommunityFullNameWidget(
-  BuildContext? context,
-  name,
-  instance, {
-  FullNameSeparator? communitySeparator,
-  bool? weightCommunityName,
-  bool? weightInstanceName,
-  bool? colorizeCommunityName,
-  bool? colorizeInstanceName,
-  TextStyle? textStyle,
-  ColorScheme? colorScheme,
-  bool includeInstance = true,
-  FontScale? fontScale,
-}) {
-  assert(context != null || (communitySeparator != null && weightCommunityName != null && weightInstanceName != null && colorizeCommunityName != null && colorizeInstanceName != null));
-  assert(context != null || (textStyle != null && colorScheme != null));
-  String prefix = generateCommunityFullNamePrefix(context, name, communitySeparator: communitySeparator);
-  String suffix = generateCommunityFullNameSuffix(context, instance, communitySeparator: communitySeparator);
-  weightCommunityName ??= context!.read<ThunderBloc>().state.communityFullNameWeightCommunityName;
-  weightInstanceName ??= context!.read<ThunderBloc>().state.communityFullNameWeightInstanceName;
-  colorizeCommunityName ??= context!.read<ThunderBloc>().state.communityFullNameColorizeCommunityName;
-  colorizeInstanceName ??= context!.read<ThunderBloc>().state.communityFullNameColorizeInstanceName;
-  textStyle ??= Theme.of(context!).textTheme.bodyMedium;
-  colorScheme ??= Theme.of(context!).colorScheme;
-
-  return Text.rich(
-    softWrap: false,
-    overflow: TextOverflow.fade,
-    style: textStyle,
-    textScaler: TextScaler.noScaling,
-    TextSpan(
-      children: [
-        TextSpan(
-          text: prefix,
-          style: textStyle!.copyWith(
-            fontWeight: weightCommunityName
-                ? FontWeight.w500
-                : weightInstanceName
-                    ? FontWeight.w300
-                    : null,
-            color: colorizeCommunityName ? colorScheme.primary : null,
-            fontSize: context == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
-          ),
-        ),
-        if (includeInstance == true)
-          TextSpan(
-            text: suffix,
-            style: textStyle.copyWith(
-              fontWeight: weightInstanceName
-                  ? FontWeight.w500
-                  : weightCommunityName
-                      ? FontWeight.w300
-                      : null,
-              color: colorizeInstanceName ? colorScheme.primary : null,
-              fontSize: context == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
-            ),
-          ),
-      ],
-    ),
-  );
 }
