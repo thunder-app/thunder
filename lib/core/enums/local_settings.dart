@@ -125,6 +125,11 @@ enum LocalSettings {
   cardPostCardMetadataItems(name: 'setting_card_post_card_metadata_items', key: 'cardPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showFullPostDate(name: 'setting_general_show_full_post_date', key: 'showFullPostDate', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   dateFormat(name: 'setting_general_date_format', key: 'dateFormat', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  // This setting exists purely for the searching function
+  dividerAppearance(name: '', key: 'dividerAppearance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  feedCardDividerThickness(
+      name: 'setting_feed_card_divider_thickness', key: 'feedCardDividerThickness', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts, searchable: false),
+  feedCardDividerColor(name: 'setting_feed_card_divider_color', key: 'feedCardDividerColor', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts, searchable: false),
 
   // Post body settings
   showCrossPosts(name: 'setting_show_cross_posts', key: 'showCrossPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
@@ -322,6 +327,7 @@ extension LocalizationExt on AppLocalizations {
       'dimReadPosts': dimReadPosts,
       'showFullPostDate': showFullDate,
       'dateFormat': dateFormat,
+      'dividerAppearance': dividerAppearance,
       'showCrossPosts': showCrossPosts,
       'postBodyShowUserInstance': postBodyShowUserInstance,
       'postBodyShowCommunityInstance': postBodyShowCommunityInstance,

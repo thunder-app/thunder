@@ -13,10 +13,13 @@ import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
+import 'package:thunder/core/enums/custom_theme_type.dart';
+import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
@@ -89,6 +92,12 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// The selected date format. This is only used when `showFullPostDate` is enabled
   DateFormat? selectedDateFormat;
 
+  /// The thickness of the divider between the post cards
+  FeedCardDividerThickness feedCardDividerThickness = FeedCardDividerThickness.compact;
+
+  /// The color of the divider between the post cards
+  Color feedCardDividerColor = Colors.transparent;
+
   /// List of available date formats to select from
   List<DateFormat> dateFormats = [DateFormat.yMMMMd(Intl.systemLocale).add_jm()];
 
@@ -132,6 +141,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
       selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : dateFormats.first;
+      feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
+      feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.value);
 
       // Compact View Settings
       compactPostCardMetadataItems =
@@ -193,6 +204,14 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.dateFormat:
         await prefs.setString(LocalSettings.dateFormat.name, (value as DateFormat).pattern ?? dateFormats.first.pattern!);
         setState(() => selectedDateFormat = value);
+        break;
+      case LocalSettings.feedCardDividerThickness:
+        await prefs.setString(LocalSettings.feedCardDividerThickness.name, (value as FeedCardDividerThickness).name);
+        setState(() => feedCardDividerThickness = value);
+        break;
+      case LocalSettings.feedCardDividerColor:
+        await prefs.setInt(LocalSettings.feedCardDividerColor.name, value.value);
+        setState(() => feedCardDividerColor = value);
         break;
 
       case LocalSettings.compactPostCardMetadataItems:
@@ -273,6 +292,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.dimReadPosts.name);
     await prefs.remove(LocalSettings.showFullPostDate.name);
     await prefs.remove(LocalSettings.dateFormat.name);
+    await prefs.remove(LocalSettings.feedCardDividerThickness.name);
+    await prefs.remove(LocalSettings.feedCardDividerColor.name);
     await prefs.remove(LocalSettings.compactPostCardMetadataItems.name);
     await prefs.remove(LocalSettings.showThumbnailPreviewOnRight.name);
     await prefs.remove(LocalSettings.showTextPostIndicator.name);
@@ -506,7 +527,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                           onSaveAction: (saved) {},
                                         ),
                                       ),
-                                const Divider(),
+                                const FeedCardDivider(),
                               ],
                             );
                           },
@@ -523,7 +544,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.generalSettings, style: theme.textTheme.titleMedium),
+              child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
@@ -624,6 +645,98 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               icon: Icons.access_time_filled_rounded,
               onChanged: (value) async => setPreferences(LocalSettings.dateFormat, value.payload),
               highlightKey: settingToHighlight == LocalSettings.dateFormat ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ListOption(
+              description: l10n.dividerAppearance,
+              value: const ListPickerItem(payload: -1),
+              icon: Icons.splitscreen_rounded,
+              highlightKey: settingToHighlight == LocalSettings.dividerAppearance ? settingToHighlightKey : null,
+              customListPicker: StatefulBuilder(
+                builder: (context, setState) {
+                  return BottomSheetListPicker(
+                    title: l10n.dividerAppearance,
+                    heading: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l10n.preview, style: theme.textTheme.titleMedium),
+                        const SizedBox(height: 20.0),
+                        const FeedCardDivider(),
+                        const SizedBox(height: 16.0),
+                      ],
+                    ),
+                    items: [
+                      ListPickerItem<int>(
+                        customWidget: ListTile(
+                          title: Text(l10n.thickness),
+                          contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                          trailing: DropdownButton<FeedCardDividerThickness>(
+                            value: feedCardDividerThickness,
+                            underline: const SizedBox(),
+                            items: [
+                              DropdownMenuItem(
+                                value: FeedCardDividerThickness.compact,
+                                child: Text(l10n.compact),
+                              ),
+                              DropdownMenuItem(
+                                value: FeedCardDividerThickness.standard,
+                                child: Text(l10n.standard),
+                              ),
+                              DropdownMenuItem(
+                                value: FeedCardDividerThickness.comfortable,
+                                child: Text(l10n.comfortable),
+                              )
+                            ],
+                            onChanged: (FeedCardDividerThickness? value) {
+                              setPreferences(LocalSettings.feedCardDividerThickness, value);
+                              setState(() {}); // Trigger rebuild
+                            },
+                          ),
+                        ),
+                        payload: -1,
+                      ),
+                      ListPickerItem<int>(
+                        customWidget: ListTile(
+                          title: Text(l10n.color),
+                          contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                          trailing: DropdownButton<Color>(
+                            menuMaxHeight: 500.0,
+                            value: feedCardDividerColor,
+                            underline: const SizedBox(),
+                            items: CustomThemeType.values
+                                .map((CustomThemeType customThemeType) => DropdownMenuItem<Color>(
+                                      alignment: Alignment.center,
+                                      value: Color(customThemeType.primaryColor.value),
+                                      child: CircleAvatar(
+                                        radius: 16.0,
+                                        backgroundColor: Color.alphaBlend(
+                                          theme.colorScheme.primaryContainer.withOpacity(0.6),
+                                          Color(customThemeType.primaryColor.value),
+                                        ),
+                                      ),
+                                    ))
+                                .toList()
+                              ..insert(
+                                0,
+                                const DropdownMenuItem<Color>(
+                                  alignment: Alignment.center,
+                                  value: Colors.transparent,
+                                  child: CircleAvatar(radius: 16.0, child: Text('D')),
+                                ),
+                              ),
+                            onChanged: (Color? value) {
+                              setPreferences(LocalSettings.feedCardDividerColor, value);
+                              setState(() {}); // Trigger rebuild
+                            },
+                          ),
+                        ),
+                        payload: -1,
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 32.0)),

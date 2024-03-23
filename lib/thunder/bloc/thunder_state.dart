@@ -67,6 +67,8 @@ class ThunderState extends Equatable {
     this.dimReadPosts = true,
     this.showFullPostDate = false,
     this.dateFormat,
+    this.feedCardDividerThickness = FeedCardDividerThickness.compact,
+    this.feedCardDividerColor = Colors.transparent,
     this.compactPostCardMetadataItems = const [],
     this.cardPostCardMetadataItems = const [],
     this.keywordFilters = const [],
@@ -215,6 +217,8 @@ class ThunderState extends Equatable {
   final bool dimReadPosts;
   final bool showFullPostDate;
   final DateFormat? dateFormat;
+  final FeedCardDividerThickness feedCardDividerThickness;
+  final Color feedCardDividerColor;
   final List<PostCardMetadataItem> compactPostCardMetadataItems;
   final List<PostCardMetadataItem> cardPostCardMetadataItems;
   final List<String> keywordFilters;
@@ -369,6 +373,8 @@ class ThunderState extends Equatable {
     bool? dimReadPosts,
     bool? showFullPostDate,
     DateFormat? dateFormat,
+    FeedCardDividerThickness? feedCardDividerThickness,
+    Color? feedCardDividerColor,
     List<PostCardMetadataItem>? compactPostCardMetadataItems,
     List<PostCardMetadataItem>? cardPostCardMetadataItems,
     String? appLanguageCode = 'en',
@@ -519,6 +525,8 @@ class ThunderState extends Equatable {
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
       showFullPostDate: showFullPostDate ?? this.showFullPostDate,
       dateFormat: dateFormat ?? this.dateFormat,
+      feedCardDividerThickness: feedCardDividerThickness ?? this.feedCardDividerThickness,
+      feedCardDividerColor: feedCardDividerColor ?? this.feedCardDividerColor,
       compactPostCardMetadataItems: compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
       cardPostCardMetadataItems: cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
 
@@ -672,6 +680,8 @@ class ThunderState extends Equatable {
         dimReadPosts,
         showFullPostDate,
         dateFormat,
+        feedCardDividerThickness,
+        feedCardDividerColor,
         compactPostCardMetadataItems,
         cardPostCardMetadataItems,
         appLanguageCode,
