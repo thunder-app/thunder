@@ -10,6 +10,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:push/push.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
@@ -29,6 +30,7 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/language/language.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:thunder/utils/notifications.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -87,6 +89,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// Not a setting, but tracks whether Android is allowing Thunder to send notifications
   bool? areAndroidNotificationsAllowed = false;
+
+  /// Not a setting, but tracks whether iOS is allowing Thunder to send notifications
+  UNNotificationSettings? areIOSNotificationsAllowed;
 
   /// When enabled, authors and community names will be tappable when in compact view
   bool tappableAuthorCommunity = false;
@@ -266,6 +271,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
+
+    if (Platform.isIOS) {
+      Push.instance.getNotificationSettings().then((settings) => areIOSNotificationsAllowed = settings);
+    } else if (Platform.isAndroid) {
+      Push.instance.areNotificationsEnabled().then((areNotificationsEnabled) => areAndroidNotificationsAllowed = areNotificationsEnabled);
+    }
 
     setState(() {
       // Default Sorts and Listing
@@ -986,7 +997,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               highlightKey: settingToHighlight == LocalSettings.showUpdateChangelogs ? settingToHighlightKey : null,
             ),
           ),
-          if (!kIsWeb && Platform.isAndroid)
+          if (!kIsWeb && Platform.isAndroid || Platform.isIOS)
             SliverToBoxAdapter(
               child: ToggleOption(
                 description: l10n.enableInboxNotifications,
@@ -1044,18 +1055,30 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
                     }
 
+                    if (value) {
+                      // Ensure that background fetching is enabled.
+                      initBackgroundFetch();
+                      initHeadlessBackgroundFetch();
+                    } else {
+                      // Ensure that background fetching is disabled.
+                      disableBackgroundFetch();
+                    }
+
                     // This setState has no body because async operations aren't allowed,
                     // but its purpose is to update areAndroidNotificationsAllowed.
                     setState(() {});
                   }
 
-                  if (value) {
-                    // Ensure that background fetching is enabled.
-                    initBackgroundFetch();
-                    initHeadlessBackgroundFetch();
-                  } else {
-                    // Ensure that background fetching is disabled.
-                    disableBackgroundFetch();
+                  if (!kIsWeb && Platform.isIOS && value) {
+                    // We're on iOS. Request notifications permissions if needed.
+                    final IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
+                        FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+                    await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
+
+                    // This setState has no body because async operations aren't allowed,
+                    // but its purpose is to update areIOSNotificationsAllowed.
+                    setState(() {});
                   }
                 },
                 subtitle: enableInboxNotifications

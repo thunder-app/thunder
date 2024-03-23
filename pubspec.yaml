@@ -108,6 +108,8 @@ dependencies:
   gal: ^2.2.0
   smooth_highlight: ^0.1.1
   visibility_detector: ^0.4.0+2
+  push: ^2.1.0
+  unifiedpush: ^5.0.1
 
 dev_dependencies:
   build_runner: ^2.4.6

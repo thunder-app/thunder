@@ -1,7 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:push/push.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:markdown/markdown.dart';
 
@@ -18,6 +23,92 @@ const String _inboxMessagesChannelName = 'Inbox Messages';
 const String repliesGroupKey = 'replies';
 const String _lastPollTimeId = 'thunder_last_notifications_poll_time';
 const int _repliesGroupSummaryId = 0;
+
+/// Initialize iOS specific notification logic. This is only called when the app is running on iOS.
+void initIOSPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
+  // Fetch device token for APNs
+  final token = await Push.instance.token;
+
+  /// We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
+  debugPrint("Device token: $token");
+
+  // Handle new tokens generated from the device
+  Push.instance.onNewToken.listen((token) {
+    /// We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
+    debugPrint("Received new device token: $token");
+  });
+
+  // Handle notification launching app from terminated state
+  Push.instance.notificationTapWhichLaunchedAppFromTerminated.then((data) {
+    if (data == null) return;
+
+    debugPrint('Notification was tapped notificationTapWhichLaunchedAppFromTerminated: Data: $data \n');
+    if (data.containsKey(repliesGroupKey)) {
+      controller.add(NotificationResponse(payload: data[repliesGroupKey] as String, notificationResponseType: NotificationResponseType.selectedNotification));
+    }
+  });
+
+  /// Handle notification taps. This triggers when the user taps on a notification when the app is on the foreground or background.
+  Push.instance.onNotificationTap.listen((data) {
+    debugPrint('Notification was tapped onNotificationTap: Data: $data \n');
+
+    if (data.containsKey(repliesGroupKey)) {
+      controller.add(NotificationResponse(payload: data[repliesGroupKey] as String, notificationResponseType: NotificationResponseType.selectedNotification));
+    }
+  });
+}
+
+/// Initialize Android specific notification logic. This is only called when the app is running on Android.
+void initAndroidPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
+  // Load up preferences
+  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+
+  bool useUnifiedPush = false;
+
+  if (useUnifiedPush) {
+    // TODO: Implement unified push
+  } else {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    // Initialize the Android-specific settings, using the splash asset as the notification icon.
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
+    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (notificationResponse) => controller.add(notificationResponse),
+    );
+
+    // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await FlutterLocalNotificationsPlugin().getNotificationAppLaunchDetails();
+
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse != null) {
+      controller.add(notificationAppLaunchDetails.notificationResponse!);
+
+      bool startupDueToGroupNotification = notificationAppLaunchDetails.notificationResponse!.payload == repliesGroupKey;
+      // Do a notifications check on startup, if the user isn't clicking on a group notification
+      if (!startupDueToGroupNotification) pollRepliesAndShowNotifications();
+    }
+
+    // Initialize background fetch (this is async and can go run on its own).
+    initBackgroundFetch();
+
+    // Register to receive BackgroundFetch events after app is terminated.
+    initHeadlessBackgroundFetch();
+  }
+}
+
+Future<void> initPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
+  if (Platform.isAndroid) {
+    initAndroidPushNotificationLogic(controller: controller);
+  }
+
+  if (Platform.isIOS) {
+    initIOSPushNotificationLogic(controller: controller);
+  }
+}
+
+// ---------------- ANDROID LOCAL NOTIFICATIONS FETCH LOGIC ---------------- //
 
 /// This method polls for new inbox messages and, if found, displays them as notificatons.
 /// It is intended to be invoked from a background fetch task.
@@ -97,8 +188,17 @@ Future<void> pollRepliesAndShowNotifications() async {
     // Create a summary notification for the group.
     // Note that it's ok to create this for every message, because it has a fixed ID,
     // so it will just get 'updated'.
-    final InboxStyleInformation inboxStyleInformationSummary =
-        InboxStyleInformation([], contentTitle: '', summaryText: generateUserFullName(null, account.username, account.instance, userSeparator: userSeparator));
+    final InboxStyleInformation inboxStyleInformationSummary = InboxStyleInformation(
+      [],
+      contentTitle: '',
+      summaryText: generateUserFullName(
+        null,
+        account.username,
+        account.instance,
+        userSeparator: userSeparator,
+      ),
+    );
+
     final AndroidNotificationDetails androidNotificationDetailsSummary = AndroidNotificationDetails(
       _inboxMessagesChannelId,
       _inboxMessagesChannelName,
@@ -106,6 +206,7 @@ Future<void> pollRepliesAndShowNotifications() async {
       groupKey: repliesGroupKey,
       setAsGroupSummary: true,
     );
+
     final NotificationDetails notificationDetailsSummary = NotificationDetails(android: androidNotificationDetailsSummary);
 
     // Send the summary message!
@@ -121,3 +222,66 @@ Future<void> pollRepliesAndShowNotifications() async {
   // Save our poll time
   prefs.setString(_lastPollTimeId, DateTime.now().toString());
 }
+
+// ---------------- ANDROID LOCAL NOTIFICATIONS BACKGROUND FETCH LOGIC ---------------- //
+
+/// This method handles "headless" callbacks (i.e., when the app is not running)
+@pragma('vm:entry-point')
+void backgroundFetchHeadlessTask(HeadlessTask task) async {
+  if (task.timeout) {
+    BackgroundFetch.finish(task.taskId);
+    return;
+  }
+  // Run the poll!
+  await pollRepliesAndShowNotifications();
+  BackgroundFetch.finish(task.taskId);
+}
+
+/// The method initializes background fetching while the app is running
+Future<void> initBackgroundFetch() async {
+  await BackgroundFetch.configure(
+    BackgroundFetchConfig(
+      minimumFetchInterval: 1,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      enableHeadless: true,
+      requiredNetworkType: NetworkType.NONE,
+      requiresBatteryNotLow: false,
+      requiresStorageNotLow: false,
+      requiresCharging: false,
+      requiresDeviceIdle: false,
+      // Uncomment this line (and set the minimumFetchInterval to 1) for quicker testing.
+      forceAlarmManager: true,
+    ),
+    // This is the callback that handles background fetching while the app is running.
+    (String taskId) async {
+      // Run the poll!
+      await pollRepliesAndShowNotifications();
+      BackgroundFetch.finish(taskId);
+    },
+    // This is the timeout callback.
+    (String taskId) async {
+      BackgroundFetch.finish(taskId);
+    },
+  );
+}
+
+void disableBackgroundFetch() async {
+  await BackgroundFetch.configure(
+    BackgroundFetchConfig(
+      minimumFetchInterval: 15,
+      stopOnTerminate: true,
+      startOnBoot: false,
+      enableHeadless: false,
+    ),
+    () {},
+    () {},
+  );
+}
+
+// This method initializes background fetching while the app is not running
+void initHeadlessBackgroundFetch() async {
+  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+}
+
+// ---------------- END BACKGROUND FETCH STUFF ---------------- //

@@ -337,6 +337,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
+  dependency_validator:
+    dependency: transitive
+    description:
+      name: dependency_validator
+      sha256: f727a5627aa405965fab4aef4f468e50a9b632ba0737fd2f98c932fec6d712b9
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.3"
   dev_build:
     dependency: transitive
     description:
@@ -1345,6 +1353,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
+  push:
+    dependency: "direct main"
+    description:
+      name: push
+      sha256: "15f47b829ac0a0c4ae592ae5d7f1b57cf27f8637744a4f2fd5f4f5dd1563a0d0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
+  push_android:
+    dependency: transitive
+    description:
+      name: push_android
+      sha256: e3ad795fc758363c5f1c1aab3af0fff10e50bd1e7cd23a51ed6cc3825673b107
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
+  push_ios:
+    dependency: transitive
+    description:
+      name: push_ios
+      sha256: c6a284994ef8a2e09c4e92c89317b14912b56cb74b31fb2efba7b9d2b8f4ff60
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
+  push_macos:
+    dependency: transitive
+    description:
+      name: push_macos
+      sha256: "800997d1d6ca19aa957ab237a25074a732a7e36ef917ef4546fc75ec9aa1b9da"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
+  push_platform_interface:
+    dependency: transitive
+    description:
+      name: push_platform_interface
+      sha256: "709c98b6e33cb0d76aa1e9017d0b16c17c077d0d0035a7b63d41ba19822a805e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   receive_sharing_intent:
     dependency: "direct main"
     description:
@@ -1664,6 +1712,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.0"
+  unifiedpush:
+    dependency: "direct main"
+    description:
+      name: unifiedpush
+      sha256: ef7f3ae6139d27169604e3844379ef7929af573a2be21d9e82187f44ab7b9a32
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.1"
+  unifiedpush_android:
+    dependency: transitive
+    description:
+      name: unifiedpush_android
+      sha256: "610ad746294541f56d632adf9afba5d1c164c44e23ec0dd2162a41a6ff00a00e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.3"
+  unifiedpush_platform_interface:
+    dependency: transitive
+    description:
+      name: unifiedpush_platform_interface
+      sha256: "7782b18a15d22bb184fa766ef1e0c675eef862055ff815453df7041dfd026146"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   universal_html:
     dependency: transitive
     description:
