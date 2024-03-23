@@ -9,6 +9,7 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
@@ -79,7 +80,7 @@ class CommentHeader extends StatelessWidget {
                             child: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
                                 ? Row(
                                     children: [
-                                      generateUserFullNameWidget(
+                                      UserFullNameWidget(
                                         context,
                                         comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
                                         fetchInstanceNameFromUrl(comment.creator.actorId),
@@ -148,7 +149,7 @@ class CommentHeader extends StatelessWidget {
                                       ),
                                     ],
                                   )
-                                : generateUserFullNameWidget(
+                                : UserFullNameWidget(
                                     context,
                                     comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
                                     fetchInstanceNameFromUrl(comment.creator.actorId),
