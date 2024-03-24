@@ -123,11 +123,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       bool userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? false;
       bool userFullNameWeightInstanceName = prefs.getBool(LocalSettings.userFullNameWeightInstanceName.name) ?? false;
+      bool userFullNameLightenUserName = prefs.getBool(LocalSettings.userFullNameLightenUserName.name) ?? false;
+      bool userFullNameLightenInstanceName = prefs.getBool(LocalSettings.userFullNameLightenInstanceName.name) ?? true;
       bool userFullNameColorizeUserName = prefs.getBool(LocalSettings.userFullNameColorizeUserName.name) ?? false;
       bool userFullNameColorizeInstanceName = prefs.getBool(LocalSettings.userFullNameColorizeInstanceName.name) ?? false;
       FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
       bool communityFullNameWeightCommunityName = prefs.getBool(LocalSettings.communityFullNameWeightCommunityName.name) ?? false;
       bool communityFullNameWeightInstanceName = prefs.getBool(LocalSettings.communityFullNameWeightInstanceName.name) ?? false;
+      bool communityFullNameLightenCommunityName = prefs.getBool(LocalSettings.communityFullNameLightenCommunityName.name) ?? false;
+      bool communityFullNameLightenInstanceName = prefs.getBool(LocalSettings.communityFullNameLightenInstanceName.name) ?? true;
       bool communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
       bool communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
@@ -278,11 +282,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         userSeparator: userSeparator,
         userFullNameWeightUserName: userFullNameWeightUserName,
         userFullNameWeightInstanceName: userFullNameWeightInstanceName,
+        userFullNameLightenUserName: userFullNameLightenUserName,
+        userFullNameLightenInstanceName: userFullNameLightenInstanceName,
         userFullNameColorizeUserName: userFullNameColorizeUserName,
         userFullNameColorizeInstanceName: userFullNameColorizeInstanceName,
         communitySeparator: communitySeparator,
         communityFullNameWeightCommunityName: communityFullNameWeightCommunityName,
         communityFullNameWeightInstanceName: communityFullNameWeightInstanceName,
+        communityFullNameLightenCommunityName: communityFullNameLightenCommunityName,
+        communityFullNameLightenInstanceName: communityFullNameLightenInstanceName,
         communityFullNameColorizeCommunityName: communityFullNameColorizeCommunityName,
         communityFullNameColorizeInstanceName: communityFullNameColorizeInstanceName,
         imageCachingMode: imageCachingMode,

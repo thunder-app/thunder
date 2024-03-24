@@ -11,6 +11,8 @@ class UserFullNameWidget extends StatelessWidget {
   final FullNameSeparator? userSeparator;
   final bool? weightUserName;
   final bool? weightInstanceName;
+  final bool? lightenUserName;
+  final bool? lightenInstanceName;
   final bool? colorizeUserName;
   final bool? colorizeInstanceName;
   final TextStyle? textStyle;
@@ -26,13 +28,22 @@ class UserFullNameWidget extends StatelessWidget {
     this.userSeparator,
     this.weightUserName,
     this.weightInstanceName,
+    this.lightenUserName,
+    this.lightenInstanceName,
     this.colorizeUserName,
     this.colorizeInstanceName,
     this.textStyle,
     this.colorScheme,
     this.includeInstance = true,
     this.fontScale,
-  })  : assert(outerContext != null || (userSeparator != null && weightUserName != null && weightInstanceName != null && colorizeUserName != null && colorizeInstanceName != null)),
+  })  : assert(outerContext != null ||
+            (userSeparator != null &&
+                weightUserName != null &&
+                weightInstanceName != null &&
+                lightenUserName != null &&
+                lightenInstanceName != null &&
+                colorizeUserName != null &&
+                colorizeInstanceName != null)),
         assert(outerContext != null || (textStyle != null && colorScheme != null));
 
   @override
@@ -41,6 +52,8 @@ class UserFullNameWidget extends StatelessWidget {
     String suffix = generateUserFullNameSuffix(outerContext, instance, userSeparator: userSeparator);
     bool weightUserName = this.weightUserName ?? outerContext!.read<ThunderBloc>().state.userFullNameWeightUserName;
     bool weightInstanceName = this.weightInstanceName ?? outerContext!.read<ThunderBloc>().state.userFullNameWeightInstanceName;
+    bool lightenUserName = this.lightenUserName ?? outerContext!.read<ThunderBloc>().state.userFullNameLightenUserName;
+    bool lightenInstanceName = this.lightenInstanceName ?? outerContext!.read<ThunderBloc>().state.userFullNameLightenInstanceName;
     bool colorizeUserName = this.colorizeUserName ?? outerContext!.read<ThunderBloc>().state.userFullNameColorizeUserName;
     bool colorizeInstanceName = this.colorizeInstanceName ?? outerContext!.read<ThunderBloc>().state.userFullNameColorizeInstanceName;
     TextStyle? textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
@@ -58,7 +71,7 @@ class UserFullNameWidget extends StatelessWidget {
             style: textStyle!.copyWith(
               fontWeight: weightUserName
                   ? FontWeight.w500
-                  : weightInstanceName
+                  : lightenUserName
                       ? FontWeight.w300
                       : null,
               color: colorizeUserName ? colorScheme.primary : null,
@@ -72,7 +85,7 @@ class UserFullNameWidget extends StatelessWidget {
               style: textStyle.copyWith(
                 fontWeight: weightInstanceName
                     ? FontWeight.w500
-                    : weightUserName
+                    : lightenInstanceName
                         ? FontWeight.w300
                         : null,
                 color: colorizeInstanceName ? colorScheme.primary : null,
@@ -93,6 +106,8 @@ class CommunityFullNameWidget extends StatelessWidget {
   final FullNameSeparator? communitySeparator;
   final bool? weightCommunityName;
   final bool? weightInstanceName;
+  final bool? lightenCommunityName;
+  final bool? lightenInstanceName;
   final bool? colorizeCommunityName;
   final bool? colorizeInstanceName;
   final TextStyle? textStyle;
@@ -108,13 +123,22 @@ class CommunityFullNameWidget extends StatelessWidget {
     this.communitySeparator,
     this.weightCommunityName,
     this.weightInstanceName,
+    this.lightenCommunityName,
+    this.lightenInstanceName,
     this.colorizeCommunityName,
     this.colorizeInstanceName,
     this.textStyle,
     this.colorScheme,
     this.includeInstance = true,
     this.fontScale,
-  })  : assert(outerContext != null || (communitySeparator != null && weightCommunityName != null && weightInstanceName != null && colorizeCommunityName != null && colorizeInstanceName != null)),
+  })  : assert(outerContext != null ||
+            (communitySeparator != null &&
+                weightCommunityName != null &&
+                weightInstanceName != null &&
+                lightenCommunityName != null &&
+                lightenInstanceName != null &&
+                colorizeCommunityName != null &&
+                colorizeInstanceName != null)),
         assert(outerContext != null || (textStyle != null && colorScheme != null));
 
   @override
@@ -123,6 +147,8 @@ class CommunityFullNameWidget extends StatelessWidget {
     String suffix = generateCommunityFullNameSuffix(outerContext, instance, communitySeparator: communitySeparator);
     bool weightCommunityName = this.weightCommunityName ?? outerContext!.read<ThunderBloc>().state.communityFullNameWeightCommunityName;
     bool weightInstanceName = this.weightInstanceName ?? outerContext!.read<ThunderBloc>().state.communityFullNameWeightInstanceName;
+    bool lightenCommunityName = this.lightenCommunityName ?? outerContext!.read<ThunderBloc>().state.communityFullNameLightenCommunityName;
+    bool lightenInstanceName = this.lightenInstanceName ?? outerContext!.read<ThunderBloc>().state.communityFullNameLightenInstanceName;
     bool colorizeCommunityName = this.colorizeCommunityName ?? outerContext!.read<ThunderBloc>().state.communityFullNameColorizeCommunityName;
     bool colorizeInstanceName = this.colorizeInstanceName ?? outerContext!.read<ThunderBloc>().state.communityFullNameColorizeInstanceName;
     TextStyle? textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
@@ -140,7 +166,7 @@ class CommunityFullNameWidget extends StatelessWidget {
             style: textStyle!.copyWith(
               fontWeight: weightCommunityName
                   ? FontWeight.w500
-                  : weightInstanceName
+                  : lightenCommunityName
                       ? FontWeight.w300
                       : null,
               color: colorizeCommunityName ? colorScheme.primary : null,
@@ -154,7 +180,7 @@ class CommunityFullNameWidget extends StatelessWidget {
               style: textStyle.copyWith(
                 fontWeight: weightInstanceName
                     ? FontWeight.w500
-                    : weightCommunityName
+                    : lightenInstanceName
                         ? FontWeight.w300
                         : null,
                 color: colorizeInstanceName ? colorScheme.primary : null,

@@ -109,6 +109,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// Defines the style used to denote full usernames
   bool userFullNameWeightUserName = false;
   bool userFullNameWeightInstanceName = false;
+  bool userFullNameLightenUserName = false;
+  bool userFullNameLightenInstanceName = true;
   bool userFullNameColorizeUserName = false;
   bool userFullNameColorizeInstanceName = false;
 
@@ -118,6 +120,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// Defines the style used to denote full community names
   bool communityFullNameWeightCommunityName = false;
   bool communityFullNameWeightInstanceName = false;
+  bool communityFullNameLightenCommunityName = false;
+  bool communityFullNameLightenInstanceName = true;
   bool communityFullNameColorizeCommunityName = false;
   bool communityFullNameColorizeInstanceName = false;
 
@@ -225,6 +229,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.userFullNameWeightInstanceName.name, value);
         setState(() => userFullNameWeightInstanceName = value);
         break;
+      case LocalSettings.userFullNameLightenUserName:
+        await prefs.setBool(LocalSettings.userFullNameLightenUserName.name, value);
+        setState(() => userFullNameLightenUserName = value);
+        break;
+      case LocalSettings.userFullNameLightenInstanceName:
+        await prefs.setBool(LocalSettings.userFullNameLightenInstanceName.name, value);
+        setState(() => userFullNameLightenInstanceName = value);
+        break;
       case LocalSettings.userFullNameColorizeUserName:
         await prefs.setBool(LocalSettings.userFullNameColorizeUserName.name, value);
         setState(() => userFullNameColorizeUserName = value);
@@ -244,6 +256,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.communityFullNameWeightInstanceName:
         await prefs.setBool(LocalSettings.communityFullNameWeightInstanceName.name, value);
         setState(() => communityFullNameWeightInstanceName = value);
+        break;
+      case LocalSettings.communityFullNameLightenCommunityName:
+        await prefs.setBool(LocalSettings.communityFullNameLightenCommunityName.name, value);
+        setState(() => communityFullNameLightenCommunityName = value);
+        break;
+      case LocalSettings.communityFullNameLightenInstanceName:
+        await prefs.setBool(LocalSettings.communityFullNameLightenInstanceName.name, value);
+        setState(() => communityFullNameLightenInstanceName = value);
         break;
       case LocalSettings.communityFullNameColorizeCommunityName:
         await prefs.setBool(LocalSettings.communityFullNameColorizeCommunityName.name, value);
@@ -299,11 +319,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? false;
       userFullNameWeightInstanceName = prefs.getBool(LocalSettings.userFullNameWeightInstanceName.name) ?? false;
+      userFullNameLightenUserName = prefs.getBool(LocalSettings.userFullNameLightenUserName.name) ?? false;
+      userFullNameLightenInstanceName = prefs.getBool(LocalSettings.userFullNameLightenInstanceName.name) ?? true;
       userFullNameColorizeUserName = prefs.getBool(LocalSettings.userFullNameColorizeUserName.name) ?? false;
       userFullNameColorizeInstanceName = prefs.getBool(LocalSettings.userFullNameColorizeInstanceName.name) ?? false;
       communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
       communityFullNameWeightCommunityName = prefs.getBool(LocalSettings.communityFullNameWeightCommunityName.name) ?? false;
       communityFullNameWeightInstanceName = prefs.getBool(LocalSettings.communityFullNameWeightInstanceName.name) ?? false;
+      communityFullNameLightenCommunityName = prefs.getBool(LocalSettings.communityFullNameLightenCommunityName.name) ?? false;
+      communityFullNameLightenInstanceName = prefs.getBool(LocalSettings.communityFullNameLightenInstanceName.name) ?? true;
       communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
       communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
       imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
@@ -670,6 +694,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   userSeparator,
                   weightUserName: userFullNameWeightUserName,
                   weightInstanceName: userFullNameWeightInstanceName,
+                  lightenUserName: userFullNameLightenUserName,
+                  lightenInstanceName: userFullNameLightenInstanceName,
                   colorizeUserName: userFullNameColorizeUserName,
                   colorizeInstanceName: userFullNameColorizeInstanceName,
                   textStyle: theme.textTheme.bodyMedium,
@@ -687,6 +713,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     FullNameSeparator.dot,
                     weightUserName: userFullNameWeightUserName,
                     weightInstanceName: userFullNameWeightInstanceName,
+                    lightenUserName: userFullNameLightenUserName,
+                    lightenInstanceName: userFullNameLightenInstanceName,
                     colorizeUserName: userFullNameColorizeUserName,
                     colorizeInstanceName: userFullNameColorizeInstanceName,
                     textStyle: theme.textTheme.bodyMedium,
@@ -702,6 +730,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     FullNameSeparator.at,
                     weightUserName: userFullNameWeightUserName,
                     weightInstanceName: userFullNameWeightInstanceName,
+                    lightenUserName: userFullNameLightenUserName,
+                    lightenInstanceName: userFullNameLightenInstanceName,
                     colorizeUserName: userFullNameColorizeUserName,
                     colorizeInstanceName: userFullNameColorizeInstanceName,
                     textStyle: theme.textTheme.bodyMedium,
@@ -717,6 +747,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     FullNameSeparator.lemmy,
                     weightUserName: userFullNameWeightUserName,
                     weightInstanceName: userFullNameWeightInstanceName,
+                    lightenUserName: userFullNameLightenUserName,
+                    lightenInstanceName: userFullNameLightenInstanceName,
                     colorizeUserName: userFullNameColorizeUserName,
                     colorizeInstanceName: userFullNameColorizeInstanceName,
                     textStyle: theme.textTheme.bodyMedium,
@@ -740,6 +772,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 userSeparator,
                 weightUserName: userFullNameWeightUserName,
                 weightInstanceName: userFullNameWeightInstanceName,
+                lightenUserName: userFullNameLightenUserName,
+                lightenInstanceName: userFullNameLightenInstanceName,
                 colorizeUserName: userFullNameColorizeUserName,
                 colorizeInstanceName: userFullNameColorizeInstanceName,
                 textStyle: theme.textTheme.bodyMedium,
@@ -749,6 +783,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 userSeparator,
                 weightUserName: userFullNameWeightUserName,
                 weightInstanceName: userFullNameWeightInstanceName,
+                lightenUserName: userFullNameLightenUserName,
+                lightenInstanceName: userFullNameLightenInstanceName,
                 colorizeUserName: userFullNameColorizeUserName,
                 colorizeInstanceName: userFullNameColorizeInstanceName,
                 textStyle: theme.textTheme.bodyMedium,
@@ -759,39 +795,74 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   icon: Icons.format_bold_rounded,
                   label: l10n.boldUserName,
                   payload: LocalSettings.userFullNameWeightUserName,
-                  isChecked: userFullNameWeightUserName,
+                  isChecked: () => userFullNameWeightUserName,
                 ),
                 ListPickerItem(
                   icon: Icons.format_bold_rounded,
                   label: l10n.boldInstanceName,
                   payload: LocalSettings.userFullNameWeightInstanceName,
-                  isChecked: userFullNameWeightInstanceName,
+                  isChecked: () => userFullNameWeightInstanceName,
+                ),
+                ListPickerItem(
+                  icon: Icons.hdr_auto_outlined,
+                  label: l10n.lightenUserName,
+                  payload: LocalSettings.userFullNameLightenUserName,
+                  isChecked: () => userFullNameLightenUserName,
+                ),
+                ListPickerItem(
+                  icon: Icons.hdr_auto_outlined,
+                  label: l10n.lightenInstanceName,
+                  payload: LocalSettings.userFullNameLightenInstanceName,
+                  isChecked: () => userFullNameLightenInstanceName,
                 ),
                 ListPickerItem(
                   icon: Icons.color_lens_rounded,
                   label: l10n.colorizeUserName,
                   payload: LocalSettings.userFullNameColorizeUserName,
-                  isChecked: userFullNameColorizeUserName,
+                  isChecked: () => userFullNameColorizeUserName,
                 ),
                 ListPickerItem(
                   icon: Icons.color_lens_rounded,
                   label: l10n.colorizeInstanceName,
                   payload: LocalSettings.userFullNameColorizeInstanceName,
-                  isChecked: userFullNameColorizeInstanceName,
+                  isChecked: () => userFullNameColorizeInstanceName,
                 ),
               ],
               icon: Icons.person_rounded,
               onChanged: (value) async {
-                bool? newValue = switch (value.payload) {
-                  LocalSettings.userFullNameWeightUserName => !userFullNameWeightUserName,
-                  LocalSettings.userFullNameWeightInstanceName => !userFullNameWeightInstanceName,
-                  LocalSettings.userFullNameColorizeUserName => !userFullNameColorizeUserName,
-                  LocalSettings.userFullNameColorizeInstanceName => !userFullNameColorizeInstanceName,
-                  _ => null,
-                };
-
-                if (newValue != null) {
-                  await setPreferences(value.payload, newValue);
+                switch (value.payload) {
+                  case LocalSettings.userFullNameWeightUserName:
+                    await setPreferences(LocalSettings.userFullNameWeightUserName, !userFullNameWeightUserName);
+                    if (userFullNameWeightUserName) {
+                      await setPreferences(LocalSettings.userFullNameLightenUserName, false);
+                    }
+                    break;
+                  case LocalSettings.userFullNameWeightInstanceName:
+                    await setPreferences(LocalSettings.userFullNameWeightInstanceName, !userFullNameWeightInstanceName);
+                    if (userFullNameWeightInstanceName) {
+                      await setPreferences(LocalSettings.userFullNameLightenInstanceName, false);
+                    }
+                    break;
+                  case LocalSettings.userFullNameLightenUserName:
+                    await setPreferences(LocalSettings.userFullNameLightenUserName, !userFullNameLightenUserName);
+                    if (userFullNameLightenUserName) {
+                      await setPreferences(LocalSettings.userFullNameWeightUserName, false);
+                    }
+                    break;
+                  case LocalSettings.userFullNameLightenInstanceName:
+                    await setPreferences(LocalSettings.userFullNameLightenInstanceName, !userFullNameLightenInstanceName);
+                    if (userFullNameLightenInstanceName) {
+                      await setPreferences(LocalSettings.userFullNameWeightInstanceName, false);
+                    }
+                    break;
+                  case LocalSettings.userFullNameColorizeUserName:
+                    await setPreferences(LocalSettings.userFullNameColorizeUserName, !userFullNameColorizeUserName);
+                    break;
+                  case LocalSettings.userFullNameColorizeInstanceName:
+                    await setPreferences(LocalSettings.userFullNameColorizeInstanceName, !userFullNameColorizeInstanceName);
+                    break;
+                  default:
+                    break;
                 }
               },
               highlightKey: settingToHighlight == LocalSettings.userStyle ? settingToHighlightKey : null,
@@ -806,6 +877,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   communitySeparator,
                   weightCommunityName: communityFullNameWeightCommunityName,
                   weightInstanceName: communityFullNameWeightInstanceName,
+                  lightenCommunityName: communityFullNameLightenCommunityName,
+                  lightenInstanceName: communityFullNameLightenInstanceName,
                   colorizeCommunityName: communityFullNameColorizeCommunityName,
                   colorizeInstanceName: communityFullNameColorizeInstanceName,
                   textStyle: theme.textTheme.bodyMedium,
@@ -823,6 +896,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     FullNameSeparator.dot,
                     weightCommunityName: communityFullNameWeightCommunityName,
                     weightInstanceName: communityFullNameWeightInstanceName,
+                    lightenCommunityName: communityFullNameLightenCommunityName,
+                    lightenInstanceName: communityFullNameLightenInstanceName,
                     colorizeCommunityName: communityFullNameColorizeCommunityName,
                     colorizeInstanceName: communityFullNameColorizeInstanceName,
                     textStyle: theme.textTheme.bodyMedium,
@@ -838,6 +913,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     FullNameSeparator.at,
                     weightCommunityName: communityFullNameWeightCommunityName,
                     weightInstanceName: communityFullNameWeightInstanceName,
+                    lightenCommunityName: communityFullNameLightenCommunityName,
+                    lightenInstanceName: communityFullNameLightenInstanceName,
                     colorizeCommunityName: communityFullNameColorizeCommunityName,
                     colorizeInstanceName: communityFullNameColorizeInstanceName,
                     textStyle: theme.textTheme.bodyMedium,
@@ -853,6 +930,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     FullNameSeparator.lemmy,
                     weightCommunityName: communityFullNameWeightCommunityName,
                     weightInstanceName: communityFullNameWeightInstanceName,
+                    lightenCommunityName: communityFullNameLightenCommunityName,
+                    lightenInstanceName: communityFullNameLightenInstanceName,
                     colorizeCommunityName: communityFullNameColorizeCommunityName,
                     colorizeInstanceName: communityFullNameColorizeInstanceName,
                     textStyle: theme.textTheme.bodyMedium,
@@ -876,6 +955,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 communitySeparator,
                 weightCommunityName: communityFullNameWeightCommunityName,
                 weightInstanceName: communityFullNameWeightInstanceName,
+                lightenCommunityName: communityFullNameLightenCommunityName,
+                lightenInstanceName: communityFullNameLightenInstanceName,
                 colorizeCommunityName: communityFullNameColorizeCommunityName,
                 colorizeInstanceName: communityFullNameColorizeInstanceName,
                 textStyle: theme.textTheme.bodyMedium,
@@ -885,6 +966,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 communitySeparator,
                 weightCommunityName: communityFullNameWeightCommunityName,
                 weightInstanceName: communityFullNameWeightInstanceName,
+                lightenCommunityName: communityFullNameLightenCommunityName,
+                lightenInstanceName: communityFullNameLightenInstanceName,
                 colorizeCommunityName: communityFullNameColorizeCommunityName,
                 colorizeInstanceName: communityFullNameColorizeInstanceName,
                 textStyle: theme.textTheme.bodyMedium,
@@ -895,39 +978,74 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   icon: Icons.format_bold_rounded,
                   label: l10n.boldCommunityName,
                   payload: LocalSettings.communityFullNameWeightCommunityName,
-                  isChecked: communityFullNameWeightCommunityName,
+                  isChecked: () => communityFullNameWeightCommunityName,
                 ),
                 ListPickerItem(
                   icon: Icons.format_bold_rounded,
                   label: l10n.boldInstanceName,
                   payload: LocalSettings.communityFullNameWeightInstanceName,
-                  isChecked: communityFullNameWeightInstanceName,
+                  isChecked: () => communityFullNameWeightInstanceName,
+                ),
+                ListPickerItem(
+                  icon: Icons.hdr_auto_outlined,
+                  label: l10n.lightenCommunityName,
+                  payload: LocalSettings.communityFullNameLightenCommunityName,
+                  isChecked: () => communityFullNameLightenCommunityName,
+                ),
+                ListPickerItem(
+                  icon: Icons.hdr_auto_outlined,
+                  label: l10n.lightenInstanceName,
+                  payload: LocalSettings.communityFullNameLightenInstanceName,
+                  isChecked: () => communityFullNameLightenInstanceName,
                 ),
                 ListPickerItem(
                   icon: Icons.color_lens_rounded,
                   label: l10n.colorizeCommunityName,
                   payload: LocalSettings.communityFullNameColorizeCommunityName,
-                  isChecked: communityFullNameColorizeCommunityName,
+                  isChecked: () => communityFullNameColorizeCommunityName,
                 ),
                 ListPickerItem(
                   icon: Icons.color_lens_rounded,
                   label: l10n.colorizeInstanceName,
                   payload: LocalSettings.communityFullNameColorizeInstanceName,
-                  isChecked: communityFullNameColorizeInstanceName,
+                  isChecked: () => communityFullNameColorizeInstanceName,
                 ),
               ],
               icon: Icons.people_rounded,
               onChanged: (value) async {
-                bool? newValue = switch (value.payload) {
-                  LocalSettings.communityFullNameWeightCommunityName => !communityFullNameWeightCommunityName,
-                  LocalSettings.communityFullNameWeightInstanceName => !communityFullNameWeightInstanceName,
-                  LocalSettings.communityFullNameColorizeCommunityName => !communityFullNameColorizeCommunityName,
-                  LocalSettings.communityFullNameColorizeInstanceName => !communityFullNameColorizeInstanceName,
-                  _ => null,
-                };
-
-                if (newValue != null) {
-                  await setPreferences(value.payload, newValue);
+                switch (value.payload) {
+                  case LocalSettings.communityFullNameWeightCommunityName:
+                    await setPreferences(LocalSettings.communityFullNameWeightCommunityName, !communityFullNameWeightCommunityName);
+                    if (communityFullNameWeightCommunityName) {
+                      await setPreferences(LocalSettings.communityFullNameLightenCommunityName, false);
+                    }
+                    break;
+                  case LocalSettings.communityFullNameWeightInstanceName:
+                    await setPreferences(LocalSettings.communityFullNameWeightInstanceName, !communityFullNameWeightInstanceName);
+                    if (communityFullNameWeightInstanceName) {
+                      await setPreferences(LocalSettings.communityFullNameLightenInstanceName, false);
+                    }
+                    break;
+                  case LocalSettings.communityFullNameLightenCommunityName:
+                    await setPreferences(LocalSettings.communityFullNameLightenCommunityName, !communityFullNameLightenCommunityName);
+                    if (communityFullNameLightenCommunityName) {
+                      await setPreferences(LocalSettings.communityFullNameWeightCommunityName, false);
+                    }
+                    break;
+                  case LocalSettings.communityFullNameLightenInstanceName:
+                    await setPreferences(LocalSettings.communityFullNameLightenInstanceName, !communityFullNameLightenInstanceName);
+                    if (communityFullNameLightenInstanceName) {
+                      await setPreferences(LocalSettings.communityFullNameWeightInstanceName, false);
+                    }
+                    break;
+                  case LocalSettings.communityFullNameColorizeCommunityName:
+                    await setPreferences(LocalSettings.communityFullNameColorizeCommunityName, !communityFullNameColorizeCommunityName);
+                    break;
+                  case LocalSettings.communityFullNameColorizeInstanceName:
+                    await setPreferences(LocalSettings.communityFullNameColorizeInstanceName, !communityFullNameColorizeInstanceName);
+                    break;
+                  default:
+                    break;
                 }
               },
               highlightKey: settingToHighlight == LocalSettings.communityStyle ? settingToHighlightKey : null,

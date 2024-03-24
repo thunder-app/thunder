@@ -763,6 +763,18 @@
   "@light": {
     "description": "Describes using the light theme"
   },
+  "lightenCommunityName": "Lighten Community Name",
+  "@lightenCommunityName": {
+    "description": "Setting for lightening the community name"
+  },
+  "lightenInstanceName": "Lighten Instance Name",
+  "@lightenInstanceName": {
+    "description": "Setting for lightening the instance name"
+  },
+  "lightenUserName": "Lighten User Name",
+  "@lightenUserName": {
+    "description": "Setting for lightening the username"
+  },
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
   "linkActions": "Link Actions",

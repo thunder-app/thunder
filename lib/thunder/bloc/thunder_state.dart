@@ -37,11 +37,15 @@ class ThunderState extends Equatable {
     this.userSeparator = FullNameSeparator.at,
     this.userFullNameWeightUserName = false,
     this.userFullNameWeightInstanceName = false,
+    this.userFullNameLightenUserName = false,
+    this.userFullNameLightenInstanceName = true,
     this.userFullNameColorizeUserName = false,
     this.userFullNameColorizeInstanceName = false,
     this.communitySeparator = FullNameSeparator.dot,
     this.communityFullNameWeightCommunityName = false,
     this.communityFullNameWeightInstanceName = false,
+    this.communityFullNameLightenCommunityName = false,
+    this.communityFullNameLightenInstanceName = true,
     this.communityFullNameColorizeCommunityName = false,
     this.communityFullNameColorizeInstanceName = false,
     this.imageCachingMode = ImageCachingMode.relaxed,
@@ -186,11 +190,15 @@ class ThunderState extends Equatable {
   final FullNameSeparator userSeparator;
   final bool userFullNameWeightUserName;
   final bool userFullNameWeightInstanceName;
+  final bool userFullNameLightenUserName;
+  final bool userFullNameLightenInstanceName;
   final bool userFullNameColorizeUserName;
   final bool userFullNameColorizeInstanceName;
   final FullNameSeparator communitySeparator;
   final bool communityFullNameWeightCommunityName;
   final bool communityFullNameWeightInstanceName;
+  final bool communityFullNameLightenCommunityName;
+  final bool communityFullNameLightenInstanceName;
   final bool communityFullNameColorizeCommunityName;
   final bool communityFullNameColorizeInstanceName;
   final ImageCachingMode imageCachingMode;
@@ -343,11 +351,15 @@ class ThunderState extends Equatable {
     FullNameSeparator? userSeparator,
     bool? userFullNameWeightUserName,
     bool? userFullNameWeightInstanceName,
+    bool? userFullNameLightenUserName,
+    bool? userFullNameLightenInstanceName,
     bool? userFullNameColorizeUserName,
     bool? userFullNameColorizeInstanceName,
     FullNameSeparator? communitySeparator,
     bool? communityFullNameWeightCommunityName,
     bool? communityFullNameWeightInstanceName,
+    bool? communityFullNameLightenCommunityName,
+    bool? communityFullNameLightenInstanceName,
     bool? communityFullNameColorizeCommunityName,
     bool? communityFullNameColorizeInstanceName,
     ImageCachingMode? imageCachingMode,
@@ -495,11 +507,15 @@ class ThunderState extends Equatable {
       userSeparator: userSeparator ?? this.userSeparator,
       userFullNameWeightUserName: userFullNameWeightUserName ?? this.userFullNameWeightUserName,
       userFullNameWeightInstanceName: userFullNameWeightInstanceName ?? this.userFullNameWeightInstanceName,
+      userFullNameLightenUserName: userFullNameLightenUserName ?? this.userFullNameLightenUserName,
+      userFullNameLightenInstanceName: userFullNameLightenInstanceName ?? this.userFullNameLightenInstanceName,
       userFullNameColorizeUserName: userFullNameColorizeUserName ?? this.userFullNameColorizeUserName,
       userFullNameColorizeInstanceName: userFullNameColorizeInstanceName ?? this.userFullNameColorizeInstanceName,
       communitySeparator: communitySeparator ?? this.communitySeparator,
       communityFullNameWeightCommunityName: communityFullNameWeightCommunityName ?? this.communityFullNameWeightCommunityName,
       communityFullNameWeightInstanceName: communityFullNameWeightInstanceName ?? this.communityFullNameWeightInstanceName,
+      communityFullNameLightenCommunityName: communityFullNameLightenCommunityName ?? this.communityFullNameLightenCommunityName,
+      communityFullNameLightenInstanceName: communityFullNameLightenInstanceName ?? this.communityFullNameLightenInstanceName,
       communityFullNameColorizeCommunityName: communityFullNameColorizeCommunityName ?? this.communityFullNameColorizeCommunityName,
       communityFullNameColorizeInstanceName: communityFullNameColorizeInstanceName ?? this.communityFullNameColorizeInstanceName,
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
@@ -651,11 +667,15 @@ class ThunderState extends Equatable {
         userSeparator,
         userFullNameWeightUserName,
         userFullNameWeightInstanceName,
+        userFullNameLightenUserName,
+        userFullNameLightenInstanceName,
         userFullNameColorizeUserName,
         userFullNameColorizeInstanceName,
         communitySeparator,
         communityFullNameWeightCommunityName,
         communityFullNameWeightInstanceName,
+        communityFullNameLightenCommunityName,
+        communityFullNameLightenInstanceName,
         communityFullNameColorizeCommunityName,
         communityFullNameColorizeInstanceName,
         imageCachingMode,
