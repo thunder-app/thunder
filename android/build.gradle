@@ -1,20 +1,19 @@
 buildscript {
-    ext.kotlin_version = '1.8.0'
-    // Versions recommended/needed by flutter_local_notifications and background_fetch
-    // These can be upgraded over time.
+    ext.kotlin_version = '1.9.22'
+
     ext {
         compileSdkVersion   = 34
         targetSdkVersion    = 34
         appCompatVersion    = "1.6.1"
     }
+
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        // flutter_local_notifications requires gradle version 7.3.1
-        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath 'com.android.tools.build:gradle:8.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -23,9 +22,20 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        // The following section is required by background_fetch
         maven {
-            url "${project(':background_fetch').projectDir}/libs"
+            url "${project(':background_fetch').projectDir}/libs" // Required by background_fetch
+        }
+    }
+
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
         }
     }
     subprojects {
@@ -42,9 +52,11 @@ allprojects {
 }
 
 rootProject.buildDir = '../build'
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+
 subprojects {
     project.evaluationDependsOn(':app')
 }
