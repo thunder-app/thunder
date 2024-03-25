@@ -121,19 +121,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-      bool userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? false;
-      bool userFullNameWeightInstanceName = prefs.getBool(LocalSettings.userFullNameWeightInstanceName.name) ?? false;
-      bool userFullNameLightenUserName = prefs.getBool(LocalSettings.userFullNameLightenUserName.name) ?? false;
-      bool userFullNameLightenInstanceName = prefs.getBool(LocalSettings.userFullNameLightenInstanceName.name) ?? true;
-      bool userFullNameColorizeUserName = prefs.getBool(LocalSettings.userFullNameColorizeUserName.name) ?? false;
-      bool userFullNameColorizeInstanceName = prefs.getBool(LocalSettings.userFullNameColorizeInstanceName.name) ?? false;
+      NameThickness userFullNameUserNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameUserNameThickness.name) ?? NameThickness.normal.name);
+      NameColor userFullNameUserNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameUserNameColor.name) ?? NameColor.defaultColor);
+      NameThickness userFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
+      NameColor userFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
       FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
-      bool communityFullNameWeightCommunityName = prefs.getBool(LocalSettings.communityFullNameWeightCommunityName.name) ?? false;
-      bool communityFullNameWeightInstanceName = prefs.getBool(LocalSettings.communityFullNameWeightInstanceName.name) ?? false;
-      bool communityFullNameLightenCommunityName = prefs.getBool(LocalSettings.communityFullNameLightenCommunityName.name) ?? false;
-      bool communityFullNameLightenInstanceName = prefs.getBool(LocalSettings.communityFullNameLightenInstanceName.name) ?? true;
-      bool communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
-      bool communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
+      NameThickness communityFullNameCommunityNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameCommunityNameThickness.name) ?? NameThickness.normal.name);
+      NameColor communityFullNameCommunityNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameCommunityNameColor.name) ?? NameColor.defaultColor);
+      NameThickness communityFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
+      NameColor communityFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
@@ -280,19 +276,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         enableInboxNotifications: enableInboxNotifications,
         appLanguageCode: appLanguageCode,
         userSeparator: userSeparator,
-        userFullNameWeightUserName: userFullNameWeightUserName,
-        userFullNameWeightInstanceName: userFullNameWeightInstanceName,
-        userFullNameLightenUserName: userFullNameLightenUserName,
-        userFullNameLightenInstanceName: userFullNameLightenInstanceName,
-        userFullNameColorizeUserName: userFullNameColorizeUserName,
-        userFullNameColorizeInstanceName: userFullNameColorizeInstanceName,
+        userFullNameUserNameThickness: userFullNameUserNameThickness,
+        userFullNameUserNameColor: userFullNameUserNameColor,
+        userFullNameInstanceNameThickness: userFullNameInstanceNameThickness,
+        userFullNameInstanceNameColor: userFullNameInstanceNameColor,
         communitySeparator: communitySeparator,
-        communityFullNameWeightCommunityName: communityFullNameWeightCommunityName,
-        communityFullNameWeightInstanceName: communityFullNameWeightInstanceName,
-        communityFullNameLightenCommunityName: communityFullNameLightenCommunityName,
-        communityFullNameLightenInstanceName: communityFullNameLightenInstanceName,
-        communityFullNameColorizeCommunityName: communityFullNameColorizeCommunityName,
-        communityFullNameColorizeInstanceName: communityFullNameColorizeInstanceName,
+        communityFullNameCommunityNameThickness: communityFullNameCommunityNameThickness,
+        communityFullNameCommunityNameColor: communityFullNameCommunityNameColor,
+        communityFullNameInstanceNameThickness: communityFullNameInstanceNameThickness,
+        communityFullNameInstanceNameColor: communityFullNameInstanceNameColor,
         imageCachingMode: imageCachingMode,
         hideTopBarOnScroll: hideTopBarOnScroll,
 

@@ -113,6 +113,10 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "bold": "Bold",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
   "boldCommunityName": "Bold Community Name",
   "@boldCommunityName": {
     "description": "Setting for bolding the community name"
@@ -291,6 +295,14 @@
   "@communityFormat": {
     "description": "Setting for community full name format"
   },
+  "communityNameColor": "Community Name Color",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "communityNameThickness": "Community Name Thickness",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
   "communityStyle": "Community Style",
   "@communityStyle": {
     "description": "Heading for community style setting"
@@ -410,6 +422,10 @@
   "debugDescription": "The following debug settings should only be used for troubleshooting purposes.",
   "@debugDescription": {
     "description": "Explanation for debug settings page"
+  },
+  "defaultColor": "Default",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
   },
   "defaultCommentSortType": "Default Comment Sort Type",
   "@defaultCommentSortType": {
@@ -729,6 +745,14 @@
   },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
+  "instanceNameColor": "Instance Name Color",
+  "@instanceNameColor": {
+    "description": "Setting for instance name color"
+  },
+  "instanceNameThickness": "Instance Name Thickness",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
   "keywordFilterDescription": "Filters posts containing any keywords in the title or body",
@@ -762,18 +786,6 @@
   "light": "Light",
   "@light": {
     "description": "Describes using the light theme"
-  },
-  "lightenCommunityName": "Lighten Community Name",
-  "@lightenCommunityName": {
-    "description": "Setting for lightening the community name"
-  },
-  "lightenInstanceName": "Lighten Instance Name",
-  "@lightenInstanceName": {
-    "description": "Setting for lightening the instance name"
-  },
-  "lightenUserName": "Lighten User Name",
-  "@lightenUserName": {
-    "description": "Setting for lightening the username"
   },
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
@@ -997,6 +1009,10 @@
   "@noUserBlocks": {},
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
   "notValidUrl": "Not a valid URL",
@@ -1625,6 +1641,18 @@
   "@themeAccentColor": {
     "description": "Setting for theme accent color"
   },
+  "themePrimary": "Theme Primary",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "themeSecondary": "Theme Secondary",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "themeTertiary": "Theme Tertiary",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
+  },
   "theming": "Theming",
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
@@ -1840,6 +1868,14 @@
   "userFormat": "User Format",
   "@userFormat": {
     "description": "Setting for user full name format"
+  },
+  "userNameColor": "User Name Color",
+  "@userNameColor": {
+    "description": "Setting for username color"
+  },
+  "userNameThickness": "User Name Thickness",
+  "@userNameThickness": {
+    "description": "Setting for user name thickness"
   },
   "userNotLoggedIn": "User not logged in",
   "@userNotLoggedIn": {},

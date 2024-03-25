@@ -35,19 +35,15 @@ class ThunderState extends Equatable {
     this.enableInboxNotifications = false,
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
-    this.userFullNameWeightUserName = false,
-    this.userFullNameWeightInstanceName = false,
-    this.userFullNameLightenUserName = false,
-    this.userFullNameLightenInstanceName = true,
-    this.userFullNameColorizeUserName = false,
-    this.userFullNameColorizeInstanceName = false,
+    this.userFullNameUserNameThickness = NameThickness.normal,
+    this.userFullNameUserNameColor = const NameColor.fromString(color: NameColor.defaultColor),
+    this.userFullNameInstanceNameThickness = NameThickness.light,
+    this.userFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor),
     this.communitySeparator = FullNameSeparator.dot,
-    this.communityFullNameWeightCommunityName = false,
-    this.communityFullNameWeightInstanceName = false,
-    this.communityFullNameLightenCommunityName = false,
-    this.communityFullNameLightenInstanceName = true,
-    this.communityFullNameColorizeCommunityName = false,
-    this.communityFullNameColorizeInstanceName = false,
+    this.communityFullNameCommunityNameThickness = NameThickness.normal,
+    this.communityFullNameCommunityNameColor = const NameColor.fromString(color: NameColor.defaultColor),
+    this.communityFullNameInstanceNameThickness = NameThickness.light,
+    this.communityFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor),
     this.imageCachingMode = ImageCachingMode.relaxed,
     this.hideTopBarOnScroll = false,
 
@@ -188,19 +184,15 @@ class ThunderState extends Equatable {
   final bool enableInboxNotifications;
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
-  final bool userFullNameWeightUserName;
-  final bool userFullNameWeightInstanceName;
-  final bool userFullNameLightenUserName;
-  final bool userFullNameLightenInstanceName;
-  final bool userFullNameColorizeUserName;
-  final bool userFullNameColorizeInstanceName;
+  final NameThickness userFullNameUserNameThickness;
+  final NameColor userFullNameUserNameColor;
+  final NameThickness userFullNameInstanceNameThickness;
+  final NameColor userFullNameInstanceNameColor;
   final FullNameSeparator communitySeparator;
-  final bool communityFullNameWeightCommunityName;
-  final bool communityFullNameWeightInstanceName;
-  final bool communityFullNameLightenCommunityName;
-  final bool communityFullNameLightenInstanceName;
-  final bool communityFullNameColorizeCommunityName;
-  final bool communityFullNameColorizeInstanceName;
+  final NameThickness communityFullNameCommunityNameThickness;
+  final NameColor communityFullNameCommunityNameColor;
+  final NameThickness communityFullNameInstanceNameThickness;
+  final NameColor communityFullNameInstanceNameColor;
   final ImageCachingMode imageCachingMode;
   final bool hideTopBarOnScroll;
 
@@ -349,19 +341,15 @@ class ThunderState extends Equatable {
     bool? enableInboxNotifications,
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
-    bool? userFullNameWeightUserName,
-    bool? userFullNameWeightInstanceName,
-    bool? userFullNameLightenUserName,
-    bool? userFullNameLightenInstanceName,
-    bool? userFullNameColorizeUserName,
-    bool? userFullNameColorizeInstanceName,
+    NameThickness? userFullNameUserNameThickness,
+    NameColor? userFullNameUserNameColor,
+    NameThickness? userFullNameInstanceNameThickness,
+    NameColor? userFullNameInstanceNameColor,
     FullNameSeparator? communitySeparator,
-    bool? communityFullNameWeightCommunityName,
-    bool? communityFullNameWeightInstanceName,
-    bool? communityFullNameLightenCommunityName,
-    bool? communityFullNameLightenInstanceName,
-    bool? communityFullNameColorizeCommunityName,
-    bool? communityFullNameColorizeInstanceName,
+    NameThickness? communityFullNameCommunityNameThickness,
+    NameColor? communityFullNameCommunityNameColor,
+    NameThickness? communityFullNameInstanceNameThickness,
+    NameColor? communityFullNameInstanceNameColor,
     ImageCachingMode? imageCachingMode,
     bool? hideTopBarOnScroll,
 
@@ -505,19 +493,15 @@ class ThunderState extends Equatable {
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
-      userFullNameWeightUserName: userFullNameWeightUserName ?? this.userFullNameWeightUserName,
-      userFullNameWeightInstanceName: userFullNameWeightInstanceName ?? this.userFullNameWeightInstanceName,
-      userFullNameLightenUserName: userFullNameLightenUserName ?? this.userFullNameLightenUserName,
-      userFullNameLightenInstanceName: userFullNameLightenInstanceName ?? this.userFullNameLightenInstanceName,
-      userFullNameColorizeUserName: userFullNameColorizeUserName ?? this.userFullNameColorizeUserName,
-      userFullNameColorizeInstanceName: userFullNameColorizeInstanceName ?? this.userFullNameColorizeInstanceName,
+      userFullNameUserNameThickness: userFullNameUserNameThickness ?? this.userFullNameUserNameThickness,
+      userFullNameUserNameColor: userFullNameUserNameColor ?? this.userFullNameUserNameColor,
+      userFullNameInstanceNameThickness: userFullNameInstanceNameThickness ?? this.userFullNameInstanceNameThickness,
+      userFullNameInstanceNameColor: userFullNameInstanceNameColor ?? this.userFullNameInstanceNameColor,
       communitySeparator: communitySeparator ?? this.communitySeparator,
-      communityFullNameWeightCommunityName: communityFullNameWeightCommunityName ?? this.communityFullNameWeightCommunityName,
-      communityFullNameWeightInstanceName: communityFullNameWeightInstanceName ?? this.communityFullNameWeightInstanceName,
-      communityFullNameLightenCommunityName: communityFullNameLightenCommunityName ?? this.communityFullNameLightenCommunityName,
-      communityFullNameLightenInstanceName: communityFullNameLightenInstanceName ?? this.communityFullNameLightenInstanceName,
-      communityFullNameColorizeCommunityName: communityFullNameColorizeCommunityName ?? this.communityFullNameColorizeCommunityName,
-      communityFullNameColorizeInstanceName: communityFullNameColorizeInstanceName ?? this.communityFullNameColorizeInstanceName,
+      communityFullNameCommunityNameThickness: communityFullNameCommunityNameThickness ?? this.communityFullNameCommunityNameThickness,
+      communityFullNameCommunityNameColor: communityFullNameCommunityNameColor ?? this.communityFullNameCommunityNameColor,
+      communityFullNameInstanceNameThickness: communityFullNameInstanceNameThickness ?? this.communityFullNameInstanceNameThickness,
+      communityFullNameInstanceNameColor: communityFullNameInstanceNameColor ?? this.communityFullNameInstanceNameColor,
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
@@ -665,19 +649,15 @@ class ThunderState extends Equatable {
         showUpdateChangelogs,
         enableInboxNotifications,
         userSeparator,
-        userFullNameWeightUserName,
-        userFullNameWeightInstanceName,
-        userFullNameLightenUserName,
-        userFullNameLightenInstanceName,
-        userFullNameColorizeUserName,
-        userFullNameColorizeInstanceName,
+        userFullNameUserNameThickness,
+        userFullNameUserNameColor,
+        userFullNameInstanceNameThickness,
+        userFullNameInstanceNameColor,
         communitySeparator,
-        communityFullNameWeightCommunityName,
-        communityFullNameWeightInstanceName,
-        communityFullNameLightenCommunityName,
-        communityFullNameLightenInstanceName,
-        communityFullNameColorizeCommunityName,
-        communityFullNameColorizeInstanceName,
+        communityFullNameCommunityNameThickness,
+        communityFullNameCommunityNameColor,
+        communityFullNameInstanceNameThickness,
+        communityFullNameInstanceNameColor,
         imageCachingMode,
 
         /// -------------------------- Feed Post Related Settings --------------------------
