@@ -3,7 +3,9 @@ import 'dart:io';
 
 // Flutter
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Packages
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,6 +39,7 @@ import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -55,6 +58,8 @@ import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/utils/notifications_navigation.dart';
+
+String? currentIntent;
 
 class Thunder extends StatefulWidget {
   final PageController pageController;
@@ -90,6 +95,16 @@ class _ThunderState extends State<Thunder> {
 
     selectedPageIndex = widget.pageController.initialPage;
 
+    // Listen for callbacks from Android native code
+    if (!kIsWeb && Platform.isAndroid) {
+      const MethodChannel('com.hjiangsu.thunder/method_channel').setMethodCallHandler((MethodCall call) {
+        if (call.method == 'set_intent') {
+          currentIntent = call.arguments;
+        }
+        return Future.value(null);
+      });
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handleSharedFilesAndText();
       BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
@@ -110,11 +125,11 @@ class _ThunderState extends State<Thunder> {
     try {
       // For sharing files from outside the app while the app is closed
       List<SharedFile> sharedFiles = await FlutterSharingIntent.instance.getInitialSharing();
-      if (sharedFiles.isNotEmpty) handleSharedItems(sharedFiles.first);
+      if (sharedFiles.isNotEmpty && currentIntent != ANDROID_INTENT_ACTION_VIEW) handleSharedItems(sharedFiles.first);
 
       // For sharing files while the app is in the memory
       mediaIntentDataStreamSubscription = FlutterSharingIntent.instance.getMediaStream().listen((List<SharedFile> sharedFiles) {
-        if (!context.mounted || sharedFiles.isEmpty) return;
+        if (!context.mounted || sharedFiles.isEmpty || currentIntent == ANDROID_INTENT_ACTION_VIEW) return;
         handleSharedItems(sharedFiles.first);
       });
     } catch (e) {
