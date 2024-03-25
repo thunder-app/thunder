@@ -997,6 +997,37 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               highlightKey: settingToHighlight == LocalSettings.showUpdateChangelogs ? settingToHighlightKey : null,
             ),
           ),
+          SliverToBoxAdapter(
+            child: ListOption(
+              description: l10n.enableInboxNotifications,
+              value: const ListPickerItem(payload: -1),
+              icon: Icons.notifications_on_rounded,
+              highlightKey: settingToHighlight == LocalSettings.enableInboxNotifications ? settingToHighlightKey : null,
+              customListPicker: StatefulBuilder(
+                builder: (context, setState) {
+                  return BottomSheetListPicker(
+                    title: l10n.dividerAppearance,
+                    heading: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l10n.preview, style: theme.textTheme.titleMedium),
+                        const SizedBox(height: 20.0),
+                        const SizedBox(height: 16.0),
+                      ],
+                    ),
+                    items: [
+                      ListPickerItem<int>(
+                        customWidget: ListTile(
+                          title: Text(l10n.color),
+                        ),
+                        payload: -1,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
           if (!kIsWeb && Platform.isAndroid || Platform.isIOS)
             SliverToBoxAdapter(
               child: ToggleOption(

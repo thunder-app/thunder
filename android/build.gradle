@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.8.0'
     // Versions recommended/needed by flutter_local_notifications and background_fetch
     // These can be upgraded over time.
     ext {
@@ -14,7 +14,7 @@ buildscript {
 
     dependencies {
         // flutter_local_notifications requires gradle version 7.3.1
-        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath 'com.android.tools.build:gradle:8.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -26,6 +26,17 @@ allprojects {
         // The following section is required by background_fetch
         maven {
             url "${project(':background_fetch').projectDir}/libs"
+        }
+    }
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
         }
     }
 }

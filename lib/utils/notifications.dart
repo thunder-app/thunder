@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,18 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:unifiedpush/unifiedpush.dart';
 
 const String _inboxMessagesChannelId = 'inbox_messages';
 const String _inboxMessagesChannelName = 'Inbox Messages';
 const String repliesGroupKey = 'replies';
 const String _lastPollTimeId = 'thunder_last_notifications_poll_time';
 const int _repliesGroupSummaryId = 0;
+
+// UnifiedPush variables
+var instance = "myInstance";
+var endpoint = "";
+var registered = false;
 
 /// Initialize iOS specific notification logic. This is only called when the app is running on iOS.
 void initIOSPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
@@ -58,15 +65,31 @@ void initIOSPushNotificationLogic({required StreamController<NotificationRespons
   });
 }
 
+void onUnregistered(String _instance) {
+  if (_instance != instance) return;
+  registered = false;
+  debugPrint("unregistered");
+}
+
 /// Initialize Android specific notification logic. This is only called when the app is running on Android.
 void initAndroidPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
   // Load up preferences
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  bool useUnifiedPush = false;
+  bool useUnifiedPush = true;
 
   if (useUnifiedPush) {
-    // TODO: Implement unified push
+    UnifiedPush.initialize(
+      onNewEndpoint: (String _endpoint, String _instance) {
+        if (_instance != instance) return;
+        registered = true;
+        endpoint = _endpoint;
+        debugPrint(endpoint);
+      },
+      onRegistrationFailed: onUnregistered,
+      onUnregistered: onUnregistered,
+      onMessage: (Uint8List message, String instance) {},
+    );
   } else {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
