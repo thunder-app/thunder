@@ -1361,22 +1361,23 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
-<<<<<<< HEAD
   push:
     dependency: "direct main"
     description:
-      name: push
-      sha256: "15f47b829ac0a0c4ae592ae5d7f1b57cf27f8637744a4f2fd5f4f5dd1563a0d0"
-      url: "https://pub.dev"
-    source: hosted
+      path: push
+      ref: "722c5e8541e1e5c91c56743b94d07f51f26fd2c5"
+      resolved-ref: "722c5e8541e1e5c91c56743b94d07f51f26fd2c5"
+      url: "https://github.com/hjiangsu/push.git"
+    source: git
     version: "2.1.0"
   push_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: push_android
-      sha256: e3ad795fc758363c5f1c1aab3af0fff10e50bd1e7cd23a51ed6cc3825673b107
-      url: "https://pub.dev"
-    source: hosted
+      path: push_android
+      ref: "722c5e8541e1e5c91c56743b94d07f51f26fd2c5"
+      resolved-ref: "722c5e8541e1e5c91c56743b94d07f51f26fd2c5"
+      url: "https://github.com/hjiangsu/push.git"
+    source: git
     version: "0.5.0"
   push_ios:
     dependency: transitive
@@ -1402,17 +1403,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
-  receive_sharing_intent:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: abedc3d6d5b80df396e9c300fd1a052cbab08827
-      url: "https://github.com/AyushmanG26/receive_sharing_intent.git"
-    source: git
-    version: "1.4.5"
-=======
->>>>>>> ef5e8f75d4e93195251bca3c839dd2174a930ea2
   rxdart:
     dependency: transitive
     description:

@@ -105,7 +105,11 @@ dependencies:
   gal: ^2.2.0
   smooth_highlight: ^0.1.1
   visibility_detector: ^0.4.0+2
-  push: ^2.1.0
+  push:
+    git:
+      url: https://github.com/hjiangsu/push.git
+      ref: 722c5e8541e1e5c91c56743b94d07f51f26fd2c5
+      path: push
   unifiedpush: ^5.0.1
   flutter_sharing_intent: ^1.1.1
 
@@ -121,6 +125,11 @@ dev_dependencies:
 
 dependency_overrides:
   markdown: 7.0.0
+  push_android:
+    git:
+      url: https://github.com/hjiangsu/push.git
+      ref: 722c5e8541e1e5c91c56743b94d07f51f26fd2c5
+      path: push_android
 
 # The following section is specific to Flutter packages.
 flutter:
