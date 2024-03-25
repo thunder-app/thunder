@@ -45,6 +45,7 @@ class ThunderState extends Equatable {
     this.communityFullNameColorizeCommunityName = false,
     this.communityFullNameColorizeInstanceName = false,
     this.imageCachingMode = ImageCachingMode.relaxed,
+    this.showNavigationLabels = false,
     this.hideTopBarOnScroll = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
@@ -194,6 +195,7 @@ class ThunderState extends Equatable {
   final bool communityFullNameColorizeCommunityName;
   final bool communityFullNameColorizeInstanceName;
   final ImageCachingMode imageCachingMode;
+  final bool showNavigationLabels;
   final bool hideTopBarOnScroll;
 
   /// -------------------------- Feed Post Related Settings --------------------------
@@ -351,6 +353,7 @@ class ThunderState extends Equatable {
     bool? communityFullNameColorizeCommunityName,
     bool? communityFullNameColorizeInstanceName,
     ImageCachingMode? imageCachingMode,
+    bool? showNavigationLabels,
     bool? hideTopBarOnScroll,
 
     /// -------------------------- Feed Post Related Settings --------------------------
@@ -503,6 +506,7 @@ class ThunderState extends Equatable {
       communityFullNameColorizeCommunityName: communityFullNameColorizeCommunityName ?? this.communityFullNameColorizeCommunityName,
       communityFullNameColorizeInstanceName: communityFullNameColorizeInstanceName ?? this.communityFullNameColorizeInstanceName,
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
+      showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
       /// -------------------------- Feed Post Related Settings --------------------------
@@ -659,6 +663,7 @@ class ThunderState extends Equatable {
         communityFullNameColorizeCommunityName,
         communityFullNameColorizeInstanceName,
         imageCachingMode,
+        showNavigationLabels,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings

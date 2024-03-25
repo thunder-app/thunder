@@ -1469,6 +1469,14 @@
   "@showLess": {},
   "showMore": "Show more",
   "@showMore": {},
+  "showNavigationLabels": "Show Navigation Labels",
+  "@showNavigationLabels": {
+    "description": "Setting for showing navigation labels"
+  },
+  "showNavigationLabelsDescription": "Whether to display labels beneath the bottom navigation buttons",
+  "@showNavigationLabelsDescription": {
+    "description": "Description for setting for showing navigation labels"
+  },
   "showPassword": "Show Password",
   "@showPassword": {},
   "showPostAuthor": "Show Post Author",
