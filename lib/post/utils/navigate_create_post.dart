@@ -5,12 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/thunder.dart';
@@ -32,6 +31,7 @@ Future<void> navigateToCreatePostPage(
     FeedBloc? feedBloc;
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
     AccountBloc accountBloc = context.read<AccountBloc>();
+    CreatePostCubit createPostCubit = CreatePostCubit();
 
     try {
       feedBloc = context.read<FeedBloc>();
@@ -51,6 +51,7 @@ Future<void> navigateToCreatePostPage(
             feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
             BlocProvider<ThunderBloc>.value(value: thunderBloc),
             BlocProvider<AccountBloc>.value(value: accountBloc),
+            BlocProvider<CreatePostCubit>.value(value: createPostCubit),
           ],
           child: CreatePostPage(
             title: title,

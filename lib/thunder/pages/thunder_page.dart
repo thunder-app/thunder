@@ -3,14 +3,13 @@ import 'dart:io';
 
 // Flutter
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Packages
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_sharing_intent/model/sharing_file.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -19,18 +18,16 @@ import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:collection/collection.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 
 // Internal
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -40,7 +37,6 @@ import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
-import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -59,8 +55,6 @@ import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/utils/notifications_navigation.dart';
-
-String? currentIntent;
 
 class Thunder extends StatefulWidget {
   final PageController pageController;
@@ -96,21 +90,10 @@ class _ThunderState extends State<Thunder> {
 
     selectedPageIndex = widget.pageController.initialPage;
 
-    // Listen for callbacks from Android native code
-    if (!kIsWeb && Platform.isAndroid) {
-      const MethodChannel('com.hjiangsu.thunder/method_channel').setMethodCallHandler((MethodCall call) {
-        if (call.method == 'set_intent') {
-          currentIntent = call.arguments;
-        }
-        return Future.value(null);
-      });
-    }
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handleSharedFilesAndText();
       BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
       BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
-
       BlocProvider.of<NotificationsCubit>(context).handleNotifications();
     });
   }
@@ -122,81 +105,37 @@ class _ThunderState extends State<Thunder> {
     super.dispose();
   }
 
-// All listeners to listen Sharing media files & text
-  void handleSharedFilesAndText() {
+  // Handle sharing media (image/text/url)
+  void handleSharedFilesAndText() async {
     try {
-      handleSharedImages();
-      handleSharedText();
+      // For sharing files from outside the app while the app is closed
+      List<SharedFile> sharedFiles = await FlutterSharingIntent.instance.getInitialSharing();
+      if (sharedFiles.isNotEmpty) handleSharedItems(sharedFiles.first);
+
+      // For sharing files while the app is in the memory
+      mediaIntentDataStreamSubscription = FlutterSharingIntent.instance.getMediaStream().listen((List<SharedFile> sharedFiles) {
+        if (!context.mounted || sharedFiles.isEmpty) return;
+        handleSharedItems(sharedFiles.first);
+      });
     } catch (e) {
       if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
     }
   }
 
-  void handleSharedImages() async {
-    // For sharing images from outside the app while the app is closed
-    final initialMedia = await ReceiveSharingIntent.getInitialMedia();
-    if (initialMedia.isNotEmpty && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
-      navigateToCreatePostPage(
-        context,
-        image: File(initialMedia.first.path),
-        prePopulated: true,
-      );
+  void handleSharedItems(SharedFile sharedFile) {
+    switch (sharedFile.type) {
+      case SharedMediaType.IMAGE:
+        navigateToCreatePostPage(context, image: File(sharedFile.value!), prePopulated: true);
+        break;
+      case SharedMediaType.URL:
+        navigateToCreatePostPage(context, url: sharedFile.value!, prePopulated: true);
+        break;
+      case SharedMediaType.TEXT:
+        navigateToCreatePostPage(context, text: sharedFile.value, prePopulated: true);
+        break;
+      default:
+        break;
     }
-    // For sharing images while the app is in the memory
-    mediaIntentDataStreamSubscription = ReceiveSharingIntent.getMediaStream().listen((
-      List<SharedMediaFile> value,
-    ) {
-      if (context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
-        navigateToCreatePostPage(
-          context,
-          image: File(value.first.path),
-          prePopulated: true,
-        );
-      }
-    });
-  }
-
-  void handleSharedText() async {
-    // For sharing URLs/text from outside the app while the app is closed
-    final initialText = await ReceiveSharingIntent.getInitialText();
-    if ((initialText?.isNotEmpty ?? false) && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
-      final uri = Uri.tryParse(initialText!);
-      if (uri?.isAbsolute == true) {
-        navigateToCreatePostPage(
-          context,
-          url: uri.toString(),
-          prePopulated: true,
-        );
-      } else {
-        navigateToCreatePostPage(
-          context,
-          text: initialText,
-          prePopulated: true,
-        );
-      }
-    }
-
-    // For sharing URLs/text while the app is in the memory
-    textIntentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen((
-      String? value,
-    ) {
-      if ((value?.isNotEmpty ?? false) && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
-        final uri = Uri.tryParse(value!);
-        if (uri?.isAbsolute == true) {
-          navigateToCreatePostPage(
-            context,
-            url: uri.toString(),
-            prePopulated: true,
-          );
-        } else {
-          navigateToCreatePostPage(
-            context,
-            text: value,
-            prePopulated: true,
-          );
-        }
-      }
-    });
   }
 
   void _showExitWarning() {
@@ -500,7 +439,7 @@ class _ThunderState extends State<Thunder> {
                             opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
                             duration: const Duration(milliseconds: 150),
                             curve: Curves.easeIn,
-                            child: IgnorePointer(ignoring: selectedPageIndex != 0, child: FeedFAB()),
+                            child: IgnorePointer(ignoring: selectedPageIndex != 0, child: const FeedFAB()),
                           )
                         : null,
                     floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
@@ -696,7 +635,7 @@ class _ThunderState extends State<Thunder> {
                                 const SearchPage(),
                                 const AccountPage(),
                                 const InboxPage(),
-                                SettingsPage(),
+                                const SettingsPage(),
                               ],
                             );
 
