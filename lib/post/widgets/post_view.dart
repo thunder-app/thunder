@@ -30,6 +30,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
@@ -406,6 +407,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             if (isOwnPost) {
                               ThunderBloc thunderBloc = context.read<ThunderBloc>();
                               AccountBloc accountBloc = context.read<AccountBloc>();
+                              CreatePostCubit createPostCubit = CreatePostCubit();
 
                               final ThunderState thunderState = context.read<ThunderBloc>().state;
                               final bool reduceAnimations = thunderState.reduceAnimations;
@@ -427,6 +429,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                         providers: [
                                           BlocProvider<ThunderBloc>.value(value: thunderBloc),
                                           BlocProvider<AccountBloc>.value(value: accountBloc),
+                                          BlocProvider<CreatePostCubit>.value(value: createPostCubit),
                                         ],
                                         child: CreatePostPage(
                                           communityId: postViewMedia.postView.community.id,
