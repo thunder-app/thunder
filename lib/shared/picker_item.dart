@@ -39,8 +39,6 @@ class PickerItem<T> extends StatelessWidget {
             title: labelWidget ??
                 Text(
                   label,
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
                   style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
                     color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(onSelected == null ? 0.5 : 1),
                   ),
