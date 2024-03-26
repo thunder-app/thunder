@@ -67,6 +67,7 @@
   "@animations": {},
   "anonymous": "Anonymous",
   "@anonymous": {},
+  "appFontFamily": "App Font",
   "appLanguage": "App Language",
   "@appLanguage": {
     "description": "Language selection in settings."
@@ -1591,7 +1592,7 @@
   },
   "system": "System",
   "@system": {
-    "description": "Describes using the system settings for theme"
+    "description": "Describes using the system settings for theme or the system font"
   },
   "tabletMode": "Tablet Mode (2-column view)",
   "@tabletMode": {

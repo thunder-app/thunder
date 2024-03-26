@@ -50,6 +50,9 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
         useDarkTheme = brightness == Brightness.dark;
       }
 
+      // Get the text theme
+      String appFontFamily = prefs.getString(LocalSettings.appFontFamily.name) ?? '';
+
       return emit(
         state.copyWith(
           status: ThemeStatus.success,
@@ -58,6 +61,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
           useMaterialYouTheme: useMaterialYouTheme,
           useDarkTheme: useDarkTheme,
           reduceAnimations: reduceAnimations,
+          appFontFamily: appFontFamily,
         ),
       );
     } catch (e) {

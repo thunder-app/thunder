@@ -192,6 +192,7 @@ enum LocalSettings {
   useMaterialYouTheme(name: 'setting_theme_use_material_you', key: 'useMaterialYouTheme', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
 
   // Font Settings
+  appFontFamily(name: 'setting_app_font_family', key: 'appFontFamily', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   titleFontSizeScale(name: 'setting_theme_title_font_size_scale', key: 'postTitleFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   contentFontSizeScale(name: 'setting_theme_content_font_size_scale', key: 'postContentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   commentFontSizeScale(name: 'setting_theme_comment_font_size_scale', key: 'commentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
@@ -351,6 +352,7 @@ extension LocalizationExt on AppLocalizations {
       'theme': theme,
       'themeAccentColor': themeAccentColor,
       'useMaterialYouTheme': useMaterialYouTheme,
+      'appFontFamily': appFontFamily,
       'postTitleFontScale': postTitleFontScale,
       'postContentFontScale': postContentFontScale,
       'commentFontScale': commentFontScale,
