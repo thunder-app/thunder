@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -16,16 +15,17 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/community.dart';
+import 'package:thunder/feed/utils/community_share.dart';
+import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/modlog/view/modlog_page.dart';
+import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/swipe.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatelessWidget {
@@ -165,7 +165,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
               ),
             );
@@ -190,7 +190,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               ),
             if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
               ThunderPopupMenuItem(
-                onTap: () => Share.share(feedBloc.state.fullCommunityView!.communityView.community.actorId),
+                onTap: () => showCommunityShareSheet(context, feedBloc.state.fullCommunityView!.communityView),
                 icon: Icons.share_rounded,
                 title: l10n.share,
               ),
@@ -222,22 +222,10 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               ),
             ThunderPopupMenuItem(
               onTap: () async {
-                final state = context.read<ThunderBloc>().state;
-                final reduceAnimations = state.reduceAnimations;
-
-                await Navigator.of(context).push(
-                  SwipeablePageRoute(
-                    transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                    backGestureDetectionWidth: 45,
-                    canOnlySwipeFromEdge: true,
-                    builder: (context) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(value: feedBloc),
-                        BlocProvider.value(value: thunderBloc),
-                      ],
-                      child: ModlogFeedPage(communityId: feedBloc.state.fullCommunityView!.communityView.community.id),
-                    ),
-                  ),
+                await navigateToModlogPage(
+                  context,
+                  feedBloc: feedBloc,
+                  communityId: feedBloc.state.fullCommunityView!.communityView.community.id,
                 );
               },
               icon: Icons.shield_rounded,
@@ -272,7 +260,7 @@ class FeedAppBarUserActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
               ),
             );
@@ -287,7 +275,7 @@ class FeedAppBarUserActions extends StatelessWidget {
             ),
             if (feedBloc.state.fullPersonView?.personView.person.actorId != null)
               ThunderPopupMenuItem(
-                onTap: () => Share.share(feedBloc.state.fullPersonView!.personView.person.actorId),
+                onTap: () => showUserShareSheet(context, feedBloc.state.fullPersonView!.personView),
                 icon: Icons.share_rounded,
                 title: l10n.share,
               ),
@@ -327,7 +315,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
               ),
             );
@@ -338,28 +326,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
             ThunderPopupMenuItem(
               onTap: () async {
                 HapticFeedback.mediumImpact();
-
-                AuthBloc authBloc = context.read<AuthBloc>();
-                ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                await Navigator.of(context).push(
-                  SwipeablePageRoute(
-                    transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                    backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
-                    backGestureDetectionWidth: 45,
-                    canOnlySwipeFromEdge:
-                        disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                    builder: (otherContext) {
-                      return MultiBlocProvider(
-                        providers: [
-                          BlocProvider.value(value: feedBloc),
-                          BlocProvider.value(value: thunderBloc),
-                        ],
-                        child: const ModlogFeedPage(),
-                      );
-                    },
-                  ),
-                );
+                await navigateToModlogPage(context, feedBloc: feedBloc);
               },
               icon: Icons.shield_rounded,
               title: l10n.modlog,

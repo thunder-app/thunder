@@ -10,6 +10,7 @@ class AccountState extends Equatable {
     this.moderates = const [],
     this.personView,
     this.errorMessage,
+    this.reload = true,
   });
 
   final AccountStatus status;
@@ -27,6 +28,9 @@ class AccountState extends Equatable {
   /// The user's information
   final PersonView? personView;
 
+  /// Whether changes to the account state should force a reload in certain parts of the app
+  final bool reload;
+
   AccountState copyWith({
     AccountStatus? status,
     List<CommunityView>? subsciptions,
@@ -34,6 +38,7 @@ class AccountState extends Equatable {
     List<CommunityModeratorView>? moderates,
     PersonView? personView,
     String? errorMessage,
+    bool? reload,
   }) {
     return AccountState(
       status: status ?? this.status,
@@ -42,9 +47,18 @@ class AccountState extends Equatable {
       moderates: moderates ?? this.moderates,
       personView: personView ?? this.personView,
       errorMessage: errorMessage ?? this.errorMessage,
+      reload: reload ?? this.reload,
     );
   }
 
   @override
-  List<Object?> get props => [status, subsciptions, favorites, moderates, personView, errorMessage];
+  List<Object?> get props => [
+        status,
+        subsciptions,
+        favorites,
+        moderates,
+        personView,
+        errorMessage,
+        reload,
+      ];
 }

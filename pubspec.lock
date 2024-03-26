@@ -671,12 +671,13 @@ packages:
     source: hosted
     version: "1.0.0"
   flutter_launcher_icons:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
-      name: flutter_launcher_icons
-      sha256: "526faf84284b86a4cb36d20a5e45147747b7563d921373d4ee0559c54fcdbcea"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "006cb1ed53f969bf11816cde5b16dd520e1ee40e"
+      url: "https://github.com/fluttercommunity/flutter_launcher_icons.git"
+    source: git
     version: "0.13.1"
   flutter_lints:
     dependency: "direct dev"
@@ -739,6 +740,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.17"
+  flutter_sharing_intent:
+    dependency: "direct main"
+    description:
+      name: flutter_sharing_intent
+      sha256: "785ffc391822641457f930eb477c91c2f598a888f50b8fbb40d481ee01c7e719"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
@@ -1041,8 +1050,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: c61289398a20383ea17428a038a47041a3369203
-      resolved-ref: c61289398a20383ea17428a038a47041a3369203
+      ref: "5639f847f7861727683c5a7dbc14f5bbd3e7194c"
+      resolved-ref: "5639f847f7861727683c5a7dbc14f5bbd3e7194c"
       url: "https://github.com/thunder-app/lemmy_api_client.git"
     source: git
     version: "0.21.0"
@@ -1384,15 +1393,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
-  receive_sharing_intent:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: abedc3d6d5b80df396e9c300fd1a052cbab08827
-      url: "https://github.com/AyushmanG26/receive_sharing_intent.git"
-    source: git
-    version: "1.4.5"
   rxdart:
     dependency: transitive
     description:

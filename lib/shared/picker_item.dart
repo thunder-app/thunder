@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class PickerItem<T> extends StatelessWidget {
   final String label;
   final String? subtitle;
+  final Widget? labelWidget;
   final IconData? icon;
   final Widget? leading;
   final IconData? trailingIcon;
@@ -14,6 +15,7 @@ class PickerItem<T> extends StatelessWidget {
     super.key,
     required this.label,
     this.subtitle,
+    this.labelWidget,
     required this.icon,
     required this.onSelected,
     this.isSelected,
@@ -34,19 +36,22 @@ class PickerItem<T> extends StatelessWidget {
           borderRadius: BorderRadius.circular(50),
           onTap: onSelected,
           child: ListTile(
-            title: Text(
-              label,
-              style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
-                color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(onSelected == null ? 0.5 : 1),
-              ),
-              textScaler: TextScaler.noScaling,
-            ),
+            title: labelWidget ??
+                Text(
+                  label,
+                  style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
+                    color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(onSelected == null ? 0.5 : 1),
+                  ),
+                  textScaler: TextScaler.noScaling,
+                ),
             subtitle: subtitle != null
                 ? Text(
                     subtitle!,
                     style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
                       color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(0.5),
                     ),
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
                   )
                 : null,
             leading: icon != null ? Icon(icon) : this.leading,

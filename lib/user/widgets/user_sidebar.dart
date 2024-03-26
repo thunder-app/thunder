@@ -6,12 +6,12 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/date_time.dart';
@@ -238,10 +238,11 @@ class UserModeratorList extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        Text(
-                          generateCommunityFullName(context, mods.community.name, fetchInstanceNameFromUrl(mods.community.actorId)),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                        CommunityFullNameWidget(
+                          context,
+                          mods.community.name,
+                          fetchInstanceNameFromUrl(mods.community.actorId),
+                          textStyle: TextStyle(
                             color: theme.colorScheme.onBackground.withOpacity(0.6),
                             fontSize: 13,
                           ),

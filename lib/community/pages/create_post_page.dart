@@ -16,12 +16,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/models/account.dart';
-import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -31,12 +29,14 @@ import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/cross_posts.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/link_preview_card.dart';
-import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/user/utils/restore_user.dart';
+import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/debounce.dart';
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/instance.dart';
 
 class CreatePostPage extends StatefulWidget {
@@ -140,6 +140,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   final imageBloc = ImageBloc();
 
+  Account? originalUser;
   bool userChanged = false;
 
   @override
@@ -176,12 +177,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          uploadImage(
-            context,
-            imageBloc,
-            postImage: true,
-            imagePath: widget.image?.path,
-          );
+          if (context.mounted) context.read<CreatePostCubit>().uploadImage(widget.image!.path, isPostImage: true);
         });
       }
 
@@ -294,9 +290,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    originalUser ??= context.read<AuthBloc>().state.account;
 
-    return BlocProvider(
-      create: (context) => CreatePostCubit(),
+    return PopScope(
+      onPopInvoked: (_) {
+        if (context.mounted) {
+          restoreUser(context, originalUser);
+        }
+      },
       child: BlocConsumer<CreatePostCubit, CreatePostState>(
         listener: (context, state) {
           if (state.status == CreatePostStatus.success && state.postViewMedia != null) {
@@ -384,6 +385,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                             const SizedBox(height: 4.0),
                             UserSelector(
+                              profileModalHeading: l10n.selectAccountToPostAs,
                               communityActorId: communityView?.community.actorId,
                               onCommunityChanged: (CommunityView? cv) {
                                 if (cv == null) {
@@ -652,79 +654,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 }
 
-/// Creates a widget which displays a preview of the currently selected account, with the ability to change accounts.
-///
-/// By passing in a [communityActorId], it will attempt to resolve the community to the new user's instance (if changed),
-/// and will invoke [onCommunityChanged]. If the community could not be resolved, the callback will pass [null].
-class UserSelector extends StatefulWidget {
-  final String? communityActorId;
-  final void Function(CommunityView?) onCommunityChanged;
-  final void Function() onUserChanged;
-
-  const UserSelector({
-    super.key,
-    required this.communityActorId,
-    required this.onCommunityChanged,
-    required this.onUserChanged,
-  });
-
-  @override
-  State<UserSelector> createState() => _UserSelectorState();
-}
-
-class _UserSelectorState extends State<UserSelector> {
-  @override
-  Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-
-    return Transform.translate(
-      offset: const Offset(-8, 0),
-      child: InkWell(
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
-        onTap: () async {
-          final Account? originalUser = context.read<AuthBloc>().state.account;
-
-          await showProfileModalSheet(
-            context,
-            quickSelectMode: true,
-            customHeading: l10n.selectAccountToPostAs,
-            reloadOnSwitch: false,
-          );
-
-          // Wait slightly longer than the duration that is waited in the account switcher logic.
-          await Future.delayed(const Duration(milliseconds: 1500));
-
-          if (context.mounted) {
-            Account? newUser = context.read<AuthBloc>().state.account;
-
-            if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
-              // The user changed. Reload the widget.
-              setState(() {});
-              widget.onUserChanged();
-
-              //If there is a selected community, see if we can resolve it to the new user's instance.
-              if (widget.communityActorId?.isNotEmpty == true) {
-                CommunityView? resolvedCommunity;
-                try {
-                  final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: widget.communityActorId!));
-                  resolvedCommunity = resolveObjectResponse.community;
-                } catch (e) {
-                  // We'll just return null if we can't find it.
-                }
-                widget.onCommunityChanged(resolvedCommunity);
-              }
-            }
-          }
-        },
-        child: const Padding(
-          padding: EdgeInsets.only(left: 8, top: 4, bottom: 4),
-          child: UserIndicator(),
-        ),
-      ),
-    );
-  }
-}
-
 /// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language
 ///
 /// Passing in [languageId] will set the initial state of the widget to display that given language.
@@ -852,10 +781,12 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('${widget.communityView?.community.title} '),
-                        Text(
-                          generateCommunityFullName(context, widget.communityView?.community.name, fetchInstanceNameFromUrl(widget.communityView?.community.actorId)),
-                          style: theme.textTheme.bodySmall,
-                        ),
+                        CommunityFullNameWidget(
+                          context,
+                          widget.communityView?.community.name,
+                          fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                          textStyle: theme.textTheme.bodySmall,
+                        )
                       ],
                     )
                   : SizedBox(

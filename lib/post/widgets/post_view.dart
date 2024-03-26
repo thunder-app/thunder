@@ -8,7 +8,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -22,7 +21,7 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
@@ -31,9 +30,10 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
-import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -83,7 +83,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-    final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
     final bool showCrossPosts = context.read<ThunderBloc>().state.showCrossPosts;
 
     PostView postView = postViewMedia.postView;
@@ -116,7 +115,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 children: [
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
                   Expanded(
                     child: ScalableText(
@@ -125,9 +124,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
-                  if (thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.isEmpty)
+                  if (thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.first.mediaType == MediaType.text)
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: Icon(
@@ -148,14 +147,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 collapsed: Container(),
                 expanded: MediaView(
                   scrapeMissingPreviews: scrapeMissingPreviews,
-                  post: post,
-                  postView: widget.postViewMedia,
+                  postViewMedia: widget.postViewMedia,
                   hideNsfwPreviews: hideNsfwPreviews,
                   markPostReadOnMediaView: markPostReadOnMediaView,
                   isUserLoggedIn: isUserLoggedIn,
                 ),
               ),
-            if (widget.postViewMedia.postView.post.body != null)
+            if (widget.postViewMedia.postView.post.body?.isNotEmpty == true)
               Expandable(
                 controller: expandableController,
                 collapsed: PostBodyPreview(
@@ -182,8 +180,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 alignment: WrapAlignment.spaceBetween,
                 runSpacing: 8.0,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
                     children: [
                       Tooltip(
                         excludeFromSemantics: true,
@@ -205,10 +203,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  ScalableText(
+                                  UserFullNameWidget(
+                                    context,
                                     postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
+                                    fetchInstanceNameFromUrl(postView.creator.actorId),
+                                    includeInstance: thunderState.postBodyShowUserInstance,
                                     fontScale: thunderState.metadataFontSizeScale,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                    textStyle: theme.textTheme.bodyMedium?.copyWith(
                                       color: (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
                                           ?.withOpacity(0.75),
                                     ),
@@ -274,10 +275,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           excludeFromSemantics: true,
                           message: generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'),
                           preferBelow: false,
-                          child: ScalableText(
+                          child: CommunityFullNameWidget(
+                            context,
                             postView.community.name,
+                            fetchInstanceNameFromUrl(postView.community.actorId),
+                            includeInstance: thunderState.postBodyShowCommunityInstance,
                             fontScale: thunderState.metadataFontSizeScale,
-                            style: theme.textTheme.bodyMedium?.copyWith(
+                            textStyle: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                             ),
                           ),
@@ -403,6 +407,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             if (isOwnPost) {
                               ThunderBloc thunderBloc = context.read<ThunderBloc>();
                               AccountBloc accountBloc = context.read<AccountBloc>();
+                              CreatePostCubit createPostCubit = CreatePostCubit();
 
                               final ThunderState thunderState = context.read<ThunderBloc>().state;
                               final bool reduceAnimations = thunderState.reduceAnimations;
@@ -424,6 +429,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                         providers: [
                                           BlocProvider<ThunderBloc>.value(value: thunderBloc),
                                           BlocProvider<AccountBloc>.value(value: accountBloc),
+                                          BlocProvider<CreatePostCubit>.value(value: createPostCubit),
                                         ],
                                         child: CreatePostPage(
                                           communityId: postViewMedia.postView.community.id,
@@ -511,17 +517,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 Expanded(
                   flex: 1,
                   child: IconButton(
-                    icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                    onPressed: useAdvancedShareSheet
-                        ? () => showAdvancedShareSheet(context, widget.postViewMedia)
-                        : widget.postViewMedia.media.isEmpty
-                            ? () => Share.share(post.apId)
-                            : () => showPostActionBottomModalSheet(
-                                  context,
-                                  widget.postViewMedia,
-                                  actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
-                                ),
-                  ),
+                      icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
+                      onPressed: () => showPostActionBottomModalSheet(context, widget.postViewMedia, page: PostActionBottomSheetPage.share)),
                 )
               ],
             ),
@@ -542,7 +539,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
           ),
           child: MediaView(
             scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
-            postView: postViewMedia,
+            postViewMedia: postViewMedia,
             showFullHeightImages: false,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,

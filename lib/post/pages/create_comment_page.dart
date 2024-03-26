@@ -18,7 +18,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/instance.dart';
 
 class CreateCommentPage extends StatefulWidget {
@@ -279,13 +279,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                           style: theme.textTheme.titleMedium,
                                         ),
                                       ),
-                                      MediaView(
-                                        scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
-                                        postView: widget.postView,
-                                        hideNsfwPreviews: thunderState.hideNsfwPreviews,
-                                        markPostReadOnMediaView: thunderState.markPostReadOnMediaView,
-                                        isUserLoggedIn: true,
-                                      ),
+                                      if (widget.postView != null)
+                                        MediaView(
+                                          scrapeMissingPreviews: thunderState.scrapeMissingPreviews,
+                                          postViewMedia: widget.postView!,
+                                          hideNsfwPreviews: thunderState.hideNsfwPreviews,
+                                          markPostReadOnMediaView: thunderState.markPostReadOnMediaView,
+                                          isUserLoggedIn: true,
+                                        ),
                                       const SizedBox(
                                         height: 12,
                                       ),

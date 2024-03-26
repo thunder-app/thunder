@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -17,6 +16,7 @@ import 'package:thunder/instance/widgets/instance_view.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -240,10 +240,11 @@ class CommunityModeratorList extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        Text(
-                          generateUserFullName(context, mods.moderator.name, fetchInstanceNameFromUrl(mods.moderator.actorId)),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                        UserFullNameWidget(
+                          context,
+                          mods.moderator.name,
+                          fetchInstanceNameFromUrl(mods.moderator.actorId),
+                          textStyle: TextStyle(
                             color: theme.colorScheme.onBackground.withOpacity(0.6),
                             fontSize: 13,
                           ),

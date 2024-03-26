@@ -91,6 +91,7 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
         communityId: event.communityId,
         userId: event.userId,
         moderatorId: event.moderatorId,
+        lemmyClient: lemmyClient,
       );
 
       // Extract information from the response
@@ -129,6 +130,7 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
       communityId: state.communityId,
       userId: state.userId,
       moderatorId: state.moderatorId,
+      lemmyClient: lemmyClient,
     );
 
     // Extract information from the response

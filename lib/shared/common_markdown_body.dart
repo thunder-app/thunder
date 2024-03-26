@@ -8,7 +8,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -476,7 +476,7 @@ class SuperscriptSubscriptWidget extends StatelessWidget {
         children: [
           WidgetSpan(
             child: Transform.translate(
-              offset: Offset(0.0, type == CustomMarkdownType.subscript ? 3.0 : -10.0),
+              offset: Offset(0.0, type == CustomMarkdownType.subscript ? 3.0 : -5.0),
               child: ScalableText(
                 text,
                 fontScale: state.contentFontSizeScale,

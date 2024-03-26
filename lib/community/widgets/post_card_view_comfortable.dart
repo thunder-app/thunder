@@ -11,6 +11,7 @@ import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
@@ -81,7 +82,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
     var mediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
-      postView: postViewMedia,
+      postViewMedia: postViewMedia,
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,
       edgeToEdgeImages: edgeToEdgeImages,
@@ -176,12 +177,12 @@ class PostCardViewComfortable extends StatelessWidget {
                 textScaler: TextScaler.noScaling,
               ),
             ),
-          if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
+          if (postViewMedia.media.first.mediaType != MediaType.text && edgeToEdgeImages)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: mediaView,
             ),
-          if (postViewMedia.media.isNotEmpty && !edgeToEdgeImages)
+          if (postViewMedia.media.first.mediaType != MediaType.text && !edgeToEdgeImages)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: mediaView,
@@ -318,22 +319,6 @@ class PostCardViewComfortable extends StatelessWidget {
                       showPostActionBottomModalSheet(
                         context,
                         postViewMedia,
-                        actionsToInclude: [
-                          PostCardAction.visitInstance,
-                          PostCardAction.visitProfile,
-                          PostCardAction.blockUser,
-                          PostCardAction.blockInstance,
-                          PostCardAction.visitCommunity,
-                          postViewMedia.postView.subscribed == SubscribedType.notSubscribed ? PostCardAction.subscribeToCommunity : PostCardAction.unsubscribeFromCommunity,
-                          PostCardAction.blockCommunity,
-                        ],
-                        multiActionsToInclude: [
-                          PostCardAction.upvote,
-                          PostCardAction.downvote,
-                          PostCardAction.save,
-                          PostCardAction.toggleRead,
-                          PostCardAction.share,
-                        ],
                       );
                       HapticFeedback.mediumImpact();
                     }),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/widgets/comment_list_entry.dart';
@@ -11,10 +12,12 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
+import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/search/widgets/search_action_chip.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/persistent_header.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_list_entry.dart';
 import 'package:thunder/utils/instance.dart';
@@ -44,6 +47,7 @@ class InstancePage extends StatefulWidget {
 
 class _InstancePageState extends State<InstancePage> {
   final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
+  bool _isLoading = false;
 
   bool? isBlocked;
   bool currentlyTogglingBlock = false;
@@ -114,9 +118,13 @@ class _InstancePageState extends State<InstancePage> {
                     slivers: [
                       SliverAppBar(
                         pinned: true,
+                        toolbarHeight: 70.0,
                         title: ListTile(
                           title: Text(
                             fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            softWrap: false,
                             style: theme.textTheme.titleLarge,
                           ),
                           subtitle: Text("v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.siteView.counts.users))}"),
@@ -147,6 +155,23 @@ class _InstancePageState extends State<InstancePage> {
                               Icons.open_in_browser_rounded,
                               semanticLabel: l10n.openInBrowser,
                             ),
+                          ),
+                          PopupMenuButton(
+                            itemBuilder: (context) => [
+                              ThunderPopupMenuItem(
+                                onTap: () async {
+                                  HapticFeedback.mediumImpact();
+                                  FeedBloc feedBloc = context.read<FeedBloc>();
+                                  navigateToModlogPage(
+                                    context,
+                                    feedBloc: feedBloc,
+                                    lemmyClient: feedBloc.lemmyClient,
+                                  );
+                                },
+                                icon: Icons.shield_rounded,
+                                title: l10n.modlog,
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -349,11 +374,13 @@ class _InstancePageState extends State<InstancePage> {
   }
 
   Future<void> _onScroll() async {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+    if (!_isLoading && _scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+      _isLoading = true;
       InstancePageState? instancePageState = buildContext?.read<InstancePageCubit>().state;
       if (instancePageState != null && instancePageState.status != InstancePageStatus.done) {
         await _doLoad(buildContext!, page: (instancePageState.page ?? 0) + 1);
       }
+      _isLoading = false;
     }
   }
 }

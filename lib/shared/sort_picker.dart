@@ -253,7 +253,7 @@ class _SortPickerState extends State<SortPicker> {
             icon: item.icon,
             onSelected: () {
               Navigator.of(context).pop();
-              widget.onSelect(item);
+              widget.onSelect?.call(item);
             },
             isSelected: widget.previouslySelected == item.payload))
         .toList();

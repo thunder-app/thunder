@@ -124,7 +124,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Handles clearing any messages from the state
   Future<void> _onFeedClearMessage(FeedClearMessageEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: state.status == FeedStatus.failureLoadingCommunity ? state.status : FeedStatus.success, message: null));
+    emit(state.copyWith(status: state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser ? state.status : FeedStatus.success, message: null));
   }
 
   /// Handles post related actions on a given item within the feed

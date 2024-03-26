@@ -19,4 +19,11 @@ Future<void> performSharedPreferencesMigration() async {
   if (browserMode != null && browserMode.contains("BrowserMode")) {
     await prefs.setString(LocalSettings.browserMode.name, browserMode.replaceAll('BrowserMode.', ''));
   }
+
+  // Migrate the commentUseColorizedUsername setting, if found.
+  bool? legacyCommentUseColorizedUsername = prefs.getBool(LocalSettings.commentUseColorizedUsername.name);
+  if (legacyCommentUseColorizedUsername != null) {
+    await prefs.remove(LocalSettings.commentUseColorizedUsername.name);
+    await prefs.setBool(LocalSettings.userFullNameColorizeUserName.name, legacyCommentUseColorizedUsername);
+  }
 }

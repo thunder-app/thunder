@@ -615,7 +615,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
           ListPickerItem(label: l10n.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
           ListPickerItem(label: l10n.setLongPress, payload: 'long', icon: Icons.touch_app_rounded),
         ],
-        onSelect: (value) {
+        onSelect: (value) async {
           if (value.payload == 'short') {
             setPreferences(LocalSettings.feedFabSinglePressAction, action);
           }
@@ -639,7 +639,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
           ListPickerItem(label: l10n.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
           ListPickerItem(label: l10n.setLongPress, payload: 'long', icon: Icons.touch_app_rounded),
         ],
-        onSelect: (value) {
+        onSelect: (value) async {
           if (value.payload == 'short') {
             setPreferences(LocalSettings.postFabSinglePressAction, action);
           }

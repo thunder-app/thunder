@@ -22,6 +22,7 @@ class ModlogFeedPage extends StatefulWidget {
     this.communityId,
     this.userId,
     this.moderatorId,
+    this.lemmyClient,
   });
 
   /// The filtering to be applied to the feed.
@@ -36,6 +37,9 @@ class ModlogFeedPage extends StatefulWidget {
   /// The id of the moderator to display modlog events for.
   final int? moderatorId;
 
+  /// An optional lemmy client to use a different instance and override the singleton
+  final LemmyClient? lemmyClient;
+
   @override
   State<ModlogFeedPage> createState() => _ModlogFeedPageState();
 }
@@ -44,7 +48,7 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ModlogBloc>(
-      create: (_) => ModlogBloc(lemmyClient: LemmyClient.instance)
+      create: (_) => ModlogBloc(lemmyClient: widget.lemmyClient ?? LemmyClient.instance)
         ..add(ModlogFeedFetchedEvent(
           modlogActionType: widget.modlogActionType,
           communityId: widget.communityId,
@@ -52,13 +56,16 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
           moderatorId: widget.moderatorId,
           reset: true,
         )),
-      child: const ModlogFeedView(),
+      child: ModlogFeedView(lemmyClient: widget.lemmyClient ?? LemmyClient.instance),
     );
   }
 }
 
 class ModlogFeedView extends StatefulWidget {
-  const ModlogFeedView({super.key});
+  /// The current Lemmy client
+  final LemmyClient lemmyClient;
+
+  const ModlogFeedView({super.key, required this.lemmyClient});
 
   @override
   State<ModlogFeedView> createState() => _ModlogFeedViewState();
@@ -166,7 +173,10 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                   CustomScrollView(
                     controller: _scrollController,
                     slivers: <Widget>[
-                      ModlogFeedPageAppBar(showAppBarTitle: state.status != ModlogStatus.initial ? true : showAppBarTitle),
+                      ModlogFeedPageAppBar(
+                        showAppBarTitle: state.status != ModlogStatus.initial ? true : showAppBarTitle,
+                        lemmyClient: widget.lemmyClient,
+                      ),
                       // Display loading indicator until the feed is fetched
                       if (state.status == ModlogStatus.initial)
                         const SliverFillRemaining(

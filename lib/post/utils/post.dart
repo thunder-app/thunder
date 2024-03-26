@@ -14,8 +14,9 @@ import 'package:thunder/core/models/media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:thunder/utils/media/video.dart';
 
 extension on MarkPostAsReadResponse {
   bool isSuccess() {
@@ -237,8 +238,10 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
   bool edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
   bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
+  bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
   List<PostView> postViewsFinal = [];
+
   if (resolutionInstance != null) {
     final LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance)).lemmyApiV3;
 
@@ -254,92 +257,66 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
     postViewsFinal = postViews.toList();
   }
 
-  Iterable<Future<PostViewMedia>> postFutures =
-      postViewsFinal.expand((post) => [if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
-  List<PostViewMedia> posts = await Future.wait(postFutures);
+  Iterable<Future<PostViewMedia>> postFutures = postViewsFinal
+      .expand(
+        (post) => [
+          if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode, scrapeMissingPreviews),
+        ],
+      )
+      .toList();
 
+  List<PostViewMedia> posts = await Future.wait(postFutures);
   return posts;
 }
 
-Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
-  List<Media> media = [];
-  String? url = postView.post.url;
+Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode, bool scrapeMissingPreviews) async {
+  List<Media> mediaList = [];
 
-  if (url != null && isImageUrl(url)) {
-    try {
-      MediaType mediaType = MediaType.image;
+  // There are three sources of URLs: the main url attached to the post, the thumbnail url attached to the post, and the video url attached to the post
+  String? url = postView.post.url ?? '';
+  String? thumbnailUrl = postView.post.thumbnailUrl;
+  String? videoUrl = postView.post.embedVideoUrl; // @TODO: Add support for videos
 
-      if (fetchImageDimensions) {
-        Size result = await retrieveImageDimensions(imageUrl: url);
-        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
-        media.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
-      } else {
-        media.add(Media(mediaUrl: url, originalUrl: url, mediaType: mediaType));
-      }
-    } catch (e) {
-      // If it fails, fall back to a media type of link
-      media.add(Media(originalUrl: url, mediaType: MediaType.link));
-    }
-  } else if (url != null) {
-    if (fetchImageDimensions) {
-      if (postView.post.thumbnailUrl?.isNotEmpty == true) {
-        try {
-          Size result = await retrieveImageDimensions(imageUrl: postView.post.thumbnailUrl!);
-          Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
-          media.add(Media(
-            mediaUrl: postView.post.thumbnailUrl!,
-            mediaType: MediaType.link,
-            originalUrl: url,
-            width: size.width,
-            height: size.height,
-          ));
-        } catch (e) {
-          // If it fails, fall back to a media type of link
-          media.add(Media(originalUrl: url, mediaType: MediaType.link));
-        }
-      } else {
-        try {
-          // For external links, attempt to fetch any media associated with it (image, title)
-          LinkInfo linkInfo = await getLinkInfo(url);
+  // First, check what type of link we're dealing with based on the url (MediaType.image, MediaType.video, MediaType.link, MediaType.text)
+  bool isImage = isImageUrl(url);
+  bool isVideo = isVideoUrl(url);
 
-          if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
-            Size result = await retrieveImageDimensions(imageUrl: linkInfo.imageURL!);
+  MediaType mediaType;
 
-            int mediaHeight = result.height.toInt();
-            int mediaWidth = result.width.toInt();
-            Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
-            media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
-          } else {
-            media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));
-          }
-        } catch (e) {
-          // Default back to a link
-          media.add(Media(mediaType: MediaType.link, originalUrl: url));
-        }
-      }
-    } else {
-      if (postView.post.thumbnailUrl?.isNotEmpty == true) {
-        media.add(Media(mediaUrl: postView.post.thumbnailUrl!, mediaType: MediaType.link, originalUrl: url));
-      } else {
-        media.add(Media(mediaType: MediaType.link, originalUrl: url));
-      }
+  if (isImage) {
+    mediaType = MediaType.image;
+  } else if (isVideo) {
+    mediaType = MediaType.video;
+  } else if (url.isNotEmpty) {
+    mediaType = MediaType.link;
+  } else {
+    mediaType = MediaType.text;
+  }
+
+  Media media = Media(mediaType: mediaType, originalUrl: url);
+
+  if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {
+    // Now check to see if there is a thumbnail image. If there is, we'll use that for the image
+    media.mediaUrl = thumbnailUrl;
+  } else if (scrapeMissingPreviews) {
+    // If there is no thumbnail image, we'll see if we should try to fetch the link metadata
+    LinkInfo linkInfo = await getLinkInfo(url);
+
+    if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
+      media.mediaUrl = linkInfo.imageURL!;
     }
   }
 
-  return PostViewMedia(
-    postView: PostView(
-      community: postView.community,
-      counts: postView.counts,
-      creator: postView.creator,
-      creatorBannedFromCommunity: postView.creatorBannedFromCommunity,
-      creatorBlocked: postView.creatorBlocked,
-      myVote: postView.myVote,
-      post: postView.post,
-      read: postView.read,
-      saved: postView.saved,
-      subscribed: postView.subscribed,
-      unreadComments: postView.unreadComments,
-    ),
-    media: media,
-  );
+  // Finally, check to see if we need to fetch the image dimensions
+  if (fetchImageDimensions && media.mediaUrl != null) {
+    Size result = await retrieveImageDimensions(imageUrl: media.mediaUrl);
+    Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+
+    media.width = size.width;
+    media.height = size.height;
+  }
+
+  mediaList.add(media);
+
+  return PostViewMedia(postView: postView, media: mediaList);
 }

@@ -6,13 +6,13 @@ import 'package:html_unescape/html_unescape_small.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -121,10 +121,12 @@ class ModlogPostItemContextCard extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(6),
                       onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: community?.id),
-                      child: ScalableText(
-                        generateCommunityFullName(context, community?.name, fetchInstanceNameFromUrl(community?.actorId)),
+                      child: CommunityFullNameWidget(
+                        context,
+                        community?.name,
+                        fetchInstanceNameFromUrl(community?.actorId),
                         fontScale: state.metadataFontSizeScale,
-                        style: theme.textTheme.bodyMedium?.copyWith(
+                        textStyle: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                         ),
                       ),
@@ -278,10 +280,12 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                         InkWell(
                           borderRadius: BorderRadius.circular(6),
                           onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community?.id),
-                          child: ScalableText(
-                            generateCommunityFullName(context, widget.community?.name, fetchInstanceNameFromUrl(widget.community?.actorId)),
+                          child: CommunityFullNameWidget(
+                            context,
+                            widget.community?.name,
+                            fetchInstanceNameFromUrl(widget.community?.actorId),
                             fontScale: state.metadataFontSizeScale,
-                            style: textStyleCommunityAndAuthor,
+                            textStyle: textStyleCommunityAndAuthor,
                           ),
                         ),
                       ],
@@ -336,10 +340,11 @@ class ModlogUserItemContextCard extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
-                    ScalableText(
-                      user == null ? '-' : generateUserFullName(context, user?.name, fetchInstanceNameFromUrl(user?.actorId)),
-                      fontScale: state.metadataFontSizeScale,
-                      style: theme.textTheme.bodyMedium?.copyWith(
+                    UserFullNameWidget(
+                      context,
+                      user?.name,
+                      fetchInstanceNameFromUrl(user?.actorId),
+                      textStyle: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
                     ),
@@ -393,10 +398,12 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
-                    ScalableText(
-                      generateCommunityFullName(context, community?.name, fetchInstanceNameFromUrl(community?.actorId)),
+                    CommunityFullNameWidget(
+                      context,
+                      community?.name,
+                      fetchInstanceNameFromUrl(community?.actorId),
                       fontScale: state.metadataFontSizeScale,
-                      style: theme.textTheme.bodyMedium?.copyWith(
+                      textStyle: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
                     ),

@@ -113,6 +113,18 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "boldCommunityName": "Bold Community Name",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "boldInstanceName": "Bold Instance Name",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "Bold User Name",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
   "browserMode": "Link handling",
   "@browserMode": {
     "description": "Title for link handling setting (called browserMode internally)"
@@ -143,6 +155,10 @@
   "@cardViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
+  "changeAccountSettingsFor": "Change account settings for",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
   "changeSort": "Change Sort",
   "@changeSort": {},
   "clearCache": "Clear Cache ({cacheSize})",
@@ -169,6 +185,10 @@
   "@clearedUserPreferences": {},
   "close": "Close",
   "@close": {},
+  "collapse": "Collapse",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
   "collapseCommentPreview": "Collapse Comment Preview",
   "@collapseCommentPreview": {
     "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
@@ -191,6 +211,22 @@
   "@collapseSpoiler": {
     "description": "Label for collapsing spoiler"
   },
+  "color": "Color",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "colorizeCommunityName": "Colorize Community Name",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "colorizeInstanceName": "Colorize Instance Name",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "colorizeUserName": "Colorize User Name",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
   "combineCommentScores": "Combine Comment Scores",
   "@combineCommentScores": {
     "description": "Toggle to combine comment scores."
@@ -203,6 +239,10 @@
   "@combineNavAndFab": {},
   "combineNavAndFabDescription": "Floating Action Button will be shown between navigation buttons.",
   "@combineNavAndFabDescription": {},
+  "comfortable": "Comfortable",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
   "comment": "Comment",
   "@comment": {},
   "commentBehaviourSettings": "Comments",
@@ -233,19 +273,31 @@
   },
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "@commentSwipeGesturesHint": {},
-  "commentUseColorizedUsername": "Colorized Usernames",
-  "@commentUseColorizedUsername": {
-    "description": "Setting used to toggle colorized comments creator display name."
-  },
   "comments": "Comments",
   "@comments": {},
   "communities": "Communities",
   "@communities": {},
   "community": "Community",
   "@community": {},
+  "communityActions": "Community Actions",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "Community '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
+  },
+  "communityStyle": "Community Style",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "compact": "Compact",
+  "@compact": {
+    "description": "Describes a compact visual density"
   },
   "compactPostCardMetadataItems": "Compact View Metadata",
   "@compactPostCardMetadataItems": {
@@ -415,6 +467,14 @@
   "@displayUserScore": {
     "description": "Option for displaying user scores or karma."
   },
+  "dividerAppearance": "Divider Appearance",
+  "@dividerAppearance": {
+    "description": "Divider appearance category"
+  },
+  "doNotShowAgain": "Do Not Show Again",
+  "@doNotShowAgain": {
+    "description": "Action for hiding something permanently"
+  },
   "downloadingMedia": "Downloading media to share…",
   "@downloadingMedia": {},
   "downvote": "Downvote",
@@ -469,6 +529,10 @@
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
   },
+  "expand": "Expand",
+  "@expand": {
+    "description": "Action to expand something"
+  },
   "expandCommentPreview": "Expand Comment Preview",
   "@expandCommentPreview": {
     "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
@@ -520,6 +584,10 @@
   "feedBehaviourSettings": "Feed",
   "@feedBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
+  },
+  "feedSettings": "Feed Settings",
+  "@feedSettings": {
+    "description": "Feed settings category."
   },
   "feedTypeAndSorts": "Default Feed Type and Sorting",
   "@feedTypeAndSorts": {
@@ -647,8 +715,18 @@
   "@information": {
     "description": "Information heading - used in the FAB settings page"
   },
-  "instance": "Instance",
-  "@instance": {},
+  "instance": "{count, plural, zero {Instance} one {Instance} other {Instances} } ",
+  "@instance": {
+    "description": "Heading for an instance"
+  },
+  "instanceActions": "Instance Actions",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "instanceEntry": "Instance '{username}'",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
+  },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
@@ -929,6 +1007,10 @@
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
   },
+  "nsfwWarning": "NSFW - Tap to reveal",
+  "@nsfwWarning": {
+    "description": "Warning for NSFW posts"
+  },
   "off": "off",
   "@off": {},
   "ok": "OK",
@@ -1001,6 +1083,14 @@
   "@postBodySettingsDescription": {
     "description": "Description of post body settings"
   },
+  "postBodyShowCommunityInstance": "Show Community Instance",
+  "@postBodyShowCommunityInstance": {
+    "description": "Whether to show the community instance for post bodies"
+  },
+  "postBodyShowUserInstance": "Show User Instance",
+  "@postBodyShowUserInstance": {
+    "description": "Whether to show the user instance for post bodies"
+  },
   "postBodyViewType": "Post Body View Type",
   "@postBodyViewType": {
     "description": "Setting name for the post body view type setting"
@@ -1027,6 +1117,10 @@
   },
   "postSavedAsDraft": "Post saved as draft",
   "@postSavedAsDraft": {},
+  "postShowUserInstance": "Show User Instance",
+  "@postShowUserInstance": {
+    "description": "Whether to show the user instance for post listings"
+  },
   "postSwipeActions": "Post Swipe Actions",
   "@postSwipeActions": {
     "description": "Setting for post swipe actions"
@@ -1245,6 +1339,10 @@
   "@searchCommunitiesFederatedWith": {},
   "searchInstance": "Search {instance}",
   "@searchInstance": {},
+  "searchInstancesFederatedWith": "Search for instances federated with {instance}",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
   "searchPostSearchType": "Select Post Search Type",
   "@searchPostSearchType": {},
   "searchPostsFederatedWith": "Search for posts federated with {instance}",
@@ -1291,12 +1389,52 @@
   },
   "share": "Share",
   "@share": {},
-  "shareLink": "Share Link",
+  "shareComment": "Share Comment Link",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "shareCommentLocal": "Share Comment Link (My Instance)",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "shareCommunity": "Share Community",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "shareCommunityLink": "Share Community Link",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "shareCommunityLinkLocal": "Share Community Link (My Instance)",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "shareLemmyLink": "Share Lemmy Link",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
+  },
+  "shareLink": "Share External Link",
   "@shareLink": {},
   "shareMedia": "Share Media",
   "@shareMedia": {},
-  "sharePost": "Share Post",
+  "sharePost": "Share Post Link",
   "@sharePost": {},
+  "sharePostLocal": "Share Post Link (My Instance)",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareUser": "Share User",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "shareUserLink": "Share User Link",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "shareUserLinkLocal": "Share User Link (My Instance)",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
   "showAll": "Show All",
   "@showAll": {},
   "showBotAccounts": "Show Bot Accounts",
@@ -1381,6 +1519,14 @@
   "@showThumbnailPreviewOnRight": {
     "description": "Toggle to show thumbnails on the right side."
   },
+  "showUpdateChangelogs": "Show Update Changelogs",
+  "@showUpdateChangelogs": {
+    "description": "Setting for showing changelogs after updates"
+  },
+  "showUpdateChangelogsSubtitle": "Display a list of changes after an update",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Subtitle for setting for showing changelogs after updates"
+  },
   "showUserDisplayNames": "Show User Display Names",
   "@showUserDisplayNames": {
     "description": "Toggle to show user display names."
@@ -1410,6 +1556,10 @@
   "spoiler": "Spoiler",
   "@spoiler": {
     "description": "Placeholder label for spoiler"
+  },
+  "standard": "Standard",
+  "@standard": {
+    "description": "Describes a standard visual density"
   },
   "submit": "Submit",
   "@submit": {},
@@ -1470,6 +1620,14 @@
   "theming": "Theming",
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "thickness": "Thickness",
+  "@thickness": {
+    "description": "Describes a thickness (e.g., divider)"
+  },
+  "thunderHasBeenUpdated": "Thunder updated to {version}!",
+  "@thunderHasBeenUpdated": {
+    "description": "Heading for changelog when Thunder has been updated"
   },
   "timeoutComments": "Error: Timeout when attempting to fetch comments",
   "@timeoutComments": {},
@@ -1553,6 +1711,8 @@
   },
   "unableToFindUser": "Unable to find user",
   "@unableToFindUser": {},
+  "unableToFindUserName": "Unable to find user '{username}'",
+  "@unableToFindUserName": {},
   "unableToLoadImage": "Unable to load image",
   "@unableToLoadImage": {
     "description": "Placeholder for when we are unable to load a binary image"
@@ -1570,6 +1730,10 @@
   "unableToNavigateToInstance": "Unable to navigate to {instanceHost}. It may not be a valid Lemmy instance.",
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "unableToRetrieveChangelog": "Unable to retrieve changelog for version {version}.",
+  "@unableToRetrieveChangelog": {
+    "description": "Error message for when we are unable to retrieve the changelog."
   },
   "unbannedUser": "Unbanned User",
   "@unbannedUser": {
@@ -1608,6 +1772,10 @@
   "unpinFromCommunity": "Unpin from Community",
   "@unpinFromCommunity": {
     "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "unreachable": "Unreachable",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
   },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
@@ -1653,6 +1821,14 @@
   "@user": {
     "description": "Role name for user"
   },
+  "userActions": "User Actions",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "userEntry": "User '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
+  },
   "userFormat": "User Format",
   "@userFormat": {
     "description": "Setting for user full name format"
@@ -1667,10 +1843,26 @@
   "@userSettingDescription": {
     "description": "Description which explains that the settings are applied globally to the current user."
   },
+  "userStyle": "User Style",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  },
   "username": "Username",
   "@username": {},
+  "usernameFormattingRedirect": "Looking for username formatting?",
+  "@usernameFormattingRedirect": {
+    "description": "Setting title for sending the user to the new formatting options"
+  },
   "users": "Users",
   "@users": {},
+  "versionNumber": "Version {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
+  },
+  "viewAll": "View all",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
   "visitCommunity": "Visit Community",

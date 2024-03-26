@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -561,13 +560,17 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         InkWell(
-                            borderRadius: BorderRadius.circular(6),
-                            onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id),
-                            child: ScalableText(
-                              '$creatorName',
-                              fontScale: state.metadataFontSizeScale,
-                              style: textStyleAuthor,
-                            )),
+                          borderRadius: BorderRadius.circular(6),
+                          onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id),
+                          child: UserFullNameWidget(
+                            context,
+                            creatorName,
+                            fetchInstanceNameFromUrl(postView.creator.actorId),
+                            includeInstance: state.postShowUserInstance,
+                            fontScale: state.metadataFontSizeScale,
+                            textStyle: textStyleAuthor,
+                          ),
+                        ),
                         if (!communityMode)
                           ScalableText(
                             ' to ',
@@ -585,10 +588,12 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (!communityMode)
-                          ScalableText(
-                            generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId)),
+                          CommunityFullNameWidget(
+                            context,
+                            postView.community.name,
+                            fetchInstanceNameFromUrl(postView.community.actorId),
                             fontScale: state.metadataFontSizeScale,
-                            style: textStyleCommunity,
+                            textStyle: textStyleCommunity,
                           ),
                         if (showCommunitySubscription)
                           Padding(
