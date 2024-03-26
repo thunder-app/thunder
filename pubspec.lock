@@ -1374,8 +1374,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: push_android
-      ref: "722c5e8541e1e5c91c56743b94d07f51f26fd2c5"
-      resolved-ref: "722c5e8541e1e5c91c56743b94d07f51f26fd2c5"
+      ref: "70269bd08a06c4f34f6f192a2d46127ae48479a5"
+      resolved-ref: "70269bd08a06c4f34f6f192a2d46127ae48479a5"
       url: "https://github.com/hjiangsu/push.git"
     source: git
     version: "0.5.0"

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -15,8 +16,10 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/notification_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 
@@ -26,15 +29,164 @@ const String repliesGroupKey = 'replies';
 const String _lastPollTimeId = 'thunder_last_notifications_poll_time';
 const int _repliesGroupSummaryId = 0;
 
-// UnifiedPush variables
-var instance = "myInstance";
-var endpoint = "";
-var registered = false;
+/// Displays a push notification on Android
+void showAndroidNotification({
+  required int id,
+  String title = '',
+  String content = '',
+  required BigTextStyleInformation bigTextStyleInformation,
+  String payload = '',
+  String summaryText = '',
+}) async {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  // Configure Android-specific settings
+  final AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+    _inboxMessagesChannelId,
+    _inboxMessagesChannelName,
+    styleInformation: bigTextStyleInformation,
+    groupKey: repliesGroupKey,
+  );
+
+  final NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+
+  // Show the notification!
+  await flutterLocalNotificationsPlugin.show(
+    id,
+    title,
+    content,
+    notificationDetails,
+    payload: payload,
+  );
+
+  // Create a summary notification for the group.
+  // Note that it's ok to create this for every message, because it has a fixed ID,
+  // so it will just get 'updated'.
+  final InboxStyleInformation inboxStyleInformationSummary = InboxStyleInformation(
+    [],
+    contentTitle: '',
+    summaryText: summaryText,
+  );
+
+  final AndroidNotificationDetails androidNotificationDetailsSummary = AndroidNotificationDetails(
+    _inboxMessagesChannelId,
+    _inboxMessagesChannelName,
+    styleInformation: inboxStyleInformationSummary,
+    groupKey: repliesGroupKey,
+    setAsGroupSummary: true,
+  );
+
+  final NotificationDetails notificationDetailsSummary = NotificationDetails(android: androidNotificationDetailsSummary);
+
+  // Send the summary message!
+  await flutterLocalNotificationsPlugin.show(
+    _repliesGroupSummaryId,
+    '',
+    '',
+    notificationDetailsSummary,
+    payload: repliesGroupKey,
+  );
+}
+
+Future<void> initPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
+  if (Platform.isAndroid) {
+    initAndroidPushNotificationLogic(controller: controller);
+  }
+
+  if (Platform.isIOS) {
+    initIOSPushNotificationLogic(controller: controller);
+  }
+}
+
+/// Initialize Android specific notification logic. This is only called when the app is running on Android.
+void initAndroidPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
+  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+  NotificationType notificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
+
+  // Return if we don't have the expected types
+  if (!(notificationType != NotificationType.local || notificationType != NotificationType.unifiedPush)) return;
+
+  if (notificationType == NotificationType.unifiedPush) {
+    UnifiedPush.initialize(
+      onNewEndpoint: (String endpoint, String instance) {
+        debugPrint("Connected to instance: $instance @ $endpoint");
+      },
+      onRegistrationFailed: (String instance) {
+        debugPrint("UnifiedPush registration failed for $instance");
+      },
+      onUnregistered: (String instance) {
+        debugPrint("UnifiedPush unregistered from $instance");
+      },
+      onMessage: (Uint8List message, String instance) {
+        Map<String, dynamic> data = jsonDecode(utf8.decode(message));
+        Map<String, dynamic> metadata = data['metadata'];
+
+        final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
+        final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+
+        final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+          '${metadata['post']['title']} · ${generateCommunityFullName(null, metadata['community']['name'], fetchInstanceNameFromUrl(metadata['community']['instance']), communitySeparator: communitySeparator)}\n$message',
+          contentTitle: generateUserFullName(null, metadata['creator']['name'], fetchInstanceNameFromUrl(metadata['creator']['instance']), userSeparator: userSeparator),
+          summaryText: generateUserFullName(null, metadata['account']['name'], metadata['account']['instance'], userSeparator: userSeparator),
+          htmlFormatBigText: true,
+        );
+
+        final String summaryText = generateUserFullName(
+          null,
+          metadata['account']['name'],
+          metadata['account']['instance'],
+          userSeparator: userSeparator,
+        );
+
+        showAndroidNotification(
+          id: 1,
+          title: data['title'] ?? "",
+          content: data['message'] ?? "",
+          payload: '$repliesGroupKey-${data['metadata']['id']}',
+          summaryText: summaryText,
+          bigTextStyleInformation: bigTextStyleInformation,
+        );
+      },
+    );
+
+    // Register Thunder with UnifiedPush
+    if (GlobalContext.context.mounted) UnifiedPush.registerAppWithDialog(GlobalContext.context, 'Thunder', []);
+  } else if (notificationType == NotificationType.local) {
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    // Initialize the Android-specific settings, using the splash asset as the notification icon.
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
+    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (notificationResponse) => controller.add(notificationResponse),
+    );
+
+    // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await FlutterLocalNotificationsPlugin().getNotificationAppLaunchDetails();
+
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails?.notificationResponse != null) {
+      controller.add(notificationAppLaunchDetails!.notificationResponse!);
+
+      bool startupDueToGroupNotification = notificationAppLaunchDetails.notificationResponse!.payload == repliesGroupKey;
+      // Do a notifications check on startup, if the user isn't clicking on a group notification
+      if (!startupDueToGroupNotification) pollRepliesAndShowNotifications();
+    }
+
+    // Initialize background fetch (this is async and can go run on its own).
+    initBackgroundFetch();
+
+    // Register to receive BackgroundFetch events after app is terminated.
+    initHeadlessBackgroundFetch();
+  }
+}
 
 /// Initialize iOS specific notification logic. This is only called when the app is running on iOS.
 void initIOSPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
   // Fetch device token for APNs
-  final token = await Push.instance.token;
+  String? token = await Push.instance.token;
+  if (token == null) return;
 
   /// We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
   debugPrint("Device token: $token");
@@ -65,72 +217,6 @@ void initIOSPushNotificationLogic({required StreamController<NotificationRespons
   });
 }
 
-void onUnregistered(String _instance) {
-  if (_instance != instance) return;
-  registered = false;
-  debugPrint("unregistered");
-}
-
-/// Initialize Android specific notification logic. This is only called when the app is running on Android.
-void initAndroidPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
-  // Load up preferences
-  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-
-  bool useUnifiedPush = true;
-
-  if (useUnifiedPush) {
-    UnifiedPush.initialize(
-      onNewEndpoint: (String _endpoint, String _instance) {
-        if (_instance != instance) return;
-        registered = true;
-        endpoint = _endpoint;
-        debugPrint(endpoint);
-      },
-      onRegistrationFailed: onUnregistered,
-      onUnregistered: onUnregistered,
-      onMessage: (Uint8List message, String instance) {},
-    );
-  } else {
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-    // Initialize the Android-specific settings, using the splash asset as the notification icon.
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
-    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
-
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (notificationResponse) => controller.add(notificationResponse),
-    );
-
-    // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
-    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await FlutterLocalNotificationsPlugin().getNotificationAppLaunchDetails();
-
-    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails!.notificationResponse != null) {
-      controller.add(notificationAppLaunchDetails.notificationResponse!);
-
-      bool startupDueToGroupNotification = notificationAppLaunchDetails.notificationResponse!.payload == repliesGroupKey;
-      // Do a notifications check on startup, if the user isn't clicking on a group notification
-      if (!startupDueToGroupNotification) pollRepliesAndShowNotifications();
-    }
-
-    // Initialize background fetch (this is async and can go run on its own).
-    initBackgroundFetch();
-
-    // Register to receive BackgroundFetch events after app is terminated.
-    initHeadlessBackgroundFetch();
-  }
-}
-
-Future<void> initPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
-  if (Platform.isAndroid) {
-    initAndroidPushNotificationLogic(controller: controller);
-  }
-
-  if (Platform.isIOS) {
-    initIOSPushNotificationLogic(controller: controller);
-  }
-}
-
 // ---------------- ANDROID LOCAL NOTIFICATIONS FETCH LOGIC ---------------- //
 
 /// This method polls for new inbox messages and, if found, displays them as notificatons.
@@ -140,28 +226,24 @@ Future<void> initPushNotificationLogic({required StreamController<NotificationRe
 /// It will track when the last poll ran and ignore any inbox messages from before that time.
 Future<void> pollRepliesAndShowNotifications() async {
   // This print statement is here for the sake of verifying that background checks only happen when they're supposed to.
-  // If we see this line outputted when notifications are disabled, then something is wrong
-  // with our configuration of background_fetch.
+  // If we see this line outputted when notifications are disabled, then something is wrong with our configuration of background_fetch.
   debugPrint('Thunder - Background fetch - Running notification poll');
+
+  final Account? account = await fetchActiveProfileAccount();
+  if (account == null) return;
 
   final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
   final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
   final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
 
-  // We shouldn't even come here if the setting is disabled, but just in case, exit.
-  if (prefs.getBool(LocalSettings.enableInboxNotifications.name) != true) return;
-
-  final Account? account = await fetchActiveProfileAccount();
-  if (account == null) return;
-
   final DateTime lastPollTime = DateTime.tryParse(prefs.getString(_lastPollTimeId) ?? '') ?? DateTime.now();
 
-  // Iterate through inbox replies
-  // In the future, this could ALSO iterate among all saved accounts.
+  // Iterate through inbox replies. This only fetches the current active account.
+  // TODO: Iterate through all saved accounts.
   GetRepliesResponse getRepliesResponse = await LemmyClient.instance.lemmyApiV3.run(
     GetReplies(
       auth: account.jwt!,
-      unreadOnly: true,
+      unreadOnly: false,
       limit: 50, // Max allowed by API
       sort: CommentSortType.old,
       page: 1,
@@ -171,74 +253,32 @@ Future<void> pollRepliesAndShowNotifications() async {
   // Only handle messages that have arrived since the last time we polled
   final Iterable<CommentReplyView> newReplies = getRepliesResponse.replies.where((CommentReplyView commentReplyView) => commentReplyView.comment.published.isAfter(lastPollTime));
 
-  // For each message, generate a notification.
-  // On Android, put them in the same group.
+  // For each message, generate a notification. On Android, put them in the same group.
   for (final CommentReplyView commentReplyView in newReplies) {
     // Format the comment body in a couple ways
     final String htmlComment = markdownToHtml(commentReplyView.comment.content);
     final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentReplyView.comment.content;
+    final String title = generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator);
 
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    // Configure Android-specific settings
     final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
       '${commentReplyView.post.name} · ${generateCommunityFullName(null, commentReplyView.community.name, fetchInstanceNameFromUrl(commentReplyView.community.actorId), communitySeparator: communitySeparator)}\n$htmlComment',
       contentTitle: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
       summaryText: generateUserFullName(null, account.username, account.instance, userSeparator: userSeparator),
       htmlFormatBigText: true,
     );
-    final AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
-      _inboxMessagesChannelId,
-      _inboxMessagesChannelName,
-      styleInformation: bigTextStyleInformation,
-      groupKey: repliesGroupKey,
-    );
-    final NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
 
-    // Show the notification!
-    await flutterLocalNotificationsPlugin.show(
-      // This is the notification ID, which should be unique.
-      // In the future it might need to incorporate user/instance id
-      // to avoid comment id collisions.
-      commentReplyView.comment.id,
-      // Title (username of sender)
-      generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
-      // Body (body of comment)
-      plaintextComment,
-      notificationDetails,
+    showAndroidNotification(
+      id: commentReplyView.comment.id,
+      title: title,
+      content: plaintextComment,
+      bigTextStyleInformation: bigTextStyleInformation,
       payload: '$repliesGroupKey-${commentReplyView.commentReply.id}',
-    );
-
-    // Create a summary notification for the group.
-    // Note that it's ok to create this for every message, because it has a fixed ID,
-    // so it will just get 'updated'.
-    final InboxStyleInformation inboxStyleInformationSummary = InboxStyleInformation(
-      [],
-      contentTitle: '',
       summaryText: generateUserFullName(
         null,
         account.username,
         account.instance,
         userSeparator: userSeparator,
       ),
-    );
-
-    final AndroidNotificationDetails androidNotificationDetailsSummary = AndroidNotificationDetails(
-      _inboxMessagesChannelId,
-      _inboxMessagesChannelName,
-      styleInformation: inboxStyleInformationSummary,
-      groupKey: repliesGroupKey,
-      setAsGroupSummary: true,
-    );
-
-    final NotificationDetails notificationDetailsSummary = NotificationDetails(android: androidNotificationDetailsSummary);
-
-    // Send the summary message!
-    await flutterLocalNotificationsPlugin.show(
-      _repliesGroupSummaryId,
-      '',
-      '',
-      notificationDetailsSummary,
-      payload: repliesGroupKey,
     );
   }
 
@@ -255,7 +295,6 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
     BackgroundFetch.finish(task.taskId);
     return;
   }
-  // Run the poll!
   await pollRepliesAndShowNotifications();
   BackgroundFetch.finish(task.taskId);
 }
@@ -264,7 +303,7 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 Future<void> initBackgroundFetch() async {
   await BackgroundFetch.configure(
     BackgroundFetchConfig(
-      minimumFetchInterval: 1,
+      minimumFetchInterval: 15,
       stopOnTerminate: false,
       startOnBoot: true,
       enableHeadless: true,
@@ -274,11 +313,10 @@ Future<void> initBackgroundFetch() async {
       requiresCharging: false,
       requiresDeviceIdle: false,
       // Uncomment this line (and set the minimumFetchInterval to 1) for quicker testing.
-      forceAlarmManager: true,
+      // forceAlarmManager: true,
     ),
     // This is the callback that handles background fetching while the app is running.
     (String taskId) async {
-      // Run the poll!
       await pollRepliesAndShowNotifications();
       BackgroundFetch.finish(taskId);
     },

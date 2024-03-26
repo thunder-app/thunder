@@ -16,6 +16,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/core/enums/notification_type.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
@@ -88,7 +89,8 @@ class _ThunderAppState extends State<ThunderApp> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      if (prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false) {
+      print(prefs.getString(LocalSettings.inboxNotificationType.name));
+      if (NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name) != NotificationType.none) {
         // Initialize notification logic
         initPushNotificationLogic(controller: notificationsStreamController);
       }

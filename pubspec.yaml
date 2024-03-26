@@ -128,7 +128,7 @@ dependency_overrides:
   push_android:
     git:
       url: https://github.com/hjiangsu/push.git
-      ref: 722c5e8541e1e5c91c56743b94d07f51f26fd2c5
+      ref: 70269bd08a06c4f34f6f192a2d46127ae48479a5
       path: push_android
 
 # The following section is specific to Flutter packages.
