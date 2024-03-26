@@ -45,7 +45,7 @@ class ThunderState extends Equatable {
     this.communityFullNameColorizeCommunityName = false,
     this.communityFullNameColorizeInstanceName = false,
     this.imageCachingMode = ImageCachingMode.relaxed,
-    this.showNavigationLabels = false,
+    this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------

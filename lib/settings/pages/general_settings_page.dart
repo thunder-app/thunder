@@ -125,7 +125,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   ImageCachingMode imageCachingMode = ImageCachingMode.relaxed;
 
   /// Whether or not to show navigation labels
-  bool showNavigationLabels = false;
+  bool showNavigationLabels = true;
 
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
@@ -314,7 +314,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
       communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
       imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
-      showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? false;
+      showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
 
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;

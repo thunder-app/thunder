@@ -131,7 +131,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
       bool communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
-      bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? false;
+      bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
