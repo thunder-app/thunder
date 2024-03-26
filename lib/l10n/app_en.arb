@@ -513,7 +513,7 @@
   "@enableFloatingButtonOnPosts": {
     "description": "Setting for enable floating button on posts"
   },
-  "enableInboxNotifications": "Enable Inbox Notifications (Experimental)",
+  "enableInboxNotifications": "Enable Inbox Notifications",
   "@enableInboxNotifications": {
     "description": "Setting name for inbox notifications"
   },
@@ -1003,7 +1003,7 @@
   "@notificationsNotAllowed": {
     "description": "Description for when notifications are now allowed for app"
   },
-  "notificationsWarningDialog": "Notifications are an experimental feature which may not function correctly on all devices.\n\n· Checks will occur every ~15 minutes and will consume additional battery.\n\n· Disable battery optimizations for a higher likelihood of successful notifications.\n\nSee the following page for more information.",
+  "notificationsWarningDialog": "Notifications are an **experimental feature** which may not function correctly on all devices.\n\n - Checks will occur every ~15 minutes and will consume additional battery.\n\n - Disable battery optimizations for a higher likelihood of successful notifications.\n\n See the following page for more information.",
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
   },

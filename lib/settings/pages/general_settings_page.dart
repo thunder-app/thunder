@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,7 +12,6 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:push/push.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
@@ -19,12 +20,13 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/notification_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/main.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
@@ -32,7 +34,6 @@ import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/language/language.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/notifications.dart';
-import 'package:unifiedpush/unifiedpush.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -88,12 +89,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// When enabled, system-level notifications will be displayed for new inbox messages
   NotificationType inboxNotificationType = NotificationType.none;
-
-  /// Not a setting, but tracks whether Android is allowing Thunder to send notifications
-  bool? areAndroidNotificationsAllowed = false;
-
-  /// Not a setting, but tracks whether iOS is allowing Thunder to send notifications
-  UNNotificationSettings? areIOSNotificationsAllowed;
 
   /// When enabled, authors and community names will be tappable when in compact view
   bool tappableAuthorCommunity = false;
@@ -274,12 +269,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
-    if (Platform.isIOS) {
-      Push.instance.getNotificationSettings().then((settings) => areIOSNotificationsAllowed = settings);
-    } else if (Platform.isAndroid) {
-      Push.instance.areNotificationsEnabled().then((areNotificationsEnabled) => areAndroidNotificationsAllowed = areNotificationsEnabled);
-    }
-
     setState(() {
       // Default Sorts and Listing
       try {
@@ -327,20 +316,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     });
   }
 
-  Future<void> checkAndroidNotificationStatus() async {
-    // Check whether Android is currently allowing Thunder to send notifications
-    final AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-    final bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
-    setState(() => this.areAndroidNotificationsAllowed = areAndroidNotificationsAllowed);
-  }
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _initPreferences();
-      await checkAndroidNotificationStatus();
 
       if (widget.settingToHighlight != null) {
         setState(() => settingToHighlight = widget.settingToHighlight);
@@ -1002,8 +982,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.enableInboxNotifications,
+              subtitle: inboxNotificationType.toString(),
               value: const ListPickerItem(payload: -1),
-              icon: Icons.notifications_on_rounded,
+              icon: inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded,
               highlightKey: settingToHighlight == LocalSettings.inboxNotificationType ? settingToHighlightKey : null,
               customListPicker: StatefulBuilder(
                 builder: (context, setState) {
@@ -1011,7 +992,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     title: "Push Notifications",
                     heading: const Align(
                       alignment: Alignment.centerLeft,
-                      child: Text("Using this feature requires the server to store your JWT token in order to poll for notifications. A restart of the app is required for this to take effect."),
+                      child: CommonMarkdownBody(
+                          body:
+                              "If enabled, Thunder will send your JWT token(s) to the server in order to poll for new notifications. \n\n **NOTE:** This will not take effect until the next time the app is launched."),
                     ),
                     previouslySelected: inboxNotificationType,
                     items: Platform.isAndroid
@@ -1020,21 +1003,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               icon: Icons.notifications_off_rounded,
                               label: "None",
                               payload: NotificationType.none,
-                              capitalizeLabel: true,
                             ),
                             const ListPickerItem(
                               icon: Icons.notifications_rounded,
                               label: "Use Local Notifications (Experimental)",
-                              subtitle: "Periodically checks for notifications in the background",
+                              subtitle: "Periodically checks for notifications in the background. Does not send your JWT token(s) to the server.",
                               payload: NotificationType.local,
-                              capitalizeLabel: true,
                             ),
                             const ListPickerItem(
                               icon: Icons.notifications_active_rounded,
                               label: "Use UnifiedPush Notifications",
-                              subtitle: "Requires a compatible UnifiedPush app",
+                              subtitle: "Requires a compatible app",
                               payload: NotificationType.unifiedPush,
-                              capitalizeLabel: true,
                             ),
                           ]
                         : [
@@ -1042,26 +1022,25 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               icon: Icons.notifications_off_rounded,
                               label: "Disable Push Notifications",
                               payload: NotificationType.none,
-                              capitalizeLabel: true,
                             ),
                             const ListPickerItem(
                               icon: Icons.notifications_active_rounded,
-                              label: "Use UnifiedPush Notifications",
-                              subtitle: "Requires a compatible UnifiedPush app",
+                              label: "Use APNs Notifications",
+                              subtitle: "Uses Apple's Push Notification service",
                               payload: NotificationType.apn,
-                              capitalizeLabel: true,
                             ),
                           ],
                     onSelect: (ListPickerItem<NotificationType> notificationType) async {
                       if (notificationType.payload == NotificationType.local) {
                         bool res = false;
+
                         await showThunderDialog(
                           context: context,
                           title: l10n.warning,
                           contentWidgetBuilder: (_) => Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(l10n.notificationsWarningDialog),
+                              CommonMarkdownBody(body: l10n.notificationsWarningDialog),
                               const SizedBox(height: 10),
                               Align(
                                 alignment: Alignment.centerLeft,
@@ -1084,29 +1063,41 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
                         );
 
-                        // The user chose not to enable the feature
-                        if (!res) return;
+                        if (!res) {
+                          // The user chose not to enable the feature. Disable any existing background fetches.
+                          return disableBackgroundFetch();
+                        }
 
                         // Enable local notifications
                         initBackgroundFetch();
                         initHeadlessBackgroundFetch();
                       } else if (notificationType.payload == NotificationType.unifiedPush) {
-                        // UnifiedPush.registerAppWithDialog(context, instance, []);
-
-                        // Disable local notifications
+                        // Disable local notifications if present.
                         disableBackgroundFetch();
                       }
 
                       if (notificationType.payload == NotificationType.local || notificationType.payload == NotificationType.unifiedPush) {
-                        // We're on Android. Request notifications permissions if needed.
-                        // This is a no-op if on SDK version < 33
-                        final AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
+                        // We're on Android. Request notifications permissions if needed. This is a no-op if on SDK version < 33
+                        AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
                             FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
-                        areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+                        bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+
                         if (areAndroidNotificationsAllowed != true) {
                           areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
+                          if (areAndroidNotificationsAllowed != true) return showSnackbar('Failed to request Android notifications permissions.');
                         }
+                      } else if (notificationType.payload == NotificationType.apn) {
+                        // We're on iOS. Request notifications permissions if needed.
+                        IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
+                            FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+                        NotificationsEnabledOptions? notificationsEnabledOptions = await iosFlutterLocalNotificationsPlugin?.checkPermissions();
+
+                        if (notificationsEnabledOptions?.isEnabled != true) {
+                          bool? isEnabled = await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
+                          if (isEnabled != true) return showSnackbar('Failed to request iOS notifications permissions.');
+                        } else {}
                       }
 
                       setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
@@ -1116,65 +1107,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
             ),
           ),
-          // if (!kIsWeb && Platform.isAndroid || Platform.isIOS)
-          //   SliverToBoxAdapter(
-          //     child: ToggleOption(
-          //       description: l10n.enableInboxNotifications,
-          //       value: enableInboxNotifications,
-          //       iconEnabled: Icons.notifications_on_rounded,
-          //       iconDisabled: Icons.notifications_off_rounded,
-          //       onToggle: (bool value) async {
-          //         // Show a warning message about the experimental nature of this feature.
-          //         // This message is specific to Android.
-
-          //         setPreferences(LocalSettings.enableInboxNotifications, value);
-
-          //         if (!kIsWeb && Platform.isAndroid && value) {
-          //           // We're on Android. Request notifications permissions if needed.
-          //           // This is a no-op if on SDK version < 33
-          //           final AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
-          //               FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-
-          //           areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
-          //           if (areAndroidNotificationsAllowed != true) {
-          //             areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
-          //           }
-
-          //           if (value) {
-          //             // Ensure that background fetching is enabled.
-          //             initBackgroundFetch();
-          //             initHeadlessBackgroundFetch();
-          //           } else {
-          //             // Ensure that background fetching is disabled.
-          //             disableBackgroundFetch();
-          //           }
-
-          //           // This setState has no body because async operations aren't allowed,
-          //           // but its purpose is to update areAndroidNotificationsAllowed.
-          //           setState(() {});
-          //         }
-
-          //         if (!kIsWeb && Platform.isIOS && value) {
-          //           // We're on iOS. Request notifications permissions if needed.
-          //           final IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
-          //               FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-
-          //           await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
-
-          //           // This setState has no body because async operations aren't allowed,
-          //           // but its purpose is to update areIOSNotificationsAllowed.
-          //           setState(() {});
-          //         }
-          //       },
-          //       subtitle: enableInboxNotifications
-          //           ? !kIsWeb && Platform.isAndroid && areAndroidNotificationsAllowed == true
-          //               ? null
-          //               : l10n.notificationsNotAllowed
-          //           : null,
-          //       highlightKey: settingToHighlight == LocalSettings.enableInboxNotifications ? settingToHighlightKey : null,
-          //     ),
-          //   ),
-
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
