@@ -100,9 +100,7 @@ class InboxMentionsView extends StatelessWidget {
                       context,
                       mentions[index].community.name,
                       fetchInstanceNameFromUrl(mentions[index].community.actorId),
-                      textStyle: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                      ),
+                      transformColor: (color) => color?.withOpacity(0.75),
                     ),
                     onTap: () => onTapCommunityName(context, mentions[index].community.id),
                   ),

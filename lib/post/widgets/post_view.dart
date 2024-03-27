@@ -209,10 +209,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                     fetchInstanceNameFromUrl(postView.creator.actorId),
                                     includeInstance: thunderState.postBodyShowUserInstance,
                                     fontScale: thunderState.metadataFontSizeScale,
-                                    textStyle: theme.textTheme.bodyMedium?.copyWith(
-                                      color: (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
-                                          ?.withOpacity(0.75),
-                                    ),
+                                    transformColor: (color) => color?.withOpacity(0.75),
                                   ),
                                   if (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)) const SizedBox(width: 2.0),
                                   if (isOwnPost)
@@ -281,9 +278,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             fetchInstanceNameFromUrl(postView.community.actorId),
                             includeInstance: thunderState.postBodyShowCommunityInstance,
                             fontScale: thunderState.metadataFontSizeScale,
-                            textStyle: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                            ),
+                            transformColor: (color) => color?.withOpacity(0.75),
                           ),
                         ),
                       ),

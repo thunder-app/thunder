@@ -74,9 +74,7 @@ class PostCardViewComfortable extends StatelessWidget {
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
     final String textContent = postViewMedia.postView.post.body ?? "";
-    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.85),
-    );
+    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && postViewMedia.postView.read ? color?.withOpacity(0.45) : color?.withOpacity(0.85);
 
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
@@ -287,8 +285,8 @@ class PostCardViewComfortable extends StatelessWidget {
                         showCommunityIcons: showCommunityIcons,
                         communityMode: communityMode,
                         postView: postViewMedia.postView,
-                        textStyleCommunity: textStyleCommunityAndAuthor,
-                        textStyleAuthor: textStyleCommunityAndAuthor,
+                        authorColorTransformation: communityAndAuthorColorTransformation,
+                        communityColorTransformation: communityAndAuthorColorTransformation,
                         compactMode: false,
                         showCommunitySubscription: showCommunitySubscription,
                       ),

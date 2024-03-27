@@ -516,8 +516,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
     required this.postView,
     required this.showCommunityIcons,
     required this.communityMode,
-    this.textStyleAuthor,
-    this.textStyleCommunity,
+    this.authorColorTransformation,
+    this.communityColorTransformation,
     required this.compactMode,
     required this.showCommunitySubscription,
   });
@@ -526,8 +526,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
   final bool communityMode;
   final bool compactMode;
   final PostView postView;
-  final TextStyle? textStyleAuthor;
-  final TextStyle? textStyleCommunity;
+  final Color? Function(Color?)? authorColorTransformation;
+  final Color? Function(Color?)? communityColorTransformation;
   final bool showCommunitySubscription;
 
   @override
@@ -568,7 +568,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             fetchInstanceNameFromUrl(postView.creator.actorId),
                             includeInstance: state.postShowUserInstance,
                             fontScale: state.metadataFontSizeScale,
-                            textStyle: textStyleAuthor,
+                            transformColor: authorColorTransformation,
                           ),
                         ),
                         if (!communityMode)
@@ -593,7 +593,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             postView.community.name,
                             fetchInstanceNameFromUrl(postView.community.actorId),
                             fontScale: state.metadataFontSizeScale,
-                            textStyle: textStyleCommunity,
+                            transformColor: communityColorTransformation,
                           ),
                         if (showCommunitySubscription)
                           Padding(
@@ -604,7 +604,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             child: Icon(
                               Icons.playlist_add_check_rounded,
                               size: 16.0,
-                              color: textStyleCommunity?.color,
+                              color: communityColorTransformation?.call(theme.textTheme.bodyMedium?.color),
                             ),
                           ),
                       ],

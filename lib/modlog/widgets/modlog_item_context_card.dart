@@ -126,9 +126,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                         community?.name,
                         fetchInstanceNameFromUrl(community?.actorId),
                         fontScale: state.metadataFontSizeScale,
-                        textStyle: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                        ),
+                        transformColor: (color) => color?.withOpacity(0.75),
                       ),
                     ),
                   ),
@@ -181,9 +179,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
     final l10n = AppLocalizations.of(context)!;
     final state = context.watch<ThunderBloc>().state;
 
-    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-    );
+    Color? textStyleCommunityAndAuthor(Color? color) => color?.withOpacity(0.75);
 
     return InkWell(
       onTap: () {
@@ -264,7 +260,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                               child: ScalableText(
                                 '${widget.user?.displayName ?? widget.user?.name}',
                                 fontScale: state.metadataFontSizeScale,
-                                style: textStyleCommunityAndAuthor,
+                                style: theme.textTheme.bodyMedium?.copyWith(color: textStyleCommunityAndAuthor(theme.textTheme.bodyMedium?.color)),
                               ),
                             ),
                             ScalableText(
@@ -285,7 +281,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             widget.community?.name,
                             fetchInstanceNameFromUrl(widget.community?.actorId),
                             fontScale: state.metadataFontSizeScale,
-                            textStyle: textStyleCommunityAndAuthor,
+                            transformColor: textStyleCommunityAndAuthor,
                           ),
                         ),
                       ],
@@ -344,9 +340,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
                       context,
                       user?.name,
                       fetchInstanceNameFromUrl(user?.actorId),
-                      textStyle: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                      ),
+                      transformColor: (color) => color?.withOpacity(0.75),
                     ),
                   ],
                 ),
@@ -403,9 +397,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                       community?.name,
                       fetchInstanceNameFromUrl(community?.actorId),
                       fontScale: state.metadataFontSizeScale,
-                      textStyle: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                      ),
+                      transformColor: (color) => color?.withOpacity(0.75),
                     ),
                   ],
                 ),
