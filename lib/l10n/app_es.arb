@@ -1874,5 +1874,13 @@
   "thickness": "Espesor",
   "@thickness": {
     "description": "Describes a thickness (e.g., divider)"
+  },
+  "showNavigationLabels": "Mostrar etiquetas de navegación",
+  "@showNavigationLabels": {
+    "description": "Setting for showing navigation labels"
+  },
+  "showNavigationLabelsDescription": "Mostrar o no etiquetas debajo de los botones de navegación inferiores",
+  "@showNavigationLabelsDescription": {
+    "description": "Description for setting for showing navigation labels"
   }
 }
