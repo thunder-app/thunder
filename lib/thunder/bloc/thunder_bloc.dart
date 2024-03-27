@@ -131,6 +131,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       NameThickness communityFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
       NameColor communityFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
+      bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
@@ -286,6 +287,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         communityFullNameInstanceNameThickness: communityFullNameInstanceNameThickness,
         communityFullNameInstanceNameColor: communityFullNameInstanceNameColor,
         imageCachingMode: imageCachingMode,
+        showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,
 
         /// -------------------------- Feed Post Related Settings --------------------------

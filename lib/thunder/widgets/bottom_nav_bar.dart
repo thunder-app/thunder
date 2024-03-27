@@ -96,7 +96,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         child: NavigationBar(
           selectedIndex: widget.selectedPageIndex,
           backgroundColor: theme.colorScheme.surface,
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          labelBehavior: state.showNavigationLabels ? NavigationDestinationLabelBehavior.alwaysShow : NavigationDestinationLabelBehavior.alwaysHide,
           elevation: 1,
           destinations: [
             NavigationDestination(

@@ -167,6 +167,7 @@ enum LocalSettings {
       name: 'community_full_name_instance_name_color', key: 'communityFullNameInstanceNameColor', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
 
   imageCachingMode(name: 'setting_advanced_image_caching_mode', key: 'imageCachingMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  showNavigationLabels(name: 'setting_advanced_show_navigation_labels', key: 'showNavigationLabels', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
@@ -352,6 +353,7 @@ extension LocalizationExt on AppLocalizations {
       'communityFormat': communityFormat,
       'communityStyle': communityStyle,
       'imageCachingMode': imageCachingMode,
+      'showNavigationLabels': showNavigationLabels,
       'defaultCommentSortType': defaultCommentSortType,
       'collapseParentCommentBodyOnGesture': collapseParentCommentBodyOnGesture,
       'showCommentActionButtons': showCommentActionButtons,

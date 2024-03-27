@@ -45,6 +45,7 @@ class ThunderState extends Equatable {
     this.communityFullNameInstanceNameThickness = NameThickness.light,
     this.communityFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor),
     this.imageCachingMode = ImageCachingMode.relaxed,
+    this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
@@ -194,6 +195,7 @@ class ThunderState extends Equatable {
   final NameThickness communityFullNameInstanceNameThickness;
   final NameColor communityFullNameInstanceNameColor;
   final ImageCachingMode imageCachingMode;
+  final bool showNavigationLabels;
   final bool hideTopBarOnScroll;
 
   /// -------------------------- Feed Post Related Settings --------------------------
@@ -351,6 +353,7 @@ class ThunderState extends Equatable {
     NameThickness? communityFullNameInstanceNameThickness,
     NameColor? communityFullNameInstanceNameColor,
     ImageCachingMode? imageCachingMode,
+    bool? showNavigationLabels,
     bool? hideTopBarOnScroll,
 
     /// -------------------------- Feed Post Related Settings --------------------------
@@ -503,6 +506,7 @@ class ThunderState extends Equatable {
       communityFullNameInstanceNameThickness: communityFullNameInstanceNameThickness ?? this.communityFullNameInstanceNameThickness,
       communityFullNameInstanceNameColor: communityFullNameInstanceNameColor ?? this.communityFullNameInstanceNameColor,
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
+      showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
       /// -------------------------- Feed Post Related Settings --------------------------
@@ -659,6 +663,7 @@ class ThunderState extends Equatable {
         communityFullNameInstanceNameThickness,
         communityFullNameInstanceNameColor,
         imageCachingMode,
+        showNavigationLabels,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings

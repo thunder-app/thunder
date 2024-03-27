@@ -1,0 +1,1 @@
+enum ReportAction { resolvePost, resolveComment }
