@@ -242,10 +242,10 @@ class UserModeratorList extends StatelessWidget {
                           context,
                           mods.community.name,
                           fetchInstanceNameFromUrl(mods.community.actorId),
-                          textStyle: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.6),
+                          textStyle: const TextStyle(
                             fontSize: 13,
                           ),
+                          transformColor: (color) => color?.withOpacity(0.6),
                         ),
                       ],
                     ),

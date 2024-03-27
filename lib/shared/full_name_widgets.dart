@@ -16,6 +16,7 @@ class UserFullNameWidget extends StatelessWidget {
   final TextStyle? textStyle;
   final bool includeInstance;
   final FontScale? fontScale;
+  final Color? Function(Color?)? transformColor;
 
   const UserFullNameWidget(
     this.outerContext,
@@ -30,6 +31,7 @@ class UserFullNameWidget extends StatelessWidget {
     this.textStyle,
     this.includeInstance = true,
     this.fontScale,
+    this.transformColor,
   })  : assert(outerContext != null || (userSeparator != null && userNameThickness != null && userNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
         assert(outerContext != null || textStyle != null);
 
@@ -42,6 +44,7 @@ class UserFullNameWidget extends StatelessWidget {
     NameThickness instanceNameThickness = this.instanceNameThickness ?? outerContext!.read<ThunderBloc>().state.userFullNameInstanceNameThickness;
     NameColor instanceNameColor = this.instanceNameColor ?? outerContext!.read<ThunderBloc>().state.userFullNameInstanceNameColor;
     TextStyle? textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
+    Color? Function(Color?) transformColor = this.transformColor ?? (color) => color;
 
     return Text.rich(
       softWrap: false,
@@ -54,7 +57,7 @@ class UserFullNameWidget extends StatelessWidget {
             text: prefix,
             style: textStyle!.copyWith(
               fontWeight: userNameThickness.toWeight(),
-              color: userNameColor.color == NameColor.defaultColor ? null : userNameColor.toColor(context),
+              color: transformColor(userNameColor.color == NameColor.defaultColor ? textStyle.color : userNameColor.toColor(context)),
               fontSize:
                   outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
             ),
@@ -64,7 +67,7 @@ class UserFullNameWidget extends StatelessWidget {
               text: suffix,
               style: textStyle.copyWith(
                 fontWeight: instanceNameThickness.toWeight(),
-                color: instanceNameColor.color == NameColor.defaultColor ? null : instanceNameColor.toColor(context),
+                color: transformColor(instanceNameColor.color == NameColor.defaultColor ? textStyle.color : instanceNameColor.toColor(context)),
                 fontSize:
                     outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
               ),
@@ -87,6 +90,7 @@ class CommunityFullNameWidget extends StatelessWidget {
   final TextStyle? textStyle;
   final bool includeInstance;
   final FontScale? fontScale;
+  final Color? Function(Color?)? transformColor;
 
   const CommunityFullNameWidget(
     this.outerContext,
@@ -101,6 +105,7 @@ class CommunityFullNameWidget extends StatelessWidget {
     this.textStyle,
     this.includeInstance = true,
     this.fontScale,
+    this.transformColor,
   })  : assert(outerContext != null || (communitySeparator != null && communityNameThickness != null && communityNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
         assert(outerContext != null || textStyle != null);
 
@@ -113,6 +118,7 @@ class CommunityFullNameWidget extends StatelessWidget {
     NameThickness instanceNameThickness = this.instanceNameThickness ?? outerContext!.read<ThunderBloc>().state.communityFullNameInstanceNameThickness;
     NameColor instanceNameColor = this.instanceNameColor ?? outerContext!.read<ThunderBloc>().state.communityFullNameInstanceNameColor;
     TextStyle? textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
+    Color? Function(Color?) transformColor = this.transformColor ?? (color) => color;
 
     return Text.rich(
       softWrap: false,
@@ -125,7 +131,7 @@ class CommunityFullNameWidget extends StatelessWidget {
             text: prefix,
             style: textStyle!.copyWith(
               fontWeight: communityNameThickness.toWeight(),
-              color: communityNameColor.color == NameColor.defaultColor ? null : communityNameColor.toColor(context),
+              color: transformColor(communityNameColor.color == NameColor.defaultColor ? textStyle.color : communityNameColor.toColor(context)),
               fontSize:
                   outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
             ),
@@ -135,7 +141,7 @@ class CommunityFullNameWidget extends StatelessWidget {
               text: suffix,
               style: textStyle.copyWith(
                 fontWeight: instanceNameThickness.toWeight(),
-                color: instanceNameColor.color == NameColor.defaultColor ? null : instanceNameColor.toColor(context),
+                color: transformColor(instanceNameColor.color == NameColor.defaultColor ? textStyle.color : instanceNameColor.toColor(context)),
                 fontSize:
                     outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
               ),
