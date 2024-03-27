@@ -124,6 +124,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// Defines the image caching mode
   ImageCachingMode imageCachingMode = ImageCachingMode.relaxed;
 
+  /// Whether or not to show navigation labels
+  bool showNavigationLabels = true;
+
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
   GlobalKey settingToHighlightKey = GlobalKey();
@@ -257,6 +260,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setString(LocalSettings.imageCachingMode.name, value);
         setState(() => imageCachingMode = ImageCachingMode.values.byName(value ?? ImageCachingMode.relaxed));
         break;
+      case LocalSettings.showNavigationLabels:
+        await prefs.setBool(LocalSettings.showNavigationLabels.name, value);
+        setState(() => showNavigationLabels = value);
+        break;
     }
 
     if (context.mounted) {
@@ -307,6 +314,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
       communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
       imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
+      showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
 
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
@@ -957,6 +965,17 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 highlightKey: settingToHighlight == LocalSettings.imageCachingMode ? settingToHighlightKey : null,
               ),
             ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showNavigationLabels,
+              subtitle: l10n.showNavigationLabelsDescription,
+              value: showNavigationLabels,
+              iconEnabled: Icons.short_text_rounded,
+              iconDisabled: Icons.short_text_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.showNavigationLabels, value),
+              highlightKey: settingToHighlight == LocalSettings.showNavigationLabels ? settingToHighlightKey : null,
+            ),
+          ),
 
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
