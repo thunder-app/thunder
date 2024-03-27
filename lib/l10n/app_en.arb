@@ -941,6 +941,10 @@
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
   "@mustBeLoggedInPost": {},
+  "names": "Names",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
   "navbarDoubleTapGestures": "Navbar Double Tap Gestures",
   "@navbarDoubleTapGestures": {
     "description": "Setting for navbar double tap gestures"

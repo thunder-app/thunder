@@ -33,6 +33,7 @@ enum LocalSettingsSubCategories {
   comments('comments'),
   linksBehaviourSettings('linksBehaviourSettings'),
   advanced('advanced'),
+  names('names'),
   notifications('notifications'),
   importExportSettings('importExportSettings'),
   filters('filters'),
@@ -140,32 +141,6 @@ enum LocalSettings {
       name: 'setting_general_post_body_show_community_instance', key: 'postBodyShowCommunityInstance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
 
   // Advanced Settings
-  userFormat(name: 'user_format', key: 'userFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  // This setting exists purely for the searching function
-  userStyle(name: '', key: 'userStyle', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  userFullNameUserNameThickness(
-      name: 'user_full_name_user_name_thickness', key: 'userFullNameUserNameThickness', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  userFullNameUserNameColor(name: 'user_full_name_user_name_color', key: 'userFullNameUserNameColor', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  userFullNameInstanceNameThickness(
-      name: 'user_full_name_instance_name_thickness', key: 'userFullNameInstanceNameThickness', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  userFullNameInstanceNameColor(
-      name: 'usr_full_name_instance_name_color', key: 'userFullNameInstanceNameColor', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-
-  // This setting exists purely for the searching function
-  communityStyle(name: '', key: 'communityStyle', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  communityFormat(name: 'community_format', key: 'communityFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  communityFullNameCommunityNameThickness(
-      name: 'community_full_name_community_name_thickness',
-      key: 'communityFullNameCommunityNameThickness',
-      category: LocalSettingsCategories.general,
-      subCategory: LocalSettingsSubCategories.advanced),
-  communityFullNameCommunityNameColor(
-      name: 'community_full_name_community_name_color', key: 'communityFullNameCommunityNameColor', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  communityFullNameInstanceNameThickness(
-      name: 'community_full_name_instance_name_thickness', key: 'communityFullNameInstanceNameThickness', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  communityFullNameInstanceNameColor(
-      name: 'community_full_name_instance_name_color', key: 'communityFullNameInstanceNameColor', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-
   imageCachingMode(name: 'setting_advanced_image_caching_mode', key: 'imageCachingMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
   showNavigationLabels(name: 'setting_advanced_show_navigation_labels', key: 'showNavigationLabels', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
 
@@ -209,6 +184,30 @@ enum LocalSettings {
   contentFontSizeScale(name: 'setting_theme_content_font_size_scale', key: 'postContentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   commentFontSizeScale(name: 'setting_theme_comment_font_size_scale', key: 'commentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   metadataFontSizeScale(name: 'setting_theme_metadata_font_size_scale', key: 'metadataFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
+
+  // Theme > Names
+  userFormat(name: 'user_format', key: 'userFormat', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  // This setting exists purely for the searching function
+  userStyle(name: '', key: 'userStyle', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  userFullNameUserNameThickness(
+      name: 'user_full_name_user_name_thickness', key: 'userFullNameUserNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  userFullNameUserNameColor(name: 'user_full_name_user_name_color', key: 'userFullNameUserNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  userFullNameInstanceNameThickness(
+      name: 'user_full_name_instance_name_thickness', key: 'userFullNameInstanceNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  userFullNameInstanceNameColor(
+      name: 'usr_full_name_instance_name_color', key: 'userFullNameInstanceNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+
+  // This setting exists purely for the searching function
+  communityStyle(name: '', key: 'communityStyle', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  communityFormat(name: 'community_format', key: 'communityFormat', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  communityFullNameCommunityNameThickness(
+      name: 'community_full_name_community_name_thickness', key: 'communityFullNameCommunityNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  communityFullNameCommunityNameColor(
+      name: 'community_full_name_community_name_color', key: 'communityFullNameCommunityNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  communityFullNameInstanceNameThickness(
+      name: 'community_full_name_instance_name_thickness', key: 'communityFullNameInstanceNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  communityFullNameInstanceNameColor(
+      name: 'community_full_name_instance_name_color', key: 'communityFullNameInstanceNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
 
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings
@@ -398,6 +397,7 @@ extension LocalizationExt on AppLocalizations {
       'linksBehaviourSettings': linksBehaviourSettings,
       'importExportSettings': importExportSettings,
       'advanced': advanced,
+      'names': names,
       'notifications': notifications(1),
       'sidebar': sidebar,
       'cardView': cardView,
