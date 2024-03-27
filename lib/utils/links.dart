@@ -11,7 +11,9 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instances.dart';
+import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
@@ -195,6 +197,25 @@ void handleLink(BuildContext context, {required String url}) async {
     } catch (e) {
       // Ignore exception, if it's not a valid comment, we'll perform the next fallback
     }
+  }
+
+  // Try navigate to modlog
+  Uri? uri = Uri.tryParse(url);
+  if (context.mounted && uri != null && instances.contains(uri.host) && url.contains('/modlog')) {
+    try {
+      final LemmyClient lemmyClient = LemmyClient()..changeBaseUrl(uri.host);
+      FeedBloc feedBloc = FeedBloc(lemmyClient: lemmyClient);
+      await navigateToModlogPage(
+        context,
+        feedBloc: feedBloc,
+        modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
+        communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
+        userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
+        moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),
+        lemmyClient: lemmyClient,
+      );
+      return;
+    } catch (e) {}
   }
 
   // Try opening it as an image

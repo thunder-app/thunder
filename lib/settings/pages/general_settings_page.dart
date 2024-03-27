@@ -107,7 +107,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   FullNameSeparator userSeparator = FullNameSeparator.at;
 
   /// Defines the style used to denote full usernames
-  bool userFullNameWeightUserName = true;
+  bool userFullNameWeightUserName = false;
   bool userFullNameWeightInstanceName = false;
   bool userFullNameColorizeUserName = false;
   bool userFullNameColorizeInstanceName = false;
@@ -297,7 +297,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
       userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-      userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? true;
+      userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? false;
       userFullNameWeightInstanceName = prefs.getBool(LocalSettings.userFullNameWeightInstanceName.name) ?? false;
       userFullNameColorizeUserName = prefs.getBool(LocalSettings.userFullNameColorizeUserName.name) ?? false;
       userFullNameColorizeInstanceName = prefs.getBool(LocalSettings.userFullNameColorizeInstanceName.name) ?? false;
@@ -916,7 +916,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   isChecked: communityFullNameColorizeInstanceName,
                 ),
               ],
-              icon: Icons.person_rounded,
+              icon: Icons.people_rounded,
               onChanged: (value) async {
                 bool? newValue = switch (value.payload) {
                   LocalSettings.communityFullNameWeightCommunityName => !communityFullNameWeightCommunityName,

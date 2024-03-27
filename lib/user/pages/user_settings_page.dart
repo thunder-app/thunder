@@ -16,6 +16,7 @@ import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -379,10 +380,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   community.title,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(
-                  generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                subtitle: CommunityFullNameWidget(
+                  context,
+                  community.name,
+                  fetchInstanceNameFromUrl(community.actorId) ?? '-',
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
@@ -433,10 +434,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   person.displayName ?? person.name,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(
-                  generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                subtitle: UserFullNameWidget(
+                  context,
+                  person.name,
+                  fetchInstanceNameFromUrl(person.actorId) ?? '-',
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id

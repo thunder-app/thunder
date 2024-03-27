@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 
@@ -11,6 +12,7 @@ import 'package:thunder/core/enums/browser_mode.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
@@ -119,12 +121,12 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-      bool userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? true;
+      bool userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? false;
       bool userFullNameWeightInstanceName = prefs.getBool(LocalSettings.userFullNameWeightInstanceName.name) ?? false;
       bool userFullNameColorizeUserName = prefs.getBool(LocalSettings.userFullNameColorizeUserName.name) ?? false;
       bool userFullNameColorizeInstanceName = prefs.getBool(LocalSettings.userFullNameColorizeInstanceName.name) ?? false;
       FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
-      bool communityFullNameWeightCommunityName = prefs.getBool(LocalSettings.communityFullNameWeightCommunityName.name) ?? true;
+      bool communityFullNameWeightCommunityName = prefs.getBool(LocalSettings.communityFullNameWeightCommunityName.name) ?? false;
       bool communityFullNameWeightInstanceName = prefs.getBool(LocalSettings.communityFullNameWeightInstanceName.name) ?? false;
       bool communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
       bool communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
@@ -140,7 +142,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       bool showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
       bool tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
-      PostBodyViewType postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
 
       // General Settings
       bool showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
@@ -150,15 +151,23 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
+      bool postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       bool showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
       DateFormat dateFormat = DateFormat(prefs.getString(LocalSettings.dateFormat.name) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
-      bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+      FeedCardDividerThickness feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
+      Color feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.value);
       List<PostCardMetadataItem> compactPostCardMetadataItems =
           prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
       List<PostCardMetadataItem> cardPostCardMetadataItems =
           prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
+
+      // Post body settings
+      bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+      PostBodyViewType postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
+      bool postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
+      bool postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
 
       List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
@@ -286,7 +295,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         showTextPostIndicator: showTextPostIndicator,
         tappableAuthorCommunity: tappableAuthorCommunity,
-        postBodyViewType: postBodyViewType,
 
         // General Settings
         showVoteActions: showVoteActions,
@@ -296,14 +304,22 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showEdgeToEdgeImages: showEdgeToEdgeImages,
         showTextContent: showTextContent,
         showPostAuthor: showPostAuthor,
+        postShowUserInstance: postShowUserInstance,
         scoreCounters: scoreCounters,
         dimReadPosts: dimReadPosts,
         showFullPostDate: showFullPostDate,
         dateFormat: dateFormat,
-        showCrossPosts: showCrossPosts,
+        feedCardDividerThickness: feedCardDividerThickness,
+        feedCardDividerColor: feedCardDividerColor,
         compactPostCardMetadataItems: compactPostCardMetadataItems,
         cardPostCardMetadataItems: cardPostCardMetadataItems,
         keywordFilters: keywordFilters,
+
+        // Post body settings
+        showCrossPosts: showCrossPosts,
+        postBodyViewType: postBodyViewType,
+        postBodyShowUserInstance: postBodyShowUserInstance,
+        postBodyShowCommunityInstance: postBodyShowCommunityInstance,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings

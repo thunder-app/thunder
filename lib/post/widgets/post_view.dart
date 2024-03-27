@@ -8,7 +8,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -31,9 +30,10 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
-import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -180,8 +180,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 alignment: WrapAlignment.spaceBetween,
                 runSpacing: 8.0,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
                     children: [
                       Tooltip(
                         excludeFromSemantics: true,
@@ -203,10 +203,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  ScalableText(
+                                  UserFullNameWidget(
+                                    context,
                                     postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
+                                    fetchInstanceNameFromUrl(postView.creator.actorId),
+                                    includeInstance: thunderState.postBodyShowUserInstance,
                                     fontScale: thunderState.metadataFontSizeScale,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                    textStyle: theme.textTheme.bodyMedium?.copyWith(
                                       color: (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
                                           ?.withOpacity(0.75),
                                     ),
@@ -272,10 +275,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           excludeFromSemantics: true,
                           message: generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'),
                           preferBelow: false,
-                          child: ScalableText(
+                          child: CommunityFullNameWidget(
+                            context,
                             postView.community.name,
+                            fetchInstanceNameFromUrl(postView.community.actorId),
+                            includeInstance: thunderState.postBodyShowCommunityInstance,
                             fontScale: thunderState.metadataFontSizeScale,
-                            style: theme.textTheme.bodyMedium?.copyWith(
+                            textStyle: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                             ),
                           ),
@@ -401,6 +407,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             if (isOwnPost) {
                               ThunderBloc thunderBloc = context.read<ThunderBloc>();
                               AccountBloc accountBloc = context.read<AccountBloc>();
+                              CreatePostCubit createPostCubit = CreatePostCubit();
 
                               final ThunderState thunderState = context.read<ThunderBloc>().state;
                               final bool reduceAnimations = thunderState.reduceAnimations;
@@ -422,6 +429,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                         providers: [
                                           BlocProvider<ThunderBloc>.value(value: thunderBloc),
                                           BlocProvider<AccountBloc>.value(value: accountBloc),
+                                          BlocProvider<CreatePostCubit>.value(value: createPostCubit),
                                         ],
                                         child: CreatePostPage(
                                           communityId: postViewMedia.postView.community.id,

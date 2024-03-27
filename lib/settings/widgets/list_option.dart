@@ -7,7 +7,7 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
 class ListOption<T> extends StatelessWidget {
   // Appearance
-  final IconData icon;
+  final IconData? icon;
 
   // General
   final String description;
@@ -16,9 +16,9 @@ class ListOption<T> extends StatelessWidget {
   final List<ListPickerItem<T>> options;
 
   // Callback
-  final Future<void> Function(ListPickerItem<T>) onChanged;
+  final Future<void> Function(ListPickerItem<T>)? onChanged;
 
-  final BottomSheetListPicker? customListPicker;
+  final Widget? customListPicker;
   final bool? isBottomModalScrollControlled;
 
   final bool disabled;
@@ -31,12 +31,12 @@ class ListOption<T> extends StatelessWidget {
 
   const ListOption({
     super.key,
-    required this.description,
+    this.description = '',
     this.bottomSheetHeading,
     required this.value,
-    required this.options,
-    required this.icon,
-    required this.onChanged,
+    this.options = const [],
+    this.icon,
+    this.onChanged,
     this.customListPicker,
     this.isBottomModalScrollControlled,
     this.disabled = false,
@@ -73,7 +73,7 @@ class ListOption<T> extends StatelessWidget {
                           heading: bottomSheetHeading,
                           onUpdateHeading: onUpdateHeading,
                           items: options,
-                          onSelect: onChanged,
+                          onSelect: onChanged ?? (value) async {},
                           previouslySelected: value.payload,
                           closeOnSelect: closeOnSelect,
                         ),

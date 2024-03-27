@@ -1,0 +1,1714 @@
+{
+  "about": "Hakkında",
+  "@about": {
+    "description": "Ayarlar kategorisi hakkında."
+  },
+  "accessibility": "Erişilebilirlik",
+  "@accessibility": {},
+  "accessibilityProfilesDescription": "Erişilebilirlik profilleri, belirli bir erişilebilirlik gereksinimini karşılamak için aynı anda birkaç ayarın uygulanmasını sağlar.",
+  "@accessibilityProfilesDescription": {},
+  "account": "{count, plural, zero {Account} one {Account} other {Accounts} } ",
+  "@account": {
+    "description": "Kullanıcı hesabını açıklar"
+  },
+  "accountSettings": "Hesap Ayarları",
+  "@accountSettings": {},
+  "actions": "Eylemler",
+  "@actions": {},
+  "active": "Aktif",
+  "@active": {},
+  "add": "Ekle",
+  "@add": {},
+  "addAccount": "Hesap Ekle",
+  "@addAccount": {},
+  "addAccountToSeeProfile": "Hesabınızı görmek için giriş yapın.",
+  "@addAccountToSeeProfile": {},
+  "addAnonymousInstance": "Anonim Örnek Ekle",
+  "@addAnonymousInstance": {},
+  "addKeywordFilter": "Anahtar Kelime Ekle",
+  "@addKeywordFilter": {
+    "description": "Anahtar kelime eklemek için metin alanı için ipucu"
+  },
+  "addToFavorites": "Favorilere ekle",
+  "@addToFavorites": {
+    "description": "Çekmecedeki bir topluluğu favorilere ekleme eylemi"
+  },
+  "addedCommunityToSubscriptions": "Topluluğa abone olundu",
+  "@addedCommunityToSubscriptions": {},
+  "addedInstanceMod": "Oluşum Modu eklendi",
+  "@addedInstanceMod": {
+    "description": "Bir örneğe mod eklemek için moderatör eylemi için kısa açıklama"
+  },
+  "addedModToCommunity": "Topluluğa Mod Eklendi",
+  "@addedModToCommunity": {
+    "description": "Bir topluluğa mod eklemek için moderatör eylemi için kısa açıklama"
+  },
+  "admin": "Yönetici",
+  "@admin": {
+    "description": "Yönetici için rol adı"
+  },
+  "advanced": "Gelişmiş",
+  "@advanced": {
+    "description": "Gelişmiş ayarlar için başlık"
+  },
+  "all": "Tümü",
+  "@all": {},
+  "allPosts": "Tüm Gönderiler",
+  "@allPosts": {},
+  "allowOpenSupportedLinks": "Uygulamanın desteklenen bağlantıları açmasına izin verin.",
+  "@allowOpenSupportedLinks": {
+    "description": "Uygulamanın desteklenen bağlantıları açmasına izin verme seçeneği."
+  },
+  "alreadyPostedTo": "Zaten şuraya gönderildi:",
+  "@alreadyPostedTo": {},
+  "andXMore": "ve {count} daha fazlası",
+  "@andXMore": {},
+  "animations": "Animasyonlar",
+  "@animations": {},
+  "anonymous": "Anonim",
+  "@anonymous": {},
+  "appLanguage": "Uygulama Dili",
+  "@appLanguage": {
+    "description": "Ayarlarda dil seçimi."
+  },
+  "appearance": "Görünüm",
+  "@appearance": {
+    "description": "Ayarlar -> Görünümdeki Görünümün Başlığı"
+  },
+  "applied": "Uygulandı",
+  "@applied": {},
+  "apply": "Uygula",
+  "@apply": {},
+  "back": "Geri",
+  "@back": {},
+  "backButton": "Geri düğmesi",
+  "@backButton": {},
+  "backToTop": "Başa Dön",
+  "@backToTop": {},
+  "backgroundCheckWarning": "Bildirim kontrollerinin ek pil tüketeceğini unutmayın",
+  "@backgroundCheckWarning": {
+    "description": "Bildirimleri etkinleştirme uyarısı"
+  },
+  "bannedUser": "Yasaklı Kullanıcı",
+  "@bannedUser": {
+    "description": "Bir kullanıcıyı yasaklamak için moderatör eylemi için kısa açıklama"
+  },
+  "bannedUserFromCommunity": "Topluluktan Yasaklı Kullanıcı",
+  "@bannedUserFromCommunity": {
+    "description": "Bir kullanıcıyı bir topluluktan yasaklamak için moderatör eylemi için kısa açıklama"
+  },
+  "base": "Matrah",
+  "@base": {
+    "description": "Temel yazı tipi ölçeği açıklaması"
+  },
+  "blockCommunity": "Topluluğu Engelle",
+  "@blockCommunity": {},
+  "blockInstance": "Örneği Engelle",
+  "@blockInstance": {},
+  "blockUser": "Kullanıcıyı Engelle",
+  "@blockUser": {},
+  "blockedCommunities": "Engellenen Topluluklar",
+  "@blockedCommunities": {},
+  "blockedInstances": "Engellenen Örnekler",
+  "@blockedInstances": {},
+  "blockedUsers": "Engellenen Kullanıcılar",
+  "@blockedUsers": {},
+  "browserMode": "Bağlantı işleme",
+  "@browserMode": {
+    "description": "Bağlantı işleme ayarı için başlık (dahili olarak browserMode olarak adlandırılır)"
+  },
+  "browsingAnonymously": "Şu anda {instance }' a anonim olarak göz atıyorsunuz.",
+  "@browsingAnonymously": {},
+  "cancel": "İptal",
+  "@cancel": {},
+  "cannotReportOwnComment": "Kendi yorumunuz için rapor gönderemezsiniz.",
+  "@cannotReportOwnComment": {},
+  "cantBlockAdmin": "Bir örnek yöneticisini engelleyemezsiniz.",
+  "@cantBlockAdmin": {},
+  "cantBlockYourself": "Kendinizi engelleyemezsiniz.",
+  "@cantBlockYourself": {},
+  "cardPostCardMetadataItems": "Kart Görünümü Meta Verileri",
+  "@cardPostCardMetadataItems": {
+    "description": "Kartpostal kartı meta veri öğeleri için ayar adı"
+  },
+  "cardView": "Kart Görünümü",
+  "@cardView": {
+    "description": "Ayar -> Görünüm -> Gönderiler bölümündeki kart görünümü seçeneği etiketi"
+  },
+  "cardViewDescription": "Ayarları yapmak için kart görünümünü etkinleştirin",
+  "@cardViewDescription": {
+    "description": "Ayar -> Görünüm -> Gönderiler bölümündeki kart görünümü alt kategorisi için açıklama"
+  },
+  "cardViewSettings": "Kart Görünümü Ayarları",
+  "@cardViewSettings": {
+    "description": "Ayar -> Görünüm -> Gönderiler'de Alt Kategori"
+  },
+  "changeAccountSettingsFor": "Için hesap ayarlarını değiştirin",
+  "@changeAccountSettingsFor": {
+    "description": "Hesap ayarlarını değiştirirken profil oluşturucu penceresine gitme"
+  },
+  "changeSort": "Sıralamayı Değiştir",
+  "@changeSort": {},
+  "clearCache": "Önbelleği Temizle ({cacheSize})",
+  "@clearCache": {
+    "description": "İletişim kutusunda önbelleği temizlemek için eylem etiketi"
+  },
+  "clearDatabase": "Veritabanını Temizle",
+  "@clearDatabase": {
+    "description": "İletişim kutusunda yerel veritabanını temizlemek için eylem etiketi"
+  },
+  "clearPreferences": "Tercihleri Temizle",
+  "@clearPreferences": {
+    "description": "İletişim kutusundaki yerel kullanıcı tercihlerini temizlemek için eylem etiketi"
+  },
+  "clearSearch": "Aramayı Temizle",
+  "@clearSearch": {},
+  "clearedCache": "Önbellek başarıyla temizlendi.",
+  "@clearedCache": {
+    "description": "Önbelleğin başarıyla temizlendiğini belirten mesaj"
+  },
+  "clearedDatabase": "Yerel veritabanı temizlendi. Yeni değişikliklerin etkili olması için Thunder'ı yeniden başlat.",
+  "@clearedDatabase": {},
+  "clearedUserPreferences": "Tüm kullanıcı tercihleri temizlendi",
+  "@clearedUserPreferences": {},
+  "close": "Kapat",
+  "@close": {},
+  "collapseCommentPreview": "Yorum Önizlemesini Daralt",
+  "@collapseCommentPreview": {
+    "description": "Ayar -> Görünüm -> Yorumlar bölümündeki daraltma düğmesi için anlamsal etiket"
+  },
+  "collapseInformation": "Bilgileri Daralt",
+  "@collapseInformation": {
+    "description": "Bilgileri daraltma eylemini açıklar - FAB ayarlarında kullanılır"
+  },
+  "collapseParentCommentBodyOnGesture": "Daraltıldığında Üst Yorumu Gizle",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Jestte üst yorum gövdesini daraltmak için geçiş yapın."
+  },
+  "collapsePost": "Gönderiyi daralt",
+  "@collapsePost": {},
+  "collapsePostPreview": "Gönderi Önizlemesini Daralt",
+  "@collapsePostPreview": {
+    "description": "Ayar -> Görünüm -> Gönderiler bölümündeki daraltma düğmesi için anlamsal etiket"
+  },
+  "collapseSpoiler": "Spoiler'ı Daralt",
+  "@collapseSpoiler": {
+    "description": "Çöken spoyler etiketi"
+  },
+  "combineCommentScores": "Yorum Puanlarını Birleştir",
+  "@combineCommentScores": {
+    "description": "Yorum puanlarını birleştirmek için geçiş yapın."
+  },
+  "combineCommentScoresLabel": "Yorum Puanlarını Birleştir",
+  "@combineCommentScoresLabel": {
+    "description": "Yorum puanlarını birleştirme ayarı etiketi"
+  },
+  "combineNavAndFab": "FAB ve Navigasyon Düğmelerini Birleştirin",
+  "@combineNavAndFab": {},
+  "combineNavAndFabDescription": "Gezinme düğmeleri arasında Kayan Eylem Düğmesi gösterilecektir.",
+  "@combineNavAndFabDescription": {},
+  "comment": "Yorum",
+  "@comment": {},
+  "commentBehaviourSettings": "Yorumlar",
+  "@commentBehaviourSettings": {
+    "description": "Ayar -> Genel bölümündeki Alt Kategori"
+  },
+  "commentFontScale": "Yorum İçeriği Yazı Tipi Ölçeği",
+  "@commentFontScale": {
+    "description": "Yorum yazı tipi ölçeği için ayar"
+  },
+  "commentPreview": "Verilen ayarlarla yorumların önizlemesini göster",
+  "@commentPreview": {
+    "description": "Ayar -> Görünüm -> Yorumlar bölümündeki yorum önizlemesi için açıklama"
+  },
+  "commentReported": "Yorum incelenmek üzere işaretlendi.",
+  "@commentReported": {},
+  "commentSavedAsDraft": "Yorum taslak olarak kaydedildi",
+  "@commentSavedAsDraft": {},
+  "commentShowUserInstance": "Kullanıcı Örneğini Göster",
+  "@commentShowUserInstance": {
+    "description": "Ayarlar, kullanıcı örneğini yorumlarda görünen adlarının yanında görüntülemek için geçiş yapar"
+  },
+  "commentSortType": "Yorum Sıralama Türü",
+  "@commentSortType": {},
+  "commentSwipeActions": "Yorum Kaydırma Eylemleri",
+  "@commentSwipeActions": {
+    "description": "Yorum kaydırma eylemleri için ayar"
+  },
+  "commentSwipeGesturesHint": "Bunun yerine düğmeler mi kullanmak istiyorsunuz? Bunları genel ayarlardaki yorumlar bölümünde etkinleştirin.",
+  "@commentSwipeGesturesHint": {},
+  "commentUseColorizedUsername": "Renkli Kullanıcı Adları",
+  "@commentUseColorizedUsername": {
+    "description": "Renklendirilmiş yorumlar oluşturucunun görünen adını değiştirmek için kullanılan ayar."
+  },
+  "comments": "Yorumlar",
+  "@comments": {},
+  "communities": "Topluluklar",
+  "@communities": {},
+  "community": "Topluluk",
+  "@community": {},
+  "communityFormat": "Topluluk Biçimi",
+  "@communityFormat": {
+    "description": "Topluluğun tam adı biçimini ayarlama"
+  },
+  "compactPostCardMetadataItems": "Kompakt Görünüm Meta Verileri",
+  "@compactPostCardMetadataItems": {
+    "description": "Kompakt kartpostal meta veri öğeleri için ayarın adı"
+  },
+  "compactView": "Kompakt Görünüm",
+  "@compactView": {
+    "description": "Ayar -> Görünüm -> Gönderiler bölümündeki kompakt görünüm seçeneği etiketi"
+  },
+  "compactViewDescription": "Ayarları yapmak için kompakt görünümü etkinleştirin",
+  "@compactViewDescription": {
+    "description": "Ayar -> Görünüm -> Gönderiler bölümündeki kompakt görünüm alt kategorisinin açıklaması"
+  },
+  "compactViewSettings": "Kompakt Görünüm Ayarları",
+  "@compactViewSettings": {
+    "description": "Ayar -> Görünüm -> Gönderiler'de Alt Kategori"
+  },
+  "condensed": "Yoğunlaştırılmış",
+  "@condensed": {
+    "description": "Yoğunlaştırılmış gönderi gövdesi görünüm türü"
+  },
+  "confirm": "Onayla",
+  "@confirm": {
+    "description": "İletişim kutusundaki onaylama eylemi etiketi"
+  },
+  "confirmLogOutBody": "Çıkış yapmak istediğinizden emin misiniz?",
+  "@confirmLogOutBody": {
+    "description": "Onay oturumu kapatma iletişim kutusunun gövdesi"
+  },
+  "confirmLogOutTitle": "Çıkış Yap?",
+  "@confirmLogOutTitle": {
+    "description": "Oturumu kapatmayı onayla iletişim kutusunun başlığı"
+  },
+  "confirmMarkAllAsReadBody": "Tüm mesajları okundu olarak işaretlemek istediğinizden emin misiniz?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "Onay kutusunun gövdesi tümünü okundu olarak işaretler"
+  },
+  "confirmMarkAllAsReadTitle": "Tümü Okundu Olarak İşaretlensin",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "Onayla başlığının tümü okundu olarak işaretle iletişim kutusu"
+  },
+  "confirmResetCommentPreferences": "Bu, tüm yorum tercihlerini sıfırlayacaktır. Devam etmek istediğinizden emin misiniz?",
+  "@confirmResetCommentPreferences": {
+    "description": "Ayar -> Görünüm -> Yorumlar bölümündeki tercihleri sıfırlama iletişim kutusunun açıklaması"
+  },
+  "confirmResetPostPreferences": "Bu, tüm gönderi tercihlerini sıfırlayacaktır. Devam etmek istediğinizden emin misiniz?",
+  "@confirmResetPostPreferences": {
+    "description": "Ayar -> Görünüm -> Gönderiler bölümündeki sıfırlama tercihleri iletişim kutusunun açıklaması"
+  },
+  "controversial": "Tartışmalı",
+  "@controversial": {},
+  "copiedToClipboard": "Panoya kopyalandı",
+  "@copiedToClipboard": {},
+  "copy": "Kopyala",
+  "@copy": {},
+  "copyText": "Metni Kopyala",
+  "@copyText": {},
+  "couldNotDetermineCommentDelete": "Hata: Yorumu silmek için gönderi belirlenemedi.",
+  "@couldNotDetermineCommentDelete": {},
+  "couldNotDeterminePostComment": "Hata: Yorum yapılacak gönderi belirlenemedi.",
+  "@couldNotDeterminePostComment": {},
+  "couldntCreateReport": "Yorum raporunuz şu anda gönderilemedi. Lütfen daha sonra tekrar deneyin",
+  "@couldntCreateReport": {},
+  "countSubscribers": "{count} abone",
+  "@countSubscribers": {},
+  "countUsers": "{count} kullanıcı",
+  "@countUsers": {
+    "description": "Belirli sayıda kullanıcıyı tanımlar"
+  },
+  "createAccount": "Hesap Oluştur",
+  "@createAccount": {},
+  "createComment": "Yorum Oluştur",
+  "@createComment": {},
+  "createNewCrossPost": "Yeni çapraz gönderi oluştur",
+  "@createNewCrossPost": {},
+  "createPost": "Gönderi Oluştur",
+  "@createPost": {},
+  "creator": "Yaratıcı",
+  "@creator": {
+    "description": "Yaratıcı aramaları filtreler."
+  },
+  "crossPostedFrom": "cross - posted from:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Metin tabanlı çapraz gönderi için ilk başlık"
+  },
+  "crossPostedTo": "Çapraz gönderim yeri",
+  "@crossPostedTo": {},
+  "currentLongPress": "Şu anda uzun basma olarak ayarlanmış",
+  "@currentLongPress": {},
+  "currentSinglePress": "Şu anda tek basım olarak ayarlanmış",
+  "@currentSinglePress": {},
+  "customizeSwipeActions": "Kaydırma eylemlerini özelleştirme (değiştirmek için dokunun)",
+  "@customizeSwipeActions": {},
+  "dangerZone": "Tehlikeli Bölge",
+  "@dangerZone": {
+    "description": "Eylemlerin tehlikeli olabileceği bir bölümü açıklar (örneğin, hesabı kalıcı olarak silmek)"
+  },
+  "dark": "Koyu",
+  "@dark": {
+    "description": "Koyu temayı kullanarak açıklar"
+  },
+  "dateFormat": "Tarih Formatı",
+  "@dateFormat": {
+    "description": "Tarih formatı ayarı"
+  },
+  "debug": "Hata ayıklama",
+  "@debug": {
+    "description": "Hata ayıklama ayarları kategorisi."
+  },
+  "debugDescription": "Aşağıdaki hata ayıklama ayarları yalnızca sorun giderme amacıyla kullanılmalıdır.",
+  "@debugDescription": {
+    "description": "Hata ayıklama ayarları sayfası açıklaması"
+  },
+  "defaultCommentSortType": "Varsayılan Yorum Sıralama Türü",
+  "@defaultCommentSortType": {
+    "description": "Varsayılan yorum sıralama türü için ayar"
+  },
+  "defaultFeedSortType": "Varsayılan Akış Sıralama Türü",
+  "@defaultFeedSortType": {
+    "description": "Akış için varsayılan sıralama türü."
+  },
+  "defaultFeedType": "Varsayılan Akış Türü",
+  "@defaultFeedType": {
+    "description": "Akış için varsayılan kayıt türü."
+  },
+  "delete": "Sil",
+  "@delete": {},
+  "deleteAccount": "Hesabı Sil",
+  "@deleteAccount": {
+    "description": "Hesabı silme eylemi etiketi"
+  },
+  "deleteAccountDescription": "Hesabınızı kalıcı olarak silmek için örnek sitenize yönlendirileceksiniz. \n\nDevam etmek istediğinizden emin misiniz?",
+  "@deleteAccountDescription": {
+    "description": "Hesabı silmek için onay işlemi açıklaması"
+  },
+  "deleteLocalDatabase": "Yerel Veritabanını Sil",
+  "@deleteLocalDatabase": {
+    "description": "Yerel veritabanını silmek için eylem etiketi"
+  },
+  "deleteLocalDatabaseDescription": "Bu işlem yerel veritabanını kaldıracak ve tüm hesaplarınızın oturumunu kapatacaktır.\n\nDevam etmek istediğinizden emin misiniz?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Yerel veritabanını silmek için onay işlemi açıklaması"
+  },
+  "deleteLocalPreferences": "Yerel Tercihleri Sil",
+  "@deleteLocalPreferences": {
+    "description": "Yerel tercihleri silmek için eylem etiketi"
+  },
+  "deleteLocalPreferencesDescription": "Bu, Thunder'daki tüm kullanıcı tercihlerini ve ayarlarını temizler.\n\nDevam etmek istiyor musunuz?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Yerel tercihleri silmek için onay işlemi açıklaması"
+  },
+  "detailedReason": "Sebep: {reason}",
+  "@detailedReason": {
+    "description": "Moderasyon eyleminin nedeni"
+  },
+  "dimReadPosts": "Dım Okuma Gönderileri",
+  "@dimReadPosts": {
+    "description": "Okunan gönderiler üzerindeki etkinin açıklaması."
+  },
+  "disable": "Devre Dışı Bırak",
+  "@disable": {
+    "description": "Bir şeyi devre dışı bırakma eylemi"
+  },
+  "dismissRead": "Okumayı Reddet",
+  "@dismissRead": {},
+  "displayUserScore": "Kullanıcı Puanlarını (Karma) görüntüleyin.",
+  "@displayUserScore": {
+    "description": "Kullanıcı puanlarını veya karmayı görüntüleme seçeneği."
+  },
+  "downloadingMedia": "Paylaşmak için medya indiriliyor…",
+  "@downloadingMedia": {},
+  "downvote": "Olumsuz oy",
+  "@downvote": {},
+  "downvotesDisabled": "Bu durumda olumsuz oylar kapatılır.",
+  "@downvotesDisabled": {},
+  "edit": "Düzenle",
+  "@edit": {},
+  "editComment": "Yorumu Düzenle",
+  "@editComment": {},
+  "editPost": "Gönderiyi Düzenle",
+  "@editPost": {
+    "description": "Bir gönderiyi düzenlerken başlık."
+  },
+  "empty": "Boş",
+  "@empty": {},
+  "emptyInbox": "Gelen Kutusunu Boşalt",
+  "@emptyInbox": {},
+  "emptyUri": "Bağlantı boş. Devam etmek için lütfen geçerli bir dinamik bağlantı sağlayın.",
+  "@emptyUri": {
+    "description": "Boş bağlantı için hata mesajı."
+  },
+  "enableCommentNavigation": "Yorum Navigasyonunu Etkinleştir",
+  "@enableCommentNavigation": {
+    "description": "Yorum navigasyonunu etkinleştirme ayarı"
+  },
+  "enableFeedFab": "Akışlarda Kayan Düğmeyi Etkinleştir",
+  "@enableFeedFab": {
+    "description": "Akış için Kayan Eylem Düğmesini etkinleştirin"
+  },
+  "enableFloatingButtonOnFeeds": "Akışlarda Kayan Düğmeyi Etkinleştir",
+  "@enableFloatingButtonOnFeeds": {
+    "description": "Beslemelerde kayan düğmeyi etkinleştirme ayarı"
+  },
+  "enableFloatingButtonOnPosts": "Gönderilerde Kayan Düğmeyi Etkinleştir",
+  "@enableFloatingButtonOnPosts": {
+    "description": "Gönderilerde kayan düğmeyi etkinleştirme ayarı"
+  },
+  "enableInboxNotifications": "Gelen Kutusu Bildirimlerini Etkinleştir (Deneysel)",
+  "@enableInboxNotifications": {
+    "description": "Gelen kutusu bildirimleri için ad ayarlama"
+  },
+  "enablePostFab": "Gönderilerde Kayan Düğmeyi Etkinleştir",
+  "@enablePostFab": {
+    "description": "Gönderi için Kayan Eylem Düğmesini etkinleştirin"
+  },
+  "endSearch": "Aramayı Sonlandır",
+  "@endSearch": {},
+  "errorDownloadingMedia": "Paylaşılacak medya dosyası indirilemedi: {errorMessage}",
+  "@errorDownloadingMedia": {},
+  "exceptionProcessingUri": "Bağlantı işlenirken bir hata oluştu. Bu, oturumunuzda kullanılamayabilir.",
+  "@exceptionProcessingUri": {
+    "description": "Bağlantı işleme sırasında belirtilmeyen bir hata."
+  },
+  "expandCommentPreview": "Yorum Önizlemesini Genişlet",
+  "@expandCommentPreview": {
+    "description": "Ayar -> Görünüm -> Yorumlar bölümündeki genişletme düğmesi için anlamsal etiket"
+  },
+  "expandInformation": "Bilgileri Genişlet",
+  "@expandInformation": {
+    "description": "FAB ayarlarında kullanılan bilgileri genişletme eylemini açıklar"
+  },
+  "expandOptions": "Seçenekleri genişlet",
+  "@expandOptions": {},
+  "expandPost": "Gönderiyi genişlet",
+  "@expandPost": {},
+  "expandPostPreview": "Gönderi Önizlemesini Genişlet",
+  "@expandPostPreview": {
+    "description": "Ayar -> Görünüm -> Gönderiler bölümündeki genişletme düğmesi için anlamsal etiket"
+  },
+  "expandSpoiler": "Spoiler'ı Genişlet",
+  "@expandSpoiler": {
+    "description": "Genişletme spoyleri etiketi"
+  },
+  "expanded": "Genişletilmiş",
+  "@expanded": {
+    "description": "Genişletilmiş gönderi gövdesi görünüm türü"
+  },
+  "exploreInstance": "Örneği keşfedin",
+  "@exploreInstance": {
+    "description": "Bir örneği keşfetme düğmesi"
+  },
+  "extraLarge": "Ekstra Büyük",
+  "@extraLarge": {
+    "description": "Ekstra büyük yazı tipi ölçeği açıklaması"
+  },
+  "failedToBlock": "Engellenemedi: {errorMessage}",
+  "@failedToBlock": {},
+  "failedToLoadBlocks": "Bloklar yüklenemedi: {errorMessage}",
+  "@failedToLoadBlocks": {},
+  "failedToUnblock": "Engel kaldırılamadı: {errorMessage}",
+  "@failedToUnblock": {},
+  "favorites": "Favoriler",
+  "@favorites": {
+    "description": "Çekmecedeki favori topluluklar"
+  },
+  "featuredPost": "Öne Çıkan Gönderi",
+  "@featuredPost": {
+    "description": "Bir gönderiyi öne çıkarmak için moderatör eylemi için kısa açıklama"
+  },
+  "feed": "Akış",
+  "@feed": {},
+  "feedBehaviourSettings": "Akış",
+  "@feedBehaviourSettings": {
+    "description": "Ayar -> Genel bölümündeki Alt Kategori"
+  },
+  "feedTypeAndSorts": "Varsayılan Akış Türü ve Sıralama",
+  "@feedTypeAndSorts": {
+    "description": "Ayar -> Genel bölümündeki Alt Kategori"
+  },
+  "fetchAccountError": "Hesap belirlenemedi",
+  "@fetchAccountError": {},
+  "filteringBy": "{entity} tarafından filtreleniyor",
+  "@filteringBy": {
+    "description": "Aramalarda bir topluluğa veya yaratıcıya göre filtreleme."
+  },
+  "filters": "Filtreler",
+  "@filters": {
+    "description": "Çeşitli filtreleri tanımlamak için kategori (kullanıcı, topluluk, örnek engelleme)"
+  },
+  "floatingActionButton": "Kayan Eylem Düğmesi",
+  "@floatingActionButton": {
+    "description": "Kayan Eylem Düğmesi ayarları kategorisi."
+  },
+  "floatingActionButtonInformation": "Thunder, birkaç hareketi destekleyen tamamen özelleştirilebilir bir FAB deneyimine sahiptir.\n- Ek FAB eylemlerini ortaya çıkarmak için yukarı kaydırın\n- FAB'I gizlemek veya ortaya çıkarmak için aşağı/yukarı kaydırın\n\nFAB için ana ve ikincil eylemleri özelleştirmek için aşağıdaki işlemlerden birine uzun basın.",
+  "@floatingActionButtonInformation": {
+    "description": "Ayarlar sayfasındaki FAB AÇIKLAMASI"
+  },
+  "floatingActionButtonLongPressDescription": "fAB'IN uzun basma eylemini gösterir.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "FAB'IN uzun basma eyleminin açıklaması"
+  },
+  "floatingActionButtonSinglePressDescription": "fAB'IN tek basma eylemini gösterir.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "FAB'IN tek basma eyleminin açıklaması"
+  },
+  "fonts": "Yazı Tipleri",
+  "@fonts": {
+    "description": "Yazı tipleri için ayarlar kategorisi"
+  },
+  "forward": "İleri",
+  "@forward": {
+    "description": "İleri gitmek için etiket (örneğin, bir tarayıcıda)"
+  },
+  "fullScreenNavigationSwipeDescription": "Soldan sağa hareketler devre dışı bırakıldığında geri dönmek için herhangi bir yere kaydırın",
+  "@fullScreenNavigationSwipeDescription": {},
+  "fullscreenSwipeGestures": "Tam Ekran Kaydırma Hareketleri",
+  "@fullscreenSwipeGestures": {
+    "description": "Tam ekran kaydırma hareketleri için ayar"
+  },
+  "general": "Genel",
+  "@general": {
+    "description": "Genel ayarlar kategorisi."
+  },
+  "generalSettings": "Genel Ayarlar",
+  "@generalSettings": {
+    "description": "Ayarlar'da Alt Kategori"
+  },
+  "gestures": "Hareketler",
+  "@gestures": {},
+  "gettingStarted": "Başlarken",
+  "@gettingStarted": {},
+  "hidCommunity": "HID Topluluğu",
+  "@hidCommunity": {
+    "description": "Bir topluluğu gizlemek için moderatör eylemi için kısa açıklama"
+  },
+  "hideNsfwPostsFromFeed": "NSFW Gönderilerini Akıştan Gizle",
+  "@hideNsfwPostsFromFeed": {
+    "description": "NSFW gönderilerini akıştan gizlemek için geçiş yapın."
+  },
+  "hideNsfwPreviews": "NSFW Önizlemelerini Bulanıklaştır",
+  "@hideNsfwPreviews": {
+    "description": "NSFW önizlemelerini bulanıklaştırmak için geçiş yapın."
+  },
+  "hidePassword": "Parolayı Gizle",
+  "@hidePassword": {},
+  "hideTopBarOnScroll": "Kaydırmada Üst Çubuğu Gizle",
+  "@hideTopBarOnScroll": {
+    "description": "Ayarlar kaydırmada üst çubuğu gizlemek için geçiş yapar"
+  },
+  "hot": "Sıcak",
+  "@hot": {},
+  "image": "Resim",
+  "@image": {},
+  "imageCachingMode": "Görüntü Önbelleğe Alma Modu",
+  "@imageCachingMode": {
+    "description": "Görüntü önbelleğe alma modu ile ilgili ayar başlığı"
+  },
+  "imageCachingModeAggressive": "Görüntüleri agresif bir şekilde önbelleğe alır (daha fazla bellek kullanır)",
+  "@imageCachingModeAggressive": {
+    "description": "Agresif görüntü önbelleğe alma modu için uzun açıklama"
+  },
+  "imageCachingModeAggressiveShort": "Agresif",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Agresif görüntü önbelleğe alma modu için kısa açıklama"
+  },
+  "imageCachingModeRelaxed": "Görüntü önbelleklerinin süresinin dolmasına izin verin (daha az bellek kullanır, ancak görüntülerin daha sık yeniden yüklenmesine neden olur)",
+  "@imageCachingModeRelaxed": {
+    "description": "Rahat görüntü önbelleğe alma modu için uzun açıklama"
+  },
+  "imageCachingModeRelaxedShort": "Rahat",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Rahat görüntü önbelleğe alma modu için kısa açıklama"
+  },
+  "importExportSettings": "Ayarları İçe/Dışa Aktar",
+  "@importExportSettings": {
+    "description": "İthalat ve ihracat ile ilgili ayarlar için kategori."
+  },
+  "importSettings": "Ayarları İçe Aktar",
+  "@importSettings": {
+    "description": "Uygulama ayarlarını içe aktarma eylemi."
+  },
+  "inReplyTo": "{community} içindeki {post} yazısına yanıt olarak",
+  "@inReplyTo": {},
+  "inbox": "Gelen Kutusu",
+  "@inbox": {},
+  "includeCommunity": "Topluluğu Dahil Et",
+  "@includeCommunity": {},
+  "includeExternalLink": "Harici Bağlantıyı Dahil Et",
+  "@includeExternalLink": {},
+  "includeImage": "Resmi Dahil Et",
+  "@includeImage": {},
+  "includePostLink": "Gönderi Bağlantısını Dahil Et",
+  "@includePostLink": {},
+  "includeText": "Metni Dahil Et",
+  "@includeText": {},
+  "includeTitle": "Başlığı Dahil Et",
+  "@includeTitle": {},
+  "information": "Bilgi",
+  "@information": {
+    "description": "Bilgi başlığı - FAB ayarları sayfasında kullanılır"
+  },
+  "instance": "{count, plural, zero {Instance} one {Instance} other {Instances}} ",
+  "@instance": {
+    "description": "Bir örnek için yönlendirme"
+  },
+  "instanceHasAlreadyBenAdded": "{instance} zaten eklendi.",
+  "@instanceHasAlreadyBenAdded": {},
+  "internetOrInstanceIssues": "İnternete bağlı olmayabilirsin veya oturumun şu anda kullanılamıyor olabilir.",
+  "@internetOrInstanceIssues": {},
+  "keywordFilterDescription": "Başlık veya gövdede herhangi bir anahtar kelime içeren gönderileri filtreler",
+  "@keywordFilterDescription": {
+    "description": "Anahtar kelime filtresi ayarlarının açıklaması"
+  },
+  "keywordFilters": "Anahtar Kelime Filtreleri",
+  "@keywordFilters": {
+    "description": "Ayar -> Genel bölümündeki Alt Kategori"
+  },
+  "language": "Dil",
+  "@language": {
+    "description": "Bir gönderi oluştururken veya düzenlerken etiketleyin."
+  },
+  "languageNotAllowed": "Gönderdiğiniz topluluk, seçtiğiniz dilde gönderilere izin vermiyor. Başka bir dil deneyin.",
+  "@languageNotAllowed": {
+    "description": "Language_not_allowed Lemmy istisnası için hata mesajı"
+  },
+  "large": "Büyük",
+  "@large": {
+    "description": "Büyük yazı tipi ölçeği için açıklama"
+  },
+  "leftLongSwipe": "Sola Uzun Kaydırma",
+  "@leftLongSwipe": {
+    "description": "Sola uzun kaydırma ayarı"
+  },
+  "leftShortSwipe": "Sola Kısa Kaydırma",
+  "@leftShortSwipe": {
+    "description": "Sola kısa kaydırma ayarı"
+  },
+  "light": "Açık",
+  "@light": {
+    "description": "Işık temasını kullanarak açıklar"
+  },
+  "link": "{count, plural, zero {Link} one {Link} other {Links}} ",
+  "@link": {},
+  "linkActions": "Bağlantı Eylemleri",
+  "@linkActions": {},
+  "linkHandlingCustomTabs": "Uygulama içi gömülü sistem tarayıcısında aç",
+  "@linkHandlingCustomTabs": {
+    "description": "Özel sekmeler için açıklama bağlantı işleme"
+  },
+  "linkHandlingCustomTabsShort": "Uygulama içi gömülü",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Özel sekmeler bağlantı yönetimi için kısa açıklama"
+  },
+  "linkHandlingExternal": "Sistem tarayıcısında harici olarak aç",
+  "@linkHandlingExternal": {
+    "description": "Harici bağlantı kullanımı için açıklama"
+  },
+  "linkHandlingExternalShort": "Harici",
+  "@linkHandlingExternalShort": {
+    "description": "Harici bağlantı kullanımı için kısa açıklama"
+  },
+  "linkHandlingInApp": "Thunder'ın yerleşik tarayıcısını kullanın",
+  "@linkHandlingInApp": {
+    "description": "Uygulama içi bağlantı kullanımı için açıklama"
+  },
+  "linkHandlingInAppShort": "Uygulama içi",
+  "@linkHandlingInAppShort": {
+    "description": "Uygulama içi bağlantı kullanımı için kısa açıklama"
+  },
+  "linksBehaviourSettings": "Bağlantılar",
+  "@linksBehaviourSettings": {
+    "description": "Ayar -> Genel bölümündeki Alt Kategori"
+  },
+  "loadMorePlural": "{count} yanıt daha yükle…",
+  "@loadMorePlural": {},
+  "loadMoreSingular": "{count} yanıt daha yükle…",
+  "@loadMoreSingular": {},
+  "local": "Yerel",
+  "@local": {},
+  "localPosts": "Yerel Gönderiler",
+  "@localPosts": {},
+  "lockPost": "Yazıyı Kilitle",
+  "@lockPost": {
+    "description": "Bir gönderiyi kilitleme eylemi (moderatör eylemi)"
+  },
+  "lockedPost": "Kilitli Gönderi",
+  "@lockedPost": {
+    "description": "Bir gönderiyi kilitlemek için moderatör eylemi için kısa açıklama"
+  },
+  "logOut": "Çıkış yap",
+  "@logOut": {},
+  "login": "Oturum aç",
+  "@login": {},
+  "loginFailed": "Giriş yapılamadı. Lütfen tekrar deneyin:({errorMessage})",
+  "@loginFailed": {},
+  "loginSucceeded": "Giriş yapıldı.",
+  "@loginSucceeded": {},
+  "loginToPerformAction": "Bu görevi gerçekleştirmek için oturum açmış olmanız gerekir.",
+  "@loginToPerformAction": {},
+  "loginToSeeInbox": "Gelen kutunuzu görmek için oturum açın",
+  "@loginToSeeInbox": {},
+  "malformedUri": "Sağladığınız bağlantı desteklenmeyen bir formatta. Lütfen geçerli bir bağlantı olduğundan emin olun.",
+  "@malformedUri": {
+    "description": "Desteklenmeyen bağlantı biçimiyle ilgili hata."
+  },
+  "manageAccounts": "Hesapları Yönet",
+  "@manageAccounts": {},
+  "markAllAsRead": "Tümünü Okundu Olarak İşaretle",
+  "@markAllAsRead": {
+    "description": "Tümünü okundu olarak işaretle eylemi"
+  },
+  "markPostAsReadOnMediaView": "Medyayı Görüntüledikten Sonra Okundu Olarak İşaretle",
+  "@markPostAsReadOnMediaView": {
+    "description": "Medyayı görüntüledikten sonra gönderileri okundu olarak işaretlemek için geçiş yapın."
+  },
+  "markPostAsReadOnScroll": "Kaydırmada Okundu Olarak İşaretle",
+  "@markPostAsReadOnScroll": {
+    "description": "Akışta ilerlerken gönderileri okundu olarak işaretlemek için geçiş yapın."
+  },
+  "medium": "Orta",
+  "@medium": {
+    "description": "Orta yazı tipi ölçeği için açıklama"
+  },
+  "mention": "{count, plural, zero {Bahsetme} one {Bahsetme} other {Bahsetme}}",
+  "@mention": {},
+  "message": "{count, plural, zero {Mesaj} one {Mesaj} other {Mesajlar}}",
+  "@message": {},
+  "metadataFontScale": "Meta Veri Yazı Tipi Ölçeği",
+  "@metadataFontScale": {
+    "description": "Meta veri yazı tipi ölçeğini ayarlama"
+  },
+  "missingErrorMessage": "Hata mesajı yok",
+  "@missingErrorMessage": {},
+  "modAdd": "Örnek Moderatörleri Ekle/Kaldır",
+  "@modAdd": {
+    "description": "Örnek moderatörleri ekleyen eylemler için modlog filtresi açıklaması"
+  },
+  "modAddCommunity": "Topluluklara Moderatör Ekle/Kaldır",
+  "@modAddCommunity": {
+    "description": "Topluluklara moderatör ekleyen eylemler için modlog filtresi açıklaması"
+  },
+  "modBan": "Örnek Moderatörlerini Yasakla/Yasağı Kaldır",
+  "@modBan": {
+    "description": "Örnek moderatörlerini yasaklayan eylemler için modlog filtresi açıklaması"
+  },
+  "modBanFromCommunity": "Kullanıcıları Topluluklardan Yasakla/Yasağı Kaldır",
+  "@modBanFromCommunity": {
+    "description": "Kullanıcıları topluluklardan yasaklayan eylemler için modlog filtresi açıklaması"
+  },
+  "modFeaturePost": "Özellikli/Özelliksiz Gönderiler",
+  "@modFeaturePost": {
+    "description": "Gönderileri içeren eylemler için modlog filtresi açıklaması"
+  },
+  "modLockPost": "Gönderileri Kilitle/Kilidi Aç",
+  "@modLockPost": {
+    "description": "Gönderileri kilitleyen eylemler için modlog filtresi açıklaması"
+  },
+  "modRemoveComment": "Yorumları Kaldır/Geri Yükle",
+  "@modRemoveComment": {
+    "description": "Yorumları kaldıran eylemler için modlog filtresi açıklaması"
+  },
+  "modRemoveCommunity": "Toplulukları Kaldır/Geri Yükle",
+  "@modRemoveCommunity": {
+    "description": "Toplulukları kaldıran eylemler için modlog filtresi açıklaması"
+  },
+  "modRemovePost": "Gönderileri Kaldır/Geri Yükle",
+  "@modRemovePost": {
+    "description": "Gönderileri kaldıran eylemler için modlog filtresi açıklaması"
+  },
+  "modTransferCommunity": "Aktaran Topluluklar",
+  "@modTransferCommunity": {
+    "description": "Moderatörleri başka bir topluluğa aktaran eylemler için modlog filtresi açıklaması"
+  },
+  "moderatedCommunities": "Yönetilen Topluluklar",
+  "@moderatedCommunities": {
+    "description": "Geçerli kullanıcı tarafından yönetilen toplulukların bir listesini açıklar."
+  },
+  "moderator": "Moderatör",
+  "@moderator": {
+    "description": "Moderatör için rol adı"
+  },
+  "moderatorActions": "Moderatör Eylemleri",
+  "@moderatorActions": {
+    "description": "Moderatörlerin gönderilerde gerçekleştirecekleri eylemler"
+  },
+  "modlog": "Modlog",
+  "@modlog": {
+    "description": "Modlog görüntüleme seçeneği."
+  },
+  "mostComments": "En Çok Yorumlananlar",
+  "@mostComments": {},
+  "mustBeLoggedInComment": "Yorum yapmak için giriş yapmalısınız",
+  "@mustBeLoggedInComment": {},
+  "mustBeLoggedInPost": "Gönderi oluşturmak için giriş yapmanız gerekir",
+  "@mustBeLoggedInPost": {},
+  "navbarDoubleTapGestures": "Navbar Çift Dokunma Hareketleri",
+  "@navbarDoubleTapGestures": {
+    "description": "Navbar çift dokunma hareketleri için ayar"
+  },
+  "navbarSwipeGestures": "Navbar Kaydırma Hareketleri",
+  "@navbarSwipeGestures": {
+    "description": "Gezinme çubuğu kaydırma hareketleri için ayar"
+  },
+  "navigateDown": "Sonraki yorum",
+  "@navigateDown": {},
+  "navigateUp": "Önceki yorum",
+  "@navigateUp": {},
+  "navigation": "Navigasyon",
+  "@navigation": {},
+  "nestedCommentIndicatorColor": "İç İçe Yorum Gösterge Rengi",
+  "@nestedCommentIndicatorColor": {
+    "description": "İç içe yorum gösterge rengi ayarı"
+  },
+  "nestedCommentIndicatorStyle": "İç İçe Yorum Gösterge Stili",
+  "@nestedCommentIndicatorStyle": {
+    "description": "İç içe yorum gösterge stili için ayar"
+  },
+  "newComments": "Yeni Yorumlar",
+  "@newComments": {},
+  "newPost": "Yeni Gönderi",
+  "@newPost": {
+    "description": "Yeni gönderi için ayar"
+  },
+  "new_": "Yeni",
+  "@new_": {},
+  "noComments": "Ah. Hiç yorum yok.",
+  "@noComments": {},
+  "noCommentsFound": "Yorum bulunamadı.",
+  "@noCommentsFound": {},
+  "noCommunitiesFound": "Hiçbir topluluk bulunamadı.",
+  "@noCommunitiesFound": {},
+  "noCommunityBlocks": "Engellenen topluluk yok.",
+  "@noCommunityBlocks": {},
+  "noFavoritedCommunities": "Favori topluluk yok",
+  "@noFavoritedCommunities": {
+    "description": "Çekmecede favori topluluk yok mesajı"
+  },
+  "noInstanceBlocks": "Engellenen örnek yok.",
+  "@noInstanceBlocks": {},
+  "noItems": "Öğe yok",
+  "@noItems": {
+    "description": "Öğe olmadığında genel metin"
+  },
+  "noKeywordFilters": "Anahtar kelime filtresi eklenmedi",
+  "@noKeywordFilters": {
+    "description": "Anahtar kelime eklenmemiş mesajı"
+  },
+  "noLanguage": "Dil yok",
+  "@noLanguage": {
+    "description": "Bir gönderi dili seçerken dil yok girdisi"
+  },
+  "noPostsFound": "Gönderi bulunamadı.",
+  "@noPostsFound": {},
+  "noResultsFound": "Sonuç bulunamadı.",
+  "@noResultsFound": {},
+  "noSubscriptions": "Abonelik Yok",
+  "@noSubscriptions": {
+    "description": "Çekmecede abonelik olmaması için mesaj"
+  },
+  "noUserBlocks": "Engellenen kullanıcı yok.",
+  "@noUserBlocks": {},
+  "noUsersFound": "Kullanıcı bulunamadı.",
+  "@noUsersFound": {},
+  "notValidLemmyInstance": "{instance} geçerli bir Lemmy örneği gibi görünmüyor",
+  "@notValidLemmyInstance": {},
+  "notValidUrl": "Geçerli bir URL değil",
+  "@notValidUrl": {},
+  "nothingToShare": "Paylaşılacak bir şey yok",
+  "@nothingToShare": {},
+  "notifications": "{count, plural, zero {Bildirim} one {Bildirimler} other {Bildirimler}}",
+  "@notifications": {
+    "description": "Bildirimler için mesaj biçimlendirme sayılır."
+  },
+  "notificationsBehaviourSettings": "Bildirimler",
+  "@notificationsBehaviourSettings": {
+    "description": "Ayar -> Genel bölümündeki Alt Kategori"
+  },
+  "notificationsNotAllowed": "Sistem ayarlarında Thunder için bildirimlere izin verilmez",
+  "@notificationsNotAllowed": {
+    "description": "Uygulama için bildirimlere artık ne zaman izin verildiğine ilişkin açıklama"
+  },
+  "notificationsWarningDialog": "Bildirimler, tüm cihazlarda doğru çalışmayabilen deneysel bir özelliktir.\n\n· Kontroller her ~15 dakikada bir gerçekleşecek ve ek pil tüketecektir.\n\n· Başarılı bildirim olasılığını artırmak için pil optimizasyonlarını devre dışı bırakın.\n\nDaha fazla bilgi için aşağıdaki sayfaya bakın.",
+  "@notificationsWarningDialog": {
+    "description": "Bildirimler özelliği için uyarı iletişim kutusunun içeriği"
+  },
+  "nsfwWarning": "NSFW - Göstermek için dokunun",
+  "@nsfwWarning": {
+    "description": "NSFW gönderileri için uyarı"
+  },
+  "off": "kapalı",
+  "@off": {},
+  "ok": "Tamam",
+  "@ok": {},
+  "old": "Eski",
+  "@old": {},
+  "on": "açık",
+  "@on": {},
+  "onlyModsCanPostInCommunity": "Bu toplulukta yalnızca moderatörler gönderi paylaşabilir",
+  "@onlyModsCanPostInCommunity": {},
+  "open": "Açık",
+  "@open": {},
+  "openAccountSwitcher": "Hesap değiştiriciyi açın",
+  "@openAccountSwitcher": {},
+  "openByDefault": "Varsayılan olarak aç",
+  "@openByDefault": {
+    "description": "Açılan bağlantıların varsayılan davranışını gösterir."
+  },
+  "openInBrowser": "Tarayıcıda Aç",
+  "@openInBrowser": {},
+  "openInstance": "Örneği Aç",
+  "@openInstance": {},
+  "openLinksInExternalBrowser": "Bağlantıları Harici Tarayıcıda Aç",
+  "@openLinksInExternalBrowser": {
+    "description": "Bağlantıları harici bir tarayıcıda açmak için geçiş yapın."
+  },
+  "openLinksInReaderMode": "Bağlantıları Okuyucu Modunda Aç",
+  "@openLinksInReaderMode": {
+    "description": "Mevcut olduğunda bağlantıları okuyucu modunda açmak için geçiş yapın."
+  },
+  "openSettings": "Ayarları Aç",
+  "@openSettings": {
+    "description": "Kullanıcının sistem ayarlarını açmasını iste"
+  },
+  "overview": "Genel Bakış",
+  "@overview": {},
+  "password": "Parola",
+  "@password": {},
+  "pending": "Beklemede",
+  "@pending": {
+    "description": "'Beklemede' için abonelik durumunu açıklar"
+  },
+  "permissionDenied": "İzin Verilmedi",
+  "@permissionDenied": {
+    "description": "Kullanıcı işletim sistemi izinlerini reddettiğinde hata başlığı"
+  },
+  "permissionDeniedMessage": "Thunder, reddedilen bu görüntüyü kaydetmek için bazı izinler gerektirir.",
+  "@permissionDeniedMessage": {
+    "description": "Kullanıcı işletim sistemi izinlerini reddettiğinde hata açıklaması"
+  },
+  "pinToCommunity": "Topluluğa Sabitle",
+  "@pinToCommunity": {
+    "description": "Bir gönderiyi bir topluluğa sabitleme ayarı (moderatör eylemi)"
+  },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Herhangi bir önizleme için yer tutucu metin. Bu, https://www.lipsum.com/ adresinden alınmıştır."
+  },
+  "postBehaviourSettings": "Gönderiler",
+  "@postBehaviourSettings": {
+    "description": "Ayar -> Genel bölümündeki Alt Kategori"
+  },
+  "postBody": "Gönderi Gövdesi",
+  "@postBody": {},
+  "postBodySettings": "Gönderi Gövde Ayarları",
+  "@postBodySettings": {
+    "description": "Gönderi gövdesi ayarları için ayarlar başlığı"
+  },
+  "postBodySettingsDescription": "Bu ayarlar, gönderi gövdesinin görüntülenmesini etkiler",
+  "@postBodySettingsDescription": {
+    "description": "Gönderi gövdesi ayarlarının açıklaması"
+  },
+  "postBodyViewType": "Gönderi Gövdesi Görünüm Türü",
+  "@postBodyViewType": {
+    "description": "Gönderi gövdesi görünüm türü ayarı için ad ayarlama"
+  },
+  "postContentFontScale": "Gönderi İçeriği Yazı Tipi Ölçeği",
+  "@postContentFontScale": {
+    "description": "Gönderi içeriği yazı tipi ölçeği ayarı"
+  },
+  "postCreatedSuccessfully": "Gönderi başarıyla oluşturuldu!",
+  "@postCreatedSuccessfully": {
+    "description": "Kullanıcıya gönderisinin başarıyla oluşturulduğunu bildirme"
+  },
+  "postLocked": "Gönderi kilitlendi. Yanıtlara izin verilmez.",
+  "@postLocked": {},
+  "postMetadataInstructions": "İstediğiniz bilgileri sürükleyip bırakarak meta veri bilgilerini özelleştirebilirsiniz",
+  "@postMetadataInstructions": {
+    "description": "Gönderi meta veri bilgilerinin nasıl özelleştirileceğine ilişkin talimatlar. Bu, Görünüm -> Gönderi ayarları sayfasında bulunur"
+  },
+  "postNSFW": "NSFW olarak işaretle",
+  "@postNSFW": {},
+  "postPreview": "Verilen ayarlarla gönderinin önizlemesini göster",
+  "@postPreview": {
+    "description": "Ayar -> Görünüm -> Gönderiler bölümündeki son önizleme açıklaması"
+  },
+  "postSavedAsDraft": "Gönderi taslak olarak kaydedildi",
+  "@postSavedAsDraft": {},
+  "postSwipeActions": "Kaydırma Sonrası Eylemler",
+  "@postSwipeActions": {
+    "description": "Kaydırma sonrası eylemler için ayar"
+  },
+  "postSwipeGesturesHint": "Bunun yerine düğmeler mi kullanmak istiyorsunuz? Genel ayarlarda kartpostallarda görünen düğmeleri değiştirin.",
+  "@postSwipeGesturesHint": {},
+  "postTitle": "Unvanı",
+  "@postTitle": {},
+  "postTitleFontScale": "Gönderi Başlığı Yazı Tipi Ölçeği",
+  "@postTitleFontScale": {
+    "description": "Yazı başlığı yazı tipi ölçeği ayarı"
+  },
+  "postTogglePreview": "Önizlemeyi Aç/Kapat",
+  "@postTogglePreview": {},
+  "postURL": "URL",
+  "@postURL": {},
+  "postUploadImageError": "Resim yüklenemedi",
+  "@postUploadImageError": {},
+  "postViewType": "Gönderi Görüntüleme Türü",
+  "@postViewType": {
+    "description": "Ayar -> Görünüm -> Gönderiler bölümündeki son görünüm türü (kompakt/kart) etiketi"
+  },
+  "posts": "Gönderiler",
+  "@posts": {},
+  "preview": "Ön izleme",
+  "@preview": {},
+  "profileAppliedSuccessfully": "{profile} başarıyla uygulandı!",
+  "@profileAppliedSuccessfully": {},
+  "profiles": "Profiller",
+  "@profiles": {},
+  "pureBlack": "Saf Siyah",
+  "@pureBlack": {
+    "description": "Saf siyah temayı kullanarak açıklar"
+  },
+  "purgedComment": "Temizlenmiş Yorum",
+  "@purgedComment": {
+    "description": "Bir yorumu temizlemek için moderatör eylemi için kısa açıklama"
+  },
+  "purgedCommunity": "Temizlenen Topluluk",
+  "@purgedCommunity": {
+    "description": "Bir topluluğu temizlemek için moderatör eylemi için kısa açıklama"
+  },
+  "purgedPerson": "Tasfiye Edilen Kişi",
+  "@purgedPerson": {
+    "description": "Bir kişiyi temizlemek için moderatör eylemi için kısa açıklama"
+  },
+  "purgedPost": "Temizlenmiş Gönderi",
+  "@purgedPost": {
+    "description": "Bir gönderiyi temizlemek için moderatör eylemi için kısa açıklama"
+  },
+  "reachedTheBottom": "Hımmm. Dibe ulaşmışsın gibi görünüyor.",
+  "@reachedTheBottom": {},
+  "readAll": "Tümünü Oku",
+  "@readAll": {},
+  "reason": "Nedeni",
+  "@reason": {
+    "description": "Denetleme eyleminin nedeni (örneğin, gönderiyi kaldırma)"
+  },
+  "reduceAnimations": "Animasyonları Azaltın",
+  "@reduceAnimations": {
+    "description": "Animasyonları azaltmak için geçiş yapın."
+  },
+  "reducesAnimations": "Thunder içinde kullanılan animasyonları azaltır",
+  "@reducesAnimations": {},
+  "refresh": "Yenile",
+  "@refresh": {},
+  "refreshContent": "İçeriği Yenile",
+  "@refreshContent": {},
+  "removalReason": "Çıkarma Nedeni",
+  "@removalReason": {
+    "description": "Bir gönderiyi kaldırma iletişim kutusunun başlığı"
+  },
+  "remove": "Kaldır",
+  "@remove": {},
+  "removeAccount": "Hesabı Kaldır",
+  "@removeAccount": {},
+  "removeFromFavorites": "Favorilerden kaldır",
+  "@removeFromFavorites": {
+    "description": "Çekmecedeki bir topluluğu favorilerden kaldırma işlemi"
+  },
+  "removeInstance": "Örneği kaldır",
+  "@removeInstance": {},
+  "removeKeyword": "\"{ keyword }\" kaldırılsın mı?",
+  "@removeKeyword": {
+    "description": "Bir anahtar kelimeyi kaldırmanın açıklaması"
+  },
+  "removeKeywordFilter": "Anahtar Kelimeyi Kaldır",
+  "@removeKeywordFilter": {
+    "description": "Anahtar kelimeyi kaldırmak için dialig başlığı"
+  },
+  "removePost": "Gönderiyi Kaldır",
+  "@removePost": {
+    "description": "Bir gönderiyi kaldırma eylemi (moderatör eylemi)"
+  },
+  "removedComment": "Silinen Yorum",
+  "@removedComment": {
+    "description": "Bir yorumu kaldırmak için moderatör eylemi için kısa açıklama"
+  },
+  "removedCommunity": "Kaldırılan Topluluk",
+  "@removedCommunity": {
+    "description": "Bir topluluğu kaldırmak için moderatör eylemi için kısa açıklama"
+  },
+  "removedCommunityFromSubscriptions": "Topluluk aboneliğinden çıkıldı",
+  "@removedCommunityFromSubscriptions": {},
+  "removedInstanceMod": "Oluşum Modu Kaldırıldı",
+  "@removedInstanceMod": {
+    "description": "Mod'u bir oluşumdan kaldırmak için moderatör eylemi için kısa açıklama"
+  },
+  "removedModFromCommunity": "Mod Topluluktan Kaldırıldı",
+  "@removedModFromCommunity": {
+    "description": "Bir modun bir topluluktan kaldırılması için moderatör eylemi için kısa açıklama"
+  },
+  "removedPost": "Gönderi Kaldırıldı",
+  "@removedPost": {
+    "description": "Bir gönderiyi kaldırmak için moderatör eylemi için kısa açıklama"
+  },
+  "reply": "{count, plural, zero {Yanıt} one {Yanıt} other {Yanıt}}",
+  "@reply": {},
+  "replyNotSupported": "Bu görünümden yanıt vermek şu anda desteklenmiyor",
+  "@replyNotSupported": {},
+  "replyToPost": "Gönderiyi Yanıtla",
+  "@replyToPost": {},
+  "replyingTo": "{author} adlı kişiye yanıt veriliyor",
+  "@replyingTo": {},
+  "report": "Rapor",
+  "@report": {},
+  "reportComment": "Yorumu Bildir",
+  "@reportComment": {},
+  "reset": "Sıfırla",
+  "@reset": {
+    "description": "Ayar -> Görünüm -> Gönderiler/Yorumlar bölümündeki sıfırlama düğmesi etiketi"
+  },
+  "resetCommentPreferences": "Yorum tercihlerini sıfırla",
+  "@resetCommentPreferences": {
+    "description": "Yorum görünümü ayarlarındaki düğme için anlamsal etiket."
+  },
+  "resetPostPreferences": "Gönderi tercihlerini sıfırla",
+  "@resetPostPreferences": {
+    "description": "Görünüm sonrası ayarlarında düğme için anlamsal etiket."
+  },
+  "resetPreferences": "Tercihleri Sıfırla",
+  "@resetPreferences": {},
+  "resetPreferencesAndData": "Tercihleri ve Verileri Sıfırla",
+  "@resetPreferencesAndData": {
+    "description": "Tüm kullanıcı tercihlerini ve verilerini sıfırlamak için hata ayıklama ayarı başlığı."
+  },
+  "restore": "Geri Yükle",
+  "@restore": {},
+  "restorePost": "Gönderiyi Geri Yükle",
+  "@restorePost": {
+    "description": "Bir gönderiyi geri yükleme eylemi (moderatör eylemi)"
+  },
+  "restoredComment": "Geri Yüklenen Yorum",
+  "@restoredComment": {
+    "description": "Bir yorumu geri yüklemek için moderatör eylemi için kısa açıklama"
+  },
+  "restoredCommentFromDraft": "Taslaktan geri yüklenen yorum",
+  "@restoredCommentFromDraft": {},
+  "restoredCommunity": "Geri Yüklenen Topluluk",
+  "@restoredCommunity": {
+    "description": "Bir topluluğu geri yüklemek için moderatör eylemi için kısa açıklama"
+  },
+  "restoredPost": "Geri Yüklenen Gönderi",
+  "@restoredPost": {
+    "description": "Bir gönderiyi geri yüklemek için moderatör eylemi için kısa açıklama"
+  },
+  "restoredPostFromDraft": "Taslaktaki gönderi geri yüklendi",
+  "@restoredPostFromDraft": {},
+  "retry": "Tekrar dene",
+  "@retry": {},
+  "rightLongSwipe": "Sağa Uzun Kaydırma",
+  "@rightLongSwipe": {
+    "description": "Sağa uzun kaydırmayı ayarlama"
+  },
+  "rightShortSwipe": "Sağa Kısa Kaydırma",
+  "@rightShortSwipe": {
+    "description": "Sağa kısa kaydırma ayarı"
+  },
+  "save": "Kaydet",
+  "@save": {},
+  "saveSettings": "Ayarları Kaydet",
+  "@saveSettings": {
+    "description": "Uygulama ayarlarını kaydetme eylemi."
+  },
+  "saved": "Kaydedildi",
+  "@saved": {},
+  "scaled": "Ölçekli",
+  "@scaled": {},
+  "scrapeMissingLinkPreviews": "Scrape Eksik Bağlantı Önizlemeleri",
+  "@scrapeMissingLinkPreviews": {
+    "description": "Eksik harici bağlantı önizlemelerini sıyırmak için geçiş yapın."
+  },
+  "scrapeMissingPreviews": "Etkinleştirmenin bir performans isabeti olacaktır.",
+  "@scrapeMissingPreviews": {
+    "description": "Bağlantı hurdaya çıkarmayı etkinleştirirken potansiyel performans etkisine dikkat edin."
+  },
+  "screenReaderProfile": "Ekran Okuyucu Profili",
+  "@screenReaderProfile": {},
+  "screenReaderProfileDescription": "Genel öğeleri azaltarak ve potansiyel olarak çakışan hareketleri kaldırarak Thunder'ı ekran okuyucular için optimize eder.",
+  "@screenReaderProfileDescription": {},
+  "search": "Ara",
+  "@search": {},
+  "searchByText": "Metne göre ara",
+  "@searchByText": {},
+  "searchByUrl": "URL'ye göre ara",
+  "@searchByUrl": {},
+  "searchComments": "Yorumlarda Ara",
+  "@searchComments": {},
+  "searchCommentsFederatedWith": "{instance} ile federe edilmiş yorumları arayın",
+  "@searchCommentsFederatedWith": {},
+  "searchCommunitiesFederatedWith": "{instance} ile birleştirilmiş toplulukları arayın",
+  "@searchCommunitiesFederatedWith": {},
+  "searchInstance": "{instance} ara",
+  "@searchInstance": {},
+  "searchInstancesFederatedWith": "{instance} ile federe edilmiş örnekleri ara",
+  "@searchInstancesFederatedWith": {
+    "description": "Örnekleri aramak için yer tutucu metin"
+  },
+  "searchPostSearchType": "Gönderi Arama Türünü Seçin",
+  "@searchPostSearchType": {},
+  "searchPostsFederatedWith": "{instance} ile federe edilmiş gönderileri arayın",
+  "@searchPostsFederatedWith": {},
+  "searchTerm": "Arama terimi",
+  "@searchTerm": {},
+  "searchUsersFederatedWith": "{instance} ile federe edilmiş kullanıcıları ara",
+  "@searchUsersFederatedWith": {},
+  "selectAccountToPostAs": "Gönderilecek hesabı şu şekilde seçin:",
+  "@selectAccountToPostAs": {
+    "description": "Gönderirken hesap seçici için başlık"
+  },
+  "selectCommunity": "Bir topluluk seçin",
+  "@selectCommunity": {},
+  "selectFeedType": "Akış Türünü Seçin",
+  "@selectFeedType": {},
+  "selectLanguage": "Dil seçin",
+  "@selectLanguage": {
+    "description": "Gönderi oluşturma sayfasında bir dil seçme istemi"
+  },
+  "selectSearchType": "Arama Türünü Seçin",
+  "@selectSearchType": {},
+  "sensitiveContentWarning": "Hassas içerik içerebilir. Göstermek için dokun.",
+  "@sensitiveContentWarning": {
+    "description": "Hassas içerik için uyarı (örneğin, modlog'dan)"
+  },
+  "serverErrorComments": "Daha fazla yorum alınırken bir sunucu hatasıyla karşılaşıldı: {message}",
+  "@serverErrorComments": {},
+  "setAction": "Eylem Ayarla",
+  "@setAction": {
+    "description": "Ayarlanacak eylem için etiket (kısa basma, uzun basma)"
+  },
+  "setLongPress": "Uzun basma eylemi olarak ayarla",
+  "@setLongPress": {},
+  "setShortPress": "Kısa basın eylemi olarak ayarla",
+  "@setShortPress": {},
+  "settingTypeNotSupported": "{settingType} türündeki ayarlar henüz desteklenmiyor.",
+  "@settingTypeNotSupported": {},
+  "settings": "Ayarlar",
+  "@settings": {},
+  "settingsFeedCards": "Bu ayarlar ana akıştaki kartlar için geçerlidir, gönderiler açılırken eylemler her zaman kullanılabilir.",
+  "@settingsFeedCards": {
+    "description": "Ana beslemedeki kartların görüntülenmesini kontrol etme ayarları."
+  },
+  "share": "Paylaş",
+  "@share": {},
+  "shareLink": "Bağlantıyı Paylaş",
+  "@shareLink": {},
+  "shareMedia": "Medyayı Paylaş",
+  "@shareMedia": {},
+  "sharePost": "Gönderiyi Paylaş",
+  "@sharePost": {},
+  "showAll": "Tümünü Göster",
+  "@showAll": {},
+  "showBotAccounts": "Bot Hesaplarını Göster",
+  "@showBotAccounts": {
+    "description": "Bot hesaplarını gösterme seçeneği."
+  },
+  "showCommentActionButtons": "Yorum Eylem Düğmelerini Göster",
+  "@showCommentActionButtons": {
+    "description": "Yorum eylem düğmelerini göstermek için geçiş yapın."
+  },
+  "showCrossPosts": "Çapraz Gönderileri Göster",
+  "@showCrossPosts": {
+    "description": "Çapraz gönderileri göstermek için geçiş yapın."
+  },
+  "showEdgeToEdgeImages": "Kenardan Kenara Görüntüleri Göster",
+  "@showEdgeToEdgeImages": {
+    "description": "Kenardan kenara görüntüleri görüntülemek için geçiş yapın."
+  },
+  "showFullDate": "Tam Tarihi Göster",
+  "@showFullDate": {
+    "description": "Gönderilerde tam tarihi göstermek için aç/kapat"
+  },
+  "showFullDateDescription": "Gönderilerde tam tarihi göster",
+  "@showFullDateDescription": {
+    "description": "Gönderilerde tam tarihi göstermek için açıklama"
+  },
+  "showFullHeightImages": "Tam Yükseklikte Resimleri Göster",
+  "@showFullHeightImages": {
+    "description": "Tam boy görüntüleri görüntülemek için geçiş yapın."
+  },
+  "showInAppUpdateNotifications": "Yeni GitHub Sürümlerinden Haberdar Olun",
+  "@showInAppUpdateNotifications": {
+    "description": "Yeni GitHub sürümlerinden haberdar olmak için geçiş yapın."
+  },
+  "showLess": "Daha az göster",
+  "@showLess": {},
+  "showMore": "Daha fazla göster",
+  "@showMore": {},
+  "showPassword": "Parolayı Göster",
+  "@showPassword": {},
+  "showPostAuthor": "Gönderi Yazarını Göster",
+  "@showPostAuthor": {
+    "description": "Gönderi yazarını göstermek için aç/kapat."
+  },
+  "showPostCommunityIcons": "Topluluk Simgelerini Göster",
+  "@showPostCommunityIcons": {
+    "description": "Topluluk simgelerini göstermek için geçiş yapın."
+  },
+  "showPostSaveAction": "Kaydet Düğmesini Göster",
+  "@showPostSaveAction": {
+    "description": "Kaydet düğmesini göstermek için geçiş yapın."
+  },
+  "showPostTextContentPreview": "Metin Önizlemesini Göster",
+  "@showPostTextContentPreview": {
+    "description": "Metin önizlemelerini göstermek için geçiş yapın."
+  },
+  "showPostTitleFirst": "Önce Başlığı Göster",
+  "@showPostTitleFirst": {
+    "description": "Önce yazı başlığını göstermek için geçiş yapın."
+  },
+  "showPostVoteActions": "Oy Düğmelerini Göster",
+  "@showPostVoteActions": {
+    "description": "Oy düğmelerini göstermek için geçiş yapın."
+  },
+  "showReadPosts": "Okunan Gönderileri Göster",
+  "@showReadPosts": {
+    "description": "Akıştaki okunmuş yayınları gösterme ayarı."
+  },
+  "showScoreCounters": "Kullanıcı Puanlarını Göster",
+  "@showScoreCounters": {
+    "description": "Kullanıcı puanlarını görüntülemek için geçiş yapın."
+  },
+  "showScores": "Gönderi/Yorum Puanlarını Göster",
+  "@showScores": {
+    "description": "Yazılarda ve yorumlarda puanları gösterme seçeneği."
+  },
+  "showTextPostIndicator": "Metin Gönderisi Göstergesini Göster",
+  "@showTextPostIndicator": {
+    "description": "Metin gönderisi göstergesini göstermek için geçiş yapın."
+  },
+  "showThumbnailPreviewOnRight": "Küçük Resimleri Sağda Göster",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Küçük resimleri sağ tarafta göstermek için geçiş yapın."
+  },
+  "showUserDisplayNames": "Kullanıcı Görünen Adlarını Göster",
+  "@showUserDisplayNames": {
+    "description": "Kullanıcı görünen adlarını göstermek için geçiş yapın."
+  },
+  "showUserInstance": "Kullanıcı Örneğini Göster",
+  "@showUserInstance": {
+    "description": "Kullanıcı örneğini göstermek için geçiş yapın."
+  },
+  "sidebar": "Kenar çubuğu",
+  "@sidebar": {},
+  "sidebarBottomNavDoubleTapDescription": "Kenar çubuğunu açmak için alt gezinmeye iki kez dokunun",
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "sidebarBottomNavSwipeDescription": "Kenar çubuğunu açmak için alt gezinmeyi kaydırın",
+  "@sidebarBottomNavSwipeDescription": {},
+  "small": "Küçük",
+  "@small": {
+    "description": "Küçük yazı tipi ölçeği için açıklama"
+  },
+  "somethingWentWrong": "Ne yazık ki bir hata oluştu!",
+  "@somethingWentWrong": {},
+  "sortBy": "Sıralama Ölçütü",
+  "@sortBy": {},
+  "sortByTop": "En üste göre sırala",
+  "@sortByTop": {},
+  "sortOptions": "Sıralama Seçenekleri",
+  "@sortOptions": {},
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Spoyler için yer tutucu etiket"
+  },
+  "submit": "Gönder",
+  "@submit": {},
+  "subscribe": "Abone ol",
+  "@subscribe": {},
+  "subscribeToCommunity": "Topluluğa Abone Ol",
+  "@subscribeToCommunity": {
+    "description": "Bir topluluğa abone olma eylemi"
+  },
+  "subscribed": "Abone olundu",
+  "@subscribed": {},
+  "subscriptions": "Abonelikler",
+  "@subscriptions": {},
+  "successfullyBlocked": "Engellendi.",
+  "@successfullyBlocked": {},
+  "successfullyBlockedCommunity": "Engellenen {communityName}",
+  "@successfullyBlockedCommunity": {},
+  "successfullyBlockedUser": "Engellenen {username}",
+  "@successfullyBlockedUser": {
+    "description": "Bir kullanıcıyı başarıyla engelleme bildirimi"
+  },
+  "successfullyUnblocked": "Engeli kaldırıldı.",
+  "@successfullyUnblocked": {},
+  "successfullyUnblockedCommunity": "{communityName} adlı topluluğun engelini kaldırdı",
+  "@successfullyUnblockedCommunity": {},
+  "successfullyUnblockedUser": "{username} adlı kullanıcının engeli kaldırıldı",
+  "@successfullyUnblockedUser": {
+    "description": "Bir kullanıcının engelini başarıyla kaldırmak için bildirim"
+  },
+  "suggestedTitle": "Önerilen başlık",
+  "@suggestedTitle": {
+    "description": "Gönderi için önerilen başlık."
+  },
+  "system": "Sistem",
+  "@system": {
+    "description": "Tema için sistem ayarlarını kullanmayı açıklar"
+  },
+  "tabletMode": "Tablet Modu (2 sütunlu görünüm)",
+  "@tabletMode": {
+    "description": "2 sütunlu tablet modunu etkinleştirmek için geçiş yapın."
+  },
+  "tapToExit": "Çıkmak için tekrar BACK'e basın",
+  "@tapToExit": {},
+  "tappableAuthorCommunity": "Dokunulabilir Yazarlar ve Topluluklar",
+  "@tappableAuthorCommunity": {
+    "description": "Yazarları ve toplulukları dokunulabilir hale getirmek için geçiş yapın."
+  },
+  "text": "Metin",
+  "@text": {},
+  "theme": "Tema",
+  "@theme": {
+    "description": "Tema için ayar"
+  },
+  "themeAccentColor": "Vurgu Renkleri",
+  "@themeAccentColor": {
+    "description": "Tema vurgu rengi ayarı"
+  },
+  "theming": "Tema",
+  "@theming": {
+    "description": "Ayarlar'da Tema Başlığı -> Görünüm -> Tema"
+  },
+  "timeoutComments": "Hata: Yorumlar alınmaya çalışılırken zaman aşımı",
+  "@timeoutComments": {},
+  "timeoutErrorMessage": "Yanıt bekleyen bir zaman aşımı vardı.",
+  "@timeoutErrorMessage": {},
+  "timeoutSaveComment": "Hata: Bir yorumu kaydetmeye çalışırken zaman aşımı",
+  "@timeoutSaveComment": {},
+  "timeoutSavingPost": "Hata: Gönderiyi kaydetmeye çalışırken zaman aşımı.",
+  "@timeoutSavingPost": {},
+  "timeoutUpvoteComment": "Hata: Yoruma oy vermeye çalışırken zaman aşımı",
+  "@timeoutUpvoteComment": {},
+  "timeoutVotingPost": "Hata: Gönderiye oy vermeye çalışırken zaman aşımı.",
+  "@timeoutVotingPost": {},
+  "toggelRead": "Okumayı Aç/Kapat",
+  "@toggelRead": {},
+  "top": "Üst",
+  "@top": {},
+  "topAll": "Tüm zamanların en iyisi",
+  "@topAll": {},
+  "topDay": "Bugünün En İyileri",
+  "@topDay": {},
+  "topHour": "Son Bir Saatteki En Yüksek",
+  "@topHour": {},
+  "topMonth": "En İyi Ay",
+  "@topMonth": {},
+  "topNineMonths": "Son 9 Ayın Zirvesi",
+  "@topNineMonths": {
+    "description": "Son 9 ayda en üst için sıralama modu"
+  },
+  "topSixHour": "Son 6 Saatteki Zirve",
+  "@topSixHour": {},
+  "topSixMonths": "Son 6 Ayın Zirvesi",
+  "@topSixMonths": {
+    "description": "Son 6 ayda en üst için sıralama modu"
+  },
+  "topThreeMonths": "Son 3 Ayın Zirvesi",
+  "@topThreeMonths": {
+    "description": "Son 3 aydaki en iyi için sıralama modu"
+  },
+  "topTwelveHour": "Son 12 Saatteki Zirve",
+  "@topTwelveHour": {},
+  "topWeek": "En İyi Hafta",
+  "@topWeek": {},
+  "topYear": "En İyi Yıl",
+  "@topYear": {},
+  "totp": "TOTP (isteğe bağlı)",
+  "@totp": {},
+  "transferredModToCommunity": "Aktarılan Topluluk",
+  "@transferredModToCommunity": {
+    "description": "Bir topluluğu aktarmak için moderatör eylemi için kısa açıklama"
+  },
+  "translationsMayNotBeComplete": "Çevirilerin tamamlanamayabileceğini lütfen unutmayın",
+  "@translationsMayNotBeComplete": {
+    "description": "Ayarlarda bir dil seçerken çevirilerin tamamlanamayabileceği uyarısı"
+  },
+  "trendingCommunities": "Popüler Topluluklar",
+  "@trendingCommunities": {},
+  "trySearchingFor": "Şunu aramayı deneyin...",
+  "@trySearchingFor": {
+    "description": "Kullanıcının farklı bir tür aramayı denemesi için öneri"
+  },
+  "unableToFindCommunity": "Topluluk bulunamıyor",
+  "@unableToFindCommunity": {},
+  "unableToFindCommunityName": "'{ communityName }' topluluğu bulunamıyor",
+  "@unableToFindCommunityName": {
+    "description": "Ad da dahil olmak üzere bir topluluk bulamadığımız zaman için hata mesajı"
+  },
+  "unableToFindCommunityOnInstance": "Seçilen kullanıcı örneğinde seçilen topluluk bulunamıyor.",
+  "@unableToFindCommunityOnInstance": {
+    "description": "Bir örnekte bir topluluk bulamadığımızda oluşan hata mesajı"
+  },
+  "unableToFindInstance": "Örnek bulunamıyor",
+  "@unableToFindInstance": {},
+  "unableToFindLanguage": "Dil bulunamıyor",
+  "@unableToFindLanguage": {
+    "description": "Dil bulunamadığında hata mesajı."
+  },
+  "unableToFindPost": "Gönderi bulunamıyor",
+  "@unableToFindPost": {
+    "description": "Gönderi bulamadığımızda hata mesajı"
+  },
+  "unableToFindUser": "Kullanıcı bulunamıyor",
+  "@unableToFindUser": {},
+  "unableToFindUserName": "'{username}' kullanıcısı bulunamıyor",
+  "@unableToFindUserName": {},
+  "unableToLoadImage": "Görüntü yüklenemiyor",
+  "@unableToLoadImage": {
+    "description": "İkili bir görüntü yükleyemediğimiz zamanlar için yer tutucu"
+  },
+  "unableToLoadImageFrom": "{domain} alanından görüntü yüklenemiyor",
+  "@unableToLoadImageFrom": {
+    "description": "Bir URL'den resim yükleyemediğimiz zamanlar için yer tutucu"
+  },
+  "unableToLoadInstance": "{instance} yüklenemiyor",
+  "@unableToLoadInstance": {},
+  "unableToLoadPostsFrominstance": "{instance} konumundan gönderiler yüklenemiyor",
+  "@unableToLoadPostsFrominstance": {},
+  "unableToLoadReplies": "Daha fazla yanıt yüklenemiyor.",
+  "@unableToLoadReplies": {},
+  "unableToNavigateToInstance": "{instanceHost} konumuna gidilemiyor. Geçerli bir Lemmy örneği olmayabilir.",
+  "@unableToNavigateToInstance": {
+    "description": "Bir Lemmy örneğine gidemediğimiz zamanlar için hata mesajı"
+  },
+  "unbannedUser": "Yasaklanmamış Kullanıcı",
+  "@unbannedUser": {
+    "description": "Bir kullanıcının yasağını kaldırmak için moderatör eylemi için kısa açıklama"
+  },
+  "unbannedUserFromCommunity": "Topluluktan Yasaklanmamış Kullanıcı",
+  "@unbannedUserFromCommunity": {
+    "description": "Bir kullanıcının bir topluluktaki yasağını kaldırmak için moderatör eylemi için kısa açıklama"
+  },
+  "unblockInstance": "Oluşumun Engelini Kaldır",
+  "@unblockInstance": {
+    "description": "Bir örneğin engelini kaldırmak için araç ipucu"
+  },
+  "understandEnable": "Anlıyorum, Etkinleştir",
+  "@understandEnable": {
+    "description": "Bir şeyi onaylama ve etkinleştirme eylemi"
+  },
+  "unexpectedError": "Beklenmedik Hata",
+  "@unexpectedError": {},
+  "unfeaturedPost": "Özelliksiz Gönderi",
+  "@unfeaturedPost": {
+    "description": "Bir gönderinin özelliğini kaldırmak için moderatör eylemi için kısa açıklama"
+  },
+  "unhidCommunity": "Unhid Topluluğu",
+  "@unhidCommunity": {
+    "description": "Bir topluluğu göstermek için moderatör eylemi için kısa açıklama"
+  },
+  "unlockPost": "Gönderinin Kilidini Aç",
+  "@unlockPost": {
+    "description": "Bir gönderinin kilidini açma eylemi (moderatör eylemi)"
+  },
+  "unlockedPost": "Kilitli Olmayan Gönderi",
+  "@unlockedPost": {
+    "description": "Bir gönderinin kilidini açmak için moderatör eylemi için kısa açıklama"
+  },
+  "unpinFromCommunity": "Topluluktan sabitlemeyi kaldır",
+  "@unpinFromCommunity": {
+    "description": "Bir topluluktan bir gönderinin sabitlemesini kaldırma ayarı (moderatör eylemi)"
+  },
+  "unreachable": "Ulaşılamıyor",
+  "@unreachable": {
+    "description": "Şu anda ulaşılamayan bir örneği açıklar"
+  },
+  "unsubscribe": "Abonelikten çık",
+  "@unsubscribe": {},
+  "unsubscribeFromCommunity": "Topluluk aboneliğinden çık",
+  "@unsubscribeFromCommunity": {
+    "description": "Bir topluluğun aboneliğinden çıkma eylemi"
+  },
+  "unsubscribePending": "Abonelikten çıkma (abonelik beklemede)",
+  "@unsubscribePending": {},
+  "unsubscribed": "Abonelikten çıkıldı",
+  "@unsubscribed": {},
+  "updateReleased": "Güncelleme yayınlandı: {version}",
+  "@updateReleased": {},
+  "uploadImage": "Resim yükle",
+  "@uploadImage": {},
+  "upvote": "Artı oy",
+  "@upvote": {},
+  "uriNotSupported": "Bu tür bir bağlantı şu anda desteklenmiyor.",
+  "@uriNotSupported": {
+    "description": "Şu anda desteklenmeyen bağlantı türü."
+  },
+  "url": "URL",
+  "@url": {},
+  "useAdvancedShareSheet": "Gelişmiş Paylaşım Sayfasını Kullan",
+  "@useAdvancedShareSheet": {
+    "description": "Gelişmiş paylaşım sayfasını kullanmak için geçiş yapın."
+  },
+  "useCompactView": "Küçük gönderiler için etkinleştirin, büyükler için devre dışı bırakın.",
+  "@useCompactView": {
+    "description": "Küçük gönderiler için kompakt görünümü etkinleştirme veya devre dışı bırakma seçeneği."
+  },
+  "useMaterialYouTheme": "Material You Temasını Kullanın",
+  "@useMaterialYouTheme": {
+    "description": "Material You temasını kullanmak için geçiş yapın."
+  },
+  "useMaterialYouThemeDescription": "Seçilen özel temayı geçersiz kılar",
+  "@useMaterialYouThemeDescription": {
+    "description": "Material You temasını kullanma ayarının altyazısı"
+  },
+  "useSuggestedTitle": "Önerilen başlığı kullanın: {title}",
+  "@useSuggestedTitle": {},
+  "user": "Kullanıcı",
+  "@user": {
+    "description": "Kullanıcı için rol adı"
+  },
+  "userFormat": "Kullanıcı Biçimi",
+  "@userFormat": {
+    "description": "Kullanıcının tam adı formatı için ayar"
+  },
+  "userNotLoggedIn": "Kullanıcı oturum açmadı",
+  "@userNotLoggedIn": {},
+  "userProfiles": "Kullanıcı Profilleri",
+  "@userProfiles": {
+    "description": "Kullanıcı profilleriyle ilgili ayarlar."
+  },
+  "userSettingDescription": "Bu ayarlar Lemmy hesabınızla senkronize edilir ve yalnızca hesap başına esasına göre uygulanır.",
+  "@userSettingDescription": {
+    "description": "Ayarların mevcut kullanıcıya global olarak uygulandığını açıklayan açıklama."
+  },
+  "username": "Kullanıcı adı",
+  "@username": {},
+  "users": "Kullanıcılar",
+  "@users": {},
+  "viewAll": "Tümünü görüntüle",
+  "@viewAll": {
+    "description": "Bir şeyin tamamını görüntülemek için bir başlık (örneğin, örnekler)"
+  },
+  "viewAllComments": "Tüm yorumları görüntüle",
+  "@viewAllComments": {},
+  "visitCommunity": "Topluluğu ziyaret edin",
+  "@visitCommunity": {},
+  "visitInstance": "Örneği Ziyaret Et",
+  "@visitInstance": {},
+  "visitUserProfile": "Kullanıcı Profilini Ziyaret Edin",
+  "@visitUserProfile": {},
+  "warning": "Uyarı",
+  "@warning": {
+    "description": "Uyarı iletişim kutuları başlığı"
+  },
+  "xDownvotes": "{x} olumsuz oy",
+  "@xDownvotes": {},
+  "xScore": "{x} puan",
+  "@xScore": {
+    "description": "Gönderi veya yorumun toplam puanı"
+  },
+  "xUpvotes": "{x} destek oyu",
+  "@xUpvotes": {}
+}

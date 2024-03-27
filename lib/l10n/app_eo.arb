@@ -5,7 +5,7 @@
   },
   "accessibility": "Alirebleco",
   "@accessibility": {},
-  "accessibilityProfilesDescription": "Alireblaj profiloj permesas apliki plurajn agordojn samtempe por alĝustigi apartan alireblecon.",
+  "accessibilityProfilesDescription": "Alireblecaj profiloj permesas apliki plurajn agordojn samtempe por alĝustigi apartan alireblecon.",
   "@accessibilityProfilesDescription": {},
   "account": "Konto",
   "@account": {},
@@ -27,7 +27,7 @@
   "@addKeywordFilter": {
     "description": "Hint for text field to add keyword"
   },
-  "addToFavorites": "Aldoni al favoratoj",
+  "addToFavorites": "Aldoni al plej ŝatataĵoj",
   "@addToFavorites": {
     "description": "Action to add a community in drawer to favorites"
   },
@@ -45,7 +45,7 @@
   "@allowOpenSupportedLinks": {
     "description": "Option to permit the app to open supported links."
   },
-  "alreadyPostedTo": "Jam afiŝita al",
+  "alreadyPostedTo": "Jam afiŝiĝis al",
   "@alreadyPostedTo": {},
   "andXMore": "kaj {count} pli",
   "@andXMore": {},
@@ -53,7 +53,7 @@
   "@animations": {},
   "anonymous": "Anonima",
   "@anonymous": {},
-  "appLanguage": "Lingvo de la Aplikaĵo",
+  "appLanguage": "Aplikaĵa Lingvo",
   "@appLanguage": {
     "description": "Language selection in settings."
   },
@@ -71,17 +71,17 @@
   "@backButton": {},
   "backToTop": "Reiri al Supro",
   "@backToTop": {},
-  "blockCommunity": "Bloki Komunumon",
+  "blockCommunity": "Bari Komunumon",
   "@blockCommunity": {},
-  "blockInstance": "Bloki Instancon",
+  "blockInstance": "Bari Instancon",
   "@blockInstance": {},
-  "blockUser": "Bloki Uzanton",
+  "blockUser": "Bari Uzanton",
   "@blockUser": {},
-  "blockedCommunities": "Blokitaj Komunumoj",
+  "blockedCommunities": "Baritaj Komunumoj",
   "@blockedCommunities": {},
-  "blockedInstances": "Blokitaj Instancoj",
+  "blockedInstances": "Baritaj Instancoj",
   "@blockedInstances": {},
-  "blockedUsers": "Blokitaj Uzantoj",
+  "blockedUsers": "Baritaj Uzantoj",
   "@blockedUsers": {},
   "browsingAnonymously": "Vi nun foliumas {instance} anonime.",
   "@browsingAnonymously": {},
@@ -89,25 +89,25 @@
   "@cancel": {},
   "cannotReportOwnComment": "Vi ne rajtas sendi raporton por via propra komento.",
   "@cannotReportOwnComment": {},
-  "cantBlockAdmin": "Vi ne rajtas bloki instancan administranton.",
+  "cantBlockAdmin": "Vi ne rajtas bari instancan administranton.",
   "@cantBlockAdmin": {},
-  "cantBlockYourself": "Vi eble ne blokas vin mem.",
+  "cantBlockYourself": "Vi ne rajtas bari vin mem.",
   "@cantBlockYourself": {},
-  "cardView": "Karta Rigardo",
+  "cardView": "Karta Vido",
   "@cardView": {
     "description": "Label for the card view option in Setting -> Appearance -> Posts"
   },
-  "cardViewDescription": "Ebligu kartan rigardon por ĝustigi agordojn",
+  "cardViewDescription": "Ebligu kartan vidon por ĝustigi agordojn",
   "@cardViewDescription": {
     "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
   },
-  "cardViewSettings": "Agordoj de Karta Rigardo",
+  "cardViewSettings": "Agordoj de Karta Vido",
   "@cardViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
   "changeSort": "Ŝanĝi Ordigon",
   "@changeSort": {},
-  "clearDatabase": "Viŝi datenbazon",
+  "clearDatabase": "Viŝi datumbazon",
   "@clearDatabase": {
     "description": "Label for action to clear local database in the dialog"
   },
@@ -117,9 +117,9 @@
   },
   "clearSearch": "Viŝi Serĉon",
   "@clearSearch": {},
-  "clearedDatabase": "Loka datenbazo viŝita. Rekomencu Thunder por ke novaj ŝanĝoj efektiviĝu.",
+  "clearedDatabase": "Loka datumbazo viŝiĝis. Rekomencu Thunder por ke novaj ŝanĝoj efektiviĝu.",
   "@clearedDatabase": {},
-  "clearedUserPreferences": "Viŝis ĉiujn uzantpreferojn",
+  "clearedUserPreferences": "Viŝiĝis ĉiuj uzantpreferoj",
   "@clearedUserPreferences": {},
   "close": "Fermi",
   "@close": {},
@@ -175,15 +175,15 @@
   "@communityFormat": {
     "description": "Setting for community full name format"
   },
-  "compactView": "Kompakta Rigardo",
+  "compactView": "Kompakta Vido",
   "@compactView": {
     "description": "Label for the compact view option in Setting -> Appearance -> Posts"
   },
-  "compactViewDescription": "Ebligu kompaktan rigardon por ĝustigi agordojn",
+  "compactViewDescription": "Ebligu kompaktan vidon por ĝustigi agordojn",
   "@compactViewDescription": {
     "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
   },
-  "compactViewSettings": "Agordoj de Kompakta Rigardo",
+  "compactViewSettings": "Agordoj de Kompakta Vido",
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
@@ -199,7 +199,7 @@
   "@confirmMarkAllAsReadBody": {
     "description": "The body of the confirm mark all as read dialog"
   },
-  "confirmMarkAllAsReadTitle": "Ĉu marki ĉion kiel legita?",
+  "confirmMarkAllAsReadTitle": "Ĉu marki ĉiun kiel legita?",
   "@confirmMarkAllAsReadTitle": {
     "description": "The title of the confirm mark all as read dialog"
   },
@@ -213,13 +213,13 @@
   },
   "controversial": "Polemika",
   "@controversial": {},
-  "copiedToClipboard": "Kopiita al tondujo",
+  "copiedToClipboard": "Kopiiĝis al tondujo",
   "@copiedToClipboard": {},
   "copy": "Kopii",
   "@copy": {},
   "copyText": "Kopii Tekston",
   "@copyText": {},
-  "couldNotDetermineCommentDelete": "Eraro: Ne eblis determini afiŝon por viŝi la komenton.",
+  "couldNotDetermineCommentDelete": "Eraro: Ne eblis determini afiŝon por forviŝi la komenton.",
   "@couldNotDetermineCommentDelete": {},
   "couldNotDeterminePostComment": "Eraro: Ne eblis determini afiŝon al komenti.",
   "@couldNotDeterminePostComment": {},
@@ -239,11 +239,11 @@
   "@creator": {
     "description": "The creator filter for searches."
   },
-  "crossPostedTo": "Transafiŝita al",
+  "crossPostedTo": "Transafiŝiĝis al",
   "@crossPostedTo": {},
-  "currentLongPress": "Nuntempe agordita kiel longa premo",
+  "currentLongPress": "Nuntempe agordiĝas kiel longa premo",
   "@currentLongPress": {},
-  "currentSinglePress": "Nuntempe agordita kiel ununura premo",
+  "currentSinglePress": "Nuntempe agordiĝas kiel ununura premo",
   "@currentSinglePress": {},
   "customizeSwipeActions": "Agordi glitajn agojn (Premu por ŝanĝi)",
   "@customizeSwipeActions": {},
@@ -255,17 +255,17 @@
   "@debugDescription": {
     "description": "Explanation for debug settings page"
   },
-  "delete": "Viŝi",
+  "delete": "Forviŝi",
   "@delete": {},
-  "deleteLocalDatabase": "Viŝi Lokan Datenbazon",
+  "deleteLocalDatabase": "Forviŝi Lokan Datenbazon",
   "@deleteLocalDatabase": {
     "description": "Label for action to delete local database"
   },
-  "deleteLocalDatabaseDescription": "Ĉi tiu ago viŝos la lokan datenbazon kaj elsalutos vin el ĉiuj viaj kontoj.\n\nĈu vi certas, ke vi volas daŭrigi?",
+  "deleteLocalDatabaseDescription": "Ĉi tiu ago forviŝos la lokan datumbazon kaj elsalutos vin el ĉiuj viaj kontoj.\n\nĈu vi certas, ke vi volas daŭrigi?",
   "@deleteLocalDatabaseDescription": {
     "description": "Description for confirmation action to delete local database"
   },
-  "deleteLocalPreferences": "Viŝi Lokajn Preferojn",
+  "deleteLocalPreferences": "Forviŝi Lokajn Preferojn",
   "@deleteLocalPreferences": {
     "description": "Label for action to delete local preferences"
   },
@@ -283,7 +283,7 @@
   "@displayUserScore": {
     "description": "Option for displaying user scores or karma."
   },
-  "downloadingMedia": "Elŝutante amaskomunikilaron por kunhavigi…",
+  "downloadingMedia": "Elŝutiĝas amaskomunikilaro por kunhavigi…",
   "@downloadingMedia": {},
   "downvote": "Subenvoĉdoni",
   "@downvote": {},
@@ -317,7 +317,7 @@
   "@endSearch": {},
   "errorDownloadingMedia": "Ne eblis elŝuti la amaskomunikilaron por kunhavigi: {errorMessage}",
   "@errorDownloadingMedia": {},
-  "exceptionProcessingUri": "Okazis eraro dum prilaborado de la ligo. Ĝi eble ne estas disponebla en via instanco.",
+  "exceptionProcessingUri": "Okazis eraro dum prilaborado de la ligilo. Ĝi eble ne estas disponebla en via instanco.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
   },
@@ -337,17 +337,17 @@
   "@expandPostPreview": {
     "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
   },
-  "failedToBlock": "Malsukcesis bloki: {errorMessage}",
+  "failedToBlock": "Malsukcesis bari: {errorMessage}",
   "@failedToBlock": {},
-  "failedToLoadBlocks": "Ne eblis ŝargi blokojn: {errorMessage}",
+  "failedToLoadBlocks": "Ne eblis ŝargi barojn: {errorMessage}",
   "@failedToLoadBlocks": {},
-  "failedToUnblock": "Ne eblis malbloki: {errorMessage}",
+  "failedToUnblock": "Ne eblis malbari: {errorMessage}",
   "@failedToUnblock": {},
-  "favorites": "Favoratoj",
+  "favorites": "Plej ŝatataĵoj",
   "@favorites": {
     "description": "The favorited communities on the drawer"
   },
-  "feed": "Abonflua",
+  "feed": "Flua",
   "@feed": {},
   "feedBehaviourSettings": "Fluo",
   "@feedBehaviourSettings": {
@@ -383,7 +383,7 @@
   "@floatingActionButtonSinglePressDescription": {
     "description": "Description of the FAB's single-press action"
   },
-  "fullScreenNavigationSwipeDescription": "Glitu ie ajn por reiri kiam gestoj de maldekstre al dekstre estas malŝaltitaj",
+  "fullScreenNavigationSwipeDescription": "Ŝovumu ie ajn por reiri kiam gestoj de maldekstre al dekstre estas malŝaltitaj",
   "@fullScreenNavigationSwipeDescription": {},
   "general": "Ĝenerala",
   "@general": {
@@ -395,7 +395,7 @@
   },
   "gestures": "Gestoj",
   "@gestures": {},
-  "gettingStarted": "Komencante",
+  "gettingStarted": "Por komenci",
   "@gettingStarted": {},
   "hidePassword": "Kaŝi Pasvorton",
   "@hidePassword": {},
@@ -437,7 +437,7 @@
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "Vi eble ne estas konektita al la Interreto, aŭ via instanco eble nuntempe ne disponeblas.",
   "@internetOrInstanceIssues": {},
-  "keywordFilterDescription": "Filtrigas afiŝojn enhavantajn ajnajn ŝlosilvortojn en la titolo aŭ korpo",
+  "keywordFilterDescription": "Tiu ĉi filtrigas afiŝojn enhavantajn ajnajn ŝlosilvortojn en la titolo aŭ korpo",
   "@keywordFilterDescription": {
     "description": "Description of keyword filter settings"
   },
@@ -449,7 +449,7 @@
   "@language": {
     "description": "Label when creating or editing a post."
   },
-  "languageNotAllowed": "La komunumo al kiu vi afiŝas ne permesas afiŝojn en la lingvo, kiun vi elektis. Provu alian lingvon.",
+  "languageNotAllowed": "La komunumo al kiu vi afiŝas al ne permesas afiŝojn en la lingvo, kiun vi elektis. Provu alian lingvon.",
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
   },
@@ -475,7 +475,7 @@
   "@login": {},
   "loginFailed": "Ne eblis ensaluti. Bonvolu provi denove:({errorMessage})",
   "@loginFailed": {},
-  "loginSucceeded": "Ensalutinte.",
+  "loginSucceeded": "Ensalutiĝis.",
   "@loginSucceeded": {},
   "loginToPerformAction": "Vi devas esti ensalutinta por plenumi ĉi tiun taskon.",
   "@loginToPerformAction": {},
@@ -487,7 +487,7 @@
   },
   "manageAccounts": "Manipuli Kontojn",
   "@manageAccounts": {},
-  "markAllAsRead": "Marki ĉion kiel legita",
+  "markAllAsRead": "Marki Ĉiun Kiel Legita",
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
@@ -519,13 +519,13 @@
   "@noCommentsFound": {},
   "noCommunitiesFound": "Neniuj komunumoj trovitaj",
   "@noCommunitiesFound": {},
-  "noCommunityBlocks": "Neniuj blokitaj komunumoj.",
+  "noCommunityBlocks": "Neniuj baritaj komunumoj.",
   "@noCommunityBlocks": {},
   "noFavoritedCommunities": "Neniuj favoratigitaj komunumoj",
   "@noFavoritedCommunities": {
     "description": "Message for no favorited communities on the drawer"
   },
-  "noInstanceBlocks": "Neniuj blokitaj instancoj.",
+  "noInstanceBlocks": "Neniuj baritaj instancoj.",
   "@noInstanceBlocks": {},
   "noKeywordFilters": "Neniujn ŝlosilvortajn filtrilojn aldonis",
   "@noKeywordFilters": {
@@ -543,7 +543,7 @@
   "@noSubscriptions": {
     "description": "Message for no subscriptions on the drawer"
   },
-  "noUserBlocks": "Neniuj blokitaj uzantoj.",
+  "noUserBlocks": "Neniuj baritaj uzantoj.",
   "@noUserBlocks": {},
   "noUsersFound": "Neniuj uzantoj trovitaj",
   "@noUsersFound": {},
@@ -629,7 +629,7 @@
   "@postURL": {},
   "postUploadImageError": "Ne eblis alŝuti bildon",
   "@postUploadImageError": {},
-  "postViewType": "Tipo de Afiŝa Rigardo",
+  "postViewType": "Tipo de Afiŝa Vido",
   "@postViewType": {
     "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
   },
@@ -651,25 +651,25 @@
   "@refresh": {},
   "refreshContent": "Refreŝigi Enhavon",
   "@refreshContent": {},
-  "remove": "Viŝi",
+  "remove": "Forviŝi",
   "@remove": {},
-  "removeAccount": "Forigi Konton",
+  "removeAccount": "Forpreni Konton",
   "@removeAccount": {},
-  "removeFromFavorites": "Forigi el favoratoj",
+  "removeFromFavorites": "Forpreni el plej ŝatataĵoj",
   "@removeFromFavorites": {
     "description": "Action to remove a community in drawer from favorites"
   },
-  "removeInstance": "Forigi Instancon",
+  "removeInstance": "Forpreni Instancon",
   "@removeInstance": {},
-  "removeKeyword": "Ĉu forigi \"{keyword}\"?",
+  "removeKeyword": "Ĉu forviŝi \"{keyword}\"?",
   "@removeKeyword": {
     "description": "Description of removing a keyword"
   },
-  "removeKeywordFilter": "Forigi Ŝlosilvorton",
+  "removeKeywordFilter": "Forviŝi Ŝlosilvorton",
   "@removeKeywordFilter": {
     "description": "Title for dialig to remove keyword"
   },
-  "removedCommunityFromSubscriptions": "Malabonita de komunumo",
+  "removedCommunityFromSubscriptions": "Malaboniĝis de komunumo",
   "@removedCommunityFromSubscriptions": {},
   "reply": "{count, plural, zero {Respondo} one {Respondo} other {Respondoj} }",
   "@reply": {},
@@ -827,13 +827,13 @@
   "@subscribed": {},
   "subscriptions": "Abonoj",
   "@subscriptions": {},
-  "successfullyBlocked": "Blokita.",
+  "successfullyBlocked": "Bariĝis.",
   "@successfullyBlocked": {},
-  "successfullyBlockedCommunity": "Blokita {communityName}",
+  "successfullyBlockedCommunity": "Bariĝis {communityName}",
   "@successfullyBlockedCommunity": {},
-  "successfullyUnblocked": "Malblokita.",
+  "successfullyUnblocked": "Malbariĝis.",
   "@successfullyUnblocked": {},
-  "successfullyUnblockedCommunity": "Malblokita {communityName}",
+  "successfullyUnblockedCommunity": "Malbariĝis {communityName}",
   "@successfullyUnblockedCommunity": {},
   "suggestedTitle": "Sugestita titolo",
   "@suggestedTitle": {
@@ -923,7 +923,7 @@
   "@unableToLoadPostsFrominstance": {},
   "unableToLoadReplies": "Ne eblas ŝargi pliajn respondojn.",
   "@unableToLoadReplies": {},
-  "unblockInstance": "Malbloki Instancon",
+  "unblockInstance": "Malbari Instancon",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
   },
@@ -1015,7 +1015,7 @@
   "@clearCache": {
     "description": "Label for action to clear cache in the dialog"
   },
-  "clearedCache": "Viŝis kaŝmemoron sukcese.",
+  "clearedCache": "Viŝiĝis kaŝmemoro sukcese.",
   "@clearedCache": {
     "description": "Message indicating that cache was cleared successfully"
   },
@@ -1027,7 +1027,7 @@
   "@commentSwipeActions": {
     "description": "Setting for comment swipe actions"
   },
-  "crossPostedFrom": "transafiŝis de:  {postUrl}",
+  "crossPostedFrom": "transafiŝiĝis de:  {postUrl}",
   "@crossPostedFrom": {
     "description": "Initial heading for text-based cross-post"
   },
@@ -1039,7 +1039,7 @@
   "@defaultFeedSortType": {
     "description": "Default sorting type for the feed."
   },
-  "deleteAccount": "Viŝi Konton",
+  "deleteAccount": "Forviŝi Konton",
   "@deleteAccount": {
     "description": "Label for action to delete account"
   },
@@ -1051,7 +1051,7 @@
   "@collapseParentCommentBodyOnGesture": {
     "description": "Toggle to collapse parent comment body on gesture."
   },
-  "combineNavAndFabDescription": "Flosanta Ago-Butono estos montrita inter navigaj butonoj.",
+  "combineNavAndFabDescription": "Flosanta Ago-Butono estos montrita inter navigadaj butonoj.",
   "@combineNavAndFabDescription": {},
   "commentFontScale": "Komento-Enhava Tipara Grandeco",
   "@commentFontScale": {
@@ -1065,12 +1065,68 @@
   "@defaultCommentSortType": {
     "description": "Setting for default comment sort type"
   },
-  "deleteAccountDescription": "Por permanente viŝi vian konton, vi estos redirektita al via instanca retejo.\n\nĈu vi certas, ke vi volas daŭrigi?",
+  "deleteAccountDescription": "Por permanente forviŝi vian konton, vi estos redirektita al via instanca retejo.\n\nĈu vi certas, ke vi volas daŭrigi?",
   "@deleteAccountDescription": {
     "description": "Description for confirmation action to delete account"
   },
   "disable": "Malebligi",
   "@disable": {
     "description": "Action for disabling something"
+  },
+  "removePost": "Forviŝi Afiŝon",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "successfullyUnblockedUser": "Malbariĝis {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "modAddCommunity": "Aldoni/Forpreni Kontrolantojn al Komunumoj",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "hideNsfwPreviews": "Malklarigi Poradoltenhavajn Antaŭrigardojn",
+  "@hideNsfwPreviews": {
+    "description": "Toggle to blur NSFW previews."
+  },
+  "modAdd": "Aldoni/Forpreni Instancajn Kontrolantojn",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modRemoveComment": "Forviŝi/Restarigi Komentojn",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "removedComment": "Forviŝiĝis Komento",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removedCommunity": "Forviŝiĝis Komunumo",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
+  "removedInstanceMod": "Forpreniĝis Instanca Kontrolanto",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "removedModFromCommunity": "Forpreniĝis Kontrolanto el Komunumo",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "removedPost": "Forviŝigis Afiŝo",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
+  "successfullyBlockedUser": "Bariĝis {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "modRemoveCommunity": "Forviŝi/Restarigi Komunumojn",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "modRemovePost": "Forviŝi/Restarigi Afiŝojn",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
   }
 }

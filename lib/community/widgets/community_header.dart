@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -106,8 +106,11 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                   widget.getCommunityResponse.communityView.community.title,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                 ),
-                                Text(generateCommunityFullName(
-                                    context, widget.getCommunityResponse.communityView.community.name, fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A')),
+                                CommunityFullNameWidget(
+                                  context,
+                                  widget.getCommunityResponse.communityView.community.name,
+                                  fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A',
+                                ),
                                 const SizedBox(height: 8.0),
                                 Row(
                                   children: [
