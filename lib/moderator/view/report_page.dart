@@ -249,7 +249,8 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     overflow: TextOverflow.ellipsis,
                                                     fontScale: thunderState.contentFontSizeScale,
                                                     style: theme.textTheme.bodyMedium?.copyWith(
-                                                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.70),
+                                                      color: theme.colorScheme.error,
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                   ),
                                                   IconButton(
@@ -329,7 +330,8 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     overflow: TextOverflow.ellipsis,
                                                     fontScale: thunderState.contentFontSizeScale,
                                                     style: theme.textTheme.bodyMedium?.copyWith(
-                                                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.70),
+                                                      color: theme.colorScheme.error,
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                   ),
                                                   IconButton(
