@@ -30,7 +30,7 @@ import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:flutter/foundation.dart';
-import 'package:thunder/utils/notifications.dart';
+import 'package:thunder/utils/notifications/notifications.dart';
 import 'package:thunder/utils/preferences.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';

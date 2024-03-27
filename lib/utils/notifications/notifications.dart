@@ -32,9 +32,9 @@ const int _repliesGroupSummaryId = 0;
 /// Displays a push notification on Android
 void showAndroidNotification({
   required int id,
+  required BigTextStyleInformation bigTextStyleInformation,
   String title = '',
   String content = '',
-  required BigTextStyleInformation bigTextStyleInformation,
   String payload = '',
   String summaryText = '',
 }) async {
@@ -51,17 +51,10 @@ void showAndroidNotification({
   final NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
 
   // Show the notification!
-  await flutterLocalNotificationsPlugin.show(
-    id,
-    title,
-    content,
-    notificationDetails,
-    payload: payload,
-  );
+  await flutterLocalNotificationsPlugin.show(id, title, content, notificationDetails, payload: payload);
 
   // Create a summary notification for the group.
-  // Note that it's ok to create this for every message, because it has a fixed ID,
-  // so it will just get 'updated'.
+  // Note that it's ok to create this for every message, because it has a fixed ID, so it will just get 'updated'.
   final InboxStyleInformation inboxStyleInformationSummary = InboxStyleInformation(
     [],
     contentTitle: '',

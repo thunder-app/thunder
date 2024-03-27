@@ -33,7 +33,8 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/language/language.dart';
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/utils/notifications.dart';
+import 'package:thunder/utils/notifications/notifications.dart';
+import 'package:unifiedpush/unifiedpush.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -1007,7 +1008,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             const ListPickerItem(
                               icon: Icons.notifications_rounded,
                               label: "Use Local Notifications (Experimental)",
-                              subtitle: "Periodically checks for notifications in the background. Does not send your JWT token(s) to the server.",
+                              subtitle: "Periodically checks for notifications in the background",
                               payload: NotificationType.local,
                             ),
                             const ListPickerItem(
@@ -1031,6 +1032,23 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             ),
                           ],
                     onSelect: (ListPickerItem<NotificationType> notificationType) async {
+                      if (notificationType.payload == inboxNotificationType) return;
+
+                      // Disable all notifications since the option has changed
+                      if (Platform.isAndroid) {
+                        disableBackgroundFetch();
+                        UnifiedPush.unregister();
+                      } else if (Platform.isIOS) {
+                        // TODO: Disable APNs
+                      }
+
+                      // If disabled, do nothing
+                      if (notificationType.payload == NotificationType.none) {
+                        setPreferences(LocalSettings.inboxNotificationType, notificationType.payload.name);
+                        return;
+                      }
+
+                      // If using local notifications, show a warning
                       if (notificationType.payload == NotificationType.local) {
                         bool res = false;
 
@@ -1041,7 +1059,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               CommonMarkdownBody(body: l10n.notificationsWarningDialog),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: GestureDetector(
@@ -1063,44 +1081,51 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
                         );
 
-                        if (!res) {
-                          // The user chose not to enable the feature. Disable any existing background fetches.
-                          return disableBackgroundFetch();
-                        }
-
-                        // Enable local notifications
-                        initBackgroundFetch();
-                        initHeadlessBackgroundFetch();
-                      } else if (notificationType.payload == NotificationType.unifiedPush) {
-                        // Disable local notifications if present.
-                        disableBackgroundFetch();
+                        if (!res) return;
                       }
 
-                      if (notificationType.payload == NotificationType.local || notificationType.payload == NotificationType.unifiedPush) {
-                        // We're on Android. Request notifications permissions if needed. This is a no-op if on SDK version < 33
-                        AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
-                            FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+                      // Check notifications permissions and enable them if needed
+                      switch (notificationType.payload) {
+                        case NotificationType.local:
+                        case NotificationType.unifiedPush:
+                          // We're on Android. Request notifications permissions if needed. This is a no-op if on SDK version < 33
+                          AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
+                              FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
-                        bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+                          bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
 
-                        if (areAndroidNotificationsAllowed != true) {
-                          areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
-                          if (areAndroidNotificationsAllowed != true) return showSnackbar('Failed to request Android notifications permissions.');
-                        }
-                      } else if (notificationType.payload == NotificationType.apn) {
-                        // We're on iOS. Request notifications permissions if needed.
-                        IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
-                            FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+                          if (areAndroidNotificationsAllowed != true) {
+                            areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
+                            if (areAndroidNotificationsAllowed != true) return showSnackbar('Failed to request Android notifications permissions.');
+                          }
 
-                        NotificationsEnabledOptions? notificationsEnabledOptions = await iosFlutterLocalNotificationsPlugin?.checkPermissions();
+                          // Permissions have been granted, so we can enable notifications
+                          if (notificationType.payload == NotificationType.local) {
+                            initBackgroundFetch();
+                            initHeadlessBackgroundFetch();
+                            setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
+                          } else if (notificationType.payload == NotificationType.unifiedPush) {
+                            // TODO: set up a way to enable UnifiedPush without app restart
+                            setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
+                          }
+                          break;
+                        case NotificationType.apn:
+                          // We're on iOS. Request notifications permissions if needed.
+                          IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
+                              FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
-                        if (notificationsEnabledOptions?.isEnabled != true) {
-                          bool? isEnabled = await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
-                          if (isEnabled != true) return showSnackbar('Failed to request iOS notifications permissions.');
-                        } else {}
+                          NotificationsEnabledOptions? notificationsEnabledOptions = await iosFlutterLocalNotificationsPlugin?.checkPermissions();
+
+                          if (notificationsEnabledOptions?.isEnabled != true) {
+                            bool? isEnabled = await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
+                            if (isEnabled != true) return showSnackbar('Failed to request iOS notifications permissions.');
+                            // TODO: set up a way to enable APNs without app restart
+                            setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
+                          }
+                          break;
+                        default:
+                          break;
                       }
-
-                      setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
                     },
                   );
                 },
