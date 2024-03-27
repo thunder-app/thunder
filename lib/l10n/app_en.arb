@@ -1245,7 +1245,7 @@
   "@replyToPost": {},
   "replyingTo": "Replying to {author}",
   "@replyingTo": {},
-  "report": "Report",
+  "report": "{count, plural, zero {Report} one {Report} other {Reports} } ",
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
@@ -1565,6 +1565,10 @@
   "@standard": {
     "description": "Describes a standard visual density"
   },
+  "status": "Status",
+  "@status": {
+    "description": "Status of the action"
+  },
   "submit": "Submit",
   "@submit": {},
   "subscribe": "Subscribe",
@@ -1735,6 +1739,10 @@
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
   },
+  "unableToResolveReport": "Unable to resolve report",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
+  },
   "unableToRetrieveChangelog": "Unable to retrieve changelog for version {version}.",
   "@unableToRetrieveChangelog": {
     "description": "Error message for when we are unable to retrieve the changelog."
@@ -1780,6 +1788,10 @@
   "unreachable": "Unreachable",
   "@unreachable": {
     "description": "Describes an instance that is currently unreachable"
+  },
+  "unresolved": "Unresolved",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
   },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
