@@ -719,7 +719,7 @@
   "@replyToPost": {},
   "replyingTo": "Responder a {author}",
   "@replyingTo": {},
-  "report": "Report",
+  "report": "{count, plural, zero {Reportes} one {Reporte} other {Reportes} } ",
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
@@ -1882,5 +1882,69 @@
   "showNavigationLabelsDescription": "Mostrar o no etiquetas debajo de los botones de navegación inferiores",
   "@showNavigationLabelsDescription": {
     "description": "Description for setting for showing navigation labels"
+  },
+  "bold": "Negrita",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "communityNameColor": "Color del nombre de la comunidad",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "communityNameThickness": "Espesor del nombre de la comunidad",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
+  "instanceNameColor": "Color del nombre de la instancia",
+  "@instanceNameColor": {
+    "description": "Setting for instance name color"
+  },
+  "instanceNameThickness": "Espesor del nombre de la instancia",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
+  "status": "Estado",
+  "@status": {
+    "description": "Status of the action"
+  },
+  "themeSecondary": "Tema secundario",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "themeTertiary": "Tema terciario",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
+  },
+  "unresolved": "Sin resolver",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
+  },
+  "userNameColor": "Color del nombre de usuario",
+  "@userNameColor": {
+    "description": "Setting for username color"
+  },
+  "userNameThickness": "Espesor del nombre del usuario",
+  "@userNameThickness": {
+    "description": "Setting for user name thickness"
+  },
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
+  "defaultColor": "Por defecto",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
+  },
+  "names": "Nombres",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
+  "themePrimary": "Tema primario",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "unableToResolveReport": "No se puede resolver el informe",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
   }
 }
