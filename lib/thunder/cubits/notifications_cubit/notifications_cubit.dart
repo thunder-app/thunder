@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:thunder/utils/notifications.dart';
+import 'package:thunder/utils/notifications/notifications.dart';
 
 part 'notifications_state.dart';
 

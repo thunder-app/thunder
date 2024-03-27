@@ -11,6 +11,7 @@ class ListOption<T> extends StatelessWidget {
 
   // General
   final String description;
+  final String? subtitle;
   final Widget? bottomSheetHeading;
   final ListPickerItem<T> value;
   final List<ListPickerItem<T>> options;
@@ -32,6 +33,7 @@ class ListOption<T> extends StatelessWidget {
   const ListOption({
     super.key,
     this.description = '',
+    this.subtitle,
     this.bottomSheetHeading,
     required this.value,
     this.options = const [],
@@ -88,7 +90,13 @@ class ListOption<T> extends StatelessWidget {
                   children: [
                     Icon(icon),
                     const SizedBox(width: 8.0),
-                    Text(description, style: theme.textTheme.bodyMedium),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(description, style: theme.textTheme.bodyMedium),
+                        if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+                      ],
+                    ),
                   ],
                 ),
                 Row(

@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/notification_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 
 Future<void> performSharedPreferencesMigration() async {
@@ -25,5 +26,12 @@ Future<void> performSharedPreferencesMigration() async {
   if (legacyCommentUseColorizedUsername != null) {
     await prefs.remove(LocalSettings.commentUseColorizedUsername.name);
     await prefs.setBool(LocalSettings.userFullNameColorizeUserName.name, legacyCommentUseColorizedUsername);
+  }
+
+  // Migrate the enableInboxNotifications setting, if found.
+  bool? legacyEnableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name);
+  if (legacyEnableInboxNotifications != null) {
+    await prefs.remove(LocalSettings.enableInboxNotifications.name);
+    await prefs.setString(LocalSettings.inboxNotificationType.name, legacyEnableInboxNotifications ? NotificationType.local.name : NotificationType.none.name);
   }
 }
