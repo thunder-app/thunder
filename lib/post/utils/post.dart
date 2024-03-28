@@ -14,6 +14,7 @@ import 'package:thunder/core/models/media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/media/video.dart';
@@ -309,7 +310,14 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
 
   // Finally, check to see if we need to fetch the image dimensions
   if (fetchImageDimensions && media.mediaUrl != null) {
-    Size result = await retrieveImageDimensions(imageUrl: media.mediaUrl);
+    Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
+
+    try {
+      result = await retrieveImageDimensions(imageUrl: media.mediaUrl);
+    } catch (e) {
+      debugPrint('$e: Falling back to default image size');
+    }
+
     Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
 
     media.width = size.width;
