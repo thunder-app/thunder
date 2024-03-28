@@ -76,7 +76,13 @@ class _UserSelectorState extends State<UserSelector> {
         },
         child: const Padding(
           padding: EdgeInsets.only(left: 8, top: 4, bottom: 4),
-          child: UserIndicator(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              UserIndicator(),
+              Icon(Icons.chevron_right_rounded),
+            ],
+          ),
         ),
       ),
     );
