@@ -34,6 +34,7 @@ lemmy.zip
 lemmygrad.ml
 lemmynsfw.com
 lemy.lol
+lululemmy.com
 mander.xyz
 midwest.social
 monero.town
@@ -47,3 +48,4 @@ startrek.website
 szmer.info
 thelemmy.club
 ttrpg.network
+yiffit.net

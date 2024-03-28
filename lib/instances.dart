@@ -35,6 +35,7 @@ const List<String> instances = [
   'lemmygrad.ml',
   'lemmynsfw.com',
   'lemy.lol',
+  'lululemmy.com',
   'mander.xyz',
   'midwest.social',
   'monero.town',
@@ -48,4 +49,5 @@ const List<String> instances = [
   'szmer.info',
   'thelemmy.club',
   'ttrpg.network',
+  'yiffit.net',
 ];
