@@ -400,7 +400,7 @@ class _PostPageState extends State<PostPage> {
 
                                               return Future.value(null);
                                             },
-                                            getSuggestions: (_) => Future.value(const Iterable<String>.empty()),
+                                            getSuggestions: (_) => [],
                                             suggestionBuilder: (payload) => Container(),
                                           );
                                         }

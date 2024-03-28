@@ -409,7 +409,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     return [linkTitle!];
                                   }
                                 }
-                                return const Iterable.empty();
+                                return [];
                               },
                               itemBuilder: (BuildContext context, String itemData) {
                                 return ListTile(
@@ -417,10 +417,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   subtitle: Text(l10n.suggestedTitle),
                                 );
                               },
-                              onSuggestionSelected: (String suggestion) {
+                              onSelected: (String suggestion) {
                                 _titleTextController.text = suggestion;
                               },
-                              textFieldConfiguration: TextFieldConfiguration(
+                              builder: (context, controller, focusNode) => TextField(
                                 controller: _titleTextController,
                                 decoration: InputDecoration(hintText: l10n.postTitle),
                               ),
