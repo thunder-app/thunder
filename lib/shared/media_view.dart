@@ -252,9 +252,6 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         height = widget.showFullHeightImages ? widget.postViewMedia.media.first.height : null;
     }
 
-    debugPrint(widget.postViewMedia.media.firstOrNull?.toString());
-    debugPrint("${widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!} Height: $height, Width: $width\n\n");
-
     return ExtendedImage.network(
       color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
       colorBlendMode: widget.read == true ? BlendMode.modulate : null,

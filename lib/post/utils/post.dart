@@ -321,13 +321,10 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
       debugPrint('${media.mediaUrl ?? media.originalUrl} - $e: Falling back to default image size');
     }
 
-    // debugPrint('${media.mediaUrl} image size: ${result.width}x${result.height}');
     Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
 
     media.width = size.width;
     media.height = size.height;
-
-    // debugPrint('${media.mediaUrl} scaled image size: ${media.width}x${media.height}\n');
   }
 
   mediaList.add(media);
