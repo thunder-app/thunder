@@ -120,6 +120,7 @@ class _ThunderState extends State<Thunder> {
   void dispose() {
     textIntentDataStreamSubscription.cancel();
     mediaIntentDataStreamSubscription.cancel();
+    BackButtonInterceptor.remove(_handleBackButtonPress);
     super.dispose();
   }
 
