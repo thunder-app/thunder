@@ -573,6 +573,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           SliverToBoxAdapter(
             child: ToggleOption(
               description: l10n.showPostAuthor,
+              subtitle: l10n.showPostAuthorSubtitle,
               value: showPostAuthor,
               iconEnabled: Icons.person_rounded,
               iconDisabled: Icons.person_off_rounded,
