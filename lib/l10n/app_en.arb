@@ -1515,6 +1515,10 @@
   "@showPostAuthor": {
     "description": "Toggle to show post author."
   },
+  "showPostAuthorSubtitle": "Post author is always shown in community feeds",
+  "@showPostAuthorSubtitle": {
+    "description": "Subtitle for the Show Post Author setting"
+  },
   "showPostCommunityIcons": "Show Community Icons",
   "@showPostCommunityIcons": {
     "description": "Toggle to show community icons."
