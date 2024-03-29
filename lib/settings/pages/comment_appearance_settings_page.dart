@@ -385,7 +385,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               ),
               onTap: () {
                 GoRouter.of(context).push(
-                  SETTINGS_GENERAL_PAGE,
+                  SETTINGS_APPEARANCE_THEMES_PAGE,
                   extra: [
                     context.read<ThunderBloc>(),
                     LocalSettings.userStyle,
