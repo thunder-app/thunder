@@ -218,8 +218,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
-    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postViewMedia.media.first.height : 150);
+    double height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? 150 : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
+
+    debugPrint(widget.postViewMedia.media.firstOrNull?.toString());
+    debugPrint("${widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!} Height: $height, Width: $width\n\n");
 
     return ExtendedImage.network(
       color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
@@ -230,9 +233,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
       clearMemoryCacheWhenDispose: state.imageCachingMode == ImageCachingMode.relaxed,
-      cacheWidth: widget.viewMode == ViewMode.compact
-          ? (75 * View.of(context).devicePixelRatio.ceil())
-          : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
+      cacheWidth: widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : (width * View.of(context).devicePixelRatio.ceil()).toInt(),
+      cacheHeight: widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : (height * View.of(context).devicePixelRatio.ceil()).toInt(),
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
