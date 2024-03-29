@@ -236,7 +236,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   ),
                   const SizedBox(height: 12.0),
                   TypeAheadField<String>(
-                    textFieldConfiguration: TextFieldConfiguration(
+                    builder: (context, controller, focusNode) => TextField(
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.url,
                       autocorrect: false,
@@ -254,14 +254,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     ),
                     suggestionsCallback: (String pattern) {
                       if (pattern.isNotEmpty != true) {
-                        return const Iterable.empty();
+                        return [];
                       }
-                      return instances.where((instance) => instance.contains(pattern));
+                      return instances.where((instance) => instance.contains(pattern)).toList();
                     },
                     itemBuilder: (BuildContext context, String itemData) {
                       return ListTile(title: Text(itemData));
                     },
-                    onSuggestionSelected: (String suggestion) {
+                    onSelected: (String suggestion) {
                       _instanceTextEditingController.text = suggestion;
                       setState(() {
                         instanceValidated = true;

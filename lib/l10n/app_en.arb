@@ -113,6 +113,10 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "bold": "Bold",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
   "boldCommunityName": "Bold Community Name",
   "@boldCommunityName": {
     "description": "Setting for bolding the community name"
@@ -291,6 +295,14 @@
   "@communityFormat": {
     "description": "Setting for community full name format"
   },
+  "communityNameColor": "Community Name Color",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "communityNameThickness": "Community Name Thickness",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
   "communityStyle": "Community Style",
   "@communityStyle": {
     "description": "Heading for community style setting"
@@ -410,6 +422,10 @@
   "debugDescription": "The following debug settings should only be used for troubleshooting purposes.",
   "@debugDescription": {
     "description": "Explanation for debug settings page"
+  },
+  "defaultColor": "Default",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
   },
   "defaultCommentSortType": "Default Comment Sort Type",
   "@defaultCommentSortType": {
@@ -729,6 +745,14 @@
   },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
+  "instanceNameColor": "Instance Name Color",
+  "@instanceNameColor": {
+    "description": "Setting for instance name color"
+  },
+  "instanceNameThickness": "Instance Name Thickness",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
   "keywordFilterDescription": "Filters posts containing any keywords in the title or body",
@@ -917,6 +941,10 @@
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
   "@mustBeLoggedInPost": {},
+  "names": "Names",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
   "navbarDoubleTapGestures": "Navbar Double Tap Gestures",
   "@navbarDoubleTapGestures": {
     "description": "Setting for navbar double tap gestures"
@@ -985,6 +1013,10 @@
   "@noUserBlocks": {},
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
   "notValidUrl": "Not a valid URL",
@@ -1249,7 +1281,7 @@
   "@replyToPost": {},
   "replyingTo": "Replying to {author}",
   "@replyingTo": {},
-  "report": "Report",
+  "report": "{count, plural, zero {Report} one {Report} other {Reports} } ",
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
@@ -1473,6 +1505,14 @@
   "@showLess": {},
   "showMore": "Show more",
   "@showMore": {},
+  "showNavigationLabels": "Show Navigation Labels",
+  "@showNavigationLabels": {
+    "description": "Setting for showing navigation labels"
+  },
+  "showNavigationLabelsDescription": "Whether to display labels beneath the bottom navigation buttons",
+  "@showNavigationLabelsDescription": {
+    "description": "Description for setting for showing navigation labels"
+  },
   "showPassword": "Show Password",
   "@showPassword": {},
   "showPostAuthor": "Show Post Author",
@@ -1561,6 +1601,10 @@
   "@standard": {
     "description": "Describes a standard visual density"
   },
+  "status": "Status",
+  "@status": {
+    "description": "Status of the action"
+  },
   "submit": "Submit",
   "@submit": {},
   "subscribe": "Subscribe",
@@ -1616,6 +1660,18 @@
   "themeAccentColor": "Accent Colors",
   "@themeAccentColor": {
     "description": "Setting for theme accent color"
+  },
+  "themePrimary": "Theme Primary",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "themeSecondary": "Theme Secondary",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "themeTertiary": "Theme Tertiary",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
   },
   "theming": "Theming",
   "@theming": {
@@ -1731,6 +1787,10 @@
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
   },
+  "unableToResolveReport": "Unable to resolve report",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
+  },
   "unableToRetrieveChangelog": "Unable to retrieve changelog for version {version}.",
   "@unableToRetrieveChangelog": {
     "description": "Error message for when we are unable to retrieve the changelog."
@@ -1776,6 +1836,10 @@
   "unreachable": "Unreachable",
   "@unreachable": {
     "description": "Describes an instance that is currently unreachable"
+  },
+  "unresolved": "Unresolved",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
   },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
@@ -1832,6 +1896,14 @@
   "userFormat": "User Format",
   "@userFormat": {
     "description": "Setting for user full name format"
+  },
+  "userNameColor": "User Name Color",
+  "@userNameColor": {
+    "description": "Setting for username color"
+  },
+  "userNameThickness": "User Name Thickness",
+  "@userNameThickness": {
+    "description": "Setting for user name thickness"
   },
   "userNotLoggedIn": "User not logged in",
   "@userNotLoggedIn": {},

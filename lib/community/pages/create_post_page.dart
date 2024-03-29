@@ -409,7 +409,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     return [linkTitle!];
                                   }
                                 }
-                                return const Iterable.empty();
+                                return [];
                               },
                               itemBuilder: (BuildContext context, String itemData) {
                                 return ListTile(
@@ -417,10 +417,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   subtitle: Text(l10n.suggestedTitle),
                                 );
                               },
-                              onSuggestionSelected: (String suggestion) {
+                              onSelected: (String suggestion) {
                                 _titleTextController.text = suggestion;
                               },
-                              textFieldConfiguration: TextFieldConfiguration(
+                              builder: (context, controller, focusNode) => TextField(
                                 controller: _titleTextController,
                                 decoration: InputDecoration(hintText: l10n.postTitle),
                               ),
@@ -773,35 +773,41 @@ class _CommunitySelectorState extends State<CommunitySelector> {
         child: Padding(
           padding: const EdgeInsets.only(left: 8, top: 4, bottom: 4),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CommunityAvatar(community: widget.communityView?.community, radius: 16),
-              const SizedBox(width: 12),
-              widget.communityId != null
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${widget.communityView?.community.title} '),
-                        CommunityFullNameWidget(
-                          context,
-                          widget.communityView?.community.name,
-                          fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
-                          textStyle: theme.textTheme.bodySmall,
+              Row(
+                children: [
+                  CommunityAvatar(community: widget.communityView?.community, radius: 16),
+                  const SizedBox(width: 12),
+                  widget.communityId != null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${widget.communityView?.community.title} '),
+                            CommunityFullNameWidget(
+                              context,
+                              widget.communityView?.community.name,
+                              fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                              textStyle: theme.textTheme.bodySmall,
+                            )
+                          ],
                         )
-                      ],
-                    )
-                  : SizedBox(
-                      height: 36,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          l10n.selectCommunity,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: theme.colorScheme.error,
+                      : SizedBox(
+                          height: 36,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              l10n.selectCommunity,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: theme.colorScheme.error,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                ],
+              ),
+              const Icon(Icons.chevron_right_rounded),
             ],
           ),
         ),

@@ -322,6 +322,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
           },
         ),
         PopupMenuButton(
+          onOpened: () => HapticFeedback.mediumImpact(),
           itemBuilder: (context) => [
             ThunderPopupMenuItem(
               onTap: () async {
