@@ -80,7 +80,7 @@ class LinkPreviewCard extends StatelessWidget {
                         child: ImagePreview(
                           read: read,
                           url: mediaURL ?? originURL!,
-                          height: showFullHeightImages ? mediaHeight : 150,
+                          height: showFullHeightImages ? mediaHeight : ViewMode.comfortable.height,
                           width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
                           isExpandable: false,
                         ),
@@ -88,13 +88,13 @@ class LinkPreviewCard extends StatelessWidget {
                     : ImagePreview(
                         read: read,
                         url: mediaURL ?? originURL!,
-                        height: showFullHeightImages ? mediaHeight : 150,
+                        height: showFullHeightImages ? mediaHeight : ViewMode.comfortable.height,
                         width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
                         isExpandable: false,
                       )
               ] else if (scrapeMissingPreviews)
                 SizedBox(
-                  height: 150,
+                  height: ViewMode.comfortable.height,
                   // This is used for external links when Lemmy does not provide a preview thumbnail
                   // and when the user has enabled external scraping.
                   // This is only used in comfortable mode.
@@ -161,22 +161,22 @@ class LinkPreviewCard extends StatelessWidget {
                         child: ImagePreview(
                           read: read,
                           url: mediaURL!,
-                          height: 75,
-                          width: 75,
+                          height: ViewMode.compact.height,
+                          width: ViewMode.compact.height,
                           isExpandable: false,
                         ),
                       )
                     : ImagePreview(
                         read: read,
                         url: mediaURL!,
-                        height: 75,
-                        width: 75,
+                        height: ViewMode.compact.height,
+                        width: ViewMode.compact.height,
                         isExpandable: false,
                       )
                 : scrapeMissingPreviews
                     ? SizedBox(
-                        height: 75,
-                        width: 75,
+                        height: ViewMode.compact.height,
+                        width: ViewMode.compact.height,
                         // This is used for external links when Lemmy does not provide a preview thumbnail
                         // and when the user has enabled external scraping.
                         // This is only used in compact mode.
@@ -201,8 +201,8 @@ class LinkPreviewCard extends StatelessWidget {
                     // This is used for link previews when no thumbnail comes from Lemmy
                     // and the user has disabled scraping. This is only in compact mode.
                     : Container(
-                        height: 75,
-                        width: 75,
+                        height: ViewMode.compact.height,
+                        width: ViewMode.compact.height,
                         color: theme.cardColor.darken(5),
                         child: Icon(
                           hideNsfw ? null : Icons.language,

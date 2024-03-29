@@ -17,6 +17,7 @@ import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
+import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/feed.dart';
@@ -1159,8 +1160,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         children: [
           !showThumbnailPreviewOnRight
               ? Container(
-                  width: 75,
-                  height: 75,
+                  width: ViewMode.compact.height,
+                  height: ViewMode.compact.height,
                   margin: const EdgeInsets.only(right: 8.0),
                   decoration: BoxDecoration(
                     color: theme.dividerColor,
@@ -1212,8 +1213,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           showThumbnailPreviewOnRight
               ? Container(
-                  width: 75,
-                  height: 75,
+                  width: ViewMode.compact.height,
+                  height: ViewMode.compact.height,
                   margin: const EdgeInsets.only(right: 8.0),
                   decoration: BoxDecoration(
                     color: theme.dividerColor,
