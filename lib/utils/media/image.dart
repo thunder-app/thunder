@@ -102,7 +102,7 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
       }
     }
   } catch (e) {
-    throw Exception('Failed to retrieve image dimensions');
+    throw Exception('Failed to retrieve image dimensions from $imageUrl: $e');
   }
 
   throw Exception('Invalid image type: $imageUrl');
