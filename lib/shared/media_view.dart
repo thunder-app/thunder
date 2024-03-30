@@ -195,6 +195,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             ),
             if (blurNSFWPreviews)
               Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
                   if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
