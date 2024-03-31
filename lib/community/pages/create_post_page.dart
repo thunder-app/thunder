@@ -402,6 +402,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                             const SizedBox(height: 12.0),
                             TypeAheadField<String>(
+                              controller: _titleTextController,
                               suggestionsCallback: (String pattern) async {
                                 if (pattern.isEmpty) {
                                   String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
@@ -421,7 +422,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 _titleTextController.text = suggestion;
                               },
                               builder: (context, controller, focusNode) => TextField(
-                                controller: _titleTextController,
+                                controller: controller,
+                                focusNode: focusNode,
                                 decoration: InputDecoration(hintText: l10n.postTitle),
                               ),
                               hideOnEmpty: true,

@@ -458,8 +458,10 @@ void showInputDialog<T>({
           mainAxisSize: MainAxisSize.min,
           children: [
             TypeAheadField<T>(
+              controller: textController,
               builder: (context, controller, focusNode) => TextField(
-                controller: textController,
+                controller: controller,
+                focusNode: focusNode,
                 onChanged: (value) {
                   setPrimaryButtonEnabled(value.trim().isNotEmpty);
                   setState(() => contentWidgetError = null);
