@@ -299,6 +299,9 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {
     // Now check to see if there is a thumbnail image. If there is, we'll use that for the image
     media.mediaUrl = thumbnailUrl;
+  } else if (isImage) {
+    // If there is no thumbnail image, but the url is an image, we'll use that for the mediaUrl
+    media.mediaUrl = url;
   } else if (scrapeMissingPreviews) {
     // If there is no thumbnail image, we'll see if we should try to fetch the link metadata
     LinkInfo linkInfo = await getLinkInfo(url);
@@ -313,9 +316,9 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
 
     try {
-      result = await retrieveImageDimensions(imageUrl: media.mediaUrl);
+      result = await retrieveImageDimensions(imageUrl: media.mediaUrl ?? media.originalUrl).timeout(const Duration(seconds: 2));
     } catch (e) {
-      debugPrint('$e: Falling back to default image size');
+      debugPrint('${media.mediaUrl ?? media.originalUrl} - $e: Falling back to default image size');
     }
 
     Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
