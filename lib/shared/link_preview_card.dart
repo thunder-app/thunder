@@ -225,6 +225,7 @@ class LinkPreviewCard extends StatelessWidget {
                 child: InkWell(
                   splashColor: theme.colorScheme.primary.withOpacity(0.4),
                   onTap: () => triggerOnTap(context),
+                  onLongPress: originURL != null ? () => handleLinkLongPress(context, thunderState, originURL!, originURL) : null,
                 ),
               ),
             ),
