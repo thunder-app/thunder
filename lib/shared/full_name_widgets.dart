@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -16,6 +17,7 @@ class UserFullNameWidget extends StatelessWidget {
   final TextStyle? textStyle;
   final bool includeInstance;
   final FontScale? fontScale;
+  final bool autoSize;
 
   const UserFullNameWidget(
     this.outerContext,
@@ -30,6 +32,7 @@ class UserFullNameWidget extends StatelessWidget {
     this.textStyle,
     this.includeInstance = true,
     this.fontScale,
+    this.autoSize = false,
   })  : assert(outerContext != null || (userSeparator != null && userNameThickness != null && userNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
         assert(outerContext != null || textStyle != null);
 
@@ -43,35 +46,45 @@ class UserFullNameWidget extends StatelessWidget {
     NameColor instanceNameColor = this.instanceNameColor ?? outerContext!.read<ThunderBloc>().state.userFullNameInstanceNameColor;
     TextStyle? textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
 
-    return Text.rich(
-      softWrap: false,
-      overflow: TextOverflow.fade,
-      style: textStyle,
-      textScaler: TextScaler.noScaling,
-      TextSpan(
-        children: [
+    TextSpan textSpan = TextSpan(
+      children: [
+        TextSpan(
+          text: prefix,
+          style: textStyle!.copyWith(
+            fontWeight: userNameThickness.toWeight(),
+            color: userNameColor.color == NameColor.defaultColor ? null : userNameColor.toColor(context),
+            fontSize:
+                outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
+          ),
+        ),
+        if (includeInstance == true)
           TextSpan(
-            text: prefix,
-            style: textStyle!.copyWith(
-              fontWeight: userNameThickness.toWeight(),
-              color: userNameColor.color == NameColor.defaultColor ? null : userNameColor.toColor(context),
+            text: suffix,
+            style: textStyle.copyWith(
+              fontWeight: instanceNameThickness.toWeight(),
+              color: instanceNameColor.color == NameColor.defaultColor ? null : instanceNameColor.toColor(context),
               fontSize:
                   outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
             ),
           ),
-          if (includeInstance == true)
-            TextSpan(
-              text: suffix,
-              style: textStyle.copyWith(
-                fontWeight: instanceNameThickness.toWeight(),
-                color: instanceNameColor.color == NameColor.defaultColor ? null : instanceNameColor.toColor(context),
-                fontSize:
-                    outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
-              ),
-            ),
-        ],
-      ),
+      ],
     );
+
+    return autoSize
+        ? AutoSizeText.rich(
+            softWrap: false,
+            maxLines: 1,
+            overflow: TextOverflow.fade,
+            style: textStyle,
+            textSpan,
+          )
+        : Text.rich(
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            style: textStyle,
+            textScaler: TextScaler.noScaling,
+            textSpan,
+          );
   }
 }
 
@@ -87,6 +100,7 @@ class CommunityFullNameWidget extends StatelessWidget {
   final TextStyle? textStyle;
   final bool includeInstance;
   final FontScale? fontScale;
+  final bool autoSize;
 
   const CommunityFullNameWidget(
     this.outerContext,
@@ -101,6 +115,7 @@ class CommunityFullNameWidget extends StatelessWidget {
     this.textStyle,
     this.includeInstance = true,
     this.fontScale,
+    this.autoSize = false,
   })  : assert(outerContext != null || (communitySeparator != null && communityNameThickness != null && communityNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
         assert(outerContext != null || textStyle != null);
 
@@ -114,34 +129,44 @@ class CommunityFullNameWidget extends StatelessWidget {
     NameColor instanceNameColor = this.instanceNameColor ?? outerContext!.read<ThunderBloc>().state.communityFullNameInstanceNameColor;
     TextStyle? textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
 
-    return Text.rich(
-      softWrap: false,
-      overflow: TextOverflow.fade,
-      style: textStyle,
-      textScaler: TextScaler.noScaling,
-      TextSpan(
-        children: [
+    TextSpan textSpan = TextSpan(
+      children: [
+        TextSpan(
+          text: prefix,
+          style: textStyle!.copyWith(
+            fontWeight: communityNameThickness.toWeight(),
+            color: communityNameColor.color == NameColor.defaultColor ? null : communityNameColor.toColor(context),
+            fontSize:
+                outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
+          ),
+        ),
+        if (includeInstance == true)
           TextSpan(
-            text: prefix,
-            style: textStyle!.copyWith(
-              fontWeight: communityNameThickness.toWeight(),
-              color: communityNameColor.color == NameColor.defaultColor ? null : communityNameColor.toColor(context),
+            text: suffix,
+            style: textStyle.copyWith(
+              fontWeight: instanceNameThickness.toWeight(),
+              color: instanceNameColor.color == NameColor.defaultColor ? null : instanceNameColor.toColor(context),
               fontSize:
                   outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
             ),
           ),
-          if (includeInstance == true)
-            TextSpan(
-              text: suffix,
-              style: textStyle.copyWith(
-                fontWeight: instanceNameThickness.toWeight(),
-                color: instanceNameColor.color == NameColor.defaultColor ? null : instanceNameColor.toColor(context),
-                fontSize:
-                    outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
-              ),
-            ),
-        ],
-      ),
+      ],
     );
+
+    return autoSize
+        ? AutoSizeText.rich(
+            softWrap: false,
+            maxLines: 1,
+            overflow: TextOverflow.fade,
+            style: textStyle,
+            textSpan,
+          )
+        : Text.rich(
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            style: textStyle,
+            textScaler: TextScaler.noScaling,
+            textSpan,
+          );
   }
 }
