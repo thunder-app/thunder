@@ -96,8 +96,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         color: theme.cardColor.darken(5),
         child: widget.postViewMedia.postView.post.body?.isNotEmpty == true
             ? SizedBox(
-                height: 75.0,
-                width: 75.0,
+                height: ViewMode.compact.height,
+                width: ViewMode.compact.height,
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Align(
@@ -113,8 +113,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 ),
               )
             : Container(
-                height: 75,
-                width: 75,
+                height: ViewMode.compact.height,
+                width: ViewMode.compact.height,
                 color: theme.cardColor.darken(5),
                 child: Icon(
                   Icons.text_fields_rounded,
@@ -163,8 +163,29 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       },
       child: Container(
         clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12))),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+          color: theme.colorScheme.primary.withOpacity(0.2),
+        ),
+        constraints: BoxConstraints(
+            maxHeight: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? ViewMode.comfortable.height : ViewMode.comfortable.height,
+            },
+            minHeight: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? ViewMode.comfortable.height : ViewMode.comfortable.height,
+            },
+            maxWidth: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
+            },
+            minWidth: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
+            }),
         child: Stack(
+          fit: StackFit.expand,
           alignment: Alignment.center,
           children: [
             ImageFiltered(
@@ -174,6 +195,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             ),
             if (blurNSFWPreviews)
               Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
                   if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
@@ -218,8 +241,18 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
-    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postViewMedia.media.first.height : 150);
-    double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
+    double? width;
+    double? height;
+
+    switch (widget.viewMode) {
+      case ViewMode.compact:
+        width = null; // Setting this to null will use the image's width. This will allow the image to not be stretched or squished.
+        height = ViewMode.compact.height;
+        break;
+      case ViewMode.comfortable:
+        width = MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
+        height = widget.showFullHeightImages ? widget.postViewMedia.media.first.height : null;
+    }
 
     return ExtendedImage.network(
       color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
@@ -230,9 +263,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
       clearMemoryCacheWhenDispose: state.imageCachingMode == ImageCachingMode.relaxed,
-      cacheWidth: widget.viewMode == ViewMode.compact
-          ? (75 * View.of(context).devicePixelRatio.ceil())
-          : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
+      cacheWidth: width != null ? (width * View.of(context).devicePixelRatio.ceil()).toInt() : null,
+      cacheHeight: height != null ? (height * View.of(context).devicePixelRatio.ceil()).toInt() : null,
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:

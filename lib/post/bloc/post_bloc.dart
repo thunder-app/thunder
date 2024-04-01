@@ -617,9 +617,21 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   Future<void> _navigateCommentEvent(NavigateCommentEvent event, Emitter<PostState> emit) async {
     if (event.direction == NavigateCommentDirection.up) {
-      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: max(0, event.targetIndex), navigateCommentId: state.navigateCommentId + 1));
+      return emit(state.copyWith(
+        status: PostStatus.success,
+        navigateCommentIndex: max(0, event.targetIndex),
+        navigateCommentId: state.navigateCommentId + 1,
+        selectedCommentId: state.selectedCommentId,
+        selectedCommentPath: state.selectedCommentPath,
+      ));
     } else {
-      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: event.targetIndex, navigateCommentId: state.navigateCommentId + 1));
+      return emit(state.copyWith(
+        status: PostStatus.success,
+        navigateCommentIndex: event.targetIndex,
+        navigateCommentId: state.navigateCommentId + 1,
+        selectedCommentId: state.selectedCommentId,
+        selectedCommentPath: state.selectedCommentPath,
+      ));
     }
   }
 

@@ -94,7 +94,7 @@ class _CommentReferenceState extends State<CommentReference> {
           ${formatTimeToString(dateTime: (widget.comment.comment.updated ?? widget.comment.comment.published).toIso8601String())}\n
           ${widget.comment.comment.content}""",
       child: InkWell(
-        onTap: () async => await navigateToComment(context, widget.comment),
+        onTap: widget.comment.post.deleted ? null : () async => await navigateToComment(context, widget.comment),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: Column(
@@ -111,6 +111,14 @@ class _CommentReferenceState extends State<CommentReference> {
                         children: [
                           Row(
                             children: [
+                              if (widget.comment.post.deleted) ...[
+                                const Icon(
+                                  Icons.delete_rounded,
+                                  size: 15,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(width: 5),
+                              ],
                               Flexible(
                                 child: ExcludeSemantics(
                                   child: Text(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -62,9 +63,9 @@ void showUserInputDialog(BuildContext context, {required String title, required 
   );
 }
 
-Future<Iterable<PersonView>> getUserSuggestions(String query) async {
+Future<List<PersonView>> getUserSuggestions(String query) async {
   if (query.isNotEmpty != true) {
-    return const Iterable.empty();
+    return [];
   }
   Account? account = await fetchActiveProfileAccount();
   final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
@@ -104,7 +105,7 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
 }
 
 /// Shows a dialog which allows typing/search for a community
-void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, Iterable<CommunityView>? emptySuggestions}) async {
+void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, List<CommunityView>? emptySuggestions}) async {
   try {
     final AccountState accountState = context.read<AccountBloc>().state;
     emptySuggestions ??= accountState.subsciptions;
@@ -151,9 +152,9 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
   );
 }
 
-Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, String query, Iterable<CommunityView>? emptySuggestions) async {
+Future<List<CommunityView>> getCommunitySuggestions(BuildContext context, String query, List<CommunityView>? emptySuggestions) async {
   if (query.isNotEmpty != true) {
-    return emptySuggestions ?? const Iterable.empty();
+    return emptySuggestions ?? [];
   }
   Account? account = await fetchActiveProfileAccount();
   final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
@@ -173,7 +174,7 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, St
     }
   }
 
-  return prioritizeFavorites(searchResponse.communities.toList(), favorites) ?? const Iterable.empty();
+  return prioritizeFavorites(searchResponse.communities.toList(), favorites) ?? [];
 }
 
 Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payload, {void Function(CommunityView)? onSelected}) {
@@ -279,12 +280,12 @@ void showInstanceInputDialog(
   }
 }
 
-Future<Iterable<InstanceWithFederationState>> getInstanceSuggestions(String query, Iterable<InstanceWithFederationState>? emptySuggestions) async {
+Future<List<InstanceWithFederationState>> getInstanceSuggestions(String query, List<InstanceWithFederationState>? emptySuggestions) async {
   if (query.isEmpty) {
-    return const Iterable.empty();
+    return [];
   }
 
-  Iterable<InstanceWithFederationState> filteredInstances = emptySuggestions?.where((InstanceWithFederationState instance) => instance.domain.contains(query)) ?? const Iterable.empty();
+  List<InstanceWithFederationState> filteredInstances = emptySuggestions?.where((InstanceWithFederationState instance) => instance.domain.contains(query)).toList() ?? [];
   return filteredInstances;
 }
 
@@ -356,7 +357,7 @@ void showLanguageInputDialog(BuildContext context, {required String title, requi
   }
 }
 
-Future<Iterable<Language>> getLanguageSuggestions(BuildContext context, String query, Iterable<Language>? emptySuggestions) async {
+Future<List<Language>> getLanguageSuggestions(BuildContext context, String query, List<Language>? emptySuggestions) async {
   final Locale currentLocale = Localizations.localeOf(context);
 
   final Language? currentLanguage = emptySuggestions?.firstWhereOrNull((Language l) => l.code == currentLocale.languageCode);
@@ -370,7 +371,7 @@ Future<Iterable<Language>> getLanguageSuggestions(BuildContext context, String q
     return emptySuggestions ?? [];
   }
 
-  Iterable<Language> filteredLanguages = emptySuggestions?.where((Language language) => language.name.toLowerCase().contains(query.toLowerCase())) ?? const Iterable.empty();
+  List<Language> filteredLanguages = emptySuggestions?.where((Language language) => language.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
   return filteredLanguages;
 }
 
@@ -416,7 +417,7 @@ void showKeywordInputDialog(BuildContext context, {required String title, requir
       title: title,
       inputLabel: l10n.addKeywordFilter,
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => [] as Future<Iterable<String>>,
+      getSuggestions: (query) => [],
       suggestionBuilder: (payload) => Container(),
     );
   }
@@ -428,7 +429,7 @@ void showInputDialog<T>({
   required String title,
   required String inputLabel,
   required Future<String?> Function({T? payload, String? value}) onSubmitted,
-  required Future<Iterable<T>> Function(String query) getSuggestions,
+  required FutureOr<List<T>?> Function(String query) getSuggestions,
   required Widget Function(T payload) suggestionBuilder,
 }) async {
   final textController = TextEditingController();
@@ -457,8 +458,10 @@ void showInputDialog<T>({
           mainAxisSize: MainAxisSize.min,
           children: [
             TypeAheadField<T>(
-              textFieldConfiguration: TextFieldConfiguration(
-                controller: textController,
+              controller: textController,
+              builder: (context, controller, focusNode) => TextField(
+                controller: controller,
+                focusNode: focusNode,
                 onChanged: (value) {
                   setPrimaryButtonEnabled(value.trim().isNotEmpty);
                   setState(() => contentWidgetError = null);
@@ -478,7 +481,7 @@ void showInputDialog<T>({
               ),
               suggestionsCallback: getSuggestions,
               itemBuilder: (context, payload) => suggestionBuilder(payload),
-              onSuggestionSelected: (payload) async {
+              onSelected: (payload) async {
                 setPrimaryButtonEnabled(false);
                 final String? submitError = await onSubmitted(payload: payload);
                 setState(() => contentWidgetError = submitError);
