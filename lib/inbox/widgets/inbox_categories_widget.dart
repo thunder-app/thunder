@@ -15,9 +15,11 @@ class InboxCategoryWidget extends StatelessWidget {
     super.key,
     required this.onSelected,
     required this.inboxType,
+    required this.unreadCounts,
   });
   final ValueChanged<InboxType?> onSelected;
   final InboxType? inboxType;
+  final Map<InboxType, int> unreadCounts;
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +43,14 @@ class InboxCategoryWidget extends StatelessWidget {
     return Wrap(
       spacing: 5.0,
       children: inboxCategories.map((InboxCategory inboxCategory) {
-        return ChoiceChip(
-          label: Text(inboxCategory.title),
-          selected: inboxType == inboxCategory.type,
-          onSelected: (selected) => onSelected(inboxCategory.type),
+        return Badge(
+          isLabelVisible: (unreadCounts[inboxCategory.type] ?? 0) > 0,
+          label: Text((unreadCounts[inboxCategory.type] ?? 0) > 99 ? '99+' : unreadCounts[inboxCategory.type]?.toString() ?? ''),
+          child: ChoiceChip(
+            label: Text(inboxCategory.title),
+            selected: inboxType == inboxCategory.type,
+            onSelected: (selected) => onSelected(inboxCategory.type),
+          ),
         );
       }).toList(),
     );

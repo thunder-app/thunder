@@ -14,6 +14,9 @@ class InboxState extends Equatable {
     this.inboxMentionPage = 1,
     this.inboxPrivateMessagePage = 1,
     this.totalUnreadCount = 0,
+    this.repliesUnreadCount = 0,
+    this.mentionsUnreadCount = 0,
+    this.messagesUnreadCount = 0,
     this.hasReachedInboxReplyEnd = false,
     this.hasReachedInboxMentionEnd = false,
     this.hasReachedInboxPrivateMessageEnd = false,
@@ -33,6 +36,9 @@ class InboxState extends Equatable {
   final int inboxPrivateMessagePage;
 
   final int totalUnreadCount;
+  final int repliesUnreadCount;
+  final int mentionsUnreadCount;
+  final int messagesUnreadCount;
 
   final bool hasReachedInboxReplyEnd;
   final bool hasReachedInboxMentionEnd;
@@ -49,6 +55,9 @@ class InboxState extends Equatable {
     int? inboxMentionPage,
     int? inboxPrivateMessagePage,
     int? totalUnreadCount,
+    int? repliesUnreadCount,
+    int? mentionsUnreadCount,
+    int? messagesUnreadCount,
     bool? hasReachedInboxReplyEnd,
     bool? hasReachedInboxMentionEnd,
     bool? hasReachedInboxPrivateMessageEnd,
@@ -64,6 +73,9 @@ class InboxState extends Equatable {
       inboxMentionPage: inboxMentionPage ?? this.inboxMentionPage,
       inboxPrivateMessagePage: inboxPrivateMessagePage ?? this.inboxPrivateMessagePage,
       totalUnreadCount: totalUnreadCount ?? this.totalUnreadCount,
+      repliesUnreadCount: repliesUnreadCount ?? this.repliesUnreadCount,
+      mentionsUnreadCount: mentionsUnreadCount ?? this.mentionsUnreadCount,
+      messagesUnreadCount: messagesUnreadCount ?? this.messagesUnreadCount,
       hasReachedInboxReplyEnd: hasReachedInboxReplyEnd ?? this.hasReachedInboxReplyEnd,
       hasReachedInboxMentionEnd: hasReachedInboxMentionEnd ?? this.hasReachedInboxMentionEnd,
       hasReachedInboxPrivateMessageEnd: hasReachedInboxPrivateMessageEnd ?? this.hasReachedInboxPrivateMessageEnd,
@@ -82,6 +94,9 @@ class InboxState extends Equatable {
         inboxMentionPage,
         inboxPrivateMessagePage,
         totalUnreadCount,
+        repliesUnreadCount,
+        mentionsUnreadCount,
+        messagesUnreadCount,
         hasReachedInboxReplyEnd,
         hasReachedInboxMentionEnd,
         hasReachedInboxPrivateMessageEnd,

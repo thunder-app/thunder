@@ -102,19 +102,28 @@ class _InboxPageState extends State<InboxPage> {
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(45.0),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Center(
-              child: InboxCategoryWidget(
-                inboxType: inboxType,
-                onSelected: (InboxType? selected) {
-                  _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
-                  setState(() {
-                    inboxType = selected;
-                  });
-                },
-              ),
-            ),
+          child: BlocBuilder<InboxBloc, InboxState>(
+            builder: (context, state) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Center(
+                  child: InboxCategoryWidget(
+                    inboxType: inboxType,
+                    onSelected: (InboxType? selected) {
+                      _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
+                      setState(() {
+                        inboxType = selected;
+                      });
+                    },
+                    unreadCounts: {
+                      InboxType.replies: context.read<InboxBloc>().state.repliesUnreadCount,
+                      InboxType.mentions: context.read<InboxBloc>().state.mentionsUnreadCount,
+                      InboxType.messages: context.read<InboxBloc>().state.messagesUnreadCount,
+                    },
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
