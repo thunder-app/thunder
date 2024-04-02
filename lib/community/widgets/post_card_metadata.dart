@@ -515,7 +515,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
     super.key,
     required this.postView,
     required this.showCommunityIcons,
-    required this.communityMode,
+    required this.feedType,
     this.textStyleAuthor,
     this.textStyleCommunity,
     required this.compactMode,
@@ -523,7 +523,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
   });
 
   final bool showCommunityIcons;
-  final bool communityMode;
+  final FeedType? feedType;
   final bool compactMode;
   final PostView postView;
   final TextStyle? textStyleAuthor;
@@ -536,6 +536,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
 
     return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
       final String? creatorName = postView.creator.displayName != null && state.useDisplayNames ? postView.creator.displayName : postView.creator.name;
+      final bool showUsername = (state.showPostAuthor || feedType == FeedType.community) && feedType != FeedType.user;
+      final bool showCommunityName = feedType != FeedType.community;
 
       return Row(
         children: [
@@ -555,7 +557,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 alignment: WrapAlignment.start,
                 crossAxisAlignment: WrapCrossAlignment.end,
                 children: [
-                  if (state.showPostAuthor || communityMode)
+                  if (showUsername)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -571,7 +573,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             textStyle: textStyleAuthor,
                           ),
                         ),
-                        if (!communityMode)
+                        if (showUsername && showCommunityName)
                           ScalableText(
                             ' to ',
                             fontScale: state.metadataFontSizeScale,
@@ -587,7 +589,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (!communityMode)
+                        if (showCommunityName)
                           CommunityFullNameWidget(
                             context,
                             postView.community.name,

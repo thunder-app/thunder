@@ -12,6 +12,7 @@ import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/comment_reference.dart';
@@ -269,6 +270,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       onVoteAction: (int postId, int voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
                       onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
                       indicateRead: !widget.isAccountUser,
+                      feedType: FeedType.user,
                     ),
                   ),
                 if (!savedToggle!.value && selectedUserOption == 1)
@@ -378,6 +380,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       onVoteAction: (int postId, int voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
                       onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
                       indicateRead: !widget.isAccountUser,
+                      feedType: FeedType.user,
                     ),
                   ),
                 if (savedToggle!.value && selectedUserOption == 1)

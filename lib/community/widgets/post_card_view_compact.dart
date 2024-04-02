@@ -13,12 +13,13 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardViewCompact extends StatelessWidget {
   final PostViewMedia postViewMedia;
-  final bool communityMode;
+  final FeedType? feedType;
   final bool isUserLoggedIn;
   final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
@@ -28,7 +29,7 @@ class PostCardViewCompact extends StatelessWidget {
   const PostCardViewCompact({
     super.key,
     required this.postViewMedia,
-    required this.communityMode,
+    required this.feedType,
     required this.isUserLoggedIn,
     required this.listingType,
     this.navigateToPost,
@@ -145,7 +146,7 @@ class PostCardViewCompact extends StatelessWidget {
                 PostCommunityAndAuthor(
                   compactMode: true,
                   showCommunityIcons: false,
-                  communityMode: communityMode,
+                  feedType: feedType,
                   postView: postViewMedia.postView,
                   textStyleCommunity: textStyleCommunityAndAuthor,
                   textStyleAuthor: textStyleCommunityAndAuthor,
