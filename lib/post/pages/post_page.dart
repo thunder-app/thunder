@@ -70,6 +70,7 @@ class _PostPageState extends State<PostPage> {
   CommentSortType? sortType;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
+  bool viewSource = false;
 
   @override
   void initState() {
@@ -215,6 +216,16 @@ class _PostPageState extends State<PostPage> {
                       ),
                       icon: Icons.repeat_rounded,
                       title: l10n.createNewCrossPost,
+                    ),
+                    ThunderPopupMenuItem(
+                      onTap: () => setState(() => viewSource = !viewSource),
+                      icon: Icons.edit_document,
+                      title: l10n.viewPostSource,
+                      checkboxValue: viewSource,
+                      onCheckboxValueToggled: () {
+                        Navigator.pop(context);
+                        setState(() => viewSource = !viewSource);
+                      },
                     ),
                   ],
                 ),
@@ -479,6 +490,7 @@ class _PostPageState extends State<PostPage> {
                                 hasReachedCommentEnd: state.hasReachedCommentEnd,
                                 moderators: state.moderators,
                                 crossPosts: state.crossPosts,
+                                viewSource: viewSource,
                               ),
                             );
                           }

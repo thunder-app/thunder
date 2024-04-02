@@ -18,6 +18,8 @@ class CommentCardActions extends StatelessWidget {
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
   final Function(int) onReportAction;
+  final void Function() onViewSourceToggled;
+  final bool viewSource;
 
   const CommentCardActions({
     super.key,
@@ -28,6 +30,8 @@ class CommentCardActions extends StatelessWidget {
     required this.onDeleteAction,
     required this.onReplyEditAction,
     required this.onReportAction,
+    required this.onViewSourceToggled,
+    required this.viewSource,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -63,6 +67,8 @@ class CommentCardActions extends StatelessWidget {
                       onVoteAction,
                       onReplyEditAction,
                       onReportAction,
+                      onViewSourceToggled,
+                      viewSource,
                     );
                     HapticFeedback.mediumImpact();
                   }),

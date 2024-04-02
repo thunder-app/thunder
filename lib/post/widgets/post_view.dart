@@ -53,6 +53,7 @@ class PostSubview extends StatefulWidget {
   final int? selectedCommentId;
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
+  final bool viewSource;
 
   const PostSubview({
     super.key,
@@ -61,6 +62,7 @@ class PostSubview extends StatefulWidget {
     required this.postViewMedia,
     required this.moderators,
     required this.crossPosts,
+    required this.viewSource,
   });
 
   @override
@@ -160,12 +162,19 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   post: post,
                   expandableController: expandableController,
                   onTapped: () => setState(() {}),
+                  viewSource: widget.viewSource,
                 ),
                 expanded: Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: CommonMarkdownBody(
-                    body: post.body ?? '',
-                  ),
+                  child: widget.viewSource
+                      ? ScalableText(
+                          post.body ?? '',
+                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                          fontScale: thunderState.contentFontSizeScale,
+                        )
+                      : CommonMarkdownBody(
+                          body: post.body ?? '',
+                        ),
                 ),
               ),
             if (showCrossPosts && sortedCrossPosts.isNotEmpty)
@@ -566,6 +575,7 @@ class PostBodyPreview extends StatelessWidget {
     required this.post,
     required this.expandableController,
     required this.onTapped,
+    required this.viewSource,
   });
 
   /// The post to display the preview of
@@ -577,9 +587,13 @@ class PostBodyPreview extends StatelessWidget {
   /// Callback function which triggers when the post preview is tapped
   final Function() onTapped;
 
+  /// Whether to view the raw post source
+  final bool viewSource;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     return LimitedBox(
       maxHeight: 80.0,
@@ -595,7 +609,15 @@ class PostBodyPreview extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: CommonMarkdownBody(body: post.body ?? ''),
+                  child: viewSource
+                      ? ScalableText(
+                          post.body ?? '',
+                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                          fontScale: thunderState.contentFontSizeScale,
+                        )
+                      : CommonMarkdownBody(
+                          body: post.body ?? '',
+                        ),
                 ),
               ],
             ),
