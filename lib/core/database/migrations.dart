@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
@@ -13,10 +15,10 @@ import 'package:thunder/core/singletons/preferences.dart';
 /// For each table, it retrieves all records and migrates them to SQLite format.
 ///
 /// Returns a [Future] that completes when the migration is finished.
-Future<bool> migrateToSQLite(AppDatabase database) async {
+Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB}) async {
   try {
-// Open the database
-    Database db = await openDatabase(join(await getDatabasesPath(), 'thunder.db'));
+    // Open the database
+    Database db = originalDB ?? await openDatabase(join(await getDatabasesPath(), 'thunder.db'));
 
     // Retrieve a list of all tables in the database
     List<Map<String, dynamic>> tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
@@ -34,15 +36,17 @@ Future<bool> migrateToSQLite(AppDatabase database) async {
     // Migrate Accounts and Favorites table
     if (data.containsKey('accounts') && data['accounts'].isNotEmpty) {
       // Check if there's an active user, and switch the account if so
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      SharedPreferences? prefs;
+
+      if (Platform.isAndroid || Platform.isIOS) prefs = (await UserPreferences.instance).sharedPreferences;
 
       for (Map<String, dynamic> record in data['accounts']) {
         int accountId =
             await database.into(database.accounts).insert(AccountsCompanion.insert(username: record['username'], jwt: record['jwt'], instance: record['instance'], userId: Value(record['userId'])));
 
-        String? activeProfileId = prefs.getString('active_profile_id');
+        String? activeProfileId = prefs?.getString('active_profile_id');
         if (activeProfileId != null && activeProfileId == record['accountId']) {
-          prefs.setString('active_profile_id', accountId.toString());
+          prefs?.setString('active_profile_id', accountId.toString());
         }
 
         // Find any favorites associated with the account, and append the new account id
@@ -64,14 +68,16 @@ Future<bool> migrateToSQLite(AppDatabase database) async {
     }
 
     // Print the new database data
-    final allTables = database.allTables.toList();
+    if (kDebugMode) {
+      final tables = database.allTables.toList();
 
-    for (final table in allTables) {
-      print('Table: ${table.entityName}');
-      final rows = await database.select(table).get();
+      for (final table in tables) {
+        print('Table: ${table.entityName}');
+        final rows = await database.select(table).get();
 
-      for (final row in rows) {
-        print(row);
+        for (final row in rows) {
+          print(row);
+        }
       }
     }
 
