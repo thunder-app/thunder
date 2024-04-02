@@ -1065,14 +1065,6 @@ packages:
       url: "https://github.com/thunder-app/markdown-editor.git"
     source: git
     version: "2.2.1"
-  marquee_widget:
-    dependency: "direct main"
-    description:
-      name: marquee_widget
-      sha256: a8333b921508a2777727f66f26eaed69ee625ea9580e9504999d3281f44fe4d0
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   matcher:
     dependency: transitive
     description:
