@@ -290,7 +290,7 @@ void showCommentActionBottomModalSheet(
         CommentActionBottomSheetPage.user: l10n.userActions,
         CommentActionBottomSheetPage.instance: l10n.instanceActions,
         CommentActionBottomSheetPage.share: l10n.share,
-        CommentActionBottomSheetPage.text: l10n.viewCommentSource,
+        CommentActionBottomSheetPage.text: l10n.textActions,
       },
       multiCommentCardActions: {CommentActionBottomSheetPage.general: commentCardDefaultMultiActionItems},
       commentCardActions: {
