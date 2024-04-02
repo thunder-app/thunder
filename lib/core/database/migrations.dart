@@ -15,7 +15,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 /// For each table, it retrieves all records and migrates them to SQLite format.
 ///
 /// Returns a [Future] that completes when the migration is finished.
-Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB}) async {
+Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool deleteOriginalDB = false}) async {
   try {
     // Open the database
     File originalDBFile = File(join(await getDatabasesPath(), 'thunder.db'));
@@ -88,7 +88,7 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB}) async
     await db.close();
 
     // Remove old database if everthing went well
-    if (await originalDBFile.exists()) await originalDBFile.delete();
+    if (await originalDBFile.exists() && deleteOriginalDB) await originalDBFile.delete();
   } catch (e) {
     debugPrint(e.toString());
     return false;
