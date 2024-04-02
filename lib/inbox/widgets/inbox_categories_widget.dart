@@ -43,14 +43,19 @@ class InboxCategoryWidget extends StatelessWidget {
     return Wrap(
       spacing: 5.0,
       children: inboxCategories.map((InboxCategory inboxCategory) {
-        return Badge(
-          isLabelVisible: (unreadCounts[inboxCategory.type] ?? 0) > 0,
-          label: Text((unreadCounts[inboxCategory.type] ?? 0) > 99 ? '99+' : unreadCounts[inboxCategory.type]?.toString() ?? ''),
-          child: ChoiceChip(
-            label: Text(inboxCategory.title),
-            selected: inboxType == inboxCategory.type,
-            onSelected: (selected) => onSelected(inboxCategory.type),
+        return ChoiceChip(
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(inboxCategory.title),
+              if ((unreadCounts[inboxCategory.type] ?? 0) > 0) ...[
+                const SizedBox(width: 5),
+                Badge(label: Text((unreadCounts[inboxCategory.type] ?? 0) > 99 ? '99+' : unreadCounts[inboxCategory.type]?.toString() ?? '')),
+              ],
+            ],
           ),
+          selected: inboxType == inboxCategory.type,
+          onSelected: (selected) => onSelected(inboxCategory.type),
         );
       }).toList(),
     );
