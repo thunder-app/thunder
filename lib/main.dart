@@ -55,14 +55,10 @@ void main() async {
   // Load up preferences
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  database = AppDatabase();
   File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
+  database = AppDatabase();
 
-  if (await dbFile.exists()) {
-    await dbFile.delete();
-    await prefs.setString('active_profile_id', '2e09c9fb29024');
-    await migrateToSQLite(database);
-  }
+  if (!await dbFile.exists()) await migrateToSQLite(database);
 
   // Clear image cache
   await clearExtendedImageCache();

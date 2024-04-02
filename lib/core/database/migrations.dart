@@ -18,7 +18,10 @@ import 'package:thunder/core/singletons/preferences.dart';
 Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB}) async {
   try {
     // Open the database
-    Database db = originalDB ?? await openDatabase(join(await getDatabasesPath(), 'thunder.db'));
+    File originalDBFile = File(join(await getDatabasesPath(), 'thunder.db'));
+    if (originalDB == null && !await originalDBFile.exists()) return true;
+
+    Database db = originalDB ?? await openDatabase(originalDBFile.path);
 
     // Retrieve a list of all tables in the database
     List<Map<String, dynamic>> tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
@@ -83,6 +86,9 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB}) async
 
     // Close the database when done
     await db.close();
+
+    // Remove old database if everthing went well
+    if (await originalDBFile.exists()) await originalDBFile.delete();
   } catch (e) {
     debugPrint(e.toString());
     return false;
