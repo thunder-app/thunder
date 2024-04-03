@@ -22,6 +22,7 @@ class UserPage extends StatefulWidget {
   final String? username;
   final List<bool>? selectedUserOption;
   final PrimitiveWrapper<bool>? savedToggle;
+  final bool Function(int page) scrollToPage;
 
   const UserPage({
     super.key,
@@ -30,6 +31,7 @@ class UserPage extends StatefulWidget {
     this.username,
     this.selectedUserOption,
     this.savedToggle,
+    required this.scrollToPage,
   });
 
   @override
@@ -164,6 +166,7 @@ class _UserPageState extends State<UserPage> {
                   selectedUserOption: widget.selectedUserOption,
                   savedToggle: widget.savedToggle,
                   fullPersonView: state.fullPersonView,
+                  scrollToPage: widget.scrollToPage,
                 );
               case UserStatus.empty:
                 return Container();

@@ -53,6 +53,7 @@ class UserPageSuccess extends StatefulWidget {
   final PrimitiveWrapper<bool>? savedToggle;
 
   final GetPersonDetailsResponse? fullPersonView;
+  final bool Function(int page) scrollToPage;
 
   const UserPageSuccess({
     super.key,
@@ -70,6 +71,7 @@ class UserPageSuccess extends StatefulWidget {
     this.selectedUserOption,
     this.savedToggle,
     this.fullPersonView,
+    required this.scrollToPage,
   });
 
   @override
@@ -572,6 +574,14 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
         });
         return true;
       }
+    }
+
+    bool canPop = Navigator.of(context).canPop();
+
+    if (!canPop) {
+      // We are on the main navigation screen, so we want to scroll back to the first page.
+      // Return the value of this method, which will be false if we're already on 0 (meaning we don't want to handle the back).
+      return widget.scrollToPage(0);
     }
 
     return false;

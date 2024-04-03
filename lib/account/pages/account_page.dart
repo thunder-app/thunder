@@ -9,7 +9,9 @@ import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/user/pages/user_page.dart';
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
+  final bool Function(int page) scrollToPage;
+
+  const AccountPage({super.key, required this.scrollToPage});
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -47,6 +49,7 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
               isAccountUser: true,
               selectedUserOption: selectedUserOption,
               savedToggle: savedToggle,
+              scrollToPage: widget.scrollToPage,
             )
           : const AccountPlaceholder(),
     );

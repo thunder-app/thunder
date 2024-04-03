@@ -169,6 +169,12 @@ class _ThunderState extends State<Thunder> {
 
     if (!topOfNavigationStack) return false;
 
+    if (selectedPageIndex == 2) {
+      // Let the account page always handle its own back button
+      // (including scrolling to page 0 if needed)
+      return false;
+    }
+
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
@@ -654,7 +660,24 @@ class _ThunderState extends State<Thunder> {
                                 ],
                               ),
                               const SearchPage(),
-                              const AccountPage(),
+                              AccountPage(
+                                scrollToPage: (page) {
+                                  if (selectedPageIndex == page) return false;
+
+                                  // Do this in a post-frame so the top-level handler doesn't immediately see that we're on page 0.
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    selectedPageIndex = page;
+
+                                    if (reduceAnimations) {
+                                      widget.pageController.jumpToPage(selectedPageIndex);
+                                    } else {
+                                      widget.pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                                    }
+                                  });
+
+                                  return true;
+                                },
+                              ),
                               const InboxPage(),
                               const SettingsPage(),
                             ],
