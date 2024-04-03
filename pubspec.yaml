@@ -116,9 +116,6 @@ dev_dependencies:
       url: https://github.com/fluttercommunity/flutter_launcher_icons.git
       ref: master
 
-dependency_overrides:
-  # markdown: 7.0.0
-
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true

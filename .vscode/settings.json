@@ -6,5 +6,24 @@
         "editor.rulers": [
             200
         ],
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "always",
+        }
     },
+    "i18n-ally.disabled": false,
+    "i18n-ally.enabledParsers": [
+        "arb"
+    ],
+    "i18n-ally.enabledFrameworks": [
+        "flutter-l10n"
+    ],
+    "i18n-ally.pathMatcher": "app_{locale}.{ext}",
+    "i18n-ally.extract.keygenStyle": "camelCase",
+    "i18n-ally.localesPaths": [
+        "lib/l10n"
+    ],
+    "i18n-ally.keystyle": "flat",
+    "i18n-ally.annotationInPlace": true,
+    "i18n-ally.annotationRange": "annotation",
+    "i18n-ally.annotationDelimiter": "//",
 }
