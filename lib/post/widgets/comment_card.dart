@@ -105,6 +105,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   /// Whether we should display the comment's raw markdown source
   bool viewSource = false;
 
+  /// Whether to allow selection of the text
+  bool selectable = false;
+
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
@@ -360,6 +363,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   widget.onReportAction,
                                   () => setState(() => viewSource = !viewSource),
                                   viewSource,
+                                  () => setState(() => selectable = !selectable),
+                                  selectable,
                                 );
                               },
                               onTap: () {
@@ -380,6 +385,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 moderators: widget.moderators,
                                 viewSource: viewSource,
                                 onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                                selectable: selectable,
+                                onSelectableToggled: () => setState(() => selectable = !selectable),
                               ),
                             ),
                           ],

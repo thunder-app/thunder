@@ -1393,6 +1393,10 @@
   },
   "selectSearchType": "Select Search Type",
   "@selectSearchType": {},
+  "selectText": "Select text",
+  "@selectText": {
+    "description": "The ability to select post/comment text"
+  },
   "sensitiveContentWarning": "May contain sensitive content. Tap to reveal.",
   "@sensitiveContentWarning": {
     "description": "Warning for sensitive content (e.g., from modlog)"
@@ -1604,6 +1608,10 @@
   "status": "Status",
   "@status": {
     "description": "Status of the action"
+  },
+  "stopSelectingText": "Stop selecting text",
+  "@stopSelectingText": {
+    "description": "Option to disable text selection mode"
   },
   "submit": "Submit",
   "@submit": {},

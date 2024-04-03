@@ -40,6 +40,7 @@ class PostPageSuccess extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
   final bool viewSource;
+  final bool selectable;
 
   const PostPageSuccess({
     super.key,
@@ -56,6 +57,7 @@ class PostPageSuccess extends StatefulWidget {
     required this.moderators,
     required this.crossPosts,
     required this.viewSource,
+    required this.selectable,
   });
 
   @override
@@ -166,6 +168,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             moderators: widget.moderators,
             crossPosts: widget.crossPosts,
             viewSource: widget.viewSource,
+            selectable: widget.selectable,
           ),
         ),
       ],

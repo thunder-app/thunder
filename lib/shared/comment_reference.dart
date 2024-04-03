@@ -82,6 +82,9 @@ class _CommentReferenceState extends State<CommentReference> {
   /// Whether to display the comment's raw markdown source
   bool viewSource = false;
 
+  /// Whether to allow selection of the text
+  bool selectable = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -310,6 +313,8 @@ class _CommentReferenceState extends State<CommentReference> {
                         disableActions: widget.disableActions,
                         viewSource: viewSource,
                         onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                        selectable: selectable,
+                        onSelectableToggled: () => setState(() => selectable = !selectable),
                       ),
                     ),
                   ),

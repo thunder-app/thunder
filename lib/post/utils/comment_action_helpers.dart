@@ -39,6 +39,7 @@ enum CommentCardAction {
   textActions,
   copyText,
   viewSource,
+  selectable,
   report,
   userActions,
   visitProfile,
@@ -65,7 +66,7 @@ class ExtendedCommentCardActions {
 
   final CommentCardAction commentCardAction;
   final IconData icon;
-  final IconData Function(bool viewSource)? getTrailingIcon;
+  final IconData Function(bool viewSource, bool selectable)? getTrailingIcon;
   final String label;
   final Color? color;
   final Color? Function(CommentView commentView)? getForegroundColor;
@@ -84,7 +85,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     icon: Icons.person_rounded,
     label: l10n.user,
     getSubtitleLabel: (context, commentView) => generateUserFullName(context, commentView.creator.name, fetchInstanceNameFromUrl(commentView.creator.actorId)),
-    getTrailingIcon: (_) => Icons.chevron_right_rounded,
+    getTrailingIcon: (_, __) => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.visitProfile,
@@ -102,7 +103,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     icon: Icons.language_rounded,
     label: l10n.instance(1),
     getSubtitleLabel: (context, postView) => fetchInstanceNameFromUrl(postView.creator.actorId) ?? '',
-    getTrailingIcon: (_) => Icons.chevron_right_rounded,
+    getTrailingIcon: (_, __) => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.visitInstance,
@@ -119,7 +120,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.textActions,
     icon: Icons.comment_rounded,
     label: l10n.textActions,
-    getTrailingIcon: (_) => Icons.chevron_right_rounded,
+    getTrailingIcon: (_, __) => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.copyText,
@@ -130,7 +131,13 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.viewSource,
     icon: Icons.edit_document,
     label: l10n.viewCommentSource,
-    getTrailingIcon: (viewSource) => viewSource ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
+    getTrailingIcon: (viewSource, _) => viewSource ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.selectable,
+    icon: Icons.select_all_rounded,
+    label: l10n.selectText,
+    getTrailingIcon: (_, selectable) => selectable ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.report,
@@ -217,6 +224,8 @@ void showCommentActionBottomModalSheet(
   Function onReportAction,
   Function onViewSourceToggled,
   bool viewSource,
+  Function onSelectableToggled,
+  bool selectable,
 ) {
   final bool isOwnComment = commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
   bool isDeleted = commentView.comment.deleted;
@@ -275,6 +284,7 @@ void showCommentActionBottomModalSheet(
       .where((extendedAction) => [
             CommentCardAction.copyText,
             CommentCardAction.viewSource,
+            CommentCardAction.selectable,
           ].contains(extendedAction.commentCardAction))
       .toList();
 
@@ -307,6 +317,8 @@ void showCommentActionBottomModalSheet(
       onReportAction: onReportAction,
       onViewSourceToggled: onViewSourceToggled,
       viewSource: viewSource,
+      onSelectableToggled: onSelectableToggled,
+      selectable: selectable,
     ),
   );
 }
@@ -335,6 +347,8 @@ class CommentActionPicker extends StatefulWidget {
   final Function onReportAction;
   final Function onViewSourceToggled;
   final bool viewSource;
+  final Function onSelectableToggled;
+  final bool selectable;
 
   const CommentActionPicker({
     super.key,
@@ -350,6 +364,8 @@ class CommentActionPicker extends StatefulWidget {
     required this.onReportAction,
     required this.onViewSourceToggled,
     required this.viewSource,
+    required this.onSelectableToggled,
+    required this.selectable,
   });
 
   @override
@@ -450,7 +466,7 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                       label: widget.commentCardActions[page]![index].getOverrideLabel?.call(context, widget.commentView) ?? widget.commentCardActions[page]![index].label,
                       subtitle: widget.commentCardActions[page]![index].getSubtitleLabel?.call(context, widget.commentView),
                       icon: widget.commentCardActions[page]![index].getOverrideIcon?.call(widget.commentView) ?? widget.commentCardActions[page]![index].icon,
-                      trailingIcon: widget.commentCardActions[page]![index].getTrailingIcon?.call(widget.viewSource),
+                      trailingIcon: widget.commentCardActions[page]![index].getTrailingIcon?.call(widget.viewSource, widget.selectable),
                       onSelected:
                           (widget.commentCardActions[page]![index].shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(widget.commentCardActions[page]![index].commentCardAction) : null,
                     );
@@ -507,6 +523,9 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
         break;
       case CommentCardAction.viewSource:
         action = widget.onViewSourceToggled;
+        break;
+      case CommentCardAction.selectable:
+        action = widget.onSelectableToggled;
         break;
       case CommentCardAction.report:
         action = () => widget.onReportAction(widget.commentView.comment.id);

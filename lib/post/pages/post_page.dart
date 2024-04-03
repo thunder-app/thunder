@@ -71,6 +71,7 @@ class _PostPageState extends State<PostPage> {
   IconData? sortTypeIcon;
   String? sortTypeLabel;
   bool viewSource = false;
+  bool selectable = false;
 
   @override
   void initState() {
@@ -222,6 +223,12 @@ class _PostPageState extends State<PostPage> {
                       icon: Icons.edit_document,
                       title: l10n.viewPostSource,
                       trailing: viewSource ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
+                    ),
+                    ThunderPopupMenuItem(
+                      onTap: () => setState(() => selectable = !selectable),
+                      icon: Icons.select_all_rounded,
+                      title: l10n.selectText,
+                      trailing: selectable ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
                     ),
                   ],
                 ),
@@ -487,6 +494,7 @@ class _PostPageState extends State<PostPage> {
                                 moderators: state.moderators,
                                 crossPosts: state.crossPosts,
                                 viewSource: viewSource,
+                                selectable: selectable,
                               ),
                             );
                           }

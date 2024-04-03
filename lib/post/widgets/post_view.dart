@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -33,6 +35,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/cross_posts.dart';
@@ -54,6 +57,7 @@ class PostSubview extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
   final bool viewSource;
+  final bool selectable;
 
   const PostSubview({
     super.key,
@@ -63,6 +67,7 @@ class PostSubview extends StatefulWidget {
     required this.moderators,
     required this.crossPosts,
     required this.viewSource,
+    required this.selectable,
   });
 
   @override
@@ -72,6 +77,7 @@ class PostSubview extends StatefulWidget {
 class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin {
   final ExpandableController expandableController = ExpandableController(initialExpanded: true);
   late PostViewMedia postViewMedia;
+  final FocusNode selectableRegionFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -165,18 +171,29 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   expandableController: expandableController,
                   onTapped: () => setState(() {}),
                   viewSource: widget.viewSource,
+                  selectable: widget.selectable,
                 ),
                 expanded: Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: widget.viewSource
-                      ? ScalableText(
-                          post.body ?? '',
-                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                          fontScale: thunderState.contentFontSizeScale,
-                        )
-                      : CommonMarkdownBody(
-                          body: post.body ?? '',
-                        ),
+                  child: ConditionalParentWidget(
+                    condition: widget.selectable,
+                    parentBuilder: (Widget child) {
+                      return SelectableRegion(
+                        focusNode: selectableRegionFocusNode,
+                        selectionControls: Platform.isIOS ? cupertinoTextSelectionControls : materialTextSelectionControls,
+                        child: child,
+                      );
+                    },
+                    child: widget.viewSource
+                        ? ScalableText(
+                            post.body ?? '',
+                            style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                            fontScale: thunderState.contentFontSizeScale,
+                          )
+                        : CommonMarkdownBody(
+                            body: post.body ?? '',
+                          ),
+                  ),
                 ),
               ),
             if (showCrossPosts && sortedCrossPosts.isNotEmpty)
@@ -567,12 +584,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
 
 /// Provides a preview of the post body when the post is collapsed.
 class PostBodyPreview extends StatelessWidget {
-  const PostBodyPreview({
+  PostBodyPreview({
     super.key,
     required this.post,
     required this.expandableController,
     required this.onTapped,
     required this.viewSource,
+    required this.selectable,
   });
 
   /// The post to display the preview of
@@ -586,6 +604,11 @@ class PostBodyPreview extends StatelessWidget {
 
   /// Whether to view the raw post source
   final bool viewSource;
+
+  /// Whether to allow selection of the text
+  final bool selectable;
+
+  final FocusNode selectableRegionFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -606,15 +629,25 @@ class PostBodyPreview extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: viewSource
-                      ? ScalableText(
-                          post.body ?? '',
-                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                          fontScale: thunderState.contentFontSizeScale,
-                        )
-                      : CommonMarkdownBody(
-                          body: post.body ?? '',
-                        ),
+                  child: ConditionalParentWidget(
+                    condition: selectable,
+                    parentBuilder: (Widget child) {
+                      return SelectableRegion(
+                        focusNode: selectableRegionFocusNode,
+                        selectionControls: Platform.isIOS ? cupertinoTextSelectionControls : materialTextSelectionControls,
+                        child: child,
+                      );
+                    },
+                    child: viewSource
+                        ? ScalableText(
+                            post.body ?? '',
+                            style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                            fontScale: thunderState.contentFontSizeScale,
+                          )
+                        : CommonMarkdownBody(
+                            body: post.body ?? '',
+                          ),
+                  ),
                 ),
               ],
             ),

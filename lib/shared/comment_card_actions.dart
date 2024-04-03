@@ -20,6 +20,8 @@ class CommentCardActions extends StatelessWidget {
   final Function(int) onReportAction;
   final void Function() onViewSourceToggled;
   final bool viewSource;
+  final void Function() onSelectableToggled;
+  final bool selectable;
 
   const CommentCardActions({
     super.key,
@@ -32,6 +34,8 @@ class CommentCardActions extends StatelessWidget {
     required this.onReportAction,
     required this.onViewSourceToggled,
     required this.viewSource,
+    required this.onSelectableToggled,
+    required this.selectable,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -69,6 +73,8 @@ class CommentCardActions extends StatelessWidget {
                       onReportAction,
                       onViewSourceToggled,
                       viewSource,
+                      onSelectableToggled,
+                      selectable,
                     );
                     HapticFeedback.mediumImpact();
                   }),

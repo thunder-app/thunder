@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'comment_card_actions.dart';
 import 'comment_header.dart';
@@ -27,6 +32,8 @@ class CommentContent extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final bool viewSource;
   final void Function() onViewSourceToggled;
+  final bool selectable;
+  final void Function() onSelectableToggled;
 
   const CommentContent({
     super.key,
@@ -46,6 +53,8 @@ class CommentContent extends StatefulWidget {
     this.disableActions = false,
     required this.viewSource,
     required this.onViewSourceToggled,
+    required this.selectable,
+    required this.onSelectableToggled,
   });
 
   @override
@@ -53,6 +62,8 @@ class CommentContent extends StatefulWidget {
 }
 
 class _CommentContentState extends State<CommentContent> with SingleTickerProviderStateMixin {
+  final FocusNode selectableRegionFocusNode = FocusNode();
+
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
@@ -72,6 +83,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
     final ThunderState state = context.read<ThunderBloc>().state;
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
     final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return ExcludeSemantics(
       excluding: widget.excludeSemantics,
@@ -105,18 +117,43 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (widget.selectable)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: FilledButton(
+                            onPressed: widget.onSelectableToggled,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(l10n.stopSelectingText),
+                                const SizedBox(width: 5),
+                                const Icon(Icons.close_rounded, size: 15),
+                              ],
+                            ),
+                          ),
+                        ),
                       Padding(
                         padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
-                        child: widget.viewSource
-                            ? ScalableText(
-                                widget.comment.comment.content,
-                                style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                                fontScale: state.contentFontSizeScale,
-                              )
-                            : CommonMarkdownBody(
-                                body: widget.comment.comment.content,
-                                isComment: true,
-                              ),
+                        child: ConditionalParentWidget(
+                          condition: widget.selectable,
+                          parentBuilder: (child) {
+                            return SelectableRegion(
+                              focusNode: selectableRegionFocusNode,
+                              selectionControls: Platform.isIOS ? cupertinoTextSelectionControls : materialTextSelectionControls,
+                              child: child,
+                            );
+                          },
+                          child: widget.viewSource
+                              ? ScalableText(
+                                  widget.comment.comment.content,
+                                  style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                                  fontScale: state.contentFontSizeScale,
+                                )
+                              : CommonMarkdownBody(
+                                  body: widget.comment.comment.content,
+                                  isComment: true,
+                                ),
+                        ),
                       ),
                       if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
                         Padding(
@@ -131,6 +168,8 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                             onReportAction: widget.onReportAction,
                             onViewSourceToggled: widget.onViewSourceToggled,
                             viewSource: widget.viewSource,
+                            onSelectableToggled: widget.onSelectableToggled,
+                            selectable: widget.selectable,
                           ),
                         ),
                     ],
