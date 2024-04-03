@@ -79,6 +79,9 @@ class _CommentReferenceState extends State<CommentReference> {
   /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
   bool isOverridingSwipeGestureAction = false;
 
+  /// Whether to display the comment's raw markdown source
+  bool viewSource = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -150,9 +153,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                   widget.comment.community.name,
                                   fetchInstanceNameFromUrl(widget.comment.community.actorId),
                                   fontScale: state.contentFontSizeScale,
-                                  textStyle: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                                  ),
+                                  transformColor: (color) => color?.withOpacity(0.75),
                                 ),
                               ),
                             ],
@@ -307,6 +308,8 @@ class _CommentReferenceState extends State<CommentReference> {
                         isHidden: false,
                         excludeSemantics: true,
                         disableActions: widget.disableActions,
+                        viewSource: viewSource,
+                        onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                       ),
                     ),
                   ),

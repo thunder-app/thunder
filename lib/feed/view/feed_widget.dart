@@ -131,7 +131,7 @@ class _FeedPostListState extends State<FeedPostList> {
                   },
                   child: PostCard(
                     postViewMedia: widget.postViewMedias[index],
-                    communityMode: state.feedType == FeedType.community,
+                    feedType: state.feedType,
                     onVoteAction: (int voteType) {
                       context.read<FeedBloc>().add(FeedItemActionedEvent(postId: widget.postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
                     },

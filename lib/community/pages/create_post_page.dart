@@ -790,7 +790,6 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                               context,
                               widget.communityView?.community.name,
                               fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
-                              textStyle: theme.textTheme.bodySmall,
                             )
                           ],
                         )

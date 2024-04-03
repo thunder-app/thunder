@@ -165,6 +165,10 @@ class _ThunderState extends State<Thunder> {
   }
 
   FutureOr<bool> _handleBackButtonPress(bool stopDefaultButtonEvent, RouteInfo info) async {
+    final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
+
+    if (!topOfNavigationStack) return false;
+
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;

@@ -515,19 +515,19 @@ class PostCommunityAndAuthor extends StatelessWidget {
     super.key,
     required this.postView,
     required this.showCommunityIcons,
-    required this.communityMode,
-    this.textStyleAuthor,
-    this.textStyleCommunity,
+    required this.feedType,
+    this.authorColorTransformation,
+    this.communityColorTransformation,
     required this.compactMode,
     required this.showCommunitySubscription,
   });
 
   final bool showCommunityIcons;
-  final bool communityMode;
+  final FeedType? feedType;
   final bool compactMode;
   final PostView postView;
-  final TextStyle? textStyleAuthor;
-  final TextStyle? textStyleCommunity;
+  final Color? Function(Color?)? authorColorTransformation;
+  final Color? Function(Color?)? communityColorTransformation;
   final bool showCommunitySubscription;
 
   @override
@@ -536,6 +536,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
 
     return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
       final String? creatorName = postView.creator.displayName != null && state.useDisplayNames ? postView.creator.displayName : postView.creator.name;
+      final bool showUsername = (state.showPostAuthor || feedType == FeedType.community) && feedType != FeedType.user;
+      final bool showCommunityName = feedType != FeedType.community;
 
       return Row(
         children: [
@@ -555,7 +557,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 alignment: WrapAlignment.start,
                 crossAxisAlignment: WrapCrossAlignment.end,
                 children: [
-                  if (state.showPostAuthor || communityMode)
+                  if (showUsername)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -568,10 +570,10 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             fetchInstanceNameFromUrl(postView.creator.actorId),
                             includeInstance: state.postShowUserInstance,
                             fontScale: state.metadataFontSizeScale,
-                            textStyle: textStyleAuthor,
+                            transformColor: authorColorTransformation,
                           ),
                         ),
-                        if (!communityMode)
+                        if (showUsername && showCommunityName)
                           ScalableText(
                             ' to ',
                             fontScale: state.metadataFontSizeScale,
@@ -587,13 +589,13 @@ class PostCommunityAndAuthor extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (!communityMode)
+                        if (showCommunityName)
                           CommunityFullNameWidget(
                             context,
                             postView.community.name,
                             fetchInstanceNameFromUrl(postView.community.actorId),
                             fontScale: state.metadataFontSizeScale,
-                            textStyle: textStyleCommunity,
+                            transformColor: communityColorTransformation,
                           ),
                         if (showCommunitySubscription)
                           Padding(
@@ -604,7 +606,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             child: Icon(
                               Icons.playlist_add_check_rounded,
                               size: 16.0,
-                              color: textStyleCommunity?.color,
+                              color: communityColorTransformation?.call(theme.textTheme.bodyMedium?.color),
                             ),
                           ),
                       ],

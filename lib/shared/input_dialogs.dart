@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:text_scroll/text_scroll.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -19,6 +18,8 @@ import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
+import 'package:thunder/shared/marquee_widget.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -92,11 +93,11 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
         ),
         subtitle: Semantics(
           excludeSemantics: true,
-          child: TextScroll(
-            generateUserFullName(context, payload.person.name, fetchInstanceNameFromUrl(payload.person.actorId)),
-            delayBefore: const Duration(seconds: 2),
-            pauseBetween: const Duration(seconds: 3),
-            velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+          child: Marquee(
+            animationDuration: const Duration(seconds: 2),
+            backDuration: const Duration(seconds: 2),
+            pauseDuration: const Duration(seconds: 1),
+            child: UserFullNameWidget(context, payload.person.name, fetchInstanceNameFromUrl(payload.person.actorId)),
           ),
         ),
       ),
@@ -197,11 +198,11 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextScroll(
-                generateCommunityFullName(context, payload.community.name, fetchInstanceNameFromUrl(payload.community.actorId)),
-                delayBefore: const Duration(seconds: 2),
-                pauseBetween: const Duration(seconds: 3),
-                velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+              Marquee(
+                animationDuration: const Duration(seconds: 2),
+                backDuration: const Duration(seconds: 2),
+                pauseDuration: const Duration(seconds: 1),
+                child: CommunityFullNameWidget(context, payload.community.name, fetchInstanceNameFromUrl(payload.community.actorId)),
               ),
               Row(
                 children: [

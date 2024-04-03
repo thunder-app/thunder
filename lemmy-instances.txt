@@ -5,8 +5,6 @@ beehaw.org
 burggit.moe
 discuss.online
 discuss.tchncs.de
-feddit.ch
-feddit.de
 feddit.dk
 feddit.it
 feddit.nl
@@ -24,6 +22,7 @@ lemmy.blahaj.zone
 lemmy.ca
 lemmy.dbzer0.com
 lemmy.eco.br
+lemmy.kya.moe
 lemmy.ml
 lemmy.nz
 lemmy.one
@@ -34,6 +33,7 @@ lemmy.zip
 lemmygrad.ml
 lemmynsfw.com
 lemy.lol
+lululemmy.com
 mander.xyz
 midwest.social
 monero.town
@@ -47,3 +47,4 @@ startrek.website
 szmer.info
 thelemmy.club
 ttrpg.network
+yiffit.net
