@@ -221,11 +221,7 @@ class _PostPageState extends State<PostPage> {
                       onTap: () => setState(() => viewSource = !viewSource),
                       icon: Icons.edit_document,
                       title: l10n.viewPostSource,
-                      checkboxValue: viewSource,
-                      onCheckboxValueToggled: () {
-                        Navigator.pop(context);
-                        setState(() => viewSource = !viewSource);
-                      },
+                      trailing: viewSource ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
                     ),
                   ],
                 ),
