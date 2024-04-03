@@ -1,6 +1,8 @@
-import 'package:sqflite/sqflite.dart';
+import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 
-import 'package:thunder/core/singletons/database.dart';
+import 'package:thunder/core/database/database.dart';
+import 'package:thunder/main.dart';
 
 class Favorite {
   final String id;
@@ -13,78 +15,63 @@ class Favorite {
     required this.accountId,
   });
 
-  Map<String, dynamic> toMap() {
-    return {'id': id, 'communityId': communityId, 'accountId': accountId};
-  }
-
-  @override
-  String toString() {
-    return 'Favourite{id: $id, communityId: $communityId, accountId: $accountId}';
-  }
-
   static Future<void> insertFavorite(Favorite favourite) async {
-    Database? database = await DB.instance.database;
-    if (database == null) return;
-
-    await database.insert(
-      'favorites',
-      favourite.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    try {
+      await database.into(database.favorites).insert(FavoritesCompanion.insert(
+            accountId: int.parse(favourite.accountId),
+            communityId: favourite.communityId,
+          ));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   // A method that retrieves all favourites from the database
   static Future<List<Favorite>> favorites(String accountId) async {
     try {
-      Database? database = await DB.instance.database;
-      if (database == null) return [];
-
-      final List<Map<String, dynamic>> maps = await database.query('favorites', where: 'accountId = ?', whereArgs: [accountId]);
-
-      return List.generate(maps.length, (i) {
-        return Favorite(
-          id: maps[i]['id'].toString(),
-          communityId: maps[i]['communityId'],
-          accountId: maps[i]['accountId'].toString(),
-        );
-      });
+      return (await database.favorites.all().get()).map((favorite) => Favorite(id: favorite.id.toString(), accountId: favorite.accountId.toString(), communityId: favorite.communityId)).toList();
     } catch (e) {
+      debugPrint(e.toString());
       return [];
     }
   }
 
   static Future<Favorite?> fetchFavourite(String id) async {
-    Database? database = await DB.instance.database;
-
-    final List<Map<String, dynamic>>? maps = await database?.query('favorites', where: 'id = ?', whereArgs: [id]);
-    if (maps == null || maps.isEmpty) return null;
-
-    return Favorite(
-      id: maps.first['id'],
-      communityId: maps.first['communityId'],
-      accountId: maps.first['accountId'],
-    );
+    try {
+      return await (database.select(database.favorites)..where((t) => t.id.equals(int.parse(id)))).getSingleOrNull().then((favorite) {
+        if (favorite == null) return null;
+        return Favorite(id: favorite.id.toString(), accountId: favorite.accountId.toString(), communityId: favorite.communityId);
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   static Future<void> updateFavourite(Favorite favorite) async {
-    Database? database = await DB.instance.database;
-    if (database == null) return;
-
-    await database.update('favorites', favorite.toMap(), where: 'id = ?', whereArgs: [favorite.id]);
+    try {
+      await database.update(database.favorites).replace(FavoritesCompanion(
+            id: Value(int.parse(favorite.id)),
+            accountId: Value(int.parse(favorite.accountId)),
+            communityId: Value(favorite.communityId),
+          ));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   static Future<void> deleteFavorite({String? id, int? communityId}) async {
-    Database? database = await DB.instance.database;
-    if (database == null) return;
+    try {
+      if (id != null) {
+        await (database.delete(database.favorites)..where((t) => t.id.equals(int.parse(id)))).go();
+        return;
+      }
 
-    if (id != null) {
-      await database.delete('favorites', where: 'id = ?', whereArgs: [id]);
-      return;
-    }
-
-    if (communityId != null) {
-      await database.delete('favorites', where: 'communityId = ?', whereArgs: [communityId]);
-      return;
+      if (communityId != null) {
+        await (database.delete(database.favorites)..where((t) => t.communityId.equals(communityId))).go();
+        return;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 }

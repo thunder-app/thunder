@@ -105,6 +105,8 @@ dependencies:
   smooth_highlight: ^0.1.1
   visibility_detector: ^0.4.0+2
   flutter_sharing_intent: ^1.1.1
+  drift: ^2.16.0
+  sqlite3_flutter_libs: ^0.5.20
   xayn_readability: 
     git:
       url: https://github.com/xaynetwork/xayn_readability
@@ -118,6 +120,7 @@ dev_dependencies:
     git:
       url: https://github.com/fluttercommunity/flutter_launcher_icons.git
       ref: master
+  drift_dev: ^2.16.0
 
 # The following section is specific to Flutter packages.
 flutter:
