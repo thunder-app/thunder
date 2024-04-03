@@ -208,12 +208,7 @@ class NavigationControls extends StatelessWidget {
                   onTap: onReaderModeToggled,
                   icon: Icons.menu_book_rounded,
                   title: l10n.readerMode,
-                  checkboxValue: readerMode,
-                  onCheckboxValueToggled: () {
-                    // Have to manually close the popup menu
-                    Navigator.pop(context);
-                    onReaderModeToggled();
-                  },
+                  trailing: readerMode ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
                 ),
               ],
             ),

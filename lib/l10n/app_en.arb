@@ -1501,7 +1501,7 @@
   "@showInAppUpdateNotifications": {
     "description": "Toggle to get notified of new GitHub releases."
   },
-  "showLess": "Show fewer",
+  "showLess": "Show less",
   "@showLess": {},
   "showMore": "Show more",
   "@showMore": {},
@@ -1518,6 +1518,10 @@
   "showPostAuthor": "Show Post Author",
   "@showPostAuthor": {
     "description": "Toggle to show post author."
+  },
+  "showPostAuthorSubtitle": "Post author is always shown in community feeds",
+  "@showPostAuthorSubtitle": {
+    "description": "Subtitle for the Show Post Author setting"
   },
   "showPostCommunityIcons": "Show Community Icons",
   "@showPostCommunityIcons": {
@@ -1653,6 +1657,10 @@
   },
   "text": "Text",
   "@text": {},
+  "textActions": "Text Actions",
+  "@textActions": {
+    "description": "Option for text actions"
+  },
   "theme": "Theme",
   "@theme": {
     "description": "Setting for theme"
@@ -1937,6 +1945,14 @@
   },
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
+  "viewCommentSource": "View comment source",
+  "@viewCommentSource": {
+    "description": "Menu item for viewing a comment's source"
+  },
+  "viewPostSource": "View post source",
+  "@viewPostSource": {
+    "description": "Menu item for viewing a post's source"
+  },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
   "visitInstance": "Visit Instance",

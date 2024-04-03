@@ -229,23 +229,26 @@ class UserModeratorList extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          mods.community.title,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.55,
+                          child: Text(
+                            mods.community.title,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                         CommunityFullNameWidget(
                           context,
                           mods.community.name,
                           fetchInstanceNameFromUrl(mods.community.actorId),
-                          textStyle: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.6),
+                          textStyle: const TextStyle(
                             fontSize: 13,
                           ),
+                          transformColor: (color) => color?.withOpacity(0.6),
                         ),
                       ],
                     ),

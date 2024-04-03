@@ -8,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc_old.dart';
@@ -25,6 +26,7 @@ class PostCardList extends StatefulWidget {
   final SortType? sortType;
   final String tagline;
   final bool indicateRead;
+  final FeedType feedType;
 
   final VoidCallback onScrollEndReached;
   final Function(int, int) onVoteAction;
@@ -49,6 +51,7 @@ class PostCardList extends StatefulWidget {
     this.blockedCommunity,
     this.tagline = '',
     this.indicateRead = true,
+    required this.feedType,
   });
 
   @override
@@ -161,7 +164,7 @@ class _PostCardListState extends State<PostCardList> {
               PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? index - 1 : index];
               return PostCard(
                 postViewMedia: postViewMedia,
-                communityMode: widget.communityId != null || widget.communityName != null,
+                feedType: widget.feedType,
                 onVoteAction: (int voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                 onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                 onReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),

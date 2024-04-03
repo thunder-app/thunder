@@ -79,6 +79,9 @@ class _CommentReferenceState extends State<CommentReference> {
   /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
   bool isOverridingSwipeGestureAction = false;
 
+  /// Whether to display the comment's raw markdown source
+  bool viewSource = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -94,7 +97,7 @@ class _CommentReferenceState extends State<CommentReference> {
           ${formatTimeToString(dateTime: (widget.comment.comment.updated ?? widget.comment.comment.published).toIso8601String())}\n
           ${widget.comment.comment.content}""",
       child: InkWell(
-        onTap: () async => await navigateToComment(context, widget.comment),
+        onTap: widget.comment.post.deleted ? null : () async => await navigateToComment(context, widget.comment),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: Column(
@@ -111,6 +114,14 @@ class _CommentReferenceState extends State<CommentReference> {
                         children: [
                           Row(
                             children: [
+                              if (widget.comment.post.deleted) ...[
+                                const Icon(
+                                  Icons.delete_rounded,
+                                  size: 15,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(width: 5),
+                              ],
                               Flexible(
                                 child: ExcludeSemantics(
                                   child: Text(
@@ -142,9 +153,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                   widget.comment.community.name,
                                   fetchInstanceNameFromUrl(widget.comment.community.actorId),
                                   fontScale: state.contentFontSizeScale,
-                                  textStyle: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                                  ),
+                                  transformColor: (color) => color?.withOpacity(0.75),
                                 ),
                               ),
                             ],
@@ -299,6 +308,8 @@ class _CommentReferenceState extends State<CommentReference> {
                         isHidden: false,
                         excludeSemantics: true,
                         disableActions: widget.disableActions,
+                        viewSource: viewSource,
+                        onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                       ),
                     ),
                   ),

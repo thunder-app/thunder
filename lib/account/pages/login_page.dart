@@ -236,11 +236,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   ),
                   const SizedBox(height: 12.0),
                   TypeAheadField<String>(
+                    controller: _instanceTextEditingController,
                     builder: (context, controller, focusNode) => TextField(
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.url,
                       autocorrect: false,
-                      controller: _instanceTextEditingController,
+                      controller: controller,
+                      focusNode: focusNode,
                       inputFormatters: [LowerCaseTextFormatter()],
                       decoration: InputDecoration(
                         isDense: true,
@@ -250,7 +252,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         errorMaxLines: 2,
                       ),
                       enableSuggestions: false,
-                      onSubmitted: (_instanceTextEditingController.text.isNotEmpty && widget.anonymous) ? (_) => _addAnonymousInstance() : null,
+                      onSubmitted: (controller.text.isNotEmpty && widget.anonymous) ? (_) => _addAnonymousInstance() : null,
                     ),
                     suggestionsCallback: (String pattern) {
                       if (pattern.isNotEmpty != true) {

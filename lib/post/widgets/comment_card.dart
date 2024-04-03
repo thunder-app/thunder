@@ -102,6 +102,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
   bool isOverridingSwipeGestureAction = false;
 
+  /// Whether we should display the comment's raw markdown source
+  bool viewSource = false;
+
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
@@ -348,7 +351,16 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               onLongPress: () {
                                 HapticFeedback.mediumImpact();
                                 showCommentActionBottomModalSheet(
-                                    context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction, widget.onVoteAction, widget.onReplyEditAction, widget.onReportAction);
+                                  context,
+                                  widget.commentViewTree.commentView!,
+                                  widget.onSaveAction,
+                                  widget.onDeleteAction,
+                                  widget.onVoteAction,
+                                  widget.onReplyEditAction,
+                                  widget.onReportAction,
+                                  () => setState(() => viewSource = !viewSource),
+                                  viewSource,
+                                );
                               },
                               onTap: () {
                                 widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
@@ -366,6 +378,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,
                                 moderators: widget.moderators,
+                                viewSource: viewSource,
+                                onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                               ),
                             ),
                           ],

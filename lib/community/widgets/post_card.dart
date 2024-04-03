@@ -12,6 +12,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/widgets.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -19,7 +20,7 @@ import 'package:thunder/post/utils/navigate_post.dart';
 
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
-  final bool communityMode;
+  final FeedType? feedType;
   final bool indicateRead;
 
   final Function(int) onVoteAction;
@@ -33,7 +34,7 @@ class PostCard extends StatefulWidget {
   const PostCard({
     super.key,
     required this.postViewMedia,
-    required this.communityMode,
+    required this.feedType,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onReadAction,
@@ -198,7 +199,7 @@ class _PostCardState extends State<PostCard> {
               child: state.useCompactView
                   ? PostCardViewCompact(
                       postViewMedia: widget.postViewMedia,
-                      communityMode: widget.communityMode,
+                      feedType: widget.feedType,
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
                       navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
@@ -209,7 +210,7 @@ class _PostCardState extends State<PostCard> {
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,
-                      communityMode: widget.communityMode,
+                      feedType: widget.feedType,
                       showPostAuthor: state.showPostAuthor,
                       showFullHeightImages: state.showFullHeightImages,
                       edgeToEdgeImages: state.showEdgeToEdgeImages,

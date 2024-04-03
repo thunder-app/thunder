@@ -87,7 +87,6 @@ dependencies:
   dart_ping: ^9.0.0
   dart_ping_ios: ^4.0.0
   flutter_typeahead: ^5.2.0
-  text_scroll: ^0.2.0
   sliver_tools: ^0.2.12
   screenshot: ^2.1.0
   html_unescape: ^2.0.0
@@ -119,9 +118,6 @@ dev_dependencies:
     git:
       url: https://github.com/fluttercommunity/flutter_launcher_icons.git
       ref: master
-
-dependency_overrides:
-  # markdown: 7.0.0
 
 # The following section is specific to Flutter packages.
 flutter:
