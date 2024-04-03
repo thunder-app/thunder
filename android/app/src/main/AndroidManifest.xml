@@ -67,8 +67,6 @@
               <data android:host="burggit.moe" />
               <data android:host="discuss.online" />
               <data android:host="discuss.tchncs.de" />
-              <data android:host="feddit.ch" />
-              <data android:host="feddit.de" />
               <data android:host="feddit.dk" />
               <data android:host="feddit.it" />
               <data android:host="feddit.nl" />
@@ -86,6 +84,7 @@
               <data android:host="lemmy.ca" />
               <data android:host="lemmy.dbzer0.com" />
               <data android:host="lemmy.eco.br" />
+              <data android:host="lemmy.kya.moe" />
               <data android:host="lemmy.ml" />
               <data android:host="lemmy.nz" />
               <data android:host="lemmy.one" />
@@ -96,6 +95,7 @@
               <data android:host="lemmygrad.ml" />
               <data android:host="lemmynsfw.com" />
               <data android:host="lemy.lol" />
+              <data android:host="lululemmy.com" />
               <data android:host="mander.xyz" />
               <data android:host="midwest.social" />
               <data android:host="monero.town" />
@@ -109,6 +109,7 @@
               <data android:host="szmer.info" />
               <data android:host="thelemmy.club" />
               <data android:host="ttrpg.network" />
+              <data android:host="yiffit.net" />
               <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity>
