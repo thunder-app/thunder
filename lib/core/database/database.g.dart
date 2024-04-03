@@ -21,19 +21,19 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
       const VerificationMeta('username');
   @override
   late final GeneratedColumn<String> username = GeneratedColumn<String>(
-      'username', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'username', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _jwtMeta = const VerificationMeta('jwt');
   @override
   late final GeneratedColumn<String> jwt = GeneratedColumn<String>(
-      'jwt', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'jwt', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _instanceMeta =
       const VerificationMeta('instance');
   @override
   late final GeneratedColumn<String> instance = GeneratedColumn<String>(
-      'instance', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'instance', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _anonymousMeta =
       const VerificationMeta('anonymous');
   @override
@@ -47,10 +47,8 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumn<int> userId = GeneratedColumn<int>(
-      'user_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(-1));
+      'user_id', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
       [id, username, jwt, instance, anonymous, userId];
@@ -70,14 +68,10 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
     if (data.containsKey('username')) {
       context.handle(_usernameMeta,
           username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
-    } else if (isInserting) {
-      context.missing(_usernameMeta);
     }
     if (data.containsKey('jwt')) {
       context.handle(
           _jwtMeta, jwt.isAcceptableOrUnknown(data['jwt']!, _jwtMeta));
-    } else if (isInserting) {
-      context.missing(_jwtMeta);
     }
     if (data.containsKey('instance')) {
       context.handle(
@@ -85,8 +79,6 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
           this
               .instance
               .isAcceptableOrUnknown(data['instance']!, _instanceMeta));
-    } else if (isInserting) {
-      context.missing(_instanceMeta);
     }
     if (data.containsKey('anonymous')) {
       context.handle(_anonymousMeta,
@@ -108,15 +100,15 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       username: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}username']),
       jwt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}jwt'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}jwt']),
       instance: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}instance'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}instance']),
       anonymous: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}anonymous'])!,
       userId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}user_id']),
     );
   }
 
@@ -128,38 +120,51 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
 
 class Account extends DataClass implements Insertable<Account> {
   final int id;
-  final String username;
-  final String jwt;
-  final String instance;
+  final String? username;
+  final String? jwt;
+  final String? instance;
   final bool anonymous;
-  final int userId;
+  final int? userId;
   const Account(
       {required this.id,
-      required this.username,
-      required this.jwt,
-      required this.instance,
+      this.username,
+      this.jwt,
+      this.instance,
       required this.anonymous,
-      required this.userId});
+      this.userId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['username'] = Variable<String>(username);
-    map['jwt'] = Variable<String>(jwt);
-    map['instance'] = Variable<String>(instance);
+    if (!nullToAbsent || username != null) {
+      map['username'] = Variable<String>(username);
+    }
+    if (!nullToAbsent || jwt != null) {
+      map['jwt'] = Variable<String>(jwt);
+    }
+    if (!nullToAbsent || instance != null) {
+      map['instance'] = Variable<String>(instance);
+    }
     map['anonymous'] = Variable<bool>(anonymous);
-    map['user_id'] = Variable<int>(userId);
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<int>(userId);
+    }
     return map;
   }
 
   AccountsCompanion toCompanion(bool nullToAbsent) {
     return AccountsCompanion(
       id: Value(id),
-      username: Value(username),
-      jwt: Value(jwt),
-      instance: Value(instance),
+      username: username == null && nullToAbsent
+          ? const Value.absent()
+          : Value(username),
+      jwt: jwt == null && nullToAbsent ? const Value.absent() : Value(jwt),
+      instance: instance == null && nullToAbsent
+          ? const Value.absent()
+          : Value(instance),
       anonymous: Value(anonymous),
-      userId: Value(userId),
+      userId:
+          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
     );
   }
 
@@ -168,11 +173,11 @@ class Account extends DataClass implements Insertable<Account> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Account(
       id: serializer.fromJson<int>(json['id']),
-      username: serializer.fromJson<String>(json['username']),
-      jwt: serializer.fromJson<String>(json['jwt']),
-      instance: serializer.fromJson<String>(json['instance']),
+      username: serializer.fromJson<String?>(json['username']),
+      jwt: serializer.fromJson<String?>(json['jwt']),
+      instance: serializer.fromJson<String?>(json['instance']),
       anonymous: serializer.fromJson<bool>(json['anonymous']),
-      userId: serializer.fromJson<int>(json['userId']),
+      userId: serializer.fromJson<int?>(json['userId']),
     );
   }
   @override
@@ -180,28 +185,28 @@ class Account extends DataClass implements Insertable<Account> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'username': serializer.toJson<String>(username),
-      'jwt': serializer.toJson<String>(jwt),
-      'instance': serializer.toJson<String>(instance),
+      'username': serializer.toJson<String?>(username),
+      'jwt': serializer.toJson<String?>(jwt),
+      'instance': serializer.toJson<String?>(instance),
       'anonymous': serializer.toJson<bool>(anonymous),
-      'userId': serializer.toJson<int>(userId),
+      'userId': serializer.toJson<int?>(userId),
     };
   }
 
   Account copyWith(
           {int? id,
-          String? username,
-          String? jwt,
-          String? instance,
+          Value<String?> username = const Value.absent(),
+          Value<String?> jwt = const Value.absent(),
+          Value<String?> instance = const Value.absent(),
           bool? anonymous,
-          int? userId}) =>
+          Value<int?> userId = const Value.absent()}) =>
       Account(
         id: id ?? this.id,
-        username: username ?? this.username,
-        jwt: jwt ?? this.jwt,
-        instance: instance ?? this.instance,
+        username: username.present ? username.value : this.username,
+        jwt: jwt.present ? jwt.value : this.jwt,
+        instance: instance.present ? instance.value : this.instance,
         anonymous: anonymous ?? this.anonymous,
-        userId: userId ?? this.userId,
+        userId: userId.present ? userId.value : this.userId,
       );
   @override
   String toString() {
@@ -233,11 +238,11 @@ class Account extends DataClass implements Insertable<Account> {
 
 class AccountsCompanion extends UpdateCompanion<Account> {
   final Value<int> id;
-  final Value<String> username;
-  final Value<String> jwt;
-  final Value<String> instance;
+  final Value<String?> username;
+  final Value<String?> jwt;
+  final Value<String?> instance;
   final Value<bool> anonymous;
-  final Value<int> userId;
+  final Value<int?> userId;
   const AccountsCompanion({
     this.id = const Value.absent(),
     this.username = const Value.absent(),
@@ -248,14 +253,12 @@ class AccountsCompanion extends UpdateCompanion<Account> {
   });
   AccountsCompanion.insert({
     this.id = const Value.absent(),
-    required String username,
-    required String jwt,
-    required String instance,
+    this.username = const Value.absent(),
+    this.jwt = const Value.absent(),
+    this.instance = const Value.absent(),
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
-  })  : username = Value(username),
-        jwt = Value(jwt),
-        instance = Value(instance);
+  });
   static Insertable<Account> custom({
     Expression<int>? id,
     Expression<String>? username,
@@ -276,11 +279,11 @@ class AccountsCompanion extends UpdateCompanion<Account> {
 
   AccountsCompanion copyWith(
       {Value<int>? id,
-      Value<String>? username,
-      Value<String>? jwt,
-      Value<String>? instance,
+      Value<String?>? username,
+      Value<String?>? jwt,
+      Value<String?>? instance,
       Value<bool>? anonymous,
-      Value<int>? userId}) {
+      Value<int?>? userId}) {
     return AccountsCompanion(
       id: id ?? this.id,
       username: username ?? this.username,
@@ -573,8 +576,8 @@ class $LocalSubscriptionsTable extends LocalSubscriptions
   static const VerificationMeta _iconMeta = const VerificationMeta('icon');
   @override
   late final GeneratedColumn<String> icon = GeneratedColumn<String>(
-      'icon', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'icon', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [id, name, title, actorId, icon];
   @override
@@ -611,8 +614,6 @@ class $LocalSubscriptionsTable extends LocalSubscriptions
     if (data.containsKey('icon')) {
       context.handle(
           _iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
-    } else if (isInserting) {
-      context.missing(_iconMeta);
     }
     return context;
   }
@@ -632,7 +633,7 @@ class $LocalSubscriptionsTable extends LocalSubscriptions
       actorId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}actor_id'])!,
       icon: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}icon'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}icon']),
     );
   }
 
@@ -648,13 +649,13 @@ class LocalSubscription extends DataClass
   final String name;
   final String title;
   final String actorId;
-  final String icon;
+  final String? icon;
   const LocalSubscription(
       {required this.id,
       required this.name,
       required this.title,
       required this.actorId,
-      required this.icon});
+      this.icon});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -662,7 +663,9 @@ class LocalSubscription extends DataClass
     map['name'] = Variable<String>(name);
     map['title'] = Variable<String>(title);
     map['actor_id'] = Variable<String>(actorId);
-    map['icon'] = Variable<String>(icon);
+    if (!nullToAbsent || icon != null) {
+      map['icon'] = Variable<String>(icon);
+    }
     return map;
   }
 
@@ -672,7 +675,7 @@ class LocalSubscription extends DataClass
       name: Value(name),
       title: Value(title),
       actorId: Value(actorId),
-      icon: Value(icon),
+      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
     );
   }
 
@@ -684,7 +687,7 @@ class LocalSubscription extends DataClass
       name: serializer.fromJson<String>(json['name']),
       title: serializer.fromJson<String>(json['title']),
       actorId: serializer.fromJson<String>(json['actorId']),
-      icon: serializer.fromJson<String>(json['icon']),
+      icon: serializer.fromJson<String?>(json['icon']),
     );
   }
   @override
@@ -695,7 +698,7 @@ class LocalSubscription extends DataClass
       'name': serializer.toJson<String>(name),
       'title': serializer.toJson<String>(title),
       'actorId': serializer.toJson<String>(actorId),
-      'icon': serializer.toJson<String>(icon),
+      'icon': serializer.toJson<String?>(icon),
     };
   }
 
@@ -704,13 +707,13 @@ class LocalSubscription extends DataClass
           String? name,
           String? title,
           String? actorId,
-          String? icon}) =>
+          Value<String?> icon = const Value.absent()}) =>
       LocalSubscription(
         id: id ?? this.id,
         name: name ?? this.name,
         title: title ?? this.title,
         actorId: actorId ?? this.actorId,
-        icon: icon ?? this.icon,
+        icon: icon.present ? icon.value : this.icon,
       );
   @override
   String toString() {
@@ -742,7 +745,7 @@ class LocalSubscriptionsCompanion extends UpdateCompanion<LocalSubscription> {
   final Value<String> name;
   final Value<String> title;
   final Value<String> actorId;
-  final Value<String> icon;
+  final Value<String?> icon;
   const LocalSubscriptionsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -755,11 +758,10 @@ class LocalSubscriptionsCompanion extends UpdateCompanion<LocalSubscription> {
     required String name,
     required String title,
     required String actorId,
-    required String icon,
+    this.icon = const Value.absent(),
   })  : name = Value(name),
         title = Value(title),
-        actorId = Value(actorId),
-        icon = Value(icon);
+        actorId = Value(actorId);
   static Insertable<LocalSubscription> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -781,7 +783,7 @@ class LocalSubscriptionsCompanion extends UpdateCompanion<LocalSubscription> {
       Value<String>? name,
       Value<String>? title,
       Value<String>? actorId,
-      Value<String>? icon}) {
+      Value<String?>? icon}) {
     return LocalSubscriptionsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,

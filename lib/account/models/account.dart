@@ -22,12 +22,9 @@ class Account {
 
   static Future<void> insertAccount(Account account) async {
     try {
-      await database.into(database.accounts).insert(AccountsCompanion.insert(
-            username: account.username ?? '',
-            jwt: account.jwt ?? '',
-            instance: account.instance ?? '',
-            userId: Value(account.userId ?? -1),
-          ));
+      await database
+          .into(database.accounts)
+          .insert(AccountsCompanion.insert(username: Value(account.username), jwt: Value(account.jwt), instance: Value(account.instance), userId: Value(account.userId)));
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -46,6 +43,8 @@ class Account {
   }
 
   static Future<Account?> fetchAccount(String accountId) async {
+    if (accountId.isEmpty) return null;
+
     try {
       return await (database.select(database.accounts)..where((t) => t.id.equals(int.parse(accountId)))).getSingleOrNull().then((account) {
         if (account == null) return null;
@@ -58,13 +57,9 @@ class Account {
 
   static Future<void> updateAccount(Account account) async {
     try {
-      await database.update(database.accounts).replace(AccountsCompanion(
-            id: Value(int.parse(account.id)),
-            username: Value(account.username ?? ''),
-            jwt: Value(account.jwt ?? ''),
-            instance: Value(account.instance ?? ''),
-            userId: Value(account.userId ?? -1),
-          ));
+      await database
+          .update(database.accounts)
+          .replace(AccountsCompanion(id: Value(int.parse(account.id)), username: Value(account.username), jwt: Value(account.jwt), instance: Value(account.instance), userId: Value(account.userId)));
     } catch (e) {
       debugPrint(e.toString());
     }

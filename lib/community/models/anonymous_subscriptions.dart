@@ -32,12 +32,9 @@ class AnonymousSubscriptions {
   static Future<void> insertCommunities(Set<LocalCommunity> communities) async {
     try {
       for (LocalCommunity community in communities) {
-        await database.into(database.localSubscriptions).insert(LocalSubscriptionsCompanion.insert(
-              name: community.name,
-              title: community.title,
-              actorId: community.actorId,
-              icon: community.icon ?? '',
-            ));
+        await database
+            .into(database.localSubscriptions)
+            .insert(LocalSubscriptionsCompanion.insert(name: community.name, title: community.title, actorId: community.actorId, icon: Value(community.icon)));
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -55,13 +52,7 @@ class AnonymousSubscriptions {
   static Future<List<LocalCommunity>> getSubscribedCommunities() async {
     try {
       return (await database.localSubscriptions.all().get())
-          .map((favorite) => LocalCommunity(
-                id: favorite.id,
-                name: favorite.name,
-                title: favorite.title,
-                actorId: favorite.actorId,
-                icon: favorite.icon as String?,
-              ))
+          .map((favorite) => LocalCommunity(id: favorite.id, name: favorite.name, title: favorite.title, actorId: favorite.actorId, icon: favorite.icon))
           .toList();
     } catch (e) {
       debugPrint(e.toString());

@@ -44,8 +44,12 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool d
       if (Platform.isAndroid || Platform.isIOS) prefs = (await UserPreferences.instance).sharedPreferences;
 
       for (Map<String, dynamic> record in data['accounts']) {
-        int accountId =
-            await database.into(database.accounts).insert(AccountsCompanion.insert(username: record['username'], jwt: record['jwt'], instance: record['instance'], userId: Value(record['userId'])));
+        int accountId = await database.into(database.accounts).insert(AccountsCompanion.insert(
+              username: Value(record['username']),
+              jwt: Value(record['jwt']),
+              instance: Value(record['instance']),
+              userId: Value(record['userId']),
+            ));
 
         String? activeProfileId = prefs?.getString('active_profile_id');
         if (activeProfileId != null && activeProfileId == record['accountId']) {
@@ -66,7 +70,12 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool d
     // Migrate AnonymousSubscriptions table
     if (data.containsKey('anonymous_subscriptions') && data['anonymous_subscriptions'].isNotEmpty) {
       for (Map<String, dynamic> record in data['anonymous_subscriptions']) {
-        await database.into(database.localSubscriptions).insert(LocalSubscriptionsCompanion.insert(name: record['name'], title: record['title'], actorId: record['actorId'], icon: record['icon']));
+        await database.into(database.localSubscriptions).insert(LocalSubscriptionsCompanion.insert(
+              name: record['name'],
+              title: record['title'],
+              actorId: record['actorId'],
+              icon: Value(record['icon']),
+            ));
       }
     }
 
