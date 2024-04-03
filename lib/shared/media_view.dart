@@ -26,6 +26,9 @@ class MediaView extends StatefulWidget {
   /// Whether to show the full height for images
   final bool showFullHeightImages;
 
+  /// When enabled, the image height will be unconstrained. This is only applicable when [showFullHeightImages] is enabled.
+  final bool allowUnconstrainedImageHeight;
+
   /// Whether to blur NSFW images
   final bool hideNsfwPreviews;
 
@@ -54,6 +57,7 @@ class MediaView extends StatefulWidget {
     super.key,
     required this.postViewMedia,
     this.showFullHeightImages = true,
+    this.allowUnconstrainedImageHeight = false,
     this.edgeToEdgeImages = false,
     this.hideNsfwPreviews = true,
     this.markPostReadOnMediaView = false,
@@ -170,7 +174,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         constraints: BoxConstraints(
             maxHeight: switch (widget.viewMode) {
               ViewMode.compact => ViewMode.compact.height,
-              ViewMode.comfortable => widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? ViewMode.comfortable.height : ViewMode.comfortable.height,
+              ViewMode.comfortable => widget.showFullHeightImages
+                  ? widget.postViewMedia.media.first.height ?? (widget.allowUnconstrainedImageHeight ? double.infinity : ViewMode.comfortable.height)
+                  : ViewMode.comfortable.height,
             },
             minHeight: switch (widget.viewMode) {
               ViewMode.compact => ViewMode.compact.height,
@@ -185,7 +191,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
             }),
         child: Stack(
-          fit: StackFit.expand,
+          fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
           alignment: Alignment.center,
           children: [
             ImageFiltered(

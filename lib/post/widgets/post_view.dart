@@ -150,6 +150,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 expanded: MediaView(
                   scrapeMissingPreviews: scrapeMissingPreviews,
                   postViewMedia: widget.postViewMedia,
+                  showFullHeightImages: true,
+                  allowUnconstrainedImageHeight: true,
                   hideNsfwPreviews: hideNsfwPreviews,
                   markPostReadOnMediaView: markPostReadOnMediaView,
                   isUserLoggedIn: isUserLoggedIn,
