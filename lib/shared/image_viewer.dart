@@ -115,15 +115,23 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   }
 
   Future<void> getImageSize() async {
-    Size decodedImage = await retrieveImageDimensions(imageUrl: widget.url, imageBytes: widget.bytes);
+    try {
+      Size decodedImage = await retrieveImageDimensions(imageUrl: widget.url, imageBytes: widget.bytes).timeout(const Duration(seconds: 2));
 
-    setState(() {
-      imageWidth = decodedImage.width;
-      imageHeight = decodedImage.height;
-      maxZoomLevel = max(imageWidth, imageHeight) / 128;
-      debugPrint("$imageWidth + $imageHeight + $maxZoomLevel");
-      areImageDimensionsLoaded = true;
-    });
+      setState(() {
+        imageWidth = decodedImage.width;
+        imageHeight = decodedImage.height;
+        maxZoomLevel = max(imageWidth, imageHeight) / 128;
+        areImageDimensionsLoaded = true;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+
+      setState(() {
+        maxZoomLevel = 3;
+        areImageDimensionsLoaded = true;
+      });
+    }
   }
 
   @override
