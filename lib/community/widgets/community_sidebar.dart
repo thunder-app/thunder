@@ -247,10 +247,10 @@ class CommunityModeratorList extends StatelessWidget {
                           context,
                           mods.moderator.name,
                           fetchInstanceNameFromUrl(mods.moderator.actorId),
-                          textStyle: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.6),
+                          textStyle: const TextStyle(
                             fontSize: 13,
                           ),
+                          transformColor: (color) => color?.withOpacity(0.6),
                         ),
                       ],
                     ),

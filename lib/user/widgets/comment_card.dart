@@ -116,9 +116,7 @@ class CommentCard extends StatelessWidget {
                   context,
                   comment.community.name,
                   fetchInstanceNameFromUrl(comment.community.actorId),
-                  textStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                  ),
+                  transformColor: (color) => color?.withOpacity(0.75),
                 ),
                 onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: comment.community.id),
               ),

@@ -50,9 +50,7 @@ class PostCardViewCompact extends StatelessWidget {
         isUserLoggedIn &&
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
-    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-    );
+    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && postViewMedia.postView.read ? color?.withOpacity(0.45) : color?.withOpacity(0.75);
 
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
@@ -148,8 +146,8 @@ class PostCardViewCompact extends StatelessWidget {
                   showCommunityIcons: false,
                   feedType: feedType,
                   postView: postViewMedia.postView,
-                  textStyleCommunity: textStyleCommunityAndAuthor,
-                  textStyleAuthor: textStyleCommunityAndAuthor,
+                  communityColorTransformation: communityAndAuthorColorTransformation,
+                  authorColorTransformation: communityAndAuthorColorTransformation,
                   showCommunitySubscription: showCommunitySubscription,
                 ),
                 const SizedBox(height: 6.0),

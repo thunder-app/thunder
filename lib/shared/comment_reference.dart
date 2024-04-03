@@ -150,9 +150,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                   widget.comment.community.name,
                                   fetchInstanceNameFromUrl(widget.comment.community.actorId),
                                   fontScale: state.contentFontSizeScale,
-                                  textStyle: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                                  ),
+                                  transformColor: (color) => color?.withOpacity(0.75),
                                 ),
                               ),
                             ],
