@@ -22,6 +22,7 @@ import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
@@ -36,6 +37,8 @@ class InboxMentionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     if (mentions.isEmpty) {
       return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No mentions'));
@@ -88,21 +91,35 @@ class InboxMentionsView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      UserFullNameWidget(
+                        context,
                         mentions[index].creator.name,
-                        style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
+                        fetchInstanceNameFromUrl(mentions[index].creator.actorId),
                       ),
                       Text(formatTimeToString(dateTime: mentions[index].comment.published.toIso8601String()))
                     ],
                   ),
-                  GestureDetector(
-                    child: CommunityFullNameWidget(
-                      context,
-                      mentions[index].community.name,
-                      fetchInstanceNameFromUrl(mentions[index].community.actorId),
-                      transformColor: (color) => color?.withOpacity(0.75),
-                    ),
-                    onTap: () => onTapCommunityName(context, mentions[index].community.id),
+                  Row(
+                    children: [
+                      ExcludeSemantics(
+                        child: ScalableText(
+                          l10n.in_,
+                          fontScale: thunderState.contentFontSizeScale,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5.0),
+                      GestureDetector(
+                        child: CommunityFullNameWidget(
+                          context,
+                          mentions[index].community.name,
+                          fetchInstanceNameFromUrl(mentions[index].community.actorId),
+                        ),
+                        onTap: () => onTapCommunityName(context, mentions[index].community.id),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   CommonMarkdownBody(body: mentions[index].comment.content),
