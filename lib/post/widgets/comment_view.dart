@@ -37,6 +37,7 @@ class CommentSubview extends StatefulWidget {
 
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
+  final bool viewSource;
 
   const CommentSubview({
     super.key,
@@ -59,6 +60,7 @@ class CommentSubview extends StatefulWidget {
     required this.now,
     required this.moderators,
     required this.crossPosts,
+    required this.viewSource,
   });
 
   @override
@@ -147,6 +149,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                   postViewMedia: widget.postViewMedia!,
                   moderators: widget.moderators,
                   crossPosts: widget.crossPosts,
+                  viewSource: widget.viewSource,
                 ),
                 if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
                   Center(

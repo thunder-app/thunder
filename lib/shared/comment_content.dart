@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 import 'comment_card_actions.dart';
@@ -24,6 +25,8 @@ class CommentContent extends StatefulWidget {
 
   final int? moddingCommentId;
   final List<CommunityModeratorView>? moderators;
+  final bool viewSource;
+  final void Function() onViewSourceToggled;
 
   const CommentContent({
     super.key,
@@ -41,6 +44,8 @@ class CommentContent extends StatefulWidget {
     this.moderators,
     this.excludeSemantics = false,
     this.disableActions = false,
+    required this.viewSource,
+    required this.onViewSourceToggled,
   });
 
   @override
@@ -66,6 +71,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
   Widget build(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
+    final ThemeData theme = Theme.of(context);
 
     return ExcludeSemantics(
       excluding: widget.excludeSemantics,
@@ -101,7 +107,16 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                     children: [
                       Padding(
                         padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
-                        child: CommonMarkdownBody(body: widget.comment.comment.content, isComment: true),
+                        child: widget.viewSource
+                            ? ScalableText(
+                                widget.comment.comment.content,
+                                style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                                fontScale: state.contentFontSizeScale,
+                              )
+                            : CommonMarkdownBody(
+                                body: widget.comment.comment.content,
+                                isComment: true,
+                              ),
                       ),
                       if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
                         Padding(
@@ -114,6 +129,8 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                             onDeleteAction: widget.onDeleteAction,
                             onReplyEditAction: widget.onReplyEditAction,
                             onReportAction: widget.onReportAction,
+                            onViewSourceToggled: widget.onViewSourceToggled,
+                            viewSource: widget.viewSource,
                           ),
                         ),
                     ],
