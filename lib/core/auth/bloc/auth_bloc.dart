@@ -37,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     /// This event occurs whenever you switch to a different authenticated account
     on<SwitchAccount>((event, emit) async {
-      emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false));
+      emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false, reload: event.reload));
 
       Account? account = await Account.fetchAccount(event.accountId);
       if (account == null) return emit(state.copyWith(status: AuthStatus.success, account: null, isLoggedIn: false));
