@@ -20,13 +20,26 @@ class Account {
     this.userId,
   });
 
-  static Future<void> insertAccount(Account account) async {
+  Account copyWith({String? id}) => Account(
+        id: id ?? this.id,
+        username: username,
+        jwt: jwt,
+        instance: instance,
+        userId: userId,
+      );
+
+  static Future<Account?> insertAccount(Account account) async {
+    // If we are given a brand new account to insert with an existing id, something is wrong.
+    assert(account.id.isEmpty);
+
     try {
-      await database
+      int id = await database
           .into(database.accounts)
           .insert(AccountsCompanion.insert(username: Value(account.username), jwt: Value(account.jwt), instance: Value(account.instance), userId: Value(account.userId)));
+      return account.copyWith(id: id.toString());
     } catch (e) {
       debugPrint(e.toString());
+      return null;
     }
   }
 
@@ -52,6 +65,7 @@ class Account {
       });
     } catch (e) {
       debugPrint(e.toString());
+      return null;
     }
   }
 
