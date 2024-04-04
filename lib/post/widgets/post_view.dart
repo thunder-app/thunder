@@ -180,7 +180,18 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     parentBuilder: (Widget child) {
                       return SelectableRegion(
                         focusNode: selectableRegionFocusNode,
-                        selectionControls: Platform.isIOS ? cupertinoTextSelectionControls : materialTextSelectionControls,
+                        // Note: material/cupertinoTextSelectionHandleControls will be deprecated eventually,
+                        // but is still required in order to also use contextMenuBuilder.
+                        // See https://github.com/flutter/flutter/issues/122421 for more info.
+                        selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
+                        contextMenuBuilder: (context, selectableRegionState) {
+                          // While this isn't strictly needed right now, it's here so that when we upgrade the Flutter version, we'll get "Share" for free.
+                          // This comment canbe deleted at that time.
+                          return AdaptiveTextSelectionToolbar.buttonItems(
+                            buttonItems: selectableRegionState.contextMenuButtonItems,
+                            anchors: selectableRegionState.contextMenuAnchors,
+                          );
+                        },
                         child: child,
                       );
                     },
