@@ -144,22 +144,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: loginResponse.jwt));
 
         // Create a new account in the database
-        Uuid uuid = const Uuid();
-        String accountId = uuid.v4().replaceAll('-', '').substring(0, 13);
-
-        Account account = Account(
-          id: accountId,
+        Account? account = Account(
+          id: '',
           username: getSiteResponse.myUser?.localUserView.person.name,
           jwt: loginResponse.jwt,
           instance: instance,
           userId: getSiteResponse.myUser?.localUserView.person.id,
         );
 
-        await Account.insertAccount(account);
+        account = await Account.insertAccount(account);
+
+        if (account == null) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
+        }
 
         // Set this account as the active account
         SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-        prefs.setString('active_profile_id', accountId);
+        prefs.setString('active_profile_id', account.id);
 
         bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
 
