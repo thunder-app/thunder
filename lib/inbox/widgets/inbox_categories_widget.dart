@@ -44,6 +44,7 @@ class InboxCategoryWidget extends StatelessWidget {
       spacing: 5.0,
       children: inboxCategories.map((InboxCategory inboxCategory) {
         return ChoiceChip(
+          showCheckmark: false,
           label: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
