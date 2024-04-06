@@ -3,20 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/user_type.dart';
-import 'package:thunder/feed/utils/utils.dart';
-import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/post/widgets/post_metadata.dart';
-import 'package:thunder/shared/full_name_widgets.dart';
+import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/thunder/thunder_icons.dart';
-import 'package:thunder/user/utils/special_user_checks.dart';
-import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 import '../utils/date_time.dart';
@@ -43,9 +37,9 @@ class CommentHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+    final AccountState accountState = context.read<AccountBloc>().state;
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
-    bool commentShowUserInstance = state.commentShowUserInstance;
 
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
@@ -56,24 +50,27 @@ class CommentHeader extends StatelessWidget {
     if (comment.creator.botAccount) userGroups.add(UserType.bot);
     if (comment.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (comment.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
-    if (comment.post.creatorId == context.read<AuthBloc>().state.account?.userId) userGroups.add(UserType.op);
-    if (comment.creator.id == context.read<AuthBloc>().state.account?.userId) userGroups.add(UserType.self);
+    if (comment.post.creatorId == comment.creator.id) userGroups.add(UserType.op);
+    if (comment.creator.id == accountState.personView?.person.id) userGroups.add(UserType.self);
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(userGroups.isNotEmpty ? 8.0 : 3.0, 10.0, 8.0, 10.0),
+      padding: EdgeInsets.fromLTRB(userGroups.isNotEmpty ? 8.0 : 8.0, 10.0, 8.0, 10.0),
       child: Row(
         children: [
           Expanded(
             child: Row(
               children: [
-                PersonPostMetadata(
+                UserChip(
                   personId: comment.creator.id,
                   personName: comment.creator.name,
                   personDisplayName: comment.creator.displayName ?? comment.creator.name,
                   personUrl: comment.creator.actorId,
                   userGroups: userGroups,
-                  disableTap: isHidden && collapseParentCommentOnGesture,
+                  includeInstance: state.commentShowUserInstance,
+                  ignorePointerEvents: isHidden && collapseParentCommentOnGesture,
+                  opacity: 1.0,
                 ),
+                const SizedBox(width: 8.0),
                 CommentHeaderScore(comment: comment),
               ],
             ),

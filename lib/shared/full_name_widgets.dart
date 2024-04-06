@@ -1,10 +1,15 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+/// A customizable [Text] widget which displays the given name and instance based on the user preferences.
+///
+/// If special badges/indicators are needed, use [UserChip] instead.
 class UserFullNameWidget extends StatelessWidget {
   final BuildContext? outerContext;
   final String? name;
@@ -65,7 +70,7 @@ class UserFullNameWidget extends StatelessWidget {
             text: suffix,
             style: textStyle.copyWith(
               fontWeight: instanceNameThickness.toWeight(),
-              color: transformColor(userNameColor.color == NameColor.defaultColor ? textStyle.color : userNameColor.toColor(context)),
+              color: transformColor(instanceNameColor.color == NameColor.defaultColor ? textStyle.color : instanceNameColor.toColor(context)),
               fontSize:
                   outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
             ),
@@ -91,6 +96,9 @@ class UserFullNameWidget extends StatelessWidget {
   }
 }
 
+/// A customizable [Text] widget which displays the given name and instance based on the user preferences.
+///
+/// If special badges/indicators are needed, use [CommunityChip] instead.
 class CommunityFullNameWidget extends StatelessWidget {
   final BuildContext? outerContext;
   final String? name;
@@ -151,7 +159,7 @@ class CommunityFullNameWidget extends StatelessWidget {
             text: suffix,
             style: textStyle.copyWith(
               fontWeight: instanceNameThickness.toWeight(),
-              color: transformColor(communityNameColor.color == NameColor.defaultColor ? textStyle.color : communityNameColor.toColor(context)),
+              color: transformColor(instanceNameColor.color == NameColor.defaultColor ? textStyle.color : instanceNameColor.toColor(context)),
               fontSize:
                   outerContext == null ? null : MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? textStyle.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
             ),

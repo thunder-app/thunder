@@ -17,11 +17,8 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
-import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
@@ -29,13 +26,12 @@ import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/feed/utils/utils.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/post/widgets/post_metadata.dart';
+import 'package:thunder/shared/chips/community_chip.dart';
+import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
-import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -43,9 +39,6 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
-import 'package:thunder/thunder/thunder_icons.dart';
-import 'package:thunder/user/utils/special_user_checks.dart';
-import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/shared/snackbar.dart';
 
@@ -112,7 +105,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     if (postView.creator.botAccount) userGroups.add(UserType.bot);
     if (postView.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (postView.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
-    if (isOwnPost) userGroups.add(UserType.op);
     if (postView.creator.id == authState.account?.userId) userGroups.add(UserType.self);
 
     return ExpandableNotifier(
@@ -201,15 +193,30 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 alignment: WrapAlignment.spaceBetween,
                 runSpacing: 8.0,
                 children: [
-                  PostPersonCommunityMetadata(
-                    personId: postView.creator.id,
-                    personName: postView.creator.name,
-                    personDisplayName: postView.creator.displayName ?? postView.creator.name,
-                    personUrl: postView.creator.actorId,
-                    communityId: postView.community.id,
-                    communityName: postView.community.name,
-                    communityUrl: postView.community.actorId,
-                    userGroups: userGroups,
+                  Wrap(
+                    spacing: 6.0,
+                    children: [
+                      UserChip(
+                        personId: postView.creator.id,
+                        personName: postView.creator.name,
+                        personDisplayName: postView.creator.displayName ?? postView.creator.name,
+                        personUrl: postView.creator.actorId,
+                        userGroups: userGroups,
+                        includeInstance: thunderState.postBodyShowCommunityInstance,
+                      ),
+                      ScalableText(
+                        'to',
+                        fontScale: thunderState.metadataFontSizeScale,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                        ),
+                      ),
+                      CommunityChip(
+                        communityId: postView.community.id,
+                        communityName: postView.community.name,
+                        communityUrl: postView.community.actorId,
+                      ),
+                    ],
                   ),
                   PostMetadata(
                     commentCount: postViewMedia.postView.counts.comments,
