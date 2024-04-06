@@ -57,7 +57,7 @@ void main() async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
   File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
-  
+
   if (!await dbFile.exists()) await migrateToSQLite(database);
 
   // Clear image cache
