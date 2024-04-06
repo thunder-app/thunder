@@ -1,58 +1,32 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/utils/global_context.dart';
 
-// These checks are for whether a given user falls into a given category
-
-/// Checks whether the given [person] is an administrator in the current instance
-bool isAdmin(Person? person) {
-  return person?.admin == true;
-}
-
-/// Checks whether the author of the given [comment] is also the author of the given [post]
-bool commentAuthorIsPostAuthor(Post? post, Comment? comment) {
-  return post != null && post.creatorId == comment?.creatorId;
-}
-
-/// Checks whether the given [person] is a moderator of the given [moderators].
-bool isModerator(Person? person, List<CommunityModeratorView>? moderators) {
-  return person != null && moderators?.any((moderator) => moderator.moderator.id == person.id) == true;
-}
-
-/// Checks whether the given [person] is a bot account
-bool isBot(Person? person) {
-  return person?.botAccount == true;
-}
-
-bool isSpecialUser(BuildContext context, bool isOwnComment, Post? post, Comment? comment, Person creator, List<CommunityModeratorView>? moderators) {
-  return commentAuthorIsPostAuthor(post, comment) || isOwnComment || isAdmin(creator) || isModerator(creator, moderators) || isBot(creator);
-}
-
-// These helper methods are for building UI elements around special users
-
-Color? fetchUsernameColor(BuildContext context, bool isOwnComment, Post? post, Comment? comment, Person creator, List<CommunityModeratorView>? moderators) {
+/// Fetches the username color based on the given [userGroups].
+///
+/// If the user is in multiple groups, the color is based on order of precedence.
+/// The order is: OP > Self > Admin > Moderator > Bot
+Color? fetchUsernameColor(BuildContext context, List<UserType> userGroups) {
   final theme = Theme.of(context);
   final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
   Color? color;
 
-  if (isBot(creator)) {
-    color = Colors.purple;
-  }
-  if (isModerator(creator, moderators)) {
-    color = Colors.orange;
-  }
-  if (isAdmin(creator)) {
-    color = Colors.red;
-  }
-  if (isOwnComment) {
-    color = Colors.green;
-  }
-  if (commentAuthorIsPostAuthor(post, comment)) {
-    color = Colors.blue;
+  if (userGroups.contains(UserType.op)) {
+    color = UserType.op.color;
+  } else if (userGroups.contains(UserType.self)) {
+    color = UserType.self.color;
+  } else if (userGroups.contains(UserType.admin)) {
+    color = UserType.admin.color;
+  } else if (userGroups.contains(UserType.moderator)) {
+    color = UserType.moderator.color;
+  } else if (userGroups.contains(UserType.bot)) {
+    color = UserType.bot.color;
   }
 
   if (color != null) {
@@ -68,16 +42,22 @@ Color? fetchUsernameColor(BuildContext context, bool isOwnComment, Post? post, C
   return color;
 }
 
-String fetchUsernameDescriptor(bool isOwnComment, Post? post, Comment? comment, Person creator, List<CommunityModeratorView>? moderators) {
+/// Fetches the username descriptor based on the given [userGroups].
+///
+/// If the user is in multiple groups, the descriptor will contain all of them.
+String fetchUsernameDescriptor(List<UserType> userGroups) {
+  List<String> descriptors = [];
   String descriptor = '';
 
-  if (commentAuthorIsPostAuthor(post, comment)) descriptor += 'original poster';
-  if (isOwnComment) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}me';
-  if (isAdmin(creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
-  if (isModerator(creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
-  if (isBot(creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}bot';
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
 
-  if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
+  if (userGroups.contains(UserType.op)) descriptors.add(l10n.originalPoster);
+  if (userGroups.contains(UserType.self)) descriptors.add(l10n.me);
+  if (userGroups.contains(UserType.admin)) descriptors.add(l10n.admin);
+  if (userGroups.contains(UserType.moderator)) descriptors.add(l10n.moderator);
+  if (userGroups.contains(UserType.bot)) descriptors.add(l10n.bot);
+
+  if (descriptors.isNotEmpty) descriptor = ' (${descriptors.join(', ')})';
 
   return descriptor;
 }
