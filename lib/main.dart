@@ -43,7 +43,8 @@ import 'package:flutter/foundation.dart';
 import 'package:thunder/utils/notifications.dart';
 import 'package:thunder/utils/preferences.dart';
 
-late AppDatabase database;
+AppDatabase get database => _database ??= AppDatabase();
+AppDatabase? _database;
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -56,8 +57,7 @@ void main() async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
   File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
-  database = AppDatabase();
-
+  
   if (!await dbFile.exists()) await migrateToSQLite(database);
 
   // Clear image cache
