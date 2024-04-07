@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:background_fetch/background_fetch.dart';
-import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // External Packages
+import 'package:background_fetch/background_fetch.dart';
+import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:flutter_displaymode/flutter_displaymode.dart";
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -16,20 +16,17 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Internal Packages
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/database/database.dart';
-import 'package:thunder/core/database/migrations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
-
-// Internal Packages
 import 'package:thunder/routes.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
@@ -51,15 +48,7 @@ Future<void> initializeDatabase() async {
   if (_isDatabaseInitialized) return;
 
   debugPrint('Initializing drift db.');
-
-  File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
-
   database = AppDatabase();
-
-  if (!await dbFile.exists()) {
-    debugPrint('Migrating from SQLite db.');
-    await migrateToSQLite(database);
-  }
 
   _isDatabaseInitialized = true;
 }

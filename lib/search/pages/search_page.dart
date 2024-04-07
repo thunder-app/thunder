@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -216,7 +217,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     child: Stack(
                       children: [
                         TextField(
-                          keyboardType: Platform.isIOS ? TextInputType.text : TextInputType.url,
+                          keyboardType: (!kIsWeb && Platform.isIOS) ? TextInputType.text : TextInputType.url,
                           focusNode: searchTextFieldFocus,
                           onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
                           controller: _controller,
