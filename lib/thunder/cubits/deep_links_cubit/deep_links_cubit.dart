@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:uni_links/uni_links.dart';
@@ -75,8 +76,9 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
 
   /// Handle incoming links - the ones that the app will recieve from the OS
   /// while already started.
-
   Future<void> handleIncomingLinks() async {
+    if (kIsWeb) return;
+
     emit(state.copyWith(
       deepLinkStatus: DeepLinkStatus.loading,
     ));
@@ -104,6 +106,8 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
 
   /// Handle the initial Uri - the one the app was started with
   Future<void> handleInitialURI() async {
+    if (kIsWeb) return;
+
     try {
       emit(state.copyWith(
         deepLinkStatus: DeepLinkStatus.loading,

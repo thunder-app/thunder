@@ -107,6 +107,8 @@ class _ThunderState extends State<Thunder> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (kIsWeb) return;
+
       handleSharedFilesAndText();
       BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
       BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
@@ -221,24 +223,24 @@ class _ThunderState extends State<Thunder> {
     }
 
     // If the incoming link is a custom URL, replace it back with https://
-    String _link = link?.replaceAll('thunder://', 'https://') ?? "";
+    String fullLink = link?.replaceAll('thunder://', 'https://') ?? "";
 
     switch (linkType) {
       case LinkType.comment:
-        if (context.mounted) await _navigateToComment(_link);
+        if (context.mounted) await _navigateToComment(fullLink);
       case LinkType.user:
-        if (context.mounted) await _navigateToUser(_link);
+        if (context.mounted) await _navigateToUser(fullLink);
       case LinkType.post:
-        if (context.mounted) await _navigateToPost(_link);
+        if (context.mounted) await _navigateToPost(fullLink);
       case LinkType.community:
-        if (context.mounted) await _navigateToCommunity(_link);
+        if (context.mounted) await _navigateToCommunity(fullLink);
       case LinkType.modlog:
-        if (context.mounted) await _navigateToModlog(_link);
+        if (context.mounted) await _navigateToModlog(fullLink);
       case LinkType.instance:
-        if (context.mounted) await _navigateToInstance(_link);
+        if (context.mounted) await _navigateToInstance(fullLink);
       case LinkType.unknown:
         if (context.mounted) {
-          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, _link);
+          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, fullLink);
         }
     }
   }
