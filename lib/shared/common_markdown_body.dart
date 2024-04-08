@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jovial_svg/jovial_svg.dart';
@@ -6,6 +7,7 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 
 import 'package:thunder/utils/media/image.dart';
@@ -388,46 +390,64 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          transform: Matrix4.translationValues(widget.allowHorizontalTranslation ? -4.0 : 0, 0, 0.0), // Move the Inkwell slightly to the left to line up text
-          child: InkWell(
-            borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-            onTap: () {
-              expandableController.toggle();
-              setState(() {}); // Update the state to trigger the collapse/expand
-            },
-            child: Padding(
-              padding: EdgeInsets.only(top: 4.0, bottom: 4.0, left: widget.allowHorizontalTranslation ? 4.0 : 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: ScalableText(
-                      widget.title ?? l10n.spoiler,
-                      fontScale: state.contentFontSizeScale,
-                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    final Color backgroundColor = darkTheme ? theme.dividerColor.darken(5) : theme.dividerColor.lighten(20);
+
+    return Container(
+      // Move the Inkwell slightly to the left to line up text
+      transform: Matrix4.translationValues(widget.allowHorizontalTranslation ? -4.0 : 0, 0, 0.0),
+      child: Ink(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InkWell(
+              borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+              onTap: () {
+                expandableController.toggle();
+                setState(() {}); // Update the state to trigger the collapse/expand
+              },
+              child: Padding(
+                padding: EdgeInsets.only(top: 4.0, bottom: 4.0, left: widget.allowHorizontalTranslation ? 4.0 : 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      expandableController.expanded ? Icons.expand_more_rounded : Icons.chevron_right_rounded,
+                      semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
+                      size: 20,
                     ),
-                  ),
-                  Icon(
-                    expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                    semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
-                    size: 20,
-                  ),
-                ],
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: ScalableText(
+                        widget.title ?? l10n.spoiler,
+                        fontScale: state.contentFontSizeScale,
+                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
+            Container(
+              // Re-adjust the main text to compsenate for the inkwell adjustment.
+              transform: Matrix4.translationValues(widget.allowHorizontalTranslation ? 4.0 : 0, 0, 0.0),
+              child: Expandable(
+                controller: expandableController,
+                collapsed: Container(),
+                expanded: Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: CommonMarkdownBody(body: widget.body ?? ''),
+                ),
+              ),
+            ),
+          ],
         ),
-        Expandable(
-          controller: expandableController,
-          collapsed: Container(),
-          expanded: CommonMarkdownBody(body: widget.body ?? ''),
-        ),
-      ],
+      ),
     );
   }
 }
