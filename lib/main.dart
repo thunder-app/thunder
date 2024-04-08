@@ -45,6 +45,25 @@ import 'package:thunder/utils/preferences.dart';
 
 late AppDatabase database;
 
+bool _isDatabaseInitialized = false;
+
+Future<void> initializeDatabase() async {
+  if (_isDatabaseInitialized) return;
+
+  debugPrint('Initializing drift db.');
+
+  File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
+
+  database = AppDatabase();
+
+  if (!await dbFile.exists()) {
+    debugPrint('Migrating from SQLite db.');
+    await migrateToSQLite(database);
+  }
+
+  _isDatabaseInitialized = true;
+}
+
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -55,10 +74,7 @@ void main() async {
   // Load up preferences
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
-  database = AppDatabase();
-
-  if (!await dbFile.exists()) await migrateToSQLite(database);
+  await initializeDatabase();
 
   // Clear image cache
   await clearExtendedImageCache();
