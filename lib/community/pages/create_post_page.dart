@@ -551,6 +551,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 MarkdownType.list,
                                 MarkdownType.separator,
                                 MarkdownType.code,
+                                MarkdownType.spoiler,
                                 MarkdownType.username,
                                 MarkdownType.community,
                               ],

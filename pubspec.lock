@@ -1084,9 +1084,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "017c8614c59b7081f54a7af70cc9586888d53b56"
-      resolved-ref: "017c8614c59b7081f54a7af70cc9586888d53b56"
-      url: "https://github.com/thunder-app/markdown-editor.git"
+      ref: cc8f0436a4b6b6b4901dead6633babb8f8284a7d
+      resolved-ref: cc8f0436a4b6b6b4901dead6633babb8f8284a7d
+      url: "https://github.com/micahmo/markdown-editor.git"
     source: git
     version: "2.2.1"
   matcher:
