@@ -7,11 +7,11 @@ import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/utils/global_context.dart';
 
-/// Fetches the username color based on the given [userGroups].
+/// Fetches the user group color based on the given [userGroups].
 ///
 /// If the user is in multiple groups, the color is based on order of precedence.
 /// The order is: OP > Self > Admin > Moderator > Bot
-Color? fetchUsernameColor(BuildContext context, List<UserType> userGroups) {
+Color? fetchUserGroupColor(BuildContext context, List<UserType> userGroups) {
   final theme = Theme.of(context);
   final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
@@ -42,10 +42,10 @@ Color? fetchUsernameColor(BuildContext context, List<UserType> userGroups) {
   return color;
 }
 
-/// Fetches the username descriptor based on the given [userGroups].
+/// Fetches the user group descriptor based on the given [userGroups].
 ///
 /// If the user is in multiple groups, the descriptor will contain all of them.
-String fetchUsernameDescriptor(List<UserType> userGroups) {
+String fetchUserGroupDescriptor(List<UserType> userGroups) {
   List<String> descriptors = [];
   String descriptor = '';
 

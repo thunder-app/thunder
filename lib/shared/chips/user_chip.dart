@@ -9,7 +9,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
-import 'package:thunder/user/utils/special_user_checks.dart';
+import 'package:thunder/user/utils/user_groups.dart';
 import 'package:thunder/utils/instance.dart';
 
 /// A chip which displays the given user and instance information. Additionally, it renders special chips for special users.
@@ -62,10 +62,10 @@ class UserChip extends StatelessWidget {
       ignoring: ignorePointerEvents,
       child: Tooltip(
         excludeFromSemantics: true,
-        message: '${generateUserFullName(context, personName, fetchInstanceNameFromUrl(personUrl) ?? '-')}${fetchUsernameDescriptor(userGroups)}',
+        message: '${generateUserFullName(context, personName, fetchInstanceNameFromUrl(personUrl) ?? '-')}${fetchUserGroupDescriptor(userGroups)}',
         preferBelow: false,
         child: Material(
-          color: userGroups.isNotEmpty ? fetchUsernameColor(context, userGroups) ?? theme.colorScheme.onBackground : Colors.transparent,
+          color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onBackground : Colors.transparent,
           borderRadius: userGroups.isNotEmpty ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
           child: InkWell(
             borderRadius: BorderRadius.circular(5),
