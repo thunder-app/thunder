@@ -90,6 +90,8 @@ class _ThunderState extends State<Thunder> {
 
   final ScrollController _changelogScrollController = ScrollController();
 
+  bool errorMessageLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -666,11 +668,18 @@ class _ThunderState extends State<Thunder> {
                           return Container();
                         case AuthStatus.failureCheckingInstance:
                           showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
-                          return ErrorMessage(
-                            title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
-                            message: AppLocalizations.of(context)!.internetOrInstanceIssues,
-                            actionText: AppLocalizations.of(context)!.accountSettings,
-                            action: () => showProfileModalSheet(context),
+                          errorMessageLoading = false;
+                          return StatefulBuilder(
+                            builder: (context, setState) => ErrorMessage(
+                              title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
+                              message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+                              actionText: AppLocalizations.of(context)!.retry,
+                              action: () {
+                                context.read<AuthBloc>().add(CheckAuth());
+                                setState(() => errorMessageLoading = true);
+                              },
+                              loading: errorMessageLoading,
+                            ),
                           );
                       }
                     },

@@ -6,8 +6,16 @@ class ErrorMessage extends StatelessWidget {
   final String? message;
   final String? actionText;
   final VoidCallback? action;
+  final bool? loading;
 
-  const ErrorMessage({super.key, this.title, this.message, this.action, this.actionText});
+  const ErrorMessage({
+    super.key,
+    this.title,
+    this.message,
+    this.action,
+    this.actionText,
+    this.loading,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +44,14 @@ class ErrorMessage extends StatelessWidget {
             const SizedBox(height: 32.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-              onPressed: () => action?.call(),
-              child: Text(actionText ?? AppLocalizations.of(context)!.refresh),
+              onPressed: loading == true ? null : () => action?.call(),
+              child: loading == true
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(),
+                    )
+                  : Text(actionText ?? AppLocalizations.of(context)!.refresh),
             ),
           ],
         ),
