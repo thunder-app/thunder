@@ -35,8 +35,6 @@ class CommonMarkdownBody extends StatelessWidget {
 
   final double? imageMaxWidth;
 
-  final bool allowHorizontalTranslation;
-
   const CommonMarkdownBody({
     super.key,
     required this.body,
@@ -44,7 +42,6 @@ class CommonMarkdownBody extends StatelessWidget {
     this.isSelectableText = false,
     this.isComment,
     this.imageMaxWidth,
-    this.allowHorizontalTranslation = true,
   });
 
   @override
@@ -121,7 +118,7 @@ class CommonMarkdownBody extends StatelessWidget {
       extensionSet: customExtensionSet,
       inlineSyntaxes: [LemmyLinkSyntax(), SubscriptInlineSyntax(), SuperscriptInlineSyntax()],
       builders: {
-        'spoiler': SpoilerElementBuilder(allowHorizontalTranslation: allowHorizontalTranslation),
+        'spoiler': SpoilerElementBuilder(),
         'sub': SubscriptElementBuilder(),
         'sup': SuperscriptElementBuilder(),
       },
@@ -347,9 +344,7 @@ class SpoilerBlockSyntax extends md.BlockSyntax {
 ///
 /// This breaks down the combined title/body and creates the resulting [SpoilerWidget]
 class SpoilerElementBuilder extends MarkdownElementBuilder {
-  final bool allowHorizontalTranslation;
-
-  SpoilerElementBuilder({required this.allowHorizontalTranslation});
+  SpoilerElementBuilder();
 
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
@@ -363,7 +358,7 @@ class SpoilerElementBuilder extends MarkdownElementBuilder {
 
     String? title = parts[0].trim();
     String? body = parts[1].trim();
-    return SpoilerWidget(title: title, body: body, allowHorizontalTranslation: allowHorizontalTranslation);
+    return SpoilerWidget(title: title, body: body);
   }
 }
 
@@ -372,9 +367,7 @@ class SpoilerWidget extends StatefulWidget {
   final String? title;
   final String? body;
 
-  final bool allowHorizontalTranslation;
-
-  const SpoilerWidget({super.key, this.title, this.body, required this.allowHorizontalTranslation});
+  const SpoilerWidget({super.key, this.title, this.body});
 
   @override
   State<SpoilerWidget> createState() => _SpoilerWidgetState();
@@ -393,60 +386,52 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
     final Color backgroundColor = darkTheme ? theme.dividerColor.darken(5) : theme.dividerColor.lighten(20);
 
-    return Container(
-      // Move the Inkwell slightly to the left to line up text
-      transform: Matrix4.translationValues(widget.allowHorizontalTranslation ? -4.0 : 0, 0, 0.0),
-      child: Ink(
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InkWell(
-              borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-              onTap: () {
-                expandableController.toggle();
-                setState(() {}); // Update the state to trigger the collapse/expand
-              },
-              child: Padding(
-                padding: EdgeInsets.only(top: 4.0, bottom: 4.0, left: widget.allowHorizontalTranslation ? 4.0 : 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      expandableController.expanded ? Icons.expand_more_rounded : Icons.chevron_right_rounded,
-                      semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
-                      size: 20,
+    return Ink(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+            onTap: () {
+              expandableController.toggle();
+              setState(() {}); // Update the state to trigger the collapse/expand
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    expandableController.expanded ? Icons.expand_more_rounded : Icons.chevron_right_rounded,
+                    semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: ScalableText(
+                      widget.title ?? l10n.spoiler,
+                      fontScale: state.contentFontSizeScale,
+                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(width: 5),
-                    Expanded(
-                      child: ScalableText(
-                        widget.title ?? l10n.spoiler,
-                        fontScale: state.contentFontSizeScale,
-                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Container(
-              // Re-adjust the main text to compsenate for the inkwell adjustment.
-              transform: Matrix4.translationValues(widget.allowHorizontalTranslation ? 4.0 : 0, 0, 0.0),
-              child: Expandable(
-                controller: expandableController,
-                collapsed: Container(),
-                expanded: Padding(
-                  padding: const EdgeInsets.only(bottom: 5),
-                  child: CommonMarkdownBody(body: widget.body ?? ''),
-                ),
-              ),
+          ),
+          Expandable(
+            controller: expandableController,
+            collapsed: Container(),
+            expanded: Padding(
+              padding: const EdgeInsets.only(left: 4, right: 4, bottom: 4),
+              child: CommonMarkdownBody(body: widget.body ?? ''),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
