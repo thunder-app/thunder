@@ -125,13 +125,13 @@ class FeedAppBarCommunityActions extends StatelessWidget {
 
     return Row(
       children: [
-        BlocListener<CommunityBloc, CommunityState>(
+        BlocConsumer<CommunityBloc, CommunityState>(
           listener: (context, state) {
             if (state.status == CommunityStatus.success && state.communityView != null) {
               feedBloc.add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
             }
           },
-          child: IconButton(
+          builder: (context, state) => IconButton(
             icon: Icon(
                 switch (_getSubscriptionStatus(context)) {
                   SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,

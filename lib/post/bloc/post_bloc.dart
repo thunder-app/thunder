@@ -212,7 +212,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           attemptCount++;
         }
       }
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(exception)));
     } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
