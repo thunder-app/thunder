@@ -101,6 +101,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                     ),
                     const SizedBox(height: 10.0),
                     const Divider(height: 1, thickness: 2),
+                    const SizedBox(height: 10.0),
                     Container(
                       alignment: Alignment.topCenter,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
