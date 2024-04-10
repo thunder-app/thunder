@@ -116,9 +116,9 @@ class _InboxPageState extends State<InboxPage> {
                       });
                     },
                     unreadCounts: {
-                      InboxType.replies: context.read<InboxBloc>().state.repliesUnreadCount,
-                      InboxType.mentions: context.read<InboxBloc>().state.mentionsUnreadCount,
-                      InboxType.messages: context.read<InboxBloc>().state.messagesUnreadCount,
+                      InboxType.replies: state.repliesUnreadCount,
+                      InboxType.mentions: state.mentionsUnreadCount,
+                      InboxType.messages: state.messagesUnreadCount,
                     },
                   ),
                 ),
