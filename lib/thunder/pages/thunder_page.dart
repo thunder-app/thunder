@@ -168,6 +168,7 @@ class _ThunderState extends State<Thunder> {
     final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
 
     if (!topOfNavigationStack) return false;
+    if (stopDefaultButtonEvent) return false;
 
     if (selectedPageIndex != 0) {
       setState(() {
@@ -221,24 +222,24 @@ class _ThunderState extends State<Thunder> {
     }
 
     // If the incoming link is a custom URL, replace it back with https://
-    String _link = link?.replaceAll('thunder://', 'https://') ?? "";
+    String originalLink = link?.replaceAll('thunder://', 'https://') ?? "";
 
     switch (linkType) {
       case LinkType.comment:
-        if (context.mounted) await _navigateToComment(_link);
+        if (context.mounted) await _navigateToComment(originalLink);
       case LinkType.user:
-        if (context.mounted) await _navigateToUser(_link);
+        if (context.mounted) await _navigateToUser(originalLink);
       case LinkType.post:
-        if (context.mounted) await _navigateToPost(_link);
+        if (context.mounted) await _navigateToPost(originalLink);
       case LinkType.community:
-        if (context.mounted) await _navigateToCommunity(_link);
+        if (context.mounted) await _navigateToCommunity(originalLink);
       case LinkType.modlog:
-        if (context.mounted) await _navigateToModlog(_link);
+        if (context.mounted) await _navigateToModlog(originalLink);
       case LinkType.instance:
-        if (context.mounted) await _navigateToInstance(_link);
+        if (context.mounted) await _navigateToInstance(originalLink);
       case LinkType.unknown:
         if (context.mounted) {
-          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, _link);
+          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, originalLink);
         }
     }
   }
