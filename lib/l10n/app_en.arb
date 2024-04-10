@@ -375,7 +375,7 @@
   "@couldntCreateReport": {},
   "couldntFindPost": "Unable to load the requested post. It may have been deleted or removed.",
   "@couldntFindPost": {
-    "Error message for when we can't load a post."
+    "description": "Error message for when we can't load a post."
   },
   "countSubscribers": "{count} subscribers",
   "@countSubscribers": {},
