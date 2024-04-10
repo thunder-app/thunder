@@ -222,24 +222,24 @@ class _ThunderState extends State<Thunder> {
     }
 
     // If the incoming link is a custom URL, replace it back with https://
-    String originalLink = link?.replaceAll('thunder://', 'https://') ?? "";
+    link = link?.replaceAll('thunder://', 'https://') ?? "";
 
     switch (linkType) {
       case LinkType.comment:
-        if (context.mounted) await _navigateToComment(originalLink);
+        if (context.mounted) await _navigateToComment(link);
       case LinkType.user:
-        if (context.mounted) await _navigateToUser(originalLink);
+        if (context.mounted) await _navigateToUser(link);
       case LinkType.post:
-        if (context.mounted) await _navigateToPost(originalLink);
+        if (context.mounted) await _navigateToPost(link);
       case LinkType.community:
-        if (context.mounted) await _navigateToCommunity(originalLink);
+        if (context.mounted) await _navigateToCommunity(link);
       case LinkType.modlog:
-        if (context.mounted) await _navigateToModlog(originalLink);
+        if (context.mounted) await _navigateToModlog(link);
       case LinkType.instance:
-        if (context.mounted) await _navigateToInstance(originalLink);
+        if (context.mounted) await _navigateToInstance(link);
       case LinkType.unknown:
         if (context.mounted) {
-          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, originalLink);
+          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link);
         }
     }
   }
