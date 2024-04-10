@@ -6,7 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Generates a user-friendly error message from an exception (or any thrown object)
-String getExceptionErrorMessage(Object e, {String? additionalInfo}) {
+String getExceptionErrorMessage(Object? e, {String? additionalInfo}) {
   if (e is LemmyApiException) {
     return getErrorMessage(GlobalContext.context, e.message, additionalInfo: additionalInfo) ?? e.toString();
   }
