@@ -168,6 +168,7 @@ class _ThunderState extends State<Thunder> {
     final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
 
     if (!topOfNavigationStack) return false;
+    if (stopDefaultButtonEvent) return false;
 
     if (selectedPageIndex != 0) {
       setState(() {
