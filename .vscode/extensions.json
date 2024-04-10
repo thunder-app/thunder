@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "ipcjs.i18n-ally-ipcjs"
+        "ipcjs.i18n-ally-ipcjs",
+        "emeraldwalk.runonsave"
     ]
 }
