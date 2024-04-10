@@ -373,6 +373,10 @@
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Your comment report could not be submitted at this time. Please try again later",
   "@couldntCreateReport": {},
+  "couldntFindPost": "Unable to load the requested post. It may have been deleted or removed.",
+  "@couldntFindPost": {
+    "description": "Error message for when we can't load a post."
+  },
   "countSubscribers": "{count} subscribers",
   "@countSubscribers": {},
   "countUsers": "{count} users",
@@ -494,7 +498,13 @@
   "downloadingMedia": "Downloading media to share…",
   "@downloadingMedia": {},
   "downvote": "Downvote",
-  "@downvote": {},
+  "@downvote": {
+    "description": "Action for downvoting a post/comment"
+  },
+  "downvoted": "Downvoted",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
   "downvotesDisabled": "Downvotes are turned off on this instance.",
   "@downvotesDisabled": {},
   "edit": "Edit",
@@ -1860,7 +1870,13 @@
   "uploadImage": "Upload image",
   "@uploadImage": {},
   "upvote": "Upvote",
-  "@upvote": {},
+  "@upvote": {
+    "description": "Action for upvoting a post/comment"
+  },
+  "upvoted": "Upvoted",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
   "uriNotSupported": "This type of link is not supported at the moment.",
   "@uriNotSupported": {
     "description": "Unsupported link type at the present time."

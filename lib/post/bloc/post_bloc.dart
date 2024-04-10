@@ -96,7 +96,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     int attemptCount = 0;
 
     try {
-      var exception;
+      Object? exception;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
@@ -212,7 +212,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           attemptCount++;
         }
       }
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(exception)));
     } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
@@ -230,7 +230,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
     try {
-      var exception;
+      Object? exception;
 
       Account? account = await fetchActiveProfileAccount();
 

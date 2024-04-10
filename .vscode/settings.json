@@ -26,4 +26,15 @@
     "i18n-ally.annotationInPlace": true,
     "i18n-ally.annotationRange": "annotation",
     "i18n-ally.annotationDelimiter": "//",
+    "i18n-ally.regex.usageMatch": [
+        "(?<annotation>l10n\\.(?<key>{key}))\\W",
+    ],
+    "i18n-ally.refactor.templates": [
+        {
+            "templates": [
+                "l10n.{key}",
+                "l10n.{key}({args})"
+            ]
+        }
+    ]
 }

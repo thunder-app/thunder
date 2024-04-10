@@ -65,7 +65,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     int limit = 20;
 
     try {
-      var exception;
+      Object? exception;
 
       Account? account = await fetchActiveProfileAccount();
 
