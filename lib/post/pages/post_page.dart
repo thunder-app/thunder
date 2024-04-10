@@ -492,18 +492,24 @@ class _PostPageState extends State<PostPage> {
                           }
                           return ErrorMessage(
                             message: state.errorMessage,
-                            action: () {
-                              context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
-                            },
-                            actionText: l10n.refreshContent,
+                            actions: [
+                              (
+                                text: l10n.refreshContent,
+                                action: () => context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null)),
+                                loading: false,
+                              ),
+                            ],
                           );
                         case PostStatus.empty:
                           return ErrorMessage(
                             message: state.errorMessage,
-                            action: () {
-                              context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                            },
-                            actionText: l10n.refreshContent,
+                            actions: [
+                              (
+                                text: l10n.refreshContent,
+                                action: () => context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId)),
+                                loading: false,
+                              ),
+                            ],
                           );
                       }
                     },

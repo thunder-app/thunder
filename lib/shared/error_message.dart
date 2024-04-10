@@ -4,17 +4,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ErrorMessage extends StatelessWidget {
   final String? title;
   final String? message;
-  final String? actionText;
-  final VoidCallback? action;
-  final bool? loading;
+  final List<({String text, void Function() action, bool loading})>? actions;
 
   const ErrorMessage({
     super.key,
     this.title,
     this.message,
-    this.action,
-    this.actionText,
-    this.loading,
+    this.actions,
   });
 
   @override
@@ -42,17 +38,27 @@ class ErrorMessage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-              onPressed: loading == true ? null : () => action?.call(),
-              child: loading == true
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(),
-                    )
-                  : Text(actionText ?? AppLocalizations.of(context)!.refresh),
-            ),
+            if (actions?.isNotEmpty == true)
+              Row(
+                children: [
+                  for (var action in actions!) ...[
+                    if (actions!.indexOf(action) > 0) const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+                        onPressed: action.loading == true ? null : () => action.action.call(),
+                        child: action.loading == true
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(),
+                              )
+                            : Text(action.text),
+                      ),
+                    ),
+                  ]
+                ],
+              )
           ],
         ),
       ),

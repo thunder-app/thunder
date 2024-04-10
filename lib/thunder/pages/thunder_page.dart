@@ -673,12 +673,21 @@ class _ThunderState extends State<Thunder> {
                             builder: (context, setState) => ErrorMessage(
                               title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
                               message: AppLocalizations.of(context)!.internetOrInstanceIssues,
-                              actionText: AppLocalizations.of(context)!.retry,
-                              action: () {
-                                context.read<AuthBloc>().add(CheckAuth());
-                                setState(() => errorMessageLoading = true);
-                              },
-                              loading: errorMessageLoading,
+                              actions: [
+                                (
+                                  text: AppLocalizations.of(context)!.retry,
+                                  action: () {
+                                    context.read<AuthBloc>().add(CheckAuth());
+                                    setState(() => errorMessageLoading = true);
+                                  },
+                                  loading: errorMessageLoading,
+                                ),
+                                (
+                                  text: AppLocalizations.of(context)!.accountSettings,
+                                  action: () => showProfileModalSheet(context),
+                                  loading: false,
+                                ),
+                              ],
                             ),
                           );
                       }
@@ -689,8 +698,13 @@ class _ThunderState extends State<Thunder> {
                 FlutterNativeSplash.remove();
                 return ErrorMessage(
                   message: thunderBlocState.errorMessage,
-                  action: () => {context.read<AuthBloc>().add(CheckAuth())},
-                  actionText: AppLocalizations.of(context)!.refreshContent,
+                  actions: [
+                    (
+                      text: AppLocalizations.of(context)!.refreshContent,
+                      action: () => context.read<AuthBloc>().add(CheckAuth()),
+                      loading: false,
+                    ),
+                  ],
                 );
             }
           },
