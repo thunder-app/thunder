@@ -345,6 +345,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 MarkdownType.list,
                                 MarkdownType.separator,
                                 MarkdownType.code,
+                                MarkdownType.spoiler,
                                 MarkdownType.username,
                                 MarkdownType.community,
                               ],
