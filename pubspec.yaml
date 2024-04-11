@@ -23,7 +23,7 @@ dependencies:
   markdown_editable_textinput:
     git:
       url: https://github.com/thunder-app/markdown-editor.git
-      ref: 017c8614c59b7081f54a7af70cc9586888d53b56
+      ref: 24f0004a0afedeef5ba52a327c1522bb1564439e
   lemmy_api_client:
     git:
       url: https://github.com/thunder-app/lemmy_api_client.git
