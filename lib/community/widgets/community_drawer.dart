@@ -177,7 +177,7 @@ class FeedDrawerItems extends StatelessWidget {
                 isSelected: destination.listingType == feedState.postListingType,
                 onTap: () {
                   Navigator.of(context).pop();
-                  navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType, sortType: thunderState.defaultSortType);
+                  navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType, sortType: thunderState.sortTypeForInstance);
                 },
                 label: destination.label,
                 icon: destination.icon,
@@ -264,7 +264,7 @@ class FavoriteCommunities extends StatelessWidget {
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
                           feedType: FeedType.community,
-                          sortType: thunderState.defaultSortType,
+                          sortType: thunderState.sortTypeForInstance,
                           communityId: community.id,
                           reset: true,
                         ),
@@ -341,7 +341,7 @@ class SubscribedCommunities extends StatelessWidget {
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: thunderState.defaultSortType,
+                            sortType: thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
                           ),
@@ -411,7 +411,7 @@ class ModeratedCommunities extends StatelessWidget {
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: thunderState.defaultSortType,
+                            sortType: thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
                           ),

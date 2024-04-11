@@ -164,6 +164,7 @@ class ThunderState extends Equatable {
   // Default Listing/Sort Settings
   final ListingType defaultListingType;
   final SortType defaultSortType;
+  SortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType) ? defaultSortType : DEFAULT_SORT_TYPE;
 
   // NSFW Settings
   final bool hideNsfwPosts;
