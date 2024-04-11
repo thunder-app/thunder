@@ -20,10 +20,10 @@ dependencies:
     sdk: flutter
   sqflite: ^2.2.8+4
   path: ^1.8.3
-  markdown_editable_textinput:
+  markdown_editor:
     git:
       url: https://github.com/thunder-app/markdown-editor.git
-      ref: 24f0004a0afedeef5ba52a327c1522bb1564439e
+      ref: 59ac76be26dc125701e00b2f3edc01dac3066329
   lemmy_api_client:
     git:
       url: https://github.com/thunder-app/lemmy_api_client.git
