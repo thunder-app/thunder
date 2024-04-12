@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
@@ -44,9 +43,10 @@ class UserAvatar extends StatelessWidget {
     if (person?.avatar?.isNotEmpty != true) return placeholderIcon;
 
     Uri imageUri = Uri.parse(person!.avatar!);
+    bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
     Map<String, dynamic> queryParameters = {};
-    if (thumbnailSize != null) queryParameters['thumbnail'] = thumbnailSize.toString();
-    if (format != null) queryParameters['format'] = format;
+    if (isPictrsImageEndpoint && thumbnailSize != null) queryParameters['thumbnail'] = thumbnailSize.toString();
+    if (isPictrsImageEndpoint && format != null) queryParameters['format'] = format;
     Uri thumbnailUri = Uri.https(imageUri.host, imageUri.path, queryParameters);
 
     return CachedNetworkImage(
