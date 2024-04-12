@@ -97,6 +97,7 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
                   onPressed: () => showLanguageInputDialog(
                     context,
                     title: l10n.addDiscussionLanguage,
+                    excludedLanguageIds: [-1],
                     onLanguageSelected: (language) {
                       _setDiscussionLanguages(discussionLanguages = [
                         ...{...discussionLanguages, language}
