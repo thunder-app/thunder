@@ -503,7 +503,7 @@ class _ThunderState extends State<Thunder> {
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
                                 postListingType: thunderBlocState.defaultListingType,
-                                sortType: thunderBlocState.defaultSortType,
+                                sortType: thunderBlocState.sortTypeForInstance,
                                 reset: true,
                               ),
                             );
@@ -638,7 +638,7 @@ class _ThunderState extends State<Thunder> {
                                     useGlobalFeedBloc: true,
                                     feedType: FeedType.general,
                                     postListingType: thunderBlocState.defaultListingType,
-                                    sortType: thunderBlocState.defaultSortType,
+                                    sortType: thunderBlocState.sortTypeForInstance,
                                     scaffoldStateKey: scaffoldStateKey,
                                   ),
                                   AnimatedOpacity(
