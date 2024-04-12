@@ -175,6 +175,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       ),
                       DiscussionLanguageSelector(
                         initialDiscussionLanguages: DiscussionLanguageSelector.getDiscussionLanguagesFromSiteResponse(state.getSiteResponse),
+                        settingToHighlight: widget.settingToHighlight,
                       ),
                       if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
                         Padding(

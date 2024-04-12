@@ -473,7 +473,7 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
-  "deselectUndeterminedWarning": "Warning: If you deselect Undetermined, you will not see most content.",
+  "deselectUndeterminedWarning": "If you deselect Undetermined, you will not see most content.",
   "@deselectUndeterminedWarning": {},
   "detailedReason": "Reason: {reason}",
   "@detailedReason": {
@@ -491,6 +491,8 @@
   "@discussionLanguages": {
     "description": "Only load posts and communities in your language(s)"
   },
+  "discussionLanguagesTooltip": "Content is filtered to the selected languages.",
+  "@discussionLanguagesTooltip": {},
   "dismissRead": "Dismiss Read",
   "@dismissRead": {},
   "displayUserScore": "Display User Scores (Karma).",
@@ -787,6 +789,8 @@
   "@language": {
     "description": "Label when creating or editing a post."
   },
+  "languageFilters": "Looking for language filters?",
+  "@languageFilters": {},
   "languageNotAllowed": "The community you are posting to does not allow posts in the language that you have selected. Try another language.",
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
@@ -957,6 +961,8 @@
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
+  "mustBeLoggedIn": "You need to be logged in",
+  "@mustBeLoggedIn": {},
   "mustBeLoggedInComment": "You need to be logged in to comment",
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
@@ -1003,7 +1009,7 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
-  "noDiscussionLanguages": "No discussion languages",
+  "noDiscussionLanguages": "No content is hidden based on language.",
   "@noDiscussionLanguages": {
     "description": "Message for no discussion languages added"
   },
@@ -1253,10 +1259,6 @@
   "@remove": {},
   "removeAccount": "Remove Account",
   "@removeAccount": {},
-  "removeDiscussionLanguage": "Remove language",
-  "@removeDiscussionLanguage": {
-    "description": "Title for dialog to remove discussion language"
-  },
   "removeFromFavorites": "Remove from favorites",
   "@removeFromFavorites": {
     "description": "Action to remove a community in drawer from favorites"
@@ -1270,10 +1272,6 @@
   "removeKeywordFilter": "Remove Keyword",
   "@removeKeywordFilter": {
     "description": "Title for dialog to remove keyword filter"
-  },
-  "removeLanguage": "Remove \"{language}\"?",
-  "@removeLanguage": {
-    "description": "Description of removing a discussion language"
   },
   "removePost": "Remove Post",
   "@removePost": {
