@@ -124,6 +124,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 inboxReplyPage: 2,
                 inboxPrivateMessagePage: 2,
                 totalUnreadCount: totalUnreadCount,
+                repliesUnreadCount: getUnreadCountResponse.replies,
+                mentionsUnreadCount: getUnreadCountResponse.mentions,
+                messagesUnreadCount: getUnreadCountResponse.privateMessages,
                 hasReachedInboxReplyEnd: getRepliesResponse.replies.isEmpty || getRepliesResponse.replies.length < limit,
                 hasReachedInboxMentionEnd: getPersonMentionsResponse.mentions.isEmpty || getPersonMentionsResponse.mentions.length < limit,
                 hasReachedInboxPrivateMessageEnd: privateMessagesResponse.privateMessages.isEmpty || privateMessagesResponse.privateMessages.length < limit,
@@ -190,9 +193,23 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         }
       }
 
-      emit(state.copyWith(status: InboxStatus.failure, errorMessage: exception.toString(), totalUnreadCount: 0));
+      emit(state.copyWith(
+        status: InboxStatus.failure,
+        errorMessage: exception.toString(),
+        totalUnreadCount: 0,
+        repliesUnreadCount: 0,
+        mentionsUnreadCount: 0,
+        messagesUnreadCount: 0,
+      ));
     } catch (e) {
-      emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString(), totalUnreadCount: 0));
+      emit(state.copyWith(
+        status: InboxStatus.failure,
+        errorMessage: e.toString(),
+        totalUnreadCount: 0,
+        repliesUnreadCount: 0,
+        mentionsUnreadCount: 0,
+        messagesUnreadCount: 0,
+      ));
     }
   }
 
@@ -236,6 +253,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         status: InboxStatus.success,
         replies: replies,
         totalUnreadCount: totalUnreadCount,
+        repliesUnreadCount: getUnreadCountResponse.replies,
+        mentionsUnreadCount: getUnreadCountResponse.mentions,
+        messagesUnreadCount: getUnreadCountResponse.privateMessages,
       ));
     } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
