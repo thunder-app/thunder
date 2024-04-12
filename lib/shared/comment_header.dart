@@ -9,6 +9,7 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -44,6 +45,7 @@ class CommentHeader extends StatelessWidget {
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
     bool commentShowUserInstance = state.commentShowUserInstance;
+    bool commentShowUserAvatar = state.commentShowUserAvatar;
 
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
@@ -80,6 +82,11 @@ class CommentHeader extends StatelessWidget {
                             child: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
                                 ? Row(
                                     children: [
+                                      if (commentShowUserAvatar)
+                                        Padding(
+                                          padding: const EdgeInsets.all(3),
+                                          child: UserAvatar(person: comment.creator, radius: 10),
+                                        ),
                                       UserFullNameWidget(
                                         context,
                                         comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
@@ -149,13 +156,20 @@ class CommentHeader extends StatelessWidget {
                                       ),
                                     ],
                                   )
-                                : UserFullNameWidget(
-                                    context,
-                                    comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
-                                    fetchInstanceNameFromUrl(comment.creator.actorId),
-                                    fontScale: state.metadataFontSizeScale,
-                                    includeInstance: commentShowUserInstance,
-                                  ),
+                                : Row(children: [
+                                    if (commentShowUserAvatar)
+                                      Padding(
+                                        padding: const EdgeInsets.all(3),
+                                        child: UserAvatar(person: comment.creator, radius: 10),
+                                      ),
+                                    UserFullNameWidget(
+                                      context,
+                                      comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
+                                      fetchInstanceNameFromUrl(comment.creator.actorId),
+                                      fontScale: state.metadataFontSizeScale,
+                                      includeInstance: commentShowUserInstance,
+                                    ),
+                                  ]),
                           ),
                         ),
                       ),

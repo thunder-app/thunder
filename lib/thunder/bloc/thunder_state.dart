@@ -78,6 +78,7 @@ class ThunderState extends Equatable {
     // Post body settings
     this.showCrossPosts = true,
     this.postBodyViewType = PostBodyViewType.expanded,
+    this.postBodyShowUserAvatar = false,
     this.postBodyShowUserInstance = false,
     this.postBodyShowCommunityInstance = false,
 
@@ -89,6 +90,7 @@ class ThunderState extends Equatable {
     this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
     this.commentShowUserInstance = false,
+    this.commentShowUserAvatar = false,
     this.combineCommentScores = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
@@ -228,6 +230,7 @@ class ThunderState extends Equatable {
   // Post body settings
   final bool showCrossPosts;
   final PostBodyViewType postBodyViewType;
+  final bool postBodyShowUserAvatar;
   final bool postBodyShowUserInstance;
   final bool postBodyShowCommunityInstance;
 
@@ -239,6 +242,7 @@ class ThunderState extends Equatable {
   final bool collapseParentCommentOnGesture;
   final bool showCommentButtonActions;
   final bool commentShowUserInstance;
+  final bool commentShowUserAvatar;
   final bool combineCommentScores;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
@@ -385,6 +389,7 @@ class ThunderState extends Equatable {
     // Post body settings
     bool? showCrossPosts,
     PostBodyViewType? postBodyViewType,
+    bool? postBodyShowUserAvatar,
     bool? postBodyShowUserInstance,
     bool? postBodyShowCommunityInstance,
 
@@ -397,6 +402,7 @@ class ThunderState extends Equatable {
     bool? collapseParentCommentOnGesture,
     bool? showCommentButtonActions,
     bool? commentShowUserInstance,
+    bool? commentShowUserAvatar,
     bool? combineCommentScores,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
@@ -537,6 +543,7 @@ class ThunderState extends Equatable {
       // Post body settings
       showCrossPosts: showCrossPosts ?? this.showCrossPosts,
       postBodyViewType: postBodyViewType ?? this.postBodyViewType,
+      postBodyShowUserAvatar: postBodyShowUserAvatar ?? this.postBodyShowUserAvatar,
       postBodyShowUserInstance: postBodyShowUserInstance ?? this.postBodyShowUserInstance,
       postBodyShowCommunityInstance: postBodyShowCommunityInstance ?? this.postBodyShowCommunityInstance,
 
@@ -550,6 +557,7 @@ class ThunderState extends Equatable {
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
+      commentShowUserAvatar: commentShowUserAvatar ?? this.commentShowUserAvatar,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
@@ -694,6 +702,7 @@ class ThunderState extends Equatable {
         // Post body settings
         showCrossPosts,
         postBodyViewType,
+        postBodyShowUserAvatar,
         postBodyShowUserInstance,
         postBodyShowCommunityInstance,
 
@@ -707,6 +716,7 @@ class ThunderState extends Equatable {
         collapseParentCommentOnGesture,
         showCommentButtonActions,
         commentShowUserInstance,
+        commentShowUserAvatar,
         combineCommentScores,
 
         nestedCommentIndicatorStyle,

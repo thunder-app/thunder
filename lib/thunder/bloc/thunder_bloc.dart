@@ -167,6 +167,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Post body settings
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       PostBodyViewType postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
+      bool postBodyShowUserAvatar = prefs.getBool(LocalSettings.postBodyShowUserAvatar.name) ?? false;
       bool postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
       bool postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
 
@@ -178,6 +179,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       bool commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
+      bool commentShowUserAvatar = prefs.getBool(LocalSettings.commentShowUserAvatar.name) ?? false;
       bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
           NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
@@ -320,6 +322,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         // Post body settings
         showCrossPosts: showCrossPosts,
         postBodyViewType: postBodyViewType,
+        postBodyShowUserAvatar: postBodyShowUserAvatar,
         postBodyShowUserInstance: postBodyShowUserInstance,
         postBodyShowCommunityInstance: postBodyShowCommunityInstance,
 
@@ -329,6 +332,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
         showCommentButtonActions: showCommentButtonActions,
         commentShowUserInstance: commentShowUserInstance,
+        commentShowUserAvatar: commentShowUserAvatar,
         combineCommentScores: combineCommentScores,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,

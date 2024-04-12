@@ -135,6 +135,7 @@ enum LocalSettings {
   // Post body settings
   showCrossPosts(name: 'setting_show_cross_posts', key: 'showCrossPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   postBodyViewType(name: 'setting_general_post_body_view_type', key: 'postBodyViewType', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  postBodyShowUserAvatar(name: 'setting_general_post_body_show_user_avatar', key: 'postBodyShowUserAvatar', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   postBodyShowUserInstance(
       name: 'setting_general_post_body_show_user_instance', key: 'postBodyShowUserInstance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   postBodyShowCommunityInstance(
@@ -156,6 +157,7 @@ enum LocalSettings {
   showCommentActionButtons(
       name: 'setting_general_show_comment_button_actions', key: 'showCommentActionButtons', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.general),
   commentShowUserInstance(name: 'settings_comment_show_user_instance', key: 'showUserInstance', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+  commentShowUserAvatar(name: 'settings_comment_show_user_avatar', key: 'showUserAvatar', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   combineCommentScores(name: 'setting_general_combine_comment_scores', key: 'combineCommentScores', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   nestedCommentIndicatorStyle(
       name: 'setting_general_nested_comment_indicator_style', key: 'nestedCommentIndicatorStyle', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
@@ -341,6 +343,7 @@ extension LocalizationExt on AppLocalizations {
       'dateFormat': dateFormat,
       'dividerAppearance': dividerAppearance,
       'showCrossPosts': showCrossPosts,
+      'postBodyShowUserAvatar': postBodyShowUserAvatar,
       'postBodyShowUserInstance': postBodyShowUserInstance,
       'postBodyShowCommunityInstance': postBodyShowCommunityInstance,
       'keywordFilters': keywordFilters,
@@ -357,6 +360,7 @@ extension LocalizationExt on AppLocalizations {
       'collapseParentCommentBodyOnGesture': collapseParentCommentBodyOnGesture,
       'showCommentActionButtons': showCommentActionButtons,
       'showUserInstance': showUserInstance,
+      'showUserAvatar': showUserAvatar,
       'combineCommentScores': combineCommentScores,
       'nestedCommentIndicatorStyle': nestedCommentIndicatorStyle,
       'nestedCommentIndicatorColor': nestedCommentIndicatorColor,

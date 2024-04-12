@@ -33,6 +33,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/post/widgets/post_quick_actions_bar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -194,6 +195,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 children: [
                   Wrap(
                     alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Tooltip(
                         excludeFromSemantics: true,
@@ -214,7 +216,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               padding: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? const EdgeInsets.symmetric(horizontal: 5.0) : EdgeInsets.zero,
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
+                                  if (thunderState.postBodyShowUserAvatar)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 3),
+                                      child: UserAvatar(person: postView.creator, radius: 10),
+                                    ),
                                   UserFullNameWidget(
                                     context,
                                     postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,

@@ -112,6 +112,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   PostBodyViewType postBodyViewType = PostBodyViewType.expanded;
 
   /// When enabled, shows the instance of the user in posts
+  bool postBodyShowUserAvatar = false;
+
+  /// When enabled, shows the instance of the user in posts
   bool postBodyShowUserInstance = false;
 
   /// When enabled, shows the instance of the community in posts
@@ -164,6 +167,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       // Post body settings
       showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
+      postBodyShowUserAvatar = prefs.getBool(LocalSettings.postBodyShowUserAvatar.name) ?? false;
       postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
       postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
     });
@@ -266,6 +270,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setString(LocalSettings.postBodyViewType.name, (value as PostBodyViewType).name);
         setState(() => postBodyViewType = value);
         break;
+      case LocalSettings.postBodyShowUserAvatar:
+        await prefs.setBool(LocalSettings.postBodyShowUserAvatar.name, value);
+        setState(() => postBodyShowUserAvatar = value);
+        break;
       case LocalSettings.postBodyShowUserInstance:
         await prefs.setBool(LocalSettings.postBodyShowUserInstance.name, value);
         setState(() => postBodyShowUserInstance = value);
@@ -308,6 +316,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.showPostCommunityIcons.name);
     await prefs.remove(LocalSettings.showCrossPosts.name);
     await prefs.remove(LocalSettings.postBodyViewType.name);
+    await prefs.remove(LocalSettings.postBodyShowUserAvatar.name);
     await prefs.remove(LocalSettings.postBodyShowUserInstance.name);
     await prefs.remove(LocalSettings.postBodyShowCommunityInstance.name);
 
@@ -1004,6 +1013,16 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           SliverToBoxAdapter(
             child: ToggleOption(
+              description: l10n.showUserAvatar,
+              value: postBodyShowUserAvatar,
+              iconEnabled: Icons.account_circle,
+              iconDisabled: Icons.account_circle_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowUserAvatar, value),
+              highlightKey: settingToHighlight == LocalSettings.postBodyShowUserAvatar ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
               description: l10n.showUserInstance,
               value: postBodyShowUserInstance,
               iconEnabled: Icons.dns_sharp,
@@ -1295,7 +1314,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
                   ),
                 ),
           onLeave: (data) => HapticFeedback.mediumImpact(),
-          onWillAccept: (data) {
+          onWillAcceptWithDetails: (data) {
             if (!containedPostCardMetadataItems.contains(data)) {
               return true;
             }
