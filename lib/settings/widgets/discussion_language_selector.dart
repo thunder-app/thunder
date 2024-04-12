@@ -149,6 +149,7 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
                             onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
                               _setDiscussionLanguages(discussionLanguages = discussionLanguages.where((element) => element != discussionLanguages[index]).toList());
                               context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(discussionLanguages: discussionLanguages.map((e) => e.id).toList()));
+                              Navigator.of(dialogContext).pop();
                             },
                             secondaryButtonText: l10n.cancel,
                             onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
