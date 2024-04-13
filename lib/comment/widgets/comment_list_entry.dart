@@ -1,22 +1,15 @@
-import 'dart:async';
-import 'dart:convert';
-
+// Flutter imports
 import 'package:flutter/material.dart';
+
+// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
+
+// Project imports
 import 'package:thunder/comment/utils/navigate_comment.dart';
-import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 import 'package:thunder/shared/comment_reference.dart';
-import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// A widget that can display a single comment entry for use within a list (e.g., search page, instance explorer)
 class CommentListEntry extends StatelessWidget {
@@ -28,7 +21,6 @@ class CommentListEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final bool isOwnComment = commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
 
     return BlocProvider<post_bloc.PostBloc>(
@@ -42,7 +34,11 @@ class CommentListEntry extends StatelessWidget {
         onDeleteAction: (int commentId, bool deleted) {},
         // Only swipe actions are supported here, and report is not one of those, so no implementation
         onReportAction: (int commentId) {},
-        onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(context, commentView: commentView),
+        onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+          context,
+          commentView: isEdit ? commentView : null,
+          parentCommentView: isEdit ? null : commentView,
+        ),
         isOwnComment: isOwnComment,
       ),
     );

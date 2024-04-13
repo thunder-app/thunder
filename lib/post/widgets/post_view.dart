@@ -1,53 +1,46 @@
-import 'dart:async';
-import 'dart:convert';
-
+// Flutter imports
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// Package imports
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+// Project imports
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
-import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/widgets/post_quick_actions_bar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
-import 'package:thunder/shared/full_name_widgets.dart';
-import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/cross_posts.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/numbers.dart';
-import 'package:thunder/shared/snackbar.dart';
 
 class PostSubview extends StatefulWidget {
   final PostViewMedia postViewMedia;

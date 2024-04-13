@@ -1,34 +1,31 @@
+// Dart imports
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:back_button_interceptor/back_button_interceptor.dart';
+// Flutter imports
 import 'package:flutter/material.dart';
+
+// Package imports
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
+
+// Project imports
 import 'package:thunder/comment/utils/navigate_comment.dart';
-import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/core/models/comment_view_tree.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/user/bloc/user_bloc_old.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/user/widgets/user_header.dart';
+import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/global_context.dart';
-
-import '../../thunder/bloc/thunder_bloc.dart';
-import '../widgets/user_sidebar.dart';
 
 List<Widget> userOptionTypes = <Widget>[
   Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
@@ -306,7 +303,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 );
                               }
                             },
-                            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(context, commentView: commentView),
+                            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+                              context,
+                              commentView: isEdit ? commentView : null,
+                              parentCommentView: isEdit ? null : commentView,
+                            ),
                             isOwnComment: widget.isAccountUser,
                           ),
                         ],
@@ -359,7 +360,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 );
                               }
                             },
-                            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(context, commentView: commentView),
+                            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+                              context,
+                              commentView: isEdit ? commentView : null,
+                              parentCommentView: isEdit ? null : commentView,
+                            ),
                             isOwnComment: widget.isAccountUser && widget.savedComments![index].commentView!.creator.id == currentUserId,
                           ),
                         ],

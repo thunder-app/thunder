@@ -1,28 +1,18 @@
-import 'dart:async';
-import 'dart:convert';
-
+// Flutter imports
 import 'package:flutter/material.dart';
 
+// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/comment/utils/navigate_comment.dart';
-import 'package:thunder/comment/view/create_comment_page.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 
-import 'package:thunder/core/models/post_view_media.dart';
+// Project imports
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
-import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
-import 'package:thunder/shared/snackbar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../thunder/bloc/thunder_bloc.dart';
 
 class PostPageSuccess extends StatefulWidget {
   final PostViewMedia postView;
@@ -108,7 +98,11 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
                 commentId: commentId,
               );
             },
-            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(context, commentView: commentView),
+            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+              context,
+              commentView: isEdit ? commentView : null,
+              parentCommentView: isEdit ? null : commentView,
+            ),
             moderators: widget.moderators,
             crossPosts: widget.crossPosts,
             viewSource: widget.viewSource,

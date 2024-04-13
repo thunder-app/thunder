@@ -1,25 +1,17 @@
-import 'dart:async';
-import 'dart:convert';
-
+// Flutter imports
 import 'package:flutter/material.dart';
 
+// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/comment/utils/navigate_comment.dart';
-import 'package:thunder/comment/view/create_comment_page.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/enums/swipe_action.dart';
 
-import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/inbox/bloc/inbox_bloc.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
+// Project imports
+import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void triggerCommentAction({
   required BuildContext context,
@@ -46,8 +38,16 @@ void triggerCommentAction({
       onVoteAction(commentView.comment.id, voteType == -1 ? 0 : -1);
       return;
     case SwipeAction.reply:
+      navigateToCreateCommentPage(
+        context,
+        parentCommentView: commentView,
+      );
+      break;
     case SwipeAction.edit:
-      navigateToCreateCommentPage(context, commentView: commentView);
+      navigateToCreateCommentPage(
+        context,
+        commentView: commentView,
+      );
       break;
     case SwipeAction.save:
       onSaveAction(commentView.comment.id, !(saved ?? false));

@@ -29,7 +29,7 @@ import 'package:thunder/utils/media/image.dart';
 
 class CreateCommentPage extends StatefulWidget {
   /// [postViewMedia] is passed in when replying to a post. [commentView] and [parentCommentView] must be null if this is passed in.
-  /// When this is passed in, a comment preview will be shown.
+  /// When this is passed in, a post preview will be shown.
   final PostViewMedia? postViewMedia;
 
   /// If this is passed in, it indicates that we are trying to edit a comment

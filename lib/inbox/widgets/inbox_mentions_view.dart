@@ -1,20 +1,19 @@
+// Dart imports
 import 'dart:io';
-import 'dart:async';
-import 'dart:convert';
 
+// Flutter imports
 import 'package:flutter/material.dart';
+
+// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
+// Project imports
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
-import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -22,12 +21,10 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
-import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/swipe.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InboxMentionsView extends StatelessWidget {
   final List<PersonMentionView> mentions;
