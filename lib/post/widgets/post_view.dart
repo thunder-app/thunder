@@ -49,6 +49,8 @@ class PostSubview extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
   final bool viewSource;
+  final bool showQuickPostActionBar;
+  final bool showExpandableButton;
 
   const PostSubview({
     super.key,
@@ -58,6 +60,8 @@ class PostSubview extends StatefulWidget {
     required this.moderators,
     required this.crossPosts,
     required this.viewSource,
+    this.showQuickPostActionBar = true,
+    this.showExpandableButton = true,
   });
 
   @override
@@ -123,7 +127,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   ),
                   if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
-                  if (thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.first.mediaType == MediaType.text)
+                  if ((thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.first.mediaType == MediaType.text) && widget.showExpandableButton)
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: Icon(
@@ -301,72 +305,74 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 ],
               ),
             ),
-            const Divider(),
-            PostQuickActionsBar(
-              vote: postView.myVote,
-              upvotes: postView.counts.upvotes,
-              downvotes: postView.counts.downvotes,
-              saved: postView.saved,
-              locked: postView.post.locked,
-              isOwnPost: isOwnPost,
-              onVote: (int score) {
-                HapticFeedback.mediumImpact();
-                context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: score));
-              },
-              onSave: (bool saved) {
-                HapticFeedback.mediumImpact();
-                context.read<PostBloc>().add(SavePostEvent(postId: post.id, save: saved));
-              },
-              onShare: () {
-                showPostActionBottomModalSheet(
-                  context,
-                  widget.postViewMedia,
-                  page: PostActionBottomSheetPage.share,
-                );
-              },
-              onEdit: () async {
-                ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                AccountBloc accountBloc = context.read<AccountBloc>();
-                CreatePostCubit createPostCubit = CreatePostCubit();
-
-                final ThunderState thunderState = context.read<ThunderBloc>().state;
-                final bool reduceAnimations = thunderState.reduceAnimations;
-
-                final Account? account = await fetchActiveProfileAccount();
-                final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
-                  auth: account?.jwt,
-                  id: postViewMedia.postView.community.id,
-                ));
-
-                if (context.mounted) {
-                  Navigator.of(context).push(
-                    SwipeablePageRoute(
-                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                      canOnlySwipeFromEdge: true,
-                      backGestureDetectionWidth: 45,
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                            BlocProvider<AccountBloc>.value(value: accountBloc),
-                            BlocProvider<CreatePostCubit>.value(value: createPostCubit),
-                          ],
-                          child: CreatePostPage(
-                            communityId: postViewMedia.postView.community.id,
-                            communityView: getCommunityResponse.communityView,
-                            postView: postViewMedia.postView,
-                            onPostSuccess: (PostViewMedia pvm, _) {
-                              setState(() => postViewMedia = pvm);
-                            },
-                          ),
-                        );
-                      },
-                    ),
+            if (widget.showQuickPostActionBar) ...[
+              const Divider(),
+              PostQuickActionsBar(
+                vote: postView.myVote,
+                upvotes: postView.counts.upvotes,
+                downvotes: postView.counts.downvotes,
+                saved: postView.saved,
+                locked: postView.post.locked,
+                isOwnPost: isOwnPost,
+                onVote: (int score) {
+                  HapticFeedback.mediumImpact();
+                  context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: score));
+                },
+                onSave: (bool saved) {
+                  HapticFeedback.mediumImpact();
+                  context.read<PostBloc>().add(SavePostEvent(postId: post.id, save: saved));
+                },
+                onShare: () {
+                  showPostActionBottomModalSheet(
+                    context,
+                    widget.postViewMedia,
+                    page: PostActionBottomSheetPage.share,
                   );
-                }
-              },
-              onReply: () async => navigateToCreateCommentPage(context, postViewMedia: widget.postViewMedia),
-            ),
+                },
+                onEdit: () async {
+                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                  AccountBloc accountBloc = context.read<AccountBloc>();
+                  CreatePostCubit createPostCubit = CreatePostCubit();
+
+                  final ThunderState thunderState = context.read<ThunderBloc>().state;
+                  final bool reduceAnimations = thunderState.reduceAnimations;
+
+                  final Account? account = await fetchActiveProfileAccount();
+                  final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+                    auth: account?.jwt,
+                    id: postViewMedia.postView.community.id,
+                  ));
+
+                  if (context.mounted) {
+                    Navigator.of(context).push(
+                      SwipeablePageRoute(
+                        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                        canOnlySwipeFromEdge: true,
+                        backGestureDetectionWidth: 45,
+                        builder: (context) {
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                              BlocProvider<AccountBloc>.value(value: accountBloc),
+                              BlocProvider<CreatePostCubit>.value(value: createPostCubit),
+                            ],
+                            child: CreatePostPage(
+                              communityId: postViewMedia.postView.community.id,
+                              communityView: getCommunityResponse.communityView,
+                              postView: postViewMedia.postView,
+                              onPostSuccess: (PostViewMedia pvm, _) {
+                                setState(() => postViewMedia = pvm);
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
+                onReply: () async => navigateToCreateCommentPage(context, postViewMedia: widget.postViewMedia),
+              ),
+            ]
           ],
         ),
       ),

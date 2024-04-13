@@ -28,30 +28,33 @@ void showSnackbar(
       (context, progress) {
         return SnackbarNotification(
           builder: (context) => ThunderSnackbar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (leadingIcon != null) Icon(leadingIcon, color: leadingIconColor),
-                if (leadingIcon != null) const SizedBox(width: 8.0),
-                Expanded(child: Text(text)),
-                if (trailingIcon != null)
-                  SizedBox(
-                    height: 20,
-                    child: IconButton(
-                      visualDensity: VisualDensity.compact,
-                      onPressed: trailingAction != null
-                          ? () {
-                              OverlaySupportEntry.of(context)?.dismiss();
-                              trailingAction();
-                            }
-                          : null,
-                      icon: Icon(
-                        trailingIcon,
-                        color: trailingIconColor ?? Theme.of(context).colorScheme.inversePrimary,
+            content: GestureDetector(
+              onTap: () => OverlaySupportEntry.of(context)?.dismiss(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (leadingIcon != null) Icon(leadingIcon, color: leadingIconColor),
+                  if (leadingIcon != null) const SizedBox(width: 8.0),
+                  Expanded(child: Text(text)),
+                  if (trailingIcon != null)
+                    SizedBox(
+                      height: 20,
+                      child: IconButton(
+                        visualDensity: VisualDensity.compact,
+                        onPressed: trailingAction != null
+                            ? () {
+                                OverlaySupportEntry.of(context)?.dismiss();
+                                trailingAction();
+                              }
+                            : null,
+                        icon: Icon(
+                          trailingIcon,
+                          color: trailingIconColor ?? Theme.of(context).colorScheme.inversePrimary,
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
           progress: progress,
