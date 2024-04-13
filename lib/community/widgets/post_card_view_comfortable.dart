@@ -25,6 +25,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final Function(bool) onSaveAction;
 
   final PostViewMedia postViewMedia;
+  final bool hideThumbnails;
   final bool showThumbnailPreviewOnRight;
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
@@ -45,6 +46,7 @@ class PostCardViewComfortable extends StatelessWidget {
   const PostCardViewComfortable({
     super.key,
     required this.postViewMedia,
+    required this.hideThumbnails,
     required this.showThumbnailPreviewOnRight,
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,

@@ -108,6 +108,7 @@ enum LocalSettings {
   // Compact Related Settings
   useCompactView(name: 'setting_general_use_compact_view', key: 'compactView', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showPostTitleFirst(name: 'setting_general_show_title_first', key: 'showPostTitleFirst', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  hideThumbnails(name: 'setting_general_hide_thumbnails', key: 'hideThumbnails', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showThumbnailPreviewOnRight(
       name: 'setting_compact_show_thumbnail_on_right', key: 'showThumbnailPreviewOnRight', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showTextPostIndicator(name: 'setting_compact_show_text_post_indicator', key: 'showTextPostIndicator', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
@@ -328,6 +329,7 @@ extension LocalizationExt on AppLocalizations {
       'appLanguage': appLanguage,
       'compactView': compactView,
       'showPostTitleFirst': showPostTitleFirst,
+      'hideThumbnails': hideThumbnails,
       'showThumbnailPreviewOnRight': showThumbnailPreviewOnRight,
       'showTextPostIndicator': showTextPostIndicator,
       'tappableAuthorCommunity': tappableAuthorCommunity,

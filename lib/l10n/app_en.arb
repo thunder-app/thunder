@@ -709,6 +709,8 @@
   },
   "hidePassword": "Hide Password",
   "@hidePassword": {},
+  "hideThumbnails": "Hide thumbnails",
+  "@hideThumbnails": {},
   "hideTopBarOnScroll": "Hide Top Bar on Scroll",
   "@hideTopBarOnScroll": {
     "description": "Settings toggle to hide the top bar on scroll"

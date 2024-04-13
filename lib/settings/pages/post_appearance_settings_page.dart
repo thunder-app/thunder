@@ -51,6 +51,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// When enabled, posts on the feed will be compacted
   bool useCompactView = false;
 
+  /// When enabled, the thumbnails in compact mode will be hidden
+  bool hideThumbnails = false;
+
   /// When enabled, the thumbnail previews will be shown on the right. By default, they are shown on the left
   bool showThumbnailPreviewOnRight = false;
 
@@ -149,6 +152,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       compactPostCardMetadataItems =
           prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
       cardPostCardMetadataItems = prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
+      hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
       showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
 
@@ -217,6 +221,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
       case LocalSettings.compactPostCardMetadataItems:
         await prefs.setStringList(LocalSettings.compactPostCardMetadataItems.name, value);
+        break;
+      case LocalSettings.hideThumbnails:
+        await prefs.setBool(LocalSettings.hideThumbnails.name, value);
+        setState(() => hideThumbnails = value);
         break;
       case LocalSettings.showThumbnailPreviewOnRight:
         await prefs.setBool(LocalSettings.showThumbnailPreviewOnRight.name, value);
@@ -296,6 +304,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.feedCardDividerThickness.name);
     await prefs.remove(LocalSettings.feedCardDividerColor.name);
     await prefs.remove(LocalSettings.compactPostCardMetadataItems.name);
+    await prefs.remove(LocalSettings.hideThumbnails.name);
     await prefs.remove(LocalSettings.showThumbnailPreviewOnRight.name);
     await prefs.remove(LocalSettings.showTextPostIndicator.name);
     await prefs.remove(LocalSettings.cardPostCardMetadataItems.name);
@@ -509,6 +518,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                     : IgnorePointer(
                                         child: PostCardViewComfortable(
                                           postViewMedia: snapshot.data![index]!,
+                                          hideThumbnails: hideThumbnails,
                                           showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
                                           showPostAuthor: showPostAuthor,
                                           hideNsfwPreviews: hideNsfwPreviews,
@@ -802,6 +812,16 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.hideThumbnails,
+              value: hideThumbnails,
+              iconEnabled: Icons.hide_image_outlined,
+              iconDisabled: Icons.image_outlined,
+              onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
+              highlightKey: settingToHighlight == LocalSettings.hideThumbnails ? settingToHighlightKey : null,
+            ),
+          ),
           SliverToBoxAdapter(
             child: ToggleOption(
               description: l10n.showThumbnailPreviewOnRight,
@@ -1159,17 +1179,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          !showThumbnailPreviewOnRight
-              ? Container(
-                  width: ViewMode.compact.height,
-                  height: ViewMode.compact.height,
-                  margin: const EdgeInsets.only(right: 8.0),
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor,
-                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                  ),
-                )
-              : const SizedBox(width: 0),
+          if (!hideThumbnails)
+            !showThumbnailPreviewOnRight
+                ? Container(
+                    width: ViewMode.compact.height,
+                    height: ViewMode.compact.height,
+                    margin: const EdgeInsets.only(right: 8.0),
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  )
+                : const SizedBox(width: 0),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(right: showThumbnailPreviewOnRight ? 8.0 : 0),
@@ -1212,17 +1233,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ),
             ),
           ),
-          showThumbnailPreviewOnRight
-              ? Container(
-                  width: ViewMode.compact.height,
-                  height: ViewMode.compact.height,
-                  margin: const EdgeInsets.only(right: 8.0),
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor,
-                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                  ),
-                )
-              : const SizedBox(width: 0),
+          if (!hideThumbnails)
+            showThumbnailPreviewOnRight
+                ? Container(
+                    width: ViewMode.compact.height,
+                    height: ViewMode.compact.height,
+                    margin: const EdgeInsets.only(right: 8.0),
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  )
+                : const SizedBox(width: 0),
         ],
       ),
     );
@@ -1295,7 +1317,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
                   ),
                 ),
           onLeave: (data) => HapticFeedback.mediumImpact(),
-          onWillAccept: (data) {
+          onWillAcceptWithDetails: (data) {
             if (!containedPostCardMetadataItems.contains(data)) {
               return true;
             }
