@@ -11,6 +11,8 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -20,7 +22,6 @@ import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/comment_reference.dart';
-import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -107,66 +108,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                     commentId: commentId,
                   );
                 },
-                onReplyEditAction: (CommentView commentView, bool isEdit) async {
-                  HapticFeedback.mediumImpact();
-                  InboxBloc inboxBloc = context.read<InboxBloc>();
-                  PostBloc postBloc = context.read<PostBloc>();
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                  AccountBloc accountBloc = context.read<AccountBloc>();
-
-                  final ThunderState state = context.read<ThunderBloc>().state;
-                  final bool reduceAnimations = state.reduceAnimations;
-
-                  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                  DraftComment? newDraftComment;
-                  DraftComment? previousDraftComment;
-                  String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
-                  String? draftCommentJson = prefs.getString(draftId);
-                  if (draftCommentJson != null) {
-                    previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-                  }
-                  Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                    if (newDraftComment?.isNotEmpty == true) {
-                      prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                    }
-                  });
-
-                  Navigator.of(context)
-                      .push(
-                    SwipeablePageRoute(
-                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                      canOnlySwipeFromEdge: true,
-                      backGestureDetectionWidth: 45,
-                      builder: (context) {
-                        return MultiBlocProvider(
-                            providers: [
-                              BlocProvider<InboxBloc>.value(value: inboxBloc),
-                              BlocProvider<PostBloc>.value(value: postBloc),
-                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                              BlocProvider<AccountBloc>.value(value: accountBloc),
-                            ],
-                            child: CreateCommentPage(
-                              commentView: commentView,
-                              comment: commentView.comment,
-                              isEdit: isEdit,
-                              previousDraftComment: previousDraftComment,
-                              onUpdateDraft: (c) => newDraftComment = c,
-                            ));
-                      },
-                    ),
-                  )
-                      .whenComplete(() async {
-                    timer.cancel();
-
-                    if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
-                      await Future.delayed(const Duration(milliseconds: 300));
-                      showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
-                      prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                    } else {
-                      prefs.remove(draftId);
-                    }
-                  });
-                },
+                onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(context, commentView: commentView),
                 isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
                 child: widget.replies[index].commentReply.read == false && !inboxRepliesMarkedAsRead.contains(widget.replies[index].commentReply.id)
                     ? inboxReplyMarkedAsRead != widget.replies[index].commentReply.id

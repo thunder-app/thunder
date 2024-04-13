@@ -15,6 +15,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -31,7 +33,6 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
-import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/post/widgets/post_quick_actions_bar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
@@ -371,66 +372,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   );
                 }
               },
-              onReply: () async {
-                PostBloc postBloc = context.read<PostBloc>();
-                ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-
-                final ThunderState state = context.read<ThunderBloc>().state;
-                final bool reduceAnimations = state.reduceAnimations;
-
-                SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                DraftComment? newDraftComment;
-                DraftComment? previousDraftComment;
-                String draftId = '${LocalSettings.draftsCache.name}-${widget.postViewMedia.postView.post.id}';
-                String? draftCommentJson = prefs.getString(draftId);
-                if (draftCommentJson != null) {
-                  previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-                }
-                Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                  if (newDraftComment?.isNotEmpty == true) {
-                    prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                  }
-                });
-
-                if (context.mounted) {
-                  Navigator.of(context)
-                      .push(
-                    SwipeablePageRoute(
-                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                      canOnlySwipeFromEdge: true,
-                      backGestureDetectionWidth: 45,
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider<PostBloc>.value(value: postBloc),
-                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                            BlocProvider<account_bloc.AccountBloc>.value(value: accountBloc),
-                          ],
-                          child: CreateCommentPage(
-                            postView: widget.postViewMedia,
-                            previousDraftComment: previousDraftComment,
-                            onUpdateDraft: (c) => newDraftComment = c,
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                      .whenComplete(() async {
-                    timer.cancel();
-
-                    if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
-                      await Future.delayed(const Duration(milliseconds: 300));
-                      if (context.mounted) {
-                        showSnackbar(l10n.commentSavedAsDraft);
-                      }
-                      prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                    } else {
-                      prefs.remove(draftId);
-                    }
-                  });
-                }
-              },
+              onReply: () async => navigateToCreateCommentPage(context, postViewMedia: widget.postViewMedia),
             ),
           ],
         ),

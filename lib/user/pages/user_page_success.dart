@@ -8,6 +8,8 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -25,7 +27,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/utils/global_context.dart';
 
-import '../../post/pages/create_comment_page.dart';
 import '../../thunder/bloc/thunder_bloc.dart';
 import '../widgets/user_sidebar.dart';
 
@@ -305,64 +306,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 );
                               }
                             },
-                            onReplyEditAction: (CommentView commentView, bool isEdit) async {
-                              ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                              AccountBloc accountBloc = context.read<AccountBloc>();
-
-                              final ThunderState state = context.read<ThunderBloc>().state;
-                              final bool reduceAnimations = state.reduceAnimations;
-
-                              SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                              DraftComment? newDraftComment;
-                              DraftComment? previousDraftComment;
-                              String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
-                              String? draftCommentJson = prefs.getString(draftId);
-                              if (draftCommentJson != null) {
-                                previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-                              }
-                              Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                                if (newDraftComment?.isNotEmpty == true) {
-                                  prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                                }
-                              });
-
-                              Navigator.of(context)
-                                  .push(
-                                SwipeablePageRoute(
-                                  transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                                  canOnlySwipeFromEdge: true,
-                                  backGestureDetectionWidth: 45,
-                                  builder: (context) {
-                                    return MultiBlocProvider(
-                                        providers: [
-                                          BlocProvider<post_bloc.PostBloc>.value(value: post_bloc.PostBloc()),
-                                          BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                          BlocProvider<AccountBloc>.value(value: accountBloc),
-                                        ],
-                                        child: CreateCommentPage(
-                                          commentView: commentView,
-                                          isEdit: isEdit,
-                                          parentCommentAuthor: commentView.creator.name,
-                                          previousDraftComment: previousDraftComment,
-                                          onUpdateDraft: (c) => newDraftComment = c,
-                                        ));
-                                  },
-                                ),
-                              )
-                                  .whenComplete(
-                                () async {
-                                  timer.cancel();
-
-                                  if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
-                                    await Future.delayed(const Duration(milliseconds: 300));
-                                    showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
-                                    prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                                  } else {
-                                    prefs.remove(draftId);
-                                  }
-                                },
-                              );
-                            },
+                            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(context, commentView: commentView),
                             isOwnComment: widget.isAccountUser,
                           ),
                         ],
@@ -415,64 +359,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 );
                               }
                             },
-                            onReplyEditAction: (CommentView commentView, bool isEdit) async {
-                              UserBloc postBloc = context.read<UserBloc>();
-                              ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                              final ThunderState state = context.read<ThunderBloc>().state;
-                              final bool reduceAnimations = state.reduceAnimations;
-
-                              SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                              DraftComment? newDraftComment;
-                              DraftComment? previousDraftComment;
-                              String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
-                              String? draftCommentJson = prefs.getString(draftId);
-                              if (draftCommentJson != null) {
-                                previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-                              }
-                              Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                                if (newDraftComment?.isNotEmpty == true) {
-                                  prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                                }
-                              });
-
-                              Navigator.of(context)
-                                  .push(
-                                SwipeablePageRoute(
-                                  transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                                  canOnlySwipeFromEdge: true,
-                                  backGestureDetectionWidth: 45,
-                                  builder: (context) {
-                                    return MultiBlocProvider(
-                                        providers: [
-                                          BlocProvider<UserBloc>.value(value: postBloc),
-                                          BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                        ],
-                                        child: CreateCommentPage(
-                                          comment: commentView.comment,
-                                          parentCommentAuthor: commentView.creator.name,
-                                          previousDraftComment: previousDraftComment,
-                                          onUpdateDraft: (c) => newDraftComment = c,
-                                        ));
-                                  },
-                                ),
-                              )
-                                  .whenComplete(
-                                () async {
-                                  timer.cancel();
-
-                                  if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
-                                    // This delay gives time for the previous page to be dismissed,
-                                    //so we don't show the snackbar during the transition
-                                    await Future.delayed(const Duration(milliseconds: 300));
-                                    showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
-                                    prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                                  } else {
-                                    prefs.remove(draftId);
-                                  }
-                                },
-                              );
-                            },
+                            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(context, commentView: commentView),
                             isOwnComment: widget.isAccountUser && widget.savedComments![index].commentView!.creator.id == currentUserId,
                           ),
                         ],
