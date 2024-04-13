@@ -41,12 +41,18 @@ void triggerCommentAction({
       navigateToCreateCommentPage(
         context,
         parentCommentView: commentView,
+        onCommentSuccess: (commentView) => {
+          // TODO: handle success comment action
+        },
       );
       break;
     case SwipeAction.edit:
       navigateToCreateCommentPage(
         context,
         commentView: commentView,
+        onCommentSuccess: (commentView) => {
+          // TODO: handle success comment action
+        },
       );
       break;
     case SwipeAction.save:

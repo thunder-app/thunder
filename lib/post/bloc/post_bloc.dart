@@ -61,17 +61,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _saveCommentEvent,
       transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
-    on<CreateCommentEvent>(
-      _createCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
-    on<EditCommentEvent>(
-      _editCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
     on<DeleteCommentEvent>(
       _deleteCommentEvent,
       transformer: throttleDroppable(throttleDuration),
+    );
+    on<UpdateCommentEvent>(
+      _updateCommentEvent,
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on update
     );
     on<NavigateCommentEvent>(
       _navigateCommentEvent,
@@ -466,93 +462,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
   }
 
-  Future<void> _createCommentEvent(CreateCommentEvent event, Emitter<PostState> emit) async {
-    try {
-      emit(state.copyWith(status: PostStatus.refreshing));
-
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-      if (account?.jwt == null) {
-        return emit(state.copyWith(
-          status: PostStatus.failure,
-          errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
-        ));
-      }
-
-      if (state.postView?.postView.post.id == null) {
-        return emit(state.copyWith(
-          status: PostStatus.failure,
-          errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDeterminePostComment,
-        ));
-      }
-
-      CommentResponse createComment = await lemmy.run(CreateComment(
-        auth: account!.jwt!,
-        content: event.content,
-        postId: state.postView!.postView.post.id,
-        parentId: event.parentCommentId,
-      ));
-
-      int? selectedCommentId = event.selectedCommentId;
-      String? selectedCommentPath = event.selectedCommentPath;
-
-      List<CommentViewTree> updatedComments = insertNewComment(state.comments, createComment.commentView);
-
-      if (event.parentCommentId == null) {
-        selectedCommentId = null;
-        selectedCommentPath = null;
-      }
-      return emit(state.copyWith(
-          status: PostStatus.success,
-          comments: updatedComments,
-          selectedCommentId: selectedCommentId,
-          selectedCommentPath: selectedCommentPath,
-          newlyCreatedCommentId: createComment.commentView.comment.id));
-    } catch (e) {
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
-    }
-  }
-
-  Future<void> _editCommentEvent(EditCommentEvent event, Emitter<PostState> emit) async {
-    try {
-      emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-      if (account?.jwt == null) {
-        return emit(state.copyWith(
-            status: PostStatus.failure,
-            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
-            moddingCommentId: event.commentId,
-            selectedCommentId: state.selectedCommentId,
-            selectedCommentPath: state.selectedCommentPath));
-      }
-
-      if (state.postView?.postView.post.id == null) {
-        return emit(state.copyWith(
-            status: PostStatus.failure,
-            errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDeterminePostComment,
-            moddingCommentId: event.commentId,
-            selectedCommentId: state.selectedCommentId,
-            selectedCommentPath: state.selectedCommentPath));
-      }
-
-      CommentResponse editComment = await lemmy.run(EditComment(
-        auth: account!.jwt!,
-        content: event.content,
-        commentId: event.commentId,
-      ));
-
-      updateModifiedComment(state.comments, editComment);
-
-      return emit(state.copyWith(status: PostStatus.success, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-    } catch (e) {
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
-    }
-  }
-
   Future<void> _deleteCommentEvent(DeleteCommentEvent event, Emitter<PostState> emit) async {
     try {
       emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
@@ -577,12 +486,55 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       }
 
       CommentResponse deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
-      updateModifiedComment(state.comments, deletedComment);
+      updateModifiedComment(state.comments, deletedComment.commentView);
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
     } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+    }
+  }
+
+  /// This function updates a comment in the comments tree
+  Future<void> _updateCommentEvent(UpdateCommentEvent event, Emitter<PostState> emit) async {
+    /// The comment was created
+    if (event.isEdit) {
+      try {
+        emit(state.copyWith(
+          status: PostStatus.refreshing,
+          moddingCommentId: event.commentView.comment.id,
+          selectedCommentId: state.selectedCommentId,
+          selectedCommentPath: state.selectedCommentPath,
+        ));
+
+        updateModifiedComment(state.comments, event.commentView);
+
+        return emit(state.copyWith(
+          status: PostStatus.success,
+          moddingCommentId: -1,
+          selectedCommentId: state.selectedCommentId,
+          selectedCommentPath: state.selectedCommentPath,
+        ));
+      } catch (e) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+      }
+    }
+
+    /// The comment was created
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      List<CommentViewTree> updatedComments = insertNewComment(state.comments, event.commentView);
+
+      return emit(state.copyWith(
+        status: PostStatus.success,
+        comments: updatedComments,
+        selectedCommentId: null,
+        selectedCommentPath: null,
+        newlyCreatedCommentId: event.commentView.comment.id,
+      ));
+    } catch (e) {
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
 

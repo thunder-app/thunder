@@ -133,6 +133,9 @@ class InboxMentionsView extends StatelessWidget {
                             saved: mentions[index].saved,
                             creatorBlocked: mentions[index].creatorBlocked,
                           ),
+                          onCommentSuccess: (commentView) {
+                            // TODO: Handle
+                          },
                         ),
                         icon: const Icon(
                           Icons.reply_rounded,

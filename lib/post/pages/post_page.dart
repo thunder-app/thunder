@@ -581,7 +581,13 @@ class _PostPageState extends State<PostPage> {
     if (!state.isLoggedIn) {
       showSnackbar(l10n.mustBeLoggedInComment);
     } else {
-      navigateToCreateCommentPage(context, postViewMedia: postViewMedia);
+      navigateToCreateCommentPage(
+        context,
+        postViewMedia: postViewMedia,
+        onCommentSuccess: (commentView) {
+          context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+        },
+      );
     }
   }
 }

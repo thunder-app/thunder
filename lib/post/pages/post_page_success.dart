@@ -102,6 +102,9 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
               context,
               commentView: isEdit ? commentView : null,
               parentCommentView: isEdit ? null : commentView,
+              onCommentSuccess: (commentView) {
+                context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+              },
             ),
             moderators: widget.moderators,
             crossPosts: widget.crossPosts,

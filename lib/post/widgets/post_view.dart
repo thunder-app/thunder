@@ -370,7 +370,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     );
                   }
                 },
-                onReply: () async => navigateToCreateCommentPage(context, postViewMedia: widget.postViewMedia),
+                onReply: () async => navigateToCreateCommentPage(
+                  context,
+                  postViewMedia: widget.postViewMedia,
+                  onCommentSuccess: (commentView) {
+                    context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+                  },
+                ),
               ),
             ]
           ],

@@ -168,14 +168,14 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
 }
 
 // Used for modifying the comment current comment tree so we don't have to refresh the whole thing
-bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentResponse moddedComment) {
+bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentView commentView) {
   for (int i = 0; i < commentTrees.length; i++) {
-    if (commentTrees[i].commentView!.comment.id == moddedComment.commentView.comment.id) {
-      commentTrees[i].commentView = moddedComment.commentView;
+    if (commentTrees[i].commentView!.comment.id == commentView.comment.id) {
+      commentTrees[i].commentView = commentView;
       return true;
     }
 
-    bool done = updateModifiedComment(commentTrees[i].replies, moddedComment);
+    bool done = updateModifiedComment(commentTrees[i].replies, commentView);
     if (done) {
       return done;
     }
