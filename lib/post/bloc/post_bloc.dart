@@ -96,10 +96,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     int attemptCount = 0;
 
     try {
-      var exception;
+      Object? exception;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -226,11 +227,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+    defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
     CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
     try {
-      var exception;
+      Object? exception;
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -286,7 +288,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           // Prevent duplicate requests if we're done fetching comments
           if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) {
-            if (!state.hasReachedCommentEnd && state.commentCount == state.postView!.postView.counts.comments) {
+            if (!state.hasReachedCommentEnd && state.commentCount >= state.postView!.postView.counts.comments) {
               emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
             }
             if (event.commentParentId == null) {

@@ -9,10 +9,9 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-import 'package:markdown_editable_textinput/format_markdown.dart';
-import 'package:markdown_editable_textinput/markdown_buttons.dart';
-import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -537,7 +536,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       Row(
                         children: [
                           Expanded(
-                            child: MarkdownButtons(
+                            child: MarkdownToolbar(
                               controller: _bodyTextController,
                               focusNode: _bodyFocusNode,
                               actions: const [
@@ -551,6 +550,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 MarkdownType.list,
                                 MarkdownType.separator,
                                 MarkdownType.code,
+                                MarkdownType.spoiler,
                                 MarkdownType.username,
                                 MarkdownType.community,
                               ],

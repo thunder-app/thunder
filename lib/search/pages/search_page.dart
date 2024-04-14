@@ -821,6 +821,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           _doSearch();
         },
         previouslySelected: sortType,
+        minimumVersion: LemmyClient.instance.version,
       ),
     );
   }

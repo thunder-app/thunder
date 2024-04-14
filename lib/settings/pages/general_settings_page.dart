@@ -28,6 +28,7 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/language/language.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:version/version.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -329,12 +330,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ListOption(
               description: l10n.defaultFeedSortType,
               value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
-              options: [...SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never), ...topSortTypeItems],
+              options: [
+                ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                ...topSortTypeItems
+              ],
               icon: Icons.sort_rounded,
               onChanged: (_) async {},
               isBottomModalScrollControlled: true,
               customListPicker: SortPicker(
-                includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
+                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                 title: l10n.defaultFeedSortType,
                 onSelect: (value) async {
                   setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
@@ -358,11 +362,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ListOption(
               description: l10n.defaultCommentSortType,
               value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
-              options: CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never),
+              options: CommentSortPicker.getCommentSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
               icon: Icons.comment_bank_rounded,
               onChanged: (_) async {},
               customListPicker: CommentSortPicker(
-                includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
+                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                 title: l10n.commentSortType,
                 onSelect: (value) async {
                   setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
@@ -371,16 +375,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
               valueDisplay: Row(
                 children: [
-                  Icon(
-                      CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
-                          .firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType)
-                          .icon,
-                      size: 13),
+                  Icon(CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).icon, size: 13),
                   const SizedBox(width: 4),
                   Text(
-                    CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
-                        .firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType)
-                        .label,
+                    CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).label,
                     style: theme.textTheme.titleSmall,
                   ),
                 ],

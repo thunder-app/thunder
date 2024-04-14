@@ -170,6 +170,7 @@ class _ThunderState extends State<Thunder> {
     final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
 
     if (!topOfNavigationStack) return false;
+    if (stopDefaultButtonEvent) return false;
 
     if (selectedPageIndex != 0) {
       setState(() {
@@ -223,24 +224,24 @@ class _ThunderState extends State<Thunder> {
     }
 
     // If the incoming link is a custom URL, replace it back with https://
-    String _link = link?.replaceAll('thunder://', 'https://') ?? "";
+    link = link?.replaceAll('thunder://', 'https://') ?? "";
 
     switch (linkType) {
       case LinkType.comment:
-        if (context.mounted) await _navigateToComment(_link);
+        if (context.mounted) await _navigateToComment(link);
       case LinkType.user:
-        if (context.mounted) await _navigateToUser(_link);
+        if (context.mounted) await _navigateToUser(link);
       case LinkType.post:
-        if (context.mounted) await _navigateToPost(_link);
+        if (context.mounted) await _navigateToPost(link);
       case LinkType.community:
-        if (context.mounted) await _navigateToCommunity(_link);
+        if (context.mounted) await _navigateToCommunity(link);
       case LinkType.modlog:
-        if (context.mounted) await _navigateToModlog(_link);
+        if (context.mounted) await _navigateToModlog(link);
       case LinkType.instance:
-        if (context.mounted) await _navigateToInstance(_link);
+        if (context.mounted) await _navigateToInstance(link);
       case LinkType.unknown:
         if (context.mounted) {
-          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, _link);
+          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link);
         }
     }
   }
@@ -504,7 +505,7 @@ class _ThunderState extends State<Thunder> {
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
                                 postListingType: thunderBlocState.defaultListingType,
-                                sortType: thunderBlocState.defaultSortType,
+                                sortType: thunderBlocState.sortTypeForInstance,
                                 reset: true,
                               ),
                             );
@@ -639,7 +640,7 @@ class _ThunderState extends State<Thunder> {
                                     useGlobalFeedBloc: true,
                                     feedType: FeedType.general,
                                     postListingType: thunderBlocState.defaultListingType,
-                                    sortType: thunderBlocState.defaultSortType,
+                                    sortType: thunderBlocState.sortTypeForInstance,
                                     scaffoldStateKey: scaffoldStateKey,
                                   ),
                                   AnimatedOpacity(
