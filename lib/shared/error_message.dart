@@ -39,24 +39,42 @@ class ErrorMessage extends StatelessWidget {
             ),
             const SizedBox(height: 32.0),
             if (actions?.isNotEmpty == true)
-              Row(
+              Column(
                 children: [
-                  for (var action in actions!) ...[
-                    if (actions!.indexOf(action) > 0) const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-                        onPressed: action.loading == true ? null : () => action.action.call(),
-                        child: action.loading == true
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(),
-                              )
-                            : Text(action.text),
-                      ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+                    onPressed: actions![0].loading == true ? null : () => actions![0].action.call(),
+                    child: actions![0].loading == true
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(),
+                          )
+                        : Text(actions![0].text),
+                  ),
+                  if (actions!.length > 1) ...[
+                    const SizedBox(height: 15),
+                    Row(
+                      children: [
+                        for (var action in actions!.skip(1)) ...[
+                          if (actions!.indexOf(action) > 1) const SizedBox(width: 10),
+                          Expanded(
+                            child: TextButton(
+                              style: TextButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+                              onPressed: action.loading == true ? null : () => action.action.call(),
+                              child: action.loading == true
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Text(action.text),
+                            ),
+                          ),
+                        ]
+                      ],
                     ),
-                  ]
+                  ],
                 ],
               )
           ],
