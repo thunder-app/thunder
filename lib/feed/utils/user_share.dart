@@ -48,7 +48,7 @@ Future<void> showUserShareSheet(BuildContext context, PersonView personView) asy
             icon: Icons.share_rounded,
           ),
         ],
-        onSelect: (selection) {
+        onSelect: (selection) async {
           switch (selection.payload) {
             case UserShareOptions.link:
               Share.share(personView.person.actorId);

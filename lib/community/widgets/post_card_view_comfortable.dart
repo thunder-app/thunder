@@ -11,9 +11,11 @@ import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/video_player/video_player.dart';
@@ -30,7 +32,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
   final bool showTitleFirst;
-  final bool communityMode;
+  final FeedType? feedType;
   final bool showPostAuthor;
   final bool showFullHeightImages;
   final bool showVoteActions;
@@ -50,7 +52,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
     required this.showTitleFirst,
-    required this.communityMode,
+    required this.feedType,
     required this.showPostAuthor,
     required this.showFullHeightImages,
     required this.showVoteActions,
@@ -76,9 +78,7 @@ class PostCardViewComfortable extends StatelessWidget {
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
     final String textContent = postViewMedia.postView.post.body ?? "";
-    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.85),
-    );
+    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && postViewMedia.postView.read ? color?.withOpacity(0.45) : color?.withOpacity(0.85);
 
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
@@ -194,12 +194,12 @@ class PostCardViewComfortable extends StatelessWidget {
                 textScaler: TextScaler.noScaling,
               ),
             ),
-          if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
+          if (postViewMedia.media.first.mediaType != MediaType.text && edgeToEdgeImages)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: mediaView,
             ),
-          if (postViewMedia.media.isNotEmpty && !edgeToEdgeImages)
+          if (postViewMedia.media.first.mediaType != MediaType.text && !edgeToEdgeImages)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: mediaView,
@@ -302,10 +302,10 @@ class PostCardViewComfortable extends StatelessWidget {
                     children: [
                       PostCommunityAndAuthor(
                         showCommunityIcons: showCommunityIcons,
-                        communityMode: communityMode,
+                        feedType: feedType,
                         postView: postViewMedia.postView,
-                        textStyleCommunity: textStyleCommunityAndAuthor,
-                        textStyleAuthor: textStyleCommunityAndAuthor,
+                        authorColorTransformation: communityAndAuthorColorTransformation,
+                        communityColorTransformation: communityAndAuthorColorTransformation,
                         compactMode: false,
                         showCommunitySubscription: showCommunitySubscription,
                       ),

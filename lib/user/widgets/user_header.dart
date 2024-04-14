@@ -4,8 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -107,14 +107,11 @@ class _UserHeaderState extends State<UserHeader> {
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                   maxLines: 1,
                                 ),
-                                AutoSizeText(
-                                  generateUserFullName(
-                                    context,
-                                    widget.getPersonDetailsResponse.personView.person.name,
-                                    fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId) ?? 'N/A',
-                                  ),
-                                  style: theme.textTheme.bodyMedium,
-                                  maxLines: 1,
+                                UserFullNameWidget(
+                                  context,
+                                  widget.getPersonDetailsResponse.personView.person.name,
+                                  fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId),
+                                  autoSize: true,
                                 ),
                                 const SizedBox(height: 8.0),
                                 Row(

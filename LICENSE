@@ -659,3 +659,7 @@ specific requirements.
 if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
+
+Portions of this software are copyright of their respective authors and released
+under the MIT license:
+- marquee_widget.dart, Copyright (c) 2018 Marcel Garus

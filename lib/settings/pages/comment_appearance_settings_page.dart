@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -15,6 +15,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
+import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -41,9 +42,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   /// When toggled on, comment scores will be combined instead of having separate upvotes and downvotes
   bool combineCommentScores = false;
 
-  /// When toggled on, usernames in comments will be colorized.
-  bool commentUseColorizedUsername = false;
-
   /// Indicates the style of the nested comment indicator
   NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
 
@@ -67,7 +65,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
       combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
-      commentUseColorizedUsername = prefs.getBool(LocalSettings.commentUseColorizedUsername.name) ?? false;
       nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
     });
@@ -99,9 +96,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
         await prefs.setString(LocalSettings.nestedCommentIndicatorColor.name, value);
         setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
         break;
-      case LocalSettings.commentUseColorizedUsername:
-        await prefs.setBool(LocalSettings.commentUseColorizedUsername.name, value);
-        setState(() => commentUseColorizedUsername = value);
     }
 
     if (context.mounted) {
@@ -118,7 +112,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     await prefs.remove(LocalSettings.nestedCommentIndicatorStyle.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorColor.name);
     await prefs.remove(LocalSettings.commentShowUserInstance.name);
-    await prefs.remove(LocalSettings.commentUseColorizedUsername.name);
 
     await initPreferences();
 
@@ -355,16 +348,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               highlightKey: settingToHighlight == LocalSettings.commentShowUserInstance ? settingToHighlightKey : null,
             ),
           ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.commentUseColorizedUsername,
-              value: commentUseColorizedUsername,
-              iconEnabled: Icons.brush_sharp,
-              iconDisabled: Icons.brush_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.commentUseColorizedUsername, value),
-              highlightKey: settingToHighlight == LocalSettings.commentUseColorizedUsername ? settingToHighlightKey : null,
-            ),
-          ),
+
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.nestedCommentIndicatorStyle,
@@ -374,7 +358,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                 ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
               ],
               icon: Icons.format_list_bulleted_rounded,
-              onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
+              onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
               highlightKey: settingToHighlight == LocalSettings.nestedCommentIndicatorStyle ? settingToHighlightKey : null,
             ),
           ),
@@ -387,8 +371,27 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                 ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
               ],
               icon: Icons.color_lens_outlined,
-              onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+              onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
               highlightKey: settingToHighlight == LocalSettings.nestedCommentIndicatorColor ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SettingsListTile(
+              icon: Icons.alternate_email_rounded,
+              description: l10n.usernameFormattingRedirect,
+              widget: const SizedBox(
+                height: 42.0,
+                child: Icon(Icons.chevron_right_rounded),
+              ),
+              onTap: () {
+                GoRouter.of(context).push(
+                  SETTINGS_APPEARANCE_THEMES_PAGE,
+                  extra: [
+                    context.read<ThunderBloc>(),
+                    LocalSettings.userStyle,
+                  ],
+                );
+              },
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),

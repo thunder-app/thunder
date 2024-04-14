@@ -11,7 +11,9 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instances.dart';
+import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
@@ -197,6 +199,25 @@ void handleLink(BuildContext context, {required String url}) async {
     }
   }
 
+  // Try navigate to modlog
+  Uri? uri = Uri.tryParse(url);
+  if (context.mounted && uri != null && instances.contains(uri.host) && url.contains('/modlog')) {
+    try {
+      final LemmyClient lemmyClient = LemmyClient()..changeBaseUrl(uri.host);
+      FeedBloc feedBloc = FeedBloc(lemmyClient: lemmyClient);
+      await navigateToModlogPage(
+        context,
+        feedBloc: feedBloc,
+        modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
+        communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
+        userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
+        moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),
+        lemmyClient: lemmyClient,
+      );
+      return;
+    } catch (e) {}
+  }
+
   // Try opening it as an image
   try {
     if (isImageUrl(url) && context.mounted) {
@@ -283,61 +304,65 @@ void handleLinkLongPress(BuildContext context, ThunderState state, String text, 
     builder: (ctx) {
       bool isValidUrl = url?.startsWith('http') ?? false;
 
-      return BottomSheetListPicker(
-        title: l10n.linkActions,
-        heading: Column(
-          children: [
-            if (isValidUrl) ...[
-              LinkPreviewGenerator(
-                link: url!,
-                placeholderWidget: const CircularProgressIndicator(),
-                linkPreviewStyle: LinkPreviewStyle.large,
-                cacheDuration: Duration.zero,
-                onTap: null,
-                bodyTextOverflow: TextOverflow.fade,
-                graphicFit: BoxFit.scaleDown,
-                removeElevation: true,
-                backgroundColor: theme.dividerColor.withOpacity(0.25),
-                borderRadius: 10,
-                useDefaultOnTap: false,
-              ),
-              const SizedBox(height: 10),
-            ],
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor.withOpacity(0.25),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Text(url!),
-                  ),
+      return AnimatedSize(
+        duration: const Duration(milliseconds: 250),
+        alignment: Alignment.bottomCenter,
+        child: BottomSheetListPicker(
+          title: l10n.linkActions,
+          heading: Column(
+            children: [
+              if (isValidUrl) ...[
+                LinkPreviewGenerator(
+                  link: url!,
+                  placeholderWidget: const CircularProgressIndicator(),
+                  linkPreviewStyle: LinkPreviewStyle.large,
+                  cacheDuration: Duration.zero,
+                  onTap: null,
+                  bodyTextOverflow: TextOverflow.fade,
+                  graphicFit: BoxFit.scaleDown,
+                  removeElevation: true,
+                  backgroundColor: theme.dividerColor.withOpacity(0.25),
+                  borderRadius: 10,
+                  useDefaultOnTap: false,
                 ),
+                const SizedBox(height: 10),
               ],
-            ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor.withOpacity(0.25),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Text(url!),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          items: [
+            ListPickerItem(label: l10n.open, payload: 'open', icon: Icons.language),
+            ListPickerItem(label: l10n.copy, payload: 'copy', icon: Icons.copy_rounded),
+            ListPickerItem(label: l10n.share, payload: 'share', icon: Icons.share_rounded),
           ],
+          onSelect: (value) async {
+            switch (value.payload) {
+              case 'open':
+                handleLinkTap(context, state, text, url);
+                break;
+              case 'copy':
+                Clipboard.setData(ClipboardData(text: url));
+                break;
+              case 'share':
+                Share.share(url);
+                break;
+            }
+          },
         ),
-        items: [
-          ListPickerItem(label: l10n.open, payload: 'open', icon: Icons.language),
-          ListPickerItem(label: l10n.copy, payload: 'copy', icon: Icons.copy_rounded),
-          ListPickerItem(label: l10n.share, payload: 'share', icon: Icons.share_rounded),
-        ],
-        onSelect: (value) {
-          switch (value.payload) {
-            case 'open':
-              handleLinkTap(context, state, text, url);
-              break;
-            case 'copy':
-              Clipboard.setData(ClipboardData(text: url));
-              break;
-            case 'share':
-              Share.share(url);
-              break;
-          }
-        },
       );
     },
   );

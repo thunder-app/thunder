@@ -7,10 +7,11 @@ import 'package:markdown/markdown.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/main.dart';
 import 'package:thunder/utils/instance.dart';
 
 const String _inboxMessagesChannelId = 'inbox_messages';
@@ -36,6 +37,9 @@ Future<void> pollRepliesAndShowNotifications() async {
 
   // We shouldn't even come here if the setting is disabled, but just in case, exit.
   if (prefs.getBool(LocalSettings.enableInboxNotifications.name) != true) return;
+
+  // Ensure that the db is initialized before attempting to access below.
+  await initializeDatabase();
 
   final Account? account = await fetchActiveProfileAccount();
   if (account == null) return;

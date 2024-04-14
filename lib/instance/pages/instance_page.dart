@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/widgets/comment_list_entry.dart';
@@ -11,10 +12,12 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
+import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/search/widgets/search_action_chip.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/persistent_header.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_list_entry.dart';
 import 'package:thunder/utils/instance.dart';
@@ -115,6 +118,7 @@ class _InstancePageState extends State<InstancePage> {
                     slivers: [
                       SliverAppBar(
                         pinned: true,
+                        toolbarHeight: 70.0,
                         title: ListTile(
                           title: Text(
                             fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
@@ -151,6 +155,23 @@ class _InstancePageState extends State<InstancePage> {
                               Icons.open_in_browser_rounded,
                               semanticLabel: l10n.openInBrowser,
                             ),
+                          ),
+                          PopupMenuButton(
+                            itemBuilder: (context) => [
+                              ThunderPopupMenuItem(
+                                onTap: () async {
+                                  HapticFeedback.mediumImpact();
+                                  FeedBloc feedBloc = context.read<FeedBloc>();
+                                  navigateToModlogPage(
+                                    context,
+                                    feedBloc: feedBloc,
+                                    lemmyClient: feedBloc.lemmyClient,
+                                  );
+                                },
+                                icon: Icons.shield_rounded,
+                                title: l10n.modlog,
+                              ),
+                            ],
                           ),
                         ],
                       ),

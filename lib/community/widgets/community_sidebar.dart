@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -17,6 +16,7 @@ import 'package:thunder/instance/widgets/instance_view.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -101,6 +101,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                     ),
                     const SizedBox(height: 10.0),
                     const Divider(height: 1, thickness: 2),
+                    const SizedBox(height: 10.0),
                     Container(
                       alignment: Alignment.topCenter,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -112,7 +113,6 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                             child: CommonMarkdownBody(
                               body: communityView.community.description ?? '',
                               imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
-                              allowHorizontalTranslation: false,
                             ),
                           ),
                           const SidebarSectionHeader(value: "Stats"),
@@ -231,22 +231,26 @@ class CommunityModeratorList extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          mods.moderator.displayName ?? mods.moderator.name,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.55,
+                          child: Text(
+                            mods.moderator.displayName ?? mods.moderator.name,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
-                        Text(
-                          generateUserFullName(context, mods.moderator.name, fetchInstanceNameFromUrl(mods.moderator.actorId)),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.6),
+                        UserFullNameWidget(
+                          context,
+                          mods.moderator.name,
+                          fetchInstanceNameFromUrl(mods.moderator.actorId),
+                          textStyle: const TextStyle(
                             fontSize: 13,
                           ),
+                          transformColor: (color) => color?.withOpacity(0.6),
                         ),
                       ],
                     ),

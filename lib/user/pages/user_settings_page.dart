@@ -8,14 +8,16 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/widgets/account_placeholder.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/settings/widgets/discussion_language_selector.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -43,7 +45,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    originalUser ??= context.read<AuthBloc>().state.account;
+    AuthState state = context.read<AuthBloc>().state;
+    originalUser ??= state.account;
 
     return PopScope(
       onPopInvoked: (_) {
@@ -169,6 +172,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         iconDisabledSize: 18.0,
                         iconSpacing: 14.0,
                         onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                      ),
+                      DiscussionLanguageSelector(
+                        initialDiscussionLanguages: DiscussionLanguageSelector.getDiscussionLanguagesFromSiteResponse(state.getSiteResponse),
+                        settingToHighlight: widget.settingToHighlight,
                       ),
                       if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
                         Padding(
@@ -379,10 +386,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   community.title,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(
-                  generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                subtitle: CommunityFullNameWidget(
+                  context,
+                  community.name,
+                  fetchInstanceNameFromUrl(community.actorId) ?? '-',
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
@@ -433,10 +440,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   person.displayName ?? person.name,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(
-                  generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                subtitle: UserFullNameWidget(
+                  context,
+                  person.name,
+                  fetchInstanceNameFromUrl(person.actorId) ?? '-',
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id

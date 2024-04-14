@@ -96,10 +96,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     int attemptCount = 0;
 
     try {
-      var exception;
+      Object? exception;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -212,7 +213,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           attemptCount++;
         }
       }
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(exception)));
     } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
@@ -226,11 +227,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+    defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
     CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
     try {
-      var exception;
+      Object? exception;
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -286,7 +288,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           // Prevent duplicate requests if we're done fetching comments
           if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) {
-            if (!state.hasReachedCommentEnd && state.commentCount == state.postView!.postView.counts.comments) {
+            if (!state.hasReachedCommentEnd && state.commentCount >= state.postView!.postView.counts.comments) {
               emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
             }
             if (event.commentParentId == null) {
@@ -617,9 +619,21 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   Future<void> _navigateCommentEvent(NavigateCommentEvent event, Emitter<PostState> emit) async {
     if (event.direction == NavigateCommentDirection.up) {
-      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: max(0, event.targetIndex), navigateCommentId: state.navigateCommentId + 1));
+      return emit(state.copyWith(
+        status: PostStatus.success,
+        navigateCommentIndex: max(0, event.targetIndex),
+        navigateCommentId: state.navigateCommentId + 1,
+        selectedCommentId: state.selectedCommentId,
+        selectedCommentPath: state.selectedCommentPath,
+      ));
     } else {
-      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: event.targetIndex, navigateCommentId: state.navigateCommentId + 1));
+      return emit(state.copyWith(
+        status: PostStatus.success,
+        navigateCommentIndex: event.targetIndex,
+        navigateCommentId: state.navigateCommentId + 1,
+        selectedCommentId: state.selectedCommentId,
+        selectedCommentPath: state.selectedCommentPath,
+      ));
     }
   }
 

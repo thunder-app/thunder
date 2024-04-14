@@ -70,6 +70,7 @@ class _PostPageState extends State<PostPage> {
   CommentSortType? sortType;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
+  bool viewSource = false;
 
   @override
   void initState() {
@@ -128,8 +129,7 @@ class _PostPageState extends State<PostPage> {
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              final sortTypeItem = CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
-                  .firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              final sortTypeItem = CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
               sortTypeIcon = sortTypeItem.icon;
               sortTypeLabel = sortTypeItem.label;
             });
@@ -215,6 +215,12 @@ class _PostPageState extends State<PostPage> {
                       ),
                       icon: Icons.repeat_rounded,
                       title: l10n.createNewCrossPost,
+                    ),
+                    ThunderPopupMenuItem(
+                      onTap: () => setState(() => viewSource = !viewSource),
+                      icon: Icons.edit_document,
+                      title: l10n.viewPostSource,
+                      trailing: viewSource ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
                     ),
                   ],
                 ),
@@ -400,7 +406,7 @@ class _PostPageState extends State<PostPage> {
 
                                               return Future.value(null);
                                             },
-                                            getSuggestions: (_) => Future.value(const Iterable<String>.empty()),
+                                            getSuggestions: (_) => [],
                                             suggestionBuilder: (payload) => Container(),
                                           );
                                         }
@@ -479,6 +485,7 @@ class _PostPageState extends State<PostPage> {
                                 hasReachedCommentEnd: state.hasReachedCommentEnd,
                                 moderators: state.moderators,
                                 crossPosts: state.crossPosts,
+                                viewSource: viewSource,
                               ),
                             );
                           }
@@ -543,7 +550,7 @@ class _PostPageState extends State<PostPage> {
       context: context,
       builder: (builderContext) => CommentSortPicker(
         title: l10n.sortOptions,
-        onSelect: (selected) {
+        onSelect: (selected) async {
           setState(() {
             sortType = selected.payload;
             sortTypeLabel = selected.label;
@@ -559,6 +566,7 @@ class _PostPageState extends State<PostPage> {
           //Navigator.of(context).pop();
         },
         previouslySelected: sortType,
+        minimumVersion: LemmyClient.instance.version,
       ),
     );
   }

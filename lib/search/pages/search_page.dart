@@ -18,7 +18,7 @@ import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -293,7 +293,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                       ListPickerItem(label: l10n.comments, payload: MetaSearchType.comments, icon: Icons.chat_rounded),
                                       if (widget.communityToSearch == null) ListPickerItem(label: l10n.instance(2), payload: MetaSearchType.instances, icon: Icons.language),
                                     ],
-                                    onSelect: (value) => _setCurrentSearchType(value.payload),
+                                    onSelect: (value) async => _setCurrentSearchType(value.payload),
                                     previouslySelected: _currentSearchType,
                                   ),
                                 );
@@ -318,7 +318,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                         ListPickerItem(label: l10n.searchByText, payload: 'text', icon: Icons.wysiwyg_rounded),
                                         ListPickerItem(label: l10n.searchByUrl, payload: 'url', icon: Icons.link_rounded),
                                       ],
-                                      onSelect: (value) {
+                                      onSelect: (value) async {
                                         setState(() {
                                           _searchByUrl = value.payload == 'url';
                                           _searchUrlLabel = value.payload == 'url' ? l10n.url : l10n.text;
@@ -362,7 +362,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                           ListPickerItem(label: l10n.local, payload: ListingType.local, icon: Icons.home_rounded),
                                           ListPickerItem(label: l10n.all, payload: ListingType.all, icon: Icons.grid_view_rounded)
                                         ],
-                                        onSelect: (value) {
+                                        onSelect: (value) async {
                                           setState(() {
                                             if (value.payload == ListingType.subscribed) {
                                               _feedTypeLabel = l10n.subscribed;
@@ -804,7 +804,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
         title: l10n.sortOptions,
-        onSelect: (selected) {
+        onSelect: (selected) async {
           setState(() {
             sortType = selected.payload;
             sortTypeIcon = selected.icon;
@@ -816,6 +816,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           _doSearch();
         },
         previouslySelected: sortType,
+        minimumVersion: LemmyClient.instance.version,
       ),
     );
   }

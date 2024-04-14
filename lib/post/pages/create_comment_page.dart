@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:markdown_editable_textinput/format_markdown.dart';
-import 'package:markdown_editable_textinput/markdown_buttons.dart';
-import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 
 import 'package:thunder/core/models/post_view_media.dart';
@@ -333,7 +331,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                   Row(
                     children: [
                       Expanded(
-                          child: MarkdownButtons(
+                          child: MarkdownToolbar(
                               controller: _bodyTextController,
                               focusNode: _bodyFocusNode,
                               actions: const [
@@ -347,6 +345,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 MarkdownType.list,
                                 MarkdownType.separator,
                                 MarkdownType.code,
+                                MarkdownType.spoiler,
                                 MarkdownType.username,
                                 MarkdownType.community,
                               ],
