@@ -84,7 +84,7 @@ class CommentHeader extends StatelessWidget {
                                     children: [
                                       if (commentShowUserAvatar)
                                         Padding(
-                                          padding: const EdgeInsets.all(3),
+                                          padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3),
                                           child: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
                                         ),
                                       UserFullNameWidget(
@@ -159,7 +159,7 @@ class CommentHeader extends StatelessWidget {
                                 : Row(children: [
                                     if (commentShowUserAvatar)
                                       Padding(
-                                        padding: const EdgeInsets.all(3),
+                                        padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3),
                                         child: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
                                       ),
                                     UserFullNameWidget(

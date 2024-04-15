@@ -220,7 +220,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                 children: [
                                   if (thunderState.postBodyShowUserAvatar)
                                     Padding(
-                                      padding: const EdgeInsets.only(right: 3),
+                                      padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3),
                                       child: UserAvatar(person: postView.creator, radius: 10, thumbnailSize: 20, format: 'png'),
                                     ),
                                   UserFullNameWidget(
