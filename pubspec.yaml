@@ -103,7 +103,6 @@ dependencies:
   background_fetch: ^1.2.1
   gal: ^2.2.0
   flutter_vlc_player: ^7.4.1
-  visibility_detector: ^0.4.0+2
   youtube_player_iframe: ^4.0.4
   youtube_player_flutter: ^8.1.2
   video_player: ^2.8.2
@@ -120,10 +119,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.1
-  flutter_launcher_icons:
-    git:
-      url: https://github.com/fluttercommunity/flutter_launcher_icons.git
-      ref: master
+  # flutter_launcher_icons:
+  #   git:
+  #     url: https://github.com/fluttercommunity/flutter_launcher_icons.git
+  #     ref: master
   drift_dev: ^2.16.0
 
 # The following section is specific to Flutter packages.

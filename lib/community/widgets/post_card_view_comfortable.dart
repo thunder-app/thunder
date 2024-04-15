@@ -18,10 +18,7 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
-import 'package:thunder/shared/video_player/video_player.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/video_is_embedded.dart';
-import 'package:thunder/utils/youtube_link_checker.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
   final Function(int) onVoteAction;
@@ -82,8 +79,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
-    Widget mediaView;
-    Widget defaultMediaView = MediaView(
+    Widget mediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
       postViewMedia: postViewMedia,
       showFullHeightImages: showFullHeightImages,
@@ -94,21 +90,7 @@ class PostCardViewComfortable extends StatelessWidget {
       navigateToPost: navigateToPost,
       read: indicateRead && postViewMedia.postView.read,
     );
-    bool youTubeLink = isYouTubeLink(postViewMedia.postView.post.embedVideoUrl) ?? false;
-    if (postViewMedia.postView.post.embedVideoUrl?.isNotEmpty ?? false) {
-      if (isVideoUrl(postViewMedia.postView.post.embedVideoUrl!) && !youTubeLink) {
-        mediaView = defaultMediaView;
-      } else {
-        mediaView = youTubeLink
-            ? ThunderYoutubePlayer(videoUrl: postViewMedia.postView.post.embedVideoUrl!)
-            : ThunderVideoPlayer(
-                videoUrl: postViewMedia.postView.post.embedVideoUrl!,
-              );
-      }
-    } else {
-      mediaView = defaultMediaView;
-    }
-
+   
     final bool useSaveButton = state.showSaveAction;
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
