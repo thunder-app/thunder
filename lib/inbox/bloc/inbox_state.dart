@@ -20,6 +20,7 @@ class InboxState extends Equatable {
     this.hasReachedInboxReplyEnd = false,
     this.hasReachedInboxMentionEnd = false,
     this.hasReachedInboxPrivateMessageEnd = false,
+    this.inboxReplyMarkedAsRead,
   });
 
   final InboxStatus status;
@@ -44,6 +45,8 @@ class InboxState extends Equatable {
   final bool hasReachedInboxMentionEnd;
   final bool hasReachedInboxPrivateMessageEnd;
 
+  final int? inboxReplyMarkedAsRead;
+
   InboxState copyWith({
     required InboxStatus status,
     String? errorMessage,
@@ -61,6 +64,7 @@ class InboxState extends Equatable {
     bool? hasReachedInboxReplyEnd,
     bool? hasReachedInboxMentionEnd,
     bool? hasReachedInboxPrivateMessageEnd,
+    int? inboxReplyMarkedAsRead,
   }) {
     return InboxState(
       status: status,
@@ -79,6 +83,7 @@ class InboxState extends Equatable {
       hasReachedInboxReplyEnd: hasReachedInboxReplyEnd ?? this.hasReachedInboxReplyEnd,
       hasReachedInboxMentionEnd: hasReachedInboxMentionEnd ?? this.hasReachedInboxMentionEnd,
       hasReachedInboxPrivateMessageEnd: hasReachedInboxPrivateMessageEnd ?? this.hasReachedInboxPrivateMessageEnd,
+      inboxReplyMarkedAsRead: inboxReplyMarkedAsRead ?? this.inboxReplyMarkedAsRead,
     );
   }
 
@@ -100,5 +105,6 @@ class InboxState extends Equatable {
         hasReachedInboxReplyEnd,
         hasReachedInboxMentionEnd,
         hasReachedInboxPrivateMessageEnd,
+        inboxReplyMarkedAsRead,
       ];
 }
