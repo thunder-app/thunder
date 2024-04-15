@@ -17,9 +17,6 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
-const Color upVoteColor = Colors.orange;
-const Color downVoteColor = Colors.blue;
-
 @Deprecated("Use [PostViewMetaData] instead")
 class PostCardMetaData extends StatelessWidget {
   final int score;
@@ -43,9 +40,6 @@ class PostCardMetaData extends StatelessWidget {
     this.readColor,
   });
 
-  final MaterialColor upVoteColor = Colors.orange;
-  final MaterialColor downVoteColor = Colors.blue;
-
   @override
   Widget build(BuildContext context) {
     final AuthState authState = context.watch<AuthBloc>().state;
@@ -60,16 +54,16 @@ class PostCardMetaData extends StatelessWidget {
               fontScale: state.metadataFontSizeScale,
               text: showScores ? formatNumberToK(score) : null,
               textColor: voteType == 1
-                  ? upVoteColor
+                  ? context.read<ThunderBloc>().state.upvoteColor.color
                   : voteType == -1
-                      ? downVoteColor
+                      ? context.read<ThunderBloc>().state.downvoteColor.color
                       : readColor,
               icon: Icon(voteType == 1 ? Icons.arrow_upward : (voteType == -1 ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
                   size: 20.0,
                   color: voteType == 1
-                      ? upVoteColor
+                      ? context.read<ThunderBloc>().state.upvoteColor.color
                       : voteType == -1
-                          ? downVoteColor
+                          ? context.read<ThunderBloc>().state.downvoteColor.color
                           : readColor),
               padding: 2.0,
             ),
@@ -230,8 +224,8 @@ class ScorePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (voteType) {
-      1 => upVoteColor,
-      -1 => downVoteColor,
+      1 => context.read<ThunderBloc>().state.upvoteColor.color,
+      -1 => context.read<ThunderBloc>().state.downvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -278,7 +272,7 @@ class UpvotePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isUpvoted) {
-      true => upVoteColor,
+      true => context.read<ThunderBloc>().state.upvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -317,7 +311,7 @@ class DownvotePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isDownvoted) {
-      true => downVoteColor,
+      true => context.read<ThunderBloc>().state.downvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -467,10 +461,6 @@ class PostViewMetaData extends StatelessWidget {
     required this.published,
     required this.saved,
   });
-
-  final MaterialColor upVoteColor = Colors.orange;
-  final MaterialColor downVoteColor = Colors.blue;
-  final MaterialColor savedColor = Colors.purple;
 
   @override
   Widget build(BuildContext context) {

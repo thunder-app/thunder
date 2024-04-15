@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 enum SwipeAction {
   upvote(label: 'Upvote'),
@@ -38,20 +40,20 @@ enum SwipeAction {
     }
   }
 
-  Color getColor() {
+  Color getColor(BuildContext context) {
     switch (this) {
       case SwipeAction.upvote:
-        return Colors.orange.shade700;
+        return context.read<ThunderBloc>().state.upvoteColor.color;
       case SwipeAction.downvote:
-        return Colors.blue.shade700;
+        return context.read<ThunderBloc>().state.downvoteColor.color;
       case SwipeAction.reply:
-        return Colors.green.shade700;
+        return context.read<ThunderBloc>().state.replyColor.color;
       case SwipeAction.edit:
-        return Colors.green.shade700;
+        return context.read<ThunderBloc>().state.replyColor.color;
       case SwipeAction.save:
-        return Colors.purple.shade700;
+        return context.read<ThunderBloc>().state.saveColor.color;
       case SwipeAction.toggleRead:
-        return Colors.teal.shade300;
+        return context.read<ThunderBloc>().state.markReadColor.color;
       default:
         return Colors.transparent;
     }

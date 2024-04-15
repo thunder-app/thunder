@@ -113,7 +113,8 @@ class PostCardViewComfortable extends StatelessWidget {
                       WidgetSpan(
                           child: Icon(
                         Icons.lock,
-                        color: indicateRead && postViewMedia.postView.read ? Colors.orange.shade900.withOpacity(0.55) : Colors.orange.shade900,
+                        color:
+                            indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.upvoteColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.upvoteColor.color,
                         size: 15 * textScaleFactor,
                       )),
                     ],
@@ -121,7 +122,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       WidgetSpan(
                         child: Icon(
                           Icons.star_rounded,
-                          color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                          color: indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.saveColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.saveColor.color,
                           size: 17 * textScaleFactor,
                           semanticLabel: 'Saved',
                         ),
@@ -196,7 +197,8 @@ class PostCardViewComfortable extends StatelessWidget {
                         WidgetSpan(
                             child: Icon(
                           Icons.lock,
-                          color: indicateRead && postViewMedia.postView.read ? Colors.orange.shade900.withOpacity(0.55) : Colors.orange.shade900,
+                          color:
+                              indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.upvoteColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.upvoteColor.color,
                           size: 15 * textScaleFactor,
                         )),
                       ],
@@ -204,7 +206,8 @@ class PostCardViewComfortable extends StatelessWidget {
                         WidgetSpan(
                           child: Icon(
                             Icons.star_rounded,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            color:
+                                indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.saveColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.saveColor.color,
                             size: 17 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),

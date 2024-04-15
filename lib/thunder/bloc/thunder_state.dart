@@ -117,6 +117,13 @@ class ThunderState extends Equatable {
     this.selectedTheme = CustomThemeType.deepBlue,
     this.useMaterialYouTheme = false,
 
+    // Color Settings
+    this.upvoteColor = const ActionColor.fromString(colorRaw: ActionColor.orange),
+    this.downvoteColor = const ActionColor.fromString(colorRaw: ActionColor.blue),
+    this.saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple),
+    this.markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal),
+    this.replyColor = const ActionColor.fromString(colorRaw: ActionColor.green),
+
     // Font Scale
     this.titleFontSizeScale = FontScale.base,
     this.contentFontSizeScale = FontScale.base,
@@ -249,6 +256,13 @@ class ThunderState extends Equatable {
   final ThemeType themeType;
   final CustomThemeType selectedTheme;
   final bool useMaterialYouTheme;
+
+  // Color Settings
+  final ActionColor upvoteColor;
+  final ActionColor downvoteColor;
+  final ActionColor saveColor;
+  final ActionColor markReadColor;
+  final ActionColor replyColor;
 
   // Font Scale
   final FontScale titleFontSizeScale;
@@ -408,6 +422,13 @@ class ThunderState extends Equatable {
     CustomThemeType? selectedTheme,
     bool? useMaterialYouTheme,
 
+    // Color Settings
+    ActionColor? upvoteColor,
+    ActionColor? downvoteColor,
+    ActionColor? saveColor,
+    ActionColor? markReadColor,
+    ActionColor? replyColor,
+
     // Font Scale
     FontScale? titleFontSizeScale,
     FontScale? contentFontSizeScale,
@@ -560,6 +581,13 @@ class ThunderState extends Equatable {
       themeType: themeType ?? this.themeType,
       selectedTheme: selectedTheme ?? this.selectedTheme,
       useMaterialYouTheme: useMaterialYouTheme ?? this.useMaterialYouTheme,
+
+      // Color Settings
+      upvoteColor: upvoteColor ?? this.upvoteColor,
+      downvoteColor: downvoteColor ?? this.downvoteColor,
+      saveColor: saveColor ?? this.saveColor,
+      markReadColor: markReadColor ?? this.markReadColor,
+      replyColor: replyColor ?? this.replyColor,
 
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
@@ -718,6 +746,13 @@ class ThunderState extends Equatable {
         themeType,
         selectedTheme,
         useMaterialYouTheme,
+
+        // Color Settings
+        upvoteColor,
+        downvoteColor,
+        saveColor,
+        markReadColor,
+        replyColor,
 
         // Font Scale
         titleFontSizeScale,
