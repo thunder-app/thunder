@@ -259,8 +259,13 @@ class _InstancePageState extends State<InstancePage> {
                         SliverFillRemaining(
                           child: ErrorMessage(
                             message: state.errorMessage,
-                            actionText: l10n.refreshContent,
-                            action: () async => await _doLoad(context),
+                            actions: [
+                              (
+                                text: l10n.refreshContent,
+                                action: () async => await _doLoad(context),
+                                loading: false,
+                              ),
+                            ],
                           ),
                         ),
                       if (state.status == InstancePageStatus.success || state.status == InstancePageStatus.done) ...[
