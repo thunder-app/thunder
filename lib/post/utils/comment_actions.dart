@@ -18,6 +18,7 @@ void triggerCommentAction({
   SwipeAction? swipeAction,
   required Function(int, int) onVoteAction,
   required Function(int, bool) onSaveAction,
+  Function(CommentView commentView, bool isEdit)? onReplyEditAction,
   required int voteType,
   bool? saved,
   required CommentView commentView,
@@ -41,18 +42,14 @@ void triggerCommentAction({
       navigateToCreateCommentPage(
         context,
         parentCommentView: commentView,
-        onCommentSuccess: (commentView) => {
-          // TODO: handle success comment action
-        },
+        onCommentSuccess: (commentView) => onReplyEditAction?.call(commentView, false),
       );
       break;
     case SwipeAction.edit:
       navigateToCreateCommentPage(
         context,
         commentView: commentView,
-        onCommentSuccess: (commentView) => {
-          // TODO: handle success comment action
-        },
+        onCommentSuccess: (commentView) => onReplyEditAction?.call(commentView, true),
       );
       break;
     case SwipeAction.save:

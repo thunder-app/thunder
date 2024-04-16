@@ -43,6 +43,7 @@ class CommentListEntry extends StatelessWidget {
           },
         ),
         isOwnComment: isOwnComment,
+        disableActions: true,
       ),
     );
   }
