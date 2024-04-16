@@ -82,9 +82,7 @@ Future<void> navigateToCreateCommentPage(
             postViewMedia: postViewMedia,
             commentView: commentView,
             parentCommentView: parentCommentView,
-            onCommentSuccess: (CommentView commentView) {
-              onCommentSuccess?.call(commentView);
-            },
+            onCommentSuccess: onCommentSuccess,
           ),
         );
       },
