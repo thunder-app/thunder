@@ -22,8 +22,8 @@ dependencies:
   path: ^1.8.3
   markdown_editor:
     git:
-      url: https://github.com/thunder-app/markdown-editor.git
-      ref: a59db6b1b5c2f927bcbfdf08b368073eb404f89b
+      url: https://github.com/micahmo/markdown-editor.git
+      ref: c2579d865c672973e075995710995551d19bdfac
   lemmy_api_client:
     git:
       url: https://github.com/thunder-app/lemmy_api_client.git
