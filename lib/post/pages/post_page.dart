@@ -283,7 +283,9 @@ class _PostPageState extends State<PostPage> {
                                               ? () => showSortBottomSheet(context, state)
                                               : singlePressAction == PostFabAction.replyToPost
                                                   ? () => replyToPost(context, postLocked: postLocked)
-                                                  : null),
+                                                  : singlePressAction == PostFabAction.search
+                                                      ? () => startCommentSearch(context)
+                                                      : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
                                   postView: state.postView,
@@ -371,47 +373,7 @@ class _PostPageState extends State<PostPage> {
                                 if (enableSearch)
                                   ActionButton(
                                     centered: combineNavAndFab,
-                                    onPressed: () {
-                                      PostFabAction.search.execute(override: () {
-                                        if (state.status == PostStatus.searchInProgress) {
-                                          context.read<PostBloc>().add(const EndCommentSearchEvent());
-                                        } else {
-                                          showInputDialog<String>(
-                                            context: context,
-                                            title: l10n.searchComments,
-                                            inputLabel: l10n.searchTerm,
-                                            onSubmitted: ({payload, value}) {
-                                              Navigator.of(context).pop();
-
-                                              List<Comment> commentMatches = [];
-
-                                              /// Recursive function which checks if any child of the given [commentViewTrees] contains the query
-                                              void findMatches(List<CommentViewTree> commentViewTrees) {
-                                                for (CommentViewTree commentViewTree in commentViewTrees) {
-                                                  if (commentViewTree.commentView?.comment.content.contains(RegExp(value!, caseSensitive: false)) == true) {
-                                                    commentMatches.add(commentViewTree.commentView!.comment);
-                                                  }
-                                                  findMatches(commentViewTree.replies);
-                                                }
-                                              }
-
-                                              // Find all comments which contain the query
-                                              findMatches(state.comments);
-
-                                              if (commentMatches.isEmpty) {
-                                                showSnackbar(l10n.noResultsFound);
-                                              } else {
-                                                context.read<PostBloc>().add(StartCommentSearchEvent(commentMatches: commentMatches));
-                                              }
-
-                                              return Future.value(null);
-                                            },
-                                            getSuggestions: (_) => [],
-                                            suggestionBuilder: (payload) => Container(),
-                                          );
-                                        }
-                                      });
-                                    },
+                                    onPressed: () => startCommentSearch(context),
                                     title: state.status == PostStatus.searchInProgress ? l10n.endSearch : PostFabAction.search.getTitle(context),
                                     icon: Icon(
                                       state.status == PostStatus.searchInProgress ? Icons.search_off_rounded : PostFabAction.search.getIcon(),
@@ -642,5 +604,50 @@ class _PostPageState extends State<PostPage> {
         }
       });
     }
+  }
+
+  void startCommentSearch(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    PostState state = context.read<PostBloc>().state;
+
+    PostFabAction.search.execute(override: () {
+      if (state.status == PostStatus.searchInProgress) {
+        context.read<PostBloc>().add(const EndCommentSearchEvent());
+      } else {
+        showInputDialog<String>(
+          context: context,
+          title: l10n.searchComments,
+          inputLabel: l10n.searchTerm,
+          onSubmitted: ({payload, value}) {
+            Navigator.of(context).pop();
+
+            List<Comment> commentMatches = [];
+
+            /// Recursive function which checks if any child of the given [commentViewTrees] contains the query
+            void findMatches(List<CommentViewTree> commentViewTrees) {
+              for (CommentViewTree commentViewTree in commentViewTrees) {
+                if (commentViewTree.commentView?.comment.content.contains(RegExp(value!, caseSensitive: false)) == true) {
+                  commentMatches.add(commentViewTree.commentView!.comment);
+                }
+                findMatches(commentViewTree.replies);
+              }
+            }
+
+            // Find all comments which contain the query
+            findMatches(state.comments);
+
+            if (commentMatches.isEmpty) {
+              showSnackbar(l10n.noResultsFound);
+            } else {
+              context.read<PostBloc>().add(StartCommentSearchEvent(commentMatches: commentMatches));
+            }
+
+            return Future.value(null);
+          },
+          getSuggestions: (_) => [],
+          suggestionBuilder: (payload) => Container(),
+        );
+      }
+    });
   }
 }
