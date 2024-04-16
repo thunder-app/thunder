@@ -313,6 +313,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       isHidden: false,
                                       viewSource: false,
                                       onViewSourceToggled: () {},
+                                      disableActions: true,
                                     ),
                                   ),
                                 ),
