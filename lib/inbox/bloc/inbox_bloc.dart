@@ -118,7 +118,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 status: InboxStatus.success,
                 privateMessages: cleanDeletedMessages(privateMessagesResponse.privateMessages),
                 mentions: cleanDeletedMentions(getPersonMentionsResponse.mentions),
-                replies: cleanDeletedReplies(getRepliesResponse.replies),
+                replies: getRepliesResponse.replies,
                 showUnreadOnly: !event.showAll,
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
@@ -177,7 +177,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               status: InboxStatus.success,
               privateMessages: cleanDeletedMessages(privateMessages),
               mentions: cleanDeletedMentions(mentions),
-              replies: cleanDeletedReplies(replies),
+              replies: replies,
               showUnreadOnly: state.showUnreadOnly,
               inboxMentionPage: state.inboxMentionPage + 1,
               inboxReplyPage: state.inboxReplyPage + 1,
@@ -357,34 +357,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
 
     return cleanedMentions;
-  }
-
-  List<CommentReplyView> cleanDeletedReplies(List<CommentReplyView> replies) {
-    List<CommentReplyView> cleanedReplies = [];
-
-    for (CommentReplyView reply in replies) {
-      if (reply.comment.removed) {
-        cleanedReplies.add(reply.copyWith(
-          comment: reply.comment.copyWith(
-            content: "_deleted by moderator_",
-          ),
-        ));
-        continue;
-      }
-
-      if (reply.comment.deleted) {
-        cleanedReplies.add(reply.copyWith(
-          comment: reply.comment.copyWith(
-            content: "_deleted by creator_",
-          ),
-        ));
-        continue;
-      }
-
-      cleanedReplies.add(reply);
-    }
-
-    return cleanedReplies;
   }
 
   PrivateMessageView cleanDeletedPrivateMessage(PrivateMessageView message) {
