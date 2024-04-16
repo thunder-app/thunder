@@ -182,6 +182,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
             sharedPreferences?.remove(draftId);
             _bodyTextController.clear();
           },
+          closable: true,
         );
       });
     }

@@ -16,6 +16,7 @@ void showSnackbar(
   IconData? leadingIcon,
   Color? trailingIconColor,
   IconData? trailingIcon,
+  bool? closable,
   void Function()? trailingAction,
 }) {
   int wordCount = RegExp(r'[\w-]+').allMatches(text).length;
@@ -28,34 +29,35 @@ void showSnackbar(
       (context, progress) {
         return SnackbarNotification(
           builder: (context) => ThunderSnackbar(
-            content: GestureDetector(
-              onTap: () => OverlaySupportEntry.of(context)?.dismiss(),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (leadingIcon != null) Icon(leadingIcon, color: leadingIconColor),
-                  if (leadingIcon != null) const SizedBox(width: 8.0),
-                  Expanded(child: Text(text)),
-                  if (trailingIcon != null)
-                    SizedBox(
-                      height: 20,
-                      child: IconButton(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: trailingAction != null
-                            ? () {
-                                OverlaySupportEntry.of(context)?.dismiss();
-                                trailingAction();
-                              }
-                            : null,
-                        icon: Icon(
-                          trailingIcon,
-                          color: trailingIconColor ?? Theme.of(context).colorScheme.inversePrimary,
-                        ),
-                      ),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (leadingIcon != null) ...[Icon(leadingIcon, color: leadingIconColor), const SizedBox(width: 8.0)],
+                Expanded(child: Text(text)),
+                if (trailingIcon != null)
+                  GestureDetector(
+                    onTap: trailingAction != null
+                        ? () {
+                            OverlaySupportEntry.of(context)?.dismiss();
+                            trailingAction();
+                          }
+                        : null,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: Icon(trailingIcon, color: trailingIconColor ?? Theme.of(context).colorScheme.inversePrimary),
                     ),
-                ],
-              ),
+                  ),
+                if (closable == true)
+                  GestureDetector(
+                    onTap: () => OverlaySupportEntry.of(context)?.dismiss(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: Icon(Icons.close_rounded, color: Theme.of(context).colorScheme.surface),
+                    ),
+                  ),
+              ],
             ),
+            closable: closable ?? false,
           ),
           progress: progress,
         );
@@ -145,7 +147,11 @@ class ThunderSnackbar extends StatefulWidget {
   /// The content of the snackbar.
   final Widget content;
 
-  const ThunderSnackbar({super.key, required this.content});
+  /// Whether the snackbar is closable or not. This parameter controls the padding of the snackbar.
+  /// See https://m3.material.io/components/snackbar/specs#c7b5d52a-24e7-45ca-8db6-7ce7d80a1cea
+  final bool closable;
+
+  const ThunderSnackbar({super.key, required this.content, this.closable = false});
 
   @override
   State<ThunderSnackbar> createState() => _ThunderSnackbarState();
@@ -190,7 +196,7 @@ class _ThunderSnackbarState extends State<ThunderSnackbar> {
                 container: true,
                 liveRegion: true,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 5.0, 15.0, 10.0),
+                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
                   child: Material(
                     shape: shape,
                     elevation: elevation,
@@ -199,7 +205,7 @@ class _ThunderSnackbarState extends State<ThunderSnackbar> {
                     child: Theme(
                       data: theme,
                       child: Padding(
-                        padding: const EdgeInsetsDirectional.only(start: horizontalPadding, end: horizontalPadding),
+                        padding: EdgeInsetsDirectional.only(start: horizontalPadding, end: widget.closable ? 12.0 : 8.0),
                         child: Wrap(
                           children: <Widget>[
                             Row(
