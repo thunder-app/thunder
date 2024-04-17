@@ -1993,6 +1993,10 @@
   "@viewPostSource": {
     "description": "Menu item for viewing a post's source"
   },
+  "viewingAll": "Viewing all",
+  "@viewingAll": {
+    "description": "Chip for viewing all possible search results"
+  },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
   "visitInstance": "Visit Instance",
