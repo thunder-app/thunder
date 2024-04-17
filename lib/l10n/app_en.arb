@@ -1971,6 +1971,30 @@
   "@versionNumber": {
     "description": "String for describing the current version"
   },
+  "video": "Video",
+  "@video": {
+    "description": "String for video "
+  },
+  "videoAutoMute": "Mute Videos",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
+  },
+  "videoAutoFullscreen": "Auto Fullscreen",
+  "@videoAutoFullscreen": {
+    "decription": "Option to always start the video players in landscape"
+  },
+  "videoAutoLoop": "Loop Video",
+  "@videoAutoLoop": {
+    "description": "Option to always loop a video"
+  },
+  "videoDefaultPlaybackSpeed": "Default Playback speed",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback speed"
+  },
+  "videoAutoPlay": "Video Autoplay",
+  "@videoAutoPlay": {
+    "description": "Option to always autoplay videos"
+  },
   "viewAll": "View all",
   "@viewAll": {
     "description": "A title for viewing all of something (e.g., instances)"

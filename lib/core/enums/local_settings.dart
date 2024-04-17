@@ -11,7 +11,8 @@ enum LocalSettingsCategories {
   account('Account'),
   about('About'),
   debug('Debug'),
-  theming('Theming');
+  theming('Theming'),
+  videoPlayer('videoPlayer');
 
   final String value;
 
@@ -269,7 +270,13 @@ enum LocalSettings {
   // This setting exists purely to save/load the user's selected advanced share options
   advancedShareOptions(name: 'advanced_share_options', key: ''),
   // import export settings
-  importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings);
+  importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
+  // video player
+  videoAutoMute(name: 'auto_mute_videos', key: 'videoAutoMute', category: LocalSettingsCategories.videoPlayer),
+  videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer),
+  videoAutoFullscreen(name: 'video_auto_fullscreen', key: 'videoAutoFullscreen', category: LocalSettingsCategories.videoPlayer),
+  videoAutoLoop(name: 'video_auto_loop', key: 'videoAutoLoop', category: LocalSettingsCategories.videoPlayer),
+  videoAutoPlay(name: 'video_auto_play', key: 'videoAutoPlay', category: LocalSettingsCategories.videoPlayer);
 
   const LocalSettings({
     required this.name,
@@ -413,6 +420,11 @@ extension LocalizationExt on AppLocalizations {
       'profiles': profiles,
       'animations': animations,
       'discussionLanguages': discussionLanguages,
+      'videoAutoMute': videoAutoMute,
+      'videoAutoFullscreen': videoAutoFullscreen,
+      'videoAutoLoop': videoAutoLoop,
+      'videoAutoPlay': videoAutoPlay,
+      'videoDefaultPlaybackSpeed': videoDefaultPlaybackSpeed,
     };
 
     if (localizationMap.containsKey(key)) {

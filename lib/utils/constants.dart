@@ -52,3 +52,4 @@ const String SETTINGS_DEBUG_PAGE = '/settings/debug';
 const String SETTINGS_APPEARANCE_POSTS_PAGE = '/settings/appearance/posts';
 const String SETTINGS_APPEARANCE_COMMENTS_PAGE = '/settings/appearance/comments';
 const String SETTINGS_APPEARANCE_THEMES_PAGE = '/settings/appearance/themes';
+const String SETTINGS_VIDEO_PAGE = '/settings/video';
