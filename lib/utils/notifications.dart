@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:markdown/markdown.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -65,8 +66,9 @@ Future<void> pollRepliesAndShowNotifications() async {
   // On Android, put them in the same group.
   for (final CommentReplyView commentReplyView in newReplies) {
     // Format the comment body in a couple ways
-    final String htmlComment = markdownToHtml(commentReplyView.comment.content);
-    final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentReplyView.comment.content;
+    final String commentContent = cleanCommentContent(commentReplyView.comment);
+    final String htmlComment = markdownToHtml(commentContent);
+    final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     // Configure Android-specific settings

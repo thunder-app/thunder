@@ -473,6 +473,14 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
+  "deletedByCreator": "deleted by creator",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "deletedByModerator": "deleted by moderator",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
   "deselectUndeterminedWarning": "If you deselect Undetermined, you will not see most content.",
   "@deselectUndeterminedWarning": {},
   "detailedReason": "Reason: {reason}",

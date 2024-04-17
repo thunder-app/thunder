@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -109,12 +110,12 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                         padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
                         child: widget.viewSource
                             ? ScalableText(
-                                widget.comment.comment.content,
+                                cleanCommentContent(widget.comment.comment),
                                 style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                                 fontScale: state.contentFontSizeScale,
                               )
                             : CommonMarkdownBody(
-                                body: widget.comment.comment.content,
+                                body: cleanCommentContent(widget.comment.comment),
                                 isComment: true,
                               ),
                       ),
