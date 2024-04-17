@@ -1,30 +1,24 @@
-import 'dart:async';
-import 'dart:convert';
-
+// Flutter imports
 import 'package:flutter/material.dart';
 
+// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/enums/swipe_action.dart';
 
-import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/inbox/bloc/inbox_bloc.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/pages/create_comment_page.dart';
+// Project imports
+import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void triggerCommentAction({
   required BuildContext context,
   SwipeAction? swipeAction,
   required Function(int, int) onVoteAction,
   required Function(int, bool) onSaveAction,
+  Function(CommentView commentView, bool isEdit)? onReplyEditAction,
   required int voteType,
   bool? saved,
   required CommentView commentView,
@@ -45,73 +39,18 @@ void triggerCommentAction({
       onVoteAction(commentView.comment.id, voteType == -1 ? 0 : -1);
       return;
     case SwipeAction.reply:
+      navigateToCreateCommentPage(
+        context,
+        parentCommentView: commentView,
+        onCommentSuccess: (commentView) => onReplyEditAction?.call(commentView, false),
+      );
+      break;
     case SwipeAction.edit:
-      PostBloc postBloc = context.read<PostBloc>();
-      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-      AccountBloc accountBloc = context.read<AccountBloc>();
-
-      InboxBloc? inboxBloc;
-
-      try {
-        inboxBloc = context.read<InboxBloc>();
-      } catch (e) {}
-
-      final ThunderState state = context.read<ThunderBloc>().state;
-      final bool reduceAnimations = state.reduceAnimations;
-
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      DraftComment? newDraftComment;
-      DraftComment? previousDraftComment;
-      String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
-      String? draftCommentJson = prefs.getString(draftId);
-      if (draftCommentJson != null) {
-        previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-      }
-      Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-        if (newDraftComment?.isNotEmpty == true) {
-          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-        }
-      });
-
-      Navigator.of(context)
-          .push(
-        SwipeablePageRoute(
-          transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-          canOnlySwipeFromEdge: true,
-          backGestureDetectionWidth: 45,
-          builder: (context) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider<PostBloc>.value(value: postBloc),
-                BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                BlocProvider<AccountBloc>.value(value: accountBloc),
-                if (inboxBloc != null) BlocProvider<InboxBloc>.value(value: inboxBloc),
-              ],
-              child: CreateCommentPage(
-                commentView: commentView,
-                comment: commentView.comment,
-                isEdit: swipeAction == SwipeAction.edit,
-                selectedCommentId: selectedCommentId,
-                selectedCommentPath: selectedCommentPath,
-                previousDraftComment: previousDraftComment,
-                onUpdateDraft: (c) => newDraftComment = c,
-              ),
-            );
-          },
-        ),
-      )
-          .whenComplete(() async {
-        timer.cancel();
-
-        if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (swipeAction != SwipeAction.edit || commentView.comment.content != newDraftComment?.text)) {
-          await Future.delayed(const Duration(milliseconds: 300));
-          showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
-          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-        } else {
-          prefs.remove(draftId);
-        }
-      });
-
+      navigateToCreateCommentPage(
+        context,
+        commentView: commentView,
+        onCommentSuccess: (commentView) => onReplyEditAction?.call(commentView, true),
+      );
       break;
     case SwipeAction.save:
       onSaveAction(commentView.comment.id, !(saved ?? false));
