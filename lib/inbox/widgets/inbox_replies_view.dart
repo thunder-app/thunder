@@ -42,7 +42,7 @@ class InboxRepliesView extends StatefulWidget {
 }
 
 class _InboxRepliesViewState extends State<InboxRepliesView> {
-  int? inboxReplyMarkedAsRead;
+  List<int> inboxRepliesBeingMarkedAsRead = [];
   List<int> inboxRepliesMarkedAsRead = [];
 
   @override
@@ -54,19 +54,16 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now().toUtc();
 
-    if (widget.replies.isEmpty) {
+    if (widget.replies.isEmpty || widget.replies.map((reply) => reply.commentReply.id).every((id) => inboxRepliesMarkedAsRead.contains(id))) {
       return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No replies'));
     }
 
     return BlocListener<InboxBloc, InboxState>(
       listener: (context, state) {
-        if (state.status == InboxStatus.success) {
-          if (inboxReplyMarkedAsRead == null) return;
-
-          setState(() {
-            inboxRepliesMarkedAsRead.add(inboxReplyMarkedAsRead!);
-            inboxReplyMarkedAsRead = null;
-          });
+        if (state.status == InboxStatus.success && inboxRepliesBeingMarkedAsRead.isNotEmpty && state.inboxReplyMarkedAsRead != null) {
+          inboxRepliesBeingMarkedAsRead.remove(state.inboxReplyMarkedAsRead);
+          inboxRepliesMarkedAsRead.add(state.inboxReplyMarkedAsRead!);
+          setState(() {});
         }
       },
       child: ListView.builder(
@@ -75,59 +72,62 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: widget.replies.length,
         itemBuilder: (context, index) {
-          return Column(
-            children: [
-              Divider(
-                height: 1.0,
-                thickness: 1.0,
-                color: ElevationOverlay.applySurfaceTint(
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surfaceTint,
-                  10,
+          if (widget.showAll || !inboxRepliesMarkedAsRead.contains(widget.replies[index].commentReply.id)) {
+            return Column(
+              children: [
+                Divider(
+                  height: 1.0,
+                  thickness: 1.0,
+                  color: ElevationOverlay.applySurfaceTint(
+                    Theme.of(context).colorScheme.surface,
+                    Theme.of(context).colorScheme.surfaceTint,
+                    10,
+                  ),
                 ),
-              ),
-              CommentReference(
-                comment: widget.replies[index].toCommentView(),
-                now: now,
-                onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-                onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-                onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-                onReportAction: (int commentId) {
-                  showReportCommentActionBottomSheet(
-                    context,
-                    commentId: commentId,
-                  );
-                },
-                onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
-                  context,
-                  commentView: isEdit ? commentView : null,
-                  parentCommentView: isEdit ? null : commentView,
-                  onCommentSuccess: (commentView) {
-                    context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+                CommentReference(
+                  comment: widget.replies[index].toCommentView(),
+                  now: now,
+                  onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                  onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                  onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                  onReportAction: (int commentId) {
+                    showReportCommentActionBottomSheet(
+                      context,
+                      commentId: commentId,
+                    );
                   },
+                  onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+                    context,
+                    commentView: isEdit ? commentView : null,
+                    parentCommentView: isEdit ? null : commentView,
+                    onCommentSuccess: (commentView) {
+                      context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+                    },
+                  ),
+                  isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
+                  child: widget.replies[index].commentReply.read == false && !inboxRepliesMarkedAsRead.contains(widget.replies[index].commentReply.id)
+                      ? !inboxRepliesBeingMarkedAsRead.contains(widget.replies[index].commentReply.id)
+                          ? IconButton(
+                              onPressed: () {
+                                setState(() => inboxRepliesBeingMarkedAsRead.add(widget.replies[index].commentReply.id));
+                                context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply.id, read: true, showAll: widget.showAll));
+                              },
+                              icon: const Icon(
+                                Icons.check,
+                                semanticLabel: 'Mark as read',
+                              ),
+                              visualDensity: VisualDensity.compact,
+                            )
+                          : const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                            )
+                      : null,
                 ),
-                isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
-                child: widget.replies[index].commentReply.read == false && !inboxRepliesMarkedAsRead.contains(widget.replies[index].commentReply.id)
-                    ? inboxReplyMarkedAsRead != widget.replies[index].commentReply.id
-                        ? IconButton(
-                            onPressed: () {
-                              setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply.id);
-                              context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply.id, read: true, showAll: widget.showAll));
-                            },
-                            icon: const Icon(
-                              Icons.check,
-                              semanticLabel: 'Mark as read',
-                            ),
-                            visualDensity: VisualDensity.compact,
-                          )
-                        : const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                          )
-                    : null,
-              ),
-            ],
-          );
+              ],
+            );
+          }
+          return Container();
         },
       ),
     );
