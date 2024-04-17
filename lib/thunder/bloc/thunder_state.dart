@@ -14,6 +14,7 @@ class ThunderState extends Equatable {
     // Default Listing/Sort Settings
     this.defaultListingType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
+    this.useProfilePictureForDrawer = false,
 
     // NSFW Settings
     this.hideNsfwPosts = false,
@@ -165,6 +166,7 @@ class ThunderState extends Equatable {
   final ListingType defaultListingType;
   final SortType defaultSortType;
   SortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType) ? defaultSortType : DEFAULT_SORT_TYPE;
+  final bool useProfilePictureForDrawer;
 
   // NSFW Settings
   final bool hideNsfwPosts;
@@ -324,6 +326,7 @@ class ThunderState extends Equatable {
     // Default Listing/Sort Settings
     ListingType? defaultListingType,
     SortType? defaultSortType,
+    bool? useProfilePictureForDrawer,
 
     // NSFW Settings
     bool? hideNsfwPosts,
@@ -475,6 +478,7 @@ class ThunderState extends Equatable {
       /// Default Listing/Sort Settings
       defaultListingType: defaultListingType ?? this.defaultListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
+      useProfilePictureForDrawer: useProfilePictureForDrawer ?? this.useProfilePictureForDrawer,
 
       // NSFW Settings
       hideNsfwPosts: hideNsfwPosts ?? this.hideNsfwPosts,
@@ -635,6 +639,7 @@ class ThunderState extends Equatable {
         /// Default Listing/Sort Settings
         defaultListingType,
         defaultSortType,
+        useProfilePictureForDrawer,
 
         // NSFW Settings
         hideNsfwPosts,

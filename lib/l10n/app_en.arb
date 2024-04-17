@@ -1927,6 +1927,14 @@
   "@useMaterialYouThemeDescription": {
     "description": "Subtitle of the setting for using Material You theme"
   },
+  "useProfilePictureForDrawer": "Use Profile Picture for Drawer",
+  "@useProfilePictureForDrawer": {
+    "description": "Setting name for using the profile picture for the drawer"
+  },
+  "useProfilePictureForDrawerSubtitle": "When logged in, shows the user's profile picture in place of the drawer icon",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Setting subtitle for using the profile picture for the drawer"
+  },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
   "user": "User",

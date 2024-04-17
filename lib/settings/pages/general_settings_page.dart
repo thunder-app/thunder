@@ -46,6 +46,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// The current locale
   late Locale currentLocale;
 
+  /// Whether to show the user's profile picture instead of the drawer icon
+  bool useProfilePictureForDrawer = false;
+
   /// Default listing type for posts on the feed (subscribed, all, local)
   ListingType defaultListingType = DEFAULT_LISTING_TYPE;
 
@@ -133,6 +136,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.appLanguageCode:
         await prefs.setString(LocalSettings.appLanguageCode.name, value.languageCode);
         setState(() => currentLocale = value);
+        break;
+      case LocalSettings.useProfilePictureForDrawer:
+        await prefs.setBool(LocalSettings.useProfilePictureForDrawer.name, value);
+        setState(() => useProfilePictureForDrawer = value);
         break;
 
       case LocalSettings.hideNsfwPosts:
@@ -228,6 +235,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
       currentLocale = Localizations.localeOf(context);
+      useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
 
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
@@ -405,6 +413,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ],
               ),
               highlightKey: settingToHighlight == LocalSettings.appLanguageCode ? settingToHighlightKey : null,
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.useProfilePictureForDrawer,
+              subtitle: l10n.useProfilePictureForDrawerSubtitle,
+              value: useProfilePictureForDrawer,
+              iconEnabled: Icons.person_rounded,
+              iconDisabled: Icons.person_outline_rounded,
+              onToggle: (value) => setPreferences(LocalSettings.useProfilePictureForDrawer, value),
+              highlightKey: settingToHighlight == LocalSettings.useProfilePictureForDrawer ? settingToHighlightKey : null,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
