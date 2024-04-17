@@ -263,7 +263,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   Future<void> _navigateToPost(String link) async {
-    final postId = await getLemmyPostId(link);
+    final postId = await getLemmyPostId(context, link);
     if (context.mounted && postId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
@@ -333,7 +333,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   Future<void> _navigateToComment(String link) async {
-    final commentId = await getLemmyCommentId(link);
+    final commentId = await getLemmyCommentId(context, link);
     if (context.mounted && commentId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
