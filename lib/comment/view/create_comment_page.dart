@@ -276,7 +276,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
                                   decoration: BoxDecoration(
                                     color: theme.colorScheme.surfaceVariant,
                                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
