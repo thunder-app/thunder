@@ -96,6 +96,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -222,6 +223,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+    defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
     CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 

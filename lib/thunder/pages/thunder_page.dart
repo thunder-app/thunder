@@ -90,6 +90,8 @@ class _ThunderState extends State<Thunder> {
 
   final ScrollController _changelogScrollController = ScrollController();
 
+  bool errorMessageLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -503,7 +505,7 @@ class _ThunderState extends State<Thunder> {
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
                                 postListingType: thunderBlocState.defaultListingType,
-                                sortType: thunderBlocState.defaultSortType,
+                                sortType: thunderBlocState.sortTypeForInstance,
                                 reset: true,
                               ),
                             );
@@ -638,7 +640,7 @@ class _ThunderState extends State<Thunder> {
                                     useGlobalFeedBloc: true,
                                     feedType: FeedType.general,
                                     postListingType: thunderBlocState.defaultListingType,
-                                    sortType: thunderBlocState.defaultSortType,
+                                    sortType: thunderBlocState.sortTypeForInstance,
                                     scaffoldStateKey: scaffoldStateKey,
                                   ),
                                   AnimatedOpacity(
@@ -667,11 +669,27 @@ class _ThunderState extends State<Thunder> {
                           return Container();
                         case AuthStatus.failureCheckingInstance:
                           showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
-                          return ErrorMessage(
-                            title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
-                            message: AppLocalizations.of(context)!.internetOrInstanceIssues,
-                            actionText: AppLocalizations.of(context)!.accountSettings,
-                            action: () => showProfileModalSheet(context),
+                          errorMessageLoading = false;
+                          return StatefulBuilder(
+                            builder: (context, setState) => ErrorMessage(
+                              title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
+                              message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+                              actions: [
+                                (
+                                  text: AppLocalizations.of(context)!.retry,
+                                  action: () {
+                                    context.read<AuthBloc>().add(CheckAuth());
+                                    setState(() => errorMessageLoading = true);
+                                  },
+                                  loading: errorMessageLoading,
+                                ),
+                                (
+                                  text: AppLocalizations.of(context)!.accountSettings,
+                                  action: () => showProfileModalSheet(context),
+                                  loading: false,
+                                ),
+                              ],
+                            ),
                           );
                       }
                     },
@@ -681,8 +699,13 @@ class _ThunderState extends State<Thunder> {
                 FlutterNativeSplash.remove();
                 return ErrorMessage(
                   message: thunderBlocState.errorMessage,
-                  action: () => {context.read<AuthBloc>().add(CheckAuth())},
-                  actionText: AppLocalizations.of(context)!.refreshContent,
+                  actions: [
+                    (
+                      text: AppLocalizations.of(context)!.refreshContent,
+                      action: () => context.read<AuthBloc>().add(CheckAuth()),
+                      loading: false,
+                    ),
+                  ],
                 );
             }
           },

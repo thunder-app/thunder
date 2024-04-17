@@ -25,6 +25,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
+  "addDiscussionLanguage": "Add Language",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
   "addKeywordFilter": "Add Keyword",
   "@addKeywordFilter": {
     "description": "Hint for text field to add keyword"
@@ -469,6 +473,16 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
+  "deletedByCreator": "deleted by creator",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "deletedByModerator": "deleted by moderator",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
+  "deselectUndeterminedWarning": "If you deselect Undetermined, you will not see most content.",
+  "@deselectUndeterminedWarning": {},
   "detailedReason": "Reason: {reason}",
   "@detailedReason": {
     "description": "The reason for the moderation action"
@@ -481,6 +495,12 @@
   "@disable": {
     "description": "Action for disabling something"
   },
+  "discussionLanguages": "Discussion Languages",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "discussionLanguagesTooltip": "Content is filtered to the selected languages.",
+  "@discussionLanguagesTooltip": {},
   "dismissRead": "Dismiss Read",
   "@dismissRead": {},
   "displayUserScore": "Display User Scores (Karma).",
@@ -771,12 +791,14 @@
   },
   "keywordFilters": "Keyword Filters",
   "@keywordFilters": {
-    "description": "Subcategory in Setting -> General"
+    "description": "Subcategory in Settings -> Filters"
   },
   "language": "Language",
   "@language": {
     "description": "Label when creating or editing a post."
   },
+  "languageFilters": "Looking for language filters?",
+  "@languageFilters": {},
   "languageNotAllowed": "The community you are posting to does not allow posts in the language that you have selected. Try another language.",
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
@@ -947,6 +969,8 @@
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
+  "mustBeLoggedIn": "You need to be logged in",
+  "@mustBeLoggedIn": {},
   "mustBeLoggedInComment": "You need to be logged in to comment",
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
@@ -993,6 +1017,10 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
+  "noDiscussionLanguages": "No content is hidden based on language.",
+  "@noDiscussionLanguages": {
+    "description": "Message for no discussion languages added"
+  },
   "noFavoritedCommunities": "No favorited communities",
   "@noFavoritedCommunities": {
     "description": "Message for no favorited communities on the drawer"
@@ -1005,7 +1033,7 @@
   },
   "noKeywordFilters": "No keyword filters added",
   "@noKeywordFilters": {
-    "description": "Message for no keywords added"
+    "description": "Message for no keyword filters added"
   },
   "noLanguage": "No language",
   "@noLanguage": {
@@ -1247,11 +1275,11 @@
   "@removeInstance": {},
   "removeKeyword": "Remove \"{keyword}\"?",
   "@removeKeyword": {
-    "description": "Description of removing a keyword"
+    "description": "Description of removing a keyword filter"
   },
   "removeKeywordFilter": "Remove Keyword",
   "@removeKeywordFilter": {
-    "description": "Title for dialig to remove keyword"
+    "description": "Title for dialog to remove keyword filter"
   },
   "removePost": "Remove Post",
   "@removePost": {

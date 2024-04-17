@@ -118,12 +118,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 status: InboxStatus.success,
                 privateMessages: cleanDeletedMessages(privateMessagesResponse.privateMessages),
                 mentions: cleanDeletedMentions(getPersonMentionsResponse.mentions),
-                replies: cleanDeletedReplies(getRepliesResponse.replies),
+                replies: getRepliesResponse.replies,
                 showUnreadOnly: !event.showAll,
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
                 inboxPrivateMessagePage: 2,
                 totalUnreadCount: totalUnreadCount,
+                repliesUnreadCount: getUnreadCountResponse.replies,
+                mentionsUnreadCount: getUnreadCountResponse.mentions,
+                messagesUnreadCount: getUnreadCountResponse.privateMessages,
                 hasReachedInboxReplyEnd: getRepliesResponse.replies.isEmpty || getRepliesResponse.replies.length < limit,
                 hasReachedInboxMentionEnd: getPersonMentionsResponse.mentions.isEmpty || getPersonMentionsResponse.mentions.length < limit,
                 hasReachedInboxPrivateMessageEnd: privateMessagesResponse.privateMessages.isEmpty || privateMessagesResponse.privateMessages.length < limit,
@@ -174,7 +177,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               status: InboxStatus.success,
               privateMessages: cleanDeletedMessages(privateMessages),
               mentions: cleanDeletedMentions(mentions),
-              replies: cleanDeletedReplies(replies),
+              replies: replies,
               showUnreadOnly: state.showUnreadOnly,
               inboxMentionPage: state.inboxMentionPage + 1,
               inboxReplyPage: state.inboxReplyPage + 1,
@@ -190,9 +193,23 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         }
       }
 
-      emit(state.copyWith(status: InboxStatus.failure, errorMessage: exception.toString(), totalUnreadCount: 0));
+      emit(state.copyWith(
+        status: InboxStatus.failure,
+        errorMessage: exception.toString(),
+        totalUnreadCount: 0,
+        repliesUnreadCount: 0,
+        mentionsUnreadCount: 0,
+        messagesUnreadCount: 0,
+      ));
     } catch (e) {
-      emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString(), totalUnreadCount: 0));
+      emit(state.copyWith(
+        status: InboxStatus.failure,
+        errorMessage: e.toString(),
+        totalUnreadCount: 0,
+        repliesUnreadCount: 0,
+        mentionsUnreadCount: 0,
+        messagesUnreadCount: 0,
+      ));
     }
   }
 
@@ -236,6 +253,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         status: InboxStatus.success,
         replies: replies,
         totalUnreadCount: totalUnreadCount,
+        repliesUnreadCount: getUnreadCountResponse.replies,
+        mentionsUnreadCount: getUnreadCountResponse.mentions,
+        messagesUnreadCount: getUnreadCountResponse.privateMessages,
       ));
     } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
@@ -337,34 +357,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
 
     return cleanedMentions;
-  }
-
-  List<CommentReplyView> cleanDeletedReplies(List<CommentReplyView> replies) {
-    List<CommentReplyView> cleanedReplies = [];
-
-    for (CommentReplyView reply in replies) {
-      if (reply.comment.removed) {
-        cleanedReplies.add(reply.copyWith(
-          comment: reply.comment.copyWith(
-            content: "_deleted by moderator_",
-          ),
-        ));
-        continue;
-      }
-
-      if (reply.comment.deleted) {
-        cleanedReplies.add(reply.copyWith(
-          comment: reply.comment.copyWith(
-            content: "_deleted by creator_",
-          ),
-        ));
-        continue;
-      }
-
-      cleanedReplies.add(reply);
-    }
-
-    return cleanedReplies;
   }
 
   PrivateMessageView cleanDeletedPrivateMessage(PrivateMessageView message) {

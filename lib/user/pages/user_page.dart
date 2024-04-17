@@ -170,8 +170,13 @@ class _UserPageState extends State<UserPage> {
               case UserStatus.failure:
                 return ErrorMessage(
                   message: state.errorMessage,
-                  action: () => context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true)),
-                  actionText: AppLocalizations.of(context)!.refreshContent,
+                  actions: [
+                    (
+                      text: AppLocalizations.of(context)!.refreshContent,
+                      action: () => context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true)),
+                      loading: false,
+                    ),
+                  ],
                 );
             }
           }),
