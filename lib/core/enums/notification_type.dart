@@ -1,3 +1,9 @@
+// Package imports
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+// Project imports
+import 'package:thunder/utils/global_context.dart';
+
 enum NotificationType {
   none,
   local,
@@ -6,15 +12,17 @@ enum NotificationType {
 
   @override
   String toString() {
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+
     switch (this) {
       case NotificationType.none:
-        return 'None';
+        return l10n.none;
       case NotificationType.local:
-        return 'Local Notifications';
+        return l10n.localNotifications;
       case NotificationType.unifiedPush:
-        return 'Unified Push Notifications';
+        return l10n.unifiedPushNotifications;
       case NotificationType.apn:
-        return 'Apple Push Notification Service';
+        return l10n.applePushNotificationService;
     }
   }
 }

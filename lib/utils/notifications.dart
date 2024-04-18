@@ -10,6 +10,7 @@ import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/notification_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/main.dart';
@@ -37,7 +38,7 @@ Future<void> pollRepliesAndShowNotifications() async {
   final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
 
   // We shouldn't even come here if the setting is disabled, but just in case, exit.
-  if (prefs.getBool(LocalSettings.enableInboxNotifications.name) != true) return;
+  if (NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name) != NotificationType.local) return;
 
   // Ensure that the db is initialized before attempting to access below.
   await initializeDatabase();

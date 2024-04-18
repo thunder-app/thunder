@@ -79,6 +79,10 @@
   "@appearance": {
     "description": "Title of Appearance in Settings -> Appearance"
   },
+  "applePushNotificationService": "Apple Push Notification Service",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
   "applied": "Applied",
   "@applied": {},
   "apply": "Apply",
@@ -861,6 +865,10 @@
   "@loadMoreSingular": {},
   "local": "Local",
   "@local": {},
+  "localNotifications": "Local Notifications",
+  "@localNotifications": {
+    "description": "Describes the notification type for Local Notifications"
+  },
   "localPosts": "Local Posts",
   "@localPosts": {},
   "lockPost": "Lock Post",
@@ -1059,6 +1067,10 @@
   "@noUserBlocks": {},
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
+  "none": "None",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
   "normal": "Normal",
   "@normal": {
     "description": "Normal name thickness/weight"
@@ -1874,6 +1886,10 @@
   "unhidCommunity": "Unhid Community",
   "@unhidCommunity": {
     "description": "Short decription for moderator action to unhide a community"
+  },
+  "unifiedPushNotifications": "Unified Push Notifications",
+  "@unifiedPushNotifications": {
+    "description": "Describes the notification type for Unified Push Notifications"
   },
   "unlockPost": "Unlock Post",
   "@unlockPost": {

@@ -32,9 +32,9 @@ Future<void> performSharedPreferencesMigration() async {
   }
 
   // Migrate the enableInboxNotifications setting, if found.
-  bool? legacyEnableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name);
+  bool? legacyEnableInboxNotifications = prefs.getBool('setting_enable_inbox_notifications');
   if (legacyEnableInboxNotifications != null) {
-    await prefs.remove(LocalSettings.enableInboxNotifications.name);
+    await prefs.remove('setting_enable_inbox_notifications');
     await prefs.setString(LocalSettings.inboxNotificationType.name, legacyEnableInboxNotifications ? NotificationType.local.name : NotificationType.none.name);
   }
 }
