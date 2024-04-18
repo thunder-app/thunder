@@ -6,8 +6,6 @@ let instances = [
     "burggit.moe",
     "discuss.online",
     "discuss.tchncs.de",
-    "feddit.ch",
-    "feddit.de",
     "feddit.dk",
     "feddit.it",
     "feddit.nl",
@@ -25,6 +23,7 @@ let instances = [
     "lemmy.ca",
     "lemmy.dbzer0.com",
     "lemmy.eco.br",
+    "lemmy.kya.moe",
     "lemmy.ml",
     "lemmy.nz",
     "lemmy.one",
@@ -35,6 +34,7 @@ let instances = [
     "lemmygrad.ml",
     "lemmynsfw.com",
     "lemy.lol",
+    "lululemmy.com",
     "mander.xyz",
     "midwest.social",
     "monero.town",
@@ -47,7 +47,8 @@ let instances = [
     "startrek.website",
     "szmer.info",
     "thelemmy.club",
-    "ttrpg.network"
+    "ttrpg.network",
+    "yiffit.net"
 ];
 
 document.addEventListener('readystatechange', handleNavigation);

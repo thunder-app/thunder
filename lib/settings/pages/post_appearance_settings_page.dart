@@ -17,6 +17,7 @@ import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
+import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/feed.dart';
@@ -499,7 +500,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                     ? IgnorePointer(
                                         child: PostCardViewCompact(
                                           postViewMedia: snapshot.data![index]!,
-                                          communityMode: false,
+                                          feedType: FeedType.general,
                                           isUserLoggedIn: true,
                                           listingType: ListingType.all,
                                           indicateRead: dimReadPosts,
@@ -511,7 +512,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                           showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
                                           showPostAuthor: showPostAuthor,
                                           hideNsfwPreviews: hideNsfwPreviews,
-                                          communityMode: false,
+                                          feedType: FeedType.general,
                                           markPostReadOnMediaView: false,
                                           isUserLoggedIn: true,
                                           listingType: ListingType.all,
@@ -573,6 +574,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           SliverToBoxAdapter(
             child: ToggleOption(
               description: l10n.showPostAuthor,
+              subtitle: l10n.showPostAuthorSubtitle,
               value: showPostAuthor,
               iconEnabled: Icons.person_rounded,
               iconDisabled: Icons.person_off_rounded,
@@ -1159,8 +1161,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         children: [
           !showThumbnailPreviewOnRight
               ? Container(
-                  width: 75,
-                  height: 75,
+                  width: ViewMode.compact.height,
+                  height: ViewMode.compact.height,
                   margin: const EdgeInsets.only(right: 8.0),
                   decoration: BoxDecoration(
                     color: theme.dividerColor,
@@ -1212,8 +1214,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           showThumbnailPreviewOnRight
               ? Container(
-                  width: 75,
-                  height: 75,
+                  width: ViewMode.compact.height,
+                  height: ViewMode.compact.height,
                   margin: const EdgeInsets.only(right: 8.0),
                   decoration: BoxDecoration(
                     color: theme.dividerColor,

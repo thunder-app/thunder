@@ -29,14 +29,11 @@ class BottomSheetListPicker<T> extends StatefulWidget {
 
 class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
   T? currentlySelected;
-  late final Map<ListPickerItem<T>, bool?> checkedItems;
   Widget? heading;
 
   @override
   void initState() {
     super.initState();
-
-    checkedItems = Map.fromEntries(widget.items.map((item) => MapEntry(item, item.isChecked)));
   }
 
   @override
@@ -88,12 +85,10 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                             Navigator.of(context).pop();
                           } else {
                             setState(() {
-                              if (checkedItems[item] == null) {
+                              if (item.isChecked == null) {
                                 currentlySelected = item.payload;
                               } else {
-                                setState(() {
-                                  checkedItems[item] = !checkedItems[item]!;
-                                });
+                                setState(() {});
                               }
                             });
                           }
@@ -140,7 +135,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                             ),
                           ],
                         ),
-                        trailingIcon: switch (checkedItems[item]) {
+                        trailingIcon: switch (item.isChecked?.call()) {
                           true => Icons.check_box_rounded,
                           false => Icons.check_box_outline_blank_rounded,
                           null => null,
@@ -208,7 +203,7 @@ class ListPickerItem<T> {
   final T payload;
 
   /// Whether the item is selected
-  final bool? isChecked;
+  final bool Function()? isChecked;
 
   const ListPickerItem({
     this.icon,

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -28,7 +29,6 @@ import '../../core/auth/bloc/auth_bloc.dart';
 
 enum CommentCardAction {
   save,
-  copyText,
   share,
   shareLink,
   shareLinkLocal,
@@ -37,6 +37,9 @@ enum CommentCardAction {
   downvote,
   reply,
   edit,
+  textActions,
+  copyText,
+  viewSource,
   report,
   userActions,
   visitProfile,
@@ -50,7 +53,7 @@ class ExtendedCommentCardActions {
   const ExtendedCommentCardActions({
     required this.commentCardAction,
     required this.icon,
-    this.trailingIcon,
+    this.getTrailingIcon,
     required this.label,
     this.color,
     this.getForegroundColor,
@@ -63,7 +66,7 @@ class ExtendedCommentCardActions {
 
   final CommentCardAction commentCardAction;
   final IconData icon;
-  final IconData? trailingIcon;
+  final IconData Function(bool viewSource)? getTrailingIcon;
   final String label;
   final Color? color;
   final Color? Function(CommentView commentView)? getForegroundColor;
@@ -82,7 +85,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     icon: Icons.person_rounded,
     label: l10n.user,
     getSubtitleLabel: (context, commentView) => generateUserFullName(context, commentView.creator.name, fetchInstanceNameFromUrl(commentView.creator.actorId)),
-    trailingIcon: Icons.chevron_right_rounded,
+    getTrailingIcon: (_) => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.visitProfile,
@@ -100,7 +103,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     icon: Icons.language_rounded,
     label: l10n.instance(1),
     getSubtitleLabel: (context, postView) => fetchInstanceNameFromUrl(postView.creator.actorId) ?? '',
-    trailingIcon: Icons.chevron_right_rounded,
+    getTrailingIcon: (_) => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.visitInstance,
@@ -114,9 +117,21 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.textActions,
+    icon: Icons.comment_rounded,
+    label: l10n.textActions,
+    getTrailingIcon: (_) => Icons.chevron_right_rounded,
+  ),
+  ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.copyText,
     icon: Icons.copy_rounded,
     label: AppLocalizations.of(GlobalContext.context)!.copyText,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.viewSource,
+    icon: Icons.edit_document,
+    label: l10n.viewCommentSource,
+    getTrailingIcon: (viewSource) => viewSource ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.report,
@@ -190,6 +205,7 @@ enum CommentActionBottomSheetPage {
   user,
   instance,
   share,
+  text,
 }
 
 void showCommentActionBottomModalSheet(
@@ -200,6 +216,8 @@ void showCommentActionBottomModalSheet(
   Function onVoteAction,
   Function onReplyEditAction,
   Function onReportAction,
+  Function onViewSourceToggled,
+  bool viewSource,
 ) {
   final bool isOwnComment = commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
   bool isDeleted = commentView.comment.deleted;
@@ -207,11 +225,11 @@ void showCommentActionBottomModalSheet(
   // Generate the list of default actions for the general page
   final List<ExtendedCommentCardActions> defaultCommentCardActions = commentCardDefaultActionItems
       .where((extendedAction) => [
-            CommentCardAction.copyText,
-            CommentCardAction.delete,
-            CommentCardAction.report,
             CommentCardAction.userActions,
             CommentCardAction.instanceActions,
+            CommentCardAction.textActions,
+            CommentCardAction.report,
+            CommentCardAction.delete,
           ].contains(extendedAction.commentCardAction))
       .toList();
 
@@ -253,6 +271,14 @@ void showCommentActionBottomModalSheet(
           ].contains(extendedAction.commentCardAction))
       .toList();
 
+  // Generate list of text actions
+  final List<ExtendedCommentCardActions> textActions = commentCardDefaultActionItems
+      .where((extendedAction) => [
+            CommentCardAction.copyText,
+            CommentCardAction.viewSource,
+          ].contains(extendedAction.commentCardAction))
+      .toList();
+
   showModalBottomSheet<void>(
     showDragHandle: true,
     isScrollControlled: true,
@@ -265,6 +291,7 @@ void showCommentActionBottomModalSheet(
         CommentActionBottomSheetPage.user: l10n.userActions,
         CommentActionBottomSheetPage.instance: l10n.instanceActions,
         CommentActionBottomSheetPage.share: l10n.share,
+        CommentActionBottomSheetPage.text: l10n.textActions,
       },
       multiCommentCardActions: {CommentActionBottomSheetPage.general: commentCardDefaultMultiActionItems},
       commentCardActions: {
@@ -272,12 +299,15 @@ void showCommentActionBottomModalSheet(
         CommentActionBottomSheetPage.user: userActions,
         CommentActionBottomSheetPage.instance: instanceActions,
         CommentActionBottomSheetPage.share: shareActions,
+        CommentActionBottomSheetPage.text: textActions,
       },
       onSaveAction: onSaveAction,
       onDeleteAction: onDeleteAction,
       onVoteAction: onVoteAction,
       onReplyEditAction: onReplyEditAction,
       onReportAction: onReportAction,
+      onViewSourceToggled: onViewSourceToggled,
+      viewSource: viewSource,
     ),
   );
 }
@@ -304,6 +334,8 @@ class CommentActionPicker extends StatefulWidget {
   final Function onVoteAction;
   final Function onReplyEditAction;
   final Function onReportAction;
+  final Function onViewSourceToggled;
+  final bool viewSource;
 
   const CommentActionPicker({
     super.key,
@@ -317,6 +349,8 @@ class CommentActionPicker extends StatefulWidget {
     required this.onVoteAction,
     required this.onReplyEditAction,
     required this.onReportAction,
+    required this.onViewSourceToggled,
+    required this.viewSource,
   });
 
   @override
@@ -417,7 +451,7 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                       label: widget.commentCardActions[page]![index].getOverrideLabel?.call(context, widget.commentView) ?? widget.commentCardActions[page]![index].label,
                       subtitle: widget.commentCardActions[page]![index].getSubtitleLabel?.call(context, widget.commentView),
                       icon: widget.commentCardActions[page]![index].getOverrideIcon?.call(widget.commentView) ?? widget.commentCardActions[page]![index].icon,
-                      trailingIcon: widget.commentCardActions[page]![index].trailingIcon,
+                      trailingIcon: widget.commentCardActions[page]![index].getTrailingIcon?.call(widget.viewSource),
                       onSelected:
                           (widget.commentCardActions[page]![index].shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(widget.commentCardActions[page]![index].commentCardAction) : null,
                     );
@@ -438,11 +472,6 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
     switch (commentCardAction) {
       case CommentCardAction.save:
         action = () => widget.onSaveAction(widget.commentView.comment.id, !(widget.commentView.saved));
-        break;
-      case CommentCardAction.copyText:
-        action = () => Clipboard.setData(ClipboardData(text: widget.commentView.comment.content)).then((_) {
-              showSnackbar(AppLocalizations.of(widget.outerContext)!.copiedToClipboard);
-            });
         break;
       case CommentCardAction.share:
         pop = false;
@@ -467,6 +496,18 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
         break;
       case CommentCardAction.edit:
         action = () => widget.onReplyEditAction(widget.commentView, true);
+        break;
+      case CommentCardAction.textActions:
+        action = () => setState(() => page = CommentActionBottomSheetPage.text);
+        pop = false;
+        break;
+      case CommentCardAction.copyText:
+        action = () => Clipboard.setData(ClipboardData(text: cleanCommentContent(widget.commentView.comment))).then((_) {
+              showSnackbar(AppLocalizations.of(widget.outerContext)!.copiedToClipboard);
+            });
+        break;
+      case CommentCardAction.viewSource:
+        action = widget.onViewSourceToggled;
         break;
       case CommentCardAction.report:
         action = () => widget.onReportAction(widget.commentView.comment.id);

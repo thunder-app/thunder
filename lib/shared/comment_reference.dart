@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/comment/utils/comment.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
@@ -21,24 +22,26 @@ class CommentReference extends StatefulWidget {
   final CommentView comment;
   final DateTime now;
   final bool isOwnComment;
-  final Function(int, int) onVoteAction;
-  final Function(int, bool) onSaveAction;
-  final Function(int, bool) onDeleteAction;
-  final Function(int) onReportAction;
-  final Function(CommentView, bool) onReplyEditAction;
+  final bool disableActions;
+  final Function(int, int)? onVoteAction;
+  final Function(int, bool)? onSaveAction;
+  final Function(int, bool)? onDeleteAction;
+  final Function(int)? onReportAction;
+  final Function(CommentView, bool)? onReplyEditAction;
   final Widget? child;
 
   const CommentReference({
     super.key,
     required this.comment,
     required this.now,
-    required this.onVoteAction,
-    required this.onSaveAction,
-    required this.onDeleteAction,
+    this.onVoteAction,
+    this.onSaveAction,
+    this.onDeleteAction,
     required this.isOwnComment,
-    required this.onReplyEditAction,
-    required this.onReportAction,
+    this.onReplyEditAction,
+    this.onReportAction,
     this.child,
+    this.disableActions = false,
   });
 
   @override
@@ -77,6 +80,9 @@ class _CommentReferenceState extends State<CommentReference> {
   /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
   bool isOverridingSwipeGestureAction = false;
 
+  /// Whether to display the comment's raw markdown source
+  bool viewSource = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -90,9 +96,9 @@ class _CommentReferenceState extends State<CommentReference> {
           ${widget.comment.counts.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.counts.upvotes))}\n
           ${widget.comment.counts.downvotes == 0 ? '' : AppLocalizations.of(context)!.xDownvotes(formatNumberToK(widget.comment.counts.downvotes))}\n
           ${formatTimeToString(dateTime: (widget.comment.comment.updated ?? widget.comment.comment.published).toIso8601String())}\n
-          ${widget.comment.comment.content}""",
+          ${cleanCommentContent(widget.comment.comment)}""",
       child: InkWell(
-        onTap: () async => await navigateToComment(context, widget.comment),
+        onTap: widget.comment.post.deleted ? null : () async => await navigateToComment(context, widget.comment),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: Column(
@@ -109,6 +115,14 @@ class _CommentReferenceState extends State<CommentReference> {
                         children: [
                           Row(
                             children: [
+                              if (widget.comment.post.deleted) ...[
+                                const Icon(
+                                  Icons.delete_rounded,
+                                  size: 15,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(width: 5),
+                              ],
                               Flexible(
                                 child: ExcludeSemantics(
                                   child: Text(
@@ -140,9 +154,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                   widget.comment.community.name,
                                   fetchInstanceNameFromUrl(widget.comment.community.actorId),
                                   fontScale: state.contentFontSizeScale,
-                                  textStyle: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                                  ),
+                                  transformColor: (color) => color?.withOpacity(0.75),
                                 ),
                               ),
                             ],
@@ -170,8 +182,8 @@ class _CommentReferenceState extends State<CommentReference> {
                         triggerCommentAction(
                           context: context,
                           swipeAction: swipeAction,
-                          onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
-                          onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
+                          onSaveAction: (int commentId, bool saved) => widget.onSaveAction?.call(commentId, saved),
+                          onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
                           voteType: widget.comment.myVote ?? 0,
                           saved: widget.comment.saved,
                           commentView: widget.comment,
@@ -198,7 +210,7 @@ class _CommentReferenceState extends State<CommentReference> {
                       }
                     },
                     child: Dismissible(
-                      direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
+                      direction: (widget.disableActions || isOverridingSwipeGestureAction == true) ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
                       key: ObjectKey(widget.comment.comment.id),
                       resizeDuration: Duration.zero,
                       dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
@@ -288,14 +300,17 @@ class _CommentReferenceState extends State<CommentReference> {
                         comment: widget.comment,
                         isUserLoggedIn: isUserLoggedIn,
                         now: widget.now,
-                        onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                        onVoteAction: (int commentId, int voteType) => widget.onVoteAction(commentId, voteType),
-                        onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
-                        onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, widget.isOwnComment),
-                        onReportAction: (int commentId) => widget.onReportAction(commentId),
+                        onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
+                        onVoteAction: (int commentId, int voteType) => widget.onVoteAction?.call(commentId, voteType),
+                        onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
+                        onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, widget.isOwnComment),
+                        onReportAction: (int commentId) => widget.onReportAction?.call(commentId),
                         isOwnComment: widget.isOwnComment,
                         isHidden: false,
                         excludeSemantics: true,
+                        disableActions: widget.disableActions,
+                        viewSource: viewSource,
+                        onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                       ),
                     ),
                   ),

@@ -94,7 +94,6 @@ class _UserSidebarState extends State<UserSidebar> {
                             child: CommonMarkdownBody(
                               body: personView.person.bio ?? 'Nothing here. This user has not written a bio.',
                               imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
-                              allowHorizontalTranslation: false,
                             ),
                           ),
                           const SidebarSectionHeader(value: "Stats"),
@@ -229,23 +228,26 @@ class UserModeratorList extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          mods.community.title,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.55,
+                          child: Text(
+                            mods.community.title,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                         CommunityFullNameWidget(
                           context,
                           mods.community.name,
                           fetchInstanceNameFromUrl(mods.community.actorId),
-                          textStyle: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.6),
+                          textStyle: const TextStyle(
                             fontSize: 13,
                           ),
+                          transformColor: (color) => color?.withOpacity(0.6),
                         ),
                       ],
                     ),

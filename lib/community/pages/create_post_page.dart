@@ -9,10 +9,9 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-import 'package:markdown_editable_textinput/format_markdown.dart';
-import 'package:markdown_editable_textinput/markdown_buttons.dart';
-import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -402,6 +401,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                             const SizedBox(height: 12.0),
                             TypeAheadField<String>(
+                              controller: _titleTextController,
                               suggestionsCallback: (String pattern) async {
                                 if (pattern.isEmpty) {
                                   String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
@@ -409,7 +409,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     return [linkTitle!];
                                   }
                                 }
-                                return const Iterable.empty();
+                                return [];
                               },
                               itemBuilder: (BuildContext context, String itemData) {
                                 return ListTile(
@@ -417,11 +417,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   subtitle: Text(l10n.suggestedTitle),
                                 );
                               },
-                              onSuggestionSelected: (String suggestion) {
+                              onSelected: (String suggestion) {
                                 _titleTextController.text = suggestion;
                               },
-                              textFieldConfiguration: TextFieldConfiguration(
-                                controller: _titleTextController,
+                              builder: (context, controller, focusNode) => TextField(
+                                controller: controller,
+                                focusNode: focusNode,
                                 decoration: InputDecoration(hintText: l10n.postTitle),
                               ),
                               hideOnEmpty: true,
@@ -535,7 +536,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       Row(
                         children: [
                           Expanded(
-                            child: MarkdownButtons(
+                            child: MarkdownToolbar(
                               controller: _bodyTextController,
                               focusNode: _bodyFocusNode,
                               actions: const [
@@ -549,6 +550,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 MarkdownType.list,
                                 MarkdownType.separator,
                                 MarkdownType.code,
+                                MarkdownType.spoiler,
                                 MarkdownType.username,
                                 MarkdownType.community,
                               ],
@@ -773,35 +775,40 @@ class _CommunitySelectorState extends State<CommunitySelector> {
         child: Padding(
           padding: const EdgeInsets.only(left: 8, top: 4, bottom: 4),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CommunityAvatar(community: widget.communityView?.community, radius: 16),
-              const SizedBox(width: 12),
-              widget.communityId != null
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${widget.communityView?.community.title} '),
-                        CommunityFullNameWidget(
-                          context,
-                          widget.communityView?.community.name,
-                          fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
-                          textStyle: theme.textTheme.bodySmall,
+              Row(
+                children: [
+                  CommunityAvatar(community: widget.communityView?.community, radius: 16),
+                  const SizedBox(width: 12),
+                  widget.communityId != null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${widget.communityView?.community.title} '),
+                            CommunityFullNameWidget(
+                              context,
+                              widget.communityView?.community.name,
+                              fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                            )
+                          ],
                         )
-                      ],
-                    )
-                  : SizedBox(
-                      height: 36,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          l10n.selectCommunity,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: theme.colorScheme.error,
+                      : SizedBox(
+                          height: 36,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              l10n.selectCommunity,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: theme.colorScheme.error,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                ],
+              ),
+              const Icon(Icons.chevron_right_rounded),
             ],
           ),
         ),

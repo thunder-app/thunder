@@ -17,11 +17,25 @@ import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/notification_type.dart';
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/database/database.dart';
+import 'package:thunder/core/database/migrations.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
 import 'package:thunder/core/enums/theme_type.dart';
-import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
@@ -40,6 +54,27 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 
+late AppDatabase database;
+
+bool _isDatabaseInitialized = false;
+
+Future<void> initializeDatabase() async {
+  if (_isDatabaseInitialized) return;
+
+  debugPrint('Initializing drift db.');
+
+  File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
+
+  database = AppDatabase();
+
+  if (!await dbFile.exists()) {
+    debugPrint('Migrating from SQLite db.');
+    await migrateToSQLite(database);
+  }
+
+  _isDatabaseInitialized = true;
+}
+
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -47,8 +82,10 @@ void main() async {
   // Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  // Load up sqlite database
-  await DB.instance.database;
+  // Load up preferences
+  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+
+  await initializeDatabase();
 
   // Clear image cache
   await clearExtendedImageCache();

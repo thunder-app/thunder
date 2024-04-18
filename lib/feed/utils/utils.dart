@@ -87,7 +87,7 @@ Future<void> navigateToFeedPage(
           FeedFetchedEvent(
             feedType: feedType,
             postListingType: postListingType,
-            sortType: sortType ?? thunderBloc.state.defaultSortType,
+            sortType: sortType ?? thunderBloc.state.sortTypeForInstance,
             communityId: communityId,
             communityName: communityName,
             userId: userId,
@@ -118,7 +118,7 @@ Future<void> navigateToFeedPage(
       child: Material(
         child: FeedPage(
           feedType: feedType,
-          sortType: sortType ?? thunderBloc.state.defaultSortType,
+          sortType: sortType ?? thunderBloc.state.sortTypeForInstance,
           communityName: communityName,
           communityId: communityId,
           userId: userId,

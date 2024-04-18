@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:expandable/expandable.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +17,7 @@ import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -557,7 +559,7 @@ class _FeedViewState extends State<FeedView> {
     if (!canPop && (desiredListingType != currentListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
-          sortType: thunderBloc.state.defaultSortType,
+          sortType: thunderBloc.state.sortTypeForInstance,
           reset: true,
           postListingType: desiredListingType,
           feedType: FeedType.general,
@@ -605,72 +607,125 @@ class FeedHeader extends StatelessWidget {
   }
 }
 
-class TagLine extends StatelessWidget {
+class TagLine extends StatefulWidget {
   final String tagline;
 
   const TagLine({super.key, required this.tagline});
 
   @override
+  State<TagLine> createState() => _TagLineState();
+}
+
+class _TagLineState extends State<TagLine> {
+  final GlobalKey taglineBodyKey = GlobalKey();
+  bool taglineIsLong = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        taglineIsLong = (taglineBodyKey.currentContext?.size?.height ?? 0) > 40;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final bool taglineIsLong = tagline.length > 200;
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    final Color backgroundColor = darkTheme ? theme.dividerColor.darken(5) : theme.dividerColor.lighten(20);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Container(
         decoration: BoxDecoration(
-          color: theme.splashColor,
+          color: backgroundColor,
           borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: !taglineIsLong
-              // TODO: Eventually pass in textScalingFactor
-              ? CommonMarkdownBody(body: tagline)
-              : ExpandableNotifier(
-                  child: Column(
-                    children: [
-                      Expandable(
-                        collapsed: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: AnimatedCrossFade(
+            crossFadeState: taglineIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: 250),
+            // TODO: Eventually pass in textScalingFactor
+            firstChild: CommonMarkdownBody(key: taglineBodyKey, body: widget.tagline),
+            secondChild: ExpandableNotifier(
+              child: Column(
+                children: [
+                  Expandable(
+                    collapsed: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Stack(
                           children: [
-                            // TODO: Eventually pass in textScalingFactor
-                            CommonMarkdownBody(
-                              body: '${tagline.substring(0, 150)}...',
-                            ),
-                            ExpandableButton(
-                              theme: const ExpandableThemeData(
-                                useInkWell: false,
+                            LimitedBox(
+                              maxHeight: 60,
+                              // Note: This Wrap is critical to prevent the LimitedBox from having a render overflow
+                              child: Wrap(
+                                children: [
+                                  // TODO: Eventually pass in textScalingFactor
+                                  CommonMarkdownBody(body: widget.tagline),
+                                ],
                               ),
-                              child: Text(
-                                AppLocalizations.of(context)!.showMore,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              height: 40,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    stops: const [0.0, 0.5, 1.0],
+                                    colors: [
+                                      backgroundColor.withOpacity(0.0),
+                                      backgroundColor,
+                                      backgroundColor,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              child: ExpandableButton(
+                                theme: const ExpandableThemeData(useInkWell: false),
+                                child: Text(
+                                  AppLocalizations.of(context)!.showMore,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        expanded: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            CommonMarkdownBody(body: tagline),
-                            ExpandableButton(
-                              theme: const ExpandableThemeData(useInkWell: false),
-                              child: Text(
-                                AppLocalizations.of(context)!.showLess,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
-                                ),
-                              ),
+                      ],
+                    ),
+                    expanded: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        CommonMarkdownBody(body: widget.tagline),
+                        ExpandableButton(
+                          theme: const ExpandableThemeData(useInkWell: false),
+                          child: Text(
+                            AppLocalizations.of(context)!.showLess,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

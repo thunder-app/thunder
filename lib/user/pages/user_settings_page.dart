@@ -12,6 +12,7 @@ import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/settings/widgets/discussion_language_selector.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -44,7 +45,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    originalUser ??= context.read<AuthBloc>().state.account;
+    AuthState state = context.read<AuthBloc>().state;
+    originalUser ??= state.account;
 
     return PopScope(
       onPopInvoked: (_) {
@@ -170,6 +172,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         iconDisabledSize: 18.0,
                         iconSpacing: 14.0,
                         onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                      ),
+                      DiscussionLanguageSelector(
+                        initialDiscussionLanguages: DiscussionLanguageSelector.getDiscussionLanguagesFromSiteResponse(state.getSiteResponse),
+                        settingToHighlight: widget.settingToHighlight,
                       ),
                       if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
                         Padding(

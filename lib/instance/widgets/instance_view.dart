@@ -68,7 +68,6 @@ class InstanceView extends StatelessWidget {
         const Divider(),
         CommonMarkdownBody(
           body: site.sidebar ?? '',
-          allowHorizontalTranslation: false,
         ),
       ],
     );

@@ -13,7 +13,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
@@ -35,6 +34,7 @@ import 'package:thunder/utils/language/language.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/notifications/notifications.dart';
 import 'package:unifiedpush/unifiedpush.dart';
+import 'package:version/version.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -106,26 +106,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, the post FAB and comment navigation buttons will be combined
   bool combineNavAndFab = true;
 
-  /// Defines the separator used to denote full usernames
-  FullNameSeparator userSeparator = FullNameSeparator.at;
-
-  /// Defines the style used to denote full usernames
-  bool userFullNameWeightUserName = false;
-  bool userFullNameWeightInstanceName = false;
-  bool userFullNameColorizeUserName = false;
-  bool userFullNameColorizeInstanceName = false;
-
-  /// Defines the separator used to denote full commuity names
-  FullNameSeparator communitySeparator = FullNameSeparator.dot;
-
-  /// Defines the style used to denote full community names
-  bool communityFullNameWeightCommunityName = false;
-  bool communityFullNameWeightInstanceName = false;
-  bool communityFullNameColorizeCommunityName = false;
-  bool communityFullNameColorizeInstanceName = false;
-
   /// Defines the image caching mode
   ImageCachingMode imageCachingMode = ImageCachingMode.relaxed;
+
+  /// Whether or not to show navigation labels
+  bool showNavigationLabels = true;
 
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
@@ -216,49 +201,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => inboxNotificationType = value);
         break;
 
-      case LocalSettings.userFormat:
-        await prefs.setString(LocalSettings.userFormat.name, value);
-        setState(() => userSeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.at));
-        break;
-      case LocalSettings.userFullNameWeightUserName:
-        await prefs.setBool(LocalSettings.userFullNameWeightUserName.name, value);
-        setState(() => userFullNameWeightUserName = value);
-        break;
-      case LocalSettings.userFullNameWeightInstanceName:
-        await prefs.setBool(LocalSettings.userFullNameWeightInstanceName.name, value);
-        setState(() => userFullNameWeightInstanceName = value);
-        break;
-      case LocalSettings.userFullNameColorizeUserName:
-        await prefs.setBool(LocalSettings.userFullNameColorizeUserName.name, value);
-        setState(() => userFullNameColorizeUserName = value);
-        break;
-      case LocalSettings.userFullNameColorizeInstanceName:
-        await prefs.setBool(LocalSettings.userFullNameColorizeInstanceName.name, value);
-        setState(() => userFullNameColorizeInstanceName = value);
-        break;
-      case LocalSettings.communityFormat:
-        await prefs.setString(LocalSettings.communityFormat.name, value);
-        setState(() => communitySeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.dot));
-        break;
-      case LocalSettings.communityFullNameWeightCommunityName:
-        await prefs.setBool(LocalSettings.communityFullNameWeightCommunityName.name, value);
-        setState(() => communityFullNameWeightCommunityName = value);
-        break;
-      case LocalSettings.communityFullNameWeightInstanceName:
-        await prefs.setBool(LocalSettings.communityFullNameWeightInstanceName.name, value);
-        setState(() => communityFullNameWeightInstanceName = value);
-        break;
-      case LocalSettings.communityFullNameColorizeCommunityName:
-        await prefs.setBool(LocalSettings.communityFullNameColorizeCommunityName.name, value);
-        setState(() => communityFullNameColorizeCommunityName = value);
-        break;
-      case LocalSettings.communityFullNameColorizeInstanceName:
-        await prefs.setBool(LocalSettings.communityFullNameColorizeInstanceName.name, value);
-        setState(() => communityFullNameColorizeInstanceName = value);
-        break;
       case LocalSettings.imageCachingMode:
         await prefs.setString(LocalSettings.imageCachingMode.name, value);
         setState(() => imageCachingMode = ImageCachingMode.values.byName(value ?? ImageCachingMode.relaxed));
+        break;
+      case LocalSettings.showNavigationLabels:
+        await prefs.setBool(LocalSettings.showNavigationLabels.name, value);
+        setState(() => showNavigationLabels = value);
         break;
     }
 
@@ -299,17 +248,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
-      userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-      userFullNameWeightUserName = prefs.getBool(LocalSettings.userFullNameWeightUserName.name) ?? false;
-      userFullNameWeightInstanceName = prefs.getBool(LocalSettings.userFullNameWeightInstanceName.name) ?? false;
-      userFullNameColorizeUserName = prefs.getBool(LocalSettings.userFullNameColorizeUserName.name) ?? false;
-      userFullNameColorizeInstanceName = prefs.getBool(LocalSettings.userFullNameColorizeInstanceName.name) ?? false;
-      communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
-      communityFullNameWeightCommunityName = prefs.getBool(LocalSettings.communityFullNameWeightCommunityName.name) ?? false;
-      communityFullNameWeightInstanceName = prefs.getBool(LocalSettings.communityFullNameWeightInstanceName.name) ?? false;
-      communityFullNameColorizeCommunityName = prefs.getBool(LocalSettings.communityFullNameColorizeCommunityName.name) ?? false;
-      communityFullNameColorizeInstanceName = prefs.getBool(LocalSettings.communityFullNameColorizeInstanceName.name) ?? false;
       imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
+      showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
 
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
@@ -384,12 +324,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ListOption(
               description: l10n.defaultFeedSortType,
               value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
-              options: [...SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never), ...topSortTypeItems],
+              options: [
+                ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                ...topSortTypeItems
+              ],
               icon: Icons.sort_rounded,
               onChanged: (_) async {},
               isBottomModalScrollControlled: true,
               customListPicker: SortPicker(
-                includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
+                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                 title: l10n.defaultFeedSortType,
                 onSelect: (value) async {
                   setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
@@ -413,11 +356,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ListOption(
               description: l10n.defaultCommentSortType,
               value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
-              options: CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never),
+              options: CommentSortPicker.getCommentSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
               icon: Icons.comment_bank_rounded,
               onChanged: (_) async {},
               customListPicker: CommentSortPicker(
-                includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
+                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                 title: l10n.commentSortType,
                 onSelect: (value) async {
                   setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
@@ -426,16 +369,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
               valueDisplay: Row(
                 children: [
-                  Icon(
-                      CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
-                          .firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType)
-                          .icon,
-                      size: 13),
+                  Icon(CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).icon, size: 13),
                   const SizedBox(width: 4),
                   Text(
-                    CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
-                        .firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType)
-                        .label,
+                    CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).label,
                     style: theme.textTheme.titleSmall,
                   ),
                 ],
@@ -655,278 +592,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               child: Text(l10n.advanced, style: theme.textTheme.titleMedium),
             ),
           ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.userFormat,
-              value: ListPickerItem(
-                label: generateSampleUserFullName(userSeparator),
-                labelWidget: generateSampleUserFullNameWidget(
-                  userSeparator,
-                  weightUserName: userFullNameWeightUserName,
-                  weightInstanceName: userFullNameWeightInstanceName,
-                  colorizeUserName: userFullNameColorizeUserName,
-                  colorizeInstanceName: userFullNameColorizeInstanceName,
-                  textStyle: theme.textTheme.bodyMedium,
-                  colorScheme: theme.colorScheme,
-                ),
-                icon: Icons.person_rounded,
-                payload: userSeparator,
-                capitalizeLabel: false,
-              ),
-              options: [
-                ListPickerItem(
-                  icon: const IconData(0x2022),
-                  label: generateSampleUserFullName(FullNameSeparator.dot),
-                  labelWidget: generateSampleUserFullNameWidget(
-                    FullNameSeparator.dot,
-                    weightUserName: userFullNameWeightUserName,
-                    weightInstanceName: userFullNameWeightInstanceName,
-                    colorizeUserName: userFullNameColorizeUserName,
-                    colorizeInstanceName: userFullNameColorizeInstanceName,
-                    textStyle: theme.textTheme.bodyMedium,
-                    colorScheme: theme.colorScheme,
-                  ),
-                  payload: FullNameSeparator.dot,
-                  capitalizeLabel: false,
-                ),
-                ListPickerItem(
-                  icon: Icons.alternate_email_rounded,
-                  label: generateSampleUserFullName(FullNameSeparator.at),
-                  labelWidget: generateSampleUserFullNameWidget(
-                    FullNameSeparator.at,
-                    weightUserName: userFullNameWeightUserName,
-                    weightInstanceName: userFullNameWeightInstanceName,
-                    colorizeUserName: userFullNameColorizeUserName,
-                    colorizeInstanceName: userFullNameColorizeInstanceName,
-                    textStyle: theme.textTheme.bodyMedium,
-                    colorScheme: theme.colorScheme,
-                  ),
-                  payload: FullNameSeparator.at,
-                  capitalizeLabel: false,
-                ),
-                ListPickerItem(
-                  icon: Icons.alternate_email_rounded,
-                  label: generateSampleUserFullName(FullNameSeparator.lemmy),
-                  labelWidget: generateSampleUserFullNameWidget(
-                    FullNameSeparator.lemmy,
-                    weightUserName: userFullNameWeightUserName,
-                    weightInstanceName: userFullNameWeightInstanceName,
-                    colorizeUserName: userFullNameColorizeUserName,
-                    colorizeInstanceName: userFullNameColorizeInstanceName,
-                    textStyle: theme.textTheme.bodyMedium,
-                    colorScheme: theme.colorScheme,
-                  ),
-                  payload: FullNameSeparator.lemmy,
-                  capitalizeLabel: false,
-                ),
-              ],
-              icon: Icons.person_rounded,
-              onChanged: (value) => setPreferences(LocalSettings.userFormat, value.payload.name),
-              highlightKey: settingToHighlight == LocalSettings.userFormat ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              closeOnSelect: false,
-              description: l10n.userStyle,
-              value: const ListPickerItem(label: '', payload: null),
-              bottomSheetHeading: generateSampleUserFullNameWidget(
-                userSeparator,
-                weightUserName: userFullNameWeightUserName,
-                weightInstanceName: userFullNameWeightInstanceName,
-                colorizeUserName: userFullNameColorizeUserName,
-                colorizeInstanceName: userFullNameColorizeInstanceName,
-                textStyle: theme.textTheme.bodyMedium,
-                colorScheme: theme.colorScheme,
-              ),
-              onUpdateHeading: () => generateSampleUserFullNameWidget(
-                userSeparator,
-                weightUserName: userFullNameWeightUserName,
-                weightInstanceName: userFullNameWeightInstanceName,
-                colorizeUserName: userFullNameColorizeUserName,
-                colorizeInstanceName: userFullNameColorizeInstanceName,
-                textStyle: theme.textTheme.bodyMedium,
-                colorScheme: theme.colorScheme,
-              ),
-              options: [
-                ListPickerItem(
-                  icon: Icons.format_bold_rounded,
-                  label: l10n.boldUserName,
-                  payload: LocalSettings.userFullNameWeightUserName,
-                  isChecked: userFullNameWeightUserName,
-                ),
-                ListPickerItem(
-                  icon: Icons.format_bold_rounded,
-                  label: l10n.boldInstanceName,
-                  payload: LocalSettings.userFullNameWeightInstanceName,
-                  isChecked: userFullNameWeightInstanceName,
-                ),
-                ListPickerItem(
-                  icon: Icons.color_lens_rounded,
-                  label: l10n.colorizeUserName,
-                  payload: LocalSettings.userFullNameColorizeUserName,
-                  isChecked: userFullNameColorizeUserName,
-                ),
-                ListPickerItem(
-                  icon: Icons.color_lens_rounded,
-                  label: l10n.colorizeInstanceName,
-                  payload: LocalSettings.userFullNameColorizeInstanceName,
-                  isChecked: userFullNameColorizeInstanceName,
-                ),
-              ],
-              icon: Icons.person_rounded,
-              onChanged: (value) async {
-                bool? newValue = switch (value.payload) {
-                  LocalSettings.userFullNameWeightUserName => !userFullNameWeightUserName,
-                  LocalSettings.userFullNameWeightInstanceName => !userFullNameWeightInstanceName,
-                  LocalSettings.userFullNameColorizeUserName => !userFullNameColorizeUserName,
-                  LocalSettings.userFullNameColorizeInstanceName => !userFullNameColorizeInstanceName,
-                  _ => null,
-                };
-
-                if (newValue != null) {
-                  await setPreferences(value.payload, newValue);
-                }
-              },
-              highlightKey: settingToHighlight == LocalSettings.userStyle ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.communityFormat,
-              value: ListPickerItem(
-                label: generateSampleCommunityFullName(communitySeparator),
-                labelWidget: generateSampleCommunityFullNameWidget(
-                  communitySeparator,
-                  weightCommunityName: communityFullNameWeightCommunityName,
-                  weightInstanceName: communityFullNameWeightInstanceName,
-                  colorizeCommunityName: communityFullNameColorizeCommunityName,
-                  colorizeInstanceName: communityFullNameColorizeInstanceName,
-                  textStyle: theme.textTheme.bodyMedium,
-                  colorScheme: theme.colorScheme,
-                ),
-                icon: Icons.people_rounded,
-                payload: communitySeparator,
-                capitalizeLabel: false,
-              ),
-              options: [
-                ListPickerItem(
-                  icon: const IconData(0x2022),
-                  label: generateSampleCommunityFullName(FullNameSeparator.dot),
-                  labelWidget: generateSampleCommunityFullNameWidget(
-                    FullNameSeparator.dot,
-                    weightCommunityName: communityFullNameWeightCommunityName,
-                    weightInstanceName: communityFullNameWeightInstanceName,
-                    colorizeCommunityName: communityFullNameColorizeCommunityName,
-                    colorizeInstanceName: communityFullNameColorizeInstanceName,
-                    textStyle: theme.textTheme.bodyMedium,
-                    colorScheme: theme.colorScheme,
-                  ),
-                  payload: FullNameSeparator.dot,
-                  capitalizeLabel: false,
-                ),
-                ListPickerItem(
-                  icon: Icons.alternate_email_rounded,
-                  label: generateSampleCommunityFullName(FullNameSeparator.at),
-                  labelWidget: generateSampleCommunityFullNameWidget(
-                    FullNameSeparator.at,
-                    weightCommunityName: communityFullNameWeightCommunityName,
-                    weightInstanceName: communityFullNameWeightInstanceName,
-                    colorizeCommunityName: communityFullNameColorizeCommunityName,
-                    colorizeInstanceName: communityFullNameColorizeInstanceName,
-                    textStyle: theme.textTheme.bodyMedium,
-                    colorScheme: theme.colorScheme,
-                  ),
-                  payload: FullNameSeparator.at,
-                  capitalizeLabel: false,
-                ),
-                ListPickerItem(
-                  icon: Icons.alternate_email_rounded,
-                  label: generateSampleCommunityFullName(FullNameSeparator.lemmy),
-                  labelWidget: generateSampleCommunityFullNameWidget(
-                    FullNameSeparator.lemmy,
-                    weightCommunityName: communityFullNameWeightCommunityName,
-                    weightInstanceName: communityFullNameWeightInstanceName,
-                    colorizeCommunityName: communityFullNameColorizeCommunityName,
-                    colorizeInstanceName: communityFullNameColorizeInstanceName,
-                    textStyle: theme.textTheme.bodyMedium,
-                    colorScheme: theme.colorScheme,
-                  ),
-                  payload: FullNameSeparator.lemmy,
-                  capitalizeLabel: false,
-                ),
-              ],
-              icon: Icons.people_rounded,
-              onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),
-              highlightKey: settingToHighlight == LocalSettings.communityFormat ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              closeOnSelect: false,
-              description: l10n.communityStyle,
-              value: const ListPickerItem(label: '', payload: null),
-              bottomSheetHeading: generateSampleCommunityFullNameWidget(
-                communitySeparator,
-                weightCommunityName: communityFullNameWeightCommunityName,
-                weightInstanceName: communityFullNameWeightInstanceName,
-                colorizeCommunityName: communityFullNameColorizeCommunityName,
-                colorizeInstanceName: communityFullNameColorizeInstanceName,
-                textStyle: theme.textTheme.bodyMedium,
-                colorScheme: theme.colorScheme,
-              ),
-              onUpdateHeading: () => generateSampleCommunityFullNameWidget(
-                communitySeparator,
-                weightCommunityName: communityFullNameWeightCommunityName,
-                weightInstanceName: communityFullNameWeightInstanceName,
-                colorizeCommunityName: communityFullNameColorizeCommunityName,
-                colorizeInstanceName: communityFullNameColorizeInstanceName,
-                textStyle: theme.textTheme.bodyMedium,
-                colorScheme: theme.colorScheme,
-              ),
-              options: [
-                ListPickerItem(
-                  icon: Icons.format_bold_rounded,
-                  label: l10n.boldCommunityName,
-                  payload: LocalSettings.communityFullNameWeightCommunityName,
-                  isChecked: communityFullNameWeightCommunityName,
-                ),
-                ListPickerItem(
-                  icon: Icons.format_bold_rounded,
-                  label: l10n.boldInstanceName,
-                  payload: LocalSettings.communityFullNameWeightInstanceName,
-                  isChecked: communityFullNameWeightInstanceName,
-                ),
-                ListPickerItem(
-                  icon: Icons.color_lens_rounded,
-                  label: l10n.colorizeCommunityName,
-                  payload: LocalSettings.communityFullNameColorizeCommunityName,
-                  isChecked: communityFullNameColorizeCommunityName,
-                ),
-                ListPickerItem(
-                  icon: Icons.color_lens_rounded,
-                  label: l10n.colorizeInstanceName,
-                  payload: LocalSettings.communityFullNameColorizeInstanceName,
-                  isChecked: communityFullNameColorizeInstanceName,
-                ),
-              ],
-              icon: Icons.people_rounded,
-              onChanged: (value) async {
-                bool? newValue = switch (value.payload) {
-                  LocalSettings.communityFullNameWeightCommunityName => !communityFullNameWeightCommunityName,
-                  LocalSettings.communityFullNameWeightInstanceName => !communityFullNameWeightInstanceName,
-                  LocalSettings.communityFullNameColorizeCommunityName => !communityFullNameColorizeCommunityName,
-                  LocalSettings.communityFullNameColorizeInstanceName => !communityFullNameColorizeInstanceName,
-                  _ => null,
-                };
-
-                if (newValue != null) {
-                  await setPreferences(value.payload, newValue);
-                }
-              },
-              highlightKey: settingToHighlight == LocalSettings.communityStyle ? settingToHighlightKey : null,
-            ),
-          ),
           if (!kIsWeb && Platform.isAndroid)
             SliverToBoxAdapter(
               child: ListOption(
@@ -951,6 +616,17 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 highlightKey: settingToHighlight == LocalSettings.imageCachingMode ? settingToHighlightKey : null,
               ),
             ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showNavigationLabels,
+              subtitle: l10n.showNavigationLabelsDescription,
+              value: showNavigationLabels,
+              iconEnabled: Icons.short_text_rounded,
+              iconDisabled: Icons.short_text_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.showNavigationLabels, value),
+              highlightKey: settingToHighlight == LocalSettings.showNavigationLabels ? settingToHighlightKey : null,
+            ),
+          ),
 
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(

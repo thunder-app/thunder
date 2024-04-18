@@ -784,8 +784,13 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
-          action: _doSearch,
-          actionText: l10n.retry,
+          actions: [
+            (
+              text: l10n.retry,
+              action: _doSearch,
+              loading: false,
+            ),
+          ],
         );
     }
   }
@@ -816,6 +821,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           _doSearch();
         },
         previouslySelected: sortType,
+        minimumVersion: LemmyClient.instance.version,
       ),
     );
   }

@@ -118,6 +118,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         showReadPosts: event.showReadPosts,
         showScores: event.showScores,
         showBotAccounts: event.showBotAccounts,
+        discussionLanguages: event.discussionLanguages,
       ));
 
       return emit(state.copyWith(status: UserSettingsStatus.success));

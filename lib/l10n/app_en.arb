@@ -25,6 +25,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
+  "addDiscussionLanguage": "Add Language",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
   "addKeywordFilter": "Add Keyword",
   "@addKeywordFilter": {
     "description": "Hint for text field to add keyword"
@@ -113,6 +117,10 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "bold": "Bold",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
   "boldCommunityName": "Bold Community Name",
   "@boldCommunityName": {
     "description": "Setting for bolding the community name"
@@ -124,6 +132,10 @@
   "boldUserName": "Bold User Name",
   "@boldUserName": {
     "description": "Setting for bolding the username"
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
   },
   "browserMode": "Link handling",
   "@browserMode": {
@@ -291,6 +303,14 @@
   "@communityFormat": {
     "description": "Setting for community full name format"
   },
+  "communityNameColor": "Community Name Color",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "communityNameThickness": "Community Name Thickness",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
   "communityStyle": "Community Style",
   "@communityStyle": {
     "description": "Heading for community style setting"
@@ -361,6 +381,10 @@
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Your comment report could not be submitted at this time. Please try again later",
   "@couldntCreateReport": {},
+  "couldntFindPost": "Unable to load the requested post. It may have been deleted or removed.",
+  "@couldntFindPost": {
+    "description": "Error message for when we can't load a post."
+  },
   "countSubscribers": "{count} subscribers",
   "@countSubscribers": {},
   "countUsers": "{count} users",
@@ -411,6 +435,10 @@
   "@debugDescription": {
     "description": "Explanation for debug settings page"
   },
+  "defaultColor": "Default",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
+  },
   "defaultCommentSortType": "Default Comment Sort Type",
   "@defaultCommentSortType": {
     "description": "Setting for default comment sort type"
@@ -449,6 +477,16 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
+  "deletedByCreator": "deleted by creator",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "deletedByModerator": "deleted by moderator",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
+  "deselectUndeterminedWarning": "If you deselect Undetermined, you will not see most content.",
+  "@deselectUndeterminedWarning": {},
   "detailedReason": "Reason: {reason}",
   "@detailedReason": {
     "description": "The reason for the moderation action"
@@ -461,6 +499,12 @@
   "@disable": {
     "description": "Action for disabling something"
   },
+  "discussionLanguages": "Discussion Languages",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "discussionLanguagesTooltip": "Content is filtered to the selected languages.",
+  "@discussionLanguagesTooltip": {},
   "dismissRead": "Dismiss Read",
   "@dismissRead": {},
   "displayUserScore": "Display User Scores (Karma).",
@@ -478,7 +522,13 @@
   "downloadingMedia": "Downloading media to share…",
   "@downloadingMedia": {},
   "downvote": "Downvote",
-  "@downvote": {},
+  "@downvote": {
+    "description": "Action for downvoting a post/comment"
+  },
+  "downvoted": "Downvoted",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
   "downvotesDisabled": "Downvotes are turned off on this instance.",
   "@downvotesDisabled": {},
   "edit": "Edit",
@@ -729,6 +779,14 @@
   },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
+  "instanceNameColor": "Instance Name Color",
+  "@instanceNameColor": {
+    "description": "Setting for instance name color"
+  },
+  "instanceNameThickness": "Instance Name Thickness",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
   "keywordFilterDescription": "Filters posts containing any keywords in the title or body",
@@ -737,12 +795,14 @@
   },
   "keywordFilters": "Keyword Filters",
   "@keywordFilters": {
-    "description": "Subcategory in Setting -> General"
+    "description": "Subcategory in Settings -> Filters"
   },
   "language": "Language",
   "@language": {
     "description": "Label when creating or editing a post."
   },
+  "languageFilters": "Looking for language filters?",
+  "@languageFilters": {},
   "languageNotAllowed": "The community you are posting to does not allow posts in the language that you have selected. Try another language.",
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
@@ -841,6 +901,10 @@
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
   },
+  "me": "Me",
+  "@me": {
+    "description": "Label for the current user."
+  },
   "medium": "Medium",
   "@medium": {
     "description": "Description for medium font scale"
@@ -913,10 +977,16 @@
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
+  "mustBeLoggedIn": "You need to be logged in",
+  "@mustBeLoggedIn": {},
   "mustBeLoggedInComment": "You need to be logged in to comment",
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
   "@mustBeLoggedInPost": {},
+  "names": "Names",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
   "navbarDoubleTapGestures": "Navbar Double Tap Gestures",
   "@navbarDoubleTapGestures": {
     "description": "Setting for navbar double tap gestures"
@@ -955,6 +1025,10 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
+  "noDiscussionLanguages": "No content is hidden based on language.",
+  "@noDiscussionLanguages": {
+    "description": "Message for no discussion languages added"
+  },
   "noFavoritedCommunities": "No favorited communities",
   "@noFavoritedCommunities": {
     "description": "Message for no favorited communities on the drawer"
@@ -967,7 +1041,7 @@
   },
   "noKeywordFilters": "No keyword filters added",
   "@noKeywordFilters": {
-    "description": "Message for no keywords added"
+    "description": "Message for no keyword filters added"
   },
   "noLanguage": "No language",
   "@noLanguage": {
@@ -985,6 +1059,10 @@
   "@noUserBlocks": {},
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
   "notValidUrl": "Not a valid URL",
@@ -1044,6 +1122,10 @@
   "openSettings": "Open Settings",
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
+  },
+  "originalPoster": "Original Poster",
+  "@originalPoster": {
+    "description": "Label for the original poster."
   },
   "overview": "Overview",
   "@overview": {},
@@ -1205,11 +1287,11 @@
   "@removeInstance": {},
   "removeKeyword": "Remove \"{keyword}\"?",
   "@removeKeyword": {
-    "description": "Description of removing a keyword"
+    "description": "Description of removing a keyword filter"
   },
   "removeKeywordFilter": "Remove Keyword",
   "@removeKeywordFilter": {
-    "description": "Title for dialig to remove keyword"
+    "description": "Title for dialog to remove keyword filter"
   },
   "removePost": "Remove Post",
   "@removePost": {
@@ -1245,7 +1327,7 @@
   "@replyToPost": {},
   "replyingTo": "Replying to {author}",
   "@replyingTo": {},
-  "report": "Report",
+  "report": "{count, plural, zero {Report} one {Report} other {Reports} } ",
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
@@ -1465,15 +1547,27 @@
   "@showInAppUpdateNotifications": {
     "description": "Toggle to get notified of new GitHub releases."
   },
-  "showLess": "Show fewer",
+  "showLess": "Show less",
   "@showLess": {},
   "showMore": "Show more",
   "@showMore": {},
+  "showNavigationLabels": "Show Navigation Labels",
+  "@showNavigationLabels": {
+    "description": "Setting for showing navigation labels"
+  },
+  "showNavigationLabelsDescription": "Whether to display labels beneath the bottom navigation buttons",
+  "@showNavigationLabelsDescription": {
+    "description": "Description for setting for showing navigation labels"
+  },
   "showPassword": "Show Password",
   "@showPassword": {},
   "showPostAuthor": "Show Post Author",
   "@showPostAuthor": {
     "description": "Toggle to show post author."
+  },
+  "showPostAuthorSubtitle": "Post author is always shown in community feeds",
+  "@showPostAuthorSubtitle": {
+    "description": "Subtitle for the Show Post Author setting"
   },
   "showPostCommunityIcons": "Show Community Icons",
   "@showPostCommunityIcons": {
@@ -1557,6 +1651,10 @@
   "@standard": {
     "description": "Describes a standard visual density"
   },
+  "status": "Status",
+  "@status": {
+    "description": "Status of the action"
+  },
   "submit": "Submit",
   "@submit": {},
   "subscribe": "Subscribe",
@@ -1605,6 +1703,10 @@
   },
   "text": "Text",
   "@text": {},
+  "textActions": "Text Actions",
+  "@textActions": {
+    "description": "Option for text actions"
+  },
   "theme": "Theme",
   "@theme": {
     "description": "Setting for theme"
@@ -1612,6 +1714,18 @@
   "themeAccentColor": "Accent Colors",
   "@themeAccentColor": {
     "description": "Setting for theme accent color"
+  },
+  "themePrimary": "Theme Primary",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "themeSecondary": "Theme Secondary",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "themeTertiary": "Theme Tertiary",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
   },
   "theming": "Theming",
   "@theming": {
@@ -1727,6 +1841,10 @@
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
   },
+  "unableToResolveReport": "Unable to resolve report",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
+  },
   "unableToRetrieveChangelog": "Unable to retrieve changelog for version {version}.",
   "@unableToRetrieveChangelog": {
     "description": "Error message for when we are unable to retrieve the changelog."
@@ -1773,6 +1891,10 @@
   "@unreachable": {
     "description": "Describes an instance that is currently unreachable"
   },
+  "unresolved": "Unresolved",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
+  },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
   "unsubscribeFromCommunity": "Unsubscribe from Community",
@@ -1788,7 +1910,13 @@
   "uploadImage": "Upload image",
   "@uploadImage": {},
   "upvote": "Upvote",
-  "@upvote": {},
+  "@upvote": {
+    "description": "Action for upvoting a post/comment"
+  },
+  "upvoted": "Upvoted",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
   "uriNotSupported": "This type of link is not supported at the moment.",
   "@uriNotSupported": {
     "description": "Unsupported link type at the present time."
@@ -1829,6 +1957,14 @@
   "@userFormat": {
     "description": "Setting for user full name format"
   },
+  "userNameColor": "User Name Color",
+  "@userNameColor": {
+    "description": "Setting for username color"
+  },
+  "userNameThickness": "User Name Thickness",
+  "@userNameThickness": {
+    "description": "Setting for user name thickness"
+  },
   "userNotLoggedIn": "User not logged in",
   "@userNotLoggedIn": {},
   "userProfiles": "User Profiles",
@@ -1861,6 +1997,14 @@
   },
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
+  "viewCommentSource": "View comment source",
+  "@viewCommentSource": {
+    "description": "Menu item for viewing a comment's source"
+  },
+  "viewPostSource": "View post source",
+  "@viewPostSource": {
+    "description": "Menu item for viewing a post's source"
+  },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
   "visitInstance": "Visit Instance",

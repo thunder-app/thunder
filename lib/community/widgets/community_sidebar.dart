@@ -101,6 +101,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                     ),
                     const SizedBox(height: 10.0),
                     const Divider(height: 1, thickness: 2),
+                    const SizedBox(height: 10.0),
                     Container(
                       alignment: Alignment.topCenter,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -112,7 +113,6 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                             child: CommonMarkdownBody(
                               body: communityView.community.description ?? '',
                               imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
-                              allowHorizontalTranslation: false,
                             ),
                           ),
                           const SidebarSectionHeader(value: "Stats"),
@@ -231,23 +231,26 @@ class CommunityModeratorList extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          mods.moderator.displayName ?? mods.moderator.name,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.55,
+                          child: Text(
+                            mods.moderator.displayName ?? mods.moderator.name,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                         UserFullNameWidget(
                           context,
                           mods.moderator.name,
                           fetchInstanceNameFromUrl(mods.moderator.actorId),
-                          textStyle: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.6),
+                          textStyle: const TextStyle(
                             fontSize: 13,
                           ),
+                          transformColor: (color) => color?.withOpacity(0.6),
                         ),
                       ],
                     ),
