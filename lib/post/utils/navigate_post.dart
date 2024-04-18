@@ -13,6 +13,7 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/pages/post_page.dart';
+import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
@@ -45,45 +46,47 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
 
   // Mark post as read when tapped
   if (authBloc.state.isLoggedIn) {
-    int? _postId;
-    _postId = postViewMedia?.postView.post.id ?? postId;
-
-    feedBloc?.add(FeedItemActionedEvent(postId: _postId, postAction: PostAction.read, value: true));
+    feedBloc?.add(FeedItemActionedEvent(postId: postViewMedia?.postView.post.id ?? postId, postAction: PostAction.read, value: true));
   }
 
-  await Navigator.of(context).push(
-    SwipeablePageRoute(
-      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-      backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
-      backGestureDetectionWidth: 45,
-      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-      builder: (otherContext) {
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: accountBloc),
-            BlocProvider.value(value: authBloc),
-            BlocProvider.value(value: thunderBloc),
-            BlocProvider.value(value: instanceBloc),
-            BlocProvider(create: (context) => post_bloc.PostBloc()),
-            if (communityBloc != null) BlocProvider.value(value: communityBloc),
-            if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
-          ],
-          child: PostPage(
-            postView: postViewMedia,
-            postId: postId,
-            selectedCommentId: selectedCommentId,
-            selectedCommentPath: selectedCommentPath,
-            onPostUpdated: (PostViewMedia postViewMedia) {
-              FeedBloc? feedBloc;
-              try {
-                feedBloc = context.read<FeedBloc>();
-              } catch (e) {}
-              // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
-              feedBloc?.add(FeedItemUpdatedEvent(postViewMedia: PostViewMedia(postView: postViewMedia.postView.copyWith(read: true), media: postViewMedia.media)));
-            },
-          ),
-        );
-      },
-    ),
+  final SwipeablePageRoute route = SwipeablePageRoute(
+    transitionDuration: isLoadingPageShown
+        ? Duration.zero
+        : reduceAnimations
+            ? const Duration(milliseconds: 100)
+            : null,
+    reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+    backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+    backGestureDetectionWidth: 45,
+    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+    builder: (otherContext) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: accountBloc),
+          BlocProvider.value(value: authBloc),
+          BlocProvider.value(value: thunderBloc),
+          BlocProvider.value(value: instanceBloc),
+          BlocProvider(create: (context) => post_bloc.PostBloc()),
+          if (communityBloc != null) BlocProvider.value(value: communityBloc),
+          if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
+        ],
+        child: PostPage(
+          postView: postViewMedia,
+          postId: postId,
+          selectedCommentId: selectedCommentId,
+          selectedCommentPath: selectedCommentPath,
+          onPostUpdated: (PostViewMedia postViewMedia) {
+            FeedBloc? feedBloc;
+            try {
+              feedBloc = context.read<FeedBloc>();
+            } catch (e) {}
+            // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
+            feedBloc?.add(FeedItemUpdatedEvent(postViewMedia: PostViewMedia(postView: postViewMedia.postView.copyWith(read: true), media: postViewMedia.media)));
+          },
+        ),
+      );
+    },
   );
+
+  pushOnTopOfLoadingPage(context, route);
 }

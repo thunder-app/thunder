@@ -31,7 +31,7 @@ class LoadingPage extends StatelessWidget {
                             semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
                           )
                         : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip),
-                    onPressed: () => Navigator.of(context).maybePop(),
+                    onPressed: null,
                   )),
               const SliverFillRemaining(
                 child: Center(
@@ -59,6 +59,7 @@ void showLoadingPage(BuildContext context) {
       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
       backGestureDetectionWidth: 45,
       canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+      canSwipe: false,
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: thunderBloc),
