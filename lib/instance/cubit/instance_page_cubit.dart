@@ -21,7 +21,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
           resolutionInstance: resolutionInstance,
         ));
 
-  Future<void> loadCommunities({int? page}) async {
+  Future<void> loadCommunities({int? page, required SortType sortType}) async {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
@@ -33,7 +33,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
-        sort: SortType.topAll,
+        sort: sortType,
         listingType: ListingType.local,
         type: SearchType.communities,
       ));
@@ -48,7 +48,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     }
   }
 
-  Future<void> loadUsers({int? page}) async {
+  Future<void> loadUsers({int? page, required SortType sortType}) async {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
@@ -60,7 +60,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
-        sort: SortType.topAll,
+        sort: sortType,
         listingType: ListingType.local,
         type: SearchType.users,
       ));
@@ -75,7 +75,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     }
   }
 
-  Future<void> loadPosts({int? page}) async {
+  Future<void> loadPosts({int? page, required SortType sortType}) async {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
@@ -87,7 +87,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
-        sort: SortType.topAll,
+        sort: sortType,
         listingType: ListingType.local,
         type: SearchType.posts,
       ));
@@ -102,7 +102,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     }
   }
 
-  Future<void> loadComments({int? page}) async {
+  Future<void> loadComments({int? page, required SortType sortType}) async {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
@@ -114,7 +114,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
-        sort: SortType.topAll,
+        sort: sortType,
         listingType: ListingType.local,
         type: SearchType.comments,
       ));
