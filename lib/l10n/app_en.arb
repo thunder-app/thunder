@@ -145,6 +145,10 @@
   "@boldUserName": {
     "description": "Setting for bolding the username"
   },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
   "browserMode": "Link handling",
   "@browserMode": {
     "description": "Title for link handling setting (called browserMode internally)"
@@ -488,6 +492,14 @@
   "deleteLocalPreferencesDescription": "This will clear all your user preferences and settings in Thunder.\n\nDo you want to continue?",
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
+  },
+  "deletedByCreator": "deleted by creator",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "deletedByModerator": "deleted by moderator",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
   },
   "deselectUndeterminedWarning": "If you deselect Undetermined, you will not see most content.",
   "@deselectUndeterminedWarning": {},
@@ -917,6 +929,10 @@
   "@markReadColor": {
     "description": "Name of mark read/unread color setting"
   },
+  "me": "Me",
+  "@me": {
+    "description": "Label for the current user."
+  },
   "medium": "Medium",
   "@medium": {
     "description": "Description for medium font scale"
@@ -1138,6 +1154,10 @@
   "orange": "Orange",
   "@orange": {
     "description": "The color orange"
+  },
+  "originalPoster": "Original Poster",
+  "@originalPoster": {
+    "description": "Label for the original poster."
   },
   "overview": "Overview",
   "@overview": {},

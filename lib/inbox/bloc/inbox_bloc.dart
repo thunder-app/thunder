@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -8,7 +7,6 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/comment/utils/comment.dart';
 
 part 'inbox_event.dart';
 part 'inbox_state.dart';
@@ -40,7 +38,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       _markReplyAsReadEvent,
       // Do not throttle mark as read because it's something
       // a user might try to do in quick succession to multiple messages
-      transformer: throttleDroppable(Duration.zero),
+      // Do not use any transformer, because a throttleDroppable will only process the first request and restartable will only process the last.
     );
     on<MarkMentionAsReadEvent>(
       _markMentionAsReadEvent,
@@ -118,7 +116,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 status: InboxStatus.success,
                 privateMessages: cleanDeletedMessages(privateMessagesResponse.privateMessages),
                 mentions: cleanDeletedMentions(getPersonMentionsResponse.mentions),
-                replies: cleanDeletedReplies(getRepliesResponse.replies),
+                replies: getRepliesResponse.replies,
                 showUnreadOnly: !event.showAll,
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
@@ -177,7 +175,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               status: InboxStatus.success,
               privateMessages: cleanDeletedMessages(privateMessages),
               mentions: cleanDeletedMentions(mentions),
-              replies: cleanDeletedReplies(replies),
+              replies: replies,
               showUnreadOnly: state.showUnreadOnly,
               inboxMentionPage: state.inboxMentionPage + 1,
               inboxReplyPage: state.inboxReplyPage + 1,
@@ -249,13 +247,14 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
-      emit(state.copyWith(
+      return emit(state.copyWith(
         status: InboxStatus.success,
         replies: replies,
         totalUnreadCount: totalUnreadCount,
         repliesUnreadCount: getUnreadCountResponse.replies,
         mentionsUnreadCount: getUnreadCountResponse.mentions,
         messagesUnreadCount: getUnreadCountResponse.privateMessages,
+        inboxReplyMarkedAsRead: event.commentReplyId,
       ));
     } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
@@ -357,34 +356,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
 
     return cleanedMentions;
-  }
-
-  List<CommentReplyView> cleanDeletedReplies(List<CommentReplyView> replies) {
-    List<CommentReplyView> cleanedReplies = [];
-
-    for (CommentReplyView reply in replies) {
-      if (reply.comment.removed) {
-        cleanedReplies.add(reply.copyWith(
-          comment: reply.comment.copyWith(
-            content: "_deleted by moderator_",
-          ),
-        ));
-        continue;
-      }
-
-      if (reply.comment.deleted) {
-        cleanedReplies.add(reply.copyWith(
-          comment: reply.comment.copyWith(
-            content: "_deleted by creator_",
-          ),
-        ));
-        continue;
-      }
-
-      cleanedReplies.add(reply);
-    }
-
-    return cleanedReplies;
   }
 
   PrivateMessageView cleanDeletedPrivateMessage(PrivateMessageView message) {

@@ -4,10 +4,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ErrorMessage extends StatelessWidget {
   final String? title;
   final String? message;
-  final String? actionText;
-  final VoidCallback? action;
+  final List<({String text, void Function() action, bool loading})>? actions;
 
-  const ErrorMessage({super.key, this.title, this.message, this.action, this.actionText});
+  const ErrorMessage({
+    super.key,
+    this.title,
+    this.message,
+    this.actions,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +38,45 @@ class ErrorMessage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-              onPressed: () => action?.call(),
-              child: Text(actionText ?? AppLocalizations.of(context)!.refresh),
-            ),
+            if (actions?.isNotEmpty == true)
+              Column(
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+                    onPressed: actions![0].loading == true ? null : () => actions![0].action.call(),
+                    child: actions![0].loading == true
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(),
+                          )
+                        : Text(actions![0].text),
+                  ),
+                  if (actions!.length > 1) ...[
+                    const SizedBox(height: 15),
+                    Row(
+                      children: [
+                        for (var action in actions!.skip(1)) ...[
+                          if (actions!.indexOf(action) > 1) const SizedBox(width: 10),
+                          Expanded(
+                            child: TextButton(
+                              style: TextButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+                              onPressed: action.loading == true ? null : () => action.action.call(),
+                              child: action.loading == true
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Text(action.text),
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
+                  ],
+                ],
+              )
           ],
         ),
       ),

@@ -170,8 +170,13 @@ class _InboxPageState extends State<InboxPage> {
                       case InboxStatus.failure:
                         return ErrorMessage(
                           message: state.errorMessage,
-                          actionText: l10n.refreshContent,
-                          action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
+                          actions: [
+                            (
+                              text: l10n.refreshContent,
+                              action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
+                              loading: false,
+                            ),
+                          ],
                         );
                     }
 

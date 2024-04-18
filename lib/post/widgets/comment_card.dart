@@ -205,6 +205,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       swipeAction: swipeAction,
                       onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
                       onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
+                      onReplyEditAction: (CommentView commentView, bool isEdit) {
+                        context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+                      },
                       voteType: myVote ?? 0,
                       saved: saved,
                       commentView: widget.commentViewTree.commentView!,
