@@ -46,6 +46,7 @@ class PostSubview extends StatefulWidget {
   final bool viewSource;
   final bool showQuickPostActionBar;
   final bool showExpandableButton;
+  final bool selectable;
 
   const PostSubview({
     super.key,
@@ -57,6 +58,7 @@ class PostSubview extends StatefulWidget {
     required this.viewSource,
     this.showQuickPostActionBar = true,
     this.showExpandableButton = true,
+    this.selectable = false,
   });
 
   @override
@@ -177,6 +179,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         )
                       : CommonMarkdownBody(
                           body: post.body ?? '',
+                          isSelectableText: widget.selectable,
                         ),
                 ),
               ),
