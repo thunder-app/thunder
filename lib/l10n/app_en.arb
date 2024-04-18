@@ -133,6 +133,10 @@
   "@boldUserName": {
     "description": "Setting for bolding the username"
   },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
   "browserMode": "Link handling",
   "@browserMode": {
     "description": "Title for link handling setting (called browserMode internally)"
@@ -897,6 +901,10 @@
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
   },
+  "me": "Me",
+  "@me": {
+    "description": "Label for the current user."
+  },
   "medium": "Medium",
   "@medium": {
     "description": "Description for medium font scale"
@@ -1114,6 +1122,10 @@
   "openSettings": "Open Settings",
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
+  },
+  "originalPoster": "Original Poster",
+  "@originalPoster": {
+    "description": "Label for the original poster."
   },
   "overview": "Overview",
   "@overview": {},
