@@ -278,7 +278,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 child: Container(
                                   padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
                                   decoration: BoxDecoration(
-                                    color: theme.colorScheme.surfaceVariant,
+                                    color: theme.dividerColor.withOpacity(0.25),
                                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                   ),
                                   child: PostSubview(
@@ -289,6 +289,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     viewSource: false,
                                     showQuickPostActionBar: false,
                                     showExpandableButton: false,
+                                    selectable: true,
                                   ),
                                 ),
                               ),
@@ -297,25 +298,24 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: theme.colorScheme.surfaceVariant,
+                                    color: theme.dividerColor.withOpacity(0.25),
                                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                   ),
-                                  child: IgnorePointer(
-                                    child: CommentContent(
-                                      comment: widget.parentCommentView!,
-                                      onVoteAction: (_, __) {},
-                                      onSaveAction: (_, __) {},
-                                      onReplyEditAction: (_, __) {},
-                                      onReportAction: (_) {},
-                                      now: DateTime.now().toUtc(),
-                                      onDeleteAction: (_, __) {},
-                                      isUserLoggedIn: true,
-                                      isOwnComment: false,
-                                      isHidden: false,
-                                      viewSource: false,
-                                      onViewSourceToggled: () {},
-                                      disableActions: true,
-                                    ),
+                                  child: CommentContent(
+                                    comment: widget.parentCommentView!,
+                                    onVoteAction: (_, __) {},
+                                    onSaveAction: (_, __) {},
+                                    onReplyEditAction: (_, __) {},
+                                    onReportAction: (_) {},
+                                    now: DateTime.now().toUtc(),
+                                    onDeleteAction: (_, __) {},
+                                    isUserLoggedIn: true,
+                                    isOwnComment: false,
+                                    isHidden: false,
+                                    viewSource: false,
+                                    onViewSourceToggled: () {},
+                                    disableActions: true,
+                                    selectable: true,
                                   ),
                                 ),
                               ),
