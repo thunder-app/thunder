@@ -25,6 +25,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
+  "addDiscussionLanguage": "Add Language",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
   "addKeywordFilter": "Add Keyword",
   "@addKeywordFilter": {
     "description": "Hint for text field to add keyword"
@@ -128,6 +132,10 @@
   "boldUserName": "Bold User Name",
   "@boldUserName": {
     "description": "Setting for bolding the username"
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
   },
   "browserMode": "Link handling",
   "@browserMode": {
@@ -373,6 +381,10 @@
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Your comment report could not be submitted at this time. Please try again later",
   "@couldntCreateReport": {},
+  "couldntFindPost": "Unable to load the requested post. It may have been deleted or removed.",
+  "@couldntFindPost": {
+    "description": "Error message for when we can't load a post."
+  },
   "countSubscribers": "{count} subscribers",
   "@countSubscribers": {},
   "countUsers": "{count} users",
@@ -465,6 +477,16 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
+  "deletedByCreator": "deleted by creator",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "deletedByModerator": "deleted by moderator",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
+  "deselectUndeterminedWarning": "If you deselect Undetermined, you will not see most content.",
+  "@deselectUndeterminedWarning": {},
   "detailedReason": "Reason: {reason}",
   "@detailedReason": {
     "description": "The reason for the moderation action"
@@ -477,6 +499,12 @@
   "@disable": {
     "description": "Action for disabling something"
   },
+  "discussionLanguages": "Discussion Languages",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "discussionLanguagesTooltip": "Content is filtered to the selected languages.",
+  "@discussionLanguagesTooltip": {},
   "dismissRead": "Dismiss Read",
   "@dismissRead": {},
   "displayUserScore": "Display User Scores (Karma).",
@@ -494,7 +522,13 @@
   "downloadingMedia": "Downloading media to share…",
   "@downloadingMedia": {},
   "downvote": "Downvote",
-  "@downvote": {},
+  "@downvote": {
+    "description": "Action for downvoting a post/comment"
+  },
+  "downvoted": "Downvoted",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
   "downvotesDisabled": "Downvotes are turned off on this instance.",
   "@downvotesDisabled": {},
   "edit": "Edit",
@@ -761,12 +795,14 @@
   },
   "keywordFilters": "Keyword Filters",
   "@keywordFilters": {
-    "description": "Subcategory in Setting -> General"
+    "description": "Subcategory in Settings -> Filters"
   },
   "language": "Language",
   "@language": {
     "description": "Label when creating or editing a post."
   },
+  "languageFilters": "Looking for language filters?",
+  "@languageFilters": {},
   "languageNotAllowed": "The community you are posting to does not allow posts in the language that you have selected. Try another language.",
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
@@ -865,6 +901,10 @@
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
   },
+  "me": "Me",
+  "@me": {
+    "description": "Label for the current user."
+  },
   "medium": "Medium",
   "@medium": {
     "description": "Description for medium font scale"
@@ -937,6 +977,8 @@
   },
   "mostComments": "Most Comments",
   "@mostComments": {},
+  "mustBeLoggedIn": "You need to be logged in",
+  "@mustBeLoggedIn": {},
   "mustBeLoggedInComment": "You need to be logged in to comment",
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
@@ -983,6 +1025,10 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
+  "noDiscussionLanguages": "No content is hidden based on language.",
+  "@noDiscussionLanguages": {
+    "description": "Message for no discussion languages added"
+  },
   "noFavoritedCommunities": "No favorited communities",
   "@noFavoritedCommunities": {
     "description": "Message for no favorited communities on the drawer"
@@ -995,7 +1041,7 @@
   },
   "noKeywordFilters": "No keyword filters added",
   "@noKeywordFilters": {
-    "description": "Message for no keywords added"
+    "description": "Message for no keyword filters added"
   },
   "noLanguage": "No language",
   "@noLanguage": {
@@ -1076,6 +1122,10 @@
   "openSettings": "Open Settings",
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
+  },
+  "originalPoster": "Original Poster",
+  "@originalPoster": {
+    "description": "Label for the original poster."
   },
   "overview": "Overview",
   "@overview": {},
@@ -1237,11 +1287,11 @@
   "@removeInstance": {},
   "removeKeyword": "Remove \"{keyword}\"?",
   "@removeKeyword": {
-    "description": "Description of removing a keyword"
+    "description": "Description of removing a keyword filter"
   },
   "removeKeywordFilter": "Remove Keyword",
   "@removeKeywordFilter": {
-    "description": "Title for dialig to remove keyword"
+    "description": "Title for dialog to remove keyword filter"
   },
   "removePost": "Remove Post",
   "@removePost": {
@@ -1868,7 +1918,13 @@
   "uploadImage": "Upload image",
   "@uploadImage": {},
   "upvote": "Upvote",
-  "@upvote": {},
+  "@upvote": {
+    "description": "Action for upvoting a post/comment"
+  },
+  "upvoted": "Upvoted",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
   "uriNotSupported": "This type of link is not supported at the moment.",
   "@uriNotSupported": {
     "description": "Unsupported link type at the present time."

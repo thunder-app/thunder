@@ -13,6 +13,7 @@ import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/community_share.dart';
@@ -125,13 +126,13 @@ class FeedAppBarCommunityActions extends StatelessWidget {
 
     return Row(
       children: [
-        BlocListener<CommunityBloc, CommunityState>(
+        BlocConsumer<CommunityBloc, CommunityState>(
           listener: (context, state) {
             if (state.status == CommunityStatus.success && state.communityView != null) {
               feedBloc.add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
             }
           },
-          child: IconButton(
+          builder: (context, state) => IconButton(
             icon: Icon(
                 switch (_getSubscriptionStatus(context)) {
                   SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
@@ -167,6 +168,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 title: l10n.sortOptions,
                 onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
+                minimumVersion: LemmyClient.instance.version,
               ),
             );
           },
@@ -262,6 +264,7 @@ class FeedAppBarUserActions extends StatelessWidget {
                 title: l10n.sortOptions,
                 onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
+                minimumVersion: LemmyClient.instance.version,
               ),
             );
           },
@@ -317,6 +320,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
                 title: l10n.sortOptions,
                 onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
+                minimumVersion: LemmyClient.instance.version,
               ),
             );
           },

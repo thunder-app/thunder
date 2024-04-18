@@ -57,7 +57,7 @@ Future<GetCommunityResponse> fetchCommunityInformation({int? id, String? name}) 
 Future<void> toggleFavoriteCommunity(BuildContext context, Community community, bool isFavorite) async {
   if (isFavorite) {
     await Favorite.deleteFavorite(communityId: community.id);
-    if (context.mounted) context.read<AccountBloc>().add(const GetFavoritedCommunities());
+    if (context.mounted) context.read<AccountBloc>().add(const RefreshAccountInformation());
     return;
   }
 
@@ -70,7 +70,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, Community community, 
   );
 
   await Favorite.insertFavorite(favorite);
-  if (context.mounted) context.read<AccountBloc>().add(const GetFavoritedCommunities());
+  if (context.mounted) context.read<AccountBloc>().add(const RefreshAccountInformation());
 }
 
 /// Takes a list of [communities] and returns the list with any [favoriteCommunities] at the beginning of the list

@@ -102,19 +102,28 @@ class _InboxPageState extends State<InboxPage> {
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(45.0),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Center(
-              child: InboxCategoryWidget(
-                inboxType: inboxType,
-                onSelected: (InboxType? selected) {
-                  _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
-                  setState(() {
-                    inboxType = selected;
-                  });
-                },
-              ),
-            ),
+          child: BlocBuilder<InboxBloc, InboxState>(
+            builder: (context, state) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Center(
+                  child: InboxCategoryWidget(
+                    inboxType: inboxType,
+                    onSelected: (InboxType? selected) {
+                      _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
+                      setState(() {
+                        inboxType = selected;
+                      });
+                    },
+                    unreadCounts: {
+                      InboxType.replies: state.repliesUnreadCount,
+                      InboxType.mentions: state.mentionsUnreadCount,
+                      InboxType.messages: state.messagesUnreadCount,
+                    },
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -161,8 +170,13 @@ class _InboxPageState extends State<InboxPage> {
                       case InboxStatus.failure:
                         return ErrorMessage(
                           message: state.errorMessage,
-                          actionText: l10n.refreshContent,
-                          action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
+                          actions: [
+                            (
+                              text: l10n.refreshContent,
+                              action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
+                              loading: false,
+                            ),
+                          ],
                         );
                     }
 

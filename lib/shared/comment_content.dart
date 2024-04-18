@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -145,12 +146,12 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                           },
                           child: widget.viewSource
                               ? ScalableText(
-                                  widget.comment.comment.content,
+                                  cleanCommentContent(widget.comment.comment),
                                   style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                                   fontScale: state.contentFontSizeScale,
                                 )
                               : CommonMarkdownBody(
-                                  body: widget.comment.comment.content,
+                                  body: cleanCommentContent(widget.comment.comment),
                                   isComment: true,
                                 ),
                         ),

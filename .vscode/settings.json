@@ -26,4 +26,24 @@
     "i18n-ally.annotationInPlace": true,
     "i18n-ally.annotationRange": "annotation",
     "i18n-ally.annotationDelimiter": "//",
+    "i18n-ally.regex.usageMatch": [
+        "(?<annotation>l10n\\.(?<key>{key}))\\W",
+    ],
+    "i18n-ally.refactor.templates": [
+        {
+            "templates": [
+                "l10n.{key}",
+                "l10n.{key}({args})"
+            ]
+        }
+    ],
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "match": ".*.arb",
+                "isAsync": false,
+                "cmd": "dart pub global activate arb_utils && arb_utils generate-meta ./lib/l10n/app_en.arb && arb_utils sort ./lib/l10n/app_en.arb && flutter gen-l10n"
+            },
+        ]
+    }
 }

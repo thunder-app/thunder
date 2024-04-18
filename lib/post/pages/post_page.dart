@@ -1,37 +1,35 @@
+// Dart imports
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:back_button_interceptor/back_button_interceptor.dart';
+// Flutter imports
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// Package imports
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
+
+// Project imports
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
-import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../shared/gesture_fab.dart';
 
 class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
@@ -130,8 +128,7 @@ class _PostPageState extends State<PostPage> {
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              final sortTypeItem = CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
-                  .firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              final sortTypeItem = CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
               sortTypeIcon = sortTypeItem.icon;
               sortTypeLabel = sortTypeItem.label;
             });
@@ -290,8 +287,10 @@ class _PostPageState extends State<PostPage> {
                                           : singlePressAction == PostFabAction.changeSort
                                               ? () => showSortBottomSheet(context, state)
                                               : singlePressAction == PostFabAction.replyToPost
-                                                  ? () => replyToPost(context, postLocked: postLocked)
-                                                  : null),
+                                                  ? () => replyToPost(context, widget.postView, postLocked: postLocked)
+                                                  : singlePressAction == PostFabAction.search
+                                                      ? () => startCommentSearch(context)
+                                                      : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
                                   postView: state.postView,
@@ -309,7 +308,7 @@ class _PostPageState extends State<PostPage> {
                                       : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : longPressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context, postLocked: postLocked)
+                                              ? () => replyToPost(context, widget.postView, postLocked: postLocked)
                                               : null),
                               children: [
                                 if (enableRefresh)
@@ -336,7 +335,7 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.replyToPost.execute(
-                                        override: () => replyToPost(context, postLocked: postLocked),
+                                        override: () => replyToPost(context, widget.postView, postLocked: postLocked),
                                       );
                                     },
                                     title: PostFabAction.replyToPost.getTitle(context),
@@ -379,47 +378,7 @@ class _PostPageState extends State<PostPage> {
                                 if (enableSearch)
                                   ActionButton(
                                     centered: combineNavAndFab,
-                                    onPressed: () {
-                                      PostFabAction.search.execute(override: () {
-                                        if (state.status == PostStatus.searchInProgress) {
-                                          context.read<PostBloc>().add(const EndCommentSearchEvent());
-                                        } else {
-                                          showInputDialog<String>(
-                                            context: context,
-                                            title: l10n.searchComments,
-                                            inputLabel: l10n.searchTerm,
-                                            onSubmitted: ({payload, value}) {
-                                              Navigator.of(context).pop();
-
-                                              List<Comment> commentMatches = [];
-
-                                              /// Recursive function which checks if any child of the given [commentViewTrees] contains the query
-                                              void findMatches(List<CommentViewTree> commentViewTrees) {
-                                                for (CommentViewTree commentViewTree in commentViewTrees) {
-                                                  if (commentViewTree.commentView?.comment.content.contains(RegExp(value!, caseSensitive: false)) == true) {
-                                                    commentMatches.add(commentViewTree.commentView!.comment);
-                                                  }
-                                                  findMatches(commentViewTree.replies);
-                                                }
-                                              }
-
-                                              // Find all comments which contain the query
-                                              findMatches(state.comments);
-
-                                              if (commentMatches.isEmpty) {
-                                                showSnackbar(l10n.noResultsFound);
-                                              } else {
-                                                context.read<PostBloc>().add(StartCommentSearchEvent(commentMatches: commentMatches));
-                                              }
-
-                                              return Future.value(null);
-                                            },
-                                            getSuggestions: (_) => [],
-                                            suggestionBuilder: (payload) => Container(),
-                                          );
-                                        }
-                                      });
-                                    },
+                                    onPressed: () => startCommentSearch(context),
                                     title: state.status == PostStatus.searchInProgress ? l10n.endSearch : PostFabAction.search.getTitle(context),
                                     icon: Icon(
                                       state.status == PostStatus.searchInProgress ? Icons.search_off_rounded : PostFabAction.search.getIcon(),
@@ -500,18 +459,24 @@ class _PostPageState extends State<PostPage> {
                           }
                           return ErrorMessage(
                             message: state.errorMessage,
-                            action: () {
-                              context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
-                            },
-                            actionText: l10n.refreshContent,
+                            actions: [
+                              (
+                                text: l10n.refreshContent,
+                                action: () => context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null)),
+                                loading: false,
+                              ),
+                            ],
                           );
                         case PostStatus.empty:
                           return ErrorMessage(
                             message: state.errorMessage,
-                            action: () {
-                              context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                            },
-                            actionText: l10n.refreshContent,
+                            actions: [
+                              (
+                                text: l10n.refreshContent,
+                                action: () => context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId)),
+                                loading: false,
+                              ),
+                            ],
                           );
                       }
                     },
@@ -575,74 +540,75 @@ class _PostPageState extends State<PostPage> {
           //Navigator.of(context).pop();
         },
         previouslySelected: sortType,
+        minimumVersion: LemmyClient.instance.version,
       ),
     );
   }
 
-  void replyToPost(BuildContext context, {bool postLocked = false}) async {
+  void replyToPost(BuildContext context, PostViewMedia? postViewMedia, {bool postLocked = false}) async {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final state = context.read<AuthBloc>().state;
 
     if (postLocked) {
       showSnackbar(l10n.postLocked);
       return;
     }
-    PostBloc postBloc = context.read<PostBloc>();
-    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    AuthBloc authBloc = context.read<AuthBloc>();
-    AccountBloc accountBloc = context.read<AccountBloc>();
 
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final bool reduceAnimations = state.reduceAnimations;
-
-    if (!authBloc.state.isLoggedIn) {
+    if (!state.isLoggedIn) {
       showSnackbar(l10n.mustBeLoggedInComment);
     } else {
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      DraftComment? newDraftComment;
-      DraftComment? previousDraftComment;
-      String draftId = '${LocalSettings.draftsCache.name}-${(widget.postView ?? postBloc.state.postView)!.postView.post.id}';
-      String? draftCommentJson = prefs.getString(draftId);
-      if (draftCommentJson != null) {
-        previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-      }
-      Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-        if (newDraftComment?.isNotEmpty == true) {
-          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-        }
-      });
-
-      Navigator.of(context)
-          .push(
-        SwipeablePageRoute(
-          transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-          canOnlySwipeFromEdge: true,
-          backGestureDetectionWidth: 45,
-          builder: (context) {
-            return MultiBlocProvider(
-                providers: [
-                  BlocProvider<PostBloc>.value(value: postBloc),
-                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                  BlocProvider<AccountBloc>.value(value: accountBloc),
-                ],
-                child: CreateCommentPage(
-                  postView: widget.postView ?? postBloc.state.postView,
-                  previousDraftComment: previousDraftComment,
-                  onUpdateDraft: (c) => newDraftComment = c,
-                ));
-          },
-        ),
-      )
-          .whenComplete(() async {
-        timer.cancel();
-
-        if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
-          await Future.delayed(const Duration(milliseconds: 300));
-          showSnackbar(l10n.commentSavedAsDraft);
-          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-        } else {
-          prefs.remove(draftId);
-        }
-      });
+      navigateToCreateCommentPage(
+        context,
+        postViewMedia: postViewMedia,
+        onCommentSuccess: (commentView) {
+          context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+        },
+      );
     }
+  }
+
+  void startCommentSearch(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    PostState state = context.read<PostBloc>().state;
+
+    PostFabAction.search.execute(override: () {
+      if (state.status == PostStatus.searchInProgress) {
+        context.read<PostBloc>().add(const EndCommentSearchEvent());
+      } else {
+        showInputDialog<String>(
+          context: context,
+          title: l10n.searchComments,
+          inputLabel: l10n.searchTerm,
+          onSubmitted: ({payload, value}) {
+            Navigator.of(context).pop();
+
+            List<Comment> commentMatches = [];
+
+            /// Recursive function which checks if any child of the given [commentViewTrees] contains the query
+            void findMatches(List<CommentViewTree> commentViewTrees) {
+              for (CommentViewTree commentViewTree in commentViewTrees) {
+                if (commentViewTree.commentView?.comment.content.contains(RegExp(value!, caseSensitive: false)) == true) {
+                  commentMatches.add(commentViewTree.commentView!.comment);
+                }
+                findMatches(commentViewTree.replies);
+              }
+            }
+
+            // Find all comments which contain the query
+            findMatches(state.comments);
+
+            if (commentMatches.isEmpty) {
+              showSnackbar(l10n.noResultsFound);
+            } else {
+              context.read<PostBloc>().add(StartCommentSearchEvent(commentMatches: commentMatches));
+            }
+
+            return Future.value(null);
+          },
+          getSuggestions: (_) => [],
+          suggestionBuilder: (payload) => Container(),
+        );
+      }
+    });
   }
 }

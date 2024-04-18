@@ -101,6 +101,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                     ),
                     const SizedBox(height: 10.0),
                     const Divider(height: 1, thickness: 2),
+                    const SizedBox(height: 10.0),
                     Container(
                       alignment: Alignment.topCenter,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -112,7 +113,6 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                             child: CommonMarkdownBody(
                               body: communityView.community.description ?? '',
                               imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
-                              allowHorizontalTranslation: false,
                             ),
                           ),
                           const SidebarSectionHeader(value: "Stats"),

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -517,7 +518,7 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
         pop = false;
         break;
       case CommentCardAction.copyText:
-        action = () => Clipboard.setData(ClipboardData(text: widget.commentView.comment.content)).then((_) {
+        action = () => Clipboard.setData(ClipboardData(text: cleanCommentContent(widget.commentView.comment))).then((_) {
               showSnackbar(AppLocalizations.of(widget.outerContext)!.copiedToClipboard);
             });
         break;
