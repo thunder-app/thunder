@@ -60,6 +60,10 @@ enum LocalSettingsSubCategories {
 }
 
 enum LocalSettings {
+  /// -------------------------- Account Settings --------------------------
+  // Discussion Languages
+  discussionLanguages(name: 'account_discussion_languages', key: 'discussionLanguages', category: LocalSettingsCategories.account),
+
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
 
@@ -408,6 +412,7 @@ extension LocalizationExt on AppLocalizations {
       'feedTypeAndSorts': feedTypeAndSorts,
       'profiles': profiles,
       'animations': animations,
+      'discussionLanguages': discussionLanguages,
     };
 
     if (localizationMap.containsKey(key)) {

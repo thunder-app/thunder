@@ -15,14 +15,25 @@ class Favorite {
     required this.accountId,
   });
 
-  static Future<void> insertFavorite(Favorite favourite) async {
+  Favorite copyWith({String? id}) => Favorite(
+        id: id ?? this.id,
+        communityId: communityId,
+        accountId: accountId,
+      );
+
+  static Future<Favorite?> insertFavorite(Favorite favourite) async {
+    // If we are given a brand new favorite to insert with an existing id, something is wrong.
+    assert(favourite.id.isEmpty);
+
     try {
-      await database.into(database.favorites).insert(FavoritesCompanion.insert(
+      int id = await database.into(database.favorites).insert(FavoritesCompanion.insert(
             accountId: int.parse(favourite.accountId),
             communityId: favourite.communityId,
           ));
+      return favourite.copyWith(id: id.toString());
     } catch (e) {
       debugPrint(e.toString());
+      return null;
     }
   }
 
@@ -44,6 +55,7 @@ class Favorite {
       });
     } catch (e) {
       debugPrint(e.toString());
+      return null;
     }
   }
 

@@ -90,6 +90,8 @@ class _ThunderState extends State<Thunder> {
 
   final ScrollController _changelogScrollController = ScrollController();
 
+  bool errorMessageLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -168,6 +170,7 @@ class _ThunderState extends State<Thunder> {
     final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
 
     if (!topOfNavigationStack) return false;
+    if (stopDefaultButtonEvent) return false;
 
     if (selectedPageIndex != 0) {
       setState(() {
@@ -221,24 +224,24 @@ class _ThunderState extends State<Thunder> {
     }
 
     // If the incoming link is a custom URL, replace it back with https://
-    String _link = link?.replaceAll('thunder://', 'https://') ?? "";
+    link = link?.replaceAll('thunder://', 'https://') ?? "";
 
     switch (linkType) {
       case LinkType.comment:
-        if (context.mounted) await _navigateToComment(_link);
+        if (context.mounted) await _navigateToComment(link);
       case LinkType.user:
-        if (context.mounted) await _navigateToUser(_link);
+        if (context.mounted) await _navigateToUser(link);
       case LinkType.post:
-        if (context.mounted) await _navigateToPost(_link);
+        if (context.mounted) await _navigateToPost(link);
       case LinkType.community:
-        if (context.mounted) await _navigateToCommunity(_link);
+        if (context.mounted) await _navigateToCommunity(link);
       case LinkType.modlog:
-        if (context.mounted) await _navigateToModlog(_link);
+        if (context.mounted) await _navigateToModlog(link);
       case LinkType.instance:
-        if (context.mounted) await _navigateToInstance(_link);
+        if (context.mounted) await _navigateToInstance(link);
       case LinkType.unknown:
         if (context.mounted) {
-          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, _link);
+          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link);
         }
     }
   }
@@ -260,7 +263,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   Future<void> _navigateToPost(String link) async {
-    final postId = await getLemmyPostId(link);
+    final postId = await getLemmyPostId(context, link);
     if (context.mounted && postId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
@@ -330,7 +333,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   Future<void> _navigateToComment(String link) async {
-    final commentId = await getLemmyCommentId(link);
+    final commentId = await getLemmyCommentId(context, link);
     if (context.mounted && commentId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
@@ -502,7 +505,7 @@ class _ThunderState extends State<Thunder> {
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
                                 postListingType: thunderBlocState.defaultListingType,
-                                sortType: thunderBlocState.defaultSortType,
+                                sortType: thunderBlocState.sortTypeForInstance,
                                 reset: true,
                               ),
                             );
@@ -637,7 +640,7 @@ class _ThunderState extends State<Thunder> {
                                     useGlobalFeedBloc: true,
                                     feedType: FeedType.general,
                                     postListingType: thunderBlocState.defaultListingType,
-                                    sortType: thunderBlocState.defaultSortType,
+                                    sortType: thunderBlocState.sortTypeForInstance,
                                     scaffoldStateKey: scaffoldStateKey,
                                   ),
                                   AnimatedOpacity(
@@ -666,11 +669,27 @@ class _ThunderState extends State<Thunder> {
                           return Container();
                         case AuthStatus.failureCheckingInstance:
                           showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
-                          return ErrorMessage(
-                            title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
-                            message: AppLocalizations.of(context)!.internetOrInstanceIssues,
-                            actionText: AppLocalizations.of(context)!.accountSettings,
-                            action: () => showProfileModalSheet(context),
+                          errorMessageLoading = false;
+                          return StatefulBuilder(
+                            builder: (context, setState) => ErrorMessage(
+                              title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
+                              message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+                              actions: [
+                                (
+                                  text: AppLocalizations.of(context)!.retry,
+                                  action: () {
+                                    context.read<AuthBloc>().add(CheckAuth());
+                                    setState(() => errorMessageLoading = true);
+                                  },
+                                  loading: errorMessageLoading,
+                                ),
+                                (
+                                  text: AppLocalizations.of(context)!.accountSettings,
+                                  action: () => showProfileModalSheet(context),
+                                  loading: false,
+                                ),
+                              ],
+                            ),
                           );
                       }
                     },
@@ -680,8 +699,13 @@ class _ThunderState extends State<Thunder> {
                 FlutterNativeSplash.remove();
                 return ErrorMessage(
                   message: thunderBlocState.errorMessage,
-                  action: () => {context.read<AuthBloc>().add(CheckAuth())},
-                  actionText: AppLocalizations.of(context)!.refreshContent,
+                  actions: [
+                    (
+                      text: AppLocalizations.of(context)!.refreshContent,
+                      action: () => context.read<AuthBloc>().add(CheckAuth()),
+                      loading: false,
+                    ),
+                  ],
                 );
             }
           },

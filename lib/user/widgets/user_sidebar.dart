@@ -94,7 +94,6 @@ class _UserSidebarState extends State<UserSidebar> {
                             child: CommonMarkdownBody(
                               body: personView.person.bio ?? 'Nothing here. This user has not written a bio.',
                               imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
-                              allowHorizontalTranslation: false,
                             ),
                           ),
                           const SidebarSectionHeader(value: "Stats"),
