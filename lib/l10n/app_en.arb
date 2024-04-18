@@ -1437,7 +1437,7 @@
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
   "@selectFeedType": {},
-  "selectLanguage": "Select language",
+  "selectLanguage": "Select Language",
   "@selectLanguage": {
     "description": "The prompt to select a language in the post creation page"
   },
