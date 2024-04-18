@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/comment/utils/comment.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
@@ -96,7 +97,7 @@ class _CommentReferenceState extends State<CommentReference> {
           ${widget.comment.counts.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.counts.upvotes))}\n
           ${widget.comment.counts.downvotes == 0 ? '' : AppLocalizations.of(context)!.xDownvotes(formatNumberToK(widget.comment.counts.downvotes))}\n
           ${formatTimeToString(dateTime: (widget.comment.comment.updated ?? widget.comment.comment.published).toIso8601String())}\n
-          ${widget.comment.comment.content}""",
+          ${cleanCommentContent(widget.comment.comment)}""",
       child: InkWell(
         onTap: widget.comment.post.deleted ? null : () async => await navigateToComment(context, widget.comment),
         child: Padding(
