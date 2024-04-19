@@ -32,6 +32,7 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/language/language.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:thunder/utils/notifications/notification_server.dart';
 import 'package:thunder/utils/notifications/notifications.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:version/version.dart';
@@ -666,51 +667,49 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               customListPicker: StatefulBuilder(
                 builder: (context, setState) {
                   return BottomSheetListPicker<NotificationType>(
-                    title: "Push Notifications",
-                    heading: const Align(
+                    title: l10n.pushNotification,
+                    heading: Align(
                       alignment: Alignment.centerLeft,
-                      child: CommonMarkdownBody(
-                          body:
-                              "If enabled, Thunder will send your JWT token(s) to the server in order to poll for new notifications. \n\n **NOTE:** This will not take effect until the next time the app is launched."),
+                      child: CommonMarkdownBody(body: l10n.pushNotificationDescription),
                     ),
                     previouslySelected: inboxNotificationType,
                     items: Platform.isAndroid
                         ? [
-                            const ListPickerItem(
+                            ListPickerItem(
                               icon: Icons.notifications_off_rounded,
-                              label: "None",
+                              label: l10n.none,
                               payload: NotificationType.none,
                             ),
-                            const ListPickerItem(
+                            ListPickerItem(
                               icon: Icons.notifications_rounded,
-                              label: "Use Local Notifications (Experimental)",
-                              subtitle: "Periodically checks for notifications in the background",
+                              label: l10n.useLocalNotifications,
+                              subtitle: l10n.useLocalNotificationsDescription,
                               payload: NotificationType.local,
                             ),
-                            const ListPickerItem(
+                            ListPickerItem(
                               icon: Icons.notifications_active_rounded,
-                              label: "Use UnifiedPush Notifications",
-                              subtitle: "Requires a compatible app",
+                              label: l10n.useUnifiedPushNotifications,
+                              subtitle: l10n.useUnifiedPushNotificationsDescription,
                               payload: NotificationType.unifiedPush,
                             ),
                           ]
                         : [
-                            const ListPickerItem(
+                            ListPickerItem(
                               icon: Icons.notifications_off_rounded,
-                              label: "Disable Push Notifications",
+                              label: l10n.disablePushNotifications,
                               payload: NotificationType.none,
                             ),
-                            const ListPickerItem(
+                            ListPickerItem(
                               icon: Icons.notifications_active_rounded,
-                              label: "Use APNs Notifications",
-                              subtitle: "Uses Apple's Push Notification service",
+                              label: l10n.useApplePushNotifications,
+                              subtitle: l10n.useApplePushNotificationsDescription,
                               payload: NotificationType.apn,
                             ),
                           ],
                     onSelect: (ListPickerItem<NotificationType> notificationType) async {
                       if (notificationType.payload == inboxNotificationType) return;
 
-                      // Disable all notifications since the option has changed
+                      // Disable all notifications since the option has changed.
                       if (Platform.isAndroid) {
                         disableBackgroundFetch();
                         UnifiedPush.unregister();
@@ -718,9 +717,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         // TODO: Disable APNs
                       }
 
+                      // Delete all server tokens related to all accounts if the option was previously unified push or apns
+                      if (inboxNotificationType == NotificationType.unifiedPush || inboxNotificationType == NotificationType.apn) {
+                        bool success = await deleteAccountFromNotificationServer();
+                        if (!success) {
+                          showSnackbar(l10n.failedToDisablePushNotifications);
+                          return;
+                        }
+                      }
+
                       // If disabled, do nothing
                       if (notificationType.payload == NotificationType.none) {
-                        setPreferences(LocalSettings.inboxNotificationType, notificationType.payload.name);
+                        setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
                         return;
                       }
 
@@ -772,18 +780,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
                           if (areAndroidNotificationsAllowed != true) {
                             areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
-                            if (areAndroidNotificationsAllowed != true) return showSnackbar('Failed to request Android notifications permissions.');
+                            if (areAndroidNotificationsAllowed != true) return showSnackbar(l10n.permissionDenied);
                           }
 
                           // Permissions have been granted, so we can enable notifications
-                          if (notificationType.payload == NotificationType.local) {
-                            initBackgroundFetch();
-                            initHeadlessBackgroundFetch();
-                            setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
-                          } else if (notificationType.payload == NotificationType.unifiedPush) {
-                            // TODO: set up a way to enable UnifiedPush without app restart
-                            setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
-                          }
+                          setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
                           break;
                         case NotificationType.apn:
                           // We're on iOS. Request notifications permissions if needed.
@@ -794,10 +795,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
                           if (notificationsEnabledOptions?.isEnabled != true) {
                             bool? isEnabled = await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
-                            if (isEnabled != true) return showSnackbar('Failed to request iOS notifications permissions.');
-                            // TODO: set up a way to enable APNs without app restart
-                            setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
+                            if (isEnabled != true) return showSnackbar(l10n.permissionDenied);
                           }
+
+                          setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
                           break;
                         default:
                           break;

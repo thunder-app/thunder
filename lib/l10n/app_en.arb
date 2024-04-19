@@ -503,6 +503,10 @@
   "@disable": {
     "description": "Action for disabling something"
   },
+  "disablePushNotifications": "Disable Push Notifications",
+  "@disablePushNotifications": {
+    "description": "Description when disabling push notifications"
+  },
   "discussionLanguages": "Discussion Languages",
   "@discussionLanguages": {
     "description": "Only load posts and communities in your language(s)"
@@ -621,6 +625,10 @@
   },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
+  "failedToDisablePushNotifications": "Failed to disable existing push notifications. Please try again.",
+  "@failedToDisablePushNotifications": {
+    "description": "Error message when failed to disable push notifications."
+  },
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
   "@failedToLoadBlocks": {},
   "failedToUnblock": "Could not unblock: {errorMessage}",
@@ -1264,6 +1272,14 @@
   "purgedPost": "Purged Post",
   "@purgedPost": {
     "description": "Short decription for moderator action to purge a post"
+  },
+  "pushNotification": "Push Notifications",
+  "@pushNotification": {
+    "description": "Setting for push notifications"
+  },
+  "pushNotificationDescription": "If enabled, Thunder will send your JWT token(s) to the server in order to poll for new notifications. \\n\\n **NOTE:** This will not take effect until the next time the app is launched.",
+  "@pushNotificationDescription": {
+    "description": "Description of push notification setting"
   },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
@@ -1943,9 +1959,25 @@
   "@useAdvancedShareSheet": {
     "description": "Toggle to use advanced share sheet."
   },
+  "useApplePushNotifications": "Use APNs Notifications",
+  "@useApplePushNotifications": {
+    "description": "Toggle to use APNs."
+  },
+  "useApplePushNotificationsDescription": "Uses Apple's Push Notification service",
+  "@useApplePushNotificationsDescription": {
+    "description": "Subtitle of the setting for using APNs"
+  },
   "useCompactView": "Enable for small posts, disable for big.",
   "@useCompactView": {
     "description": "Option to enable or disable compact view for small posts."
+  },
+  "useLocalNotifications": "Use Local Notifications (Experimental)",
+  "@useLocalNotifications": {
+    "description": "Toggle to use local notifications."
+  },
+  "useLocalNotificationsDescription": "Periodically checks for notifications in the background",
+  "@useLocalNotificationsDescription": {
+    "description": "Subtitle of the setting for using local notifications"
   },
   "useMaterialYouTheme": "Use Material You Theme",
   "@useMaterialYouTheme": {
@@ -1957,6 +1989,14 @@
   },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
+  "useUnifiedPushNotifications": "Use UnifiedPush Notifications",
+  "@useUnifiedPushNotifications": {
+    "description": "Toggle to use UnifiedPush Notifications"
+  },
+  "useUnifiedPushNotificationsDescription": "Requires a compatible app",
+  "@useUnifiedPushNotificationsDescription": {
+    "description": "Subtitle of the setting for using UnifiedPush Notifications"
+  },
   "user": "User",
   "@user": {
     "description": "Role name for user"

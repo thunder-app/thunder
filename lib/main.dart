@@ -1,58 +1,49 @@
-import 'dart:io';
+// Dart imports
 import 'dart:async';
+import 'dart:io';
 
+// Flutter imports
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// External Packages
+// Package imports
+import "package:flutter_displaymode/flutter_displaymode.dart";
 import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import "package:flutter_displaymode/flutter_displaymode.dart";
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/core/enums/notification_type.dart';
-import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Project imports
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/database/database.dart';
 import 'package:thunder/core/database/migrations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/notification_type.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/instance/bloc/instance_bloc.dart';
-
-// Internal Packages
-import 'package:thunder/routes.dart';
-import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/routes.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:flutter/foundation.dart';
 import 'package:thunder/utils/notifications/notifications.dart';
 import 'package:thunder/utils/preferences.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/instance/bloc/instance_bloc.dart';
-import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 
 late AppDatabase database;
 
@@ -81,9 +72,6 @@ void main() async {
 
   // Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
-  // Load up preferences
-  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
   await initializeDatabase();
 
@@ -126,7 +114,7 @@ class _ThunderAppState extends State<ThunderApp> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      print(prefs.getString(LocalSettings.inboxNotificationType.name));
+
       if (NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name) != NotificationType.none) {
         // Initialize notification logic
         initPushNotificationLogic(controller: notificationsStreamController);

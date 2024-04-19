@@ -21,6 +21,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/notifications/notification_server.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 
 const String _inboxMessagesChannelId = 'inbox_messages';
@@ -81,12 +82,13 @@ void showAndroidNotification({
   );
 }
 
+/// The main function which triggers push notification logic. This handles both Android and iOS.
+///
+/// The [controller] is passed in so that we can react to push notifications.
 Future<void> initPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
   if (Platform.isAndroid) {
     initAndroidPushNotificationLogic(controller: controller);
-  }
-
-  if (Platform.isIOS) {
+  } else if (Platform.isIOS) {
     initIOSPushNotificationLogic(controller: controller);
   }
 }
@@ -101,8 +103,14 @@ void initAndroidPushNotificationLogic({required StreamController<NotificationRes
 
   if (notificationType == NotificationType.unifiedPush) {
     UnifiedPush.initialize(
-      onNewEndpoint: (String endpoint, String instance) {
+      onNewEndpoint: (String endpoint, String instance) async {
         debugPrint("Connected to instance: $instance @ $endpoint");
+        List<Account> accounts = await Account.accounts();
+
+        for (Account account in accounts) {
+          // TODO: Select accounts to enable push notifications
+          bool success = await sendAuthTokenToNotificationServer(type: notificationType, token: endpoint, jwts: [account.jwt!], instance: account.instance!);
+        }
       },
       onRegistrationFailed: (String instance) {
         debugPrint("UnifiedPush registration failed for $instance");
@@ -145,49 +153,68 @@ void initAndroidPushNotificationLogic({required StreamController<NotificationRes
     // Register Thunder with UnifiedPush
     if (GlobalContext.context.mounted) UnifiedPush.registerAppWithDialog(GlobalContext.context, 'Thunder', []);
   } else if (notificationType == NotificationType.local) {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-    // Initialize the Android-specific settings, using the splash asset as the notification icon.
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
-    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
-
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (notificationResponse) => controller.add(notificationResponse),
-    );
-
-    // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
-    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await FlutterLocalNotificationsPlugin().getNotificationAppLaunchDetails();
-
-    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails?.notificationResponse != null) {
-      controller.add(notificationAppLaunchDetails!.notificationResponse!);
-
-      bool startupDueToGroupNotification = notificationAppLaunchDetails.notificationResponse!.payload == repliesGroupKey;
-      // Do a notifications check on startup, if the user isn't clicking on a group notification
-      if (!startupDueToGroupNotification) pollRepliesAndShowNotifications();
-    }
-
     // Initialize background fetch (this is async and can go run on its own).
     initBackgroundFetch();
 
     // Register to receive BackgroundFetch events after app is terminated.
     initHeadlessBackgroundFetch();
   }
+
+  // Initialize the Flutter Local Notifications plugin for both UnifiedPush and Local notifications
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  // Initialize the Android-specific settings, using the splash asset as the notification icon.
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
+  const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: (notificationResponse) => controller.add(notificationResponse),
+  );
+
+  // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
+  final NotificationAppLaunchDetails? notificationAppLaunchDetails = await FlutterLocalNotificationsPlugin().getNotificationAppLaunchDetails();
+
+  if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails?.notificationResponse != null) {
+    controller.add(notificationAppLaunchDetails!.notificationResponse!);
+
+    bool startupDueToGroupNotification = notificationAppLaunchDetails.notificationResponse!.payload == repliesGroupKey;
+    // Do a notifications check on startup, if the user isn't clicking on a group notification
+    if (!startupDueToGroupNotification && notificationType == NotificationType.local) pollRepliesAndShowNotifications();
+  }
 }
 
 /// Initialize iOS specific notification logic. This is only called when the app is running on iOS.
 void initIOSPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
+  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+  NotificationType notificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
+
+  // Return if we don't have the expected types
+  if (notificationType != NotificationType.apn) return;
+
   // Fetch device token for APNs
   String? token = await Push.instance.token;
   if (token == null) return;
 
+  List<Account> accounts = await Account.accounts();
+
   /// We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
   debugPrint("Device token: $token");
 
+  for (Account account in accounts) {
+    // TODO: Select accounts to enable push notifications
+    bool success = await sendAuthTokenToNotificationServer(type: notificationType, token: token, jwts: [account.jwt!], instance: account.instance!);
+  }
+
   // Handle new tokens generated from the device
-  Push.instance.onNewToken.listen((token) {
+  Push.instance.onNewToken.listen((token) async {
     /// We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
     debugPrint("Received new device token: $token");
+
+    for (Account account in accounts) {
+      // TODO: Select accounts to enable push notifications
+      bool success = await sendAuthTokenToNotificationServer(type: notificationType, token: token, jwts: [account.jwt!], instance: account.instance!);
+    }
   });
 
   // Handle notification launching app from terminated state
