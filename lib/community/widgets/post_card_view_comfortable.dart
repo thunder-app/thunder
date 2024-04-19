@@ -86,6 +86,7 @@ class PostCardViewComfortable extends StatelessWidget {
       postViewMedia: postViewMedia,
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,
+      hideThumbnails: hideThumbnails,
       edgeToEdgeImages: edgeToEdgeImages,
       markPostReadOnMediaView: markPostReadOnMediaView,
       isUserLoggedIn: isUserLoggedIn,

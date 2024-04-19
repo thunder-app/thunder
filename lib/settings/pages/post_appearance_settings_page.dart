@@ -139,6 +139,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       // General Settings
       useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
+      hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
@@ -152,7 +153,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       compactPostCardMetadataItems =
           prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
       cardPostCardMetadataItems = prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
-      hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
       showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
 
@@ -185,6 +185,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.hideNsfwPreviews:
         await prefs.setBool(LocalSettings.hideNsfwPreviews.name, value);
         setState(() => hideNsfwPreviews = value);
+        break;
+      case LocalSettings.hideThumbnails:
+        await prefs.setBool(LocalSettings.hideThumbnails.name, value);
+        setState(() => hideThumbnails = value);
         break;
       case LocalSettings.showPostAuthor:
         await prefs.setBool(LocalSettings.showPostAuthor.name, value);
@@ -221,10 +225,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
       case LocalSettings.compactPostCardMetadataItems:
         await prefs.setStringList(LocalSettings.compactPostCardMetadataItems.name, value);
-        break;
-      case LocalSettings.hideThumbnails:
-        await prefs.setBool(LocalSettings.hideThumbnails.name, value);
-        setState(() => hideThumbnails = value);
         break;
       case LocalSettings.showThumbnailPreviewOnRight:
         await prefs.setBool(LocalSettings.showThumbnailPreviewOnRight.name, value);
@@ -295,6 +295,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
     await prefs.remove(LocalSettings.useCompactView.name);
     await prefs.remove(LocalSettings.hideNsfwPreviews.name);
+    await prefs.remove(LocalSettings.hideThumbnails.name);
     await prefs.remove(LocalSettings.showPostAuthor.name);
     await prefs.remove(LocalSettings.useDisplayNamesForUsers.name);
     await prefs.remove(LocalSettings.postShowUserInstance.name);
@@ -304,7 +305,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.feedCardDividerThickness.name);
     await prefs.remove(LocalSettings.feedCardDividerColor.name);
     await prefs.remove(LocalSettings.compactPostCardMetadataItems.name);
-    await prefs.remove(LocalSettings.hideThumbnails.name);
     await prefs.remove(LocalSettings.showThumbnailPreviewOnRight.name);
     await prefs.remove(LocalSettings.showTextPostIndicator.name);
     await prefs.remove(LocalSettings.cardPostCardMetadataItems.name);
@@ -583,6 +583,16 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           SliverToBoxAdapter(
             child: ToggleOption(
+              description: l10n.hideThumbnails,
+              value: hideThumbnails,
+              iconEnabled: Icons.hide_image_outlined,
+              iconDisabled: Icons.image_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
+              highlightKey: settingToHighlight == LocalSettings.hideThumbnails ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
               description: l10n.showPostAuthor,
               subtitle: l10n.showPostAuthorSubtitle,
               value: showPostAuthor,
@@ -812,16 +822,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.hideThumbnails,
-              value: hideThumbnails,
-              iconEnabled: Icons.hide_image_outlined,
-              iconDisabled: Icons.image_outlined,
-              onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
-              highlightKey: settingToHighlight == LocalSettings.hideThumbnails ? settingToHighlightKey : null,
-            ),
-          ),
           SliverToBoxAdapter(
             child: ToggleOption(
               description: l10n.showThumbnailPreviewOnRight,
@@ -1066,14 +1066,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ), // Title
           const SizedBox(height: 4.0),
         ],
-        Container(
-          height: showFullHeightImages ? 150 : 100,
-          margin: const EdgeInsets.symmetric(vertical: 8.0),
-          decoration: BoxDecoration(
-            color: theme.dividerColor,
-            borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+        if (!hideThumbnails)
+          Container(
+            height: showFullHeightImages ? 150 : 100,
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+            ),
           ),
-        ),
         if (!showTitleFirst) ...[
           const SizedBox(height: 4.0),
           Container(
