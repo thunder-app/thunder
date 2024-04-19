@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/shared/link_information.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -224,11 +225,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     if (widget.hideThumbnails) {
-      return linkInformation(
-        context,
-        widget.viewMode,
-        widget.postViewMedia.media.first.originalUrl,
-        widget.postViewMedia.media.first.mediaType,
+      return LinkInformation(
+        viewMode: widget.viewMode,
+        originURL: widget.postViewMedia.media.first.originalUrl,
+        mediaType: widget.postViewMedia.media.first.mediaType,
+        handleTapImage: showImage,
       );
     }
     switch (widget.postViewMedia.media.firstOrNull?.mediaType) {
@@ -346,46 +347,6 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             );
         }
       },
-    );
-  }
-
-  Widget linkInformation(BuildContext context, ViewMode viewMode, String? originURL, MediaType? mediaType) {
-    final theme = Theme.of(context);
-    final IconData icon = switch (mediaType) { MediaType.image => Icons.image_outlined, MediaType.video => Icons.play_arrow_rounded, MediaType.text => Icons.wysiwyg_rounded, _ => Icons.link_rounded };
-    return Semantics(
-      excludeSemantics: true,
-      child: Container(
-        color: ElevationOverlay.applySurfaceTint(
-          Theme.of(context).colorScheme.surface.withOpacity(0.8),
-          Theme.of(context).colorScheme.surfaceTint,
-          10,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-        child: InkWell(
-          onTap: () {
-            if (mediaType == MediaType.image) showImage();
-          },
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Icon(
-                  icon,
-                  color: theme.colorScheme.onSecondaryContainer,
-                ),
-              ),
-              if (viewMode != ViewMode.compact)
-                Expanded(
-                  child: Text(
-                    originURL!,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
