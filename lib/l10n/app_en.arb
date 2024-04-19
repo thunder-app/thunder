@@ -273,6 +273,10 @@
   "@commentReported": {},
   "commentSavedAsDraft": "Comment saved as draft",
   "@commentSavedAsDraft": {},
+  "commentShowUserAvatar": "Show User Avatar",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
   "commentShowUserInstance": "Show User Instance",
   "@commentShowUserInstance": {
     "description": "Settings toggle to display user instance alongside their display name in comments"
@@ -1165,6 +1169,10 @@
   "@postBodySettingsDescription": {
     "description": "Description of post body settings"
   },
+  "postBodyShowCommunityAvatar": "Show Community Avatar",
+  "@postBodyShowCommunityAvatar": {
+    "description": "Whether to show the community avatar for post bodies"
+  },
   "postBodyShowCommunityInstance": "Show Community Instance",
   "@postBodyShowCommunityInstance": {
     "description": "Whether to show the community instance for post bodies"
@@ -1616,6 +1624,10 @@
   "showUpdateChangelogsSubtitle": "Display a list of changes after an update",
   "@showUpdateChangelogsSubtitle": {
     "description": "Subtitle for setting for showing changelogs after updates"
+  },
+  "showUserAvatar": "Show User Avatar",
+  "@showUserAvatar": {
+    "description": "Toggle to show user avatar."
   },
   "showUserDisplayNames": "Show User Display Names",
   "@showUserDisplayNames": {

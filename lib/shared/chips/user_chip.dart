@@ -6,6 +6,7 @@ import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
@@ -19,6 +20,7 @@ class UserChip extends StatelessWidget {
   const UserChip({
     super.key,
     this.personId,
+    this.personAvatar,
     this.personName,
     this.personDisplayName,
     this.personUrl,
@@ -30,6 +32,9 @@ class UserChip extends StatelessWidget {
 
   /// The ID of the user
   final int? personId;
+
+  /// The avatar of the user
+  final UserAvatar? personAvatar;
 
   /// The username of the user
   final String? personName;
@@ -57,6 +62,7 @@ class UserChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
+    final showUserAvatar = state.commentShowUserAvatar;
 
     return IgnorePointer(
       ignoring: ignorePointerEvents,
@@ -77,6 +83,7 @@ class UserChip extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (showUserAvatar && personAvatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
                   UserFullNameWidget(
                     context,
                     personDisplayName != null && state.useDisplayNames ? personDisplayName! : personName,

@@ -14,7 +14,13 @@ class UserAvatar extends StatelessWidget {
   /// The radius of the avatar. Defaults to 16
   final double radius;
 
-  const UserAvatar({super.key, this.person, this.radius = 16.0});
+  /// The size of the thumbnail's height
+  final int? thumbnailSize;
+
+  /// The image format to request from the instance
+  final String? format;
+
+  const UserAvatar({super.key, this.person, this.radius = 16.0, this.thumbnailSize, this.format});
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +42,15 @@ class UserAvatar extends StatelessWidget {
 
     if (person?.avatar?.isNotEmpty != true) return placeholderIcon;
 
+    Uri imageUri = Uri.parse(person!.avatar!);
+    bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
+    Map<String, dynamic> queryParameters = {};
+    if (isPictrsImageEndpoint && thumbnailSize != null) queryParameters['thumbnail'] = thumbnailSize.toString();
+    if (isPictrsImageEndpoint && format != null) queryParameters['format'] = format;
+    Uri thumbnailUri = Uri.https(imageUri.host, imageUri.path, queryParameters);
+
     return CachedNetworkImage(
-      imageUrl: person!.avatar!,
+      imageUrl: thumbnailUri.toString(),
       imageBuilder: (context, imageProvider) {
         return CircleAvatar(
           backgroundColor: Colors.transparent,

@@ -29,6 +29,8 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/widgets/post_metadata.dart';
 import 'package:thunder/post/widgets/post_quick_actions_bar.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/community_chip.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -193,13 +195,16 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               width: MediaQuery.of(context).size.width,
               child: Wrap(
                 alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 runSpacing: 8.0,
                 children: [
                   Wrap(
                     spacing: 6.0,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       UserChip(
                         personId: postView.creator.id,
+                        personAvatar: UserAvatar(person: postView.creator, radius: 10, thumbnailSize: 20, format: 'png'),
                         personName: postView.creator.name,
                         personDisplayName: postView.creator.displayName ?? postView.creator.name,
                         personUrl: postView.creator.actorId,
@@ -215,6 +220,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       ),
                       CommunityChip(
                         communityId: postView.community.id,
+                        communityAvatar: CommunityAvatar(community: postView.community, radius: 10, thumbnailSize: 20, format: 'png'),
                         communityName: postView.community.name,
                         communityUrl: postView.community.actorId,
                       ),

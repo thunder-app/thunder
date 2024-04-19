@@ -80,6 +80,7 @@ class ThunderState extends Equatable {
     this.postBodyViewType = PostBodyViewType.expanded,
     this.postBodyShowUserInstance = false,
     this.postBodyShowCommunityInstance = false,
+    this.postBodyShowCommunityAvatar = false,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -89,6 +90,7 @@ class ThunderState extends Equatable {
     this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
     this.commentShowUserInstance = false,
+    this.commentShowUserAvatar = false,
     this.combineCommentScores = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
@@ -231,6 +233,7 @@ class ThunderState extends Equatable {
   final PostBodyViewType postBodyViewType;
   final bool postBodyShowUserInstance;
   final bool postBodyShowCommunityInstance;
+  final bool postBodyShowCommunityAvatar;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -240,6 +243,7 @@ class ThunderState extends Equatable {
   final bool collapseParentCommentOnGesture;
   final bool showCommentButtonActions;
   final bool commentShowUserInstance;
+  final bool commentShowUserAvatar;
   final bool combineCommentScores;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
@@ -388,6 +392,7 @@ class ThunderState extends Equatable {
     PostBodyViewType? postBodyViewType,
     bool? postBodyShowUserInstance,
     bool? postBodyShowCommunityInstance,
+    bool? postBodyShowCommunityAvatar,
 
     // Keyword filters
     List<String>? keywordFilters,
@@ -398,6 +403,7 @@ class ThunderState extends Equatable {
     bool? collapseParentCommentOnGesture,
     bool? showCommentButtonActions,
     bool? commentShowUserInstance,
+    bool? commentShowUserAvatar,
     bool? combineCommentScores,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
@@ -540,6 +546,7 @@ class ThunderState extends Equatable {
       postBodyViewType: postBodyViewType ?? this.postBodyViewType,
       postBodyShowUserInstance: postBodyShowUserInstance ?? this.postBodyShowUserInstance,
       postBodyShowCommunityInstance: postBodyShowCommunityInstance ?? this.postBodyShowCommunityInstance,
+      postBodyShowCommunityAvatar: postBodyShowCommunityAvatar ?? this.postBodyShowCommunityAvatar,
 
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
@@ -551,6 +558,7 @@ class ThunderState extends Equatable {
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
+      commentShowUserAvatar: commentShowUserAvatar ?? this.commentShowUserAvatar,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
@@ -697,6 +705,7 @@ class ThunderState extends Equatable {
         postBodyViewType,
         postBodyShowUserInstance,
         postBodyShowCommunityInstance,
+        postBodyShowCommunityAvatar,
 
         keywordFilters,
 
@@ -708,6 +717,7 @@ class ThunderState extends Equatable {
         collapseParentCommentOnGesture,
         showCommentButtonActions,
         commentShowUserInstance,
+        commentShowUserAvatar,
         combineCommentScores,
 
         nestedCommentIndicatorStyle,
