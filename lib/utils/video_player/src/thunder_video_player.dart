@@ -1,6 +1,9 @@
-import 'package:chewie/chewie.dart';
+
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:river_player/river_player.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class ThunderVideoPlayer extends StatefulWidget {
   const ThunderVideoPlayer({
@@ -19,46 +22,51 @@ class ThunderVideoPlayer extends StatefulWidget {
 }
 
 class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
-  late ChewieController? chewieController;
-  late VideoPlayerController videoPlayerController;
+  
+late BetterPlayerController _betterPlayerController;
+  late BetterPlayerDataSource _betterPlayerDataSource;
 
   @override
   void dispose() async {
-    videoPlayerController.dispose();
-    chewieController?.dispose();
+    _betterPlayerController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
-    _initializePlayer();
     super.initState();
+    _initializePlayer();
   }
 
   Future<void> _initializePlayer() async {
-    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
-    await videoPlayerController.initialize();
-    chewieController = ChewieController(
-      videoPlayerController: videoPlayerController,
-      autoPlay: false,
-      autoInitialize: true,
-      aspectRatio: videoPlayerController.value.aspectRatio,
-      controlsSafeAreaMinimum: const EdgeInsets.only(bottom: 8),
-      looping: false,
-      hideControlsTimer: const Duration(seconds: 1),
+    final thunderBloc = context.read<ThunderBloc>().state;
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 16 / 10,
+      fit: BoxFit.cover,
+      autoPlay: true,
+      fullScreenByDefault: thunderBloc.videoAutoFullscreen,
+      looping: thunderBloc.videoAutoLoop,
+      deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp],
     );
-    setState(() {});
+    _betterPlayerDataSource = BetterPlayerDataSource(
+      BetterPlayerDataSourceType.network,
+      widget.videoUrl,
+    );
+    _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
+    _betterPlayerController.setupDataSource(_betterPlayerDataSource);
+    
+ 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: (chewieController != null && chewieController!.videoPlayerController.value.isInitialized)
-            ? SafeArea(
-                child: Chewie(
-                  controller: chewieController!,
-                ),
-              )
-            : const Center(child: CircularProgressIndicator()));
+      body: Center(
+        child: AspectRatio(
+          aspectRatio: 16 / 10,
+          child: BetterPlayer(controller: _betterPlayerController),
+        ),
+      ),
+    );
   }
 }

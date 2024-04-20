@@ -143,7 +143,12 @@ class ThunderState extends Equatable {
     this.postFabLongPressAction = PostFabAction.openFab,
     this.enableCommentNavigation = true,
     this.combineNavAndFab = true,
-
+    /// ------------------ Video Player ------------------------
+    this.videoAutoFullscreen = false,
+    this.videoAutoLoop = false,
+    this.videoAutoMute = true,
+    this.videoAutoPlay = VideoAutoPlay.never,
+    this.videoDefaultPlaybackSpeed = VideoPlayBackSpeed.normal,
     /// -------------------------- Accessibility Related Settings --------------------------
     this.reduceAnimations = false,
     this.anonymousInstances = const ['lemmy.ml'],
@@ -307,7 +312,14 @@ class ThunderState extends Equatable {
 
   final List<String> anonymousInstances;
   final String currentAnonymousInstance;
-
+  
+  /// ------------------ Video Player ------------------------
+  final bool videoAutoFullscreen;
+  final bool videoAutoLoop;
+  final bool videoAutoMute;
+  final VideoAutoPlay videoAutoPlay;
+  final VideoPlayBackSpeed videoDefaultPlaybackSpeed;
+  
   /// --------------------------------- UI Events ---------------------------------
   // Expand/Close FAB event
   final bool isFabOpen;
@@ -460,6 +472,12 @@ class ThunderState extends Equatable {
     List<String>? anonymousInstances,
     String? currentAnonymousInstance,
 
+    /// ------------------ Video Player ------------------------
+    bool? videoAutoFullscreen,
+    bool? videoAutoLoop,
+    bool? videoAutoMute,
+    VideoAutoPlay? videoAutoPlay,
+    VideoPlayBackSpeed? videoDefaultPlaybackSpeed,
     /// --------------------------------- UI Events ---------------------------------
     // Expand/Close FAB event
     bool? isFabOpen,
@@ -613,10 +631,16 @@ class ThunderState extends Equatable {
 
       /// -------------------------- Accessibility Related Settings --------------------------
       reduceAnimations: reduceAnimations ?? this.reduceAnimations,
-
+      /// ------------------ Video Player ------------------------
+      videoAutoFullscreen: videoAutoFullscreen ?? this.videoAutoFullscreen,
+      videoAutoLoop: videoAutoLoop ?? this.videoAutoLoop,
+      videoAutoMute: videoAutoMute ?? this.videoAutoMute,
+      videoAutoPlay: videoAutoPlay ?? this.videoAutoPlay,
+      videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed ?? this.videoDefaultPlaybackSpeed,
       anonymousInstances: anonymousInstances ?? this.anonymousInstances,
       currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
-
+      /// ------------------ Video Player ------------------------
+      
       /// --------------------------------- UI Events ---------------------------------
       // Expand/Close FAB event
       isFabOpen: isFabOpen ?? this.isFabOpen,
@@ -766,7 +790,12 @@ class ThunderState extends Equatable {
 
         enableCommentNavigation,
         combineNavAndFab,
-
+        /// ------------------ Video Player ------------------------
+        videoAutoFullscreen,
+        videoAutoLoop,
+        videoAutoMute,
+        videoAutoPlay,
+        videoDefaultPlaybackSpeed,
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations,
 

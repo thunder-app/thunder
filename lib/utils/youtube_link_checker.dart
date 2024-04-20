@@ -3,7 +3,7 @@ bool? isYouTubeLink(String? url) {
     return null;
   }
 
-  RegExp regExp = RegExp(r'^https?://(?:www\.)?youtube\.com/(?:[^/]+/u/\d+/|embed/|v/|watch\?v=|watch\?.+&v=|)([^"&?/\s]{11})');
+  RegExp regExp = RegExp(r'(?:https?://)?(?:www\.)?(?:youtube\.com(?:/[^/]+/.+/.+|\?.*v=|/v/)|youtu\.be/)([^"&?/\s]{11})');
 
   return regExp.hasMatch(url);
 }

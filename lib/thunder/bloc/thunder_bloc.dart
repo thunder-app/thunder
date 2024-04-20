@@ -21,6 +21,8 @@ import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';
+import 'package:thunder/core/enums/video_auto_play.dart';
+import 'package:thunder/core/enums/video_playback_speed.dart';
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -244,7 +246,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       /// -------------------------- Accessibility Related Settings --------------------------
       bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
+      
+      /// ------------------ VIDEO PLAYER SETTINGS -----------------------------------------
+      bool videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
+      bool videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
+      bool videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? false;
+      VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
+      VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoPlayBackSpeed.normal.name);
 
+      
       List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ??
           // If the user already has some accouts (i.e., an upgrade), we don't want to just throw an anonymous instance at them
           ((await Account.accounts()).isNotEmpty ? [] : ['lemmy.ml']);
@@ -393,6 +403,12 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations: reduceAnimations,
+        /// ------------------ VIDEO PLAYER SETTINGS -----------------------------------------
+        videoAutoMute: videoAutoMute,
+        videoAutoFullscreen: videoAutoFullscreen,
+        videoAutoLoop: videoAutoLoop,
+        videoAutoPlay: videoAutoPlay,
+        videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed,
 
         anonymousInstances: anonymousInstances,
         currentAnonymousInstance: currentAnonymousInstance,

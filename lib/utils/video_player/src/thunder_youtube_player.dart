@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -32,15 +34,18 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
   @override
   void initState() {
     super.initState();
+   
+    final thunderBloc = context.read<ThunderBloc>().state;
     if (Platform.isAndroid || Platform.isIOS) {
       _ypfController = ypf.YoutubePlayerController(
         initialVideoId: grabYoutubeVideoId(widget.videoUrl),
-        flags: const ypf.YoutubePlayerFlags(
+        flags: ypf.YoutubePlayerFlags(
           controlsVisibleAtStart: true,
           autoPlay: false,
           enableCaption: false,
           hideControls: false,
-          mute: true,
+            
+          mute: thunderBloc.videoAutoMute,
         ),
       )..addListener(listener);
     } else {
@@ -54,6 +59,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
       );
       _controller.loadVideoById(videoId: grabYoutubeVideoId(widget.videoUrl));
     }
+    
     _videoMetaData = const ypf.YoutubeMetaData();
     _playerState = ypf.PlayerState.unknown;
     animationController = AnimationController(
@@ -140,6 +146,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
                             onPressed: _isPlayerReady

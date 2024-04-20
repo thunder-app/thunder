@@ -46,7 +46,8 @@ enum LocalSettingsSubCategories {
   theme('Theme'),
   sidebar('Sidebar'),
   cardView('cardView'),
-  navigation('navigation');
+  navigation('navigation'),
+  videoPlayer('videoPlayer');
 
   final String value;
 
@@ -272,11 +273,11 @@ enum LocalSettings {
   // import export settings
   importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
   // video player
-  videoAutoMute(name: 'auto_mute_videos', key: 'videoAutoMute', category: LocalSettingsCategories.videoPlayer),
-  videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer),
-  videoAutoFullscreen(name: 'video_auto_fullscreen', key: 'videoAutoFullscreen', category: LocalSettingsCategories.videoPlayer),
-  videoAutoLoop(name: 'video_auto_loop', key: 'videoAutoLoop', category: LocalSettingsCategories.videoPlayer),
-  videoAutoPlay(name: 'video_auto_play', key: 'videoAutoPlay', category: LocalSettingsCategories.videoPlayer);
+  videoAutoMute(name: 'auto_mute_videos', key: 'videoAutoMute', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoAutoFullscreen(name: 'video_auto_fullscreen', key: 'videoAutoFullscreen', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoAutoLoop(name: 'video_auto_loop', key: 'videoAutoLoop', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoAutoPlay(name: 'video_auto_play', key: 'videoAutoPlay', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer);
 
   const LocalSettings({
     required this.name,

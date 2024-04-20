@@ -1,7 +1,7 @@
 enum VideoPlayBackSpeed {
-  twoPoint5x(label: '0.25x'),
+  pointTow5x(label: '0.25x'),
   point5x(label: '0.5x'),
-  sevenPoint5x(label: '0.75x'),
+  pointSeven5x(label: '0.75x'),
   normal(label: 'normal'),
   onePointTwo5x(label: '1.25x'),
   onePoint5x(label: '1.5x'),
