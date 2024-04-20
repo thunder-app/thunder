@@ -507,6 +507,10 @@
   "@disablePushNotifications": {
     "description": "Description when disabling push notifications"
   },
+  "disabled": "Disabled",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
   "discussionLanguages": "Discussion Languages",
   "@discussionLanguages": {
     "description": "Only load posts and communities in your language(s)"
@@ -2078,6 +2082,5 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {},
-  "disabled": "Disabled"
+  "@xUpvotes": {}
 }
