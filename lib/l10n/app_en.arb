@@ -629,7 +629,7 @@
   },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
-  "failedToDisablePushNotifications": "Failed to disable existing push notifications. Please try again.",
+  "failedToDisablePushNotifications": "Failed to disable existing push notifications. Will try again when app restarts.",
   "@failedToDisablePushNotifications": {
     "description": "Error message when failed to disable push notifications."
   },
@@ -1285,6 +1285,10 @@
   "@pushNotificationDescription": {
     "description": "Description of push notification setting"
   },
+  "pushNotificationServer": "Push Notification Server",
+  "@pushNotificationServer": {},
+  "pushNotificationServerDescription": "Configure the notification server to use for sending push notifications.",
+  "@pushNotificationServerDescription": {},
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",

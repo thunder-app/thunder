@@ -12,6 +12,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
@@ -93,6 +94,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, system-level notifications will be displayed for new inbox messages
   NotificationType inboxNotificationType = NotificationType.none;
 
+  /// The URL of the push notification server
+  String pushNotificationServer = '';
+
   /// When enabled, authors and community names will be tappable when in compact view
   bool tappableAuthorCommunity = false;
 
@@ -121,6 +125,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// List of authenticated accounts
   List<Account> accounts = [];
+
+  /// Controller for the navigation server URL
+  TextEditingController controller = TextEditingController();
 
   Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -205,6 +212,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setString(LocalSettings.inboxNotificationType.name, (value as NotificationType).name);
         setState(() => inboxNotificationType = value);
         break;
+      case LocalSettings.pushNotificationServer:
+        await prefs.setString(LocalSettings.pushNotificationServer.name, value);
+        setState(() => pushNotificationServer = value);
+        break;
 
       case LocalSettings.imageCachingMode:
         await prefs.setString(LocalSettings.imageCachingMode.name, value);
@@ -262,6 +273,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
       inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
+      pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+      controller.text = pushNotificationServer;
 
       accounts = allAccounts;
     });
@@ -723,23 +736,23 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       if (Platform.isAndroid) {
                         disableBackgroundFetch();
                         UnifiedPush.unregister();
-                      } else if (Platform.isIOS) {
-                        // TODO: Disable APNs
                       }
+
+                      bool successfullyRemovedExistingTokens = false;
 
                       // Delete all server tokens related to all accounts if the option was previously unified push or apns
                       if (inboxNotificationType == NotificationType.unifiedPush || inboxNotificationType == NotificationType.apn) {
-                        bool success = await deleteAccountFromNotificationServer();
-                        if (!success) {
-                          showSnackbar(l10n.failedToDisablePushNotifications);
-                          return;
-                        }
+                        successfullyRemovedExistingTokens = await deleteAccountFromNotificationServer();
                       }
 
-                      // If disabled, do nothing
-                      if (notificationType.payload == NotificationType.none) {
-                        setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
-                        return;
+                      if (notificationType.payload == NotificationType.none && successfullyRemovedExistingTokens) {
+                        // If we have successfully removed all tokens from the server, we'll remove the preference altogether
+                        SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                        prefs.remove(LocalSettings.inboxNotificationType.name);
+                        debugPrint('Removed tokens from notification server');
+                      } else if (notificationType.payload == NotificationType.none && !successfullyRemovedExistingTokens) {
+                        showSnackbar(l10n.failedToDisablePushNotifications);
+                        return setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
                       }
 
                       // If using local notifications, show a warning
@@ -817,6 +830,57 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   );
                 },
               ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SettingsListTile(
+              icon: Icons.electrical_services_rounded,
+              description: l10n.pushNotificationServer,
+              subtitle: pushNotificationServer,
+              widget: const SizedBox(
+                height: 42.0,
+                child: Icon(Icons.chevron_right_rounded),
+              ),
+              onTap: () async {
+                showThunderDialog<void>(
+                  context: context,
+                  title: l10n.pushNotificationServer,
+                  contentWidgetBuilder: (_) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          l10n.pushNotificationServerDescription,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                          ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        TextField(
+                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.url,
+                          autocorrect: false,
+                          controller: controller,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            border: const OutlineInputBorder(),
+                            labelText: l10n.url,
+                            hintText: THUNDER_SERVER_URL,
+                          ),
+                          enableSuggestions: false,
+                        ),
+                      ],
+                    );
+                  },
+                  secondaryButtonText: l10n.cancel,
+                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                  primaryButtonText: l10n.confirm,
+                  onPrimaryButtonPressed: (dialogContext, _) {
+                    setPreferences(LocalSettings.pushNotificationServer, controller.text);
+                    Navigator.of(dialogContext).pop();
+                  },
+                );
+              },
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),

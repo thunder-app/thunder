@@ -102,6 +102,7 @@ enum LocalSettings {
   scoreCounters(name: 'setting_score_counters', key: "showScoreCounters", category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   appLanguageCode(name: 'setting_app_language_code', key: 'appLanguage', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
   inboxNotificationType(name: 'setting_inbox_notification_type', key: 'inboxNotificationType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
+  pushNotificationServer(name: 'setting_push_notification_server', key: 'pushNotificationServer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
@@ -323,6 +324,7 @@ extension LocalizationExt on AppLocalizations {
       'showInAppUpdateNotifications': showInAppUpdateNotifications,
       'showUpdateChangelogs': showUpdateChangelogs,
       'inboxNotificationType': enableInboxNotifications,
+      'pushNotificationServer': pushNotificationServer,
       'showScoreCounters': showScoreCounters,
       'appLanguage': appLanguage,
       'compactView': compactView,

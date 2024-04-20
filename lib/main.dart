@@ -37,6 +37,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/notification/notifications.dart';
+import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/routes.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
@@ -114,10 +115,19 @@ class _ThunderAppState extends State<ThunderApp> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      String? inboxNotificationType = prefs.getString(LocalSettings.inboxNotificationType.name);
 
-      if (NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name) != NotificationType.none) {
+      if (NotificationType.values.byName(inboxNotificationType ?? NotificationType.none.name) != NotificationType.none) {
         // Initialize notification logic
         initPushNotificationLogic(controller: notificationsStreamController);
+      } else if (inboxNotificationType != null && inboxNotificationType == NotificationType.none.name) {
+        // Attempt to remove tokens from notification server. When inboxNotificationType == NotificationType.none.name, that means at some point in time
+        // removing the tokens was unsuccessful. When there is a successful removal, the inboxNotificationType will be set to null.
+        bool success = await deleteAccountFromNotificationServer();
+        if (success) {
+          prefs.remove(LocalSettings.inboxNotificationType.name);
+          debugPrint('Removed tokens from notification server');
+        }
       }
     });
   }
