@@ -2078,5 +2078,6 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "disabled": "Disabled"
 }

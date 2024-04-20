@@ -36,13 +36,13 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/notification/notifications.dart';
 import 'package:thunder/routes.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/utils/notifications/notifications.dart';
 import 'package:thunder/utils/preferences.dart';
 
 late AppDatabase database;

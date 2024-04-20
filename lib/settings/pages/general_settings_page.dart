@@ -12,6 +12,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
@@ -19,6 +20,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/notification_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/notification/utils/local_notifications.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -32,8 +34,7 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/language/language.dart';
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/utils/notifications/notification_server.dart';
-import 'package:thunder/utils/notifications/notifications.dart';
+import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:version/version.dart';
 
@@ -117,6 +118,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
+
+  /// List of authenticated accounts
+  List<Account> accounts = [];
 
   Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -220,6 +224,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
+    // Get all accounts
+    List<Account> allAccounts = await Account.accounts();
+
     setState(() {
       // Default Sorts and Listing
       try {
@@ -255,6 +262,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
       inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
+
+      accounts = allAccounts;
     });
   }
 
@@ -660,8 +669,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.enableInboxNotifications,
-              subtitle: inboxNotificationType.toString(),
+              subtitle: accounts.isEmpty ? l10n.disabled : inboxNotificationType.toString(),
               value: const ListPickerItem(payload: -1),
+              disabled: accounts.isEmpty,
               icon: inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded,
               highlightKey: settingToHighlight == LocalSettings.inboxNotificationType ? settingToHighlightKey : null,
               customListPicker: StatefulBuilder(
