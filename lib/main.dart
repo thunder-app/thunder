@@ -30,7 +30,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/database/database.dart';
 import 'package:thunder/core/database/migrations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/enums/notification_type.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';

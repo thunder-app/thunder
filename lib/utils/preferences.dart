@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/enums/notification_type.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 
 Future<void> performSharedPreferencesMigration() async {

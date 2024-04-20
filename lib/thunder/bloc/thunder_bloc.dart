@@ -18,7 +18,7 @@ import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
-import 'package:thunder/core/enums/notification_type.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';

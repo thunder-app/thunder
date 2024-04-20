@@ -17,7 +17,7 @@ import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/enums/notification_type.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/utils/local_notifications.dart';

@@ -10,7 +10,7 @@ import 'package:push/push.dart';
 
 // Project imports
 import 'package:thunder/account/models/account.dart';
-import 'package:thunder/core/enums/notification_type.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 
 /// Initializes push notifications for APNs (Apple Push Notifications service).

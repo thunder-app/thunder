@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/enums/notification_type.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/utils/apns.dart';

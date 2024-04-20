@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 // Project imports:
 import 'package:thunder/account/models/account.dart';
-import 'package:thunder/core/enums/notification_type.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/utils/constants.dart';
 
 // String notificationServerUrl = '$THUNDER_SERVER_URL/notifications';
