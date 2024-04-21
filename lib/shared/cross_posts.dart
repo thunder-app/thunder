@@ -85,6 +85,10 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                   style: crossPostLinkTextStyle,
                                   // This text is not tappable; there is an invisible widget above this that handles the InkWell and the tap gesture
                                 ),
+                                TextSpan(
+                                  text: '(${widget.crossPosts[0].counts.score >= 0 ? '+' : '-'}${widget.crossPosts[0].counts.score}) ',
+                                  style: crossPostTextStyle,
+                                ),
                                 if (widget.crossPosts.length > 1)
                                   TextSpan(
                                     text: l10n.andXMore(widget.crossPosts.length - 1),
@@ -161,6 +165,10 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                       generateCommunityFullName(context, widget.crossPosts[index + 1].community.name, fetchInstanceNameFromUrl(widget.crossPosts[index + 1].community.actorId)),
                                       style: crossPostLinkTextStyle,
                                     ),
+                                  ),
+                                  Text(
+                                    ' (${widget.crossPosts[index + 1].counts.score >= 0 ? '+' : '-'}${widget.crossPosts[index + 1].counts.score})',
+                                    style: crossPostTextStyle,
                                   ),
                                 ],
                               ),
