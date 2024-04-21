@@ -120,7 +120,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
             // We will make the bottom spacer the size of the list height, minus the size of the two other widgets.
             // This will allow the last comment to be scrolled to the top, with the "reached bottom" indicator and the spacer
             // taking up the rest of the space.
-            _bottomSpacerHeight = max(0, listHeight - lastCommentHeight - reachedBottomHeight);
+            _bottomSpacerHeight = max(160, listHeight - lastCommentHeight - reachedBottomHeight);
             setState(() {});
           }
         }
