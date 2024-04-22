@@ -105,7 +105,6 @@ Future<void> pollRepliesAndShowNotifications() async {
         title: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
         content: plaintextComment,
         payload: '$repliesGroupKey-${commentReplyView.comment.id}',
-        summaryText: generateUserFullName(null, commentReplyView.recipient.name, fetchInstanceNameFromUrl(commentReplyView.recipient.actorId), userSeparator: userSeparator),
       );
     }
   }

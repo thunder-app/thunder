@@ -44,7 +44,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
 
       // TODO: Select accounts to enable push notifications
       for (Account account in accounts) {
-        bool success = await sendAuthTokenToNotificationServer(type: NotificationType.unifiedPush, token: endpoint, jwts: [account.jwt!], instance: account.instance!);
+        bool success = await sendAuthTokenToNotificationServer(type: NotificationType.unifiedPush, token: endpoint, jwt: account.jwt!, instance: account.instance!);
         if (!success) debugPrint("Failed to send device token to server for account ${account.id}. Skipping.");
       }
     },
@@ -97,7 +97,6 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           title: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
           content: plaintextComment,
           payload: '$repliesGroupKey-${commentReplyView.comment.id}',
-          summaryText: generateUserFullName(null, commentReplyView.recipient.name, fetchInstanceNameFromUrl(commentReplyView.recipient.actorId), userSeparator: userSeparator),
         );
       }
 
@@ -126,7 +125,6 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           title: generateUserFullName(null, personMentionView.creator.name, fetchInstanceNameFromUrl(personMentionView.creator.actorId), userSeparator: userSeparator),
           content: plaintextComment,
           payload: '$repliesGroupKey-${personMentionView.comment.id}',
-          summaryText: generateUserFullName(null, personMentionView.recipient.name, fetchInstanceNameFromUrl(personMentionView.recipient.actorId), userSeparator: userSeparator),
         );
       }
 

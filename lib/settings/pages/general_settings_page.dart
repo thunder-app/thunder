@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:lemmy_api_client/v3.dart';
@@ -123,10 +124,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
-  /// List of authenticated accounts
+  /// List of authenticated accounts. Used to determine if push notifications are enabled
   List<Account> accounts = [];
 
-  /// Controller for the navigation server URL
+  /// Controller for the push notification server URL
   TextEditingController controller = TextEditingController();
 
   Future<void> setPreferences(attribute, value) async {
@@ -235,8 +236,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
-    // Get all accounts
-    List<Account> allAccounts = await Account.accounts();
+    // Get all currently active accounts
+    List<Account> accountList = await Account.accounts();
 
     setState(() {
       // Default Sorts and Listing
@@ -276,7 +277,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
       controller.text = pushNotificationServer;
 
-      accounts = allAccounts;
+      accounts = accountList;
     });
   }
 
@@ -679,210 +680,209 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               highlightKey: settingToHighlight == LocalSettings.showUpdateChangelogs ? settingToHighlightKey : null,
             ),
           ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.enableInboxNotifications,
-              subtitle: accounts.isEmpty ? l10n.disabled : inboxNotificationType.toString(),
-              value: const ListPickerItem(payload: -1),
-              disabled: accounts.isEmpty,
-              icon: inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded,
-              highlightKey: settingToHighlight == LocalSettings.inboxNotificationType ? settingToHighlightKey : null,
-              customListPicker: StatefulBuilder(
-                builder: (context, setState) {
-                  return BottomSheetListPicker<NotificationType>(
-                    title: l10n.pushNotification,
-                    heading: Align(
-                      alignment: Alignment.centerLeft,
-                      child: CommonMarkdownBody(body: l10n.pushNotificationDescription),
-                    ),
-                    previouslySelected: inboxNotificationType,
-                    items: Platform.isAndroid
-                        ? [
-                            ListPickerItem(
-                              icon: Icons.notifications_off_rounded,
-                              label: l10n.none,
-                              payload: NotificationType.none,
-                            ),
-                            ListPickerItem(
-                              icon: Icons.notifications_rounded,
-                              label: l10n.useLocalNotifications,
-                              subtitle: l10n.useLocalNotificationsDescription,
-                              payload: NotificationType.local,
-                            ),
-                            ListPickerItem(
-                              icon: Icons.notifications_active_rounded,
-                              label: l10n.useUnifiedPushNotifications,
-                              subtitle: l10n.useUnifiedPushNotificationsDescription,
-                              payload: NotificationType.unifiedPush,
-                            ),
-                          ]
-                        : [
-                            ListPickerItem(
-                              icon: Icons.notifications_off_rounded,
-                              label: l10n.disablePushNotifications,
-                              payload: NotificationType.none,
-                            ),
-                            ListPickerItem(
-                              icon: Icons.notifications_active_rounded,
-                              label: l10n.useApplePushNotifications,
-                              subtitle: l10n.useApplePushNotificationsDescription,
-                              payload: NotificationType.apn,
-                            ),
-                          ],
-                    onSelect: (ListPickerItem<NotificationType> notificationType) async {
-                      if (notificationType.payload == inboxNotificationType) return;
-
-                      // Disable all notifications since the option has changed.
-                      if (Platform.isAndroid) {
-                        disableBackgroundFetch();
-                        UnifiedPush.unregister();
-                      }
-
-                      bool successfullyRemovedExistingTokens = false;
-
-                      // Delete all server tokens related to all accounts if the option was previously unified push or apns
-                      if (inboxNotificationType == NotificationType.unifiedPush || inboxNotificationType == NotificationType.apn) {
-                        successfullyRemovedExistingTokens = await deleteAccountFromNotificationServer();
-                      }
-
-                      if (notificationType.payload == NotificationType.none && successfullyRemovedExistingTokens) {
-                        // If we have successfully removed all tokens from the server, we'll remove the preference altogether
-                        SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                        prefs.remove(LocalSettings.inboxNotificationType.name);
-                        debugPrint('Removed tokens from notification server');
-                      } else if (notificationType.payload == NotificationType.none && !successfullyRemovedExistingTokens) {
-                        showSnackbar(l10n.failedToDisablePushNotifications);
-                        return setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
-                      }
-
-                      // If using local notifications, show a warning
-                      if (notificationType.payload == NotificationType.local) {
-                        bool res = false;
-
-                        await showThunderDialog(
-                          context: context,
-                          title: l10n.warning,
-                          contentWidgetBuilder: (_) => Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CommonMarkdownBody(body: l10n.notificationsWarningDialog),
-                              const SizedBox(height: 5),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: GestureDetector(
-                                  onTap: () => handleLink(context, url: 'https://dontkillmyapp.com/'),
-                                  child: Text(
-                                    'https://dontkillmyapp.com/',
-                                    style: theme.textTheme.bodyMedium?.copyWith(color: Colors.blue),
-                                  ),
-                                ),
+          if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) ...[
+            SliverToBoxAdapter(
+              child: ListOption(
+                description: l10n.enableInboxNotifications,
+                subtitle: accounts.isEmpty ? l10n.disabled : inboxNotificationType.toString(),
+                value: const ListPickerItem(payload: -1),
+                disabled: accounts.isEmpty,
+                icon: inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded,
+                highlightKey: settingToHighlight == LocalSettings.inboxNotificationType ? settingToHighlightKey : null,
+                customListPicker: StatefulBuilder(
+                  builder: (context, setState) {
+                    return BottomSheetListPicker<NotificationType>(
+                      title: l10n.pushNotification,
+                      heading: Align(
+                        alignment: Alignment.centerLeft,
+                        child: CommonMarkdownBody(body: l10n.pushNotificationDescription),
+                      ),
+                      previouslySelected: inboxNotificationType,
+                      items: Platform.isAndroid
+                          ? [
+                              ListPickerItem(
+                                icon: Icons.notifications_off_rounded,
+                                label: l10n.none,
+                                payload: NotificationType.none,
+                              ),
+                              ListPickerItem(
+                                icon: Icons.notifications_rounded,
+                                label: l10n.useLocalNotifications,
+                                subtitle: l10n.useLocalNotificationsDescription,
+                                payload: NotificationType.local,
+                              ),
+                              ListPickerItem(
+                                icon: Icons.notifications_active_rounded,
+                                label: l10n.useUnifiedPushNotifications,
+                                subtitle: l10n.useUnifiedPushNotificationsDescription,
+                                payload: NotificationType.unifiedPush,
+                              ),
+                            ]
+                          : [
+                              ListPickerItem(
+                                icon: Icons.notifications_off_rounded,
+                                label: l10n.disablePushNotifications,
+                                payload: NotificationType.none,
+                              ),
+                              ListPickerItem(
+                                icon: Icons.notifications_active_rounded,
+                                label: l10n.useApplePushNotifications,
+                                subtitle: l10n.useApplePushNotificationsDescription,
+                                payload: NotificationType.apn,
                               ),
                             ],
+                      onSelect: (ListPickerItem<NotificationType> notificationType) async {
+                        if (notificationType.payload == inboxNotificationType) return;
+
+                        // Disable all notifications since the option has changed.
+                        if (Platform.isAndroid) {
+                          disableBackgroundFetch();
+                          UnifiedPush.unregister();
+                        }
+
+                        bool successfullyRemovedExistingTokens = false;
+
+                        // Delete all server tokens related to all accounts if the option was previously unified push or apns
+                        if (inboxNotificationType == NotificationType.unifiedPush || inboxNotificationType == NotificationType.apn) {
+                          successfullyRemovedExistingTokens = await deleteAccountFromNotificationServer();
+                        }
+
+                        if (notificationType.payload == NotificationType.none && successfullyRemovedExistingTokens) {
+                          // If we have successfully removed all tokens from the server, we'll remove the preference altogether
+                          SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                          prefs.remove(LocalSettings.inboxNotificationType.name);
+                          debugPrint('Removed tokens from notification server');
+                        } else if (notificationType.payload == NotificationType.none && !successfullyRemovedExistingTokens) {
+                          // If we failed to remove all tokens from the server, we'll set the preference to NotificationType.none
+                          // The next time the app is opened, it will attempt to remove tokens from the server
+                          showSnackbar(l10n.failedToDisablePushNotifications);
+                          return setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
+                        }
+
+                        // If using local notifications, show a warning
+                        if (notificationType.payload == NotificationType.local) {
+                          bool res = false;
+
+                          await showThunderDialog(
+                            context: context,
+                            title: l10n.warning,
+                            contentWidgetBuilder: (_) => Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CommonMarkdownBody(body: l10n.notificationsWarningDialog),
+                                const SizedBox(height: 5),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: GestureDetector(
+                                    onTap: () => handleLink(context, url: 'https://dontkillmyapp.com/'),
+                                    child: Text(
+                                      'https://dontkillmyapp.com/',
+                                      style: theme.textTheme.bodyMedium?.copyWith(color: Colors.blue),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            primaryButtonText: l10n.understandEnable,
+                            onPrimaryButtonPressed: (dialogContext, _) {
+                              res = true;
+                              dialogContext.pop();
+                            },
+                            secondaryButtonText: l10n.cancel,
+                            onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
+                          );
+
+                          if (!res) return;
+                        }
+
+                        // Check notifications permissions and enable them if needed
+                        switch (notificationType.payload) {
+                          case NotificationType.local:
+                          case NotificationType.unifiedPush:
+                            // We're on Android. Request notifications permissions if needed. This is a no-op if on SDK version < 33
+                            AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
+                                FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+                            bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+
+                            if (areAndroidNotificationsAllowed != true) {
+                              areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
+                              if (areAndroidNotificationsAllowed != true) return showSnackbar(l10n.permissionDenied);
+                            }
+
+                            // Permissions have been granted, so we can enable notifications
+                            setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
+                            break;
+                          case NotificationType.apn:
+                            // We're on iOS. Request notifications permissions if needed.
+                            IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
+                                FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+                            NotificationsEnabledOptions? notificationsEnabledOptions = await iosFlutterLocalNotificationsPlugin?.checkPermissions();
+
+                            if (notificationsEnabledOptions?.isEnabled != true) {
+                              bool? isEnabled = await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
+                              if (isEnabled != true) return showSnackbar(l10n.permissionDenied);
+                            }
+
+                            setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
+                            break;
+                          default:
+                            break;
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: SettingsListTile(
+                icon: Icons.electrical_services_rounded,
+                description: l10n.pushNotificationServer,
+                subtitle: pushNotificationServer,
+                widget: const SizedBox(
+                  height: 42.0,
+                  child: Icon(Icons.chevron_right_rounded),
+                ),
+                onTap: () async {
+                  showThunderDialog<void>(
+                    context: context,
+                    title: l10n.pushNotificationServer,
+                    contentWidgetBuilder: (_) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CommonMarkdownBody(body: l10n.pushNotificationServerDescription),
+                          const SizedBox(height: 32.0),
+                          TextField(
+                            textInputAction: TextInputAction.done,
+                            keyboardType: TextInputType.url,
+                            autocorrect: false,
+                            controller: controller,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              border: const OutlineInputBorder(),
+                              labelText: l10n.url,
+                              hintText: THUNDER_SERVER_URL,
+                            ),
+                            enableSuggestions: false,
                           ),
-                          primaryButtonText: l10n.understandEnable,
-                          onPrimaryButtonPressed: (dialogContext, _) {
-                            res = true;
-                            dialogContext.pop();
-                          },
-                          secondaryButtonText: l10n.cancel,
-                          onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
-                        );
-
-                        if (!res) return;
-                      }
-
-                      // Check notifications permissions and enable them if needed
-                      switch (notificationType.payload) {
-                        case NotificationType.local:
-                        case NotificationType.unifiedPush:
-                          // We're on Android. Request notifications permissions if needed. This is a no-op if on SDK version < 33
-                          AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
-                              FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-
-                          bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
-
-                          if (areAndroidNotificationsAllowed != true) {
-                            areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
-                            if (areAndroidNotificationsAllowed != true) return showSnackbar(l10n.permissionDenied);
-                          }
-
-                          // Permissions have been granted, so we can enable notifications
-                          setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
-                          break;
-                        case NotificationType.apn:
-                          // We're on iOS. Request notifications permissions if needed.
-                          IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
-                              FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-
-                          NotificationsEnabledOptions? notificationsEnabledOptions = await iosFlutterLocalNotificationsPlugin?.checkPermissions();
-
-                          if (notificationsEnabledOptions?.isEnabled != true) {
-                            bool? isEnabled = await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
-                            if (isEnabled != true) return showSnackbar(l10n.permissionDenied);
-                          }
-
-                          setPreferences(LocalSettings.inboxNotificationType, notificationType.payload);
-                          break;
-                        default:
-                          break;
-                      }
+                        ],
+                      );
+                    },
+                    secondaryButtonText: l10n.cancel,
+                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                    primaryButtonText: l10n.confirm,
+                    onPrimaryButtonPressed: (dialogContext, _) {
+                      setPreferences(LocalSettings.pushNotificationServer, controller.text);
+                      Navigator.of(dialogContext).pop();
                     },
                   );
                 },
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: SettingsListTile(
-              icon: Icons.electrical_services_rounded,
-              description: l10n.pushNotificationServer,
-              subtitle: pushNotificationServer,
-              widget: const SizedBox(
-                height: 42.0,
-                child: Icon(Icons.chevron_right_rounded),
-              ),
-              onTap: () async {
-                showThunderDialog<void>(
-                  context: context,
-                  title: l10n.pushNotificationServer,
-                  contentWidgetBuilder: (_) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          l10n.pushNotificationServerDescription,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
-                          ),
-                        ),
-                        const SizedBox(height: 16.0),
-                        TextField(
-                          textInputAction: TextInputAction.done,
-                          keyboardType: TextInputType.url,
-                          autocorrect: false,
-                          controller: controller,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            border: const OutlineInputBorder(),
-                            labelText: l10n.url,
-                            hintText: THUNDER_SERVER_URL,
-                          ),
-                          enableSuggestions: false,
-                        ),
-                      ],
-                    );
-                  },
-                  secondaryButtonText: l10n.cancel,
-                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                  primaryButtonText: l10n.confirm,
-                  onPrimaryButtonPressed: (dialogContext, _) {
-                    setPreferences(LocalSettings.pushNotificationServer, controller.text);
-                    Navigator.of(dialogContext).pop();
-                  },
-                );
-              },
-            ),
-          ),
+          ],
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(

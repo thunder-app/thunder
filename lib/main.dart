@@ -117,13 +117,18 @@ class _ThunderAppState extends State<ThunderApp> {
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       String? inboxNotificationType = prefs.getString(LocalSettings.inboxNotificationType.name);
 
-      if (NotificationType.values.byName(inboxNotificationType ?? NotificationType.none.name) != NotificationType.none) {
+      // If notification type is null, then don't perform any logic
+      if (inboxNotificationType == null) return;
+
+      if (NotificationType.values.byName(inboxNotificationType) != NotificationType.none) {
         // Initialize notification logic
         initPushNotificationLogic(controller: notificationsStreamController);
-      } else if (inboxNotificationType != null && inboxNotificationType == NotificationType.none.name) {
-        // Attempt to remove tokens from notification server. When inboxNotificationType == NotificationType.none.name, that means at some point in time
-        // removing the tokens was unsuccessful. When there is a successful removal, the inboxNotificationType will be set to null.
+      } else {
+        // Attempt to remove tokens from notification server. When inboxNotificationType == NotificationType.none,
+        // this indicates that removing token was unsuccessful previously. We will attempt to remove it again.
+        // When there is a successful removal, the inboxNotificationType will be set to null.
         bool success = await deleteAccountFromNotificationServer();
+
         if (success) {
           prefs.remove(LocalSettings.inboxNotificationType.name);
           debugPrint('Removed tokens from notification server');

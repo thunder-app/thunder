@@ -20,13 +20,12 @@ import 'package:thunder/notification/shared/notification_server.dart';
 void initAPNs({required StreamController<NotificationResponse> controller}) async {
   const String repliesGroupKey = 'replies';
 
-  // Fetch device token for APNs
-  // We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
+  // Fetch device token for APNs. We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
   String? token = await Push.instance.token;
   debugPrint("Device token: $token");
 
   if (token == null) {
-    debugPrint("No device token, skipping APNs initialization");
+    debugPrint("No device token found, skipping APNs initialization");
     return;
   }
 
@@ -35,7 +34,7 @@ void initAPNs({required StreamController<NotificationResponse> controller}) asyn
 
   // TODO: Select accounts to enable push notifications
   for (Account account in accounts) {
-    bool success = await sendAuthTokenToNotificationServer(type: NotificationType.apn, token: token, jwts: [account.jwt!], instance: account.instance!);
+    bool success = await sendAuthTokenToNotificationServer(type: NotificationType.apn, token: token, jwt: account.jwt!, instance: account.instance!);
     if (!success) debugPrint("Failed to send device token to server for account ${account.id}. Skipping.");
   }
 
@@ -49,7 +48,7 @@ void initAPNs({required StreamController<NotificationResponse> controller}) asyn
 
     // TODO: Select accounts to enable push notifications
     for (Account account in accounts) {
-      bool success = await sendAuthTokenToNotificationServer(type: NotificationType.apn, token: token, jwts: [account.jwt!], instance: account.instance!);
+      bool success = await sendAuthTokenToNotificationServer(type: NotificationType.apn, token: token, jwt: account.jwt!, instance: account.instance!);
       if (!success) debugPrint("Failed to send device token to server for account ${account.id}. Skipping.");
     }
   });
@@ -59,14 +58,20 @@ void initAPNs({required StreamController<NotificationResponse> controller}) asyn
     if (data == null) return;
 
     if (data.containsKey(repliesGroupKey)) {
-      controller.add(NotificationResponse(payload: data[repliesGroupKey] as String, notificationResponseType: NotificationResponseType.selectedNotification));
+      controller.add(NotificationResponse(
+        payload: data[repliesGroupKey] as String,
+        notificationResponseType: NotificationResponseType.selectedNotification,
+      ));
     }
   });
 
   /// Handle notification taps. This triggers when the user taps on a notification when the app is on the foreground or background.
   Push.instance.onNotificationTap.listen((data) {
     if (data.containsKey(repliesGroupKey)) {
-      controller.add(NotificationResponse(payload: data[repliesGroupKey] as String, notificationResponseType: NotificationResponseType.selectedNotification));
+      controller.add(NotificationResponse(
+        payload: data[repliesGroupKey] as String,
+        notificationResponseType: NotificationResponseType.selectedNotification,
+      ));
     }
   });
 }

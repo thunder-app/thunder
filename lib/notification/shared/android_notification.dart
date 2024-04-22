@@ -8,9 +8,10 @@ const String _inboxMessagesChannelName = 'Inbox Messages';
 const String repliesGroupKey = 'replies';
 
 /// Displays a new notification group on Android based on the accounts passed in.
-void showNotificationGroups({
-  List<Account> accounts = const [],
-}) async {
+///
+/// This displays an empty notification which will be used in conjunction with the [showAndroidNotification]
+/// to help display a group of notifications on Android.
+void showNotificationGroups({List<Account> accounts = const []}) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   for (Account account in accounts) {
@@ -42,9 +43,8 @@ void showNotificationGroups({
   }
 }
 
-/// Displays a single push notification on Android
-///
-/// The notification will be grouped based on the account id.
+/// Displays a single push notification on Android. When a notification is displayed, it will be grouped by the account id.
+/// This allows us to group notifications for a single account on Android.
 void showAndroidNotification({
   required int id,
   required BigTextStyleInformation bigTextStyleInformation,
@@ -52,7 +52,6 @@ void showAndroidNotification({
   String title = '',
   String content = '',
   String payload = '',
-  String summaryText = '',
 }) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 

@@ -629,7 +629,7 @@
   },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
-  "failedToDisablePushNotifications": "Failed to disable existing push notifications. Will try again when app restarts.",
+  "failedToDisablePushNotifications": "Failed to disable push notifications",
   "@failedToDisablePushNotifications": {
     "description": "Error message when failed to disable push notifications."
   },
@@ -1281,14 +1281,18 @@
   "@pushNotification": {
     "description": "Setting for push notifications"
   },
-  "pushNotificationDescription": "If enabled, Thunder will send your JWT token(s) to the server in order to poll for new notifications. \\n\\n **NOTE:** This will not take effect until the next time the app is launched.",
+  "pushNotificationDescription": "If enabled, Thunder will send your JWT token(s) to the server in order to poll for new notifications. \n\n **NOTE:** This will not take effect until the next time the app is launched.",
   "@pushNotificationDescription": {
     "description": "Description of push notification setting"
   },
   "pushNotificationServer": "Push Notification Server",
-  "@pushNotificationServer": {},
-  "pushNotificationServerDescription": "Configure the notification server to use for sending push notifications.",
-  "@pushNotificationServerDescription": {},
+  "@pushNotificationServer": {
+    "description": "Setting for choosing push notification server"
+  },
+  "pushNotificationServerDescription": "Configure the push notification server. The server must be properly configured to send push notifications to your device.\n\n **Only enter a server that you trust with your credentials.**",
+  "@pushNotificationServerDescription": {
+    "description": "Description of choosing push notification server setting"
+  },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
