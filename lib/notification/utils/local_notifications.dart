@@ -75,7 +75,13 @@ Future<void> pollRepliesAndShowNotifications() async {
     // Only handle messages that have arrived since the last time we polled
     final Iterable<CommentReplyView> newReplies = getRepliesResponse.replies.where((CommentReplyView commentReplyView) => commentReplyView.commentReply.published.isAfter(lastPollTime));
 
-    notifications.putIfAbsent(account, () => newReplies.toList());
+    if (newReplies.isNotEmpty) notifications.putIfAbsent(account, () => newReplies.toList());
+  }
+
+  if (notifications.isEmpty) {
+    // Save our poll time
+    prefs.setString(_lastPollTimeId, DateTime.now().toString());
+    return;
   }
 
   // Create a notification group for each account that has replies
@@ -128,7 +134,7 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 Future<void> initBackgroundFetch() async {
   await BackgroundFetch.configure(
     BackgroundFetchConfig(
-      minimumFetchInterval: 15,
+      minimumFetchInterval: 1,
       stopOnTerminate: false,
       startOnBoot: true,
       enableHeadless: true,
@@ -138,7 +144,7 @@ Future<void> initBackgroundFetch() async {
       requiresCharging: false,
       requiresDeviceIdle: false,
       // Uncomment this line (and set the minimumFetchInterval to 1) for quicker testing.
-      // forceAlarmManager: true,
+      forceAlarmManager: true,
     ),
     // This is the callback that handles background fetching while the app is running.
     (String taskId) async {
