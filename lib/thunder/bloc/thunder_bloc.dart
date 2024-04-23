@@ -18,6 +18,7 @@ import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';
@@ -118,7 +119,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       bool showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
-      bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
+      NotificationType inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name) ?? NotificationType.none;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       NameThickness userFullNameUserNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameUserNameThickness.name) ?? NameThickness.normal.name);
@@ -274,7 +275,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         markPostReadOnScroll: markPostReadOnScroll,
         showInAppUpdateNotification: showInAppUpdateNotification,
         showUpdateChangelogs: showUpdateChangelogs,
-        enableInboxNotifications: enableInboxNotifications,
+        inboxNotificationType: inboxNotificationType,
         appLanguageCode: appLanguageCode,
         userSeparator: userSeparator,
         userFullNameUserNameThickness: userFullNameUserNameThickness,

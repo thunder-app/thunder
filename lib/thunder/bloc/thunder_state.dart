@@ -32,7 +32,7 @@ class ThunderState extends Equatable {
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
     this.showUpdateChangelogs = true,
-    this.enableInboxNotifications = false,
+    this.inboxNotificationType = NotificationType.none,
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
     this.userFullNameUserNameThickness = NameThickness.normal,
@@ -183,7 +183,7 @@ class ThunderState extends Equatable {
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
   final bool showUpdateChangelogs;
-  final bool enableInboxNotifications;
+  final NotificationType inboxNotificationType;
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
   final NameThickness userFullNameUserNameThickness;
@@ -341,7 +341,7 @@ class ThunderState extends Equatable {
     bool? markPostReadOnScroll,
     bool? showInAppUpdateNotification,
     bool? showUpdateChangelogs,
-    bool? enableInboxNotifications,
+    NotificationType? inboxNotificationType,
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
     NameThickness? userFullNameUserNameThickness,
@@ -493,7 +493,7 @@ class ThunderState extends Equatable {
       disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       showUpdateChangelogs: showUpdateChangelogs ?? this.showUpdateChangelogs,
-      enableInboxNotifications: enableInboxNotifications ?? this.enableInboxNotifications,
+      inboxNotificationType: inboxNotificationType ?? this.inboxNotificationType,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
@@ -652,7 +652,7 @@ class ThunderState extends Equatable {
         disableFeedFab,
         showInAppUpdateNotification,
         showUpdateChangelogs,
-        enableInboxNotifications,
+        inboxNotificationType,
         userSeparator,
         userFullNameUserNameThickness,
         userFullNameUserNameColor,
