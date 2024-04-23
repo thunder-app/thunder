@@ -134,7 +134,7 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 Future<void> initBackgroundFetch() async {
   await BackgroundFetch.configure(
     BackgroundFetchConfig(
-      minimumFetchInterval: 1,
+      minimumFetchInterval: 15,
       stopOnTerminate: false,
       startOnBoot: true,
       enableHeadless: true,
@@ -144,7 +144,7 @@ Future<void> initBackgroundFetch() async {
       requiresCharging: false,
       requiresDeviceIdle: false,
       // Uncomment this line (and set the minimumFetchInterval to 1) for quicker testing.
-      forceAlarmManager: true,
+      // forceAlarmManager: true,
     ),
     // This is the callback that handles background fetching while the app is running.
     (String taskId) async {
