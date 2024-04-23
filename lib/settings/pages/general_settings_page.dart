@@ -704,18 +704,21 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 icon: Icons.notifications_off_rounded,
                                 label: l10n.none,
                                 payload: NotificationType.none,
+                                softWrap: true,
                               ),
                               ListPickerItem(
                                 icon: Icons.notifications_rounded,
                                 label: l10n.useLocalNotifications,
                                 subtitle: l10n.useLocalNotificationsDescription,
                                 payload: NotificationType.local,
+                                softWrap: true,
                               ),
                               ListPickerItem(
                                 icon: Icons.notifications_active_rounded,
                                 label: l10n.useUnifiedPushNotifications,
                                 subtitle: l10n.useUnifiedPushNotificationsDescription,
                                 payload: NotificationType.unifiedPush,
+                                softWrap: true,
                               ),
                             ]
                           : [
@@ -723,12 +726,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 icon: Icons.notifications_off_rounded,
                                 label: l10n.disablePushNotifications,
                                 payload: NotificationType.none,
+                                softWrap: true,
                               ),
                               ListPickerItem(
                                 icon: Icons.notifications_active_rounded,
                                 label: l10n.useApplePushNotifications,
                                 subtitle: l10n.useApplePushNotificationsDescription,
                                 payload: NotificationType.apn,
+                                softWrap: true,
                               ),
                             ],
                       onSelect: (ListPickerItem<NotificationType> notificationType) async {

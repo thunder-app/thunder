@@ -10,6 +10,7 @@ class PickerItem<T> extends StatelessWidget {
   final void Function()? onSelected;
   final bool? isSelected;
   final TextTheme? textTheme;
+  final bool softWrap;
 
   const PickerItem({
     super.key,
@@ -22,6 +23,7 @@ class PickerItem<T> extends StatelessWidget {
     this.trailingIcon,
     this.leading,
     this.textTheme,
+    this.softWrap = false,
   });
 
   @override
@@ -50,6 +52,8 @@ class PickerItem<T> extends StatelessWidget {
                     style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
                       color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(0.5),
                     ),
+                    softWrap: softWrap,
+                    overflow: TextOverflow.fade,
                   )
                 : null,
             leading: icon != null ? Icon(icon) : this.leading,
