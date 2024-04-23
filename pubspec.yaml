@@ -26,8 +26,8 @@ dependencies:
       ref: 3196471d8e1b26873aecaf04254043cf9817bbe3
   lemmy_api_client:
     git:
-      url: https://github.com/micahmo/lemmy_api_client.git
-      ref: 4ef619eeabe1e3961fab668202167646ab662831
+      url: https://github.com/thunder-app/lemmy_api_client.git
+      ref: 8d1513a3574665b464822595ac97bb166a5ffa89
   link_preview_generator:
     git:
       url: https://github.com/thunder-app/link_preview_generator.git
