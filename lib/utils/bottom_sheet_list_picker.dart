@@ -140,6 +140,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                           false => Icons.check_box_outline_blank_rounded,
                           null => null,
                         },
+                        softWrap: item.softWrap,
                       );
                     },
                   ).toList(),
@@ -205,6 +206,9 @@ class ListPickerItem<T> {
   /// Whether the item is selected
   final bool Function()? isChecked;
 
+  /// Whether the subtitle should softwrap
+  final bool softWrap;
+
   const ListPickerItem({
     this.icon,
     this.colors,
@@ -216,5 +220,6 @@ class ListPickerItem<T> {
     this.customWidget,
     required this.payload,
     this.isChecked,
+    this.softWrap = false,
   });
 }
