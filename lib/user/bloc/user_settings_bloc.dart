@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:lemmy_api_client/pictrs.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -50,6 +52,14 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     on<UnblockPersonEvent>(
       _unblockPersonEvent,
       transformer: throttleDroppable(throttleDuration),
+    );
+    on<ListMediaEvent>(
+      _listMediaEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<DeleteMediaEvent>(
+      _deleteMediaEvent,
+      // Do not use any transformer, because a throttleDroppable will only process the first request and restartable will only process the last.
     );
   }
 
@@ -245,6 +255,53 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       return emit(state.copyWith(
           status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
           errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+    }
+  }
+
+  Future<void> _listMediaEvent(ListMediaEvent event, emit) async {
+    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+    Account? account = await fetchActiveProfileAccount();
+
+    emit(state.copyWith(status: UserSettingsStatus.listingMedia));
+
+    try {
+      int page = 1;
+      List<LocalImageView> images = [];
+      List<LocalImageView>? lastResponse;
+
+      while (lastResponse?.isEmpty != true) {
+        ListMediaResponse listMediaResponse = await lemmy.run(ListMedia(page: page, auth: account?.jwt));
+        images.addAll(lastResponse = listMediaResponse.images);
+        ++page;
+      }
+
+      return emit(state.copyWith(status: UserSettingsStatus.succeededListingMedia, images: images));
+    } catch (e) {
+      return emit(state.copyWith(status: UserSettingsStatus.failedListingMedia, errorMessage: getExceptionErrorMessage(e)));
+    }
+  }
+
+  Future<void> _deleteMediaEvent(DeleteMediaEvent event, emit) async {
+    emit(state.copyWith(status: UserSettingsStatus.deletingMedia));
+
+    try {
+      // Optimistically remove the media from the list
+      state.images?.removeWhere((localImageView) => localImageView.localImage.pictrsAlias == event.id);
+
+      Account? account = await fetchActiveProfileAccount();
+
+      if (account?.jwt == null) return;
+
+      await PictrsApi(account!.instance!).delete(PictrsUploadFile(deleteToken: event.deleteToken, file: event.id), account.jwt);
+
+      return emit(state.copyWith(status: UserSettingsStatus.succeededListingMedia, images: state.images));
+    } catch (e) {
+      return emit(
+        state.copyWith(
+          status: UserSettingsStatus.failedListingMedia,
+          errorMessage: AppLocalizations.of(GlobalContext.context)!.errorDeletingImage(getExceptionErrorMessage(e)),
+        ),
+      );
     }
   }
 }

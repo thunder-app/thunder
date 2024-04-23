@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
@@ -21,8 +25,10 @@ import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
+import 'package:thunder/user/pages/media_management_page.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/instance.dart';
@@ -291,6 +297,41 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                           );
                         },
                       ),
+                      if (LemmyClient.instance.supportsFeature(LemmyFeature.listMedia))
+                        SettingsListTile(
+                          icon: Icons.hide_image_rounded,
+                          description: l10n.manageMedia,
+                          widget: const SizedBox(
+                            height: 42.0,
+                            child: Icon(Icons.chevron_right_rounded),
+                          ),
+                          onTap: () async {
+                            final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                            final UserSettingsBloc userSettingsBloc = context.read<UserSettingsBloc>();
+                            final AuthBloc authBloc = context.read<AuthBloc>();
+
+                            userSettingsBloc.add(const ListMediaEvent());
+
+                            await Navigator.of(context).push(
+                              SwipeablePageRoute(
+                                transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                                backGestureDetectionWidth: 45,
+                                canOnlySwipeFromEdge: true,
+                                builder: (otherContext) {
+                                  return MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider.value(value: userSettingsBloc),
+                                      BlocProvider.value(value: thunderBloc),
+                                      BlocProvider.value(value: authBloc),
+                                    ],
+                                    child: const MediaManagementPage(),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
                       const SizedBox(height: 100.0),
                     ],
                   ),
