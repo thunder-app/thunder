@@ -637,6 +637,10 @@
   "@failedToLoadBlocks": {},
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
+  "failedToUpdateNotificationSettings": "Failed to update notification settings",
+  "@failedToUpdateNotificationSettings": {
+    "description": "Error message when failed to update notification settings."
+  },
   "favorites": "Favorites",
   "@favorites": {
     "description": "The favorited communities on the drawer"
