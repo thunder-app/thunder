@@ -8,6 +8,7 @@ import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 
+const String _inboxMessagesChannelId = 'inbox_messages';
 const String _inboxMessagesChannelName = 'Inbox Messages';
 const String repliesGroupKey = 'replies';
 
@@ -29,7 +30,7 @@ void showNotificationGroups({List<Account> accounts = const []}) async {
     );
 
     final AndroidNotificationDetails androidNotificationDetailsSummary = AndroidNotificationDetails(
-      account.id,
+      _inboxMessagesChannelId,
       _inboxMessagesChannelName,
       styleInformation: inboxStyleInformationSummary,
       groupKey: account.id,
@@ -63,7 +64,7 @@ void showAndroidNotification({
 
   // Configure Android-specific settings
   final AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
-    account?.id ?? 'default',
+    _inboxMessagesChannelId,
     _inboxMessagesChannelName,
     styleInformation: bigTextStyleInformation,
     groupKey: account?.id ?? 'default',
