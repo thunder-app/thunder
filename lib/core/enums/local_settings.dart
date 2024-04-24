@@ -143,6 +143,8 @@ enum LocalSettings {
       name: 'setting_general_post_body_show_user_instance', key: 'postBodyShowUserInstance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   postBodyShowCommunityInstance(
       name: 'setting_general_post_body_show_community_instance', key: 'postBodyShowCommunityInstance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  postBodyShowCommunityAvatar(
+      name: 'setting_general_post_body_show_community_avatar', key: 'postBodyShowCommunityAvatar', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
 
   // Advanced Settings
   imageCachingMode(name: 'setting_advanced_image_caching_mode', key: 'imageCachingMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
@@ -160,6 +162,7 @@ enum LocalSettings {
   showCommentActionButtons(
       name: 'setting_general_show_comment_button_actions', key: 'showCommentActionButtons', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.general),
   commentShowUserInstance(name: 'settings_comment_show_user_instance', key: 'showUserInstance', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+  commentShowUserAvatar(name: 'settings_comment_show_user_avatar', key: 'showUserAvatar', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   combineCommentScores(name: 'setting_general_combine_comment_scores', key: 'combineCommentScores', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   nestedCommentIndicatorStyle(
       name: 'setting_general_nested_comment_indicator_style', key: 'nestedCommentIndicatorStyle', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
@@ -348,6 +351,7 @@ extension LocalizationExt on AppLocalizations {
       'showCrossPosts': showCrossPosts,
       'postBodyShowUserInstance': postBodyShowUserInstance,
       'postBodyShowCommunityInstance': postBodyShowCommunityInstance,
+      'postBodyShowCommunityAvatar': postBodyShowCommunityAvatar,
       'keywordFilters': keywordFilters,
       'hideTopBarOnScroll': hideTopBarOnScroll,
       'compactPostCardMetadataItems': compactPostCardMetadataItems,
@@ -362,6 +366,7 @@ extension LocalizationExt on AppLocalizations {
       'collapseParentCommentBodyOnGesture': collapseParentCommentBodyOnGesture,
       'showCommentActionButtons': showCommentActionButtons,
       'showUserInstance': showUserInstance,
+      'showUserAvatar': showUserAvatar,
       'combineCommentScores': combineCommentScores,
       'nestedCommentIndicatorStyle': nestedCommentIndicatorStyle,
       'nestedCommentIndicatorColor': nestedCommentIndicatorColor,

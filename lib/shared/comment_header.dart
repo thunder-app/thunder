@@ -8,6 +8,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/user_type.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -62,6 +63,7 @@ class CommentHeader extends StatelessWidget {
               children: [
                 UserChip(
                   personId: comment.creator.id,
+                  personAvatar: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
                   personName: comment.creator.name,
                   personDisplayName: comment.creator.displayName ?? comment.creator.name,
                   personUrl: comment.creator.actorId,
