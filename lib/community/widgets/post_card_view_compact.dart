@@ -42,7 +42,6 @@ class PostCardViewCompact extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
 
-    bool hideThumbnails = state.hideThumbnails;
     bool showThumbnailPreviewOnRight = state.showThumbnailPreviewOnRight;
     bool showTextPostIndicator = state.showTextPostIndicator;
     bool indicateRead = this.indicateRead ?? state.dimReadPosts;
@@ -60,18 +59,17 @@ class PostCardViewCompact extends StatelessWidget {
 
     return Container(
       color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
-      padding: showMedia ? const EdgeInsets.only(bottom: 8.0, top: 6) : const EdgeInsets.only(left: 4.0, top: 10.0),
+      padding: showMedia ? const EdgeInsets.only(bottom: 8.0, top: 6) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (!hideThumbnails)
-            !showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
-                ? ThumbnailPreview(
-                    postViewMedia: postViewMedia,
-                    navigateToPost: navigateToPost,
-                    indicateRead: indicateRead,
-                  )
-                : const SizedBox(width: 8.0),
+          !showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
+              ? ThumbnailPreview(
+                  postViewMedia: postViewMedia,
+                  navigateToPost: navigateToPost,
+                  indicateRead: indicateRead,
+                )
+              : const SizedBox(width: 8.0),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,14 +167,13 @@ class PostCardViewCompact extends StatelessWidget {
               ],
             ),
           ),
-          if (!hideThumbnails)
-            showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
-                ? ThumbnailPreview(
-                    postViewMedia: postViewMedia,
-                    navigateToPost: navigateToPost,
-                    indicateRead: indicateRead,
-                  )
-                : const SizedBox(width: 8.0),
+          showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
+              ? ThumbnailPreview(
+                  postViewMedia: postViewMedia,
+                  navigateToPost: navigateToPost,
+                  indicateRead: indicateRead,
+                )
+              : const SizedBox(width: 8.0),
         ],
       ),
     );
