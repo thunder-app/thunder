@@ -229,7 +229,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         viewMode: widget.viewMode,
         originURL: widget.postViewMedia.media.first.originalUrl,
         mediaType: widget.postViewMedia.media.first.mediaType,
-        handleTapImage: showImage,
+        onTap: widget.postViewMedia.media.first.mediaType == MediaType.image ? showImage : null,
       );
     }
     switch (widget.postViewMedia.media.firstOrNull?.mediaType) {
@@ -317,33 +317,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               );
             }
 
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: theme.colorScheme.secondary.withOpacity(0.4),
-              ),
-              child: InkWell(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                  child: Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Icon(Icons.link),
-                      ),
-                      Expanded(
-                        child: Text(
-                          widget.postViewMedia.postView.post.url ?? '',
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  handleLink(context, url: widget.postViewMedia.postView.post.url ?? '');
-                },
-              ),
+            return LinkInformation(
+              viewMode: widget.viewMode,
+              mediaType: MediaType.image,
+              originURL: widget.postViewMedia.postView.post.url ?? '',
             );
         }
       },
