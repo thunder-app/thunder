@@ -19,13 +19,11 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   void handleNotifications() {
     _notificationsStreamSubscription = notificationsStream.listen((notificationResponse) async {
-      // Check if this is a reply notification
       NotificationPayload? payload = notificationResponse.payload?.isNotEmpty == true ? NotificationPayload.fromJson(jsonDecode(notificationResponse.payload!)) : null;
-      if (payload?.inboxType == NotificationInboxType.reply) {
-        // Check if this is a specific notification for a specific reply
-        int? replyId = int.tryParse(payload!.id ?? '');
 
-        emit(state.copyWith(status: NotificationsStatus.reply, replyId: replyId));
+      // Check if this is a reply notification
+      if (payload?.inboxType == NotificationInboxType.reply) {
+        emit(state.copyWith(status: NotificationsStatus.reply, replyId: payload!.id));
       }
 
       // Reset the state

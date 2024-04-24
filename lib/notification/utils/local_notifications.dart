@@ -118,7 +118,7 @@ Future<void> pollRepliesAndShowNotifications() async {
           accountId: account.id,
           inboxType: NotificationInboxType.reply,
           group: false,
-          id: commentReplyView.commentReply.id.toString(),
+          id: commentReplyView.commentReply.id,
         ).toJson()),
         inboxType: NotificationInboxType.reply,
       );
