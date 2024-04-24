@@ -1,8 +1,12 @@
 // Package imports
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 
 const String _inboxMessagesChannelName = 'Inbox Messages';
 const String repliesGroupKey = 'replies';
@@ -13,13 +17,15 @@ const String repliesGroupKey = 'replies';
 /// to help display a group of notifications on Android.
 void showNotificationGroups({List<Account> accounts = const []}) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
 
   for (Account account in accounts) {
     // Create a summary notification for the group.
     final InboxStyleInformation inboxStyleInformationSummary = InboxStyleInformation(
       [],
       contentTitle: '',
-      summaryText: '${account.username}@${account.instance}',
+      summaryText: generateUserFullName(null, account.username, account.instance, userSeparator: userSeparator),
     );
 
     final AndroidNotificationDetails androidNotificationDetailsSummary = AndroidNotificationDetails(
