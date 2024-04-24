@@ -3,12 +3,16 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 
 class LinkInformation extends StatefulWidget {
+  /// The view mode of the media
   final ViewMode viewMode;
 
+  /// URL of the media
   final String? originURL;
 
+  /// Type of media (image, link, text, etc.)
   final MediaType? mediaType;
 
+  /// Callback for when an image is tapped
   final Function? handleTapImage;
 
   const LinkInformation({

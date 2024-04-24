@@ -51,7 +51,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// When enabled, posts on the feed will be compacted
   bool useCompactView = false;
 
-  /// When enabled, the thumbnails in compact mode will be hidden
+  /// When enabled, the thumbnails in compact/card mode will be hidden
   bool hideThumbnails = false;
 
   /// When enabled, the thumbnail previews will be shown on the right. By default, they are shown on the left
