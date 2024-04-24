@@ -96,7 +96,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           bigTextStyleInformation: bigTextStyleInformation,
           title: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
           content: plaintextComment,
-          payload: '$repliesGroupKey-${commentReplyView.comment.id}',
+          payload: '$repliesGroupKey-${commentReplyView.commentReply.id}',
         );
       }
 
@@ -124,7 +124,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           bigTextStyleInformation: bigTextStyleInformation,
           title: generateUserFullName(null, personMentionView.creator.name, fetchInstanceNameFromUrl(personMentionView.creator.actorId), userSeparator: userSeparator),
           content: plaintextComment,
-          payload: '$repliesGroupKey-${personMentionView.comment.id}',
+          payload: '$repliesGroupKey-${personMentionView.personMention.id}',
         );
       }
 
