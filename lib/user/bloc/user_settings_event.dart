@@ -59,3 +59,9 @@ class DeleteMediaEvent extends UserSettingsEvent {
 
   const DeleteMediaEvent({required this.deleteToken, required this.id});
 }
+
+class FindMediaUsagesEvent extends UserSettingsEvent {
+  final String id;
+
+  const FindMediaUsagesEvent({required this.id});
+}

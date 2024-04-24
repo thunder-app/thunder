@@ -31,6 +31,8 @@ class PostCard extends StatefulWidget {
 
   final ListingType? listingType;
 
+  final bool disableSwiping;
+
   const PostCard({
     super.key,
     required this.postViewMedia,
@@ -42,6 +44,7 @@ class PostCard extends StatefulWidget {
     required this.onDownAction,
     required this.listingType,
     required this.indicateRead,
+    this.disableSwiping = false,
   });
 
   @override
@@ -123,11 +126,13 @@ class _PostCardState extends State<PostCard> {
         // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
         // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
         if (horizontalDragDistance > 0) {
-          if (determinePostSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+          if (determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping) == DismissDirection.endToStart &&
+              isOverridingSwipeGestureAction == false &&
+              dismissThreshold == 0.0) {
             setState(() => isOverridingSwipeGestureAction = true);
           }
         } else {
-          if (determinePostSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+          if (determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
             setState(() => isOverridingSwipeGestureAction = false);
           }
         }
@@ -135,7 +140,7 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         children: [
           Dismissible(
-            direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
+            direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping),
             key: ObjectKey(widget.postViewMedia.postView.post.id),
             resizeDuration: Duration.zero,
             dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},

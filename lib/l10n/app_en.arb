@@ -1073,6 +1073,10 @@
   },
   "noPostsFound": "No posts found.",
   "@noPostsFound": {},
+  "noReferencesToImage": "No posts or comments were found containing this image. However, it may be used elsewhere on the internet.",
+  "@noReferencesToImage": {
+    "description": "Message indicating media was not found on Lemmy"
+  },
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
   "noSubscriptions": "No Subscriptions",

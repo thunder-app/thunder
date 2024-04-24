@@ -8,8 +8,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/utils/instance.dart';
+import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -60,6 +62,9 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     on<DeleteMediaEvent>(
       _deleteMediaEvent,
       // Do not use any transformer, because a throttleDroppable will only process the first request and restartable will only process the last.
+    );
+    on<FindMediaUsagesEvent>(
+      _findMediaUsagesEvent,
     );
   }
 
@@ -300,6 +305,55 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         state.copyWith(
           status: UserSettingsStatus.failedListingMedia,
           errorMessage: AppLocalizations.of(GlobalContext.context)!.errorDeletingImage(getExceptionErrorMessage(e)),
+        ),
+      );
+    }
+  }
+
+  Future<void> _findMediaUsagesEvent(FindMediaUsagesEvent event, emit) async {
+    emit(state.copyWith(status: UserSettingsStatus.searchingMedia));
+
+    try {
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      Account? account = await fetchActiveProfileAccount();
+
+      String url = Uri.https(lemmy.host, 'pictrs/image/${event.id}').toString();
+
+      List<PostView> posts = (await lemmy.run(Search(
+        q: url,
+        type: SearchType.posts,
+        auth: account?.jwt,
+      )))
+          .posts
+          .toList(); // Copy so we can modify
+
+      List<PostView> postsByUrl = (await lemmy.run(Search(
+        q: url,
+        type: SearchType.url,
+        auth: account?.jwt,
+      )))
+          .posts;
+
+      // De-dup posts found by body and URL
+      posts.addAll(postsByUrl.where((postViewByUrl) => !posts.any((postView) => postView.post.id == postViewByUrl.post.id)));
+
+      final List<CommentView> comments = (await lemmy.run(Search(
+        q: url,
+        type: SearchType.comments,
+        auth: account?.jwt,
+      )))
+          .comments;
+
+      return emit(state.copyWith(
+        status: UserSettingsStatus.succeededSearchingMedia,
+        imageSearchPosts: await parsePostViews(posts),
+        imageSearchComments: comments,
+      ));
+    } catch (e) {
+      return emit(
+        state.copyWith(
+          status: UserSettingsStatus.failedListingMedia,
+          errorMessage: getExceptionErrorMessage(e),
         ),
       );
     }

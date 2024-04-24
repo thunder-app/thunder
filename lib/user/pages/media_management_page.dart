@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/comment/widgets/comment_list_entry.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/view/feed_widget.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -58,7 +61,11 @@ class MediaManagementPage extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       ),
                     ),
-                  if (state.status == UserSettingsStatus.deletingMedia || state.status == UserSettingsStatus.failedListingMedia || state.status == UserSettingsStatus.succeededListingMedia) ...[
+                  if (state.status == UserSettingsStatus.searchingMedia ||
+                      state.status == UserSettingsStatus.succeededSearchingMedia ||
+                      state.status == UserSettingsStatus.deletingMedia ||
+                      state.status == UserSettingsStatus.failedListingMedia ||
+                      state.status == UserSettingsStatus.succeededListingMedia) ...[
                     if (state.images?.isNotEmpty == true)
                       SliverList.builder(
                         addSemanticIndexes: false,
@@ -133,31 +140,119 @@ class MediaManagementPage extends StatelessWidget {
                                       Text(l10n.uploadedDate(thunderBloc.state.dateFormat?.format(DateTime.parse(state.images![index].localImage.published).toLocal()) ?? '')),
                                       const Spacer(),
                                       IconButton(
-                                          onPressed: () async {
-                                            bool result = false;
-                                            await showThunderDialog<bool>(
-                                              context: context,
-                                              title: l10n.deleteImageConfirmTitle,
-                                              contentText: l10n.deleteImageConfirmMessage,
-                                              onSecondaryButtonPressed: (dialogContext) {
-                                                result = false;
-                                                Navigator.of(dialogContext).pop();
-                                              },
-                                              secondaryButtonText: l10n.cancel,
-                                              onPrimaryButtonPressed: (dialogContext, _) {
-                                                result = true;
-                                                Navigator.of(dialogContext).pop();
-                                              },
-                                              primaryButtonText: l10n.delete,
-                                            );
+                                        onPressed: () async {
+                                          final UserSettingsBloc userSettingsBloc = context.read<UserSettingsBloc>();
+                                          userSettingsBloc.add(FindMediaUsagesEvent(id: state.images![index].localImage.pictrsAlias));
 
-                                            if (result && context.mounted) {
-                                              context
-                                                  .read<UserSettingsBloc>()
-                                                  .add(DeleteMediaEvent(deleteToken: state.images![index].localImage.pictrsDeleteToken, id: state.images![index].localImage.pictrsAlias));
-                                            }
-                                          },
-                                          icon: const Icon(Icons.delete_forever)),
+                                          showModalBottomSheet(
+                                            context: context,
+                                            showDragHandle: true,
+                                            isScrollControlled: false,
+                                            builder: (context) {
+                                              return AnimatedSize(
+                                                duration: const Duration(milliseconds: 250),
+                                                child: BlocProvider.value(
+                                                  value: userSettingsBloc,
+                                                  child: BlocBuilder<UserSettingsBloc, UserSettingsState>(
+                                                    builder: (context, state) {
+                                                      if (state.status == UserSettingsStatus.failedListingMedia) {
+                                                        Navigator.of(context).pop();
+                                                      }
+
+                                                      return SingleChildScrollView(
+                                                        child: Column(
+                                                          children: [
+                                                            if (state.status == UserSettingsStatus.searchingMedia)
+                                                              const SizedBox(
+                                                                height: 200,
+                                                                child: Center(
+                                                                  child: CircularProgressIndicator(),
+                                                                ),
+                                                              )
+                                                            else if (state.status == UserSettingsStatus.succeededSearchingMedia) ...[
+                                                              if (state.imageSearchPosts?.isNotEmpty == true)
+                                                                BlocProvider.value(
+                                                                  value: FeedBloc(lemmyClient: LemmyClient.instance),
+                                                                  child: CustomScrollView(
+                                                                    physics: const NeverScrollableScrollPhysics(),
+                                                                    shrinkWrap: true,
+                                                                    slivers: [
+                                                                      FeedPostList(
+                                                                        postViewMedias: state.imageSearchPosts!,
+                                                                        tabletMode: false,
+                                                                        markPostReadOnScroll: false,
+                                                                        disableSwiping: true,
+                                                                        indicateRead: false,
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              if (state.imageSearchComments?.isNotEmpty == true)
+                                                                ListView.builder(
+                                                                  physics: const NeverScrollableScrollPhysics(),
+                                                                  shrinkWrap: true,
+                                                                  itemCount: state.imageSearchComments!.length,
+                                                                  itemBuilder: (context, index) => CommentListEntry(commentView: state.imageSearchComments![index]),
+                                                                ),
+                                                            ],
+                                                            if (state.status == UserSettingsStatus.succeededSearchingMedia &&
+                                                                state.imageSearchComments?.isNotEmpty != true &&
+                                                                state.imageSearchComments?.isNotEmpty != true)
+                                                              SizedBox(
+                                                                width: double.infinity,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(bottom: 24),
+                                                                  child: Container(
+                                                                    color: theme.dividerColor.withOpacity(0.1),
+                                                                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                                                                    child: ScalableText(
+                                                                      l10n.noReferencesToImage,
+                                                                      textAlign: TextAlign.center,
+                                                                      style: theme.textTheme.titleSmall,
+                                                                      fontScale: thunderBloc.state.metadataFontSizeScale,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        icon: const Icon(Icons.search_rounded),
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          bool result = false;
+                                          await showThunderDialog<bool>(
+                                            context: context,
+                                            title: l10n.deleteImageConfirmTitle,
+                                            contentText: l10n.deleteImageConfirmMessage,
+                                            onSecondaryButtonPressed: (dialogContext) {
+                                              result = false;
+                                              Navigator.of(dialogContext).pop();
+                                            },
+                                            secondaryButtonText: l10n.cancel,
+                                            onPrimaryButtonPressed: (dialogContext, _) {
+                                              result = true;
+                                              Navigator.of(dialogContext).pop();
+                                            },
+                                            primaryButtonText: l10n.delete,
+                                          );
+
+                                          if (result && context.mounted) {
+                                            context
+                                                .read<UserSettingsBloc>()
+                                                .add(DeleteMediaEvent(deleteToken: state.images![index].localImage.pictrsDeleteToken, id: state.images![index].localImage.pictrsAlias));
+                                          }
+                                        },
+                                        icon: const Icon(Icons.delete_forever),
+                                      ),
                                     ],
                                   ),
                                 ],
