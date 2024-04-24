@@ -83,7 +83,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                   alignment: PlaceholderAlignment.middle,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Icon(Icons.expand_more_rounded),
+                    child: Icon(Icons.chevron_right_rounded),
                   ),
                 ),
               ],

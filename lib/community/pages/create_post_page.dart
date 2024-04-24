@@ -492,7 +492,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Expanded(
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.55),
                                   child: LanguageSelector(
                                     languageId: languageId,
                                     onLanguageSelected: (Language? language) {
@@ -500,9 +501,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     },
                                   ),
                                 ),
-                                Row(
+                                Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
-                                    Text(l10n.postNSFW),
+                                    Text(l10n.nsfw),
                                     const SizedBox(width: 10),
                                     Switch(
                                       value: isNSFW,
