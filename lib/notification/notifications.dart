@@ -1,5 +1,6 @@
 // Dart imports
 import 'dart:async';
+import 'dart:convert';
 
 // Flutter imports
 import 'package:flutter/foundation.dart';
@@ -12,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/notification/shared/android_notification.dart';
+import 'package:thunder/notification/shared/notification_payload.dart';
 import 'package:thunder/notification/utils/apns.dart';
 import 'package:thunder/notification/utils/local_notifications.dart';
 import 'package:thunder/notification/utils/unified_push.dart';
@@ -59,7 +60,8 @@ Future<void> initPushNotificationLogic({required StreamController<NotificationRe
     if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails?.notificationResponse != null) {
       controller.add(notificationAppLaunchDetails!.notificationResponse!);
 
-      bool startupDueToGroupNotification = notificationAppLaunchDetails.notificationResponse!.payload == repliesGroupKey;
+      bool startupDueToGroupNotification =
+          notificationAppLaunchDetails.notificationResponse!.payload?.isNotEmpty == true && NotificationPayload.fromJson(jsonDecode(notificationAppLaunchDetails.notificationResponse!.payload!)).group;
       // Do a notifications check on startup, if the user isn't clicking on a group notification
       if (!startupDueToGroupNotification && notificationType == NotificationType.local) pollRepliesAndShowNotifications();
     }

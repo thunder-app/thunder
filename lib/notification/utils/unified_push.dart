@@ -13,6 +13,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/main.dart';
+import 'package:thunder/notification/shared/notification_payload.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:markdown/markdown.dart';
 
@@ -96,7 +97,13 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           bigTextStyleInformation: bigTextStyleInformation,
           title: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
           content: plaintextComment,
-          payload: '$repliesGroupKey-${commentReplyView.commentReply.id}',
+          payload: jsonEncode(NotificationPayload(
+            type: NotificationType.unifiedPush,
+            accountId: account.id,
+            inboxType: NotificationInboxType.reply,
+            group: false,
+          ).toJson()),
+          inboxType: NotificationInboxType.reply,
         );
       }
 
@@ -124,7 +131,13 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           bigTextStyleInformation: bigTextStyleInformation,
           title: generateUserFullName(null, personMentionView.creator.name, fetchInstanceNameFromUrl(personMentionView.creator.actorId), userSeparator: userSeparator),
           content: plaintextComment,
-          payload: '$repliesGroupKey-${personMentionView.personMention.id}',
+          payload: jsonEncode(NotificationPayload(
+            type: NotificationType.unifiedPush,
+            accountId: account.id,
+            inboxType: NotificationInboxType.mention,
+            group: false,
+          ).toJson()),
+          inboxType: NotificationInboxType.mention,
         );
       }
 

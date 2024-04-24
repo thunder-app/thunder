@@ -1,5 +1,6 @@
 // Dart imports
 import 'dart:async';
+import 'dart:convert';
 
 // Flutter imports
 import 'package:flutter/material.dart';
@@ -20,7 +21,9 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/main.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
+import 'package:thunder/notification/shared/notification_payload.dart';
 import 'package:thunder/utils/instance.dart';
 
 const String _lastPollTimeId = 'thunder_last_notifications_poll_time';
@@ -85,7 +88,7 @@ Future<void> pollRepliesAndShowNotifications() async {
   }
 
   // Create a notification group for each account that has replies
-  showNotificationGroups(accounts: notifications.keys.toList());
+  showNotificationGroups(accounts: notifications.keys.toList(), inboxTypes: [NotificationInboxType.reply], type: NotificationType.local);
 
   // Show the notifications
   for (final entry in notifications.entries) {
@@ -110,7 +113,14 @@ Future<void> pollRepliesAndShowNotifications() async {
         bigTextStyleInformation: bigTextStyleInformation,
         title: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
         content: plaintextComment,
-        payload: '$repliesGroupKey-${commentReplyView.commentReply.id}',
+        payload: jsonEncode(NotificationPayload(
+          type: NotificationType.local,
+          accountId: account.id,
+          inboxType: NotificationInboxType.reply,
+          group: false,
+          id: commentReplyView.commentReply.id,
+        ).toJson()),
+        inboxType: NotificationInboxType.reply,
       );
     }
   }
