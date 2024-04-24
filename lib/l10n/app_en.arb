@@ -733,6 +733,10 @@
   },
   "hidePassword": "Hide Password",
   "@hidePassword": {},
+  "hideThumbnails": "Hide Thumbnails",
+  "@hideThumbnails": {
+    "description": "Option to hide thumbnails in feed"
+  },
   "hideTopBarOnScroll": "Hide Top Bar on Scroll",
   "@hideTopBarOnScroll": {
     "description": "Settings toggle to hide the top bar on scroll"

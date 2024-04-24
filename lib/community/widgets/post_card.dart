@@ -207,6 +207,7 @@ class _PostCardState extends State<PostCard> {
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
+                      hideThumbnails: state.hideThumbnails,
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,

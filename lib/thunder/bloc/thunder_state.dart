@@ -52,6 +52,7 @@ class ThunderState extends Equatable {
     // Compact Related Settings
     this.useCompactView = false,
     this.showTitleFirst = false,
+    this.hideThumbnails = false,
     this.showThumbnailPreviewOnRight = false,
     this.showTextPostIndicator = false,
     this.tappableAuthorCommunity = false,
@@ -205,6 +206,7 @@ class ThunderState extends Equatable {
   /// Compact Related Settings
   final bool useCompactView;
   final bool showTitleFirst;
+  final bool hideThumbnails;
   final bool showThumbnailPreviewOnRight;
   final bool showTextPostIndicator;
   final bool tappableAuthorCommunity;
@@ -365,6 +367,7 @@ class ThunderState extends Equatable {
     /// Compact Related Settings
     bool? useCompactView,
     bool? showTitleFirst,
+    bool? hideThumbnails,
     bool? showThumbnailPreviewOnRight,
     bool? showTextPostIndicator,
     bool? tappableAuthorCommunity,
@@ -520,6 +523,7 @@ class ThunderState extends Equatable {
       // Compact Related Settings
       useCompactView: useCompactView ?? this.useCompactView,
       showTitleFirst: showTitleFirst ?? this.showTitleFirst,
+      hideThumbnails: hideThumbnails ?? this.hideThumbnails,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
       showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
       tappableAuthorCommunity: tappableAuthorCommunity ?? this.tappableAuthorCommunity,
@@ -678,6 +682,7 @@ class ThunderState extends Equatable {
         /// Compact Related Settings
         useCompactView,
         showTitleFirst,
+        hideThumbnails,
         showThumbnailPreviewOnRight,
         showTextPostIndicator,
         tappableAuthorCommunity,

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/shared/link_information.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -31,6 +32,9 @@ class MediaView extends StatefulWidget {
 
   /// Whether to blur NSFW images
   final bool hideNsfwPreviews;
+
+  /// Whether to hide thumbnails
+  final bool hideThumbnails;
 
   /// Whether to extend the image to the edge of the screen (ViewMode.comfortable)
   final bool edgeToEdgeImages;
@@ -60,6 +64,7 @@ class MediaView extends StatefulWidget {
     this.allowUnconstrainedImageHeight = false,
     this.edgeToEdgeImages = false,
     this.hideNsfwPreviews = true,
+    this.hideThumbnails = false,
     this.markPostReadOnMediaView = false,
     this.isUserLoggedIn = false,
     this.viewMode = ViewMode.comfortable,
@@ -129,6 +134,34 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     );
   }
 
+  /// Overlays the image as an ImageViewer
+  void showImage() {
+    if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
+      try {
+        // Mark post as read when on the feed page
+        int postId = widget.postViewMedia.postView.post.id;
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
+      } catch (e) {}
+    }
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 100),
+        transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+          return ImageViewer(
+            url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!,
+            postId: widget.postViewMedia.postView.post.id,
+            navigateToPost: widget.navigateToPost,
+          );
+        },
+      ),
+    );
+  }
+
   /// Creates an image preview
   Widget buildMediaImage() {
     final theme = Theme.of(context);
@@ -139,32 +172,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     return InkWell(
       splashColor: theme.colorScheme.primary.withOpacity(0.4),
       borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-      onTap: () {
-        if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
-          try {
-            // Mark post as read when on the feed page
-            int postId = widget.postViewMedia.postView.post.id;
-            context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
-          } catch (e) {}
-        }
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            opaque: false,
-            transitionDuration: const Duration(milliseconds: 100),
-            reverseTransitionDuration: const Duration(milliseconds: 100),
-            transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-              return ImageViewer(
-                url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!,
-                postId: widget.postViewMedia.postView.post.id,
-                navigateToPost: widget.navigateToPost,
-              );
-            },
-          ),
-        );
-      },
+      onTap: showImage,
       child: Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
@@ -216,6 +224,14 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    if (widget.hideThumbnails) {
+      return LinkInformation(
+        viewMode: widget.viewMode,
+        originURL: widget.postViewMedia.media.first.originalUrl,
+        mediaType: widget.postViewMedia.media.first.mediaType,
+        handleTapImage: showImage,
+      );
+    }
     switch (widget.postViewMedia.media.firstOrNull?.mediaType) {
       case MediaType.image:
         return buildMediaImage();
