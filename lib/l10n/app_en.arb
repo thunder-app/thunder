@@ -1121,6 +1121,10 @@
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
   },
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
+  },
   "nsfwWarning": "NSFW - Tap to reveal",
   "@nsfwWarning": {
     "description": "Warning for NSFW posts"
@@ -1493,7 +1497,7 @@
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
   "@selectFeedType": {},
-  "selectLanguage": "Select language",
+  "selectLanguage": "Select Language",
   "@selectLanguage": {
     "description": "The prompt to select a language in the post creation page"
   },
