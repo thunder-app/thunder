@@ -74,17 +74,15 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         },
         borderRadius: const BorderRadius.all(Radius.circular(50)),
         child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
+          padding: const EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 12),
           child: Text.rich(
+            softWrap: true,
             TextSpan(
               children: <InlineSpan>[
                 TextSpan(text: _language != null ? '${l10n.language}: ${_language?.name}' : l10n.selectLanguage),
                 const WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  child: Icon(Icons.chevron_right_rounded),
                 ),
               ],
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
