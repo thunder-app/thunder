@@ -204,9 +204,11 @@ class _PostCardState extends State<PostCard> {
                       listingType: widget.listingType,
                       navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead,
+                      showMedia: !state.hideThumbnails,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
+                      hideThumbnails: state.hideThumbnails,
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,

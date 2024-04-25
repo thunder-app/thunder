@@ -1,8 +1,10 @@
 import 'dart:collection';
 
+import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instances.dart';
+import 'package:thunder/shared/pages/loading_page.dart';
 
 String? fetchInstanceNameFromUrl(String? url) {
   if (url == null) {
@@ -97,7 +99,7 @@ Future<String?> getLemmyUser(String text) async {
 }
 
 final RegExp _post = RegExp(r'^(https?:\/\/)(.*)\/post\/([0-9]*).*$');
-Future<int?> getLemmyPostId(String text) async {
+Future<int?> getLemmyPostId(BuildContext context, String text) async {
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   final RegExpMatch? postMatch = _post.firstMatch(text);
@@ -110,6 +112,9 @@ Future<int?> getLemmyPostId(String text) async {
       } else {
         // This is a post on another instance. Try to resolve it
         try {
+          // Show the loading page while we resolve the post
+          showLoadingPage(context);
+
           final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
           return resolveObjectResponse.post?.post.id;
         } catch (e) {
@@ -123,7 +128,7 @@ Future<int?> getLemmyPostId(String text) async {
 }
 
 final RegExp _comment = RegExp(r'^(https?:\/\/)(.*)\/comment\/([0-9]*).*$');
-Future<int?> getLemmyCommentId(String text) async {
+Future<int?> getLemmyCommentId(BuildContext context, String text) async {
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   final RegExpMatch? commentMatch = _comment.firstMatch(text);
@@ -136,6 +141,9 @@ Future<int?> getLemmyCommentId(String text) async {
       } else {
         // This is a comment on another instance. Try to resolve it
         try {
+          // Show the loading page while we resolve the post
+          showLoadingPage(context);
+
           final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
           return resolveObjectResponse.comment?.comment.id;
         } catch (e) {

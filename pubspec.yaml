@@ -104,6 +104,12 @@ dependencies:
   gal: ^2.2.0
   smooth_highlight: ^0.1.1
   visibility_detector: ^0.4.0+2
+  push:
+    git:
+      url: https://github.com/hjiangsu/push.git
+      ref: 722c5e8541e1e5c91c56743b94d07f51f26fd2c5
+      path: push
+  unifiedpush: ^5.0.1
   flutter_sharing_intent: ^1.1.1
   drift: ^2.16.0
   sqlite3_flutter_libs: ^0.5.20
@@ -118,6 +124,13 @@ dev_dependencies:
       url: https://github.com/fluttercommunity/flutter_launcher_icons.git
       ref: master
   drift_dev: ^2.16.0
+
+dependency_overrides:
+  push_android:
+    git:
+      url: https://github.com/hjiangsu/push.git
+      ref: 70269bd08a06c4f34f6f192a2d46127ae48479a5
+      path: push_android
 
 # The following section is specific to Flutter packages.
 flutter:

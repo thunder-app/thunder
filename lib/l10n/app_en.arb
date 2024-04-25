@@ -79,6 +79,10 @@
   "@appearance": {
     "description": "Title of Appearance in Settings -> Appearance"
   },
+  "applePushNotificationService": "Apple Push Notification Service",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
   "applied": "Applied",
   "@applied": {},
   "apply": "Apply",
@@ -132,6 +136,10 @@
   "boldUserName": "Bold User Name",
   "@boldUserName": {
     "description": "Setting for bolding the username"
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
   },
   "browserMode": "Link handling",
   "@browserMode": {
@@ -269,6 +277,10 @@
   "@commentReported": {},
   "commentSavedAsDraft": "Comment saved as draft",
   "@commentSavedAsDraft": {},
+  "commentShowUserAvatar": "Show User Avatar",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
   "commentShowUserInstance": "Show User Instance",
   "@commentShowUserInstance": {
     "description": "Settings toggle to display user instance alongside their display name in comments"
@@ -495,6 +507,14 @@
   "@disable": {
     "description": "Action for disabling something"
   },
+  "disablePushNotifications": "Disable Push Notifications",
+  "@disablePushNotifications": {
+    "description": "Description when disabling push notifications"
+  },
+  "disabled": "Disabled",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
   "discussionLanguages": "Discussion Languages",
   "@discussionLanguages": {
     "description": "Only load posts and communities in your language(s)"
@@ -559,7 +579,7 @@
   "@enableFloatingButtonOnPosts": {
     "description": "Setting for enable floating button on posts"
   },
-  "enableInboxNotifications": "Enable Inbox Notifications (Experimental)",
+  "enableInboxNotifications": "Enable Inbox Notifications",
   "@enableInboxNotifications": {
     "description": "Setting name for inbox notifications"
   },
@@ -613,10 +633,18 @@
   },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
+  "failedToDisablePushNotifications": "Failed to disable push notifications",
+  "@failedToDisablePushNotifications": {
+    "description": "Error message when failed to disable push notifications."
+  },
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
   "@failedToLoadBlocks": {},
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
+  "failedToUpdateNotificationSettings": "Failed to update notification settings",
+  "@failedToUpdateNotificationSettings": {
+    "description": "Error message when failed to update notification settings."
+  },
   "favorites": "Favorites",
   "@favorites": {
     "description": "The favorited communities on the drawer"
@@ -705,6 +733,10 @@
   },
   "hidePassword": "Hide Password",
   "@hidePassword": {},
+  "hideThumbnails": "Hide Thumbnails",
+  "@hideThumbnails": {
+    "description": "Option to hide thumbnails in feed"
+  },
   "hideTopBarOnScroll": "Hide Top Bar on Scroll",
   "@hideTopBarOnScroll": {
     "description": "Settings toggle to hide the top bar on scroll"
@@ -857,6 +889,10 @@
   "@loadMoreSingular": {},
   "local": "Local",
   "@local": {},
+  "localNotifications": "Local Notifications",
+  "@localNotifications": {
+    "description": "Describes the notification type for Local Notifications"
+  },
   "localPosts": "Local Posts",
   "@localPosts": {},
   "lockPost": "Lock Post",
@@ -896,6 +932,10 @@
   "markPostAsReadOnScroll": "Mark Read On Scroll",
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "me": "Me",
+  "@me": {
+    "description": "Label for the current user."
   },
   "medium": "Medium",
   "@medium": {
@@ -1051,6 +1091,10 @@
   "@noUserBlocks": {},
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
+  "none": "None",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
   "normal": "Normal",
   "@normal": {
     "description": "Normal name thickness/weight"
@@ -1073,9 +1117,13 @@
   "@notificationsNotAllowed": {
     "description": "Description for when notifications are now allowed for app"
   },
-  "notificationsWarningDialog": "Notifications are an experimental feature which may not function correctly on all devices.\n\n· Checks will occur every ~15 minutes and will consume additional battery.\n\n· Disable battery optimizations for a higher likelihood of successful notifications.\n\nSee the following page for more information.",
+  "notificationsWarningDialog": "Notifications are an **experimental feature** which may not function correctly on all devices.\n\n - Checks will occur every ~15 minutes and will consume additional battery.\n\n - Disable battery optimizations for a higher likelihood of successful notifications.\n\n See the following page for more information.",
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
+  },
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
   },
   "nsfwWarning": "NSFW - Tap to reveal",
   "@nsfwWarning": {
@@ -1115,6 +1163,10 @@
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
   },
+  "originalPoster": "Original Poster",
+  "@originalPoster": {
+    "description": "Label for the original poster."
+  },
   "overview": "Overview",
   "@overview": {},
   "password": "Password",
@@ -1152,6 +1204,10 @@
   "postBodySettingsDescription": "These settings affect the display of the post body",
   "@postBodySettingsDescription": {
     "description": "Description of post body settings"
+  },
+  "postBodyShowCommunityAvatar": "Show Community Avatar",
+  "@postBodyShowCommunityAvatar": {
+    "description": "Whether to show the community avatar for post bodies"
   },
   "postBodyShowCommunityInstance": "Show Community Instance",
   "@postBodyShowCommunityInstance": {
@@ -1240,6 +1296,22 @@
   "purgedPost": "Purged Post",
   "@purgedPost": {
     "description": "Short decription for moderator action to purge a post"
+  },
+  "pushNotification": "Push Notifications",
+  "@pushNotification": {
+    "description": "Setting for push notifications"
+  },
+  "pushNotificationDescription": "If enabled, Thunder will send your JWT token(s) to the server in order to poll for new notifications. \n\n **NOTE:** This will not take effect until the next time the app is launched.",
+  "@pushNotificationDescription": {
+    "description": "Description of push notification setting"
+  },
+  "pushNotificationServer": "Push Notification Server",
+  "@pushNotificationServer": {
+    "description": "Setting for choosing push notification server"
+  },
+  "pushNotificationServerDescription": "Configure the push notification server. The server must be properly configured to send push notifications to your device.\n\n **Only enter a server that you trust with your credentials.**",
+  "@pushNotificationServerDescription": {
+    "description": "Description of choosing push notification server setting"
   },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
@@ -1425,7 +1497,7 @@
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
   "@selectFeedType": {},
-  "selectLanguage": "Select language",
+  "selectLanguage": "Select Language",
   "@selectLanguage": {
     "description": "The prompt to select a language in the post creation page"
   },
@@ -1604,6 +1676,10 @@
   "showUpdateChangelogsSubtitle": "Display a list of changes after an update",
   "@showUpdateChangelogsSubtitle": {
     "description": "Subtitle for setting for showing changelogs after updates"
+  },
+  "showUserAvatar": "Show User Avatar",
+  "@showUserAvatar": {
+    "description": "Toggle to show user avatar."
   },
   "showUserDisplayNames": "Show User Display Names",
   "@showUserDisplayNames": {
@@ -1863,6 +1939,10 @@
   "@unhidCommunity": {
     "description": "Short decription for moderator action to unhide a community"
   },
+  "unifiedPushNotifications": "Unified Push Notifications",
+  "@unifiedPushNotifications": {
+    "description": "Describes the notification type for Unified Push Notifications"
+  },
   "unlockPost": "Unlock Post",
   "@unlockPost": {
     "description": "Action for unlocking a post (moderator action)"
@@ -1915,9 +1995,25 @@
   "@useAdvancedShareSheet": {
     "description": "Toggle to use advanced share sheet."
   },
+  "useApplePushNotifications": "Use APNs Notifications",
+  "@useApplePushNotifications": {
+    "description": "Toggle to use APNs."
+  },
+  "useApplePushNotificationsDescription": "Uses Apple's Push Notification service",
+  "@useApplePushNotificationsDescription": {
+    "description": "Subtitle of the setting for using APNs"
+  },
   "useCompactView": "Enable for small posts, disable for big.",
   "@useCompactView": {
     "description": "Option to enable or disable compact view for small posts."
+  },
+  "useLocalNotifications": "Use Local Notifications (Experimental)",
+  "@useLocalNotifications": {
+    "description": "Toggle to use local notifications."
+  },
+  "useLocalNotificationsDescription": "Periodically checks for notifications in the background",
+  "@useLocalNotificationsDescription": {
+    "description": "Subtitle of the setting for using local notifications"
   },
   "useMaterialYouTheme": "Use Material You Theme",
   "@useMaterialYouTheme": {
@@ -1937,6 +2033,14 @@
   },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
+  "useUnifiedPushNotifications": "Use UnifiedPush Notifications",
+  "@useUnifiedPushNotifications": {
+    "description": "Toggle to use UnifiedPush Notifications"
+  },
+  "useUnifiedPushNotificationsDescription": "Requires a compatible app",
+  "@useUnifiedPushNotificationsDescription": {
+    "description": "Subtitle of the setting for using UnifiedPush Notifications"
+  },
   "user": "User",
   "@user": {
     "description": "Role name for user"
