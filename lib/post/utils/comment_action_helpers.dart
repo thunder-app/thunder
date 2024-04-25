@@ -19,6 +19,7 @@ import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -40,6 +41,7 @@ enum CommentCardAction {
   textActions,
   copyText,
   viewSource,
+  selectText,
   report,
   userActions,
   visitProfile,
@@ -66,12 +68,12 @@ class ExtendedCommentCardActions {
 
   final CommentCardAction commentCardAction;
   final IconData icon;
-  final IconData Function(bool viewSource)? getTrailingIcon;
+  final IconData Function()? getTrailingIcon;
   final String label;
   final Color? color;
   final Color? Function(CommentView commentView)? getForegroundColor;
   final IconData? Function(CommentView commentView)? getOverrideIcon;
-  final String Function(BuildContext context, CommentView commentView)? getOverrideLabel;
+  final String Function(BuildContext context, CommentView commentView, bool viewSource)? getOverrideLabel;
   final String Function(BuildContext context, CommentView commentView)? getSubtitleLabel;
   final bool Function(BuildContext context, CommentView commentView)? shouldShow;
   final bool Function(bool isUserLoggedIn)? shouldEnable;
@@ -85,7 +87,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     icon: Icons.person_rounded,
     label: l10n.user,
     getSubtitleLabel: (context, commentView) => generateUserFullName(context, commentView.creator.name, fetchInstanceNameFromUrl(commentView.creator.actorId)),
-    getTrailingIcon: (_) => Icons.chevron_right_rounded,
+    getTrailingIcon: () => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.visitProfile,
@@ -103,7 +105,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     icon: Icons.language_rounded,
     label: l10n.instance(1),
     getSubtitleLabel: (context, postView) => fetchInstanceNameFromUrl(postView.creator.actorId) ?? '',
-    getTrailingIcon: (_) => Icons.chevron_right_rounded,
+    getTrailingIcon: () => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.visitInstance,
@@ -120,7 +122,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.textActions,
     icon: Icons.comment_rounded,
     label: l10n.textActions,
-    getTrailingIcon: (_) => Icons.chevron_right_rounded,
+    getTrailingIcon: () => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.copyText,
@@ -131,7 +133,12 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.viewSource,
     icon: Icons.edit_document,
     label: l10n.viewCommentSource,
-    getTrailingIcon: (viewSource) => viewSource ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
+    getOverrideLabel: (context, commentView, viewSource) => viewSource ? l10n.viewOriginal : l10n.viewCommentSource,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.selectText,
+    icon: Icons.select_all_rounded,
+    label: l10n.selectText,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.report,
@@ -276,6 +283,7 @@ void showCommentActionBottomModalSheet(
       .where((extendedAction) => [
             CommentCardAction.copyText,
             CommentCardAction.viewSource,
+            CommentCardAction.selectText,
           ].contains(extendedAction.commentCardAction))
       .toList();
 
@@ -448,10 +456,10 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                   itemCount: widget.commentCardActions[page]!.length,
                   itemBuilder: (BuildContext itemBuilderContext, int index) {
                     return PickerItem(
-                      label: widget.commentCardActions[page]![index].getOverrideLabel?.call(context, widget.commentView) ?? widget.commentCardActions[page]![index].label,
+                      label: widget.commentCardActions[page]![index].getOverrideLabel?.call(context, widget.commentView, widget.viewSource) ?? widget.commentCardActions[page]![index].label,
                       subtitle: widget.commentCardActions[page]![index].getSubtitleLabel?.call(context, widget.commentView),
                       icon: widget.commentCardActions[page]![index].getOverrideIcon?.call(widget.commentView) ?? widget.commentCardActions[page]![index].icon,
-                      trailingIcon: widget.commentCardActions[page]![index].getTrailingIcon?.call(widget.viewSource),
+                      trailingIcon: widget.commentCardActions[page]![index].getTrailingIcon?.call(),
                       onSelected:
                           (widget.commentCardActions[page]![index].shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(widget.commentCardActions[page]![index].commentCardAction) : null,
                     );
@@ -508,6 +516,12 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
         break;
       case CommentCardAction.viewSource:
         action = widget.onViewSourceToggled;
+        break;
+      case CommentCardAction.selectText:
+        action = () => showSelectableTextModal(
+              context,
+              text: widget.commentView.comment.content,
+            );
         break;
       case CommentCardAction.report:
         action = () => widget.onReportAction(widget.commentView.comment.id);
