@@ -177,6 +177,15 @@ class CommonMarkdownBody extends StatelessWidget {
                 width: 1,
                 borderRadius: const BorderRadius.all(Radius.circular(5)),
               ),
+              horizontalRuleDecoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
+                border: Border(
+                  top: BorderSide(
+                    width: 3,
+                    color: theme.colorScheme.primary.withOpacity(0.75),
+                  ),
+                ),
+              ),
             ),
     );
   }
