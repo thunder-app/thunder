@@ -18,7 +18,13 @@ class CommunityAvatar extends StatelessWidget {
   /// Whether to show the community status (locked)
   final bool showCommunityStatus;
 
-  const CommunityAvatar({super.key, this.community, this.radius = 12.0, this.showCommunityStatus = false});
+  /// The size of the thumbnail's height
+  final int? thumbnailSize;
+
+  /// The image format to request from the instance
+  final String? format;
+
+  const CommunityAvatar({super.key, this.community, this.radius = 12.0, this.showCommunityStatus = false, this.thumbnailSize, this.format});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +47,15 @@ class CommunityAvatar extends StatelessWidget {
 
     if (community?.icon?.isNotEmpty != true) return placeholderIcon;
 
+    Uri imageUri = Uri.parse(community!.icon!);
+    bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
+    Map<String, dynamic> queryParameters = {};
+    if (isPictrsImageEndpoint && thumbnailSize != null) queryParameters['thumbnail'] = thumbnailSize.toString();
+    if (isPictrsImageEndpoint && format != null) queryParameters['format'] = format;
+    Uri thumbnailUri = Uri.https(imageUri.host, imageUri.path, queryParameters);
+
     return CachedNetworkImage(
-      imageUrl: community!.icon!,
+      imageUrl: thumbnailUri.toString(),
       imageBuilder: (context, imageProvider) {
         return Stack(
           children: [
