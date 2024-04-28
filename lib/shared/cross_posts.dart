@@ -180,7 +180,6 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                           WidgetSpan(
                                               alignment: PlaceholderAlignment.middle,
                                               child: InkWell(
-                                    onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index + 1]])).first),
                                                 onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index + 1]])).first),
                                                 child: Text(
                                                   '${generateCommunityFullName(context, widget.crossPosts[index + 1].community.name, fetchInstanceNameFromUrl(widget.crossPosts[index + 1].community.actorId))} ',
