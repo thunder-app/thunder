@@ -156,12 +156,84 @@ class PostViewMetaData extends StatelessWidget {
             IconText(
               fontScale: state.metadataFontSizeScale,
               icon: Icon(
-                hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
+                hasBeenEdited ? Icons.edit_rounded : Icons.history_rounded,
                 size: 19.0,
                 color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
               ),
               text: formatTimeToString(dateTime: published.toIso8601String()),
               textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class CrossPostMetaData extends StatelessWidget {
+  final int unreadComments;
+  final int comments;
+  final bool hasBeenEdited;
+  final DateTime published;
+  final bool saved;
+  final int score;
+
+  const CrossPostMetaData({
+    super.key,
+    required this.unreadComments,
+    required this.comments,
+    required this.hasBeenEdited,
+    required this.published,
+    required this.saved,
+    required this.score,
+  });
+
+  final MaterialColor upVoteColor = Colors.orange;
+  final MaterialColor downVoteColor = Colors.blue;
+  final MaterialColor savedColor = Colors.purple;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return BlocBuilder<ThunderBloc, ThunderState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconText(
+              fontScale: state.metadataFontSizeScale,
+              icon: Icon(
+                Icons.arrow_upward,
+                size: 17.0,
+                color: theme.textTheme.titleSmall?.color?.withOpacity(0.4),
+              ),
+              text: formatNumberToK(score),
+              textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.5),
+              padding: 5.0,
+            ),
+            const SizedBox(width: 10.0),
+            IconText(
+              fontScale: state.metadataFontSizeScale,
+              icon: Icon(
+                Icons.chat,
+                size: 17.0,
+                color: theme.textTheme.titleSmall?.color?.withOpacity(0.4),
+              ),
+              text: formatNumberToK(comments),
+              textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.5),
+              padding: 5.0,
+            ),
+            const SizedBox(width: 10.0),
+            IconText(
+              fontScale: state.metadataFontSizeScale,
+              icon: Icon(
+                hasBeenEdited ? Icons.edit_rounded : Icons.history_rounded,
+                size: 19.0,
+                color: theme.textTheme.titleSmall?.color?.withOpacity(0.4),
+              ),
+              text: formatTimeToString(dateTime: published.toIso8601String()),
+              textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.5),
             ),
           ],
         );

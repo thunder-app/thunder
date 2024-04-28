@@ -9,6 +9,8 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 
+import '../community/widgets/post_card_metadata.dart';
+
 /// Widget which displays a post's cross-posts
 class CrossPosts extends StatefulWidget {
   final List<PostView> crossPosts;
@@ -48,157 +50,169 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final TextStyle? crossPostTextStyle = theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic);
-    final TextStyle? crossPostLinkTextStyle = crossPostTextStyle?.copyWith(color: Colors.blue);
+    final TextStyle? crossPostTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4));
+    final TextStyle? crossPostLinkTextStyle = crossPostTextStyle?.copyWith(
+      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+    );
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.dividerColor.withOpacity(0.25),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            InkWell(
-              onTap: (widget.isNewPost == true && widget.crossPosts.length == 1) ? null : () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
-              borderRadius: BorderRadius.circular(10),
-              child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: Stack(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          // The rich text handles overflow across multiple sections (TextSpan) of text
-                          child: RichText(
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: widget.isNewPost == true ? l10n.alreadyPostedTo : l10n.crossPostedTo,
-                                  style: crossPostTextStyle,
-                                ),
-                                TextSpan(
-                                  text: ' ${generateCommunityFullName(context, widget.crossPosts[0].community.name, fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId))} ',
-                                  style: crossPostLinkTextStyle,
-                                  // This text is not tappable; there is an invisible widget above this that handles the InkWell and the tap gesture
-                                ),
-                                if (widget.crossPosts.length > 1)
-                                  TextSpan(
-                                    text: l10n.andXMore(widget.crossPosts.length - 1),
-                                    style: crossPostTextStyle,
-                                  ),
-                              ],
-                            ),
-                          ),
+    return InkWell(
+      onTap: (widget.isNewPost == true && widget.crossPosts.length == 1) ? null : () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                widget.isNewPost == true ? l10n.alreadyPostedTo : l10n.crossPostedTo,
+                style: theme.textTheme.bodySmall,
+              ),
+              const Spacer(),
+              (widget.crossPosts.length == 1)
+                  ? const Icon(null)
+                  : _areCrossPostsExpanded
+                      ? const Icon(Icons.expand_less_rounded, size: 18)
+                      : const Icon(Icons.expand_more_rounded, size: 18),
+            ],
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          Row(
+            children: [
+              Expanded(
+                // The rich text handles overflow across multiple sections (TextSpan) of text
+                child: RichText(
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  text: TextSpan(
+                    children: [
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.repeat_rounded,
+                          size: 14.0,
+                          color: theme.colorScheme.onBackground.withOpacity(0.9),
                         ),
-                        (widget.isNewPost == true && widget.crossPosts.length == 1)
-                            ? const Icon(null)
-                            : _areCrossPostsExpanded
-                                ? const Icon(Icons.arrow_drop_up_rounded)
-                                : const Icon(Icons.arrow_drop_down_rounded),
-                      ],
-                    ),
-                    // This Row widget exists purely so that we can get an InkWell on the community link.
-                    // However, the text is insvisible because we actually want the RichText to manage the text,
-                    // including overflow.
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            widget.isNewPost == true ? l10n.alreadyPostedTo : l10n.crossPostedTo,
-                            style: crossPostTextStyle?.copyWith(color: Colors.transparent),
-                          ),
-                          InkWell(
-                            borderRadius: BorderRadius.circular(5),
+                      ),
+                      const WidgetSpan(
+                        child: SizedBox(width: 6.0),
+                      ),
+                      TextSpan(
+                        text: 'to',
+                        style: crossPostTextStyle,
+                      ),
+                      const WidgetSpan(
+                        child: SizedBox(width: 6.0),
+                      ),
+                      WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: InkWell(
                             onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[0]])).first),
                             child: Text(
-                              ' ${generateCommunityFullName(context, widget.crossPosts[0].community.name, fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId))} ',
-                              style: crossPostLinkTextStyle?.copyWith(color: Colors.transparent),
+                              '${generateCommunityFullName(context, widget.crossPosts[0].community.name, fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId))} ',
+                              style: crossPostLinkTextStyle,
+                              // This text is not tappable; there is an invisible widget above this that handles the InkWell and the tap gesture
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                          )),
+                      if (widget.crossPosts.length > 1 && !_areCrossPostsExpanded)
+                        TextSpan(
+                          text: l10n.andXMore(widget.crossPosts.length - 1),
+                          style: crossPostTextStyle,
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              switchInCurve: Curves.easeInOut,
-              switchOutCurve: Curves.easeInOut,
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return SizeTransition(
-                  sizeFactor: animation,
-                  child: SlideTransition(position: _offsetAnimation, child: child),
-                );
-              },
-              child: _areCrossPostsExpanded
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: Row(
+              CrossPostMetaData(
+                score: widget.crossPosts[0].counts.score,
+                comments: widget.crossPosts[0].counts.comments,
+                unreadComments: widget.crossPosts[0].unreadComments,
+                hasBeenEdited: widget.crossPosts[0].post.updated != null ? true : false,
+                published: widget.crossPosts[0].post.published,
+                saved: widget.crossPosts[0].saved,
+              ),
+            ],
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            switchInCurve: Curves.easeInOut,
+            switchOutCurve: Curves.easeInOut,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return SizeTransition(
+                sizeFactor: animation,
+                child: SlideTransition(position: _offsetAnimation, child: child),
+              );
+            },
+            child: _areCrossPostsExpanded
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              const Divider(),
+                              Row(
                                 children: [
-                                  Text(
-                                    ' • ',
-                                    style: crossPostTextStyle,
-                                  ),
-                                  InkWell(
-                                    onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index + 1]])).first),
-                                    borderRadius: BorderRadius.circular(5),
-                                    child: Text(
-                                      generateCommunityFullName(context, widget.crossPosts[index + 1].community.name, fetchInstanceNameFromUrl(widget.crossPosts[index + 1].community.actorId)),
-                                      style: crossPostLinkTextStyle,
+                                  Expanded(
+                                    child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      text: TextSpan(
+                                        children: [
+                                          WidgetSpan(
+                                            child: Icon(
+                                              Icons.repeat_rounded,
+                                              size: 14.0,
+                                              color: theme.colorScheme.onBackground.withOpacity(0.9),
+                                            ),
+                                          ),
+                                          const WidgetSpan(
+                                            child: SizedBox(width: 6.0),
+                                          ),
+                                          TextSpan(
+                                            text: 'to',
+                                            style: crossPostTextStyle,
+                                          ),
+                                          const WidgetSpan(
+                                            child: SizedBox(width: 6.0),
+                                          ),
+                                          WidgetSpan(
+                                              alignment: PlaceholderAlignment.middle,
+                                              child: InkWell(
+                                                onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index + 1]])).first),
+                                                child: Text(
+                                                  '${generateCommunityFullName(context, widget.crossPosts[index + 1].community.name, fetchInstanceNameFromUrl(widget.crossPosts[index + 1].community.actorId))} ',
+                                                  style: crossPostLinkTextStyle,
+                                                  // This text is not tappable; there is an invisible widget above this that handles the InkWell and the tap gesture
+                                                ),
+                                              )),
+                                        ],
+                                      ),
                                     ),
+                                  ),
+                                  CrossPostMetaData(
+                                    score: widget.crossPosts[index + 1].counts.score,
+                                    comments: widget.crossPosts[index + 1].counts.comments,
+                                    unreadComments: widget.crossPosts[index + 1].unreadComments,
+                                    hasBeenEdited: widget.crossPosts[index + 1].post.updated != null ? true : false,
+                                    published: widget.crossPosts[index + 1].post.published,
+                                    saved: widget.crossPosts[index + 1].saved,
                                   ),
                                 ],
                               ),
-                            );
-                          },
-                          itemCount: widget.crossPosts.length - 1,
-                        ),
-                        widget.isNewPost != true
-                            ? InkWell(
-                                onTap: () => createCrossPost(
-                                  context,
-                                  title: widget.originalPost!.postView.post.name,
-                                  url: widget.originalPost!.postView.post.url,
-                                  scaffoldMessengerKey: widget.scaffoldMessengerKey,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        l10n.createNewCrossPost,
-                                        style: crossPostTextStyle,
-                                      ),
-                                      const Icon(Icons.arrow_right_rounded)
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : const SizedBox(height: 10),
-                      ],
-                    )
-                  : Container(),
-            ),
-          ],
-        ),
+                            ],
+                          );
+                        },
+                        itemCount: widget.crossPosts.length - 1,
+                      ),
+                    ],
+                  )
+                : Container(),
+          ),
+        ],
       ),
     );
   }

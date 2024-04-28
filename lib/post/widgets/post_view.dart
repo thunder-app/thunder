@@ -175,12 +175,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   ),
                 ),
               ),
-            if (showCrossPosts && sortedCrossPosts.isNotEmpty)
-              CrossPosts(
-                crossPosts: sortedCrossPosts,
-                originalPost: widget.postViewMedia,
-                scaffoldMessengerKey: widget.scaffoldMessengerKey,
-              ),
             const SizedBox(height: 16.0),
             SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -302,6 +296,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 ],
               ),
             ),
+            if (showCrossPosts && sortedCrossPosts.isNotEmpty) const Divider(),
+            if (showCrossPosts && sortedCrossPosts.isNotEmpty)
+              CrossPosts(
+                crossPosts: sortedCrossPosts,
+                originalPost: widget.postViewMedia,
+                scaffoldMessengerKey: widget.scaffoldMessengerKey,
+              ),
             const Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
