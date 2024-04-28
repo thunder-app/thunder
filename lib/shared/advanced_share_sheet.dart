@@ -10,6 +10,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -55,7 +56,7 @@ bool _hasImage(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty &&
 
 bool _hasText(PostViewMedia postViewMedia) => postViewMedia.postView.post.body?.isNotEmpty == true;
 
-bool _hasExternalLink(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty && postViewMedia.media.first.originalUrl != null;
+bool _hasExternalLink(PostViewMedia postViewMedia) => postViewMedia.media.first.mediaType != MediaType.text;
 
 bool _canShare(AdvancedShareSheetOptions options, PostViewMedia postViewMedia) {
   return options.includePostLink || (options.includeExternalLink && _hasExternalLink(postViewMedia)) || _canShareImage(options, postViewMedia);
@@ -167,190 +168,203 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                   isGeneratingImage = false;
                 }
 
-                return Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          AppLocalizations.of(context)!.preview,
-                          style: theme.textTheme.titleLarge,
+                return AnimatedSize(
+                  duration: const Duration(milliseconds: 250),
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 14, right: 14, bottom: 30),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.preview,
+                              style: theme.textTheme.titleLarge,
+                            ),
+                          ),
                         ),
-                      ),
-                      if (!_canShare(options, postViewMedia))
-                        Text(
-                          AppLocalizations.of(context)!.nothingToShare,
-                          style: theme.textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
+                        if (!_canShare(options, postViewMedia))
+                          Text(
+                            AppLocalizations.of(context)!.nothingToShare,
+                            style: theme.textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
+                          ),
+                        if (!_isImageCustomized(options, postViewMedia) && options.includeImage && _hasImage(postViewMedia))
+                          ImagePreview(
+                            url: postViewMedia.media.first.mediaUrl.toString(),
+                            isExpandable: true,
+                            isComment: true,
+                            showFullHeightImages: true,
+                          ),
+                        if (_isImageCustomized(options, postViewMedia))
+                          snapshot.hasData && !isGeneratingImage
+                              ? ImagePreview(
+                                  bytes: snapshot.data!,
+                                  isExpandable: true,
+                                  isComment: true,
+                                  showFullHeightImages: true,
+                                )
+                              : const CircularProgressIndicator(),
+                        if (options.includePostLink)
+                          Text(
+                            postViewMedia.postView.post.apId,
+                            style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),
+                          ),
+                        if (options.includeExternalLink && _hasExternalLink(postViewMedia))
+                          Text(
+                            postViewMedia.media.first.originalUrl!,
+                            style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),
+                          ),
+                        const SizedBox(height: 20),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.image,
+                              style: theme.textTheme.titleLarge,
+                            ),
+                          ),
                         ),
-                      if (!_isImageCustomized(options, postViewMedia) && options.includeImage && _hasImage(postViewMedia))
-                        ImagePreview(
-                          url: postViewMedia.media.first.mediaUrl.toString(),
-                          isExpandable: true,
-                          isComment: true,
-                          showFullHeightImages: true,
-                        ),
-                      if (_isImageCustomized(options, postViewMedia))
-                        snapshot.hasData && !isGeneratingImage
-                            ? ImagePreview(
-                                bytes: snapshot.data!,
-                                isExpandable: true,
-                                isComment: true,
-                                showFullHeightImages: true,
-                              )
-                            : const CircularProgressIndicator(),
-                      if (options.includePostLink)
-                        Text(
-                          postViewMedia.postView.post.apId,
-                          style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),
-                        ),
-                      if (options.includeExternalLink && _hasExternalLink(postViewMedia))
-                        Text(
-                          postViewMedia.media.first.originalUrl!,
-                          style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),
-                        ),
-                      const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          AppLocalizations.of(context)!.image,
-                          style: theme.textTheme.titleLarge,
-                        ),
-                      ),
-                      ToggleOption(
-                        description: AppLocalizations.of(context)!.includeTitle,
-                        iconEnabled: Icons.title_rounded,
-                        iconDisabled: Icons.title_rounded,
-                        value: options.includeTitle,
-                        onToggle: (_) => setState(() {
-                          isGeneratingImage = true;
-                          options.includeTitle = !options.includeTitle;
-                        }),
-                      ),
-                      if (_hasImage(postViewMedia))
                         ToggleOption(
-                          description: AppLocalizations.of(context)!.includeImage,
-                          iconEnabled: Icons.image_rounded,
-                          iconDisabled: Icons.image_rounded,
-                          value: options.includeImage,
+                          description: AppLocalizations.of(context)!.includeTitle,
+                          iconEnabled: Icons.title_rounded,
+                          iconDisabled: Icons.title_rounded,
+                          value: options.includeTitle,
                           onToggle: (_) => setState(() {
                             isGeneratingImage = true;
-                            options.includeImage = !options.includeImage;
+                            options.includeTitle = !options.includeTitle;
                           }),
                         ),
-                      if (_hasText(postViewMedia))
+                        if (_hasImage(postViewMedia))
+                          ToggleOption(
+                            description: AppLocalizations.of(context)!.includeImage,
+                            iconEnabled: Icons.image_rounded,
+                            iconDisabled: Icons.image_rounded,
+                            value: options.includeImage,
+                            onToggle: (_) => setState(() {
+                              isGeneratingImage = true;
+                              options.includeImage = !options.includeImage;
+                            }),
+                          ),
+                        if (_hasText(postViewMedia))
+                          ToggleOption(
+                            description: AppLocalizations.of(context)!.includeText,
+                            iconEnabled: Icons.comment_rounded,
+                            iconDisabled: Icons.comment_rounded,
+                            value: options.includeText,
+                            onToggle: (_) => setState(() {
+                              isGeneratingImage = true;
+                              options.includeText = !options.includeText;
+                            }),
+                          ),
                         ToggleOption(
-                          description: AppLocalizations.of(context)!.includeText,
-                          iconEnabled: Icons.comment_rounded,
-                          iconDisabled: Icons.comment_rounded,
-                          value: options.includeText,
+                          description: AppLocalizations.of(context)!.includeCommunity,
+                          iconEnabled: Icons.people_rounded,
+                          iconDisabled: Icons.people_rounded,
+                          value: options.includeCommnity,
                           onToggle: (_) => setState(() {
                             isGeneratingImage = true;
-                            options.includeText = !options.includeText;
+                            options.includeCommnity = !options.includeCommnity;
                           }),
                         ),
-                      ToggleOption(
-                        description: AppLocalizations.of(context)!.includeCommunity,
-                        iconEnabled: Icons.people_rounded,
-                        iconDisabled: Icons.people_rounded,
-                        value: options.includeCommnity,
-                        onToggle: (_) => setState(() {
-                          isGeneratingImage = true;
-                          options.includeCommnity = !options.includeCommnity;
-                        }),
-                      ),
-                      const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          AppLocalizations.of(context)!.link(0),
-                          style: theme.textTheme.titleLarge,
+                        const SizedBox(height: 20),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.link(0),
+                              style: theme.textTheme.titleLarge,
+                            ),
+                          ),
                         ),
-                      ),
-                      ToggleOption(
-                        description: AppLocalizations.of(context)!.includePostLink,
-                        iconEnabled: Icons.link_rounded,
-                        iconDisabled: Icons.link_rounded,
-                        value: options.includePostLink,
-                        onToggle: (_) => setState(() => options.includePostLink = !options.includePostLink),
-                      ),
-                      if (_hasExternalLink(postViewMedia))
                         ToggleOption(
-                          description: AppLocalizations.of(context)!.includeExternalLink,
+                          description: AppLocalizations.of(context)!.includePostLink,
                           iconEnabled: Icons.link_rounded,
                           iconDisabled: Icons.link_rounded,
-                          value: options.includeExternalLink,
-                          onToggle: (_) => setState(() => options.includeExternalLink = !options.includeExternalLink),
+                          value: options.includePostLink,
+                          onToggle: (_) => setState(() => options.includePostLink = !options.includePostLink),
                         ),
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text(AppLocalizations.of(context)!.cancel),
+                        if (_hasExternalLink(postViewMedia))
+                          ToggleOption(
+                            description: AppLocalizations.of(context)!.includeExternalLink,
+                            iconEnabled: Icons.link_rounded,
+                            iconDisabled: Icons.link_rounded,
+                            value: options.includeExternalLink,
+                            onToggle: (_) => setState(() => options.includeExternalLink = !options.includeExternalLink),
                           ),
-                          const SizedBox(width: 5),
-                          FilledButton(
-                            onPressed: _canShare(options, postViewMedia) && !isGeneratingImage
-                                ? () async {
-                                    // Save the share settings
-                                    prefs.setString(LocalSettings.advancedShareOptions.name, jsonEncode(options.toJson()));
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text(AppLocalizations.of(context)!.cancel),
+                            ),
+                            const SizedBox(width: 5),
+                            FilledButton(
+                              onPressed: _canShare(options, postViewMedia) && !isGeneratingImage
+                                  ? () async {
+                                      // Save the share settings
+                                      prefs.setString(LocalSettings.advancedShareOptions.name, jsonEncode(options.toJson()));
 
-                                    // Generate the text to share
-                                    String? text;
-                                    if (options.includePostLink) {
-                                      text = postViewMedia.postView.post.apId;
-                                    }
-                                    if (options.includeExternalLink && _hasExternalLink(postViewMedia)) {
-                                      text == null ? text = postViewMedia.media.first.originalUrl! : text = '$text\n${postViewMedia.media.first.originalUrl!}';
-                                    }
-
-                                    // Do the actual sharing
-                                    if (_canShareImage(options, postViewMedia)) {
-                                      if (_isImageCustomized(options, postViewMedia)) {
-                                        Share.shareXFiles([XFile.fromData(snapshot.data!, mimeType: 'image/jpeg')], text: text);
-                                      } else {
-                                        setState(() => isDownloading = true);
-                                        final File file = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.mediaUrl!);
-                                        setState(() => isDownloading = false);
-                                        Share.shareXFiles([XFile(file.path)], text: text);
+                                      // Generate the text to share
+                                      String? text;
+                                      if (options.includePostLink) {
+                                        text = postViewMedia.postView.post.apId;
                                       }
-                                    } else if (text != null) {
-                                      Share.share(text);
-                                    }
+                                      if (options.includeExternalLink && _hasExternalLink(postViewMedia)) {
+                                        text == null ? text = postViewMedia.media.first.originalUrl! : text = '$text\n${postViewMedia.media.first.originalUrl!}';
+                                      }
 
-                                    if (context.mounted) {
-                                      Navigator.of(context).pop();
+                                      // Do the actual sharing
+                                      if (_canShareImage(options, postViewMedia)) {
+                                        if (_isImageCustomized(options, postViewMedia)) {
+                                          Share.shareXFiles([XFile.fromData(snapshot.data!, mimeType: 'image/jpeg')], text: text);
+                                        } else {
+                                          setState(() => isDownloading = true);
+                                          final File file = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.mediaUrl!);
+                                          setState(() => isDownloading = false);
+                                          Share.shareXFiles([XFile(file.path)], text: text);
+                                        }
+                                      } else if (text != null) {
+                                        Share.share(text);
+                                      }
+
+                                      if (context.mounted) {
+                                        Navigator.of(context).pop();
+                                      }
                                     }
-                                  }
-                                : null,
-                            child: Stack(
-                              children: [
-                                if (isDownloading)
-                                  const Positioned.fill(
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: SizedBox(
-                                        width: 15,
-                                        height: 15,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
+                                  : null,
+                              child: Stack(
+                                children: [
+                                  if (isDownloading)
+                                    const Positioned.fill(
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: SizedBox(
+                                          width: 15,
+                                          height: 15,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                     ),
+                                  Text(
+                                    AppLocalizations.of(context)!.share,
+                                    style: TextStyle(color: isDownloading ? Colors.transparent : null),
                                   ),
-                                Text(
-                                  AppLocalizations.of(context)!.share,
-                                  style: TextStyle(color: isDownloading ? Colors.transparent : null),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

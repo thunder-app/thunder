@@ -5,6 +5,8 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/utils/global_context.dart';
 
 // Optimistically updates a comment
 CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, int voteType) {
@@ -76,7 +78,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
 
     commentMap[commentView.comment.path] = CommentViewTree(
       datePostedOrEdited: formatTimeToString(dateTime: commentTime),
-      commentView: cleanDeletedCommentView(commentView),
+      commentView: commentView,
       replies: [],
       level: commentView.comment.path.split('.').length - 2,
     );
@@ -168,14 +170,14 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
 }
 
 // Used for modifying the comment current comment tree so we don't have to refresh the whole thing
-bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentResponse moddedComment) {
+bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentView commentView) {
   for (int i = 0; i < commentTrees.length; i++) {
-    if (commentTrees[i].commentView!.comment.id == moddedComment.commentView.comment.id) {
-      commentTrees[i].commentView = moddedComment.commentView;
+    if (commentTrees[i].commentView!.comment.id == commentView.comment.id) {
+      commentTrees[i].commentView = commentView;
       return true;
     }
 
-    bool done = updateModifiedComment(commentTrees[i].replies, moddedComment);
+    bool done = updateModifiedComment(commentTrees[i].replies, commentView);
     if (done) {
       return done;
     }
@@ -184,41 +186,28 @@ bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentResponse m
   return false;
 }
 
-CommentView cleanDeletedCommentView(CommentView commentView) {
-  if (!commentView.comment.deleted) {
-    return commentView;
+String cleanCommentContent(Comment comment) {
+  String deletedByModerator = "deleted by moderator";
+  String deletedByCreator = "deleted by creator";
+
+  try {
+    // Try to load these strings from localizations
+    final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+    deletedByModerator = l10n.deletedByModerator;
+    deletedByCreator = l10n.deletedByCreator;
+  } catch (e) {
+    // Ignore the error and move on with the default strings
   }
 
-  Comment deletedComment = convertToDeletedComment(commentView.comment);
+  if (comment.removed) {
+    return '_${deletedByModerator}_';
+  }
 
-  return CommentView(
-    comment: deletedComment,
-    creator: commentView.creator,
-    post: commentView.post,
-    community: commentView.community,
-    counts: commentView.counts,
-    creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
-    saved: commentView.saved,
-    creatorBlocked: commentView.creatorBlocked,
-    subscribed: commentView.subscribed,
-  );
-}
+  if (comment.deleted) {
+    return '_${deletedByCreator}_';
+  }
 
-Comment convertToDeletedComment(Comment comment) {
-  return Comment(
-    id: comment.id,
-    creatorId: comment.creatorId,
-    postId: comment.postId,
-    content: "_deleted by creator_",
-    removed: comment.removed,
-    distinguished: comment.distinguished,
-    published: comment.published,
-    deleted: comment.deleted,
-    apId: comment.apId,
-    local: comment.local,
-    languageId: comment.languageId,
-    path: comment.path,
-  );
+  return comment.content;
 }
 
 /// Creates a placeholder comment from the given parameters. This is mainly used to display a preview of the comment

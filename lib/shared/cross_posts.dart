@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -16,14 +16,12 @@ class CrossPosts extends StatefulWidget {
   final List<PostView> crossPosts;
   final PostViewMedia? originalPost;
   final bool? isNewPost;
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
 
   const CrossPosts({
     super.key,
     required this.crossPosts,
     this.originalPost,
     this.isNewPost,
-    this.scaffoldMessengerKey,
   }) : assert(originalPost != null || isNewPost == true);
 
   @override
@@ -182,6 +180,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                           WidgetSpan(
                                               alignment: PlaceholderAlignment.middle,
                                               child: InkWell(
+                                    onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index + 1]])).first),
                                                 onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index + 1]])).first),
                                                 child: Text(
                                                   '${generateCommunityFullName(context, widget.crossPosts[index + 1].community.name, fetchInstanceNameFromUrl(widget.crossPosts[index + 1].community.actorId))} ',
@@ -224,7 +223,6 @@ void createCrossPost(
   String? url,
   String? text,
   String? postUrl,
-  GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey,
 }) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
@@ -241,6 +239,5 @@ void createCrossPost(
     url: url,
     text: text,
     prePopulated: true,
-    scaffoldMessengerKey: scaffoldMessengerKey,
   );
 }

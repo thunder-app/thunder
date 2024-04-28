@@ -6,6 +6,8 @@ import 'package:version/version.dart';
 class LemmyClient {
   LemmyApiV3 lemmyApiV3 = const LemmyApiV3('');
 
+  LemmyClient();
+
   LemmyClient._initialize();
 
   void changeBaseUrl(String baseUrl) {
@@ -30,21 +32,57 @@ class LemmyClient {
     );
   }
 
-  bool supportsFeature(LemmyFeature feature) {
-    if (!_lemmySites.containsKey(instance.lemmyApiV3.host)) return false;
+  Version? get version {
+    if (!_lemmySites.containsKey(instance.lemmyApiV3.host)) return null;
 
     // Parse the version
     GetSiteResponse site = _lemmySites[instance.lemmyApiV3.host]!;
-    Version instanceVersion;
     try {
-      instanceVersion = Version.parse(site.version);
+      return Version.parse(site.version);
     } catch (e) {
-      return false;
+      return null;
     }
+  }
+
+  bool supportsSortType(SortType? sortType) => switch (sortType) {
+        SortType.controversial => supportsFeature(LemmyFeature.sortTypeControversial),
+        SortType.scaled => supportsFeature(LemmyFeature.sortTypeScaled),
+        _ => true,
+      };
+
+  bool supportsCommentSortType(CommentSortType commentSortType) => switch (commentSortType) {
+        CommentSortType.controversial => supportsFeature(LemmyFeature.commentSortTypeControversial),
+        _ => true,
+      };
+
+  bool supportsFeature(LemmyFeature feature) {
+    if (version == null) return false;
 
     // Check the feature and return whether it's supported in this version
-    return instanceVersion > feature.minSupportedVersion;
+    return version! >= feature.minSupportedVersion;
   }
+
+  static bool versionSupportsFeature(Version? version, LemmyFeature feature) {
+    if (version == null) return false;
+
+    if (version == maxVersion) return true;
+
+    // Check the feature and return whether it's supported in this version
+    return version >= feature.minSupportedVersion;
+  }
+
+  /// This is a special Version object which simulates a "maximum possible version".
+  /// Note that it doesn't actually work as a max version in terms of comparison,
+  /// but it can be reference checked.
+  static Version maxVersion = Version(0, 0, 0, build: "max-version");
+
+  String generatePostUrl(int id) => 'https://${lemmyApiV3.host}/post/$id';
+
+  String generateCommentUrl(int id) => 'https://${lemmyApiV3.host}/comment/$id';
+
+  String generateCommunityUrl(String community) => 'https://${lemmyApiV3.host}/c/$community';
+
+  String generateUserUrl(String community) => 'https://${lemmyApiV3.host}/u/$community';
 
   static final Map<String, GetSiteResponse> _lemmySites = <String, GetSiteResponse>{};
 }
@@ -53,7 +91,8 @@ enum LemmyFeature {
   sortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
   sortTypeScaled(0, 19, 0, preRelease: ["rc", "1"]),
   commentSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
-  blockInstance(0, 19, 0, preRelease: ["rc", "1"]);
+  blockInstance(0, 19, 0, preRelease: ["rc", "1"]),
+  multiRead(0, 19, 0, preRelease: ["rc", "1"]);
 
   final int major;
   final int minor;
@@ -69,10 +108,4 @@ enum LemmyFeature {
         // The Version package attempts to modify this list, so give them a non-final copy.
         preRelease: List.from(preRelease),
       );
-}
-
-enum IncludeVersionSpecificFeature {
-  never,
-  ifSupported,
-  always,
 }

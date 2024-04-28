@@ -11,6 +11,9 @@ final class FeedFetchedEvent extends FeedEvent {
   /// The type of feed to display.
   final FeedType? feedType;
 
+  /// The subtype of feed to display (if applicable). This is only used when [feedType] is [FeedType.user]
+  final FeedTypeSubview feedTypeSubview;
+
   /// The type of general feed to display: all, local, subscribed.
   final ListingType? postListingType;
 
@@ -34,6 +37,7 @@ final class FeedFetchedEvent extends FeedEvent {
 
   const FeedFetchedEvent({
     this.feedType,
+    this.feedTypeSubview = FeedTypeSubview.post,
     this.postListingType,
     this.sortType,
     this.communityId,
@@ -73,6 +77,8 @@ final class FeedItemActionedEvent extends FeedEvent {
   /// If both are provided, [postId] will take precedence
   final int? postId;
 
+  final List<int>? postIds;
+
   /// This indicates the relevant action to perform on the post
   final PostAction postAction;
 
@@ -80,7 +86,7 @@ final class FeedItemActionedEvent extends FeedEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  const FeedItemActionedEvent({this.postViewMedia, this.postId, required this.postAction, this.value});
+  const FeedItemActionedEvent({this.postViewMedia, this.postId, this.postIds, required this.postAction, this.value});
 }
 
 final class FeedClearMessageEvent extends FeedEvent {}

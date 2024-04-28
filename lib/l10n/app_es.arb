@@ -11,13 +11,13 @@
   "@account": {},
   "accountSettings": "Ajustes de la cuenta",
   "@accountSettings": {},
-  "actions": "Actions",
+  "actions": "Acciones",
   "@actions": {},
-  "active": "Active",
+  "active": "Activo",
   "@active": {},
-  "add": "Add",
+  "add": "Agregar",
   "@add": {},
-  "addAccount": "Add Account",
+  "addAccount": "Agregar cuenta",
   "@addAccount": {},
   "addAccountToSeeProfile": "Inicia sesión para ver tu cuenta.",
   "@addAccountToSeeProfile": {},
@@ -71,11 +71,11 @@
   "@backButton": {},
   "backToTop": "Volver arriba",
   "@backToTop": {},
-  "blockCommunity": "Bloquear Comunidad",
+  "blockCommunity": "Bloquear comunidad",
   "@blockCommunity": {},
   "blockInstance": "Bloquear la instancia",
   "@blockInstance": {},
-  "blockUser": "Block User",
+  "blockUser": "Bloquear usuario",
   "@blockUser": {},
   "blockedCommunities": "Comunidades bloqueadas",
   "@blockedCommunities": {},
@@ -145,7 +145,7 @@
   "@combineCommentScoresLabel": {
     "description": "Label for setting to combine comment scores"
   },
-  "combineNavAndFab": "El botón de acción flotante se mostrará entre los botones de navegación.",
+  "combineNavAndFab": "Combinar botones FAB y de navegación",
   "@combineNavAndFab": {},
   "comment": "Comentario",
   "@comment": {},
@@ -289,7 +289,7 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
-  "dimReadPosts": "Los mensajes leídos aparecerán en gris",
+  "dimReadPosts": "Publicaciones de lectura oscura",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
   },
@@ -459,7 +459,7 @@
   "@information": {
     "description": "Information heading - used in the FAB settings page"
   },
-  "instance": "Instancia",
+  "instance": "{count, plural, zero {Instancia} one {Instancias} other {Instancias} } ",
   "@instance": {},
   "instanceHasAlreadyBenAdded": "{instance} ya ha sido añadido.",
   "@instanceHasAlreadyBenAdded": {},
@@ -563,9 +563,7 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "No hay ninguna publicación.",
-  "@noPosts": {},
-  "noPostsFound": "No se ha encontrado ningún tema",
+  "noPostsFound": "No se ha encontrado ningún tema.",
   "@noPostsFound": {},
   "noResultsFound": "No se han encontrado resultados.",
   "@noResultsFound": {},
@@ -821,13 +819,13 @@
   },
   "share": "Share",
   "@share": {},
-  "shareLink": "Share Link",
+  "shareLink": "Compartir enlace externo",
   "@shareLink": {},
-  "shareMedia": "Share Media",
+  "shareMedia": "Compartir medios",
   "@shareMedia": {},
-  "sharePost": "Share Post",
+  "sharePost": "Compartir enlace al tema",
   "@sharePost": {},
-  "showAll": "Show All",
+  "showAll": "Mostrar todo",
   "@showAll": {},
   "showBotAccounts": "Mostrar las cuentas de los bots",
   "@showBotAccounts": {
@@ -889,7 +887,7 @@
   "@suggestedTitle": {
     "description": "Suggested title for the post."
   },
-  "tapToExit": "Retroceder dos veces para salir",
+  "tapToExit": "Vuelve a pulsar atrás para salir",
   "@tapToExit": {},
   "text": "Texto",
   "@text": {},
@@ -1048,5 +1046,793 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "confirm": "Confirmar",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "showPostCommunityIcons": "Mostrar iconos de la comunidad",
+  "@showPostCommunityIcons": {
+    "description": "Toggle to show community icons."
+  },
+  "showPostVoteActions": "Mostrar los botones de votación",
+  "@showPostVoteActions": {
+    "description": "Toggle to show vote buttons."
+  },
+  "collapseParentCommentBodyOnGesture": "Ocultar comentario principal cuando está contraído",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "combineNavAndFabDescription": "El botón de acción flotante se mostrará entre los botones de navegación.",
+  "@combineNavAndFabDescription": {},
+  "commentFontScale": "Tamaño de la fuente del comentario",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
+  },
+  "showScoreCounters": "Visualizar las puntuaciones de los usuarios",
+  "@showScoreCounters": {
+    "description": "Toggle to display user scores."
+  },
+  "defaultCommentSortType": "Tipo de clasificación de comentarios predeterminado",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "defaultFeedSortType": "Tipo de clasificación del feed predeterminado",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  },
+  "deleteAccountDescription": "Para eliminar definitivamente su cuenta, será redirigido al sitio de su instancia. \n\n¿Está seguro de que desea continuar?",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
+  "enableFloatingButtonOnFeeds": "Activar el botón flotante en los feeds",
+  "@enableFloatingButtonOnFeeds": {
+    "description": "Setting for enable floating button on feeds"
+  },
+  "hideNsfwPostsFromFeed": "Ocultar publicaciones NSFW del Feed",
+  "@hideNsfwPostsFromFeed": {
+    "description": "Toggle to hide NSFW posts from the feed."
+  },
+  "openLinksInReaderMode": "Abrir enlaces en modo lectura",
+  "@openLinksInReaderMode": {
+    "description": "Toggle to open links in reader mode when available."
+  },
+  "rightLongSwipe": "Deslizamiento largo hacia la derecha",
+  "@rightLongSwipe": {
+    "description": "Setting for right long swipe"
+  },
+  "showCommentActionButtons": "Mostrar botones de acción del comentario",
+  "@showCommentActionButtons": {
+    "description": "Toggle to show comment action buttons."
+  },
+  "showInAppUpdateNotifications": "Recibe notificaciones de las nuevas versiones de GitHub",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
+  "leftShortSwipe": "Deslizamiento corto a la izquierda",
+  "@leftShortSwipe": {
+    "description": "Setting for left short swipe"
+  },
+  "showFullHeightImages": "Mostrar imágenes a tamaño completo",
+  "@showFullHeightImages": {
+    "description": "Toggle to view full height images."
+  },
+  "nestedCommentIndicatorColor": "Color del indicador del comentario fijado",
+  "@nestedCommentIndicatorColor": {
+    "description": "Setting for nested comment indicator color"
+  },
+  "markPostAsReadOnMediaView": "Marcar como leído después de ver los medios",
+  "@markPostAsReadOnMediaView": {
+    "description": "Toggle to mark posts as read after viewing media."
+  },
+  "showUserDisplayNames": "Mostrar los nombres de usuario",
+  "@showUserDisplayNames": {
+    "description": "Toggle to show user display names."
+  },
+  "themeAccentColor": "Colores del acento",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "tabletMode": "Modo tableta (vista en 2 columnas)",
+  "@tabletMode": {
+    "description": "Toggle to enable 2-column tablet mode."
+  },
+  "useAdvancedShareSheet": "Utilice el formulario para compartir avanzado",
+  "@useAdvancedShareSheet": {
+    "description": "Toggle to use advanced share sheet."
+  },
+  "combineCommentScores": "Combinar notas de comentarios",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
+  "commentSwipeActions": "Acciones de deslizar los comentarios",
+  "@commentSwipeActions": {
+    "description": "Setting for comment swipe actions"
+  },
+  "dangerZone": "Zona peligrosa",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "defaultFeedType": "Tipo de feed predeterminado",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
+  "deleteAccount": "Eliminar cuenta",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "enableCommentNavigation": "Activar la navegación por comentarios",
+  "@enableCommentNavigation": {
+    "description": "Setting for enable comment navigation"
+  },
+  "enableFloatingButtonOnPosts": "Habilitar el botón flotante en los mensajes",
+  "@enableFloatingButtonOnPosts": {
+    "description": "Setting for enable floating button on posts"
+  },
+  "fullscreenSwipeGestures": "Gestos de deslizamiento a pantalla completa",
+  "@fullscreenSwipeGestures": {
+    "description": "Setting for fullscreen swipe gestures"
+  },
+  "hideNsfwPreviews": "Desenfocar vistas previas NSFW",
+  "@hideNsfwPreviews": {
+    "description": "Toggle to hide NSFW previews."
+  },
+  "leftLongSwipe": "Deslizamiento largo a la izquierda",
+  "@leftLongSwipe": {
+    "description": "Setting for left long swipe"
+  },
+  "metadataFontScale": "Escala de las fuentes de metadatos",
+  "@metadataFontScale": {
+    "description": "Setting for metadata font scale"
+  },
+  "navbarDoubleTapGestures": "Gestos de doble toque en la barra de navegación",
+  "@navbarDoubleTapGestures": {
+    "description": "Setting for navbar double tap gestures"
+  },
+  "navbarSwipeGestures": "Gestos de deslizar en la barra de navegación",
+  "@navbarSwipeGestures": {
+    "description": "Setting for navbar swipe gestures"
+  },
+  "nestedCommentIndicatorStyle": "Estilo del indicador del comentario fijado",
+  "@nestedCommentIndicatorStyle": {
+    "description": "Setting for nested comment indicator style"
+  },
+  "newPost": "Nuevo tema",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "openLinksInExternalBrowser": "Abrir enlaces en un navegador externo",
+  "@openLinksInExternalBrowser": {
+    "description": "Toggle to open links in an external browser."
+  },
+  "postContentFontScale": "Tamaño de las fuentes del contenido de la entrada",
+  "@postContentFontScale": {
+    "description": "Setting for post content font scale"
+  },
+  "postSwipeActions": "Acciones posteriores al deslizamiento",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
+  "postTitleFontScale": "Tamaño de la fuente del título de la publicación",
+  "@postTitleFontScale": {
+    "description": "Setting for post title font scale"
+  },
+  "reduceAnimations": "Reducir las animaciones",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "rightShortSwipe": "Deslizamiento corto hacia la derecha",
+  "@rightShortSwipe": {
+    "description": "Setting for right short swipe"
+  },
+  "scrapeMissingLinkPreviews": "Eliminación de las vistas previas de los enlaces borrados",
+  "@scrapeMissingLinkPreviews": {
+    "description": "Toggle to scrape missing external link previews."
+  },
+  "showCrossPosts": "Mostrar publicaciones cruzadas",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "showEdgeToEdgeImages": "Mostrar imágenes de borde a borde",
+  "@showEdgeToEdgeImages": {
+    "description": "Toggle to view edge to edge images."
+  },
+  "showPostAuthor": "Mostrar el autor del mensaje",
+  "@showPostAuthor": {
+    "description": "Toggle to show post author."
+  },
+  "showPostSaveAction": "Mostrar el botón guardar",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "showPostTextContentPreview": "Mostrar vista previa del texto",
+  "@showPostTextContentPreview": {
+    "description": "Toggle to show text previews."
+  },
+  "showPostTitleFirst": "Mostrar el título primero",
+  "@showPostTitleFirst": {
+    "description": "Toggle to show post title first."
+  },
+  "showTextPostIndicator": "Mostrar indicador de la publicación del texto",
+  "@showTextPostIndicator": {
+    "description": "Toggle to show text post indicator."
+  },
+  "showThumbnailPreviewOnRight": "Mostrar miniaturas a la derecha",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Toggle to show thumbnails on the right side."
+  },
+  "showUserInstance": "Mostrar la instancia del usuario",
+  "@showUserInstance": {
+    "description": "Toggle to show user instance."
+  },
+  "tappableAuthorCommunity": "Autores y comunidades de Tappable",
+  "@tappableAuthorCommunity": {
+    "description": "Toggle to make authors and communities tappable."
+  },
+  "theme": "Tema",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "useMaterialYouTheme": "Utilizar en el tema Material You",
+  "@useMaterialYouTheme": {
+    "description": "Toggle to use Material You theme."
+  },
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "clearedCache": "Borrado de la caché con éxito.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "dark": "Oscuro",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "fonts": "Fuentes",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
+  "large": "Grande",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "medium": "Medio",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "pureBlack": "Negro puro",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "small": "Pequeño",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "system": "Sistema",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "clearCache": "Borrar la caché ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "useMaterialYouThemeDescription": "Anula el tema personalizado seleccionado",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
+  },
+  "extraLarge": "Extra grande",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "light": "Claro",
+  "@light": {
+    "description": "Describes using the light theme"
+  },
+  "postCreatedSuccessfully": "¡Publicación creada exitosamente!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
+  },
+  "understandEnable": "Comprendo, Activar",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
+  },
+  "disable": "Desactivar",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "warning": "Advertencia",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "enableInboxNotifications": "Activar las notificaciones de la bandeja de entrada (experimental)",
+  "@enableInboxNotifications": {
+    "description": "Setting name for inbox notifications"
+  },
+  "moderatedCommunities": "Comunidades moderadas",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "notificationsNotAllowed": "Las notificaciones no están permitidas para Thunder en la configuración del sistema",
+  "@notificationsNotAllowed": {
+    "description": "Description for when notifications are now allowed for app"
+  },
+  "backgroundCheckWarning": "Tenga en cuenta que las comprobaciones de notificaciones consumirán más batería",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "notificationsWarningDialog": "Las notificaciones son una función experimental que puede no funcionar correctamente en todos los dispositivos.\n\n· Las omprobaciones se producirán cada ~15 minutos y consumirán batería adicional.\n\n· Desactiva las optimizaciones de batería para una mayor probabilidad de éxito de las notificaciones.\n\nConsulte la siguiente página para obtener más información.",
+  "@notificationsWarningDialog": {
+    "description": "The content of the warning dialog for the notifications feature"
+  },
+  "unableToNavigateToInstance": "No se puede navegar a {instanceHost}. Puede que no sea una instancia Lemmy válida.",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "noItems": "Sin artículos",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "cardPostCardMetadataItems": "Metadatos de la vista de tarjetas",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "compactPostCardMetadataItems": "Metadatos de la vista compacta",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
+  },
+  "forward": "Adelante",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "postMetadataInstructions": "Puede personalizar la información de metadatos arrastrando y soltando la información deseada",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
+  "browserMode": "Gestión de enlaces",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "linkHandlingExternal": "Abrir externamente en el navegador del sistema",
+  "@linkHandlingExternal": {
+    "description": "Description for external link handling"
+  },
+  "linkHandlingExternalShort": "Externo",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "linkHandlingInApp": "Utiliza el navegador integrado en Thunder",
+  "@linkHandlingInApp": {
+    "description": "Description for in-app link handling"
+  },
+  "linkHandlingInAppShort": "En la aplicación",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "linkHandlingCustomTabs": "Abrir en el navegador del sistema integrado en la aplicación",
+  "@linkHandlingCustomTabs": {
+    "description": "Description for custom tabs link handling"
+  },
+  "linkHandlingCustomTabsShort": "Integrado en la aplicación",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  },
+  "moderatorActions": "Acciones del moderador",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "imageCachingMode": "Modo de almacenamiento en caché de imágenes",
+  "@imageCachingMode": {
+    "description": "Title for setting related to image caching mode"
+  },
+  "imageCachingModeAggressiveShort": "Agresivos",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "imageCachingModeRelaxed": "Permitir que los cachés de imagen expiren (utiliza menos memoria pero hace que las imágenes se recarguen más a menudo)",
+  "@imageCachingModeRelaxed": {
+    "description": "Long description for relaxed image caching mode"
+  },
+  "removalReason": "Razón de la eliminación",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
+  "imageCachingModeAggressive": "Almacenamiento agresivo de imágenes en caché (utiliza más memoria)",
+  "@imageCachingModeAggressive": {
+    "description": "Long description for aggressive image caching mode"
+  },
+  "reason": "Motivo",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "unlockPost": "Desbloquear el tema",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unpinFromCommunity": "Desvincular de la comunidad",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "lockPost": "Bloquear tema",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
+  "pinToCommunity": "Fijar a la comunidad",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
+  "imageCachingModeRelaxedShort": "Relajado",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
+  "removePost": "Eliminar el tema",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "restorePost": "Restaurar el tema",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "exploreInstance": "Explorar instancia",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
+  "addedModToCommunity": "Mod añadido a la Comunidad",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "admin": "Adm.",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "bannedUser": "Usuario baneado",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "bannedUserFromCommunity": "Usuario expulsado de la Comunidad",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "detailedReason": "Razón: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "hidCommunity": "Comunidad oculta",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
+  "lockedPost": "Tema bloqueado",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
+  "featuredPost": "Publicación destacada",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
+  },
+  "addedInstanceMod": "Añadido Instancia Mod",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "shareUserLinkLocal": "Compartir el enlace del usuario (Mi Instancia)",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
+  "communityEntry": "Comunidad '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "instanceEntry": "Instancia '{username}'",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
+  },
+  "communityActions": "Acciones comunitarias",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "instanceActions": "Acciones de la instancia",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "dateFormat": "Formato de la fecha",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
+  "changeAccountSettingsFor": "Cambiar la configuración de la cuenta para",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
+  "removedModFromCommunity": "Eliminado el moderador de la comunidad",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "restoredComment": "Comentario restaurado",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
+  "restoredCommunity": "Comunidad restaurada",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "restoredPost": "Tema restaurado",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
+  "markPostAsReadOnScroll": "Marcar como leído al desplazarse",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "moderator": "Moderador",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
+  "purgedCommunity": "Comunidad depurada",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "purgedPerson": "Persona depurada",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "shareUser": "Compartir usuario",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "sharePostLocal": "Compartir enlace de publicación (Mi instancia)",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareUserLink": "Compartir enlace del usuario",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "modAdd": "Añadir/eliminar moderadores de la instancia",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modAddCommunity": "Añadir/eliminar moderadores a las comunidades",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "modBanFromCommunity": "Bloquear/desbloquear usuarios de las comunidades",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "modFeaturePost": "Entradas destacadas/no destacadas",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modLockPost": "Bloquear/Desbloquear mensajes",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modBan": "Bloquear/Desbloquear moderadores de instancia",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance moderators"
+  },
+  "modRemoveComment": "Eliminar/restaurar comentarios",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Eliminar/restaurar comunidades",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "modRemovePost": "Eliminar/Restaurar mensajes",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "modlog": "Registros de moderadores",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "nsfwWarning": "NSFW - Toque para mostrar",
+  "@nsfwWarning": {
+    "description": "Warning for NSFW posts"
+  },
+  "purgedPost": "Tema depurado",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
+  "removedComment": "Comentario eliminado",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removedCommunity": "Comunidad eliminada",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
+  "removedPost": "Mensaje eliminado",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
+  "modTransferCommunity": "Transferir comunidades",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
+  "purgedComment": "Comentario depurado",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "removedInstanceMod": "Moderador de instancia eliminado",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "unbannedUserFromCommunity": "Usuario no expulsado de la comunidad",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
+  "user": "Usuario",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "userActions": "Acciones del usuario",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "shareCommentLocal": "Compartir enlace del comentario (Mi instancia)",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "shareCommunityLink": "Compartir enlace a la comunidad",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "shareCommunityLinkLocal": "Compartir enlace comunitario (Mi instancia)",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "selectAccountToPostAs": "Seleccione la cuenta para publicar como",
+  "@selectAccountToPostAs": {
+    "description": "Heading for account selector when posting"
+  },
+  "searchInstancesFederatedWith": "Buscar instancias federadas con {instance}",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
+  "successfullyBlockedUser": "{username} bloqueado",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "sensitiveContentWarning": "Puede contener contenido sensible. Toque para revelar.",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
+  "successfullyUnblockedUser": "{username} desbloqueado",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "transferredModToCommunity": "Comunidad transferida",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
+  "unableToFindCommunityOnInstance": "No se puede encontrar la comunidad seleccionada en la instancia del usuario seleccionado.",
+  "@unableToFindCommunityOnInstance": {
+    "description": "An error message for when we can't find a community on an instance"
+  },
+  "unableToFindPost": "No se encuentra el mensaje",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
+  "unableToFindUserName": "No se puede encontrar el usuario '{username}'",
+  "@unableToFindUserName": {},
+  "shareCommunity": "Compartir la comunidad",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "shareLemmyLink": "Compartir enlace Lemmy",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
+  },
+  "unfeaturedPost": "Tema sin categoría",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "unhidCommunity": "Comunidad sin ocultar",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
+  "unlockedPost": "Tema desbloqueado",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
+  },
+  "unreachable": "Inaccesible",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "userEntry": "Usuario '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
+  },
+  "viewAll": "Ver todo",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
+  "showFullDate": "Mostrar la fecha completa",
+  "@showFullDate": {
+    "description": "Toggle to show full date on posts"
+  },
+  "showFullDateDescription": "Mostrar la fecha completa en los mensajes",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
+  },
+  "shareComment": "Compartir enlace del comentario",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "unbannedUser": "Usuario no bloqueado",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "collapse": "Contraer",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "doNotShowAgain": "No volver a mostrar",
+  "@doNotShowAgain": {
+    "description": "Action for hiding something permanently"
+  },
+  "expand": "Expandir",
+  "@expand": {
+    "description": "Action to expand something"
+  },
+  "showUpdateChangelogs": "Mostrar los registros de cambios de la actualización",
+  "@showUpdateChangelogs": {
+    "description": "Setting for showing changelogs after updates"
+  },
+  "showUpdateChangelogsSubtitle": "Mostrar una lista con los cambios después de actualizar",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Subtitle for setting for showing changelogs after updates"
+  },
+  "thunderHasBeenUpdated": "¡Thunder actualizado a {version}!",
+  "@thunderHasBeenUpdated": {
+    "description": "Heading for changelog when Thunder has been updated"
+  },
+  "unableToRetrieveChangelog": "No se ha podido recuperar el registro de cambios para la versión {version}.",
+  "@unableToRetrieveChangelog": {
+    "description": "Error message for when we are unable to retrieve the changelog."
+  },
+  "versionNumber": "Versión {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
+  },
+  "usernameFormattingRedirect": "¿Buscas el formato de un nombre de usuario?",
+  "@usernameFormattingRedirect": {
+    "description": "Setting title for sending the user to the new formatting options"
+  },
+  "boldCommunityName": "Nombre de la comunidad en negrita",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "boldInstanceName": "Nombre de la instancia en negrita",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "Nombre del usuario en negrita",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "colorizeCommunityName": "Colorear el nombre de la comunidad",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "colorizeUserName": "Colorear el nombre del usuario",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
+  "colorizeInstanceName": "Colorear el nombre de la instancia",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "communityStyle": "Estilo de la comunidad",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "userStyle": "Estilo del usuario",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  }
 }

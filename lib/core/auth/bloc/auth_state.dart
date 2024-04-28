@@ -10,6 +10,7 @@ class AuthState extends Equatable {
     this.account,
     this.downvotesEnabled = true,
     this.getSiteResponse,
+    this.reload = true,
   });
 
   final AuthStatus status;
@@ -18,6 +19,7 @@ class AuthState extends Equatable {
   final Account? account;
   final bool downvotesEnabled;
   final GetSiteResponse? getSiteResponse;
+  final bool reload;
 
   AuthState copyWith({
     AuthStatus? status,
@@ -26,6 +28,7 @@ class AuthState extends Equatable {
     Account? account,
     bool? downvotesEnabled,
     GetSiteResponse? getSiteResponse,
+    bool? reload,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -34,9 +37,10 @@ class AuthState extends Equatable {
       account: account,
       downvotesEnabled: downvotesEnabled ?? this.downvotesEnabled,
       getSiteResponse: getSiteResponse ?? this.getSiteResponse,
+      reload: reload ?? this.reload,
     );
   }
 
   @override
-  List<Object?> get props => [status, isLoggedIn, errorMessage, account, downvotesEnabled, getSiteResponse];
+  List<Object?> get props => [status, isLoggedIn, errorMessage, account, downvotesEnabled, getSiteResponse, reload];
 }

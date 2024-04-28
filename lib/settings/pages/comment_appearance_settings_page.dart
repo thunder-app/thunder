@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
@@ -12,6 +15,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
+import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -20,7 +24,9 @@ import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/utils/constants.dart';
 
 class CommentAppearanceSettingsPage extends StatefulWidget {
-  const CommentAppearanceSettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const CommentAppearanceSettingsPage({super.key, this.settingToHighlight});
 
   @override
   State<CommentAppearanceSettingsPage> createState() => _CommentAppearanceSettingsPageState();
@@ -30,8 +36,11 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   /// When toggled on, comments will show a row of actions to perform
   bool showCommentButtonActions = false;
 
-  /// When toggled on, user intance is displayed alongside the display name/username
+  /// When toggled on, user instance is displayed alongside the display name/username
   bool commentShowUserInstance = false;
+
+  /// When toggled on, user avatar is displayed to the left of the display name/username
+  bool commentShowUserAvatar = false;
 
   /// When toggled on, comment scores will be combined instead of having separate upvotes and downvotes
   bool combineCommentScores = false;
@@ -48,6 +57,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   /// An example comment for use with comment preview
   Future<CommentViewTree>? exampleCommentViewTree;
 
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
+
   /// Initialize the settings from the user's shared preferences
   Future<void> initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -55,6 +67,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     setState(() {
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
+      commentShowUserAvatar = prefs.getBool(LocalSettings.commentShowUserAvatar.name) ?? false;
       combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
       nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
@@ -75,6 +88,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       case LocalSettings.commentShowUserInstance:
         await prefs.setBool(LocalSettings.commentShowUserInstance.name, value);
         setState(() => commentShowUserInstance = value);
+      case LocalSettings.commentShowUserAvatar:
+        await prefs.setBool(LocalSettings.commentShowUserAvatar.name, value);
+        setState(() => commentShowUserAvatar = value);
       case LocalSettings.combineCommentScores:
         await prefs.setBool(LocalSettings.combineCommentScores.name, value);
         setState(() => combineCommentScores = value);
@@ -103,6 +119,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     await prefs.remove(LocalSettings.nestedCommentIndicatorStyle.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorColor.name);
     await prefs.remove(LocalSettings.commentShowUserInstance.name);
+    await prefs.remove(LocalSettings.commentShowUserAvatar.name);
 
     await initPreferences();
 
@@ -160,7 +177,30 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => initPreferences());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initPreferences();
+
+      if (widget.settingToHighlight != null) {
+        setState(() => settingToHighlight = widget.settingToHighlight);
+
+        // Need some delay to finish building, even though we're in a post-frame callback.
+        Timer(const Duration(milliseconds: 500), () {
+          if (settingToHighlightKey.currentContext != null) {
+            // Ensure that the selected setting is visible on the screen
+            Scrollable.ensureVisible(
+              settingToHighlightKey.currentContext!,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          // Give time for the highlighting to appear, then turn it off
+          Timer(const Duration(seconds: 1), () {
+            setState(() => settingToHighlight = null);
+          });
+        });
+      }
+    });
   }
 
   @override
@@ -287,69 +327,88 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
           ),
           // Comment Settings
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: l10n.showCommentActionButtons,
-                value: showCommentButtonActions,
-                iconEnabled: Icons.mode_comment_rounded,
-                iconDisabled: Icons.mode_comment_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
-              ),
+            child: ToggleOption(
+              description: l10n.showCommentActionButtons,
+              value: showCommentButtonActions,
+              iconEnabled: Icons.mode_comment_rounded,
+              iconDisabled: Icons.mode_comment_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
+              highlightKey: settingToHighlight == LocalSettings.showCommentActionButtons ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: l10n.combineCommentScoresLabel,
-                value: combineCommentScores,
-                iconEnabled: Icons.onetwothree_rounded,
-                iconDisabled: Icons.onetwothree_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
-              ),
+            child: ToggleOption(
+              description: l10n.combineCommentScoresLabel,
+              value: combineCommentScores,
+              iconEnabled: Icons.onetwothree_rounded,
+              iconDisabled: Icons.onetwothree_rounded,
+              onToggle: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
+              highlightKey: settingToHighlight == LocalSettings.combineCommentScores ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: l10n.commentShowUserInstance,
-                value: commentShowUserInstance,
-                iconEnabled: Icons.dns_sharp,
-                iconDisabled: Icons.dns_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
-              ),
+            child: ToggleOption(
+              description: l10n.commentShowUserInstance,
+              value: commentShowUserInstance,
+              iconEnabled: Icons.dns_sharp,
+              iconDisabled: Icons.dns_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
+              highlightKey: settingToHighlight == LocalSettings.commentShowUserInstance ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListOption(
-                description: l10n.nestedCommentIndicatorStyle,
-                value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
-                options: [
-                  ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
-                  ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
-                ],
-                icon: Icons.format_list_bulleted_rounded,
-                onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
-              ),
+            child: ToggleOption(
+              description: l10n.commentShowUserAvatar,
+              value: commentShowUserAvatar,
+              iconEnabled: Icons.account_circle,
+              iconDisabled: Icons.account_circle_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserAvatar, value),
+              highlightKey: settingToHighlight == LocalSettings.commentShowUserAvatar ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListOption(
-                description: l10n.nestedCommentIndicatorColor,
-                value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
-                options: [
-                  ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
-                  ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
-                ],
-                icon: Icons.color_lens_outlined,
-                onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+            child: ListOption(
+              description: l10n.nestedCommentIndicatorStyle,
+              value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
+              options: [
+                ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
+                ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
+              ],
+              icon: Icons.format_list_bulleted_rounded,
+              onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
+              highlightKey: settingToHighlight == LocalSettings.nestedCommentIndicatorStyle ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ListOption(
+              description: l10n.nestedCommentIndicatorColor,
+              value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
+              options: [
+                ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
+                ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
+              ],
+              icon: Icons.color_lens_outlined,
+              onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+              highlightKey: settingToHighlight == LocalSettings.nestedCommentIndicatorColor ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SettingsListTile(
+              icon: Icons.alternate_email_rounded,
+              description: l10n.usernameFormattingRedirect,
+              widget: const SizedBox(
+                height: 42.0,
+                child: Icon(Icons.chevron_right_rounded),
               ),
+              onTap: () {
+                GoRouter.of(context).push(
+                  SETTINGS_APPEARANCE_THEMES_PAGE,
+                  extra: [
+                    context.read<ThunderBloc>(),
+                    LocalSettings.userStyle,
+                  ],
+                );
+              },
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),

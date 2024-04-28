@@ -72,9 +72,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   barHintText: l10n.search,
                   suggestionsBuilder: (BuildContext context, SearchController controller) {
                     final List<LocalSettings> localSettings = LocalSettings.values
-                        .where((item) => l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
-                              controller.text.toLowerCase(),
-                            ))
+                        .where((item) =>
+                            item.searchable &&
+                            l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
+                                  controller.text.toLowerCase(),
+                                ))
                         .toSet()
                         .toList();
 
@@ -92,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       LocalSettingsCategories.comments: SETTINGS_APPEARANCE_COMMENTS_PAGE,
                                       LocalSettingsCategories.general: SETTINGS_GENERAL_PAGE,
                                       LocalSettingsCategories.gestures: SETTINGS_GESTURES_PAGE,
-                                      LocalSettingsCategories.floatingActionButton: SETTINGS_GESTURES_PAGE,
+                                      LocalSettingsCategories.floatingActionButton: SETTINGS_FAB_PAGE,
                                       LocalSettingsCategories.filters: SETTINGS_FILTERS_PAGE,
                                       LocalSettingsCategories.accessibility: SETTINGS_ACCESSIBILITY_PAGE,
                                       LocalSettingsCategories.account: SETTINGS_ACCOUNT_PAGE,
@@ -109,8 +111,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                           context.read<ThunderBloc>(),
                                           context.read<AccountBloc>(),
                                           context.read<AuthBloc>(),
+                                          localSettings[index],
                                         ]
-                                      : context.read<ThunderBloc>(),
+                                      : [
+                                          context.read<ThunderBloc>(),
+                                          localSettings[index],
+                                        ],
                                 );
                                 controller.closeView(null);
                                 controller.clear();
@@ -143,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   context.read<AccountBloc>(),
                                   context.read<AuthBloc>(),
                                 ]
-                              : context.read<ThunderBloc>(),
+                              : [context.read<ThunderBloc>()],
                         ),
                       ))
                   .toList(),
@@ -153,19 +159,9 @@ class _SettingsPageState extends State<SettingsPage> {
             hasScrollBody: false,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: FutureBuilder(
-                future: getCurrentVersion(removeInternalBuildNumber: true),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        'Thunder ${snapshot.data ?? 'N/A'}',
-                      ),
-                    );
-                  }
-                  return Container();
-                },
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Text('Thunder ${getCurrentVersion(removeInternalBuildNumber: true)}'),
               ),
             ),
           )

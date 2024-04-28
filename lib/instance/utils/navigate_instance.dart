@@ -8,21 +8,22 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/instance/instance_page.dart';
+import 'package:thunder/instance/pages/instance_page.dart';
+import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 Future<void> navigateToInstancePage(BuildContext context, {required String instanceHost, required int? instanceId}) async {
+  showLoadingPage(context);
+
   final AppLocalizations l10n = AppLocalizations.of(context)!;
-
-  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
+  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
   final bool reduceAnimations = thunderBloc.state.reduceAnimations;
-
   final Account? account = await fetchActiveProfileAccount();
 
   GetSiteResponse? getSiteResponse;
   bool? isBlocked;
+
   try {
     getSiteResponse = await LemmyApiV3(instanceHost).run(const GetSite()).timeout(const Duration(seconds: 5));
 
@@ -33,9 +34,15 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
 
   if (context.mounted) {
     if (getSiteResponse?.siteView.site != null) {
-      Navigator.of(context).push(
+      pushOnTopOfLoadingPage(
+        context,
         SwipeablePageRoute(
-          transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+          transitionDuration: isLoadingPageShown
+              ? Duration.zero
+              : reduceAnimations
+                  ? const Duration(milliseconds: 100)
+                  : null,
+          reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
           backGestureDetectionWidth: 45,
           canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
           builder: (context) => MultiBlocProvider(
@@ -51,7 +58,8 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
         ),
       );
     } else {
-      showSnackbar(context, l10n.unableToNavigateToInstance(instanceHost));
+      showSnackbar(l10n.unableToNavigateToInstance(instanceHost));
+      hideLoadingPage(context);
     }
   }
 }

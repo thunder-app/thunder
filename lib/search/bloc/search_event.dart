@@ -11,10 +11,11 @@ class StartSearchEvent extends SearchEvent {
   final String query;
   final SortType sortType;
   final ListingType listingType;
-  final SearchType searchType;
+  final MetaSearchType searchType;
   final int? communityId;
   final int? creatorId;
   final List<CommunityView>? favoriteCommunities;
+  final bool? force;
 
   const StartSearchEvent({
     required this.query,
@@ -24,6 +25,7 @@ class StartSearchEvent extends SearchEvent {
     this.communityId,
     this.creatorId,
     this.favoriteCommunities,
+    this.force,
   });
 }
 
@@ -41,7 +43,7 @@ class ContinueSearchEvent extends SearchEvent {
   final String query;
   final SortType sortType;
   final ListingType listingType;
-  final SearchType searchType;
+  final MetaSearchType searchType;
   final int? communityId;
   final int? creatorId;
   final List<CommunityView>? favoriteCommunities;

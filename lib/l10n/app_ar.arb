@@ -1,1 +1,32 @@
-{}
+{
+  "addKeywordFilter": "اضف كلمه مفتاحية",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "اضافة الي المفضلات",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "accountSettings": "اعدادات الحساب",
+  "@accountSettings": {},
+  "add": "اضافة",
+  "@add": {},
+  "active": "متصل",
+  "@active": {},
+  "account": "حساب ",
+  "@account": {
+    "description": "Describes the user account"
+  },
+  "addAccount": "اضافة حساب",
+  "@addAccount": {},
+  "about": "عن",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accessibility": "توافر",
+  "@accessibility": {},
+  "accessibilityProfilesDescription": "تسمح ملفات تعريف إمكانية الوصول بتطبيق عدة إعدادات في وقت واحد لاستيعاب متطلبات إمكانية وصول معينة.",
+  "@accessibilityProfilesDescription": {},
+  "addAccountToSeeProfile": "قم بتسجيل الدخول لرؤية حسابك.",
+  "@addAccountToSeeProfile": {}
+}

@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:text_scroll/text_scroll.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -12,12 +12,14 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
+import 'package:thunder/shared/marquee_widget.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -62,9 +64,9 @@ void showUserInputDialog(BuildContext context, {required String title, required 
   );
 }
 
-Future<Iterable<PersonView>> getUserSuggestions(String query) async {
+Future<List<PersonView>> getUserSuggestions(String query) async {
   if (query.isNotEmpty != true) {
-    return const Iterable.empty();
+    return [];
   }
   Account? account = await fetchActiveProfileAccount();
   final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
@@ -91,11 +93,11 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
         ),
         subtitle: Semantics(
           excludeSemantics: true,
-          child: TextScroll(
-            generateUserFullName(context, payload.person.name, fetchInstanceNameFromUrl(payload.person.actorId)),
-            delayBefore: const Duration(seconds: 2),
-            pauseBetween: const Duration(seconds: 3),
-            velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+          child: Marquee(
+            animationDuration: const Duration(seconds: 2),
+            backDuration: const Duration(seconds: 2),
+            pauseDuration: const Duration(seconds: 1),
+            child: UserFullNameWidget(context, payload.person.name, fetchInstanceNameFromUrl(payload.person.actorId)),
           ),
         ),
       ),
@@ -104,7 +106,7 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
 }
 
 /// Shows a dialog which allows typing/search for a community
-void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, Iterable<CommunityView>? emptySuggestions}) async {
+void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, List<CommunityView>? emptySuggestions}) async {
   try {
     final AccountState accountState = context.read<AccountBloc>().state;
     emptySuggestions ??= accountState.subsciptions;
@@ -151,9 +153,9 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
   );
 }
 
-Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, String query, Iterable<CommunityView>? emptySuggestions) async {
+Future<List<CommunityView>> getCommunitySuggestions(BuildContext context, String query, List<CommunityView>? emptySuggestions) async {
   if (query.isNotEmpty != true) {
-    return emptySuggestions ?? const Iterable.empty();
+    return emptySuggestions ?? [];
   }
   Account? account = await fetchActiveProfileAccount();
   final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
@@ -173,7 +175,7 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, St
     }
   }
 
-  return prioritizeFavorites(searchResponse.communities.toList(), favorites) ?? const Iterable.empty();
+  return prioritizeFavorites(searchResponse.communities.toList(), favorites) ?? [];
 }
 
 Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payload, {void Function(CommunityView)? onSelected}) {
@@ -196,11 +198,11 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextScroll(
-                generateCommunityFullName(context, payload.community.name, fetchInstanceNameFromUrl(payload.community.actorId)),
-                delayBefore: const Duration(seconds: 2),
-                pauseBetween: const Duration(seconds: 3),
-                velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+              Marquee(
+                animationDuration: const Duration(seconds: 2),
+                backDuration: const Duration(seconds: 2),
+                pauseDuration: const Duration(seconds: 1),
+                child: CommunityFullNameWidget(context, payload.community.name, fetchInstanceNameFromUrl(payload.community.actorId)),
               ),
               Row(
                 children: [
@@ -271,7 +273,7 @@ void showInstanceInputDialog(
     showInputDialog<InstanceWithFederationState>(
       context: context,
       title: title,
-      inputLabel: AppLocalizations.of(context)!.instance,
+      inputLabel: AppLocalizations.of(context)!.instance(1),
       onSubmitted: onSubmitted,
       getSuggestions: (query) => getInstanceSuggestions(query, getFederatedInstancesResponse.federatedInstances?.linked),
       suggestionBuilder: (payload) => buildInstanceSuggestionWidget(payload, context: context),
@@ -279,12 +281,12 @@ void showInstanceInputDialog(
   }
 }
 
-Future<Iterable<InstanceWithFederationState>> getInstanceSuggestions(String query, Iterable<InstanceWithFederationState>? emptySuggestions) async {
+Future<List<InstanceWithFederationState>> getInstanceSuggestions(String query, List<InstanceWithFederationState>? emptySuggestions) async {
   if (query.isEmpty) {
-    return const Iterable.empty();
+    return [];
   }
 
-  Iterable<InstanceWithFederationState> filteredInstances = emptySuggestions?.where((InstanceWithFederationState instance) => instance.domain.contains(query)) ?? const Iterable.empty();
+  List<InstanceWithFederationState> filteredInstances = emptySuggestions?.where((InstanceWithFederationState instance) => instance.domain.contains(query)).toList() ?? [];
   return filteredInstances;
 }
 
@@ -320,11 +322,18 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
 }
 
 /// Shows a dialog which allows typing/search for an language
-void showLanguageInputDialog(BuildContext context, {required String title, required void Function(Language) onLanguageSelected, Iterable<Language>? emptySuggestions}) async {
+void showLanguageInputDialog(BuildContext context,
+    {required String title, required void Function(Language) onLanguageSelected, Iterable<int>? excludedLanguageIds, Iterable<Language>? emptySuggestions}) async {
   AuthState state = context.read<AuthBloc>().state;
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
   List<Language> languages = [Language(id: -1, code: '', name: l10n.noLanguage), ...(state.getSiteResponse?.allLanguages ?? [])];
+  languages = languages.where((language) {
+    if (excludedLanguageIds != null && excludedLanguageIds.isNotEmpty) {
+      return !excludedLanguageIds.contains(language.id);
+    }
+    return true;
+  }).toList();
 
   Future<String?> onSubmitted({Language? payload, String? value}) async {
     if (payload != null) {
@@ -356,7 +365,7 @@ void showLanguageInputDialog(BuildContext context, {required String title, requi
   }
 }
 
-Future<Iterable<Language>> getLanguageSuggestions(BuildContext context, String query, Iterable<Language>? emptySuggestions) async {
+Future<List<Language>> getLanguageSuggestions(BuildContext context, String query, List<Language>? emptySuggestions) async {
   final Locale currentLocale = Localizations.localeOf(context);
 
   final Language? currentLanguage = emptySuggestions?.firstWhereOrNull((Language l) => l.code == currentLocale.languageCode);
@@ -370,7 +379,7 @@ Future<Iterable<Language>> getLanguageSuggestions(BuildContext context, String q
     return emptySuggestions ?? [];
   }
 
-  Iterable<Language> filteredLanguages = emptySuggestions?.where((Language language) => language.name.toLowerCase().contains(query.toLowerCase())) ?? const Iterable.empty();
+  List<Language> filteredLanguages = emptySuggestions?.where((Language language) => language.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
   return filteredLanguages;
 }
 
@@ -416,7 +425,7 @@ void showKeywordInputDialog(BuildContext context, {required String title, requir
       title: title,
       inputLabel: l10n.addKeywordFilter,
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => [] as Future<Iterable<String>>,
+      getSuggestions: (query) => [],
       suggestionBuilder: (payload) => Container(),
     );
   }
@@ -428,7 +437,7 @@ void showInputDialog<T>({
   required String title,
   required String inputLabel,
   required Future<String?> Function({T? payload, String? value}) onSubmitted,
-  required Future<Iterable<T>> Function(String query) getSuggestions,
+  required FutureOr<List<T>?> Function(String query) getSuggestions,
   required Widget Function(T payload) suggestionBuilder,
 }) async {
   final textController = TextEditingController();
@@ -457,8 +466,10 @@ void showInputDialog<T>({
           mainAxisSize: MainAxisSize.min,
           children: [
             TypeAheadField<T>(
-              textFieldConfiguration: TextFieldConfiguration(
-                controller: textController,
+              controller: textController,
+              builder: (context, controller, focusNode) => TextField(
+                controller: controller,
+                focusNode: focusNode,
                 onChanged: (value) {
                   setPrimaryButtonEnabled(value.trim().isNotEmpty);
                   setState(() => contentWidgetError = null);
@@ -478,7 +489,7 @@ void showInputDialog<T>({
               ),
               suggestionsCallback: getSuggestions,
               itemBuilder: (context, payload) => suggestionBuilder(payload),
-              onSuggestionSelected: (payload) async {
+              onSelected: (payload) async {
                 setPrimaryButtonEnabled(false);
                 final String? submitError = await onSubmitted(payload: payload);
                 setState(() => contentWidgetError = submitError);

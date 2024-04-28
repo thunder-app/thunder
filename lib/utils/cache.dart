@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:extended_image/extended_image.dart';
@@ -22,6 +23,7 @@ class Cache<T> {
 /// Returns the total size of the image cache from ExtendedImage
 Future<int> getExtendedImageCacheSize() async {
   try {
+    if (kIsWeb) return 0;
     final Directory cacheImagesDirectory = Directory(join((await getTemporaryDirectory()).path, cacheImageFolderName));
     if (!cacheImagesDirectory.existsSync()) return 0;
 
@@ -46,6 +48,7 @@ Future<int> getExtendedImageCacheSize() async {
 /// Clears the image cache from ExtendedImage, by deleting all files older than [duration].
 /// If [duration] is not provided, it defaults to 7 days.
 Future<void> clearExtendedImageCache({Duration expiration = const Duration(days: 7)}) async {
+  if (kIsWeb) return;
   final Directory cacheImagesDirectory = Directory(join((await getTemporaryDirectory()).path, cacheImageFolderName));
   if (!cacheImagesDirectory.existsSync()) return;
 

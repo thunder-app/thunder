@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/enums/image_caching_mode.dart';
 
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -46,8 +47,8 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
     final ThunderState state = context.read<ThunderBloc>().state;
     final useDarkTheme = state.themeType == 'dark';
 
-    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.height : 150);
-    double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;
+    double? height = widget.viewMode == ViewMode.compact ? ViewMode.compact.height : (widget.showFullHeightImages ? widget.height : ViewMode.comfortable.height);
+    double width = widget.viewMode == ViewMode.compact ? ViewMode.compact.height : MediaQuery.of(context).size.width - 24;
 
     return ExtendedImage.network(
       widget.mediaUrl,
@@ -55,9 +56,10 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
-      clearMemoryCacheWhenDispose: false,
-      cacheMaxAge: const Duration(minutes: 1),
-      cacheWidth: widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+      clearMemoryCacheWhenDispose: state.imageCachingMode == ImageCachingMode.relaxed,
+      cacheWidth: widget.viewMode == ViewMode.compact
+          ? (ViewMode.compact.height * View.of(context).devicePixelRatio.ceil()).toInt()
+          : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
