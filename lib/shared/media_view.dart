@@ -272,7 +272,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         height = ViewMode.compact.height;
         break;
       case ViewMode.comfortable:
-        width = MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
+        width = (state.tabletMode ? (MediaQuery.of(context).size.width / 2) - 24.0 : MediaQuery.of(context).size.width) - (widget.edgeToEdgeImages ? 0 : 24);
         height = widget.showFullHeightImages ? widget.postViewMedia.media.first.height : null;
     }
 
