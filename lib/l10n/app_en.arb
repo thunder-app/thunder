@@ -1361,6 +1361,10 @@
   "@reason": {
     "description": "The reason for the moderation action (e.g., removing post)"
   },
+  "red": "Red",
+  "@red": {
+    "description": "The color red"
+  },
   "reduceAnimations": "Reduce Animations",
   "@reduceAnimations": {
     "description": "Toggle to reduce animations."

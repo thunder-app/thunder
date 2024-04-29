@@ -7,6 +7,7 @@ class ActionColor {
   static const String purple = '0xFF7B1FA2'; // Colors.purple.shade700
   static const String teal = '0xFF4DB6AC'; // Colors.teal.shade300
   static const String green = '0xFF388E3C'; // Colors.green.shade700
+  static const String red = '0xFFD32F2F'; // Colors.red.shade700
 
   final String colorRaw;
 
@@ -26,6 +27,7 @@ class ActionColor {
       purple => l10n.purple,
       teal => l10n.teal,
       green => l10n.green,
+      red => l10n.red,
       _ => throw Exception('Unknown color'),
     };
   }
@@ -37,6 +39,7 @@ class ActionColor {
       currentValue.colorRaw == purple ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.purple),
       currentValue.colorRaw == teal ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.teal),
       currentValue.colorRaw == green ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.green),
+      currentValue.colorRaw == red ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.red),
     ];
   }
 }
