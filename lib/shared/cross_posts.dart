@@ -89,12 +89,10 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                     size: 14.0,
                                     color: theme.colorScheme.onBackground.withOpacity(0.9),
                                   ),
-                                  const SizedBox(width: 5.0),
                                   Text(
-                                    'to',
+                                    ' to ',
                                     style: crossPostTextStyle,
                                   ),
-                                  const SizedBox(width: 6.0),
                                   Text(
                                     generateCommunityFullName(context, widget.crossPosts[index].community.name, fetchInstanceNameFromUrl(widget.crossPosts[index].community.actorId)),
                                     style: crossPostLinkTextStyle,
@@ -125,7 +123,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
           decoration: BoxDecoration( borderRadius: BorderRadius.circular(8)),
           child: InkWell(
             borderRadius: BorderRadius.circular(5),
-            onTap: (widget.isNewPost == true /*&& widget.crossPosts.length == 1*/) ? null : () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
+            onTap: () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
             child: Row(
               children: [
                 Expanded(
