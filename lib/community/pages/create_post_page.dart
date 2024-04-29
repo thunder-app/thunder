@@ -482,7 +482,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                             if (crossPosts.isNotEmpty && widget.postView == null) const SizedBox(height: 6),
                             Visibility(
-                              visible: url.isNotEmpty,
+                              visible: url.isNotEmpty && crossPosts.isNotEmpty,
                               child: CrossPosts(
                                 crossPosts: crossPosts,
                                 isNewPost: true,
