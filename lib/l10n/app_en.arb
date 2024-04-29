@@ -595,7 +595,7 @@
   "@errorMarkingReplyRead": {
     "description": "Error message for marking a reply read"
   },
-  "errorMarkingReplyUnread": "There was an error marking the reply as read.",
+  "errorMarkingReplyUnread": "There was an error marking the reply as unread.",
   "@errorMarkingReplyUnread": {
     "description": "Error message for marking a reply unread"
   },
@@ -1099,7 +1099,7 @@
   "@noPostsFound": {},
   "noReplies": "No replies",
   "@noReplies": {
-    "description": "Label for the action to mark a message as unread"
+    "description": "Label for when there are no replies in the list"
   },
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
