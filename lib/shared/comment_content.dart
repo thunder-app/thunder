@@ -28,6 +28,7 @@ class CommentContent extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final bool viewSource;
   final void Function() onViewSourceToggled;
+  final bool selectable;
 
   const CommentContent({
     super.key,
@@ -47,6 +48,7 @@ class CommentContent extends StatefulWidget {
     this.disableActions = false,
     required this.viewSource,
     required this.onViewSourceToggled,
+    this.selectable = false,
   });
 
   @override
@@ -117,6 +119,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                             : CommonMarkdownBody(
                                 body: cleanCommentContent(widget.comment.comment),
                                 isComment: true,
+                                isSelectableText: widget.selectable,
                               ),
                       ),
                       if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)

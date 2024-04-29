@@ -18,6 +18,7 @@ import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';
@@ -118,7 +119,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       bool showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
-      bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
+      NotificationType inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name) ?? NotificationType.none;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       NameThickness userFullNameUserNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameUserNameThickness.name) ?? NameThickness.normal.name);
@@ -140,6 +141,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Compact Related Settings
       bool useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
       bool showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
+      bool hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
       bool showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       bool showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
       bool tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
@@ -169,6 +171,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       PostBodyViewType postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
       bool postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
       bool postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
+      bool postBodyShowCommunityAvatar = prefs.getBool(LocalSettings.postBodyShowCommunityAvatar.name) ?? false;
 
       List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
@@ -178,6 +181,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       bool commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
+      bool commentShowUserAvatar = prefs.getBool(LocalSettings.commentShowUserAvatar.name) ?? false;
       bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
           NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
@@ -274,7 +278,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         markPostReadOnScroll: markPostReadOnScroll,
         showInAppUpdateNotification: showInAppUpdateNotification,
         showUpdateChangelogs: showUpdateChangelogs,
-        enableInboxNotifications: enableInboxNotifications,
+        inboxNotificationType: inboxNotificationType,
         appLanguageCode: appLanguageCode,
         userSeparator: userSeparator,
         userFullNameUserNameThickness: userFullNameUserNameThickness,
@@ -294,6 +298,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         // Compact Related Settings
         useCompactView: useCompactView,
         showTitleFirst: showTitleFirst,
+        hideThumbnails: hideThumbnails,
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         showTextPostIndicator: showTextPostIndicator,
         tappableAuthorCommunity: tappableAuthorCommunity,
@@ -322,6 +327,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         postBodyViewType: postBodyViewType,
         postBodyShowUserInstance: postBodyShowUserInstance,
         postBodyShowCommunityInstance: postBodyShowCommunityInstance,
+        postBodyShowCommunityAvatar: postBodyShowCommunityAvatar,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings
@@ -329,6 +335,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
         showCommentButtonActions: showCommentButtonActions,
         commentShowUserInstance: commentShowUserInstance,
+        commentShowUserAvatar: commentShowUserAvatar,
         combineCommentScores: combineCommentScores,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,

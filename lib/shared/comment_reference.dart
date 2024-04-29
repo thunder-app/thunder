@@ -88,6 +88,7 @@ class _CommentReferenceState extends State<CommentReference> {
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final ThunderState state = context.read<ThunderBloc>().state;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Semantics(
       label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
@@ -141,13 +142,14 @@ class _CommentReferenceState extends State<CommentReference> {
                             children: [
                               ExcludeSemantics(
                                 child: ScalableText(
-                                  'in ',
+                                  l10n.in_,
                                   fontScale: state.contentFontSizeScale,
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                                   ),
                                 ),
                               ),
+                              const SizedBox(width: 5.0),
                               ExcludeSemantics(
                                 child: CommunityFullNameWidget(
                                   context,

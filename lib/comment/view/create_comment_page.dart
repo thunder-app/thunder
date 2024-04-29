@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 // Package imports
-import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -17,7 +16,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Project imports
 import 'package:thunder/comment/cubit/create_comment_cubit.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -25,6 +23,7 @@ import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/shared/comment_content.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/input_dialogs.dart';
+import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
@@ -278,7 +277,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 child: Container(
                                   padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
                                   decoration: BoxDecoration(
-                                    color: theme.colorScheme.surfaceVariant,
+                                    color: theme.dividerColor.withOpacity(0.25),
                                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                   ),
                                   child: PostSubview(
@@ -289,6 +288,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     viewSource: false,
                                     showQuickPostActionBar: false,
                                     showExpandableButton: false,
+                                    selectable: true,
                                   ),
                                 ),
                               ),
@@ -297,25 +297,24 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: theme.colorScheme.surfaceVariant,
+                                    color: theme.dividerColor.withOpacity(0.25),
                                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                   ),
-                                  child: IgnorePointer(
-                                    child: CommentContent(
-                                      comment: widget.parentCommentView!,
-                                      onVoteAction: (_, __) {},
-                                      onSaveAction: (_, __) {},
-                                      onReplyEditAction: (_, __) {},
-                                      onReportAction: (_) {},
-                                      now: DateTime.now().toUtc(),
-                                      onDeleteAction: (_, __) {},
-                                      isUserLoggedIn: true,
-                                      isOwnComment: false,
-                                      isHidden: false,
-                                      viewSource: false,
-                                      onViewSourceToggled: () {},
-                                      disableActions: true,
-                                    ),
+                                  child: CommentContent(
+                                    comment: widget.parentCommentView!,
+                                    onVoteAction: (_, __) {},
+                                    onSaveAction: (_, __) {},
+                                    onReplyEditAction: (_, __) {},
+                                    onReportAction: (_) {},
+                                    now: DateTime.now().toUtc(),
+                                    onDeleteAction: (_, __) {},
+                                    isUserLoggedIn: true,
+                                    isOwnComment: false,
+                                    isHidden: false,
+                                    viewSource: false,
+                                    onViewSourceToggled: () {},
+                                    disableActions: true,
+                                    selectable: true,
                                   ),
                                 ),
                               ),
@@ -472,80 +471,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
         });
       }
     }
-  }
-}
-
-/// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language
-///
-/// Passing in [languageId] will set the initial state of the widget to display that given language.
-/// A callback function [onLanguageSelected] will be triggered whenever a new language is selected from the dropdown.
-class LanguageSelector extends StatefulWidget {
-  const LanguageSelector({
-    super.key,
-    required this.languageId,
-    required this.onLanguageSelected,
-  });
-
-  /// The initial language id to be passed in
-  final int? languageId;
-
-  /// A callback function to trigger whenever a language is selected from the dropdown
-  final Function(Language?) onLanguageSelected;
-
-  @override
-  State<LanguageSelector> createState() => _LanguageSelectorState();
-}
-
-class _LanguageSelectorState extends State<LanguageSelector> {
-  late int? _languageId;
-  late Language? _language;
-
-  @override
-  void initState() {
-    super.initState();
-    _languageId = widget.languageId;
-
-    // Determine the language from the languageId
-    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
-    _language = languages.firstWhereOrNull((Language language) => language.id == _languageId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-
-    return Transform.translate(
-      offset: const Offset(-8, 0),
-      child: InkWell(
-        onTap: () {
-          showLanguageInputDialog(
-            context,
-            title: l10n.language,
-            onLanguageSelected: (language) {
-              if (language.id == -1) {
-                setState(() => _languageId = _language = null);
-                widget.onLanguageSelected(null);
-              } else {
-                setState(() {
-                  _languageId = language.id;
-                  _language = language;
-                });
-                widget.onLanguageSelected(language);
-              }
-            },
-          );
-        },
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
-          child: Text(
-            '${l10n.language}: ${_language?.name ?? l10n.selectLanguage}',
-            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ),
-      ),
-    );
   }
 }
 

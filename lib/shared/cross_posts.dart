@@ -5,6 +5,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
@@ -53,7 +54,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
       padding: const EdgeInsets.only(top: 10),
       child: Container(
         decoration: BoxDecoration(
-          color: theme.dividerColor.withOpacity(0.25),
+          color: getBackgroundColor(context),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(

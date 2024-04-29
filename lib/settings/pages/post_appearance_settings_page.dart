@@ -51,6 +51,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// When enabled, posts on the feed will be compacted
   bool useCompactView = false;
 
+  /// When enabled, the thumbnails in compact/card mode will be hidden
+  bool hideThumbnails = false;
+
   /// When enabled, the thumbnail previews will be shown on the right. By default, they are shown on the left
   bool showThumbnailPreviewOnRight = false;
 
@@ -117,6 +120,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// When enabled, shows the instance of the community in posts
   bool postBodyShowCommunityInstance = false;
 
+  /// When enabled, shows the avatar of the community in chips
+  bool postBodyShowCommunityAvatar = false;
+
   /// List of compact post card metadata items to show on the post card
   /// The order of the items is important as they will be displayed in that order
   List<PostCardMetadataItem> compactPostCardMetadataItems = [];
@@ -136,6 +142,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       // General Settings
       useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
+      hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
@@ -166,6 +173,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
       postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
       postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
+      postBodyShowCommunityAvatar = prefs.getBool(LocalSettings.postBodyShowCommunityAvatar.name) ?? false;
     });
   }
 
@@ -181,6 +189,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.hideNsfwPreviews:
         await prefs.setBool(LocalSettings.hideNsfwPreviews.name, value);
         setState(() => hideNsfwPreviews = value);
+        break;
+      case LocalSettings.hideThumbnails:
+        await prefs.setBool(LocalSettings.hideThumbnails.name, value);
+        setState(() => hideThumbnails = value);
         break;
       case LocalSettings.showPostAuthor:
         await prefs.setBool(LocalSettings.showPostAuthor.name, value);
@@ -274,6 +286,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setBool(LocalSettings.postBodyShowCommunityInstance.name, value);
         setState(() => postBodyShowCommunityInstance = value);
         break;
+      case LocalSettings.postBodyShowCommunityAvatar:
+        await prefs.setBool(LocalSettings.postBodyShowCommunityAvatar.name, value);
+        setState(() => postBodyShowCommunityAvatar = value);
+        break;
     }
 
     if (context.mounted) {
@@ -287,6 +303,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
     await prefs.remove(LocalSettings.useCompactView.name);
     await prefs.remove(LocalSettings.hideNsfwPreviews.name);
+    await prefs.remove(LocalSettings.hideThumbnails.name);
     await prefs.remove(LocalSettings.showPostAuthor.name);
     await prefs.remove(LocalSettings.useDisplayNamesForUsers.name);
     await prefs.remove(LocalSettings.postShowUserInstance.name);
@@ -310,6 +327,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.postBodyViewType.name);
     await prefs.remove(LocalSettings.postBodyShowUserInstance.name);
     await prefs.remove(LocalSettings.postBodyShowCommunityInstance.name);
+    await prefs.remove(LocalSettings.postBodyShowCommunityAvatar.name);
 
     await initPreferences();
 
@@ -509,6 +527,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                     : IgnorePointer(
                                         child: PostCardViewComfortable(
                                           postViewMedia: snapshot.data![index]!,
+                                          hideThumbnails: hideThumbnails,
                                           showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
                                           showPostAuthor: showPostAuthor,
                                           hideNsfwPreviews: hideNsfwPreviews,
@@ -569,6 +588,16 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               iconDisabled: Icons.no_adult_content,
               onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPreviews, value),
               highlightKey: settingToHighlight == LocalSettings.hideNsfwPreviews ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.hideThumbnails,
+              value: hideThumbnails,
+              iconEnabled: Icons.hide_image_outlined,
+              iconDisabled: Icons.image_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
+              highlightKey: settingToHighlight == LocalSettings.hideThumbnails ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(
@@ -1022,6 +1051,16 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               highlightKey: settingToHighlight == LocalSettings.postBodyShowCommunityInstance ? settingToHighlightKey : null,
             ),
           ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.postBodyShowCommunityAvatar,
+              value: postBodyShowCommunityAvatar,
+              iconEnabled: Icons.image,
+              iconDisabled: Icons.image_not_supported,
+              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityAvatar, value),
+              highlightKey: settingToHighlight == LocalSettings.postBodyShowCommunityAvatar ? settingToHighlightKey : null,
+            ),
+          ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),
         ],
       ),
@@ -1046,14 +1085,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ), // Title
           const SizedBox(height: 4.0),
         ],
-        Container(
-          height: showFullHeightImages ? 150 : 100,
-          margin: const EdgeInsets.symmetric(vertical: 8.0),
-          decoration: BoxDecoration(
-            color: theme.dividerColor,
-            borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+        if (!hideThumbnails)
+          Container(
+            height: showFullHeightImages ? 150 : 100,
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+            ),
           ),
-        ),
         if (!showTitleFirst) ...[
           const SizedBox(height: 4.0),
           Container(
@@ -1159,17 +1199,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          !showThumbnailPreviewOnRight
-              ? Container(
-                  width: ViewMode.compact.height,
-                  height: ViewMode.compact.height,
-                  margin: const EdgeInsets.only(right: 8.0),
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor,
-                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                  ),
-                )
-              : const SizedBox(width: 0),
+          if (!hideThumbnails)
+            !showThumbnailPreviewOnRight
+                ? Container(
+                    width: ViewMode.compact.height,
+                    height: ViewMode.compact.height,
+                    margin: const EdgeInsets.only(right: 8.0),
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  )
+                : const SizedBox(width: 0),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(right: showThumbnailPreviewOnRight ? 8.0 : 0),
@@ -1212,17 +1253,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ),
             ),
           ),
-          showThumbnailPreviewOnRight
-              ? Container(
-                  width: ViewMode.compact.height,
-                  height: ViewMode.compact.height,
-                  margin: const EdgeInsets.only(right: 8.0),
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor,
-                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                  ),
-                )
-              : const SizedBox(width: 0),
+          if (!hideThumbnails)
+            showThumbnailPreviewOnRight
+                ? Container(
+                    width: ViewMode.compact.height,
+                    height: ViewMode.compact.height,
+                    margin: const EdgeInsets.only(right: 8.0),
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  )
+                : const SizedBox(width: 0),
         ],
       ),
     );
@@ -1295,7 +1337,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
                   ),
                 ),
           onLeave: (data) => HapticFeedback.mediumImpact(),
-          onWillAccept: (data) {
+          onWillAcceptWithDetails: (data) {
             if (!containedPostCardMetadataItems.contains(data)) {
               return true;
             }

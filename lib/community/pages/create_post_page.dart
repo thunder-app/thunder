@@ -1,19 +1,22 @@
+// Dart imports
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
+// Flutter imports
 import 'package:flutter/material.dart';
+
+// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Project imports
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
@@ -25,18 +28,19 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
-import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
+import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/debounce.dart';
-import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/media/image.dart';
 
 class CreatePostPage extends StatefulWidget {
   final int? communityId;
@@ -488,7 +492,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Expanded(
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60),
                                   child: LanguageSelector(
                                     languageId: languageId,
                                     onLanguageSelected: (Language? language) {
@@ -496,10 +501,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     },
                                   ),
                                 ),
-                                Row(
+                                Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
-                                    Text(l10n.postNSFW),
-                                    const SizedBox(width: 10),
+                                    Text(l10n.nsfw),
+                                    const SizedBox(width: 4.0),
                                     Switch(
                                       value: isNSFW,
                                       onChanged: (bool value) => setState(() => isNSFW = value),
@@ -653,80 +659,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         });
       }
     }
-  }
-}
-
-/// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language
-///
-/// Passing in [languageId] will set the initial state of the widget to display that given language.
-/// A callback function [onLanguageSelected] will be triggered whenever a new language is selected from the dropdown.
-class LanguageSelector extends StatefulWidget {
-  const LanguageSelector({
-    super.key,
-    required this.languageId,
-    required this.onLanguageSelected,
-  });
-
-  /// The initial language id to be passed in
-  final int? languageId;
-
-  /// A callback function to trigger whenever a language is selected from the dropdown
-  final Function(Language?) onLanguageSelected;
-
-  @override
-  State<LanguageSelector> createState() => _LanguageSelectorState();
-}
-
-class _LanguageSelectorState extends State<LanguageSelector> {
-  late int? _languageId;
-  late Language? _language;
-
-  @override
-  void initState() {
-    super.initState();
-    _languageId = widget.languageId;
-
-    // Determine the language from the languageId
-    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
-    _language = languages.firstWhereOrNull((Language language) => language.id == _languageId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-
-    return Transform.translate(
-      offset: const Offset(-8, 0),
-      child: InkWell(
-        onTap: () {
-          showLanguageInputDialog(
-            context,
-            title: l10n.language,
-            onLanguageSelected: (language) {
-              if (language.id == -1) {
-                setState(() => _languageId = _language = null);
-                widget.onLanguageSelected(null);
-              } else {
-                setState(() {
-                  _languageId = language.id;
-                  _language = language;
-                });
-                widget.onLanguageSelected(language);
-              }
-            },
-          );
-        },
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
-          child: Text(
-            '${l10n.language}: ${_language?.name ?? l10n.selectLanguage}',
-            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ),
-      ),
-    );
   }
 }
 

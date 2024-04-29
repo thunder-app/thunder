@@ -10,6 +10,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/notification/shared/notification_server.dart';
 
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
