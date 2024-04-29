@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/shared/link_information.dart';
+import 'package:html/parser.dart';
+import 'package:markdown/markdown.dart' hide Text;
 
+import 'package:thunder/shared/link_information.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/image_viewer.dart';
@@ -98,6 +100,12 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     if (widget.viewMode == ViewMode.comfortable) return Container();
 
+    String? plainTextComment;
+    if (widget.postViewMedia.postView.post.body?.isNotEmpty == true) {
+      final String htmlComment = markdownToHtml(widget.postViewMedia.postView.post.body!);
+      plainTextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? widget.postViewMedia.postView.post.body!;
+    }
+
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -112,7 +120,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      widget.postViewMedia.postView.post.body!,
+                      plainTextComment!,
                       style: TextStyle(
                         fontSize: min(20, max(4.5, (20 * (1 / log(widget.postViewMedia.postView.post.body!.length))))),
                         color: widget.read == true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
@@ -272,7 +280,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         height = ViewMode.compact.height;
         break;
       case ViewMode.comfortable:
-        width = MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
+        width = (state.tabletMode ? (MediaQuery.of(context).size.width / 2) - 24.0 : MediaQuery.of(context).size.width) - (widget.edgeToEdgeImages ? 0 : 24);
         height = widget.showFullHeightImages ? widget.postViewMedia.media.first.height : null;
     }
 
