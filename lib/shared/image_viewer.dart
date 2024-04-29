@@ -153,7 +153,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     return Stack(
       children: [
         AnimatedContainer(
-            duration: const Duration(milliseconds: 400),
+          duration: const Duration(milliseconds: 400),
           color: fullscreen ? Colors.black : Colors.transparent,
         ),
         Scaffold(
@@ -216,12 +216,12 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     child: areImageDimensionsLoaded // Only display the image if dimensions are loaded
                         ? Listener(
                             // Start watching for double tap zoom
-                              onPointerDown: (details) {
-                                downCoord = details.position;
-                              },
+                            onPointerDown: (details) {
+                              downCoord = details.position;
+                            },
                             onPointerUp: (details) {
-                                delta = (downCoord - details.position).distance;
-                                if (!slideZooming && delta < 0.5) {
+                              delta = (downCoord - details.position).distance;
+                              if (!slideZooming && delta < 0.5) {
                                 _maybeSlide(context);
                               }
                             },
