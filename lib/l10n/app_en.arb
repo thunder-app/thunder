@@ -799,6 +799,10 @@
   },
   "inReplyTo": "In reply to {post} in {community}",
   "@inReplyTo": {},
+  "in_": "in",
+  "@in_": {
+    "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+  },
   "inbox": "Inbox",
   "@inbox": {},
   "includeCommunity": "Include Community",

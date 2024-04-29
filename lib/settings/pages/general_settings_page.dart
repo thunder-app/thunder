@@ -29,6 +29,7 @@ import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/language/language.dart';
 import 'package:version/version.dart';
 
@@ -46,7 +47,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   Iterable<Locale> get supportedLocales => AppLocalizations.supportedLocales;
 
   /// The current locale
-  late Locale currentLocale;
+  Locale currentLocale = Localizations.localeOf(GlobalContext.context);
 
   /// Default listing type for posts on the feed (subscribed, all, local)
   ListingType defaultListingType = DEFAULT_LISTING_TYPE;
@@ -121,6 +122,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// Controller for the push notification server URL
   TextEditingController controller = TextEditingController();
+
+  /// Whether or not experimental features are enabled
+  bool enableExperimentalFeatures = false;
 
   Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -705,13 +709,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.local,
                                 softWrap: true,
                               ),
-                              ListPickerItem(
-                                icon: Icons.notifications_active_rounded,
-                                label: l10n.useUnifiedPushNotifications,
-                                subtitle: l10n.useUnifiedPushNotificationsDescription,
-                                payload: NotificationType.unifiedPush,
-                                softWrap: true,
-                              ),
+                              if (enableExperimentalFeatures)
+                                ListPickerItem(
+                                  icon: Icons.notifications_active_rounded,
+                                  label: l10n.useUnifiedPushNotifications,
+                                  subtitle: l10n.useUnifiedPushNotificationsDescription,
+                                  payload: NotificationType.unifiedPush,
+                                  softWrap: true,
+                                ),
                             ]
                           : [
                               ListPickerItem(
@@ -720,13 +725,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.none,
                                 softWrap: true,
                               ),
-                              ListPickerItem(
-                                icon: Icons.notifications_active_rounded,
-                                label: l10n.useApplePushNotifications,
-                                subtitle: l10n.useApplePushNotificationsDescription,
-                                payload: NotificationType.apn,
-                                softWrap: true,
-                              ),
+                              if (enableExperimentalFeatures)
+                                ListPickerItem(
+                                  icon: Icons.notifications_active_rounded,
+                                  label: l10n.useApplePushNotifications,
+                                  subtitle: l10n.useApplePushNotificationsDescription,
+                                  payload: NotificationType.apn,
+                                  softWrap: true,
+                                ),
                             ],
                       onSelect: (ListPickerItem<NotificationType> notificationType) async {
                         if (notificationType.payload == inboxNotificationType) return;

@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:expandable/expandable.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +16,6 @@ import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -33,7 +31,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/user/widgets/user_sidebar.dart';
-import 'package:thunder/utils/cache.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/global_context.dart';
 
 enum FeedType { community, user, general }
@@ -634,14 +632,12 @@ class _TagLineState extends State<TagLine> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
-    final Color backgroundColor = darkTheme ? theme.dividerColor.darken(5) : theme.dividerColor.lighten(20);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Container(
         decoration: BoxDecoration(
-          color: backgroundColor,
+          color: getBackgroundColor(context),
           borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
         ),
         child: Padding(
@@ -682,9 +678,9 @@ class _TagLineState extends State<TagLine> {
                                     end: Alignment.bottomCenter,
                                     stops: const [0.0, 0.5, 1.0],
                                     colors: [
-                                      backgroundColor.withOpacity(0.0),
-                                      backgroundColor,
-                                      backgroundColor,
+                                      getBackgroundColor(context).withOpacity(0.0),
+                                      getBackgroundColor(context),
+                                      getBackgroundColor(context),
                                     ],
                                   ),
                                 ),
