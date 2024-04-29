@@ -375,6 +375,10 @@
   "@confirmResetPostPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
   },
+  "connectedToUnifiedPushDistributorApp": "Conected to {app}",
+  "@connectedToUnifiedPushDistributorApp": {
+    "description": "Tell the user which UnifiedPush app we're connected to"
+  },
   "controversial": "Controversial",
   "@controversial": {},
   "copiedToClipboard": "Copied to clipboard",
@@ -535,6 +539,10 @@
   "@doNotShowAgain": {
     "description": "Action for hiding something permanently"
   },
+  "doNotSupportMultipleUnifiedPushApps": "Found multiple compatible apps; please install only one",
+  "@doNotSupportMultipleUnifiedPushApps": {
+    "description": "Tell the user we don't currently support multiple UnifiedPush apps"
+  },
   "downloadingMedia": "Downloading media to share…",
   "@downloadingMedia": {},
   "downvote": "Downvote",
@@ -633,9 +641,9 @@
   },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
-  "failedToDisablePushNotifications": "Failed to disable push notifications",
-  "@failedToDisablePushNotifications": {
-    "description": "Error message when failed to disable push notifications."
+  "failedToCommunicateWithThunderNotificationServer": "Failed to communicate with Thunder notification server at '{serverAddress}'",
+  "@failedToCommunicateWithThunderNotificationServer": {
+    "description": "Error message for when we fail to communicate with Thunder notification server"
   },
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
   "@failedToLoadBlocks": {},
@@ -700,6 +708,10 @@
   "forward": "Forward",
   "@forward": {
     "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "foundUnifiedPushDistribtorApp": "Found compatible app; restart Thunder to connect",
+  "@foundUnifiedPushDistribtorApp": {
+    "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
   },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
@@ -1061,6 +1073,10 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
+  "noCompatibleAppFound": "No compatible app found",
+  "@noCompatibleAppFound": {
+    "description": "Tell the user we didn't find a compatible UnifiedPush app"
+  },
   "noDiscussionLanguages": "No content is hidden based on language.",
   "@noDiscussionLanguages": {
     "description": "Message for no discussion languages added"
@@ -1179,7 +1195,7 @@
   "@pending": {
     "description": "Describes the subscription status for 'Pending'"
   },
-  "permissionDenied": "Permission Denied",
+  "permissionDenied": "Thunder has not been granted permission to display notifications. Please enable in system settings.",
   "@permissionDenied": {
     "description": "Title for error when user denies OS permissions"
   },
@@ -1750,6 +1766,10 @@
   "successfullyUnblockedUser": "Unblocked {username}",
   "@successfullyUnblockedUser": {
     "description": "Notification for successfully unblocking a user"
+  },
+  "suchAs": "such as",
+  "@suchAs": {
+    "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
   },
   "suggestedTitle": "Suggested title",
   "@suggestedTitle": {

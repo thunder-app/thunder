@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,6 +33,8 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/language/language.dart';
+import 'package:thunder/utils/links.dart';
+import 'package:unifiedpush/unifiedpush.dart';
 import 'package:version/version.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
@@ -125,6 +129,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// Whether or not experimental features are enabled
   bool enableExperimentalFeatures = false;
+
+  AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+  /// Whether the Android system is allowing Thunder to send notifications
+  bool? areAndroidNotificationsAllowed;
+
+  /// The UnifiedPush distributor app that we're connected to, and how many are available.
+  String? unifiedPushConnectedDistributorApp;
+  int? unifiedPushAvailableDistributorApps;
 
   Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -303,6 +316,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           });
         });
       }
+
+      areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+      unifiedPushConnectedDistributorApp = await UnifiedPush.getDistributor();
+      unifiedPushAvailableDistributorApps = (await UnifiedPush.getDistributors()).length;
+      setState(() {});
     });
   }
 
@@ -680,7 +698,71 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             SliverToBoxAdapter(
               child: ListOption(
                 description: l10n.enableInboxNotifications,
-                subtitle: accounts.isEmpty ? l10n.loginToPerformAction : inboxNotificationType.toString(),
+                subtitleWidget: Text.rich(
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8)),
+                  softWrap: true,
+                  TextSpan(
+                    children: [
+                      TextSpan(text: accounts.isEmpty ? l10n.loginToPerformAction : inboxNotificationType.toString()),
+                      if (Platform.isAndroid &&
+                          (inboxNotificationType == NotificationType.local || inboxNotificationType == NotificationType.unifiedPush) &&
+                          areAndroidNotificationsAllowed != true) ...[
+                        const TextSpan(text: '\n'),
+                        TextSpan(
+                          text: '- ${l10n.notificationsNotAllowed}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.red.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
+                      if (Platform.isAndroid && inboxNotificationType == NotificationType.unifiedPush) ...[
+                        if (unifiedPushConnectedDistributorApp?.isNotEmpty != true) ...[
+                          if ((unifiedPushAvailableDistributorApps ?? 0) == 1) ...[
+                            const TextSpan(text: '\n'),
+                            TextSpan(
+                              text: '- ${l10n.foundUnifiedPushDistribtorApp}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.red.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                          if ((unifiedPushAvailableDistributorApps ?? 0) > 1) ...[
+                            const TextSpan(text: '\n'),
+                            TextSpan(
+                              text: '- ${l10n.doNotSupportMultipleUnifiedPushApps}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.red.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                          if ((unifiedPushAvailableDistributorApps ?? 0) == 0) ...[
+                            const TextSpan(text: '\n'),
+                            TextSpan(
+                              text: '- ${l10n.noCompatibleAppFound}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.red.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                        ],
+                        if (unifiedPushConnectedDistributorApp?.isNotEmpty == true) ...[
+                          const TextSpan(text: '\n'),
+                          TextSpan(
+                            text: l10n.connectedToUnifiedPushDistributorApp(unifiedPushConnectedDistributorApp!),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontStyle: FontStyle.italic,
+                              color: Colors.green.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ],
+                  ),
+                ),
                 value: const ListPickerItem(payload: -1),
                 disabled: accounts.isEmpty,
                 icon: inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded,
@@ -713,7 +795,27 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useUnifiedPushNotifications,
-                                  subtitle: l10n.useUnifiedPushNotificationsDescription,
+                                  subtitleWidget: Text.rich(
+                                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+                                    softWrap: true,
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(text: l10n.useUnifiedPushNotificationsDescription),
+                                        const TextSpan(text: ' ('),
+                                        TextSpan(text: l10n.suchAs),
+                                        const TextSpan(text: ' '),
+                                        TextSpan(
+                                          text: 'ntfy',
+                                          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.blue),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              handleLink(context, url: 'https://f-droid.org/packages/io.heckel.ntfy/');
+                                            },
+                                        ),
+                                        const TextSpan(text: ')'),
+                                      ],
+                                    ),
+                                  ),
                                   payload: NotificationType.unifiedPush,
                                   softWrap: true,
                                 ),
@@ -741,8 +843,17 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           context,
                           currentNotificationType: inboxNotificationType,
                           updatedNotificationType: notificationType.payload,
-                          onUpdate: (NotificationType updatedNotificationType) {
+                          onUpdate: (NotificationType updatedNotificationType) async {
                             setPreferences(LocalSettings.inboxNotificationType, updatedNotificationType);
+
+                            if (Platform.isAndroid) {
+                              areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+
+                              if (updatedNotificationType == NotificationType.unifiedPush) {
+                                unifiedPushConnectedDistributorApp = await UnifiedPush.getDistributor();
+                                unifiedPushAvailableDistributorApps = (await UnifiedPush.getDistributors()).length;
+                              }
+                            }
                           },
                         );
 
