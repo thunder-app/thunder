@@ -1,0 +1,12 @@
+{
+  "about": "Sobre",
+  "@about": {
+    "description": "About settings category."
+  },
+  "active": "Ativo",
+  "@active": {},
+  "actions": "Ações",
+  "@actions": {},
+  "accessibility": "Acessibilidade",
+  "@accessibility": {}
+}

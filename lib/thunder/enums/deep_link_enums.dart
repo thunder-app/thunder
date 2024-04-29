@@ -1,1 +1,9 @@
-enum LinkType { user, post, comment, instance, unknown, community }
+enum LinkType {
+  user,
+  post,
+  comment,
+  instance,
+  unknown,
+  community,
+  modlog,
+}

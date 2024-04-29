@@ -68,12 +68,12 @@ class SettingProfile extends StatelessWidget {
                           // before adding a profile containing those types.
                           success = false;
                           if (context.mounted) {
-                            showSnackbar(context, AppLocalizations.of(context)!.settingTypeNotSupported(entry.value.runtimeType));
+                            showSnackbar(AppLocalizations.of(context)!.settingTypeNotSupported(entry.value.runtimeType));
                           }
                         }
                       }
                       if (context.mounted && success) {
-                        showSnackbar(context, AppLocalizations.of(context)!.profileAppliedSuccessfully(name));
+                        showSnackbar(AppLocalizations.of(context)!.profileAppliedSuccessfully(name));
                         setState(() => recentSuccess = true);
                         Future.delayed(const Duration(seconds: 5), () async {
                           setState(() => recentSuccess = false);

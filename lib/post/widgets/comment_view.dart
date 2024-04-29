@@ -37,9 +37,7 @@ class CommentSubview extends StatefulWidget {
 
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
-
-  /// The messenger key back to the post page
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
+  final bool viewSource;
 
   const CommentSubview({
     super.key,
@@ -62,7 +60,7 @@ class CommentSubview extends StatefulWidget {
     required this.now,
     required this.moderators,
     required this.crossPosts,
-    this.scaffoldMessengerKey,
+    required this.viewSource,
   });
 
   @override
@@ -97,6 +95,16 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
         context.read<PostBloc>().add(const GetPostCommentsEvent(commentParentId: null, viewAllCommentsRefresh: true));
       }
     });
+
+    if (widget.selectedCommentId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // If we are looking at a comment context, scroll to the first comment.
+        // The delay is purely for aesthetics and is not required for the logic to work.
+        Future.delayed(const Duration(milliseconds: 250), () {
+          widget.itemScrollController.scrollTo(index: 1, duration: const Duration(milliseconds: 250));
+        });
+      });
+    }
   }
 
   @override
@@ -133,13 +141,51 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
         itemCount: getCommentsListLength(),
         itemBuilder: (context, index) {
           if (widget.postViewMedia != null && index == 0) {
-            return PostSubview(
-              selectedCommentId: widget.selectedCommentId,
-              useDisplayNames: state.useDisplayNames,
-              postViewMedia: widget.postViewMedia!,
-              moderators: widget.moderators,
-              crossPosts: widget.crossPosts,
-              scaffoldMessengerKey: widget.scaffoldMessengerKey,
+            return Column(
+              children: [
+                PostSubview(
+                  selectedCommentId: widget.selectedCommentId,
+                  useDisplayNames: state.useDisplayNames,
+                  postViewMedia: widget.postViewMedia!,
+                  moderators: widget.moderators,
+                  crossPosts: widget.crossPosts,
+                  viewSource: widget.viewSource,
+                ),
+                if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
+                  Center(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Padding(padding: EdgeInsets.only(left: 15)),
+                            Expanded(
+                              child: AnimatedOpacity(
+                                opacity: _removeViewFullCommentsButton ? 0 : 1,
+                                duration: const Duration(milliseconds: 500),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(50),
+                                    backgroundColor: theme.colorScheme.primaryContainer,
+                                    textStyle: theme.textTheme.titleMedium?.copyWith(
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    setState(() => _animatingOut = true);
+                                    _fullCommentsAnimation.forward();
+                                  },
+                                  child: Text(AppLocalizations.of(context)!.viewAllComments),
+                                ),
+                              ),
+                            ),
+                            const Padding(padding: EdgeInsets.only(right: 15))
+                          ],
+                        ),
+                        const Padding(padding: EdgeInsets.only(top: 10)),
+                      ],
+                    ),
+                  ),
+              ],
             );
           }
           if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
@@ -156,36 +202,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
               position: _fullCommentsOffsetAnimation,
               child: Column(
                 children: [
-                  if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
-                    Center(
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Padding(padding: EdgeInsets.only(left: 15)),
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size.fromHeight(50),
-                                    backgroundColor: theme.colorScheme.primaryContainer,
-                                    textStyle: theme.textTheme.titleMedium?.copyWith(
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    _animatingOut = true;
-                                    _fullCommentsAnimation.forward();
-                                  },
-                                  child: Text(AppLocalizations.of(context)!.viewAllComments),
-                                ),
-                              ),
-                              const Padding(padding: EdgeInsets.only(right: 15))
-                            ],
-                          ),
-                          const Padding(padding: EdgeInsets.only(top: 10)),
-                        ],
-                      ),
-                    ),
                   if (index != widget.comments.length + 1)
                     CommentCard(
                       now: widget.now,

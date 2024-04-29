@@ -24,8 +24,6 @@
                 "*://burggit.moe/*",
                 "*://discuss.online/*",
                 "*://discuss.tchncs.de/*",
-                "*://feddit.ch/*",
-                "*://feddit.de/*",
                 "*://feddit.dk/*",
                 "*://feddit.it/*",
                 "*://feddit.nl/*",
@@ -39,7 +37,6 @@
                 "*://leminal.space/*",
                 "*://lemm.ee/*",
                 "*://lemmings.world/*",
-                "*://lemmus.org/*",
                 "*://lemmy.blahaj.zone/*",
                 "*://lemmy.ca/*",
                 "*://lemmy.dbzer0.com/*",
@@ -51,11 +48,11 @@
                 "*://lemmy.sdf.org/*",
                 "*://lemmy.today/*",
                 "*://lemmy.world/*",
-                "*://lemmy.wtf/*",
                 "*://lemmy.zip/*",
                 "*://lemmygrad.ml/*",
                 "*://lemmynsfw.com/*",
                 "*://lemy.lol/*",
+                "*://lululemmy.com/*",
                 "*://mander.xyz/*",
                 "*://midwest.social/*",
                 "*://monero.town/*",
@@ -67,7 +64,9 @@
                 "*://sopuli.xyz/*",
                 "*://startrek.website/*",
                 "*://szmer.info/*",
-                "*://ttrpg.network/*"
+                "*://thelemmy.club/*",
+                "*://ttrpg.network/*",
+                "*://yiffit.net/*"
             ]
         }
     ],

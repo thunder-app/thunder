@@ -6,7 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Generates a user-friendly error message from an exception (or any thrown object)
-String getExceptionErrorMessage(Object e, {String? additionalInfo}) {
+String getExceptionErrorMessage(Object? e, {String? additionalInfo}) {
   if (e is LemmyApiException) {
     return getErrorMessage(GlobalContext.context, e.message, additionalInfo: additionalInfo) ?? e.toString();
   }
@@ -30,6 +30,8 @@ String? getErrorMessage(BuildContext context, String lemmyApiErrorCode, {String?
     "couldnt_create_report" => l10n.couldntCreateReport,
     "language_not_allowed" => l10n.languageNotAllowed,
     "couldnt_find_community" => additionalInfo != null ? l10n.unableToFindCommunityName(additionalInfo) : l10n.unableToFindCommunity,
+    "couldnt_find_person" => additionalInfo != null ? l10n.unableToFindUserName(additionalInfo) : l10n.unableToFindUser,
+    "couldnt_find_post" => l10n.couldntFindPost,
     _ => lemmyApiErrorCode,
   };
 }

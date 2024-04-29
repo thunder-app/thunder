@@ -1,22 +1,25 @@
+// Dart imports
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
+// Flutter imports
 import 'package:flutter/material.dart';
+
+// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-import 'package:markdown_editable_textinput/format_markdown.dart';
-import 'package:markdown_editable_textinput/markdown_buttons.dart';
-import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Project imports
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -25,17 +28,19 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
-import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/cross_posts.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
+import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/link_preview_card.dart';
-import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/user/utils/restore_user.dart';
+import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/debounce.dart';
-import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/utils/media/image.dart';
 
 class CreatePostPage extends StatefulWidget {
   final int? communityId;
@@ -60,10 +65,7 @@ class CreatePostPage extends StatefulWidget {
   final PostView? postView;
 
   /// Callback function that is triggered whenever the post is successfully created or updated
-  final Function(PostViewMedia postViewMedia)? onPostSuccess;
-
-  // The scaffold key for the main Thunder page
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
+  final Function(PostViewMedia postViewMedia, bool userChanged)? onPostSuccess;
 
   const CreatePostPage({
     super.key,
@@ -76,7 +78,6 @@ class CreatePostPage extends StatefulWidget {
     this.prePopulated = false,
     this.postView,
     this.onPostSuccess,
-    this.scaffoldMessengerKey,
   });
 
   @override
@@ -142,6 +143,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   final imageBloc = ImageBloc();
 
+  Account? originalUser;
+  bool userChanged = false;
+
   @override
   void initState() {
     super.initState();
@@ -176,12 +180,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          uploadImage(
-            context,
-            imageBloc,
-            postImage: true,
-            imagePath: widget.image?.path,
-          );
+          if (context.mounted) context.read<CreatePostCubit>().uploadImage(widget.image!.path, isPostImage: true);
         });
       }
 
@@ -218,7 +217,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
       sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
-      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
+      showSnackbar(l10n.postSavedAsDraft);
     } else {
       sharedPreferences?.remove(draftId);
     }
@@ -260,7 +259,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     if (context.mounted && draftPost.isNotEmpty) {
       showSnackbar(
-        context,
         AppLocalizations.of(context)!.restoredPostFromDraft,
         trailingIcon: Icons.delete_forever_rounded,
         trailingIconColor: Theme.of(context).colorScheme.errorContainer,
@@ -295,18 +293,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    originalUser ??= context.read<AuthBloc>().state.account;
 
-    return BlocProvider(
-      create: (context) => CreatePostCubit(),
+    return PopScope(
+      onPopInvoked: (_) {
+        if (context.mounted) {
+          restoreUser(context, originalUser);
+        }
+      },
       child: BlocConsumer<CreatePostCubit, CreatePostState>(
         listener: (context, state) {
           if (state.status == CreatePostStatus.success && state.postViewMedia != null) {
-            widget.onPostSuccess?.call(state.postViewMedia!);
+            widget.onPostSuccess?.call(state.postViewMedia!, userChanged);
             Navigator.of(context).pop();
           }
 
           if (state.status == CreatePostStatus.error && state.message != null) {
-            showSnackbar(context, state.message!);
+            showSnackbar(state.message!);
             context.read<CreatePostCubit>().clearMessage();
           }
 
@@ -319,7 +322,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               break;
             case CreatePostStatus.imageUploadFailure:
             case CreatePostStatus.postImageUploadFailure:
-              showSnackbar(context, l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
             default:
               break;
           }
@@ -342,10 +345,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           child: IconButton(
                             onPressed: isSubmitButtonDisabled
                                 ? null
-                                : () async {
+                                : () {
                                     draftPost.saveAsDraft = false;
 
-                                    final int? postId = await context.read<CreatePostCubit>().createOrEditPost(
+                                    context.read<CreatePostCubit>().createOrEditPost(
                                           communityId: communityId!,
                                           name: _titleTextController.text,
                                           body: _bodyTextController.text,
@@ -354,18 +357,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           postIdBeingEdited: widget.postView?.post.id,
                                           languageId: languageId,
                                         );
-
-                                    if (context.mounted && widget.scaffoldMessengerKey?.currentContext != null && widget.postView?.post.id == null && postId != null) {
-                                      showSnackbar(
-                                        context,
-                                        l10n.postCreatedSuccessfully,
-                                        trailingIcon: Icons.remove_red_eye_rounded,
-                                        trailingAction: () {
-                                          navigateToPost(widget.scaffoldMessengerKey!.currentContext!, postId: postId);
-                                        },
-                                        customState: widget.scaffoldMessengerKey?.currentState,
-                                      );
-                                    }
                                   },
                             icon: Icon(
                               widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
@@ -396,9 +387,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               },
                             ),
                             const SizedBox(height: 4.0),
-                            const UserIndicator(),
+                            UserSelector(
+                              profileModalHeading: l10n.selectAccountToPostAs,
+                              communityActorId: communityView?.community.actorId,
+                              onCommunityChanged: (CommunityView? cv) {
+                                if (cv == null) {
+                                  showSnackbar(l10n.unableToFindCommunityOnInstance);
+                                }
+
+                                setState(() {
+                                  communityId = cv?.community.id;
+                                  communityView = cv;
+                                });
+                                _validateSubmission();
+                              },
+                              onUserChanged: () => userChanged = true,
+                            ),
                             const SizedBox(height: 12.0),
                             TypeAheadField<String>(
+                              controller: _titleTextController,
                               suggestionsCallback: (String pattern) async {
                                 if (pattern.isEmpty) {
                                   String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
@@ -406,7 +413,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     return [linkTitle!];
                                   }
                                 }
-                                return const Iterable.empty();
+                                return [];
                               },
                               itemBuilder: (BuildContext context, String itemData) {
                                 return ListTile(
@@ -414,11 +421,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   subtitle: Text(l10n.suggestedTitle),
                                 );
                               },
-                              onSuggestionSelected: (String suggestion) {
+                              onSelected: (String suggestion) {
                                 _titleTextController.text = suggestion;
                               },
-                              textFieldConfiguration: TextFieldConfiguration(
-                                controller: _titleTextController,
+                              builder: (context, controller, focusNode) => TextField(
+                                controller: controller,
+                                focusNode: focusNode,
                                 decoration: InputDecoration(hintText: l10n.postTitle),
                               ),
                               hideOnEmpty: true,
@@ -484,7 +492,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Expanded(
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60),
                                   child: LanguageSelector(
                                     languageId: languageId,
                                     onLanguageSelected: (Language? language) {
@@ -492,10 +501,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     },
                                   ),
                                 ),
-                                Row(
+                                Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
-                                    Text(l10n.postNSFW),
-                                    const SizedBox(width: 10),
+                                    Text(l10n.nsfw),
+                                    const SizedBox(width: 4.0),
                                     Switch(
                                       value: isNSFW,
                                       onChanged: (bool value) => setState(() => isNSFW = value),
@@ -532,7 +542,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       Row(
                         children: [
                           Expanded(
-                            child: MarkdownButtons(
+                            child: MarkdownToolbar(
                               controller: _bodyTextController,
                               focusNode: _bodyFocusNode,
                               actions: const [
@@ -546,6 +556,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 MarkdownType.list,
                                 MarkdownType.separator,
                                 MarkdownType.code,
+                                MarkdownType.spoiler,
                                 MarkdownType.username,
                                 MarkdownType.community,
                               ],
@@ -651,80 +662,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 }
 
-/// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language
-///
-/// Passing in [languageId] will set the initial state of the widget to display that given language.
-/// A callback function [onLanguageSelected] will be triggered whenever a new language is selected from the dropdown.
-class LanguageSelector extends StatefulWidget {
-  const LanguageSelector({
-    super.key,
-    required this.languageId,
-    required this.onLanguageSelected,
-  });
-
-  /// The initial language id to be passed in
-  final int? languageId;
-
-  /// A callback function to trigger whenever a language is selected from the dropdown
-  final Function(Language?) onLanguageSelected;
-
-  @override
-  State<LanguageSelector> createState() => _LanguageSelectorState();
-}
-
-class _LanguageSelectorState extends State<LanguageSelector> {
-  late int? _languageId;
-  late Language? _language;
-
-  @override
-  void initState() {
-    super.initState();
-    _languageId = widget.languageId;
-
-    // Determine the language from the languageId
-    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
-    _language = languages.firstWhereOrNull((Language language) => language.id == _languageId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-
-    return Transform.translate(
-      offset: const Offset(-8, 0),
-      child: InkWell(
-        onTap: () {
-          showLanguageInputDialog(
-            context,
-            title: l10n.language,
-            onLanguageSelected: (language) {
-              if (language.id == -1) {
-                setState(() => _languageId = _language = null);
-                widget.onLanguageSelected(null);
-              } else {
-                setState(() {
-                  _languageId = language.id;
-                  _language = language;
-                });
-                widget.onLanguageSelected(language);
-              }
-            },
-          );
-        },
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
-          child: Text(
-            '${l10n.language}: ${_language?.name ?? l10n.selectLanguage}',
-            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// Creates a widget which displays a preview of a pre-selected community, with the ability to change the selected community
 ///
 /// Passing in either [communityId] or [communityView] will set the initial state of the widget to display that given community.
@@ -751,17 +688,6 @@ class CommunitySelector extends StatefulWidget {
 }
 
 class _CommunitySelectorState extends State<CommunitySelector> {
-  int? _communityId;
-  CommunityView? _communityView;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _communityId = widget.communityId;
-    _communityView = widget.communityView;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -774,52 +700,47 @@ class _CommunitySelectorState extends State<CommunitySelector> {
           showCommunityInputDialog(
             context,
             title: l10n.community,
-            onCommunitySelected: (cv) {
-              setState(() {
-                _communityId = cv.community.id;
-                _communityView = cv;
-              });
-
-              widget.onCommunitySelected(cv);
-            },
+            onCommunitySelected: widget.onCommunitySelected,
           );
         },
         borderRadius: const BorderRadius.all(Radius.circular(50)),
         child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
+          padding: const EdgeInsets.only(left: 8, top: 4, bottom: 4),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CommunityAvatar(community: _communityView?.community, radius: 16),
-              const SizedBox(width: 12),
-              _communityId != null
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${_communityView?.community.title} '),
-                        FutureBuilder(
-                          future: getLemmyCommunity(_communityView?.community.actorId ?? ''),
-                          builder: (context, snapshot) {
-                            return Text(
-                              snapshot.data ?? '',
-                              style: theme.textTheme.bodySmall,
-                            );
-                          },
-                        ),
-                      ],
-                    )
-                  : SizedBox(
-                      height: 36,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          l10n.selectCommunity,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: theme.colorScheme.error,
+              Row(
+                children: [
+                  CommunityAvatar(community: widget.communityView?.community, radius: 16),
+                  const SizedBox(width: 12),
+                  widget.communityId != null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${widget.communityView?.community.title} '),
+                            CommunityFullNameWidget(
+                              context,
+                              widget.communityView?.community.name,
+                              fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                            )
+                          ],
+                        )
+                      : SizedBox(
+                          height: 36,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              l10n.selectCommunity,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: theme.colorScheme.error,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                ],
+              ),
+              const Icon(Icons.chevron_right_rounded),
             ],
           ),
         ),

@@ -13,25 +13,28 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardViewCompact extends StatelessWidget {
   final PostViewMedia postViewMedia;
-  final bool communityMode;
+  final FeedType? feedType;
   final bool isUserLoggedIn;
   final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool? indicateRead;
+  final bool showMedia;
 
   const PostCardViewCompact({
     super.key,
     required this.postViewMedia,
-    required this.communityMode,
+    required this.feedType,
     required this.isUserLoggedIn,
     required this.listingType,
     this.navigateToPost,
     this.indicateRead,
+    this.showMedia = true,
   });
 
   @override
@@ -47,9 +50,7 @@ class PostCardViewCompact extends StatelessWidget {
         isUserLoggedIn &&
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
-    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-    );
+    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && postViewMedia.postView.read ? color?.withOpacity(0.45) : color?.withOpacity(0.75);
 
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
@@ -58,11 +59,11 @@ class PostCardViewCompact extends StatelessWidget {
 
     return Container(
       color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
-      padding: const EdgeInsets.only(bottom: 8.0, top: 6),
+      padding: showMedia ? const EdgeInsets.only(bottom: 8.0, top: 6) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          !showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
+          !showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
               ? ThumbnailPreview(
                   postViewMedia: postViewMedia,
                   navigateToPost: navigateToPost,
@@ -110,7 +111,16 @@ class PostCardViewCompact extends StatelessWidget {
                             color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                           ),
                         ),
+                      if (postViewMedia.postView.post.removed)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.delete_forever_rounded,
+                            size: 16 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          ),
+                        ),
                       if (postViewMedia.postView.post.deleted ||
+                          postViewMedia.postView.post.removed ||
                           postViewMedia.postView.post.featuredCommunity ||
                           postViewMedia.postView.post.featuredLocal ||
                           postViewMedia.postView.saved ||
@@ -134,27 +144,30 @@ class PostCardViewCompact extends StatelessWidget {
                 PostCommunityAndAuthor(
                   compactMode: true,
                   showCommunityIcons: false,
-                  communityMode: communityMode,
+                  feedType: feedType,
                   postView: postViewMedia.postView,
-                  textStyleCommunity: textStyleCommunityAndAuthor,
-                  textStyleAuthor: textStyleCommunityAndAuthor,
+                  communityColorTransformation: communityAndAuthorColorTransformation,
+                  authorColorTransformation: communityAndAuthorColorTransformation,
                   showCommunitySubscription: showCommunitySubscription,
                 ),
                 const SizedBox(height: 6.0),
-                PostCardMetaData(
-                  readColor: readColor,
+                PostCardMetadata(
+                  postCardViewType: ViewMode.compact,
                   score: postViewMedia.postView.counts.score,
+                  upvoteCount: postViewMedia.postView.counts.upvotes,
+                  downvoteCount: postViewMedia.postView.counts.downvotes,
                   voteType: postViewMedia.postView.myVote ?? 0,
-                  comments: postViewMedia.postView.counts.comments,
-                  unreadComments: postViewMedia.postView.unreadComments,
+                  commentCount: postViewMedia.postView.counts.comments,
+                  unreadCommentCount: postViewMedia.postView.unreadComments,
+                  dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
                   hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                  published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
-                  hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                  url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                  hasBeenRead: indicateRead && postViewMedia.postView.read,
                 ),
               ],
             ),
           ),
-          showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
+          showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
               ? ThumbnailPreview(
                   postViewMedia: postViewMedia,
                   navigateToPost: navigateToPost,
@@ -201,7 +214,7 @@ class ThumbnailPreview extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
             child: MediaView(
               scrapeMissingPreviews: state.scrapeMissingPreviews,
-              postView: postViewMedia,
+              postViewMedia: postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
               markPostReadOnMediaView: markPostReadOnMediaView,

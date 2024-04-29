@@ -26,7 +26,7 @@ void buildRelease() {
 
   // Build for Android
   print('\nStarting Android build...');
-  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--release', '--no-tree-shake-icons']);
+  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--release', '--flavor', 'production', '--no-tree-shake-icons']);
   stdout.write(androidResult.stdout);
   stderr.write(androidResult.stderr);
 
@@ -39,7 +39,7 @@ void buildRelease() {
 
   // Build for iOS
   print('\nStarting iOS build...');
-  ProcessResult iosResult = Process.runSync('flutter', ['build', 'ios', '--release', '--no-tree-shake-icons']);
+  ProcessResult iosResult = Process.runSync('flutter', ['build', 'ios', '--release', '--flavor', 'production', '--no-tree-shake-icons']);
   stdout.write(iosResult.stdout);
   stderr.write(iosResult.stderr);
 
@@ -71,7 +71,7 @@ void createAPKFile(String version) {
   releaseDir.createSync();
 
   // Copy the APK file to the "release" directory and rename it
-  File apkFile = File('build/app/outputs/flutter-apk/app-release.apk');
+  File apkFile = File('build/app/outputs/flutter-apk/app-production-release.apk');
   String newApkPath = '${releaseDir.path}/thunder-v$version.apk';
   apkFile.copySync(newApkPath);
 

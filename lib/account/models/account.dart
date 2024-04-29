@@ -1,5 +1,9 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:thunder/core/singletons/database.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:drift/drift.dart';
+
+import 'package:thunder/core/database/database.dart';
+import 'package:thunder/main.dart';
 
 class Account {
   final String id;
@@ -16,74 +20,70 @@ class Account {
     this.userId,
   });
 
-  Map<String, dynamic> toMap() {
-    return {'accountId': id, 'username': username, 'jwt': jwt, 'instance': instance, 'userId': userId};
-  }
+  Account copyWith({String? id}) => Account(
+        id: id ?? this.id,
+        username: username,
+        jwt: jwt,
+        instance: instance,
+        userId: userId,
+      );
 
-  @override
-  String toString() {
-    return 'Account{accountId: $id, username: $username, instance: $instance, userId: $userId}';
-  }
+  static Future<Account?> insertAccount(Account account) async {
+    // If we are given a brand new account to insert with an existing id, something is wrong.
+    assert(account.id.isEmpty);
 
-  static Future<void> insertAccount(Account account) async {
-    Database? database = await DB.instance.database;
-    if (database == null) return;
-
-    await database.insert(
-      'accounts',
-      account.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    try {
+      int id = await database
+          .into(database.accounts)
+          .insert(AccountsCompanion.insert(username: Value(account.username), jwt: Value(account.jwt), instance: Value(account.instance), userId: Value(account.userId)));
+      return account.copyWith(id: id.toString());
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
   }
 
   // A method that retrieves all accounts from the database
   static Future<List<Account>> accounts() async {
     try {
-      Database? database = await DB.instance.database;
-      if (database == null) return [];
-
-      final List<Map<String, dynamic>> maps = await database.query('accounts');
-
-      return List.generate(maps.length, (i) {
-        return Account(
-          id: maps[i]['accountId'],
-          username: maps[i]['username'],
-          jwt: maps[i]['jwt'],
-          instance: maps[i]['instance'],
-          userId: maps[i]['userId'],
-        );
-      });
+      return (await database.accounts.all().get())
+          .map((account) => Account(id: account.id.toString(), username: account.username, jwt: account.jwt, instance: account.instance, userId: account.userId))
+          .toList();
     } catch (e) {
+      debugPrint(e.toString());
       return [];
     }
   }
 
   static Future<Account?> fetchAccount(String accountId) async {
-    Database? database = await DB.instance.database;
+    if (accountId.isEmpty) return null;
 
-    final List<Map<String, dynamic>>? maps = await database?.query('accounts', where: 'accountId = ?', whereArgs: [accountId]);
-    if (maps == null || maps.isEmpty) return null;
-
-    return Account(
-      id: maps.first['accountId'],
-      username: maps.first['username'],
-      jwt: maps.first['jwt'],
-      instance: maps.first['instance'],
-      userId: maps.first['userId'],
-    );
+    try {
+      return await (database.select(database.accounts)..where((t) => t.id.equals(int.parse(accountId)))).getSingleOrNull().then((account) {
+        if (account == null) return null;
+        return Account(id: account.id.toString(), username: account.username, jwt: account.jwt, instance: account.instance, userId: account.userId);
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
   }
 
   static Future<void> updateAccount(Account account) async {
-    Database? database = await DB.instance.database;
-    if (database == null) return;
-
-    await database.update('accounts', account.toMap(), where: 'accountId = ?', whereArgs: [account.id]);
+    try {
+      await database
+          .update(database.accounts)
+          .replace(AccountsCompanion(id: Value(int.parse(account.id)), username: Value(account.username), jwt: Value(account.jwt), instance: Value(account.instance), userId: Value(account.userId)));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   static Future<void> deleteAccount(String id) async {
-    Database? database = await DB.instance.database;
-    if (database == null) return;
-
-    await database.delete('accounts', where: 'accountId = ?', whereArgs: [id]);
+    try {
+      await (database.delete(database.accounts)..where((t) => t.id.equals(int.parse(id)))).go();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }

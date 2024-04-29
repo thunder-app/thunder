@@ -1,13 +1,18 @@
 ## Unreleased
 ### Added
+- Added indicator when community posting is locked to moderators
 - Added additional font scale option for medium
 - Added ability to subscribe/unsubscribe to community from long press action on posts
 - Added option to hide top app bar on scroll
-- Ability to search through settings/preferences contribution from @ggichure.
+- Ability to search through settings/preferences - contribution from @ggichure
+- Setting to use colorized usernames - contribution from @ggichure.
+- Show the number of new comments a read post has received since last visited
+- Added ability to mark read on scroll - contribution from @Fmstrat
 
 ## Changed
 - Small UI adjustments for account switcher
 - Dynamic Maximum Zoom Level Based on Image Resolution - contribution from @Niranjan-Dorage
+- Update docker build scripts for API 34 and Flutter 3.16.9 - contribution from @Fmstrat
 
 ### Fixed
 - Fixed issue where Thunder was being locked to 60Hz on 120Hz displays on Android

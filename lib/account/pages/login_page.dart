@@ -145,11 +145,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 isLoading = false;
               });
 
-              showSnackbar(context, AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
+              showSnackbar(AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
             } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
               context.pop();
 
-              showSnackbar(context, AppLocalizations.of(context)!.loginSucceeded);
+              showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
             }
           },
         ),
@@ -236,32 +236,34 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   ),
                   const SizedBox(height: 12.0),
                   TypeAheadField<String>(
-                    textFieldConfiguration: TextFieldConfiguration(
+                    controller: _instanceTextEditingController,
+                    builder: (context, controller, focusNode) => TextField(
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.url,
                       autocorrect: false,
-                      controller: _instanceTextEditingController,
+                      controller: controller,
+                      focusNode: focusNode,
                       inputFormatters: [LowerCaseTextFormatter()],
                       decoration: InputDecoration(
                         isDense: true,
                         border: const OutlineInputBorder(),
-                        labelText: AppLocalizations.of(context)!.instance,
+                        labelText: AppLocalizations.of(context)!.instance(1),
                         errorText: instanceValidated ? null : instanceError,
                         errorMaxLines: 2,
                       ),
                       enableSuggestions: false,
-                      onSubmitted: (_instanceTextEditingController.text.isNotEmpty && widget.anonymous) ? (_) => _addAnonymousInstance() : null,
+                      onSubmitted: (controller.text.isNotEmpty && widget.anonymous) ? (_) => _addAnonymousInstance() : null,
                     ),
                     suggestionsCallback: (String pattern) {
                       if (pattern.isNotEmpty != true) {
-                        return const Iterable.empty();
+                        return [];
                       }
-                      return instances.where((instance) => instance.contains(pattern));
+                      return instances.where((instance) => instance.contains(pattern)).toList();
                     },
                     itemBuilder: (BuildContext context, String itemData) {
                       return ListTile(title: Text(itemData));
                     },
-                    onSuggestionSelected: (String suggestion) {
+                    onSelected: (String suggestion) {
                       _instanceTextEditingController.text = suggestion;
                       setState(() {
                         instanceValidated = true;

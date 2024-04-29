@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 import 'comment_card_actions.dart';
@@ -14,6 +16,7 @@ class CommentContent extends StatefulWidget {
   final bool isOwnComment;
   final bool isHidden;
   final bool excludeSemantics;
+  final bool disableActions;
 
   final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
@@ -23,6 +26,9 @@ class CommentContent extends StatefulWidget {
 
   final int? moddingCommentId;
   final List<CommunityModeratorView>? moderators;
+  final bool viewSource;
+  final void Function() onViewSourceToggled;
+  final bool selectable;
 
   const CommentContent({
     super.key,
@@ -39,6 +45,10 @@ class CommentContent extends StatefulWidget {
     this.moddingCommentId,
     this.moderators,
     this.excludeSemantics = false,
+    this.disableActions = false,
+    required this.viewSource,
+    required this.onViewSourceToggled,
+    this.selectable = false,
   });
 
   @override
@@ -64,6 +74,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
   Widget build(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
+    final ThemeData theme = Theme.of(context);
 
     return ExcludeSemantics(
       excluding: widget.excludeSemantics,
@@ -98,10 +109,20 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn) ? 0.0 : 8.0),
-                        child: CommonMarkdownBody(body: widget.comment.comment.content, isComment: true),
+                        padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
+                        child: widget.viewSource
+                            ? ScalableText(
+                                cleanCommentContent(widget.comment.comment),
+                                style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                                fontScale: state.contentFontSizeScale,
+                              )
+                            : CommonMarkdownBody(
+                                body: cleanCommentContent(widget.comment.comment),
+                                isComment: true,
+                                isSelectableText: widget.selectable,
+                              ),
                       ),
-                      if (state.showCommentButtonActions && widget.isUserLoggedIn)
+                      if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
                           child: CommentCardActions(
@@ -112,6 +133,8 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                             onDeleteAction: widget.onDeleteAction,
                             onReplyEditAction: widget.onReplyEditAction,
                             onReportAction: widget.onReportAction,
+                            onViewSourceToggled: widget.onViewSourceToggled,
+                            viewSource: widget.viewSource,
                           ),
                         ),
                     ],

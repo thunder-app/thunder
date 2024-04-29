@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jovial_svg/jovial_svg.dart';
@@ -6,14 +7,17 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/markdown/extended_markdown.dart';
+
+enum CustomMarkdownType { superscript, subscript }
 
 class CommonMarkdownBody extends StatelessWidget {
   /// The markdown content body
@@ -31,8 +35,6 @@ class CommonMarkdownBody extends StatelessWidget {
 
   final double? imageMaxWidth;
 
-  final bool allowHorizontalTranslation;
-
   const CommonMarkdownBody({
     super.key,
     required this.body,
@@ -40,7 +42,6 @@ class CommonMarkdownBody extends StatelessWidget {
     this.isSelectableText = false,
     this.isComment,
     this.imageMaxWidth,
-    this.allowHorizontalTranslation = true,
   });
 
   @override
@@ -107,14 +108,19 @@ class CommonMarkdownBody extends StatelessWidget {
 
     // Custom extension set
     md.ExtensionSet customExtensionSet = md.ExtensionSet.gitHubFlavored;
-    customExtensionSet = md.ExtensionSet(List.from(customExtensionSet.blockSyntaxes)..add(SpoilerBlockSyntax()), List.from(customExtensionSet.inlineSyntaxes));
+    customExtensionSet = md.ExtensionSet(
+      List.from(customExtensionSet.blockSyntaxes)..add(SpoilerBlockSyntax()),
+      List.from(customExtensionSet.inlineSyntaxes)..addAll([SuperscriptInlineSyntax(), SubscriptInlineSyntax()]),
+    );
 
     return ExtendedMarkdownBody(
       data: body,
       extensionSet: customExtensionSet,
-      inlineSyntaxes: [LemmyLinkSyntax(), SpoilerInlineSyntax()],
+      inlineSyntaxes: [LemmyLinkSyntax(), SubscriptInlineSyntax(), SuperscriptInlineSyntax()],
       builders: {
-        'spoiler': SpoilerElementBuilder(allowHorizontalTranslation: allowHorizontalTranslation),
+        'spoiler': SpoilerElementBuilder(),
+        'sub': SubscriptElementBuilder(),
+        'sup': SuperscriptElementBuilder(),
       },
       imageBuilder: (uri, title, alt) {
         if (hideContent) return Container();
@@ -182,6 +188,55 @@ class LemmyLinkSyntax extends md.InlineSyntax {
   }
 }
 
+/// A Markdown Extension to handle subscript tags on Lemmy. This extends the [md.InlineSyntax]
+/// to allow for inline parsing of text for a given subscript tag.
+///
+/// It parses the following syntax for a subscript:
+///
+/// ```
+/// ~subscript~ and text~subscript~
+/// ```
+///
+/// It does not capture this syntax properly (parity with Lemmy UI):
+/// ```
+/// ~subscript with space~ and text~subscript with space~
+/// ```
+class SubscriptInlineSyntax extends md.InlineSyntax {
+  SubscriptInlineSyntax() : super(r'([^~]*)~([^~\s]+)~');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    parser.addNode(md.Element.text("text", match[1]!));
+    parser.addNode(md.Element.text("sub", match[2]!));
+    return true;
+  }
+}
+
+/// A Markdown Extension to handle superscript tags on Lemmy. This extends the [md.InlineSyntax]
+/// to allow for inline parsing of text for a given superscript tag.
+///
+/// It parses the following syntax for a superscript:
+/// ```
+/// ^superscript^ and text^superscript^
+/// ```
+///
+/// It does not capture this syntax properly (parity with Lemmy UI):
+/// ```
+/// ^superscript with space^ and text^superscript with space^
+/// ```
+class SuperscriptInlineSyntax extends md.InlineSyntax {
+  SuperscriptInlineSyntax() : super(r'([^\\^]*)\^([^\s^]+)\^');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    parser.addNode(md.Element.text("text", match[1]!));
+    parser.addNode(md.Element.text("sup", match[2]!));
+    return true;
+  }
+}
+
+/// Note: This is currently disabled as this is not an officially supported Lemmy Markdown syntax
+///
 /// A Markdown Extension to handle spoiler tags on Lemmy. This extends the [md.InlineSyntax]
 /// to allow for inline parsing of text for a given spoiler tag.
 ///
@@ -225,21 +280,22 @@ class SpoilerInlineSyntax extends md.InlineSyntax {
 
 /// A Markdown Extension to handle spoiler tags on Lemmy. This extends the [md.BlockSyntax]
 /// to allow for multi-line parsing of text for a given spoiler tag.
-///
-/// It parses the following syntax for a spoiler:
-///
-/// ```
-/// ::: spoiler spoiler_title
-/// spoiler_body
-/// :::
-/// ```
 class SpoilerBlockSyntax extends md.BlockSyntax {
   /// The pattern to match the end of a spoiler
-  static final RegExp _spoilerBlockEnd = RegExp(r'^:::');
+  /// This pattern checks for the following conditions:
+  /// - The line starts with 0-3 whitespace characters
+  /// - The line is followed by 3 or more colons
+  /// - The line ends without any other characters except optional whitespace
+  RegExp endPattern = RegExp(r'^\s{0,3}:{3,}\s*$');
 
   /// The pattern to match the beginning of a spoiler
+  /// This pattern checks for the following conditions:
+  /// - The line starts with 0-3 whitespace characters
+  /// - The line is followed by 3 or more colons
+  /// - The line contains optional whitespace between the colons and "spoiler"
+  /// - The line contains some non-whitespace character after the spoiler keyword
   @override
-  RegExp get pattern => RegExp(r'^::: spoiler\s+(.*)$');
+  RegExp get pattern => RegExp(r'^\s{0,3}:{3,}\s*spoiler\s+(\S.*)$');
 
   @override
   bool canParse(md.BlockParser parser) {
@@ -256,14 +312,16 @@ class SpoilerBlockSyntax extends md.BlockSyntax {
 
     final List<String> body = [];
 
-    // Accumulate lines of the body until the closing :::
+    // Accumulate lines of the body until the closing pattern
     while (!parser.isDone) {
-      if (_spoilerBlockEnd.hasMatch(parser.current.content)) {
+      // Stop parsing if the current line is one of the following:
+      if (endPattern.hasMatch(parser.current.content)) {
         parser.advance();
         break;
+      } else {
+        body.add(parser.current.content);
+        parser.advance();
       }
-      body.add(parser.current.content);
-      parser.advance();
     }
 
     // Create a custom Node which will be used to render the spoiler in [SpoilerElementBuilder]
@@ -272,9 +330,9 @@ class SpoilerBlockSyntax extends md.BlockSyntax {
       ///
       /// If the title and body are passed as separate elements into the [spoiler] tag, it causes
       /// the resulting [SpoilerWidget] to always show the second element. To work around this, the title and
-      /// body are placed together into a single node, separated by a ::: to distinguish the sections.
+      /// body are placed together into a single node, separated by a :::/-/::: to distinguish the sections.
       md.Element('spoiler', [
-        md.Text('${title ?? '_block'}:::${body.join('\n')}'),
+        md.Text('${title ?? '_block'}:::/-/:::${body.join('\n')}'),
       ]),
     ]);
 
@@ -286,14 +344,12 @@ class SpoilerBlockSyntax extends md.BlockSyntax {
 ///
 /// This breaks down the combined title/body and creates the resulting [SpoilerWidget]
 class SpoilerElementBuilder extends MarkdownElementBuilder {
-  final bool allowHorizontalTranslation;
-
-  SpoilerElementBuilder({required this.allowHorizontalTranslation});
+  SpoilerElementBuilder();
 
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     String rawText = element.textContent;
-    List<String> parts = rawText.split(':::');
+    List<String> parts = rawText.split(':::/-/:::');
 
     if (parts.length < 2) {
       // An invalid spoiler format
@@ -302,7 +358,7 @@ class SpoilerElementBuilder extends MarkdownElementBuilder {
 
     String? title = parts[0].trim();
     String? body = parts[1].trim();
-    return SpoilerWidget(title: title, body: body, allowHorizontalTranslation: allowHorizontalTranslation);
+    return SpoilerWidget(title: title, body: body);
   }
 }
 
@@ -311,9 +367,7 @@ class SpoilerWidget extends StatefulWidget {
   final String? title;
   final String? body;
 
-  final bool allowHorizontalTranslation;
-
-  const SpoilerWidget({super.key, this.title, this.body, required this.allowHorizontalTranslation});
+  const SpoilerWidget({super.key, this.title, this.body});
 
   @override
   State<SpoilerWidget> createState() => _SpoilerWidgetState();
@@ -329,23 +383,35 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          transform: Matrix4.translationValues(widget.allowHorizontalTranslation ? -4.0 : 0, 0, 0.0), // Move the Inkwell slightly to the left to line up text
-          child: InkWell(
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    final Color backgroundColor = darkTheme ? theme.dividerColor.darken(5) : theme.dividerColor.lighten(20);
+
+    return Ink(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
             borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
             onTap: () {
               expandableController.toggle();
               setState(() {}); // Update the state to trigger the collapse/expand
             },
             child: Padding(
-              padding: EdgeInsets.only(top: 4.0, bottom: 4.0, left: widget.allowHorizontalTranslation ? 4.0 : 0),
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Icon(
+                    expandableController.expanded ? Icons.expand_more_rounded : Icons.chevron_right_rounded,
+                    semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 5),
                   Expanded(
                     child: ScalableText(
                       widget.title ?? l10n.spoiler,
@@ -353,22 +419,78 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Icon(
-                    expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                    semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
-                    size: 20,
-                  ),
                 ],
               ),
             ),
           ),
-        ),
-        Expandable(
-          controller: expandableController,
-          collapsed: Container(),
-          expanded: CommonMarkdownBody(body: widget.body ?? ''),
-        ),
-      ],
+          Expandable(
+            controller: expandableController,
+            collapsed: Container(),
+            expanded: Padding(
+              padding: const EdgeInsets.only(left: 4, right: 4, bottom: 4),
+              child: CommonMarkdownBody(body: widget.body ?? ''),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Creates a [MarkdownElementBuilder] that renders the custom subscript tag defined in [SubscriptInlineSyntax].
+class SubscriptElementBuilder extends MarkdownElementBuilder {
+  @override
+  Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
+    final String textContent = element.textContent;
+
+    return SuperscriptSubscriptWidget(text: textContent, type: CustomMarkdownType.subscript);
+  }
+}
+
+/// Creates a [MarkdownElementBuilder] that renders the custom superscript tag defined in [SuperscriptInlineSyntax]..
+class SuperscriptElementBuilder extends MarkdownElementBuilder {
+  @override
+  Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
+    final String textContent = element.textContent;
+
+    return SuperscriptSubscriptWidget(text: textContent, type: CustomMarkdownType.superscript);
+  }
+}
+
+/// Creates a widget that displays the given [text] in the given [type] (superscript or subscript).
+///
+/// Note: There seems to be an issue with rendering both superscript and subscript at the if they are in the same line.
+/// For example: `This is a text^subscript^ and this is a text~superscript~`.
+/// In this case, the subscript is not rendered correctly.
+class SuperscriptSubscriptWidget extends StatelessWidget {
+  /// The text for the superscript or subscript
+  final String text;
+
+  /// Whether the text is superscript or subscript
+  final CustomMarkdownType type;
+
+  const SuperscriptSubscriptWidget({super.key, required this.text, required this.type});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final state = context.read<ThunderBloc>().state;
+
+    return RichText(
+      text: TextSpan(
+        children: [
+          WidgetSpan(
+            child: Transform.translate(
+              offset: Offset(0.0, type == CustomMarkdownType.subscript ? 3.0 : -5.0),
+              child: ScalableText(
+                text,
+                fontScale: state.contentFontSizeScale,
+                style: theme.textTheme.bodyMedium?.copyWith(fontSize: 11),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

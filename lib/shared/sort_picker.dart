@@ -5,6 +5,7 @@ import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:version/version.dart';
 
 List<ListPickerItem<SortType>> topSortTypeItems = [
   ListPickerItem(
@@ -64,12 +65,12 @@ List<ListPickerItem<SortType>> topSortTypeItems = [
   ),
 ];
 
-List<ListPickerItem<SortType>> allSortTypeItems = [...SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always), ...topSortTypeItems];
+List<ListPickerItem<SortType>> allSortTypeItems = [...SortPicker.getDefaultSortTypeItems(minimumVersion: LemmyClient.maxVersion), ...topSortTypeItems];
 
 class SortPicker extends BottomSheetListPicker<SortType> {
-  final IncludeVersionSpecificFeature includeVersionSpecificFeature;
+  final Version? minimumVersion;
 
-  static List<ListPickerItem<SortType>> getDefaultSortTypeItems({IncludeVersionSpecificFeature includeVersionSpecificFeature = IncludeVersionSpecificFeature.ifSupported}) => [
+  static List<ListPickerItem<SortType>> getDefaultSortTypeItems({required Version? minimumVersion}) => [
         ListPickerItem(
           payload: SortType.hot,
           icon: Icons.local_fire_department_rounded,
@@ -80,15 +81,13 @@ class SortPicker extends BottomSheetListPicker<SortType> {
           icon: Icons.rocket_launch_rounded,
           label: AppLocalizations.of(GlobalContext.context)!.active,
         ),
-        if (includeVersionSpecificFeature == IncludeVersionSpecificFeature.always ||
-            (includeVersionSpecificFeature == IncludeVersionSpecificFeature.ifSupported && LemmyClient.instance.supportsFeature(LemmyFeature.sortTypeScaled)))
+        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.sortTypeScaled))
           ListPickerItem(
             payload: SortType.scaled,
             icon: Icons.line_weight_rounded,
             label: AppLocalizations.of(GlobalContext.context)!.scaled,
           ),
-        if (includeVersionSpecificFeature == IncludeVersionSpecificFeature.always ||
-            (includeVersionSpecificFeature == IncludeVersionSpecificFeature.ifSupported && LemmyClient.instance.supportsFeature(LemmyFeature.sortTypeControversial)))
+        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.sortTypeControversial))
           ListPickerItem(
             payload: SortType.controversial,
             icon: Icons.warning_rounded,
@@ -116,14 +115,18 @@ class SortPicker extends BottomSheetListPicker<SortType> {
         ),
       ];
 
-  SortPicker(
-      {super.key,
-      required super.onSelect,
-      required super.title,
-      List<ListPickerItem<SortType>>? items,
-      super.previouslySelected,
-      this.includeVersionSpecificFeature = IncludeVersionSpecificFeature.ifSupported})
-      : super(items: items ?? getDefaultSortTypeItems(includeVersionSpecificFeature: includeVersionSpecificFeature));
+  /// Create a picker which allows selecting a valid sort type.
+  /// Specify a [minimumVersion] to determine which sort types will be displayed.
+  /// Pass `null` to NOT show any version-specific types (e.g., Scaled).
+  /// Pass [LemmyClient.maxVersion] to show ALL types.
+  SortPicker({
+    super.key,
+    required super.onSelect,
+    required super.title,
+    List<ListPickerItem<SortType>>? items,
+    super.previouslySelected,
+    required this.minimumVersion,
+  }) : super(items: items ?? getDefaultSortTypeItems(minimumVersion: minimumVersion));
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -135,17 +138,15 @@ class _SortPickerState extends State<SortPicker> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: AnimatedSwitcher(
+      child: AnimatedSize(
         duration: const Duration(milliseconds: 100),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        child: topSelected ? topSortPicker() : defaultSortPicker(widget.includeVersionSpecificFeature),
+        curve: Curves.easeInOut,
+        child: topSelected ? topSortPicker() : defaultSortPicker(minimumVersion: widget.minimumVersion),
       ),
     );
   }
 
-  Widget defaultSortPicker(IncludeVersionSpecificFeature includeVersionSpecificFeature) {
+  Widget defaultSortPicker({required Version? minimumVersion}) {
     final theme = Theme.of(context);
 
     return Column(
@@ -167,7 +168,7 @@ class _SortPickerState extends State<SortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: widget.includeVersionSpecificFeature), theme),
+            ..._generateList(SortPicker.getDefaultSortTypeItems(minimumVersion: widget.minimumVersion), theme),
             PickerItem(
               label: AppLocalizations.of(GlobalContext.context)!.top,
               icon: Icons.military_tech,
@@ -255,7 +256,7 @@ class _SortPickerState extends State<SortPicker> {
             icon: item.icon,
             onSelected: () {
               Navigator.of(context).pop();
-              widget.onSelect(item);
+              widget.onSelect?.call(item);
             },
             isSelected: widget.previouslySelected == item.payload))
         .toList();

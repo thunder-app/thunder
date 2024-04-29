@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
@@ -31,7 +32,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc() : super(SearchState()) {
     on<StartSearchEvent>(
       _startSearchEvent,
-      transformer: throttleDroppable(throttleDuration),
+      // Use restartable here so that a long search can essentially be "canceled" by a new one.
+      // Note that we don't also need throttling because the search page text box has a debounce.
+      transformer: restartable(),
     );
     on<ChangeCommunitySubsciptionStatusEvent>(
       _changeCommunitySubsciptionStatusEvent,
@@ -72,27 +75,72 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       emit(state.copyWith(status: SearchStatus.loading));
 
-      if (event.query.isEmpty) {
+      if (event.query.isEmpty && event.force != true) {
         return emit(state.copyWith(status: SearchStatus.initial));
       }
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      SearchResponse searchResponse = await lemmy.run(Search(
-        auth: account?.jwt,
-        q: event.query,
-        page: 1,
-        limit: 15,
-        sort: event.sortType,
-        listingType: event.listingType,
-        type: event.searchType,
-        communityId: event.communityId,
-        creatorId: event.creatorId,
-      ));
+      SearchResponse? searchResponse;
+      List<GetInstanceInfoResponse> instances = [];
+      if (event.searchType == MetaSearchType.instances) {
+        // Retrieve all the federated instances from this instance.
+        GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(GetFederatedInstances(auth: account?.jwt));
+
+        // Filter the instances down
+        for (final InstanceWithFederationState instance in getFederatedInstancesResponse.federatedInstances?.linked.where(
+              (instance) =>
+                  // Only include Lemmy instances that have successfully federated in the past week
+                  instance.software == "lemmy" &&
+                  instance.federationState?.lastSuccessfulPublishedTime?.isAfter(DateTime.now().subtract(const Duration(days: 1))) == true &&
+                  // Also only include instances that match the user's query
+                  instance.domain.contains(event.query),
+            ) ??
+            []) {
+          instances.add(GetInstanceInfoResponse(success: true, domain: instance.domain, id: instance.id));
+        }
+
+        // Put the initial, full list in the UI now
+        emit(state.copyWith(status: SearchStatus.success, instances: instances));
+
+        // Now go through and fill the rest of the information about the instances. Periodically update the UI with this info.
+        for (final MapEntry<int, GetInstanceInfoResponse> entry in instances.asMap().entries) {
+          // Use a lower timeout so we're not waiting forever.
+          final GetInstanceInfoResponse newInstanceInfo = await getInstanceInfo(
+            entry.value.domain,
+            id: entry.value.id,
+            timeout: const Duration(seconds: 1),
+          );
+
+          if (newInstanceInfo.success) {
+            instances[entry.key] = newInstanceInfo;
+          } else {
+            instances[entry.key] = GetInstanceInfoResponse(success: false, domain: entry.value.domain, id: entry.value.id);
+          }
+
+          // To avoid rebuilding too often, we'll invoke a rebuild for every 10 instances we process or when we reach the end.
+          if (entry.key > 0 && entry.key % 10 == 0 || entry.key == instances.length - 1) {
+            emit(state.copyWith(status: SearchStatus.loading));
+            emit(state.copyWith(status: SearchStatus.success, instances: instances));
+          }
+        }
+      } else {
+        searchResponse = await lemmy.run(Search(
+          auth: account?.jwt,
+          q: event.query,
+          page: 1,
+          limit: 15,
+          sort: event.sortType,
+          listingType: event.listingType,
+          type: event.searchType.searchType,
+          communityId: event.communityId,
+          creatorId: event.creatorId,
+        ));
+      }
 
       // If there are no search results, see if this is an exact search
-      if (event.searchType == SearchType.communities && searchResponse.communities.isEmpty) {
+      if (event.searchType == MetaSearchType.communities && searchResponse?.communities.isEmpty == true) {
         // Note: We could jump straight to GetCommunity here.
         // However, getLemmyCommunity has a nice instance check that can short-circuit things
         // if the instance is not valid to start.
@@ -106,7 +154,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               auth: account?.jwt,
             ));
 
-            searchResponse = searchResponse.copyWith(communities: [getCommunityResponse.communityView]);
+            searchResponse = searchResponse?.copyWith(communities: [getCommunityResponse.communityView]);
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
           }
@@ -114,7 +162,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       }
 
       // Check for exact user search
-      if (event.searchType == SearchType.users && searchResponse.users.isEmpty) {
+      if (event.searchType == MetaSearchType.users && searchResponse?.users.isEmpty == true) {
         String? userName = await getLemmyUser(event.query);
         if (userName != null) {
           try {
@@ -125,7 +173,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               auth: account?.jwt,
             ));
 
-            searchResponse = searchResponse.copyWith(users: [getCommunityResponse.personView]);
+            searchResponse = searchResponse?.copyWith(users: [getCommunityResponse.personView]);
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
           }
@@ -134,10 +182,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: prioritizeFavorites(searchResponse.communities.toList(), event.favoriteCommunities),
-        users: searchResponse.users,
-        comments: searchResponse.comments,
-        posts: await parsePostViews(searchResponse.posts),
+        communities: prioritizeFavorites(searchResponse?.communities.toList(), event.favoriteCommunities),
+        users: searchResponse?.users,
+        comments: searchResponse?.comments,
+        posts: await parsePostViews(searchResponse?.posts ?? []),
+        instances: instances,
         page: 2,
       ));
     } catch (e) {
@@ -157,32 +206,39 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             users: state.users,
             comments: state.comments,
             posts: state.posts,
+            instances: state.instances,
           ));
 
           Account? account = await fetchActiveProfileAccount();
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          SearchResponse searchResponse = await lemmy.run(Search(
-            auth: account?.jwt,
-            q: event.query,
-            page: state.page,
-            limit: 15,
-            sort: event.sortType,
-            listingType: event.listingType,
-            type: event.searchType,
-            communityId: event.communityId,
-            creatorId: event.creatorId,
-          ));
+          SearchResponse? searchResponse;
+          if (event.searchType == MetaSearchType.instances) {
+            // Instance search is not paged, so this is a no-op.
+            //
+          } else {
+            searchResponse = await lemmy.run(Search(
+              auth: account?.jwt,
+              q: event.query,
+              page: state.page,
+              limit: 15,
+              sort: event.sortType,
+              listingType: event.listingType,
+              type: event.searchType.searchType,
+              communityId: event.communityId,
+              creatorId: event.creatorId,
+            ));
+          }
 
           if (searchIsEmpty(event.searchType, searchResponse: searchResponse)) {
             return emit(state.copyWith(status: SearchStatus.done));
           }
 
           // Append the search results
-          state.communities = [...state.communities ?? [], ...searchResponse.communities];
-          state.users = [...state.users ?? [], ...searchResponse.users];
-          state.comments = [...state.comments ?? [], ...searchResponse.comments];
-          state.posts = [...state.posts ?? [], ...await parsePostViews(searchResponse.posts)];
+          state.communities = [...state.communities ?? [], ...searchResponse?.communities ?? []];
+          state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
+          state.comments = [...state.comments ?? [], ...searchResponse?.comments ?? []];
+          state.posts = [...state.posts ?? [], ...await parsePostViews(searchResponse?.posts ?? [])];
 
           return emit(state.copyWith(
             status: SearchStatus.success,
@@ -190,6 +246,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             users: state.users,
             comments: state.comments,
             posts: state.posts,
+            instances: state.instances,
             page: state.page + 1,
           ));
         } catch (e) {

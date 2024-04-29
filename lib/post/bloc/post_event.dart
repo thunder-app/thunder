@@ -56,27 +56,18 @@ class SaveCommentEvent extends PostEvent {
   const SaveCommentEvent({required this.commentId, required this.save});
 }
 
-class CreateCommentEvent extends PostEvent {
-  final String content;
-  final int? parentCommentId;
-  final int? selectedCommentId;
-  final String? selectedCommentPath;
-
-  const CreateCommentEvent({required this.content, this.parentCommentId, this.selectedCommentId, this.selectedCommentPath});
-}
-
-class EditCommentEvent extends PostEvent {
-  final String content;
-  final int commentId;
-
-  const EditCommentEvent({required this.content, required this.commentId});
-}
-
 class DeleteCommentEvent extends PostEvent {
   final int commentId;
   final bool deleted;
 
   const DeleteCommentEvent({required this.deleted, required this.commentId});
+}
+
+class UpdateCommentEvent extends PostEvent {
+  final CommentView commentView;
+  final bool isEdit;
+
+  const UpdateCommentEvent({required this.commentView, this.isEdit = false});
 }
 
 enum NavigateCommentDirection { up, down }

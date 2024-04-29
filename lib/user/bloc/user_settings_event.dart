@@ -19,8 +19,9 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
   final bool? showReadPosts;
   final bool? showScores;
   final bool? showBotAccounts;
+  final List<int>? discussionLanguages;
 
-  const UpdateUserSettingsEvent({this.showReadPosts, this.showScores, this.showBotAccounts});
+  const UpdateUserSettingsEvent({this.showReadPosts, this.showScores, this.showBotAccounts, this.discussionLanguages});
 }
 
 class GetUserBlocksEvent extends UserSettingsEvent {

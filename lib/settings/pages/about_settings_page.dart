@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 
 class AboutSettingsPage extends StatelessWidget {
-  const AboutSettingsPage({super.key});
+  final LocalSettings? settingToHighlight;
+
+  const AboutSettingsPage({super.key, this.settingToHighlight});
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(centerTitle: false),
@@ -22,14 +27,8 @@ class AboutSettingsPage extends StatelessWidget {
             Text('Thunder', style: theme.textTheme.headlineMedium),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: FutureBuilder(
-                future: getCurrentVersion(removeInternalBuildNumber: true),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Center(child: Text('Version ${snapshot.data ?? 'N/A'}'));
-                  }
-                  return Container();
-                },
+              child: Center(
+                child: Text(l10n.versionNumber(getCurrentVersion(removeInternalBuildNumber: true))),
               ),
             ),
             ListView(
