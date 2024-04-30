@@ -50,7 +50,7 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
         commentResponse = await lemmy.run(EditComment(
           commentId: commentIdBeingEdited,
           content: content,
-          languageId: languageId ?? 0,
+          languageId: languageId,
           auth: account!.jwt!,
         ));
       } else {
@@ -58,7 +58,7 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
           postId: postId!,
           content: content,
           parentId: parentCommentId,
-          languageId: languageId ?? 0,
+          languageId: languageId,
           auth: account!.jwt!,
         ));
       }
