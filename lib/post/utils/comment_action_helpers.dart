@@ -40,9 +40,9 @@ enum CommentCardAction {
   reply,
   edit,
   textActions,
+  selectText,
   copyText,
   viewSource,
-  selectText,
   report,
   userActions,
   visitProfile,
@@ -126,20 +126,20 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     getTrailingIcon: () => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.selectText,
+    icon: Icons.select_all_rounded,
+    label: l10n.selectText,
+  ),
+  ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.copyText,
     icon: Icons.copy_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.copyText,
+    label: AppLocalizations.of(GlobalContext.context)!.copyComment,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.viewSource,
     icon: Icons.edit_document,
     label: l10n.viewCommentSource,
     getOverrideLabel: (context, commentView, viewSource) => viewSource ? l10n.viewOriginal : l10n.viewCommentSource,
-  ),
-  ExtendedCommentCardActions(
-    commentCardAction: CommentCardAction.selectText,
-    icon: Icons.select_all_rounded,
-    label: l10n.selectText,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.report,
@@ -282,9 +282,9 @@ void showCommentActionBottomModalSheet(
   // Generate list of text actions
   final List<ExtendedCommentCardActions> textActions = commentCardDefaultActionItems
       .where((extendedAction) => [
+            CommentCardAction.selectText,
             CommentCardAction.copyText,
             CommentCardAction.viewSource,
-            CommentCardAction.selectText,
           ].contains(extendedAction.commentCardAction))
       .toList();
 
@@ -510,6 +510,12 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
         action = () => setState(() => page = CommentActionBottomSheetPage.text);
         pop = false;
         break;
+      case CommentCardAction.selectText:
+        action = () => showSelectableTextModal(
+              context,
+              text: widget.commentView.comment.content,
+            );
+        break;
       case CommentCardAction.copyText:
         action = () => Clipboard.setData(ClipboardData(text: cleanCommentContent(widget.commentView.comment))).then((_) {
               showSnackbar(AppLocalizations.of(widget.outerContext)!.copiedToClipboard);
@@ -518,12 +524,7 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
       case CommentCardAction.viewSource:
         action = widget.onViewSourceToggled;
         break;
-      case CommentCardAction.selectText:
-        action = () => showSelectableTextModal(
-              context,
-              text: widget.commentView.comment.content,
-            );
-        break;
+
       case CommentCardAction.report:
         action = () => widget.onReportAction(widget.commentView.comment.id);
         break;

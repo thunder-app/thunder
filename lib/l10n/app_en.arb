@@ -397,6 +397,10 @@
   "@copiedToClipboard": {},
   "copy": "Copy",
   "@copy": {},
+  "copyComment": "Copy Comment",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
   "copySelected": "Copy selected",
   "@copySelected": {
     "description": "Action for copying selected text"
@@ -1579,7 +1583,7 @@
   },
   "selectSearchType": "Select Search Type",
   "@selectSearchType": {},
-  "selectText": "Select text",
+  "selectText": "Select Text",
   "@selectText": {
     "description": "Post and comment action for selecting text"
   },
@@ -2185,7 +2189,7 @@
   },
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
-  "viewCommentSource": "View comment source",
+  "viewCommentSource": "View Comment Source",
   "@viewCommentSource": {
     "description": "Menu item for viewing a comment's source"
   },
