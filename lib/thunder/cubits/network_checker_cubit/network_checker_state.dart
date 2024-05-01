@@ -1,10 +1,14 @@
 part of 'network_checker_cubit.dart';
 
-sealed class NetworkCheckerState extends Equatable {
-  const NetworkCheckerState();
-
+class NetworkCheckerState extends Equatable {
+  const NetworkCheckerState({
+    this.internetConnectionType,
+    this.status = NetworkCheckerStatus.initial,
+  });
+  final InternetConnectionType? internetConnectionType;
+  final NetworkCheckerStatus status;
   @override
-  List<Object> get props => [];
+  List<dynamic> get props => [internetConnectionType, status];
 }
 
-final class NetworkCheckerInitial extends NetworkCheckerState {}
+enum NetworkCheckerStatus { initial, loading, success, error }

@@ -94,7 +94,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
       case LocalSettings.videoDefaultPlaybackSpeed:
         await prefs.setString(LocalSettings.videoDefaultPlaybackSpeed.name, value);
         setState(() => videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(value ?? VideoAutoPlay.never));
-        break;
+        break; 
       default:
     }
   }
@@ -155,9 +155,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     description: l10n.videoAutoPlay,
                     value: ListPickerItem(label: videoAutoPlay.name, icon: Icons.video_settings_outlined, payload: videoAutoPlay),
                     options: [
-                      ListPickerItem(label: VideoAutoPlay.never.name, payload: VideoAutoPlay.never),
-                      ListPickerItem(label: VideoAutoPlay.always.name, payload: VideoAutoPlay.always),
-                      ListPickerItem(label: VideoAutoPlay.onwifi.name, payload: VideoAutoPlay.onwifi),
+                      ListPickerItem(label: VideoAutoPlay.never.label, payload: VideoAutoPlay.never),
+                      ListPickerItem(label: VideoAutoPlay.always.label, payload: VideoAutoPlay.always),
+                      ListPickerItem(label: VideoAutoPlay.onwifi.label, payload: VideoAutoPlay.onwifi),
                     ],
                     icon: Icons.play_circle,
                     onChanged: (value) async => setPreferences(LocalSettings.videoAutoPlay, value.payload.name),
@@ -165,7 +165,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                   ),
                   ListOption(
                     description: l10n.videoDefaultPlaybackSpeed,
-                    value: ListPickerItem(label: videoDefaultPlaybackSpeed.label, icon: Icons.speed, payload: videoDefaultPlaybackSpeed),
+                    value: ListPickerItem(label: videoDefaultPlaybackSpeed.name, icon: Icons.speed, payload: videoDefaultPlaybackSpeed),
                     options: [
                       ListPickerItem(label: VideoPlayBackSpeed.pointTow5x.label, payload: VideoPlayBackSpeed.pointTow5x),
                       ListPickerItem(label: VideoPlayBackSpeed.point5x.label, payload: VideoPlayBackSpeed.point5x),

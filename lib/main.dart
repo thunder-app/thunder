@@ -173,6 +173,9 @@ class ThunderApp extends StatelessWidget {
         BlocProvider(
           create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
         ),
+        BlocProvider(
+          create: (context) => NetworkCheckerCubit(),
+        )
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
