@@ -104,6 +104,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
+      bool useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
+
       // NSFW Settings
       bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       bool hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
@@ -261,6 +263,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         // Default Listing/Sort Settings
         defaultListingType: defaultListingType,
         defaultSortType: defaultSortType,
+        useProfilePictureForDrawer: useProfilePictureForDrawer,
 
         // NSFW Settings
         hideNsfwPosts: hideNsfwPosts,
