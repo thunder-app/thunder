@@ -399,7 +399,7 @@ class _ThunderState extends State<Thunder> {
           BlocListener<NotificationsCubit, NotificationsState>(
             listener: (context, state) {
               if (state.status == NotificationsStatus.reply) {
-                navigateToNotificationReplyPage(context, replyId: state.replyId);
+                navigateToNotificationReplyPage(context, replyId: state.replyId, accountId: state.accountId);
               }
             },
           ),
