@@ -591,6 +591,14 @@
   "@endSearch": {},
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
+  "errorMarkingReplyRead": "There was an error marking the reply as read.",
+  "@errorMarkingReplyRead": {
+    "description": "Error message for marking a reply read"
+  },
+  "errorMarkingReplyUnread": "There was an error marking the reply as unread.",
+  "@errorMarkingReplyUnread": {
+    "description": "Error message for marking a reply unread"
+  },
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
@@ -929,6 +937,10 @@
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
+  "markAsRead": "Mark as read",
+  "@markAsRead": {
+    "description": "Label for the action to mark a message as read"
+  },
   "markPostAsReadOnMediaView": "Mark Read After Viewing Media",
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
@@ -1085,6 +1097,10 @@
   },
   "noPostsFound": "No posts found.",
   "@noPostsFound": {},
+  "noReplies": "No replies",
+  "@noReplies": {
+    "description": "Label for when there are no replies in the list"
+  },
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
   "noSubscriptions": "No Subscriptions",

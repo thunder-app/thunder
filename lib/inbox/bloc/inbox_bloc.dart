@@ -7,6 +7,8 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/global_context.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'inbox_event.dart';
 part 'inbox_state.dart';
@@ -32,7 +34,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   void _init() {
     on<GetInboxEvent>(
       _getInboxEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: restartable(),
     );
     on<MarkReplyAsReadEvent>(
       _markReplyAsReadEvent,
@@ -72,7 +74,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
           if (event.reset) {
-            emit(state.copyWith(status: InboxStatus.loading));
+            emit(state.copyWith(status: InboxStatus.loading, errorMessage: ''));
             // Fetch all the things
             PrivateMessagesResponse privateMessagesResponse = await lemmy.run(
               GetPrivateMessages(
@@ -116,7 +118,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 status: InboxStatus.success,
                 privateMessages: cleanDeletedMessages(privateMessagesResponse.privateMessages),
                 mentions: cleanDeletedMentions(getPersonMentionsResponse.mentions),
-                replies: getRepliesResponse.replies,
+                replies: getRepliesResponse.replies.toList(), // Copy this list so that it is modifyable
                 showUnreadOnly: !event.showAll,
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
@@ -134,7 +136,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
           // Prevent duplicate requests if we're done fetching
           if (state.hasReachedInboxReplyEnd && state.hasReachedInboxMentionEnd && state.hasReachedInboxPrivateMessageEnd) return;
-          emit(state.copyWith(status: InboxStatus.refreshing));
+          emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
 
           // Fetch all the things
           PrivateMessagesResponse privateMessagesResponse = await lemmy.run(
@@ -213,7 +215,19 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
   Future<void> _markReplyAsReadEvent(MarkReplyAsReadEvent event, emit) async {
     try {
-      emit(state.copyWith(status: InboxStatus.refreshing));
+      emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
+
+      bool matchMarkedComment(CommentReplyView commentView) => commentView.commentReply.id == event.commentReplyId;
+
+      // Optimistically remove the reply from the list
+      // or change the status (depending on whether we're showing all)
+      final CommentReplyView commentReplyView = state.replies.firstWhere(matchMarkedComment);
+      int index = state.replies.indexOf(commentReplyView);
+      if (event.showAll) {
+        state.replies[index] = commentReplyView.copyWith(commentReply: commentReplyView.commentReply.copyWith(read: event.read));
+      } else if (event.read) {
+        state.replies.remove(commentReplyView);
+      }
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -228,15 +242,13 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         read: event.read,
       ));
 
-      // Remove the post from the current reply list, or just mark it as read
-      List<CommentReplyView> replies = List.from(state.replies);
-      bool matchMarkedComment(CommentReplyView commentView) => commentView.commentReply.id == response.commentReplyView.commentReply.id;
-      if (event.showAll) {
-        final CommentReplyView markedComment = replies.firstWhere(matchMarkedComment);
-        final int index = replies.indexOf(markedComment);
-        replies[index] = markedComment.copyWith(comment: response.commentReplyView.comment);
-      } else {
-        replies.removeWhere(matchMarkedComment);
+      if (response.commentReplyView.commentReply.read != event.read) {
+        return emit(
+          state.copyWith(
+            status: InboxStatus.failure,
+            errorMessage: event.read ? AppLocalizations.of(GlobalContext.context)!.errorMarkingReplyRead : AppLocalizations.of(GlobalContext.context)!.errorMarkingReplyUnread,
+          ),
+        );
       }
 
       GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(
@@ -249,7 +261,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       return emit(state.copyWith(
         status: InboxStatus.success,
-        replies: replies,
+        replies: state.replies,
         totalUnreadCount: totalUnreadCount,
         repliesUnreadCount: getUnreadCountResponse.replies,
         mentionsUnreadCount: getUnreadCountResponse.mentions,
@@ -268,6 +280,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         privateMessages: state.privateMessages,
         mentions: state.mentions,
         replies: state.replies,
+        errorMessage: '',
       ));
 
       Account? account = await fetchActiveProfileAccount();
@@ -291,7 +304,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
   Future<void> _createCommentEvent(CreateInboxCommentReplyEvent event, Emitter<InboxState> emit) async {
     try {
-      emit(state.copyWith(status: InboxStatus.refreshing));
+      emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -318,6 +331,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     try {
       emit(state.copyWith(
         status: InboxStatus.refreshing,
+        errorMessage: '',
       ));
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
