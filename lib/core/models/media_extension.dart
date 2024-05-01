@@ -8,9 +8,11 @@ abstract class MediaExtension {
   static Size getScaledMediaSize({width, height, offset = 24.0, tabletMode = false}) {
     double mediaRatio = width / height;
 
-    double screenWidth = (PlatformDispatcher.instance.views.first.physicalSize / PlatformDispatcher.instance.views.first.devicePixelRatio).width;
-    double usableScreenWidth = tabletMode ? screenWidth / 2 - 20 : screenWidth;
-    double widthScale = (usableScreenWidth - offset) / width;
+    FlutterView device = PlatformDispatcher.instance.views.first;
+
+    double screenWidth = (device.physicalSize.width / device.devicePixelRatio) - device.viewPadding.left - device.viewPadding.right - offset;
+    double usableScreenWidth = tabletMode ? screenWidth / 2 - (offset + 8.0) : screenWidth;
+    double widthScale = usableScreenWidth / width;
     double mediaMaxWidth = widthScale * width;
     double mediaMaxHeight = mediaMaxWidth / mediaRatio;
 

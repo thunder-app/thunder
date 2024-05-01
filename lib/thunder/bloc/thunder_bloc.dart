@@ -8,6 +8,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/enums/action_color.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
@@ -104,6 +105,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
+      bool useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
+
       // NSFW Settings
       bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       bool hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
@@ -194,6 +197,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
       bool useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
 
+      // Color Settings
+      ActionColor upvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.upvoteColor.name) ?? ActionColor.orange);
+      ActionColor downvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.downvoteColor.name) ?? ActionColor.blue);
+      ActionColor saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
+      ActionColor markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
+      ActionColor replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
+
       // Font Settings
       FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
       FontScale contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
@@ -261,6 +271,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         // Default Listing/Sort Settings
         defaultListingType: defaultListingType,
         defaultSortType: defaultSortType,
+        useProfilePictureForDrawer: useProfilePictureForDrawer,
 
         // NSFW Settings
         hideNsfwPosts: hideNsfwPosts,
@@ -345,6 +356,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         themeType: themeType,
         selectedTheme: selectedTheme,
         useMaterialYouTheme: useMaterialYouTheme,
+
+        // Color Settings
+        upvoteColor: upvoteColor,
+        downvoteColor: downvoteColor,
+        saveColor: saveColor,
+        markReadColor: markReadColor,
+        replyColor: replyColor,
 
         // Font Settings
         titleFontSizeScale: titleFontSizeScale,

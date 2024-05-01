@@ -17,9 +17,6 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
-const Color upVoteColor = Colors.orange;
-const Color downVoteColor = Colors.blue;
-
 /// Contains metadata related to a given post. This is generally displayed as part of the post card.
 ///
 /// This information is customizable, and can be changed by the user in the settings.
@@ -131,8 +128,8 @@ class ScorePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (voteType) {
-      1 => upVoteColor,
-      -1 => downVoteColor,
+      1 => context.read<ThunderBloc>().state.upvoteColor.color,
+      -1 => context.read<ThunderBloc>().state.downvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -179,7 +176,7 @@ class UpvotePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isUpvoted) {
-      true => upVoteColor,
+      true => context.read<ThunderBloc>().state.upvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -218,7 +215,7 @@ class DownvotePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isDownvoted) {
-      true => downVoteColor,
+      true => context.read<ThunderBloc>().state.downvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 

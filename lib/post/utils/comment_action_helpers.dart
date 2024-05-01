@@ -20,6 +20,7 @@ import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/text/selectable_text_modal.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -57,7 +58,7 @@ class ExtendedCommentCardActions {
     required this.icon,
     this.getTrailingIcon,
     required this.label,
-    this.color,
+    this.getColor,
     this.getForegroundColor,
     this.getOverrideIcon,
     this.getOverrideLabel,
@@ -70,8 +71,8 @@ class ExtendedCommentCardActions {
   final IconData icon;
   final IconData Function()? getTrailingIcon;
   final String label;
-  final Color? color;
-  final Color? Function(CommentView commentView)? getForegroundColor;
+  final Color Function(BuildContext context)? getColor;
+  final Color? Function(BuildContext context, CommentView commentView)? getForegroundColor;
   final IconData? Function(CommentView commentView)? getOverrideIcon;
   final String Function(BuildContext context, CommentView commentView, bool viewSource)? getOverrideLabel;
   final String Function(BuildContext context, CommentView commentView)? getSubtitleLabel;
@@ -165,16 +166,16 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     commentCardAction: CommentCardAction.upvote,
     label: AppLocalizations.of(GlobalContext.context)!.upvote,
     icon: Icons.arrow_upward_rounded,
-    color: Colors.orange,
-    getForegroundColor: (commentView) => commentView.myVote == 1 ? Colors.orange : null,
+    getColor: (context) => context.read<ThunderBloc>().state.upvoteColor.color,
+    getForegroundColor: (context, commentView) => commentView.myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : null,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.downvote,
     label: AppLocalizations.of(GlobalContext.context)!.downvote,
     icon: Icons.arrow_downward_rounded,
-    color: Colors.blue,
-    getForegroundColor: (commentView) => commentView.myVote == -1 ? Colors.blue : null,
+    getColor: (context) => context.read<ThunderBloc>().state.downvoteColor.color,
+    getForegroundColor: (context, commentView) => commentView.myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : null,
     shouldShow: (context, commentView) => context.read<AuthBloc>().state.downvotesEnabled,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
@@ -182,8 +183,8 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     commentCardAction: CommentCardAction.save,
     label: AppLocalizations.of(GlobalContext.context)!.save,
     icon: Icons.star_border_rounded,
-    color: Colors.purple,
-    getForegroundColor: (commentView) => commentView.saved ? Colors.purple : null,
+    getColor: (context) => context.read<ThunderBloc>().state.saveColor.color,
+    getForegroundColor: (context, commentView) => commentView.saved ? context.read<ThunderBloc>().state.saveColor.color : null,
     getOverrideIcon: (commentView) => commentView.saved ? Icons.star_rounded : null,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
@@ -441,8 +442,8 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                         return PickerItemData(
                           label: a.label,
                           icon: a.getOverrideIcon?.call(widget.commentView) ?? a.icon,
-                          backgroundColor: a.color,
-                          foregroundColor: a.getForegroundColor?.call(widget.commentView),
+                          backgroundColor: a.getColor?.call(context),
+                          foregroundColor: a.getForegroundColor?.call(context, widget.commentView),
                           onSelected: (a.shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(a.commentCardAction) : null,
                         );
                       },

@@ -14,6 +14,7 @@ class ThunderState extends Equatable {
     // Default Listing/Sort Settings
     this.defaultListingType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
+    this.useProfilePictureForDrawer = false,
 
     // NSFW Settings
     this.hideNsfwPosts = false,
@@ -120,6 +121,13 @@ class ThunderState extends Equatable {
     this.selectedTheme = CustomThemeType.deepBlue,
     this.useMaterialYouTheme = false,
 
+    // Color Settings
+    this.upvoteColor = const ActionColor.fromString(colorRaw: ActionColor.orange),
+    this.downvoteColor = const ActionColor.fromString(colorRaw: ActionColor.blue),
+    this.saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple),
+    this.markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal),
+    this.replyColor = const ActionColor.fromString(colorRaw: ActionColor.green),
+
     // Font Scale
     this.titleFontSizeScale = FontScale.base,
     this.contentFontSizeScale = FontScale.base,
@@ -168,6 +176,7 @@ class ThunderState extends Equatable {
   final ListingType defaultListingType;
   final SortType defaultSortType;
   SortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType) ? defaultSortType : DEFAULT_SORT_TYPE;
+  final bool useProfilePictureForDrawer;
 
   // NSFW Settings
   final bool hideNsfwPosts;
@@ -256,6 +265,13 @@ class ThunderState extends Equatable {
   final CustomThemeType selectedTheme;
   final bool useMaterialYouTheme;
 
+  // Color Settings
+  final ActionColor upvoteColor;
+  final ActionColor downvoteColor;
+  final ActionColor saveColor;
+  final ActionColor markReadColor;
+  final ActionColor replyColor;
+
   // Font Scale
   final FontScale titleFontSizeScale;
   final FontScale contentFontSizeScale;
@@ -330,6 +346,7 @@ class ThunderState extends Equatable {
     // Default Listing/Sort Settings
     ListingType? defaultListingType,
     SortType? defaultSortType,
+    bool? useProfilePictureForDrawer,
 
     // NSFW Settings
     bool? hideNsfwPosts,
@@ -417,6 +434,13 @@ class ThunderState extends Equatable {
     CustomThemeType? selectedTheme,
     bool? useMaterialYouTheme,
 
+    // Color Settings
+    ActionColor? upvoteColor,
+    ActionColor? downvoteColor,
+    ActionColor? saveColor,
+    ActionColor? markReadColor,
+    ActionColor? replyColor,
+
     // Font Scale
     FontScale? titleFontSizeScale,
     FontScale? contentFontSizeScale,
@@ -484,6 +508,7 @@ class ThunderState extends Equatable {
       /// Default Listing/Sort Settings
       defaultListingType: defaultListingType ?? this.defaultListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
+      useProfilePictureForDrawer: useProfilePictureForDrawer ?? this.useProfilePictureForDrawer,
 
       // NSFW Settings
       hideNsfwPosts: hideNsfwPosts ?? this.hideNsfwPosts,
@@ -573,6 +598,13 @@ class ThunderState extends Equatable {
       selectedTheme: selectedTheme ?? this.selectedTheme,
       useMaterialYouTheme: useMaterialYouTheme ?? this.useMaterialYouTheme,
 
+      // Color Settings
+      upvoteColor: upvoteColor ?? this.upvoteColor,
+      downvoteColor: downvoteColor ?? this.downvoteColor,
+      saveColor: saveColor ?? this.saveColor,
+      markReadColor: markReadColor ?? this.markReadColor,
+      replyColor: replyColor ?? this.replyColor,
+
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
       contentFontSizeScale: contentFontSizeScale ?? this.contentFontSizeScale,
@@ -647,6 +679,7 @@ class ThunderState extends Equatable {
         /// Default Listing/Sort Settings
         defaultListingType,
         defaultSortType,
+        useProfilePictureForDrawer,
 
         // NSFW Settings
         hideNsfwPosts,
@@ -733,6 +766,13 @@ class ThunderState extends Equatable {
         themeType,
         selectedTheme,
         useMaterialYouTheme,
+
+        // Color Settings
+        upvoteColor,
+        downvoteColor,
+        saveColor,
+        markReadColor,
+        replyColor,
 
         // Font Scale
         titleFontSizeScale,

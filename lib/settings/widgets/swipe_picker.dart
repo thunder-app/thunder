@@ -43,7 +43,7 @@ class SwipePicker<T> extends StatelessWidget {
                   width: 100,
                   height: 65,
                   child: Material(
-                    color: items[0].value.getColor(),
+                    color: items[0].value.getColor(context),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(12),
                       bottomLeft: Radius.circular(12),
@@ -79,7 +79,7 @@ class SwipePicker<T> extends StatelessWidget {
                   width: 100,
                   height: 65,
                   child: Material(
-                    color: items[1].value.getColor(),
+                    color: items[1].value.getColor(context),
                     child: InkWell(
                       onTap: () {
                         showModalBottomSheet(
@@ -114,7 +114,7 @@ class SwipePicker<T> extends StatelessWidget {
                   width: 100,
                   height: 65,
                   child: Material(
-                    color: items[1].value.getColor(),
+                    color: items[1].value.getColor(context),
                     child: InkWell(
                       onTap: () {
                         showModalBottomSheet(
@@ -142,7 +142,7 @@ class SwipePicker<T> extends StatelessWidget {
                   width: 100,
                   height: 65,
                   child: Material(
-                    color: items[0].value.getColor(),
+                    color: items[0].value.getColor(context),
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(12),
                       bottomRight: Radius.circular(12),

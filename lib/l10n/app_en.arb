@@ -13,6 +13,14 @@
   },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
+  "actionColors": "Action Colors",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "actionColorsRedirect": "Looking to customize colors?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
   "actions": "Actions",
   "@actions": {},
   "active": "Active",
@@ -121,6 +129,10 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "blue": "Blue",
+  "@blue": {
+    "description": "The color blue"
+  },
   "bold": "Bold",
   "@bold": {
     "description": "Bold name thickness/weight"
@@ -242,6 +254,10 @@
   "colorizeUserName": "Colorize User Name",
   "@colorizeUserName": {
     "description": "Setting for colorizing username"
+  },
+  "colors": "Colors",
+  "@colors": {
+    "description": "Heading for colors"
   },
   "combineCommentScores": "Combine Comment Scores",
   "@combineCommentScores": {
@@ -545,6 +561,10 @@
   "@downvote": {
     "description": "Action for downvoting a post/comment"
   },
+  "downvoteColor": "Downvote Color",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
+  },
   "downvoted": "Downvoted",
   "@downvoted": {
     "description": "Short description for downvoting a post/comment"
@@ -595,6 +615,14 @@
   "@endSearch": {},
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
+  "errorMarkingReplyRead": "There was an error marking the reply as read.",
+  "@errorMarkingReplyRead": {
+    "description": "Error message for marking a reply read"
+  },
+  "errorMarkingReplyUnread": "There was an error marking the reply as unread.",
+  "@errorMarkingReplyUnread": {
+    "description": "Error message for marking a reply unread"
+  },
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
@@ -723,6 +751,10 @@
   "@gestures": {},
   "gettingStarted": "Getting Started",
   "@gettingStarted": {},
+  "green": "Green",
+  "@green": {
+    "description": "The color green"
+  },
   "hidCommunity": "Hid Community",
   "@hidCommunity": {
     "description": "Short decription for moderator action to hide a community"
@@ -779,6 +811,10 @@
   },
   "inReplyTo": "In reply to {post} in {community}",
   "@inReplyTo": {},
+  "in_": "in",
+  "@in_": {
+    "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+  },
   "inbox": "Inbox",
   "@inbox": {},
   "includeCommunity": "Include Community",
@@ -929,6 +965,10 @@
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
+  "markAsRead": "Mark as read",
+  "@markAsRead": {
+    "description": "Label for the action to mark a message as read"
+  },
   "markPostAsReadOnMediaView": "Mark Read After Viewing Media",
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
@@ -936,6 +976,10 @@
   "markPostAsReadOnScroll": "Mark Read On Scroll",
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "markReadColor": "Mark Read/Unread Color",
+  "@markReadColor": {
+    "description": "Name of mark read/unread color setting"
   },
   "me": "Me",
   "@me": {
@@ -1085,6 +1129,10 @@
   },
   "noPostsFound": "No posts found.",
   "@noPostsFound": {},
+  "noReplies": "No replies",
+  "@noReplies": {
+    "description": "Label for when there are no replies in the list"
+  },
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
   "noSubscriptions": "No Subscriptions",
@@ -1166,6 +1214,10 @@
   "openSettings": "Open Settings",
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
+  },
+  "orange": "Orange",
+  "@orange": {
+    "description": "The color orange"
   },
   "originalPoster": "Original Poster",
   "@originalPoster": {
@@ -1301,6 +1353,10 @@
   "@purgedPost": {
     "description": "Short decription for moderator action to purge a post"
   },
+  "purple": "Purple",
+  "@purple": {
+    "description": "The color purple"
+  },
   "pushNotification": "Push Notifications",
   "@pushNotification": {
     "description": "Setting for push notifications"
@@ -1324,6 +1380,10 @@
   "reason": "Reason",
   "@reason": {
     "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "red": "Red",
+  "@red": {
+    "description": "The color red"
   },
   "reduceAnimations": "Reduce Animations",
   "@reduceAnimations": {
@@ -1385,6 +1445,10 @@
   },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},
+  "replyColor": "Reply Color",
+  "@replyColor": {
+    "description": "Name of reply color setting"
+  },
   "replyNotSupported": "Replying from this view is currently not supported yet",
   "@replyNotSupported": {},
   "replyToPost": "Reply to Post",
@@ -1447,6 +1511,10 @@
   },
   "save": "Save",
   "@save": {},
+  "saveColor": "Save Color",
+  "@saveColor": {
+    "description": "Name of save color setting"
+  },
   "saveSettings": "Save Settings",
   "@saveSettings": {
     "description": "Action to save the application settings."
@@ -1777,6 +1845,10 @@
   "@tappableAuthorCommunity": {
     "description": "Toggle to make authors and communities tappable."
   },
+  "teal": "Teal",
+  "@teal": {
+    "description": "The color teal"
+  },
   "text": "Text",
   "@text": {},
   "textActions": "Text Actions",
@@ -1993,6 +2065,10 @@
   "@upvote": {
     "description": "Action for upvoting a post/comment"
   },
+  "upvoteColor": "Upvote Color",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
+  },
   "upvoted": "Upvoted",
   "@upvoted": {
     "description": "Short description for upvoted post/comment"
@@ -2034,6 +2110,14 @@
   "useMaterialYouThemeDescription": "Overrides the selected custom theme",
   "@useMaterialYouThemeDescription": {
     "description": "Subtitle of the setting for using Material You theme"
+  },
+  "useProfilePictureForDrawer": "Use Profile Picture for Drawer",
+  "@useProfilePictureForDrawer": {
+    "description": "Setting name for using the profile picture for the drawer"
+  },
+  "useProfilePictureForDrawerSubtitle": "When logged in, shows the user's profile picture in place of the drawer icon",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Setting subtitle for using the profile picture for the drawer"
   },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
