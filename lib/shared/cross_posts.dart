@@ -8,12 +8,11 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/post/utils/post.dart';
-import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 
-import '../community/widgets/post_card_metadata.dart';
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 
 /// Widget which displays a post's cross-posts
 class CrossPosts extends StatefulWidget {
@@ -81,7 +80,6 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
-                            /*const Divider(),*/
                             InkWell(
                               borderRadius: BorderRadius.circular(5),
                               onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index]])).first),
