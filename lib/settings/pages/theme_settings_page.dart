@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/enums/action_color.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -15,6 +16,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/settings/widgets/action_color_setting_widget.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -51,6 +53,12 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       return ListPickerItem(colors: [scheme.primaryColor, scheme.secondaryColor, scheme.tertiaryColor], label: scheme.label, payload: scheme);
     })
   ];
+
+  ActionColor upvoteColor = const ActionColor.fromString(colorRaw: ActionColor.orange);
+  ActionColor downvoteColor = const ActionColor.fromString(colorRaw: ActionColor.blue);
+  ActionColor saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple);
+  ActionColor markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal);
+  ActionColor replyColor = const ActionColor.fromString(colorRaw: ActionColor.green);
 
   // Font Settings
   FontScale titleFontSizeScale = FontScale.base;
@@ -109,6 +117,28 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         await prefs.setBool(LocalSettings.useMaterialYouTheme.name, value);
         setState(() => useMaterialYouTheme = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
+
+      // Color settings
+      case LocalSettings.upvoteColor:
+        await prefs.setString(LocalSettings.upvoteColor.name, value);
+        setState(() => upvoteColor = ActionColor.fromString(colorRaw: value));
+        break;
+      case LocalSettings.downvoteColor:
+        await prefs.setString(LocalSettings.downvoteColor.name, value);
+        setState(() => downvoteColor = ActionColor.fromString(colorRaw: value));
+        break;
+      case LocalSettings.saveColor:
+        await prefs.setString(LocalSettings.saveColor.name, value);
+        setState(() => saveColor = ActionColor.fromString(colorRaw: value));
+        break;
+      case LocalSettings.markReadColor:
+        await prefs.setString(LocalSettings.markReadColor.name, value);
+        setState(() => markReadColor = ActionColor.fromString(colorRaw: value));
+        break;
+      case LocalSettings.replyColor:
+        await prefs.setString(LocalSettings.replyColor.name, value);
+        setState(() => replyColor = ActionColor.fromString(colorRaw: value));
         break;
 
       // Font Settings
@@ -190,6 +220,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
       selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
       useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
+
+      // Color settings
+      upvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.upvoteColor.name) ?? ActionColor.orange);
+      downvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.downvoteColor.name) ?? ActionColor.blue);
+      saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
+      markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
+      replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
 
       // Font Settings
       titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
@@ -363,6 +400,16 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ],
                       ],
                     ),
+                  ),
+                  ActionColorSettingWidget(
+                    settingToHighlight: widget.settingToHighlight,
+                    settingToHighlightKey: settingToHighlightKey,
+                    setPreferences: setPreferences,
+                    upvoteColor: upvoteColor,
+                    downvoteColor: downvoteColor,
+                    saveColor: saveColor,
+                    markReadColor: markReadColor,
+                    replyColor: replyColor,
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),

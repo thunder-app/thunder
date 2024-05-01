@@ -13,6 +13,14 @@
   },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
+  "actionColors": "Action Colors",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "actionColorsRedirect": "Looking to customize colors?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
   "actions": "Actions",
   "@actions": {},
   "active": "Active",
@@ -121,6 +129,10 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "blue": "Blue",
+  "@blue": {
+    "description": "The color blue"
+  },
   "bold": "Bold",
   "@bold": {
     "description": "Bold name thickness/weight"
@@ -242,6 +254,10 @@
   "colorizeUserName": "Colorize User Name",
   "@colorizeUserName": {
     "description": "Setting for colorizing username"
+  },
+  "colors": "Colors",
+  "@colors": {
+    "description": "Heading for colors"
   },
   "combineCommentScores": "Combine Comment Scores",
   "@combineCommentScores": {
@@ -541,6 +557,10 @@
   "@downvote": {
     "description": "Action for downvoting a post/comment"
   },
+  "downvoteColor": "Downvote Color",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
+  },
   "downvoted": "Downvoted",
   "@downvoted": {
     "description": "Short description for downvoting a post/comment"
@@ -727,6 +747,10 @@
   "@gestures": {},
   "gettingStarted": "Getting Started",
   "@gettingStarted": {},
+  "green": "Green",
+  "@green": {
+    "description": "The color green"
+  },
   "hidCommunity": "Hid Community",
   "@hidCommunity": {
     "description": "Short decription for moderator action to hide a community"
@@ -948,6 +972,10 @@
   "markPostAsReadOnScroll": "Mark Read On Scroll",
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "markReadColor": "Mark Read/Unread Color",
+  "@markReadColor": {
+    "description": "Name of mark read/unread color setting"
   },
   "me": "Me",
   "@me": {
@@ -1183,6 +1211,10 @@
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
   },
+  "orange": "Orange",
+  "@orange": {
+    "description": "The color orange"
+  },
   "originalPoster": "Original Poster",
   "@originalPoster": {
     "description": "Label for the original poster."
@@ -1317,6 +1349,10 @@
   "@purgedPost": {
     "description": "Short decription for moderator action to purge a post"
   },
+  "purple": "Purple",
+  "@purple": {
+    "description": "The color purple"
+  },
   "pushNotification": "Push Notifications",
   "@pushNotification": {
     "description": "Setting for push notifications"
@@ -1340,6 +1376,10 @@
   "reason": "Reason",
   "@reason": {
     "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "red": "Red",
+  "@red": {
+    "description": "The color red"
   },
   "reduceAnimations": "Reduce Animations",
   "@reduceAnimations": {
@@ -1401,6 +1441,10 @@
   },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},
+  "replyColor": "Reply Color",
+  "@replyColor": {
+    "description": "Name of reply color setting"
+  },
   "replyNotSupported": "Replying from this view is currently not supported yet",
   "@replyNotSupported": {},
   "replyToPost": "Reply to Post",
@@ -1463,6 +1507,10 @@
   },
   "save": "Save",
   "@save": {},
+  "saveColor": "Save Color",
+  "@saveColor": {
+    "description": "Name of save color setting"
+  },
   "saveSettings": "Save Settings",
   "@saveSettings": {
     "description": "Action to save the application settings."
@@ -1785,6 +1833,10 @@
   "@tappableAuthorCommunity": {
     "description": "Toggle to make authors and communities tappable."
   },
+  "teal": "Teal",
+  "@teal": {
+    "description": "The color teal"
+  },
   "text": "Text",
   "@text": {},
   "textActions": "Text Actions",
@@ -2000,6 +2052,10 @@
   "upvote": "Upvote",
   "@upvote": {
     "description": "Action for upvoting a post/comment"
+  },
+  "upvoteColor": "Upvote Color",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
   },
   "upvoted": "Upvoted",
   "@upvoted": {
