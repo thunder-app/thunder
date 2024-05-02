@@ -34,9 +34,6 @@ class CommentCardActions extends StatelessWidget {
     required this.viewSource,
   });
 
-  final MaterialColor upVoteColor = Colors.orange;
-  final MaterialColor downVoteColor = Colors.blue;
-
   @override
   Widget build(BuildContext context) {
     final int voteType = commentView.myVote ?? 0;
@@ -94,7 +91,7 @@ class CommentCardActions extends StatelessWidget {
                     semanticLabel: voteType == 1 ? 'Upvoted' : 'Upvote',
                     size: iconSize,
                   ),
-                  color: voteType == 1 ? upVoteColor : null,
+                  color: voteType == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
@@ -111,7 +108,7 @@ class CommentCardActions extends StatelessWidget {
                     semanticLabel: voteType == -1 ? 'Downvoted' : 'Downvote',
                     size: iconSize,
                   ),
-                  color: voteType == -1 ? downVoteColor : null,
+                  color: voteType == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();

@@ -13,6 +13,14 @@
   },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
+  "actionColors": "Action Colors",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "actionColorsRedirect": "Looking to customize colors?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
   "actions": "Actions",
   "@actions": {},
   "active": "Active",
@@ -79,6 +87,10 @@
   "@appearance": {
     "description": "Title of Appearance in Settings -> Appearance"
   },
+  "applePushNotificationService": "Apple Push Notification Service",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
   "applied": "Applied",
   "@applied": {},
   "apply": "Apply",
@@ -117,6 +129,10 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "blue": "Blue",
+  "@blue": {
+    "description": "The color blue"
+  },
   "bold": "Bold",
   "@bold": {
     "description": "Bold name thickness/weight"
@@ -239,6 +255,10 @@
   "@colorizeUserName": {
     "description": "Setting for colorizing username"
   },
+  "colors": "Colors",
+  "@colors": {
+    "description": "Heading for colors"
+  },
   "combineCommentScores": "Combine Comment Scores",
   "@combineCommentScores": {
     "description": "Toggle to combine comment scores."
@@ -273,6 +293,10 @@
   "@commentReported": {},
   "commentSavedAsDraft": "Comment saved as draft",
   "@commentSavedAsDraft": {},
+  "commentShowUserAvatar": "Show User Avatar",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
   "commentShowUserInstance": "Show User Instance",
   "@commentShowUserInstance": {
     "description": "Settings toggle to display user instance alongside their display name in comments"
@@ -507,6 +531,14 @@
   "@disable": {
     "description": "Action for disabling something"
   },
+  "disablePushNotifications": "Disable Push Notifications",
+  "@disablePushNotifications": {
+    "description": "Description when disabling push notifications"
+  },
+  "disabled": "Disabled",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
   "discussionLanguages": "Discussion Languages",
   "@discussionLanguages": {
     "description": "Only load posts and communities in your language(s)"
@@ -532,6 +564,10 @@
   "downvote": "Downvote",
   "@downvote": {
     "description": "Action for downvoting a post/comment"
+  },
+  "downvoteColor": "Downvote Color",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
   },
   "downvoted": "Downvoted",
   "@downvoted": {
@@ -571,7 +607,7 @@
   "@enableFloatingButtonOnPosts": {
     "description": "Setting for enable floating button on posts"
   },
-  "enableInboxNotifications": "Enable Inbox Notifications (Experimental)",
+  "enableInboxNotifications": "Enable Inbox Notifications",
   "@enableInboxNotifications": {
     "description": "Setting name for inbox notifications"
   },
@@ -587,6 +623,14 @@
   },
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
+  "errorMarkingReplyRead": "There was an error marking the reply as read.",
+  "@errorMarkingReplyRead": {
+    "description": "Error message for marking a reply read"
+  },
+  "errorMarkingReplyUnread": "There was an error marking the reply as unread.",
+  "@errorMarkingReplyUnread": {
+    "description": "Error message for marking a reply unread"
+  },
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
@@ -629,10 +673,18 @@
   },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
+  "failedToDisablePushNotifications": "Failed to disable push notifications",
+  "@failedToDisablePushNotifications": {
+    "description": "Error message when failed to disable push notifications."
+  },
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
   "@failedToLoadBlocks": {},
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
+  "failedToUpdateNotificationSettings": "Failed to update notification settings",
+  "@failedToUpdateNotificationSettings": {
+    "description": "Error message when failed to update notification settings."
+  },
   "favorites": "Favorites",
   "@favorites": {
     "description": "The favorited communities on the drawer"
@@ -707,6 +759,10 @@
   "@gestures": {},
   "gettingStarted": "Getting Started",
   "@gettingStarted": {},
+  "green": "Green",
+  "@green": {
+    "description": "The color green"
+  },
   "hidCommunity": "Hid Community",
   "@hidCommunity": {
     "description": "Short decription for moderator action to hide a community"
@@ -721,6 +777,10 @@
   },
   "hidePassword": "Hide Password",
   "@hidePassword": {},
+  "hideThumbnails": "Hide Thumbnails",
+  "@hideThumbnails": {
+    "description": "Option to hide thumbnails in feed"
+  },
   "hideTopBarOnScroll": "Hide Top Bar on Scroll",
   "@hideTopBarOnScroll": {
     "description": "Settings toggle to hide the top bar on scroll"
@@ -759,6 +819,10 @@
   },
   "inReplyTo": "In reply to {post} in {community}",
   "@inReplyTo": {},
+  "in_": "in",
+  "@in_": {
+    "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+  },
   "inbox": "Inbox",
   "@inbox": {},
   "includeCommunity": "Include Community",
@@ -877,6 +941,10 @@
   },
   "local": "Local",
   "@local": {},
+  "localNotifications": "Local Notifications",
+  "@localNotifications": {
+    "description": "Describes the notification type for Local Notifications"
+  },
   "localPosts": "Local Posts",
   "@localPosts": {},
   "lockPost": "Lock Post",
@@ -913,6 +981,10 @@
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
+  "markAsRead": "Mark as read",
+  "@markAsRead": {
+    "description": "Label for the action to mark a message as read"
+  },
   "markPostAsReadOnMediaView": "Mark Read After Viewing Media",
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
@@ -920,6 +992,10 @@
   "markPostAsReadOnScroll": "Mark Read On Scroll",
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "markReadColor": "Mark Read/Unread Color",
+  "@markReadColor": {
+    "description": "Name of mark read/unread color setting"
   },
   "me": "Me",
   "@me": {
@@ -1077,6 +1153,10 @@
   "@noReferencesToImage": {
     "description": "Message indicating media was not found on Lemmy"
   },
+  "noReplies": "No replies",
+  "@noReplies": {
+    "description": "Label for when there are no replies in the list"
+  },
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
   "noSubscriptions": "No Subscriptions",
@@ -1087,6 +1167,10 @@
   "@noUserBlocks": {},
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
+  "none": "None",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
   "normal": "Normal",
   "@normal": {
     "description": "Normal name thickness/weight"
@@ -1109,9 +1193,13 @@
   "@notificationsNotAllowed": {
     "description": "Description for when notifications are now allowed for app"
   },
-  "notificationsWarningDialog": "Notifications are an experimental feature which may not function correctly on all devices.\n\n· Checks will occur every ~15 minutes and will consume additional battery.\n\n· Disable battery optimizations for a higher likelihood of successful notifications.\n\nSee the following page for more information.",
+  "notificationsWarningDialog": "Notifications are an **experimental feature** which may not function correctly on all devices.\n\n - Checks will occur every ~15 minutes and will consume additional battery.\n\n - Disable battery optimizations for a higher likelihood of successful notifications.\n\n See the following page for more information.",
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
+  },
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
   },
   "nsfwWarning": "NSFW - Tap to reveal",
   "@nsfwWarning": {
@@ -1150,6 +1238,10 @@
   "openSettings": "Open Settings",
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
+  },
+  "orange": "Orange",
+  "@orange": {
+    "description": "The color orange"
   },
   "originalPoster": "Original Poster",
   "@originalPoster": {
@@ -1192,6 +1284,10 @@
   "postBodySettingsDescription": "These settings affect the display of the post body",
   "@postBodySettingsDescription": {
     "description": "Description of post body settings"
+  },
+  "postBodyShowCommunityAvatar": "Show Community Avatar",
+  "@postBodyShowCommunityAvatar": {
+    "description": "Whether to show the community avatar for post bodies"
   },
   "postBodyShowCommunityInstance": "Show Community Instance",
   "@postBodyShowCommunityInstance": {
@@ -1281,6 +1377,26 @@
   "@purgedPost": {
     "description": "Short decription for moderator action to purge a post"
   },
+  "purple": "Purple",
+  "@purple": {
+    "description": "The color purple"
+  },
+  "pushNotification": "Push Notifications",
+  "@pushNotification": {
+    "description": "Setting for push notifications"
+  },
+  "pushNotificationDescription": "If enabled, Thunder will send your JWT token(s) to the server in order to poll for new notifications. \n\n **NOTE:** This will not take effect until the next time the app is launched.",
+  "@pushNotificationDescription": {
+    "description": "Description of push notification setting"
+  },
+  "pushNotificationServer": "Push Notification Server",
+  "@pushNotificationServer": {
+    "description": "Setting for choosing push notification server"
+  },
+  "pushNotificationServerDescription": "Configure the push notification server. The server must be properly configured to send push notifications to your device.\n\n **Only enter a server that you trust with your credentials.**",
+  "@pushNotificationServerDescription": {
+    "description": "Description of choosing push notification server setting"
+  },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
@@ -1288,6 +1404,10 @@
   "reason": "Reason",
   "@reason": {
     "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "red": "Red",
+  "@red": {
+    "description": "The color red"
   },
   "reduceAnimations": "Reduce Animations",
   "@reduceAnimations": {
@@ -1349,6 +1469,10 @@
   },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},
+  "replyColor": "Reply Color",
+  "@replyColor": {
+    "description": "Name of reply color setting"
+  },
   "replyNotSupported": "Replying from this view is currently not supported yet",
   "@replyNotSupported": {},
   "replyToPost": "Reply to Post",
@@ -1411,6 +1535,10 @@
   },
   "save": "Save",
   "@save": {},
+  "saveColor": "Save Color",
+  "@saveColor": {
+    "description": "Name of save color setting"
+  },
   "saveSettings": "Save Settings",
   "@saveSettings": {
     "description": "Action to save the application settings."
@@ -1465,7 +1593,7 @@
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
   "@selectFeedType": {},
-  "selectLanguage": "Select language",
+  "selectLanguage": "Select Language",
   "@selectLanguage": {
     "description": "The prompt to select a language in the post creation page"
   },
@@ -1645,6 +1773,10 @@
   "@showUpdateChangelogsSubtitle": {
     "description": "Subtitle for setting for showing changelogs after updates"
   },
+  "showUserAvatar": "Show User Avatar",
+  "@showUserAvatar": {
+    "description": "Toggle to show user avatar."
+  },
   "showUserDisplayNames": "Show User Display Names",
   "@showUserDisplayNames": {
     "description": "Toggle to show user display names."
@@ -1728,6 +1860,10 @@
   "tappableAuthorCommunity": "Tappable Authors & Communities",
   "@tappableAuthorCommunity": {
     "description": "Toggle to make authors and communities tappable."
+  },
+  "teal": "Teal",
+  "@teal": {
+    "description": "The color teal"
   },
   "text": "Text",
   "@text": {},
@@ -1903,6 +2039,10 @@
   "@unhidCommunity": {
     "description": "Short decription for moderator action to unhide a community"
   },
+  "unifiedPushNotifications": "Unified Push Notifications",
+  "@unifiedPushNotifications": {
+    "description": "Describes the notification type for Unified Push Notifications"
+  },
   "unlockPost": "Unlock Post",
   "@unlockPost": {
     "description": "Action for unlocking a post (moderator action)"
@@ -1945,6 +2085,10 @@
   "@upvote": {
     "description": "Action for upvoting a post/comment"
   },
+  "upvoteColor": "Upvote Color",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
+  },
   "upvoted": "Upvoted",
   "@upvoted": {
     "description": "Short description for upvoted post/comment"
@@ -1959,9 +2103,25 @@
   "@useAdvancedShareSheet": {
     "description": "Toggle to use advanced share sheet."
   },
+  "useApplePushNotifications": "Use APNs Notifications",
+  "@useApplePushNotifications": {
+    "description": "Toggle to use APNs."
+  },
+  "useApplePushNotificationsDescription": "Uses Apple's Push Notification service",
+  "@useApplePushNotificationsDescription": {
+    "description": "Subtitle of the setting for using APNs"
+  },
   "useCompactView": "Enable for small posts, disable for big.",
   "@useCompactView": {
     "description": "Option to enable or disable compact view for small posts."
+  },
+  "useLocalNotifications": "Use Local Notifications (Experimental)",
+  "@useLocalNotifications": {
+    "description": "Toggle to use local notifications."
+  },
+  "useLocalNotificationsDescription": "Periodically checks for notifications in the background",
+  "@useLocalNotificationsDescription": {
+    "description": "Subtitle of the setting for using local notifications"
   },
   "useMaterialYouTheme": "Use Material You Theme",
   "@useMaterialYouTheme": {
@@ -1971,8 +2131,24 @@
   "@useMaterialYouThemeDescription": {
     "description": "Subtitle of the setting for using Material You theme"
   },
+  "useProfilePictureForDrawer": "Use Profile Picture for Drawer",
+  "@useProfilePictureForDrawer": {
+    "description": "Setting name for using the profile picture for the drawer"
+  },
+  "useProfilePictureForDrawerSubtitle": "When logged in, shows the user's profile picture in place of the drawer icon",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Setting subtitle for using the profile picture for the drawer"
+  },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
+  "useUnifiedPushNotifications": "Use UnifiedPush Notifications",
+  "@useUnifiedPushNotifications": {
+    "description": "Toggle to use UnifiedPush Notifications"
+  },
+  "useUnifiedPushNotificationsDescription": "Requires a compatible app",
+  "@useUnifiedPushNotificationsDescription": {
+    "description": "Subtitle of the setting for using UnifiedPush Notifications"
+  },
   "user": "User",
   "@user": {
     "description": "Role name for user"

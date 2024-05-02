@@ -7,7 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:html/parser.dart';
+import 'package:markdown/markdown.dart' hide Text;
 
+import 'package:thunder/shared/link_information.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/image_viewer.dart';
@@ -31,6 +34,9 @@ class MediaView extends StatefulWidget {
 
   /// Whether to blur NSFW images
   final bool hideNsfwPreviews;
+
+  /// Whether to hide thumbnails
+  final bool hideThumbnails;
 
   /// Whether to extend the image to the edge of the screen (ViewMode.comfortable)
   final bool edgeToEdgeImages;
@@ -60,6 +66,7 @@ class MediaView extends StatefulWidget {
     this.allowUnconstrainedImageHeight = false,
     this.edgeToEdgeImages = false,
     this.hideNsfwPreviews = true,
+    this.hideThumbnails = false,
     this.markPostReadOnMediaView = false,
     this.isUserLoggedIn = false,
     this.viewMode = ViewMode.comfortable,
@@ -93,6 +100,12 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     if (widget.viewMode == ViewMode.comfortable) return Container();
 
+    String? plainTextComment;
+    if (widget.postViewMedia.postView.post.body?.isNotEmpty == true) {
+      final String htmlComment = markdownToHtml(widget.postViewMedia.postView.post.body!);
+      plainTextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? widget.postViewMedia.postView.post.body!;
+    }
+
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -107,7 +120,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      widget.postViewMedia.postView.post.body!,
+                      plainTextComment!,
                       style: TextStyle(
                         fontSize: min(20, max(4.5, (20 * (1 / log(widget.postViewMedia.postView.post.body!.length))))),
                         color: widget.read == true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
@@ -129,6 +142,34 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     );
   }
 
+  /// Overlays the image as an ImageViewer
+  void showImage() {
+    if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
+      try {
+        // Mark post as read when on the feed page
+        int postId = widget.postViewMedia.postView.post.id;
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
+      } catch (e) {}
+    }
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 100),
+        transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+          return ImageViewer(
+            url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!,
+            postId: widget.postViewMedia.postView.post.id,
+            navigateToPost: widget.navigateToPost,
+          );
+        },
+      ),
+    );
+  }
+
   /// Creates an image preview
   Widget buildMediaImage() {
     final theme = Theme.of(context);
@@ -139,32 +180,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     return InkWell(
       splashColor: theme.colorScheme.primary.withOpacity(0.4),
       borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-      onTap: () {
-        if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
-          try {
-            // Mark post as read when on the feed page
-            int postId = widget.postViewMedia.postView.post.id;
-            context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
-          } catch (e) {}
-        }
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            opaque: false,
-            transitionDuration: const Duration(milliseconds: 100),
-            reverseTransitionDuration: const Duration(milliseconds: 100),
-            transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-              return ImageViewer(
-                url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!,
-                postId: widget.postViewMedia.postView.post.id,
-                navigateToPost: widget.navigateToPost,
-              );
-            },
-          ),
-        );
-      },
+      onTap: showImage,
       child: Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
@@ -216,6 +232,14 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    if (widget.hideThumbnails) {
+      return LinkInformation(
+        viewMode: widget.viewMode,
+        originURL: widget.postViewMedia.media.first.originalUrl,
+        mediaType: widget.postViewMedia.media.first.mediaType,
+        onTap: widget.postViewMedia.media.first.mediaType == MediaType.image ? showImage : null,
+      );
+    }
     switch (widget.postViewMedia.media.firstOrNull?.mediaType) {
       case MediaType.image:
         return buildMediaImage();
@@ -256,7 +280,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         height = ViewMode.compact.height;
         break;
       case ViewMode.comfortable:
-        width = MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
+        width = (state.tabletMode ? (MediaQuery.of(context).size.width / 2) - 24.0 : MediaQuery.of(context).size.width) - (widget.edgeToEdgeImages ? 0 : 24);
         height = widget.showFullHeightImages ? widget.postViewMedia.media.first.height : null;
     }
 
@@ -301,33 +325,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               );
             }
 
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: theme.colorScheme.secondary.withOpacity(0.4),
-              ),
-              child: InkWell(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                  child: Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Icon(Icons.link),
-                      ),
-                      Expanded(
-                        child: Text(
-                          widget.postViewMedia.postView.post.url ?? '',
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  handleLink(context, url: widget.postViewMedia.postView.post.url ?? '');
-                },
-              ),
+            return LinkInformation(
+              viewMode: widget.viewMode,
+              mediaType: MediaType.image,
+              originURL: widget.postViewMedia.postView.post.url ?? '',
             );
         }
       },

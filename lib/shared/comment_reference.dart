@@ -88,6 +88,7 @@ class _CommentReferenceState extends State<CommentReference> {
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final ThunderState state = context.read<ThunderBloc>().state;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Semantics(
       label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
@@ -141,13 +142,14 @@ class _CommentReferenceState extends State<CommentReference> {
                             children: [
                               ExcludeSemantics(
                                 child: ScalableText(
-                                  'in ',
+                                  l10n.in_,
                                   fontScale: state.contentFontSizeScale,
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                                   ),
                                 ),
                               ),
+                              const SizedBox(width: 5.0),
                               ExcludeSemantics(
                                 child: CommunityFullNameWidget(
                                   context,
@@ -277,8 +279,9 @@ class _CommentReferenceState extends State<CommentReference> {
                       background: dismissDirection == DismissDirection.startToEnd
                           ? AnimatedContainer(
                               alignment: Alignment.centerLeft,
-                              color:
-                                  swipeAction == null ? state.leftPrimaryCommentGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                              color: swipeAction == null
+                                  ? state.leftPrimaryCommentGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                                  : (swipeAction ?? SwipeAction.none).getColor(context),
                               duration: const Duration(milliseconds: 200),
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * dismissThreshold,
@@ -288,8 +291,8 @@ class _CommentReferenceState extends State<CommentReference> {
                           : AnimatedContainer(
                               alignment: Alignment.centerRight,
                               color: swipeAction == null
-                                  ? (state.rightPrimaryCommentGesture).getColor().withOpacity(dismissThreshold / firstActionThreshold)
-                                  : (swipeAction ?? SwipeAction.none).getColor(),
+                                  ? (state.rightPrimaryCommentGesture).getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                                  : (swipeAction ?? SwipeAction.none).getColor(context),
                               duration: const Duration(milliseconds: 200),
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * dismissThreshold,

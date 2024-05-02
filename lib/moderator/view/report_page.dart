@@ -222,7 +222,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                         InkWell(
                                           onTap: () => navigateToPost(context, postId: state.postReports[index].post.id),
                                           child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                            padding: const EdgeInsets.only(top: 8.0),
                                             child: PostCardViewCompact(
                                               showMedia: false,
                                               postViewMedia: PostViewMedia(postView: postView, media: [Media(mediaType: MediaType.text)]),

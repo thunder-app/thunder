@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:thunder/utils/notifications.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
+
+import 'package:thunder/notification/shared/notification_payload.dart';
 
 part 'notifications_state.dart';
 
@@ -16,16 +19,11 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   void handleNotifications() {
     _notificationsStreamSubscription = notificationsStream.listen((notificationResponse) async {
-      // Check if this is a reply notification
-      if (notificationResponse.payload?.contains(repliesGroupKey) == true) {
-        // Check if this is a specific notification for a specific reply
-        int? replyId;
-        final List<String> parts = notificationResponse.payload!.split('-');
-        if (parts.length == 2) {
-          replyId = int.tryParse(parts[1]);
-        }
+      NotificationPayload? payload = notificationResponse.payload?.isNotEmpty == true ? NotificationPayload.fromJson(jsonDecode(notificationResponse.payload!)) : null;
 
-        emit(state.copyWith(status: NotificationsStatus.reply, replyId: replyId));
+      // Check if this is a reply notification
+      if (payload?.inboxType == NotificationInboxType.reply) {
+        emit(state.copyWith(status: NotificationsStatus.reply, replyId: payload!.id));
       }
 
       // Reset the state

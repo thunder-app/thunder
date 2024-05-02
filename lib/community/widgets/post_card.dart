@@ -184,7 +184,8 @@ class _PostCardState extends State<PostCard> {
             background: dismissDirection == DismissDirection.startToEnd
                 ? AnimatedContainer(
                     alignment: Alignment.centerLeft,
-                    color: swipeAction == null ? state.leftPrimaryPostGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                    color:
+                        swipeAction == null ? state.leftPrimaryPostGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(context),
                     duration: const Duration(milliseconds: 200),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
@@ -193,7 +194,9 @@ class _PostCardState extends State<PostCard> {
                   )
                 : AnimatedContainer(
                     alignment: Alignment.centerRight,
-                    color: swipeAction == null ? state.rightPrimaryPostGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                    color: swipeAction == null
+                        ? state.rightPrimaryPostGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                        : (swipeAction ?? SwipeAction.none).getColor(context),
                     duration: const Duration(milliseconds: 200),
                     child: SizedBox(
                       width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
@@ -209,9 +212,11 @@ class _PostCardState extends State<PostCard> {
                       listingType: widget.listingType,
                       navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead,
+                      showMedia: !state.hideThumbnails,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
+                      hideThumbnails: state.hideThumbnails,
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,

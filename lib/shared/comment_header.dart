@@ -8,6 +8,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/user_type.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -62,6 +63,7 @@ class CommentHeader extends StatelessWidget {
               children: [
                 UserChip(
                   personId: comment.creator.id,
+                  personAvatar: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
                   personName: comment.creator.name,
                   personDisplayName: comment.creator.displayName ?? comment.creator.name,
                   personUrl: comment.creator.actorId,
@@ -98,7 +100,7 @@ class CommentHeader extends StatelessWidget {
               const SizedBox(width: 8.0),
               Icon(
                 saved == true ? Icons.star_rounded : null,
-                color: saved == true ? Colors.purple : null,
+                color: saved == true ? context.read<ThunderBloc>().state.saveColor.color : null,
                 size: saved == true ? 18.0 : 0,
               ),
               SizedBox(
@@ -181,7 +183,7 @@ class CommentHeaderScore extends StatelessWidget {
       return Icon(
         myVote == 1 ? Icons.north_rounded : Icons.south_rounded,
         size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-        color: myVote == 1 ? Colors.orange : Colors.blue,
+        color: myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : context.read<ThunderBloc>().state.downvoteColor.color,
       );
     }
 
@@ -191,7 +193,7 @@ class CommentHeaderScore extends StatelessWidget {
         Icon(
           Icons.north_rounded,
           size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-          color: myVote == 1 ? Colors.orange : theme.colorScheme.onBackground,
+          color: myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.colorScheme.onBackground,
         ),
         const SizedBox(width: 2.0),
         ScalableText(
@@ -199,14 +201,16 @@ class CommentHeaderScore extends StatelessWidget {
           semanticsLabel: combineCommentScores ? l10n.xScore(formatNumberToK(score)) : l10n.xUpvotes(formatNumberToK(upvotes)),
           fontScale: state.metadataFontSizeScale,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: myVote == 1 ? Colors.orange : (myVote == -1 && combineCommentScores ? Colors.blue : theme.colorScheme.onBackground),
+            color: myVote == 1
+                ? context.read<ThunderBloc>().state.upvoteColor.color
+                : (myVote == -1 && combineCommentScores ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground),
           ),
         ),
         SizedBox(width: combineCommentScores ? 2.0 : 10.0),
         Icon(
           Icons.south_rounded,
           size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-          color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+          color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground) : Colors.transparent,
         ),
         if (!combineCommentScores) ...[
           const SizedBox(width: 2.0),
@@ -216,7 +220,7 @@ class CommentHeaderScore extends StatelessWidget {
               fontScale: state.metadataFontSizeScale,
               semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                color: downvotes != 0 ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground) : Colors.transparent,
               ),
             ),
         ],
