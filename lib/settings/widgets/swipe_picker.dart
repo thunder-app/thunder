@@ -1,4 +1,8 @@
+import 'package:expandable/expandable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/settings/widgets/post_placeholder.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
@@ -67,9 +71,44 @@ class SwipePicker<T> extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Icon(
-                        items[0].value.getIcon(),
-                        semanticLabel: 'Short swipe right, ${items[0].value.label}',
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              items[0].value.getIcon(),
+                              semanticLabel: 'Short swipe right, ${items[0].value.label}',
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.bottomRight,
+                            child: Icon(
+                              Icons.keyboard_arrow_right_rounded,
+                              size: 20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  bottomLeft: Radius.circular(12),
+                                ),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  stops: const [0,0.08,0.92,1],
+                                  colors: <Color>[
+                                    Colors.black.withOpacity(0.2),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.2),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -95,9 +134,57 @@ class SwipePicker<T> extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Icon(
-                        items[1].value.getIcon(),
-                        semanticLabel: 'Long swipe right, ${items[1].value.label}',
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              items[1].value.getIcon(),
+                              semanticLabel: 'Long swipe right, ${items[1].value.label}',
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.bottomRight,
+                            child: Icon(
+                              Icons.keyboard_double_arrow_right_rounded,
+                              size: 20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  stops: const [0,0.08,0.92,1],
+                                  colors: <Color>[
+                                    Colors.black.withOpacity(0.2),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.2),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.centerRight,
+                                  end: Alignment.centerLeft,
+                                  stops: const [0,0.05,0.95,1],
+                                  colors: <Color>[
+                                    Colors.black.withOpacity(0.2),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.2),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
@@ -130,9 +217,57 @@ class SwipePicker<T> extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Icon(
-                        items[1].value.getIcon(),
-                        semanticLabel: 'Long swipe left, ${items[1].value.label}',
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              items[1].value.getIcon(),
+                              semanticLabel: 'Long swipe left, ${items[1].value.label}',
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Icon(
+                              Icons.keyboard_double_arrow_left_rounded,
+                              size: 20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  stops: const [0,0.08,0.92,1],
+                                  colors: <Color>[
+                                    Colors.black.withOpacity(0.2),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.2),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.centerRight,
+                                  end: Alignment.centerLeft,
+                                  stops: const [0,0.05,0.95,1],
+                                  colors: <Color>[
+                                    Colors.black.withOpacity(0.2),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.2),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -166,9 +301,44 @@ class SwipePicker<T> extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Icon(
-                        items[0].value.getIcon(),
-                        semanticLabel: 'Short swipe left, ${items[0].value.label}',
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              items[0].value.getIcon(),
+                              semanticLabel: 'Short swipe left, ${items[0].value.label}',
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Icon(
+                              Icons.keyboard_arrow_left_rounded,
+                              size: 20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(12),
+                                  bottomRight: Radius.circular(12),
+                                ),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  stops: const [0,0.08,0.92,1],
+                                  colors: <Color>[
+                                    Colors.black.withOpacity(0.2),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.2),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
