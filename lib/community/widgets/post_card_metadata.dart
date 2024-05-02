@@ -350,6 +350,47 @@ class UrlPostCardMetaData extends StatelessWidget {
   }
 }
 
+/// Display metadata for a cross-post, used in the expanded cross-posts view
+class CrossPostMetaData extends StatelessWidget {
+  /// Accepts the PostView of a cross-post
+  final PostView crossPost;
+
+  const CrossPostMetaData({
+    super.key,
+    required this.crossPost,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThunderBloc, ThunderState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ScorePostCardMetaData(
+              score: crossPost.counts.score,
+              voteType: crossPost.myVote,
+              hasBeenRead: true,
+            ),
+            const SizedBox(width: 10.0),
+            CommentCountPostCardMetaData(
+              commentCount: crossPost.counts.comments,
+              unreadCommentCount: crossPost.unreadComments,
+              hasBeenRead: true,
+            ),
+            const SizedBox(width: 10.0),
+            DateTimePostCardMetaData(
+              dateTime: crossPost.post.published.toIso8601String(),
+              hasBeenEdited: crossPost.post.updated != null ? true : false,
+              hasBeenRead: true,
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class PostCommunityAndAuthor extends StatelessWidget {
   const PostCommunityAndAuthor({
     super.key,
