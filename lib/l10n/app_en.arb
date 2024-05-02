@@ -397,6 +397,14 @@
   "@copiedToClipboard": {},
   "copy": "Copy",
   "@copy": {},
+  "copyComment": "Copy Comment",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
+  "copySelected": "Copy selected",
+  "@copySelected": {
+    "description": "Action for copying selected text"
+  },
   "copyText": "Copy Text",
   "@copyText": {},
   "couldNotDetermineCommentDelete": "Error: Could not determine post to delete the comment.",
@@ -1561,6 +1569,10 @@
   "@selectAccountToPostAs": {
     "description": "Heading for account selector when posting"
   },
+  "selectAll": "Select all",
+  "@selectAll": {
+    "description": "Action for selecting all text"
+  },
   "selectCommunity": "Select a community",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
@@ -1571,6 +1583,10 @@
   },
   "selectSearchType": "Select Search Type",
   "@selectSearchType": {},
+  "selectText": "Select Text",
+  "@selectText": {
+    "description": "Post and comment action for selecting text"
+  },
   "sensitiveContentWarning": "May contain sensitive content. Tap to reveal.",
   "@sensitiveContentWarning": {
     "description": "Warning for sensitive content (e.g., from modlog)"
@@ -2173,13 +2189,21 @@
   },
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
-  "viewCommentSource": "View comment source",
+  "viewCommentSource": "View Comment Source",
   "@viewCommentSource": {
     "description": "Menu item for viewing a comment's source"
+  },
+  "viewOriginal": "View original",
+  "@viewOriginal": {
+    "description": "Action for viewing original text (as opposed to raw markdown)"
   },
   "viewPostSource": "View post source",
   "@viewPostSource": {
     "description": "Menu item for viewing a post's source"
+  },
+  "viewSource": "View source",
+  "@viewSource": {
+    "description": "Action for viewing source (raw markdown)"
   },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
