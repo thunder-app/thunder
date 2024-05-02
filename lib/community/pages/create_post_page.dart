@@ -367,13 +367,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ],
               ),
               body: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             CommunitySelector(
                               communityId: communityId,
@@ -538,8 +538,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ]),
                         ),
                       ),
-                      const Divider(),
-                      Row(
+                    ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    Container(
+                      color: theme.cardColor,
+                      child: Row(
                         children: [
                           Expanded(
                             child: MarkdownToolbar(
@@ -584,7 +589,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
                             child: IconButton(
                               onPressed: () {
                                 if (!showPreview) {
@@ -606,8 +611,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
