@@ -63,12 +63,15 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                         const SizedBox(width: 10),
                         SearchActionChip(
                           children: [Text(l10n.selectAll)],
-                          onPressed: () {},
+                          onPressed: () {
+                            (selectableRegionKey.currentState as SelectableRegionState).selectAll();
+                          },
                         ),
                         const SizedBox(width: 10),
                         SearchActionChip(
                           onPressed: isAnythingSelected
                               ? () async {
+                                  (selectableRegionKey.currentState as SelectableRegionState).copySelection(SelectionChangedCause.tap);
                                   setState(() => copySuccess = true);
                                   await Future.delayed(const Duration(seconds: 2));
                                   setState(() => copySuccess = false);
