@@ -23,6 +23,8 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
   final FocusNode focusNode = FocusNode();
   final GlobalKey selectableRegionKey = GlobalKey();
 
+  bool isAnythingSelected = false;
+
   showModalBottomSheet(
     context: context,
     showDragHandle: true,
@@ -61,18 +63,17 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                         const SizedBox(width: 10),
                         SearchActionChip(
                           children: [Text(l10n.selectAll)],
-                          onPressed: () {
-                            (selectableRegionKey.currentState as SelectableRegionState).selectAll();
-                          },
+                          onPressed: () {},
                         ),
                         const SizedBox(width: 10),
                         SearchActionChip(
-                          onPressed: () async {
-                            (selectableRegionKey.currentState as SelectableRegionState).copySelection(SelectionChangedCause.tap);
-                            setState(() => copySuccess = true);
-                            await Future.delayed(const Duration(seconds: 2));
-                            setState(() => copySuccess = false);
-                          },
+                          onPressed: isAnythingSelected
+                              ? () async {
+                                  setState(() => copySuccess = true);
+                                  await Future.delayed(const Duration(seconds: 2));
+                                  setState(() => copySuccess = false);
+                                }
+                              : null,
                           backgroundColor: copySuccess ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
                           children: [
                             Text(l10n.copySelected),
@@ -101,6 +102,9 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             SelectableRegion(
+                              onSelectionChanged: (value) {
+                                setState(() => isAnythingSelected = value != null);
+                              },
                               key: selectableRegionKey,
                               focusNode: focusNode,
                               // Note: material/cupertinoTextSelectionHandleControls will be deprecated eventually,
@@ -140,6 +144,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                           )
                                         : CommonMarkdownBody(
                                             body: text,
+                                            isComment: true,
                                           ),
                                   ),
                                 ],
