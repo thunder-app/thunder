@@ -144,13 +144,10 @@ class ScorePostCardMetaData extends StatelessWidget {
           height: 17,
           child: Stack(
             children: [
+              Align(alignment: Alignment.topLeft, child: Icon(Icons.arrow_upward, size: 13.5, color: voteType == -1 ? readColor : color)),
               Align(
-                alignment: Alignment.topLeft,
-                child: Icon(Icons.arrow_upward, size: 13.5, color: voteType == -1 ? readColor : color)
-              ),
-              Align(
-                  alignment: Alignment.bottomRight,
-                  child: Icon(Icons.arrow_downward, size: 13.5, color: voteType == 1 ? readColor : color),
+                alignment: Alignment.bottomRight,
+                child: Icon(Icons.arrow_downward, size: 13.5, color: voteType == 1 ? readColor : color),
               ),
             ],
           ),
