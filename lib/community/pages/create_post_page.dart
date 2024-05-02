@@ -575,7 +575,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 MarkdownType.community: () {
                                   showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
                                     _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                        '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                        '!${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}');
                                   });
                                 },
                               },
