@@ -54,8 +54,8 @@ class FeedPageAppBar extends StatelessWidget {
       toolbarHeight: 70.0,
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
       title: FeedAppBarTitle(visible: showAppBarTitle),
-      leadingWidth: thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
-      leading: thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
+      leadingWidth: scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
+      leading: scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
           ? Padding(
               padding: const EdgeInsets.only(left: 16.0),
               child: Stack(
@@ -70,7 +70,7 @@ class FeedPageAppBar extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       customBorder: const CircleBorder(),
-                      onTap: () => _openDrawer(context, feedBloc),
+                      onTap: () => _openDrawerOrGoBack(context, feedBloc),
                     ),
                   ),
                 ],
@@ -85,7 +85,7 @@ class FeedPageAppBar extends StatelessWidget {
                         )
                       : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
                   : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
-              onPressed: () => _openDrawer(context, feedBloc),
+              onPressed: () => _openDrawerOrGoBack(context, feedBloc),
             ),
       actions: (feedBloc.state.status != FeedStatus.initial && feedBloc.state.status != FeedStatus.failureLoadingCommunity && feedBloc.state.status != FeedStatus.failureLoadingUser)
           ? [
@@ -97,7 +97,7 @@ class FeedPageAppBar extends StatelessWidget {
     );
   }
 
-  void _openDrawer(BuildContext context, FeedBloc feedBloc) {
+  void _openDrawerOrGoBack(BuildContext context, FeedBloc feedBloc) {
     HapticFeedback.mediumImpact();
     (scaffoldStateKey == null && (feedBloc.state.feedType == FeedType.community || feedBloc.state.feedType == FeedType.user))
         ? Navigator.of(context).maybePop()
