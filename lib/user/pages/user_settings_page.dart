@@ -314,6 +314,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           message: instance.domain,
           preferBelow: false,
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
@@ -374,6 +375,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           message: generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
           preferBelow: false,
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
@@ -428,6 +430,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           message: generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
           preferBelow: false,
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
