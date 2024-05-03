@@ -155,6 +155,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         iconEnabled: Icons.fact_check_rounded,
                         iconDisabled: Icons.fact_check_outlined,
                         onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                        highlightKey: null,
+                        setting: null,
+                        highlightedSetting: null,
                       ),
                       ToggleOption(
                         description: l10n.showScores,
@@ -162,6 +165,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         iconEnabled: Icons.onetwothree_rounded,
                         iconDisabled: Icons.onetwothree_rounded,
                         onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                        highlightKey: null,
+                        setting: null,
+                        highlightedSetting: null,
                       ),
                       ToggleOption(
                         description: l10n.showBotAccounts,
@@ -172,6 +178,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         iconDisabledSize: 18.0,
                         iconSpacing: 14.0,
                         onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                        highlightKey: null,
+                        setting: null,
+                        highlightedSetting: null,
                       ),
                       DiscussionLanguageSelector(
                         initialDiscussionLanguages: DiscussionLanguageSelector.getDiscussionLanguagesFromSiteResponse(state.getSiteResponse),
@@ -290,6 +299,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             primaryButtonText: l10n.confirm,
                           );
                         },
+                        highlightKey: null,
+                        setting: null,
+                        highlightedSetting: null,
                       ),
                       const SizedBox(height: 100.0),
                     ],

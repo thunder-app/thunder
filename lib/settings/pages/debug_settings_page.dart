@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -28,6 +29,36 @@ class DebugSettingsPage extends StatefulWidget {
 }
 
 class _DebugSettingsPageState extends State<DebugSettingsPage> {
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.settingToHighlight != null) {
+        setState(() => settingToHighlight = widget.settingToHighlight);
+
+        // Need some delay to finish building, even though we're in a post-frame callback.
+        Timer(const Duration(milliseconds: 500), () {
+          if (settingToHighlightKey.currentContext != null) {
+            // Ensure that the selected setting is visible on the screen
+            Scrollable.ensureVisible(
+              settingToHighlightKey.currentContext!,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          // Give time for the highlighting to appear, then turn it off
+          Timer(const Duration(seconds: 1), () {
+            setState(() => settingToHighlight = null);
+          });
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -90,6 +121,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   primaryButtonText: l10n.clearPreferences,
                 );
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
@@ -124,6 +158,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   primaryButtonText: l10n.clearDatabase,
                 );
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -152,6 +189,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       if (context.mounted) showSnackbar(l10n.clearedCache);
                       setState(() {}); // Trigger a rebuild to refresh the cache size
                     },
+                    highlightKey: settingToHighlightKey,
+                    setting: null,
+                    highlightedSetting: settingToHighlight,
                   );
                 }
                 return Container();

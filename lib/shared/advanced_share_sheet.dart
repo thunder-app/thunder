@@ -237,6 +237,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                             isGeneratingImage = true;
                             options.includeTitle = !options.includeTitle;
                           }),
+                          highlightKey: null,
+                          setting: null,
+                          highlightedSetting: null,
                         ),
                         if (_hasImage(postViewMedia))
                           ToggleOption(
@@ -248,6 +251,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                               isGeneratingImage = true;
                               options.includeImage = !options.includeImage;
                             }),
+                            highlightKey: null,
+                            setting: null,
+                            highlightedSetting: null,
                           ),
                         if (_hasText(postViewMedia))
                           ToggleOption(
@@ -259,6 +265,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                               isGeneratingImage = true;
                               options.includeText = !options.includeText;
                             }),
+                            highlightKey: null,
+                            setting: null,
+                            highlightedSetting: null,
                           ),
                         ToggleOption(
                           description: AppLocalizations.of(context)!.includeCommunity,
@@ -269,6 +278,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                             isGeneratingImage = true;
                             options.includeCommnity = !options.includeCommnity;
                           }),
+                          highlightKey: null,
+                          setting: null,
+                          highlightedSetting: null,
                         ),
                         const SizedBox(height: 20),
                         Align(
@@ -287,6 +299,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                           iconDisabled: Icons.link_rounded,
                           value: options.includePostLink,
                           onToggle: (_) => setState(() => options.includePostLink = !options.includePostLink),
+                          highlightKey: null,
+                          setting: null,
+                          highlightedSetting: null,
                         ),
                         if (_hasExternalLink(postViewMedia))
                           ToggleOption(
@@ -295,6 +310,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                             iconDisabled: Icons.link_rounded,
                             value: options.includeExternalLink,
                             onToggle: (_) => setState(() => options.includeExternalLink = !options.includeExternalLink),
+                            highlightKey: null,
+                            setting: null,
+                            highlightedSetting: null,
                           ),
                         const SizedBox(height: 12),
                         Row(
