@@ -480,14 +480,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 isUserLoggedIn: true,
                               ),
                             ),
-                            if (crossPosts.isNotEmpty && widget.postView == null)
-                              Visibility(
-                                visible: url.isNotEmpty,
-                                child: CrossPosts(
-                                  crossPosts: crossPosts,
-                                  isNewPost: true,
-                                ),
+                            if (crossPosts.isNotEmpty && widget.postView == null) const SizedBox(height: 6),
+                            Visibility(
+                              visible: url.isNotEmpty && crossPosts.isNotEmpty,
+                              child: CrossPosts(
+                                crossPosts: crossPosts,
+                                isNewPost: true,
                               ),
+                            ),
                             const SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
