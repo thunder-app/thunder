@@ -60,7 +60,7 @@ Future<void> navigateToCreateCommentPage(
   PostViewMedia? postViewMedia,
   CommentView? commentView,
   CommentView? parentCommentView,
-  Function(CommentView commentView)? onCommentSuccess,
+  Function(CommentView commentView, bool userChanged)? onCommentSuccess,
 }) async {
   assert(!(postViewMedia == null && parentCommentView == null && commentView == null));
   assert(!(postViewMedia != null && (parentCommentView != null || commentView != null)));

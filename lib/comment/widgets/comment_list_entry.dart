@@ -38,8 +38,10 @@ class CommentListEntry extends StatelessWidget {
           context,
           commentView: isEdit ? commentView : null,
           parentCommentView: isEdit ? null : commentView,
-          onCommentSuccess: (commentView) {
-            context.read<post_bloc.PostBloc>().add(post_bloc.UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+          onCommentSuccess: (commentView, userChanged) {
+            if (!userChanged) {
+              context.read<post_bloc.PostBloc>().add(post_bloc.UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+            }
           },
         ),
         isOwnComment: isOwnComment,

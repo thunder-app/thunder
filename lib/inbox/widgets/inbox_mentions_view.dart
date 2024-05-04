@@ -151,7 +151,7 @@ class InboxMentionsView extends StatelessWidget {
                             saved: mentions[index].saved,
                             creatorBlocked: mentions[index].creatorBlocked,
                           ),
-                          onCommentSuccess: (commentView) {
+                          onCommentSuccess: (commentView, userChanged) {
                             // TODO: Handle
                           },
                         ),

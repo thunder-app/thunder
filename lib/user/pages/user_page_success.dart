@@ -307,9 +307,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               context,
                               commentView: isEdit ? commentView : null,
                               parentCommentView: isEdit ? null : commentView,
-                              onCommentSuccess: (commentView) {
-                                // TODO: handle success for account page changes.
-                                // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                              onCommentSuccess: (commentView, userChanged) {
+                                if (!userChanged) {
+                                  // TODO: handle success for account page changes.
+                                  // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                                }
                               },
                             ),
                             isOwnComment: widget.isAccountUser,
@@ -368,9 +370,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               context,
                               commentView: isEdit ? commentView : null,
                               parentCommentView: isEdit ? null : commentView,
-                              onCommentSuccess: (commentView) {
-                                // TODO: handle success for account page changes.
-                                // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                              onCommentSuccess: (commentView, userChanged) {
+                                if (!userChanged) {
+                                  // TODO: handle success for account page changes.
+                                  // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                                }
                               },
                             ),
                             isOwnComment: widget.isAccountUser && widget.savedComments![index].commentView!.creator.id == currentUserId,
