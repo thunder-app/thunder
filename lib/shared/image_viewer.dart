@@ -154,6 +154,14 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     Animation? animation;
     return Stack(
       children: [
+        AppBar(
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            // Forcing status bar to display bright icons even in light mode
+            statusBarIconBrightness: Brightness.light, // For Android (dark icons)
+            statusBarBrightness: Brightness.dark, // For iOS (dark icons)
+          ),
+        ),
         AnimatedContainer(
           duration: const Duration(milliseconds: 400),
           color: fullscreen ? Colors.black : Colors.black.withOpacity(slideTransparency),
@@ -194,7 +202,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     }
                   }
                 : null,
-            // End doubltap zoom
+            // End doubletap zoom
             onVerticalDragEnd: slideZooming
                 ? (details) {
                     setState(() {
@@ -383,6 +391,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
               opacity: fullscreen ? 0.0 : 1.0,
               duration: const Duration(milliseconds: 200),
               child: Container(
+                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
@@ -390,12 +399,11 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     stops: [0, 0.3, 1],
                     colors: [
                       Colors.transparent,
-                      Colors.black12,
                       Colors.black26,
+                      Colors.black45,
                     ],
                   ),
                 ),
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -428,8 +436,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     stops: [0, 0.3, 1],
                     colors: [
                       Colors.transparent,
-                      Colors.black12,
                       Colors.black26,
+                      Colors.black45,
                     ],
                   ),
                 ),
@@ -477,7 +485,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   Icons.share_rounded,
                                   semanticLabel: "Share",
                                   color: Colors.white.withOpacity(0.90),
-                                  shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0), Shadow(color: Colors.black, blurRadius: 50.0)],
                                 ),
                         ),
                       ),
