@@ -2198,5 +2198,21 @@
   "viewSource": "Ver la fuente",
   "@viewSource": {
     "description": "Action for viewing source (raw markdown)"
+  },
+  "upvoteColor": "Color del voto positivo",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
+  },
+  "useProfilePictureForDrawer": "Usar imagen de perfil para cajón",
+  "@useProfilePictureForDrawer": {
+    "description": "Setting name for using the profile picture for the drawer"
+  },
+  "useProfilePictureForDrawerSubtitle": "Cuando inicia sesión, muestra la imagen de perfil del usuario en lugar del ícono del cajón",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Setting subtitle for using the profile picture for the drawer"
+  },
+  "downvoteColor": "Color de voto negativo",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
   }
 }
