@@ -162,6 +162,14 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     Animation? animation;
     return Stack(
       children: [
+        AppBar(
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            // Forcing status bar to display bright icons even in light mode
+            statusBarIconBrightness: Brightness.light, // For Android (dark icons)
+            statusBarBrightness: Brightness.dark, // For iOS (dark icons)
+          ),
+        ),
         AnimatedContainer(
           duration: const Duration(milliseconds: 400),
           color: fullscreen ? Colors.black : Colors.black.withOpacity(slideTransparency),
@@ -202,7 +210,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     }
                   }
                 : null,
-            // End doubltap zoom
+            // End doubletap zoom
             onVerticalDragEnd: slideZooming
                 ? (details) {
                     setState(() {
@@ -286,9 +294,9 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 double begin = state.gestureDetails!.totalScale!;
                                 double end;
 
-                                        animation?.removeListener(animationListener);
-                                        animationController.stop();
-                                        animationController.reset();
+                                animation?.removeListener(animationListener);
+                                animationController.stop();
+                                animationController.reset();
 
                                 if (begin == 1) {
                                   end = 2;
