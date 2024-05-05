@@ -1,4 +1,6 @@
 // Flutter imports
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 // Package imports
@@ -35,6 +37,7 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
             : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
+    canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
       providers: [

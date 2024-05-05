@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 
@@ -87,6 +89,7 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
         break;
     }
     return SwipeablePageRoute<dynamic>(
+      canSwipe: Platform.isIOS || context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: !context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
       builder: (context) {
         return page;
@@ -164,6 +167,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
         return true;
       },
       child: Scaffold(
+        backgroundColor: theme.cardColor,
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -526,6 +530,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     ),
                   );
                 }
+                return null;
               },
               itemCount: (accounts?.length ?? 0) + (anonymousInstances?.length ?? 0),
             ),
