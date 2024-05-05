@@ -1,4 +1,6 @@
 // Flutter imports
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 // Package imports
@@ -51,6 +53,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
           SwipeablePageRoute(
             transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
             backGestureDetectionWidth: 45,
+            canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
             canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
             builder: (context) => MultiBlocProvider(
               providers: [
