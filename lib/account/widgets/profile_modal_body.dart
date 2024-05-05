@@ -167,6 +167,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
         return true;
       },
       child: Scaffold(
+        backgroundColor: theme.cardColor,
         body: CustomScrollView(
           slivers: [
             SliverAppBar(

@@ -348,7 +348,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               ),
                       ),
                       child: Material(
-                        color: highlightComment ? theme.highlightColor : theme.colorScheme.background,
+                        color: highlightComment ? theme.highlightColor : null,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
