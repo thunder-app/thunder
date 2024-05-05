@@ -1,8 +1,4 @@
-import 'package:expandable/expandable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/settings/widgets/post_placeholder.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
