@@ -133,8 +133,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             height: 42.0,
                             child: Icon(Icons.chevron_right_rounded),
                           ),
-                          onTap: () => showProfileModalSheet(context)
-                      ),
+                          onTap: () => showProfileModalSheet(context)),
                       if (state.status != UserSettingsStatus.notLoggedIn)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -172,8 +171,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   height: 42.0,
                                   child: Icon(Icons.chevron_right_rounded),
                                 ),
-                                onTap: () => showProfileModalSheet(context, showLogoutDialog: true)
-                            ),
+                                onTap: () => showProfileModalSheet(context, showLogoutDialog: true)),
                             ToggleOption(
                               description: l10n.showReadPosts,
                               value: showReadPosts,

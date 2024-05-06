@@ -58,16 +58,16 @@ class _UserPageState extends State<UserPage> {
             scrolledUnderElevation: 0,
             leading: widget.isAccountUser
                 ? Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
-                  child: IconButton(
-                    onPressed: () => showProfileModalSheet(context),
-                    icon: Icon(
-                      Icons.people_alt_rounded,
-                      semanticLabel: AppLocalizations.of(context)!.profiles,
+                    padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
+                    child: IconButton(
+                      onPressed: () => showProfileModalSheet(context),
+                      icon: Icon(
+                        Icons.people_alt_rounded,
+                        semanticLabel: AppLocalizations.of(context)!.profiles,
+                      ),
+                      tooltip: AppLocalizations.of(context)!.profiles,
                     ),
-                    tooltip: AppLocalizations.of(context)!.profiles,
-                  ),
-                )
+                  )
                 : null,
             actions: [
               Padding(
