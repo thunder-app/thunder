@@ -148,5 +148,5 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
   );
 
   // Register Thunder with UnifiedPush
-  if (GlobalContext.context.mounted) UnifiedPush.registerAppWithDialog(GlobalContext.context, 'Thunder', []);
+  if (GlobalContext.context.mounted) UnifiedPush.registerAppWithDialog(GlobalContext.context);
 }

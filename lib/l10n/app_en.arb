@@ -95,6 +95,10 @@
   "@applied": {},
   "apply": "Apply",
   "@apply": {},
+  "areNotificationsAllowedBySystem": "Notifications are allowed by system: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
   "back": "Back",
   "@back": {},
   "backButton": "Back button",
@@ -186,6 +190,10 @@
   "changeAccountSettingsFor": "Change account settings for",
   "@changeAccountSettingsFor": {
     "description": "Heading for the profiler modal when changing account settings"
+  },
+  "changeNotificationSettings": "Change notification settings...",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
   },
   "changeSort": "Change Sort",
   "@changeSort": {},
@@ -443,6 +451,10 @@
   "@crossPostedTo": {},
   "currentLongPress": "Currently set as long press",
   "@currentLongPress": {},
+  "currentNotificationsMode": "Current notifications mode: {mode}",
+  "@currentNotificationsMode": {
+    "description": "A status indicator for the current notifications mode"
+  },
   "currentSinglePress": "Currently set as single press",
   "@currentSinglePress": {},
   "customizeSwipeActions": "Customize swipe actions (tap to change)",
@@ -466,6 +478,10 @@
   "debugDescription": "The following debug settings should only be used for troubleshooting purposes.",
   "@debugDescription": {
     "description": "Explanation for debug settings page"
+  },
+  "debugNotificationsDescription": "Use the following options to troubleshoot issues related to notifications.",
+  "@debugNotificationsDescription": {
+    "description": "A description for the notification debugging section"
   },
   "defaultColor": "Default",
   "@defaultColor": {
@@ -758,6 +774,10 @@
   "green": "Green",
   "@green": {
     "description": "The color green"
+  },
+  "havingIssuesWithNotifications": "Having issues with notifications?",
+  "@havingIssuesWithNotifications": {
+    "description": "A shortcut to navigate to the notification debugging section"
   },
   "hidCommunity": "Hid Community",
   "@hidCommunity": {
@@ -1101,6 +1121,10 @@
   },
   "new_": "New",
   "@new_": {},
+  "no": "No",
+  "@no": {
+    "description": "A negative status"
+  },
   "noComments": "Oh. There are no comments.",
   "@noComments": {},
   "noCommentsFound": "No comments found.",
@@ -1587,6 +1611,22 @@
   "@selectText": {
     "description": "Post and comment action for selecting text"
   },
+  "sendBackgroundTestLocalNotification": "Send background test local notification",
+  "@sendBackgroundTestLocalNotification": {
+    "description": "The option to send a background notification for testing"
+  },
+  "sendBackgroundTestUnifiedPushNotification": "Send background test UnifiedPush notification",
+  "@sendBackgroundTestUnifiedPushNotification": {
+    "description": "The option to send a background UnifiedPUsh notification for testing"
+  },
+  "sendTestLocalNotification": "Send test local notification",
+  "@sendTestLocalNotification": {
+    "description": "The option to send a notification for testing"
+  },
+  "sendTestUnifiedPushNotification": "Send test UnifiedPush notification",
+  "@sendTestUnifiedPushNotification": {
+    "description": "The option to send a UnifiedPush notification for testing"
+  },
   "sensitiveContentWarning": "May contain sensitive content. Tap to reveal.",
   "@sensitiveContentWarning": {
     "description": "Warning for sensitive content (e.g., from modlog)"
@@ -1853,6 +1893,14 @@
   "@teal": {
     "description": "The color teal"
   },
+  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It may take a few minutes.)",
+  "@testBackgroundNotificationDescription": {
+    "description": "A message describing the background test notification"
+  },
+  "testBackgroundUnifiedPushNotificationDescription": "Thunder will ask the notification server to send a delayed notification and then close itself. (It may take a few minutes.)",
+  "@testBackgroundUnifiedPushNotificationDescription": {
+    "description": "A message describing the UnifiedPush background test notification"
+  },
   "text": "Text",
   "@text": {},
   "textActions": "Text Actions",
@@ -2027,9 +2075,17 @@
   "@unhidCommunity": {
     "description": "Short decription for moderator action to unhide a community"
   },
-  "unifiedPushNotifications": "Unified Push Notifications",
+  "unifiedPushDistributorApp": "UnifiedPush Distributor app: {app} ({count} available)",
+  "@unifiedPushDistributorApp": {
+    "description": "A status indicator telling the current state of the UnifiedPush distributor app"
+  },
+  "unifiedPushNotifications": "UnifiedPush Notifications",
   "@unifiedPushNotifications": {
-    "description": "Describes the notification type for Unified Push Notifications"
+    "description": "Describes the notification type for UnifiedPush Notifications"
+  },
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
   },
   "unlockPost": "Unlock Post",
   "@unlockPost": {
@@ -2222,5 +2278,9 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "yes": "Yes",
+  "@yes": {
+    "description": "A positive status"
+  }
 }
