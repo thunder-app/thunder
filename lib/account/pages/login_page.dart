@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -187,14 +186,31 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     firstChild: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        RichText(
-                          text: TextSpan(
-                            style: theme.textTheme.bodySmall?.copyWith(color: Colors.blue),
-                            text: AppLocalizations.of(context)!.gettingStarted,
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                handleLink(context, url: 'https://join-lemmy.org/');
-                              },
+                        OutlinedButton(
+                          onPressed: () {
+                            handleLink(context, url: 'https://join-lemmy.org/');
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.only(left: 10, right: 16),
+                            backgroundColor: theme.colorScheme.surface,
+                            textStyle: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.insert_link_rounded,
+                                color: theme.textTheme.bodySmall?.color,
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                AppLocalizations.of(context)!.gettingStarted,
+                                style: theme.textTheme.bodySmall,
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -202,32 +218,60 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     secondChild: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(width: 5),
-                        RichText(
-                          text: TextSpan(
-                            style: theme.textTheme.bodySmall?.copyWith(color: Colors.blue),
-                            text: AppLocalizations.of(context)!.openInstance,
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                handleLink(context, url: 'https://${_instanceTextEditingController.text}');
-                              },
+                        OutlinedButton(
+                          onPressed: () {
+                            handleLink(context, url: 'https://${_instanceTextEditingController.text}');
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.only(left: 10, right: 16),
+                            backgroundColor: theme.colorScheme.surface,
+                            textStyle: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.insert_link_rounded,
+                                color: theme.textTheme.bodySmall?.color,
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                AppLocalizations.of(context)!.openInstance,
+                                style: theme.textTheme.bodySmall,
+                              ),
+                            ],
                           ),
                         ),
                         if (!widget.anonymous) ...[
-                          const SizedBox(width: 10),
-                          Text(
-                            '|',
-                            style: theme.textTheme.bodySmall,
-                          ),
-                          const SizedBox(width: 10),
-                          RichText(
-                            text: TextSpan(
-                              style: theme.textTheme.bodySmall?.copyWith(color: Colors.blue),
-                              text: AppLocalizations.of(context)!.createAccount,
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  handleLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
-                                },
+                          const SizedBox(width: 12),
+                          OutlinedButton(
+                            onPressed: () {
+                              handleLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.only(left: 10, right: 16),
+                              backgroundColor: theme.colorScheme.surface,
+                              textStyle: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.insert_link_rounded,
+                                  color: theme.textTheme.bodySmall?.color,
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!.createAccount,
+                                  style: theme.textTheme.bodySmall,
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -274,7 +318,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     hideOnError: true,
                   ),
                   if (!widget.anonymous) ...[
-                    const SizedBox(height: 35.0),
+                    const SizedBox(height: 32.0),
                     AutofillGroup(
                       child: Column(
                         children: <Widget>[
@@ -344,7 +388,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       enableSuggestions: false,
                     ),
                   ],
-                  const SizedBox(height: 12.0),
                   const SizedBox(height: 32.0),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -362,6 +405,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     child: Text(widget.anonymous ? AppLocalizations.of(context)!.add : AppLocalizations.of(context)!.login,
                         style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                   ),
+                  const SizedBox(height: 12.0),
                   TextButton(
                     style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
                     onPressed: !isLoading ? () => widget.popRegister() : null,
