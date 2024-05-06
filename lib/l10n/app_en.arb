@@ -1887,6 +1887,10 @@
   "@thickness": {
     "description": "Describes a thickness (e.g., divider)"
   },
+  "thisAccount": "This Account",
+  "@thisAccount": {
+    "description": "Referring to the currently active account in account settings"
+  },
   "thunderHasBeenUpdated": "Thunder updated to {version}!",
   "@thunderHasBeenUpdated": {
     "description": "Heading for changelog when Thunder has been updated"

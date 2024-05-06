@@ -23,7 +23,7 @@ import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/utils/restore_user.dart';
-import 'package:thunder/user/widgets/user_selector.dart';
+import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
@@ -117,10 +117,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 bool showBotAccounts = localUser?.showBotAccounts ?? true;
                 bool showScores = localUser?.showScores ?? true;
 
-                if (state.getSiteResponse == null || myUserInfo == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
                 return SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -134,21 +130,25 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             child: Icon(Icons.chevron_right_rounded),
                           ),
                           onTap: () => showProfileModalSheet(context)),
-                      if (state.status != UserSettingsStatus.notLoggedIn)
+                      if (state.status != UserSettingsStatus.notLoggedIn && state.getSiteResponse != null && myUserInfo != null)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            const Divider(),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text('This Account', style: theme.textTheme.titleMedium),
+                            Divider(
+                              indent: 32.0,
+                              height: 32.0,
+                              endIndent: 32.0,
+                              thickness: 2.0,
+                              color: theme.dividerColor.withOpacity(0.6),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 16.0, bottom: 16.0, right: 8),
-                              child: UserSelector(
-                                profileModalHeading: l10n.changeAccountSettingsFor,
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.thisAccount, style: theme.textTheme.titleMedium),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 16.0, bottom: 16.0, right: 8),
+                              child: UserIndicator(),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
