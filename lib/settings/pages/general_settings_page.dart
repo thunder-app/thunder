@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,6 +49,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// The current locale
   Locale currentLocale = Localizations.localeOf(GlobalContext.context);
+
+  /// Whether to show the user's profile picture instead of the drawer icon
+  bool useProfilePictureForDrawer = false;
 
   /// Default listing type for posts on the feed (subscribed, all, local)
   ListingType defaultListingType = DEFAULT_LISTING_TYPE;
@@ -123,9 +127,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// Controller for the push notification server URL
   TextEditingController controller = TextEditingController();
 
-  /// Whether or not experimental features are enabled
-  bool enableExperimentalFeatures = false;
-
   Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
@@ -145,6 +146,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.appLanguageCode:
         await prefs.setString(LocalSettings.appLanguageCode.name, value.languageCode);
         setState(() => currentLocale = value);
+        break;
+      case LocalSettings.useProfilePictureForDrawer:
+        await prefs.setBool(LocalSettings.useProfilePictureForDrawer.name, value);
+        setState(() => useProfilePictureForDrawer = value);
         break;
 
       case LocalSettings.hideNsfwPosts:
@@ -247,6 +252,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
       currentLocale = Localizations.localeOf(context);
+      useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
 
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
@@ -419,6 +425,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ],
               ),
               highlightKey: settingToHighlight == LocalSettings.appLanguageCode ? settingToHighlightKey : null,
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.useProfilePictureForDrawer,
+              subtitle: l10n.useProfilePictureForDrawerSubtitle,
+              value: useProfilePictureForDrawer,
+              iconEnabled: Icons.person_rounded,
+              iconDisabled: Icons.person_outline_rounded,
+              onToggle: (value) => setPreferences(LocalSettings.useProfilePictureForDrawer, value),
+              highlightKey: settingToHighlight == LocalSettings.useProfilePictureForDrawer ? settingToHighlightKey : null,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
@@ -709,7 +727,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.local,
                                 softWrap: true,
                               ),
-                              if (enableExperimentalFeatures)
+                              if (kDebugMode)
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useUnifiedPushNotifications,
@@ -725,7 +743,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.none,
                                 softWrap: true,
                               ),
-                              if (enableExperimentalFeatures)
+                              if (kDebugMode)
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useApplePushNotifications,
@@ -801,6 +819,21 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   },
                 ),
               ),
+            SliverToBoxAdapter(
+              child: SettingsListTile(
+                icon: Icons.bug_report_rounded,
+                description: l10n.havingIssuesWithNotifications,
+                widget: const SizedBox(
+                  height: 42.0,
+                  child: Icon(Icons.chevron_right_rounded),
+                ),
+                onTap: () {
+                  GoRouter.of(context).push(SETTINGS_DEBUG_PAGE, extra: [
+                    context.read<ThunderBloc>(),
+                  ]);
+                },
+              ),
+            ),
           ],
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(

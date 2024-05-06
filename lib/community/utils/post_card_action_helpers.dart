@@ -25,6 +25,7 @@ import 'package:thunder/post/widgets/reason_bottom_sheet.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
@@ -70,7 +71,7 @@ class ExtendedPostCardActions {
     required this.icon,
     this.trailingIcon,
     required this.label,
-    this.color,
+    this.getColor,
     this.getForegroundColor,
     this.getOverrideIcon,
     this.getOverrideLabel,
@@ -83,8 +84,8 @@ class ExtendedPostCardActions {
   final IconData icon;
   final IconData? trailingIcon;
   final String label;
-  final Color? color;
-  final Color? Function(PostView postView)? getForegroundColor;
+  final Color Function(BuildContext context)? getColor;
+  final Color? Function(BuildContext context, PostView postView)? getForegroundColor;
   final IconData? Function(PostView postView)? getOverrideIcon;
   final String? Function(BuildContext context, PostView postView)? getOverrideLabel;
   final String? Function(BuildContext context, PostViewMedia postViewMedia)? getSubtitleLabel;
@@ -195,16 +196,16 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.upvote,
     label: l10n.upvote,
     icon: Icons.arrow_upward_rounded,
-    color: Colors.orange,
-    getForegroundColor: (postView) => postView.myVote == 1 ? Colors.orange : null,
+    getColor: (context) => context.read<ThunderBloc>().state.upvoteColor.color,
+    getForegroundColor: (context, postView) => postView.myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : null,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.downvote,
     label: l10n.downvote,
     icon: Icons.arrow_downward_rounded,
-    color: Colors.blue,
-    getForegroundColor: (postView) => postView.myVote == -1 ? Colors.blue : null,
+    getColor: (context) => context.read<ThunderBloc>().state.downvoteColor.color,
+    getForegroundColor: (context, postView) => postView.myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : null,
     shouldShow: (context, commentView) => context.read<AuthBloc>().state.downvotesEnabled,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
@@ -212,8 +213,8 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.save,
     label: l10n.save,
     icon: Icons.star_border_rounded,
-    color: Colors.purple,
-    getForegroundColor: (postView) => postView.saved ? Colors.purple : null,
+    getColor: (context) => context.read<ThunderBloc>().state.saveColor.color,
+    getForegroundColor: (context, postView) => postView.saved ? context.read<ThunderBloc>().state.saveColor.color : null,
     getOverrideIcon: (postView) => postView.saved ? Icons.star_rounded : null,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
@@ -221,7 +222,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.toggleRead,
     label: l10n.toggelRead,
     icon: Icons.mail_outline_outlined,
-    color: Colors.teal.shade300,
+    getColor: (context) => context.read<ThunderBloc>().state.markReadColor.color,
     getOverrideIcon: (postView) => postView.read ? Icons.mark_email_unread_rounded : Icons.mark_email_read_outlined,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
@@ -520,8 +521,8 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                         return PickerItemData(
                           label: a.label,
                           icon: a.getOverrideIcon?.call(widget.postViewMedia.postView) ?? a.icon,
-                          backgroundColor: a.color,
-                          foregroundColor: a.getForegroundColor?.call(widget.postViewMedia.postView),
+                          backgroundColor: a.getColor?.call(context),
+                          foregroundColor: a.getForegroundColor?.call(context, widget.postViewMedia.postView),
                           onSelected: (a.shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(a.postCardAction) : null,
                         );
                       },

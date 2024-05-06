@@ -155,6 +155,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         ),
       ],
       child: Scaffold(
+        backgroundColor: theme.cardColor,
         resizeToAvoidBottomInset: false,
         body: Padding(
           padding: EdgeInsets.only(
