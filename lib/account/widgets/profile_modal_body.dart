@@ -311,7 +311,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 ),
                               ],
                             ),
-                            trailing: !widget.quickSelectMode && (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
+                            trailing: !widget.quickSelectMode
                                 ? (currentAccountId == accounts![index].account.id)
                                     ? IconButton(
                                         icon: loggingOutId == accounts![index].account.id

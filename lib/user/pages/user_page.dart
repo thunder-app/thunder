@@ -57,14 +57,17 @@ class _UserPageState extends State<UserPage> {
           appBar: AppBar(
             scrolledUnderElevation: 0,
             leading: widget.isAccountUser
-                ? IconButton(
-                    onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
+                ? Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
+                  child: IconButton(
+                    onPressed: () => showProfileModalSheet(context),
                     icon: Icon(
-                      Icons.logout,
-                      semanticLabel: AppLocalizations.of(context)!.logOut,
+                      Icons.people_alt_rounded,
+                      semanticLabel: AppLocalizations.of(context)!.profiles,
                     ),
-                    tooltip: AppLocalizations.of(context)!.logOut,
-                  )
+                    tooltip: AppLocalizations.of(context)!.profiles,
+                  ),
+                )
                 : null,
             actions: [
               Padding(
@@ -116,18 +119,6 @@ class _UserPageState extends State<UserPage> {
                       semanticLabel: AppLocalizations.of(context)!.accountSettings,
                     ),
                     tooltip: AppLocalizations.of(context)!.accountSettings,
-                  ),
-                ),
-              if (widget.isAccountUser)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
-                  child: IconButton(
-                    onPressed: () => showProfileModalSheet(context),
-                    icon: Icon(
-                      Icons.people_alt_rounded,
-                      semanticLabel: AppLocalizations.of(context)!.profiles,
-                    ),
-                    tooltip: AppLocalizations.of(context)!.profiles,
                   ),
                 ),
             ],
