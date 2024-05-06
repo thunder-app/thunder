@@ -17,9 +17,6 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
-const Color upVoteColor = Colors.orange;
-const Color downVoteColor = Colors.blue;
-
 /// Contains metadata related to a given post. This is generally displayed as part of the post card.
 ///
 /// This information is customizable, and can be changed by the user in the settings.
@@ -131,8 +128,8 @@ class ScorePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (voteType) {
-      1 => upVoteColor,
-      -1 => downVoteColor,
+      1 => context.read<ThunderBloc>().state.upvoteColor.color,
+      -1 => context.read<ThunderBloc>().state.downvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -179,7 +176,7 @@ class UpvotePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isUpvoted) {
-      true => upVoteColor,
+      true => context.read<ThunderBloc>().state.upvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -218,7 +215,7 @@ class DownvotePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isDownvoted) {
-      true => downVoteColor,
+      true => context.read<ThunderBloc>().state.downvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -349,6 +346,47 @@ class UrlPostCardMetaData extends StatelessWidget {
         padding: 3.0,
         icon: Icon(Icons.public, size: 17.0, color: color),
       ),
+    );
+  }
+}
+
+/// Display metadata for a cross-post, used in the expanded cross-posts view
+class CrossPostMetaData extends StatelessWidget {
+  /// Accepts the PostView of a cross-post
+  final PostView crossPost;
+
+  const CrossPostMetaData({
+    super.key,
+    required this.crossPost,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThunderBloc, ThunderState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ScorePostCardMetaData(
+              score: crossPost.counts.score,
+              voteType: crossPost.myVote,
+              hasBeenRead: true,
+            ),
+            const SizedBox(width: 10.0),
+            CommentCountPostCardMetaData(
+              commentCount: crossPost.counts.comments,
+              unreadCommentCount: crossPost.unreadComments,
+              hasBeenRead: true,
+            ),
+            const SizedBox(width: 10.0),
+            DateTimePostCardMetaData(
+              dateTime: crossPost.post.published.toIso8601String(),
+              hasBeenEdited: crossPost.post.updated != null ? true : false,
+              hasBeenRead: true,
+            ),
+          ],
+        );
+      },
     );
   }
 }

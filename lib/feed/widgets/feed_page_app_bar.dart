@@ -23,6 +23,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
@@ -43,6 +44,8 @@ class FeedPageAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final feedBloc = context.read<FeedBloc>();
     final thunderBloc = context.read<ThunderBloc>();
+    final AuthState authState = context.read<AuthBloc>().state;
+    final AccountState accountState = context.read<AccountBloc>().state;
 
     return SliverAppBar(
       pinned: !thunderBloc.state.hideTopBarOnScroll,
@@ -51,22 +54,39 @@ class FeedPageAppBar extends StatelessWidget {
       toolbarHeight: 70.0,
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
       title: FeedAppBarTitle(visible: showAppBarTitle),
-      leading: IconButton(
-        icon: scaffoldStateKey == null
-            ? (!kIsWeb && Platform.isIOS
-                ? Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                  )
-                : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
-            : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
-        onPressed: () {
-          HapticFeedback.mediumImpact();
-          (scaffoldStateKey == null && (feedBloc.state.feedType == FeedType.community || feedBloc.state.feedType == FeedType.user))
-              ? Navigator.of(context).maybePop()
-              : scaffoldStateKey?.currentState?.openDrawer();
-        },
-      ),
+      leadingWidth: scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
+      leading: scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
+          ? Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: UserAvatar(
+                      person: accountState.personView?.person,
+                    ),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () => _openDrawerOrGoBack(context, feedBloc),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : IconButton(
+              icon: scaffoldStateKey == null
+                  ? (!kIsWeb && Platform.isIOS
+                      ? Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                        )
+                      : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
+                  : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
+              onPressed: () => _openDrawerOrGoBack(context, feedBloc),
+            ),
       actions: (feedBloc.state.status != FeedStatus.initial && feedBloc.state.status != FeedStatus.failureLoadingCommunity && feedBloc.state.status != FeedStatus.failureLoadingUser)
           ? [
               if (feedBloc.state.feedType == FeedType.general) const FeedAppBarGeneralActions(),
@@ -75,6 +95,13 @@ class FeedPageAppBar extends StatelessWidget {
             ]
           : [],
     );
+  }
+
+  void _openDrawerOrGoBack(BuildContext context, FeedBloc feedBloc) {
+    HapticFeedback.mediumImpact();
+    (scaffoldStateKey == null && (feedBloc.state.feedType == FeedType.community || feedBloc.state.feedType == FeedType.user))
+        ? Navigator.of(context).maybePop()
+        : scaffoldStateKey?.currentState?.openDrawer();
   }
 }
 

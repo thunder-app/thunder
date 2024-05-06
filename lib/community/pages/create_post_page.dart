@@ -367,13 +367,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ],
               ),
               body: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             CommunitySelector(
                               communityId: communityId,
@@ -480,14 +480,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 isUserLoggedIn: true,
                               ),
                             ),
-                            if (crossPosts.isNotEmpty && widget.postView == null)
-                              Visibility(
-                                visible: url.isNotEmpty,
-                                child: CrossPosts(
-                                  crossPosts: crossPosts,
-                                  isNewPost: true,
-                                ),
+                            if (crossPosts.isNotEmpty && widget.postView == null) const SizedBox(height: 6),
+                            Visibility(
+                              visible: url.isNotEmpty && crossPosts.isNotEmpty,
+                              child: CrossPosts(
+                                crossPosts: crossPosts,
+                                isNewPost: true,
                               ),
+                            ),
                             const SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -538,8 +538,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ]),
                         ),
                       ),
-                      const Divider(),
-                      Row(
+                    ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    Container(
+                      color: theme.cardColor,
+                      child: Row(
                         children: [
                           Expanded(
                             child: MarkdownToolbar(
@@ -569,8 +574,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 },
                                 MarkdownType.community: () {
                                   showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                        '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                    _bodyTextController.text = _bodyTextController.text.replaceRange(
+                                        _bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
                                   });
                                 },
                               },
@@ -584,7 +589,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
                             child: IconButton(
                               onPressed: () {
                                 if (!showPreview) {
@@ -606,8 +611,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

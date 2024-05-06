@@ -58,6 +58,7 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
     backGestureDetectionWidth: 45,
+    canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
     builder: (otherContext) {
       return MultiBlocProvider(

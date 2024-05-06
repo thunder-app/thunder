@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,6 +46,7 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
                   : null,
           reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
           backGestureDetectionWidth: 45,
+          canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
           canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
           builder: (context) => MultiBlocProvider(
             providers: [

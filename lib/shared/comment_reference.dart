@@ -279,8 +279,9 @@ class _CommentReferenceState extends State<CommentReference> {
                       background: dismissDirection == DismissDirection.startToEnd
                           ? AnimatedContainer(
                               alignment: Alignment.centerLeft,
-                              color:
-                                  swipeAction == null ? state.leftPrimaryCommentGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                              color: swipeAction == null
+                                  ? state.leftPrimaryCommentGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                                  : (swipeAction ?? SwipeAction.none).getColor(context),
                               duration: const Duration(milliseconds: 200),
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * dismissThreshold,
@@ -290,8 +291,8 @@ class _CommentReferenceState extends State<CommentReference> {
                           : AnimatedContainer(
                               alignment: Alignment.centerRight,
                               color: swipeAction == null
-                                  ? (state.rightPrimaryCommentGesture).getColor().withOpacity(dismissThreshold / firstActionThreshold)
-                                  : (swipeAction ?? SwipeAction.none).getColor(),
+                                  ? (state.rightPrimaryCommentGesture).getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                                  : (swipeAction ?? SwipeAction.none).getColor(context),
                               duration: const Duration(milliseconds: 200),
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * dismissThreshold,

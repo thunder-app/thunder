@@ -101,6 +101,8 @@ enum LocalSettings {
   showUpdateChangelogs(name: 'setting_show_update_changelogs', key: 'showUpdateChangelogs', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   scoreCounters(name: 'setting_score_counters', key: "showScoreCounters", category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   appLanguageCode(name: 'setting_app_language_code', key: 'appLanguage', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
+  useProfilePictureForDrawer(
+      name: 'setting_use_profile_picture_for_drawer', key: 'useProfilePictureForDrawer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
   inboxNotificationType(name: 'setting_inbox_notification_type', key: 'inboxNotificationType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   pushNotificationServer(name: 'setting_push_notification_server', key: 'pushNotificationServer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
 
@@ -187,6 +189,15 @@ enum LocalSettings {
   appThemeAccentColor(name: 'setting_theme_custom_app_theme', key: 'themeAccentColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   useMaterialYouTheme(name: 'setting_theme_use_material_you', key: 'useMaterialYouTheme', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
 
+  // Color settings
+  // The first setting exists purely for searching
+  actionColors(name: 'setting_action_colors', key: 'actionColors', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  upvoteColor(name: 'settings_theme_upvote_color', key: 'upvoteColor', searchable: false),
+  downvoteColor(name: 'settings_theme_downvote_color', key: 'downvoteColor', searchable: false),
+  saveColor(name: 'settings_theme_save_color', key: 'saveColor', searchable: false),
+  markReadColor(name: 'settings_theme_mark_read_color', key: 'markReadColor', searchable: false),
+  replyColor(name: 'settings_theme_reply_color', key: 'replyColor', searchable: false),
+
   // Font Settings
   titleFontSizeScale(name: 'setting_theme_title_font_size_scale', key: 'postTitleFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   contentFontSizeScale(name: 'setting_theme_content_font_size_scale', key: 'postContentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
@@ -198,24 +209,45 @@ enum LocalSettings {
   // This setting exists purely for the searching function
   userStyle(name: '', key: 'userStyle', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
   userFullNameUserNameThickness(
-      name: 'user_full_name_user_name_thickness', key: 'userFullNameUserNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
-  userFullNameUserNameColor(name: 'user_full_name_user_name_color', key: 'userFullNameUserNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+      name: 'user_full_name_user_name_thickness', key: 'userFullNameUserNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names, searchable: false),
+  userFullNameUserNameColor(
+      name: 'user_full_name_user_name_color', key: 'userFullNameUserNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names, searchable: false),
   userFullNameInstanceNameThickness(
-      name: 'user_full_name_instance_name_thickness', key: 'userFullNameInstanceNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+      name: 'user_full_name_instance_name_thickness',
+      key: 'userFullNameInstanceNameThickness',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
   userFullNameInstanceNameColor(
-      name: 'usr_full_name_instance_name_color', key: 'userFullNameInstanceNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+      name: 'usr_full_name_instance_name_color', key: 'userFullNameInstanceNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names, searchable: false),
 
   // This setting exists purely for the searching function
   communityStyle(name: '', key: 'communityStyle', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
   communityFormat(name: 'community_format', key: 'communityFormat', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
   communityFullNameCommunityNameThickness(
-      name: 'community_full_name_community_name_thickness', key: 'communityFullNameCommunityNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+      name: 'community_full_name_community_name_thickness',
+      key: 'communityFullNameCommunityNameThickness',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
   communityFullNameCommunityNameColor(
-      name: 'community_full_name_community_name_color', key: 'communityFullNameCommunityNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+      name: 'community_full_name_community_name_color',
+      key: 'communityFullNameCommunityNameColor',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
   communityFullNameInstanceNameThickness(
-      name: 'community_full_name_instance_name_thickness', key: 'communityFullNameInstanceNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+      name: 'community_full_name_instance_name_thickness',
+      key: 'communityFullNameInstanceNameThickness',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
   communityFullNameInstanceNameColor(
-      name: 'community_full_name_instance_name_color', key: 'communityFullNameInstanceNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+      name: 'community_full_name_instance_name_color',
+      key: 'communityFullNameInstanceNameColor',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
 
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings
@@ -365,6 +397,7 @@ extension LocalizationExt on AppLocalizations {
       'imageCachingMode': imageCachingMode,
       'showNavigationLabels': showNavigationLabels,
       'defaultCommentSortType': defaultCommentSortType,
+      'useProfilePictureForDrawer': useProfilePictureForDrawer,
       'collapseParentCommentBodyOnGesture': collapseParentCommentBodyOnGesture,
       'showCommentActionButtons': showCommentActionButtons,
       'showUserInstance': showUserInstance,
@@ -376,6 +409,7 @@ extension LocalizationExt on AppLocalizations {
       'theme': theme,
       'themeAccentColor': themeAccentColor,
       'useMaterialYouTheme': useMaterialYouTheme,
+      'actionColors': actionColors,
       'postTitleFontScale': postTitleFontScale,
       'postContentFontScale': postContentFontScale,
       'commentFontScale': commentFontScale,

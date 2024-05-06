@@ -80,8 +80,8 @@ class _UserSidebarState extends State<UserSidebar> {
                       },
                       child: personView.person.id != currentUserId ? BlockUserButton(personView: personView, isUserLoggedIn: authState.isLoggedIn) : null,
                     ),
-                    const SizedBox(height: 10.0),
-                    const Divider(height: 1, thickness: 2),
+                    if (personView.person.id != currentUserId) const SizedBox(height: 10.0),
+                    if (personView.person.id != currentUserId) const Divider(height: 1, thickness: 2),
                     Container(
                       alignment: Alignment.topCenter,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -287,7 +287,7 @@ class BlockUserButton extends StatelessWidget {
         }
 
         return Padding(
-          padding: EdgeInsets.only(top: blocked ? 10 : 4, left: 12, right: 12, bottom: 4),
+          padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
           child: ElevatedButton(
             onPressed: isUserLoggedIn
                 ? () {
