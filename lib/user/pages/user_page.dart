@@ -140,6 +140,9 @@ class _UserPageState extends State<UserPage> {
               case UserStatus.refreshing:
               case UserStatus.success:
               case UserStatus.failedToBlock:
+                if (state.personView == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 return UserPageSuccess(
                   userId: widget.userId,
                   isAccountUser: widget.isAccountUser,
