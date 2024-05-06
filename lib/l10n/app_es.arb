@@ -2067,10 +2067,6 @@
   "@applePushNotificationService": {
     "description": "Describes the notification type for Apple Push Notification Service"
   },
-  "failedToDisablePushNotifications": "Error al desactivar las notificaciones push",
-  "@failedToDisablePushNotifications": {
-    "description": "Error message when failed to disable push notifications."
-  },
   "hideThumbnails": "Ocultar miniaturas",
   "@hideThumbnails": {
     "description": "Option to hide thumbnails in feed"
