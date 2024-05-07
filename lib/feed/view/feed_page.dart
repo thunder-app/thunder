@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:expandable/expandable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -490,14 +491,19 @@ class _FeedViewState extends State<FeedView> {
                     // Widget to host the feed FAB when navigating to new page
                     AnimatedOpacity(
                       opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 150),
-                      child: thunderBloc.state.isFabOpen
-                          ? ModalBarrier(
-                              color: theme.colorScheme.background.withOpacity(0.95),
-                              dismissible: true,
-                              onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                            )
-                          : null,
+                      curve: Curves.easeInOut,
+                      duration: const Duration(milliseconds: 250),
+                      child: Stack(
+                            children: [
+                              IgnorePointer(child: Container(color: theme.colorScheme.background.withOpacity(0.95),)),
+                              if (thunderBloc.state.isFabOpen)
+                                ModalBarrier(
+                                  color: null,
+                                  dismissible: true,
+                                  onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                                ),
+                            ],
+                          ),
                     ),
                     if (Navigator.of(context).canPop() &&
                         (state.communityId != null || state.communityName != null || state.userId != null || state.username != null) &&
