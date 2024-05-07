@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:expandable/expandable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -244,7 +243,6 @@ class _FeedViewState extends State<FeedView> {
   @override
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
-    final l10n = AppLocalizations.of(context)!;
 
     bool tabletMode = thunderBloc.state.tabletMode;
     bool markPostReadOnScroll = thunderBloc.state.markPostReadOnScroll;
