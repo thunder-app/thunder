@@ -30,11 +30,13 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
       listeners: [
         BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
+            if (!state.reload) return;
             setState(() => authState = state);
           },
         ),
         BlocListener<AccountBloc, AccountState>(
           listener: (context, state) {
+            if (!state.reload) return;
             setState(() => accountState = state);
           },
         ),
