@@ -30,7 +30,7 @@ import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
-class FeedPageAppBar extends StatelessWidget {
+class FeedPageAppBar extends StatefulWidget {
   const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
 
   /// Whether to show the app bar title
@@ -41,11 +41,20 @@ class FeedPageAppBar extends StatelessWidget {
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
 
   @override
+  State<FeedPageAppBar> createState() => _FeedPageAppBarState();
+}
+
+class _FeedPageAppBarState extends State<FeedPageAppBar> {
+  Person? person;
+
+  @override
   Widget build(BuildContext context) {
     final feedBloc = context.read<FeedBloc>();
     final thunderBloc = context.read<ThunderBloc>();
     final AuthState authState = context.read<AuthBloc>().state;
     final AccountState accountState = context.read<AccountBloc>().state;
+
+    person = accountState.reload ? accountState.personView?.person : person;
 
     return SliverAppBar(
       pinned: !thunderBloc.state.hideTopBarOnScroll,
@@ -53,9 +62,9 @@ class FeedPageAppBar extends StatelessWidget {
       centerTitle: false,
       toolbarHeight: 70.0,
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: FeedAppBarTitle(visible: showAppBarTitle),
-      leadingWidth: scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
-      leading: scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
+      title: FeedAppBarTitle(visible: widget.showAppBarTitle),
+      leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
+      leading: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
           ? Padding(
               padding: const EdgeInsets.only(left: 16.0),
               child: Stack(
@@ -63,7 +72,7 @@ class FeedPageAppBar extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: UserAvatar(
-                      person: accountState.personView?.person,
+                      person: person,
                     ),
                   ),
                   Material(
@@ -77,7 +86,7 @@ class FeedPageAppBar extends StatelessWidget {
               ),
             )
           : IconButton(
-              icon: scaffoldStateKey == null
+              icon: widget.scaffoldStateKey == null
                   ? (!kIsWeb && Platform.isIOS
                       ? Icon(
                           Icons.arrow_back_ios_new_rounded,
@@ -99,9 +108,9 @@ class FeedPageAppBar extends StatelessWidget {
 
   void _openDrawerOrGoBack(BuildContext context, FeedBloc feedBloc) {
     HapticFeedback.mediumImpact();
-    (scaffoldStateKey == null && (feedBloc.state.feedType == FeedType.community || feedBloc.state.feedType == FeedType.user))
+    (widget.scaffoldStateKey == null && (feedBloc.state.feedType == FeedType.community || feedBloc.state.feedType == FeedType.user))
         ? Navigator.of(context).maybePop()
-        : scaffoldStateKey?.currentState?.openDrawer();
+        : widget.scaffoldStateKey?.currentState?.openDrawer();
   }
 }
 
