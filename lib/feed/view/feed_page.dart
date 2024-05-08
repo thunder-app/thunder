@@ -492,16 +492,19 @@ class _FeedViewState extends State<FeedView> {
                       curve: Curves.easeInOut,
                       duration: const Duration(milliseconds: 250),
                       child: Stack(
-                            children: [
-                              IgnorePointer(child: Container(color: theme.colorScheme.background.withOpacity(0.95),)),
-                              if (thunderBloc.state.isFabOpen)
-                                ModalBarrier(
-                                  color: null,
-                                  dismissible: true,
-                                  onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                                ),
-                            ],
-                          ),
+                        children: [
+                          IgnorePointer(
+                              child: Container(
+                            color: theme.colorScheme.background.withOpacity(0.95),
+                          )),
+                          if (thunderBloc.state.isFabOpen)
+                            ModalBarrier(
+                              color: null,
+                              dismissible: true,
+                              onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                            ),
+                        ],
+                      ),
                     ),
                     if (Navigator.of(context).canPop() &&
                         (state.communityId != null || state.communityName != null || state.userId != null || state.username != null) &&
