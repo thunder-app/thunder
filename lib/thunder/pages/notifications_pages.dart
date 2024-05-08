@@ -41,7 +41,7 @@ class NotificationsReplyPage extends StatelessWidget {
                 child: Material(
                   child: BlocConsumer<InboxBloc, InboxState>(
                     listener: (BuildContext context, InboxState state) {
-                      if (state.replies.isEmpty) {
+                      if (state.replies.isEmpty && (ModalRoute.of(context)?.isCurrent ?? false)) {
                         Navigator.of(context).pop();
                       }
                     },

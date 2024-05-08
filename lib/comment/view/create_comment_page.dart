@@ -219,7 +219,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
         builder: (context, state) {
           return KeyboardDismissOnTap(
             child: Scaffold(
-              backgroundColor: theme.colorScheme.surface,
               appBar: AppBar(
                 title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
                 toolbarHeight: 70.0,
@@ -373,7 +372,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                     ),
                     const Divider(height: 1),
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      color: theme.cardColor,
                       child: Row(
                         children: [
                           Expanded(
@@ -407,7 +406,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   MarkdownType.community: () {
                                     showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
                                       _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                          '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                          '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
                                     });
                                   },
                                 },
@@ -422,7 +421,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
                             child: IconButton(
                               onPressed: () {
                                 if (!showPreview) {

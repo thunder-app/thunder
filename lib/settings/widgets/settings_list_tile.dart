@@ -56,8 +56,8 @@ class SettingsListTile extends StatelessWidget {
           label: semanticLabel ?? description,
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(50)),
-            onTap: () => onTap!.call(),
-            onLongPress: onLongPress ?? () => shareSetting(context, setting, description),
+            onTap: onTap,
+            onLongPress: onLongPress,
             child: Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Row(
@@ -80,7 +80,11 @@ class SettingsListTile extends StatelessWidget {
                                   excludeSemantics: true,
                                   child: Text(
                                     description,
-                                    style: theme.textTheme.bodyMedium,
+                                    style: onTap != null || onLongPress != null
+                                        ? theme.textTheme.bodyMedium
+                                        : theme.textTheme.bodyMedium?.copyWith(
+                                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                                          ),
                                   ),
                                 ),
                                 if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
