@@ -24,6 +24,7 @@ import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
@@ -391,11 +392,36 @@ bool _getFavoriteStatus(BuildContext context) {
   return accountState.favorites.any((communityView) => communityView.community.id == feedBloc.state.fullCommunityView!.communityView.community.id);
 }
 
-void _onSubscribeIconPressed(BuildContext context) {
+void _onSubscribeIconPressed(BuildContext context) async {
   final AuthBloc authBloc = context.read<AuthBloc>();
   final FeedBloc feedBloc = context.read<FeedBloc>();
-
   final FeedState feedState = feedBloc.state;
+
+  final Community community = feedBloc.state.fullCommunityView!.communityView.community;
+  final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+
+  final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+  if ((authBloc.state.isLoggedIn && feedState.fullCommunityView?.communityView.subscribed != SubscribedType.notSubscribed) || // If we're logged in and subscribed
+      currentSubscriptions.contains(community.id)) // Or this is an anonymous subscription
+  {
+    bool result = false;
+
+    await showThunderDialog<void>(
+      context: context,
+      title: l10n.confirm,
+      contentText: l10n.confirmUnsubscription,
+      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+      secondaryButtonText: l10n.cancel,
+      onPrimaryButtonPressed: (dialogContext, _) async {
+        Navigator.of(dialogContext).pop();
+        result = true;
+      },
+      primaryButtonText: l10n.confirm,
+    );
+
+    if (!result) return;
+  }
 
   if (authBloc.state.isLoggedIn) {
     context.read<CommunityBloc>().add(
@@ -407,9 +433,6 @@ void _onSubscribeIconPressed(BuildContext context) {
         );
     return;
   }
-
-  Community community = feedBloc.state.fullCommunityView!.communityView.community;
-  Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
   if (currentSubscriptions.contains(community.id)) {
     context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: {community.id}));
