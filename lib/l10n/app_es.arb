@@ -623,7 +623,7 @@
   "@pending": {
     "description": "Describes the subscription status for 'Pending'"
   },
-  "permissionDenied": "Permiso denegado",
+  "permissionDenied": "Thunder no tiene permiso para mostrar notificaciones. Por favor, habilítelo en los ajustes del sistema.",
   "@permissionDenied": {
     "description": "Title for error when user denies OS permissions"
   },
@@ -2087,7 +2087,7 @@
   "@pushNotificationDescription": {
     "description": "Description of push notification setting"
   },
-  "unifiedPushNotifications": "Notificaciones push unificadas",
+  "unifiedPushNotifications": "Notificaciones UnifiedPush",
   "@unifiedPushNotifications": {
     "description": "Describes the notification type for Unified Push Notifications"
   },
@@ -2210,5 +2210,89 @@
   "downvoteColor": "Color de voto negativo",
   "@downvoteColor": {
     "description": "Name of downvote color setting"
+  },
+  "areNotificationsAllowedBySystem": "Las notificaciones están permitidas por el sistema: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "changeNotificationSettings": "Cambiar los ajustes de notificación...",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
+  "connectedToUnifiedPushDistributorApp": "Conectado a la {app}",
+  "@connectedToUnifiedPushDistributorApp": {
+    "description": "Tell the user which UnifiedPush app we're connected to"
+  },
+  "currentNotificationsMode": "Modo actual de notificaciones: {mode}",
+  "@currentNotificationsMode": {
+    "description": "A status indicator for the current notifications mode"
+  },
+  "debugNotificationsDescription": "Utilice las siguientes opciones para solucionar problemas relacionados con las notificaciones.",
+  "@debugNotificationsDescription": {
+    "description": "A description for the notification debugging section"
+  },
+  "doNotSupportMultipleUnifiedPushApps": "Se han encontrado varias aplicaciones compatibles; instale solo una",
+  "@doNotSupportMultipleUnifiedPushApps": {
+    "description": "Tell the user we don't currently support multiple UnifiedPush apps"
+  },
+  "failedToCommunicateWithThunderNotificationServer": "Error al comunicarse con el servidor de notificación de Thunder en '{serverAddress}'",
+  "@failedToCommunicateWithThunderNotificationServer": {
+    "description": "Error message for when we fail to communicate with Thunder notification server"
+  },
+  "foundUnifiedPushDistribtorApp": "Encontrada aplicación compatible; reiniciar Thunder para conectar",
+  "@foundUnifiedPushDistribtorApp": {
+    "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
+  },
+  "havingIssuesWithNotifications": "¿Tienes problemas con las notificaciones?",
+  "@havingIssuesWithNotifications": {
+    "description": "A shortcut to navigate to the notification debugging section"
+  },
+  "no": "No",
+  "@no": {
+    "description": "A negative status"
+  },
+  "noCompatibleAppFound": "No se ha encontrado una aplicación compatible",
+  "@noCompatibleAppFound": {
+    "description": "Tell the user we didn't find a compatible UnifiedPush app"
+  },
+  "sendBackgroundTestUnifiedPushNotification": "Enviar notificación UnifiedPush de prueba en segundo plano",
+  "@sendBackgroundTestUnifiedPushNotification": {
+    "description": "The option to send a background UnifiedPUsh notification for testing"
+  },
+  "sendTestLocalNotification": "Enviar notificación local de prueba",
+  "@sendTestLocalNotification": {
+    "description": "The option to send a notification for testing"
+  },
+  "sendTestUnifiedPushNotification": "Enviar notificación UnifiedPush de prueba",
+  "@sendTestUnifiedPushNotification": {
+    "description": "The option to send a UnifiedPush notification for testing"
+  },
+  "suchAs": "tales como",
+  "@suchAs": {
+    "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
+  },
+  "testBackgroundNotificationDescription": "Thunder se cerrará e intentará generar una notificación en segundo plano. (Puede tardar unos minutos)",
+  "@testBackgroundNotificationDescription": {
+    "description": "A message describing the background test notification"
+  },
+  "testBackgroundUnifiedPushNotificationDescription": "Thunder pedirá al servidor de notificaciones que envíe una notificación diferida y luego se cerrará. (Puede tardar unos minutos)",
+  "@testBackgroundUnifiedPushNotificationDescription": {
+    "description": "A message describing the UnifiedPush background test notification"
+  },
+  "unifiedPushDistributorApp": "Aplicación Distribuidor UnifiedPush: {app} ({count} disponible)",
+  "@unifiedPushDistributorApp": {
+    "description": "A status indicator telling the current state of the UnifiedPush distributor app"
+  },
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
+  },
+  "yes": "Sí",
+  "@yes": {
+    "description": "A positive status"
+  },
+  "sendBackgroundTestLocalNotification": "Enviar notificación local de prueba en segundo plano",
+  "@sendBackgroundTestLocalNotification": {
+    "description": "The option to send a background notification for testing"
   }
 }
