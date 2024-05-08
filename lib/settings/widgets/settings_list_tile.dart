@@ -57,7 +57,7 @@ class SettingsListTile extends StatelessWidget {
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(50)),
             onTap: onTap,
-            onLongPress: onLongPress,
+            onLongPress: onLongPress ?? (onTap == null ? null : () => shareSetting(context, setting, description)),
             child: Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Row(
