@@ -399,6 +399,10 @@
   "@confirmResetPostPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
   },
+  "confirmUnsubscription": "Are you sure you want to unsubscribe?",
+  "@confirmUnsubscription": {
+    "description": "Ask the user to confirm that they want to unsubscribe"
+  },
   "connectedToUnifiedPushDistributorApp": "Conected to {app}",
   "@connectedToUnifiedPushDistributorApp": {
     "description": "Tell the user which UnifiedPush app we're connected to"
