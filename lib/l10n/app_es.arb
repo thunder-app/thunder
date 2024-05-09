@@ -2294,5 +2294,9 @@
   "sendBackgroundTestLocalNotification": "Enviar notificación local de prueba en segundo plano",
   "@sendBackgroundTestLocalNotification": {
     "description": "The option to send a background notification for testing"
+  },
+  "confirmUnsubscription": "¿Estás seguro de que quieres darte de baja?",
+  "@confirmUnsubscription": {
+    "description": "Ask the user to confirm that they want to unsubscribe"
   }
 }
