@@ -12,7 +12,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/pages/post_page.dart';
+import 'package:thunder/post/pages/legacy_post_page.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
