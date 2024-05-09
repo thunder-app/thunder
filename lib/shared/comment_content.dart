@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
+import 'package:thunder/shared/divider.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -34,7 +37,7 @@ class CommentContent extends StatefulWidget {
   final bool viewSource;
   final void Function() onViewSourceToggled;
   final bool selectable;
-  final bool showViewSourceButton;
+  final bool showReplyEditorButtons;
 
   const CommentContent({
     super.key,
@@ -55,7 +58,7 @@ class CommentContent extends StatefulWidget {
     required this.viewSource,
     required this.onViewSourceToggled,
     this.selectable = false,
-    this.showViewSourceButton = false,
+    this.showReplyEditorButtons = false,
   });
 
   @override
@@ -166,25 +169,55 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                     ],
                   ),
           ),
-          if (widget.showViewSourceButton)
+          if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true) ...[
+            const Padding(
+              padding: EdgeInsets.only(left: 8.0, right: 8.0),
+              child: ThunderDivider(sliver: false, padding: false),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
               child: Material(
                 color: Colors.transparent,
-                child: InkWell(
-                  onTap: widget.onViewSourceToggled,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.edit_document, size: 15),
-                      const SizedBox(width: 5),
-                      Text(widget.viewSource ? l10n.viewOriginal : l10n.viewSource),
-                    ],
-                  ),
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: widget.onViewSourceToggled,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(width: 5),
+                          const Icon(Icons.edit_document, size: 15),
+                          const SizedBox(width: 5),
+                          Text(widget.viewSource ? l10n.viewOriginal : l10n.viewSource),
+                          const SizedBox(width: 5),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12.0),
+                    InkWell(
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: cleanCommentContent(widget.comment.comment))).then((_) {
+                          showSnackbar(AppLocalizations.of(context)!.copiedToClipboard);
+                        });
+                      },
+                      borderRadius: BorderRadius.circular(10),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(width: 5),
+                          const Icon(Icons.copy_rounded, size: 15),
+                          const SizedBox(width: 5),
+                          Text(l10n.copyText),
+                          const SizedBox(width: 5),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
+          ],
         ],
       ),
     );

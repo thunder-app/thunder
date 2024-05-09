@@ -39,7 +39,9 @@ import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/cross_posts.dart';
+import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -54,7 +56,7 @@ class PostSubview extends StatefulWidget {
   final bool showQuickPostActionBar;
   final bool showExpandableButton;
   final bool selectable;
-  final bool showViewSourceButton;
+  final bool showReplyEditorButtons;
 
   const PostSubview({
     super.key,
@@ -68,7 +70,7 @@ class PostSubview extends StatefulWidget {
     this.showQuickPostActionBar = true,
     this.showExpandableButton = true,
     this.selectable = false,
-    this.showViewSourceButton = false,
+    this.showReplyEditorButtons = false,
   });
 
   @override
@@ -253,22 +255,49 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                     url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
                   ),
-                  if (widget.showViewSourceButton)
+                  if (widget.showReplyEditorButtons && widget.postViewMedia.postView.post.body?.isNotEmpty == true) ...[
+                    const ThunderDivider(sliver: false, padding: false),
                     Material(
                       color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () => widget.onViewSourceToggled?.call(),
-                        borderRadius: BorderRadius.circular(10),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.edit_document, size: 15),
-                            const SizedBox(width: 5),
-                            Text(widget.viewSource ? l10n.viewOriginal : l10n.viewSource),
-                          ],
-                        ),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: widget.onViewSourceToggled,
+                            borderRadius: BorderRadius.circular(10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(width: 5),
+                                const Icon(Icons.edit_document, size: 15),
+                                const SizedBox(width: 5),
+                                Text(widget.viewSource ? l10n.viewOriginal : l10n.viewSource),
+                                const SizedBox(width: 5),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12.0),
+                          InkWell(
+                            onTap: () {
+                              Clipboard.setData(ClipboardData(text: widget.postViewMedia.postView.post.body!)).then((_) {
+                                showSnackbar(AppLocalizations.of(context)!.copiedToClipboard);
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(width: 5),
+                                const Icon(Icons.copy_rounded, size: 15),
+                                const SizedBox(width: 5),
+                                Text(l10n.copyText),
+                                const SizedBox(width: 5),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                  ],
                 ],
               ),
             ),
