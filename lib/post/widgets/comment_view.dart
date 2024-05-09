@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:super_sliver_list/super_sliver_list.dart';
 
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -28,8 +28,8 @@ class CommentSubview extends StatefulWidget {
   final String? selectedCommentPath;
   final int? newlyCreatedCommentId;
   final int? moddingCommentId;
-  final ItemScrollController itemScrollController;
-  final ItemPositionsListener itemPositionsListener;
+  final ScrollController scrollController;
+  final ListController listController;
 
   final bool hasReachedCommentEnd;
   final bool viewFullCommentsRefreshing;
@@ -53,8 +53,8 @@ class CommentSubview extends StatefulWidget {
     this.selectedCommentPath,
     this.newlyCreatedCommentId,
     this.moddingCommentId,
-    required this.itemScrollController,
-    required this.itemPositionsListener,
+    required this.scrollController,
+    required this.listController,
     this.hasReachedCommentEnd = false,
     this.viewFullCommentsRefreshing = false,
     required this.now,
@@ -101,7 +101,13 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
         // If we are looking at a comment context, scroll to the first comment.
         // The delay is purely for aesthetics and is not required for the logic to work.
         Future.delayed(const Duration(milliseconds: 250), () {
-          widget.itemScrollController.scrollTo(index: 1, duration: const Duration(milliseconds: 250));
+          widget.listController.animateToItem(
+            index: 1,
+            scrollController: widget.scrollController,
+            alignment: 0,
+            duration: (estimatedDistance) => const Duration(milliseconds: 250),
+            curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+          );
         });
       });
     }
@@ -120,24 +126,28 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
         if (state.navigateCommentId > 0) {
-          widget.itemScrollController.scrollTo(
+          widget.listController.animateToItem(
             index: state.navigateCommentIndex,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
+            scrollController: widget.scrollController,
+            alignment: 0,
+            duration: (estimatedDistance) => const Duration(milliseconds: 250),
+            curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
           );
         } else if (state.newlyCreatedCommentId != null && state.comments.first.commentView?.comment.id == state.newlyCreatedCommentId) {
           // Only scroll for top level comments since you can comment from anywhere in the comment section.
-          widget.itemScrollController.scrollTo(
+          widget.listController.animateToItem(
             index: 1,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
+            scrollController: widget.scrollController,
+            alignment: 0,
+            duration: (estimatedDistance) => const Duration(milliseconds: 250),
+            curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
           );
         }
       },
-      child: ScrollablePositionedList.builder(
+      child: SuperListView.builder(
         addSemanticIndexes: false,
-        itemScrollController: widget.itemScrollController,
-        itemPositionsListener: widget.itemPositionsListener,
+        listController: widget.listController,
+        controller: widget.scrollController,
         itemCount: getCommentsListLength(),
         itemBuilder: (context, index) {
           if (widget.postViewMedia != null && index == 0) {
