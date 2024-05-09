@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/comment/utils/comment.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
@@ -87,6 +88,7 @@ class _CommentReferenceState extends State<CommentReference> {
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final ThunderState state = context.read<ThunderBloc>().state;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Semantics(
       label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
@@ -95,7 +97,7 @@ class _CommentReferenceState extends State<CommentReference> {
           ${widget.comment.counts.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.counts.upvotes))}\n
           ${widget.comment.counts.downvotes == 0 ? '' : AppLocalizations.of(context)!.xDownvotes(formatNumberToK(widget.comment.counts.downvotes))}\n
           ${formatTimeToString(dateTime: (widget.comment.comment.updated ?? widget.comment.comment.published).toIso8601String())}\n
-          ${widget.comment.comment.content}""",
+          ${cleanCommentContent(widget.comment.comment)}""",
       child: InkWell(
         onTap: widget.comment.post.deleted ? null : () async => await navigateToComment(context, widget.comment),
         child: Padding(
@@ -140,13 +142,14 @@ class _CommentReferenceState extends State<CommentReference> {
                             children: [
                               ExcludeSemantics(
                                 child: ScalableText(
-                                  'in ',
+                                  l10n.in_,
                                   fontScale: state.contentFontSizeScale,
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                                   ),
                                 ),
                               ),
+                              const SizedBox(width: 5.0),
                               ExcludeSemantics(
                                 child: CommunityFullNameWidget(
                                   context,
@@ -276,8 +279,9 @@ class _CommentReferenceState extends State<CommentReference> {
                       background: dismissDirection == DismissDirection.startToEnd
                           ? AnimatedContainer(
                               alignment: Alignment.centerLeft,
-                              color:
-                                  swipeAction == null ? state.leftPrimaryCommentGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                              color: swipeAction == null
+                                  ? state.leftPrimaryCommentGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                                  : (swipeAction ?? SwipeAction.none).getColor(context),
                               duration: const Duration(milliseconds: 200),
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * dismissThreshold,
@@ -287,8 +291,8 @@ class _CommentReferenceState extends State<CommentReference> {
                           : AnimatedContainer(
                               alignment: Alignment.centerRight,
                               color: swipeAction == null
-                                  ? (state.rightPrimaryCommentGesture).getColor().withOpacity(dismissThreshold / firstActionThreshold)
-                                  : (swipeAction ?? SwipeAction.none).getColor(),
+                                  ? (state.rightPrimaryCommentGesture).getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                                  : (swipeAction ?? SwipeAction.none).getColor(context),
                               duration: const Duration(milliseconds: 200),
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * dismissThreshold,

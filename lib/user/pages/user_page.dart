@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,6 +102,7 @@ class _UserPageState extends State<UserPage> {
                       Navigator.of(context).push(
                         SwipeablePageRoute(
                           transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                          canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
                           canOnlySwipeFromEdge: !state.enableFullScreenSwipeNavigationGesture,
                           builder: (context) => MultiBlocProvider(
                             providers: [
@@ -170,8 +173,13 @@ class _UserPageState extends State<UserPage> {
               case UserStatus.failure:
                 return ErrorMessage(
                   message: state.errorMessage,
-                  action: () => context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true)),
-                  actionText: AppLocalizations.of(context)!.refreshContent,
+                  actions: [
+                    (
+                      text: AppLocalizations.of(context)!.refreshContent,
+                      action: () => context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true)),
+                      loading: false,
+                    ),
+                  ],
                 );
             }
           }),

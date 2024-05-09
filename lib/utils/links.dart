@@ -165,9 +165,12 @@ void handleLink(BuildContext context, {required String url}) async {
   }
 
   // Try navigating to post
-  int? postId = await getLemmyPostId(url);
+  int? postId = await getLemmyPostId(context, url);
   if (postId != null) {
     try {
+      // Show the loading page while we fetch the post
+      if (context.mounted) showLoadingPage(context);
+
       GetPostResponse post = await lemmy.run(GetPost(
         id: postId,
         auth: account?.jwt,
@@ -183,9 +186,12 @@ void handleLink(BuildContext context, {required String url}) async {
   }
 
   // Try navigating to comment
-  int? commentId = await getLemmyCommentId(url);
+  int? commentId = await getLemmyCommentId(context, url);
   if (commentId != null) {
     try {
+      // Show the loading page while we fetch the comment
+      if (context.mounted) showLoadingPage(context);
+
       CommentResponse fullCommentView = await lemmy.run(GetComment(
         id: commentId,
         auth: account?.jwt,

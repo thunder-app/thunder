@@ -3,18 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/feed/utils/utils.dart';
-import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/shared/full_name_widgets.dart';
+import 'package:thunder/core/enums/user_type.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/thunder/thunder_icons.dart';
-import 'package:thunder/user/utils/special_user_checks.dart';
-import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 import '../utils/date_time.dart';
@@ -41,128 +38,41 @@ class CommentHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+    final AccountState accountState = context.read<AccountBloc>().state;
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
-    bool commentShowUserInstance = state.commentShowUserInstance;
 
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
     bool? isCommentNew = now.difference(comment.comment.published).inMinutes < 15;
 
+    List<UserType> userGroups = [];
+
+    if (comment.creator.botAccount) userGroups.add(UserType.bot);
+    if (comment.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
+    if (comment.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
+    if (comment.post.creatorId == comment.creator.id) userGroups.add(UserType.op);
+    if (comment.creator.id == accountState.personView?.person.id) userGroups.add(UserType.self);
+
     return Padding(
-      padding: EdgeInsets.fromLTRB(isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ? 8.0 : 3.0, 10.0, 8.0, 10.0),
+      padding: EdgeInsets.fromLTRB(userGroups.isNotEmpty ? 8.0 : 8.0, 10.0, 8.0, 10.0),
       child: Row(
         children: [
           Expanded(
             child: Row(
               children: [
-                Tooltip(
-                  excludeFromSemantics: true,
-                  message:
-                      '${generateUserFullName(context, comment.creator.name, fetchInstanceNameFromUrl(comment.creator.actorId) ?? '-')}${fetchUsernameDescriptor(isOwnComment, comment.post, comment.comment, comment.creator, moderators)}',
-                  preferBelow: false,
-                  child: Row(
-                    children: [
-                      Material(
-                        color: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
-                            ? fetchUsernameColor(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ?? theme.colorScheme.onBackground
-                            : Colors.transparent,
-                        borderRadius: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
-                        child: InkWell(
-                          borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-                          onTap: isHidden && collapseParentCommentOnGesture
-                              ? null
-                              : () {
-                                  navigateToFeedPage(context, feedType: FeedType.user, userId: comment.creator.id);
-                                },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 5, right: 5),
-                            child: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
-                                ? Row(
-                                    children: [
-                                      UserFullNameWidget(
-                                        context,
-                                        comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
-                                        fetchInstanceNameFromUrl(comment.creator.actorId),
-                                        fontScale: state.metadataFontSizeScale,
-                                        includeInstance: commentShowUserInstance,
-                                      ),
-                                      const SizedBox(width: 2.0),
-                                      Container(
-                                        child: commentAuthorIsPostAuthor(comment.post, comment.comment)
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
-                                                child: Icon(
-                                                  Thunder.microphone_variant,
-                                                  size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                      Container(
-                                        child: isOwnComment
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
-                                                child: Icon(
-                                                  Icons.person,
-                                                  size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ))
-                                            : Container(),
-                                      ),
-                                      Container(
-                                        child: isAdmin(comment.creator)
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
-                                                child: Icon(
-                                                  Thunder.shield_crown,
-                                                  size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                      Container(
-                                        child: isModerator(comment.creator, moderators)
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
-                                                child: Icon(
-                                                  Thunder.shield,
-                                                  size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                      Container(
-                                        child: isBot(comment.creator)
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1, right: 2),
-                                                child: Icon(
-                                                  Thunder.robot,
-                                                  size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                    ],
-                                  )
-                                : UserFullNameWidget(
-                                    context,
-                                    comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
-                                    fetchInstanceNameFromUrl(comment.creator.actorId),
-                                    fontScale: state.metadataFontSizeScale,
-                                    includeInstance: commentShowUserInstance,
-                                  ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8.0),
-                    ],
-                  ),
+                UserChip(
+                  personId: comment.creator.id,
+                  personAvatar: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
+                  personName: comment.creator.name,
+                  personDisplayName: comment.creator.displayName ?? comment.creator.name,
+                  personUrl: comment.creator.actorId,
+                  userGroups: userGroups,
+                  includeInstance: state.commentShowUserInstance,
+                  ignorePointerEvents: isHidden && collapseParentCommentOnGesture,
+                  opacity: 1.0,
                 ),
+                const SizedBox(width: 8.0),
                 CommentHeaderScore(comment: comment),
               ],
             ),
@@ -190,7 +100,7 @@ class CommentHeader extends StatelessWidget {
               const SizedBox(width: 8.0),
               Icon(
                 saved == true ? Icons.star_rounded : null,
-                color: saved == true ? Colors.purple : null,
+                color: saved == true ? context.read<ThunderBloc>().state.saveColor.color : null,
                 size: saved == true ? 18.0 : 0,
               ),
               SizedBox(
@@ -273,7 +183,7 @@ class CommentHeaderScore extends StatelessWidget {
       return Icon(
         myVote == 1 ? Icons.north_rounded : Icons.south_rounded,
         size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-        color: myVote == 1 ? Colors.orange : Colors.blue,
+        color: myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : context.read<ThunderBloc>().state.downvoteColor.color,
       );
     }
 
@@ -283,7 +193,7 @@ class CommentHeaderScore extends StatelessWidget {
         Icon(
           Icons.north_rounded,
           size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-          color: myVote == 1 ? Colors.orange : theme.colorScheme.onBackground,
+          color: myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.colorScheme.onBackground,
         ),
         const SizedBox(width: 2.0),
         ScalableText(
@@ -291,14 +201,16 @@ class CommentHeaderScore extends StatelessWidget {
           semanticsLabel: combineCommentScores ? l10n.xScore(formatNumberToK(score)) : l10n.xUpvotes(formatNumberToK(upvotes)),
           fontScale: state.metadataFontSizeScale,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: myVote == 1 ? Colors.orange : (myVote == -1 && combineCommentScores ? Colors.blue : theme.colorScheme.onBackground),
+            color: myVote == 1
+                ? context.read<ThunderBloc>().state.upvoteColor.color
+                : (myVote == -1 && combineCommentScores ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground),
           ),
         ),
         SizedBox(width: combineCommentScores ? 2.0 : 10.0),
         Icon(
           Icons.south_rounded,
           size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-          color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+          color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground) : Colors.transparent,
         ),
         if (!combineCommentScores) ...[
           const SizedBox(width: 2.0),
@@ -308,7 +220,7 @@ class CommentHeaderScore extends StatelessWidget {
               fontScale: state.metadataFontSizeScale,
               semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                color: downvotes != 0 ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground) : Colors.transparent,
               ),
             ),
         ],

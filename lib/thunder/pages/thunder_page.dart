@@ -58,7 +58,7 @@ import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
-import 'package:thunder/utils/notifications_navigation.dart';
+import 'package:thunder/notification/utils/navigate_notification.dart';
 
 String? currentIntent;
 
@@ -89,6 +89,8 @@ class _ThunderState extends State<Thunder> {
   late final StreamSubscription textIntentDataStreamSubscription;
 
   final ScrollController _changelogScrollController = ScrollController();
+
+  bool errorMessageLoading = false;
 
   @override
   void initState() {
@@ -261,7 +263,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   Future<void> _navigateToPost(String link) async {
-    final postId = await getLemmyPostId(link);
+    final postId = await getLemmyPostId(context, link);
     if (context.mounted && postId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
@@ -331,7 +333,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   Future<void> _navigateToComment(String link) async {
-    final commentId = await getLemmyCommentId(link);
+    final commentId = await getLemmyCommentId(context, link);
     if (context.mounted && commentId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
@@ -397,7 +399,7 @@ class _ThunderState extends State<Thunder> {
           BlocListener<NotificationsCubit, NotificationsState>(
             listener: (context, state) {
               if (state.status == NotificationsStatus.reply) {
-                navigateToNotificationReplyPage(context, replyId: state.replyId);
+                navigateToNotificationReplyPage(context, replyId: state.replyId, accountId: state.accountId);
               }
             },
           ),
@@ -667,11 +669,27 @@ class _ThunderState extends State<Thunder> {
                           return Container();
                         case AuthStatus.failureCheckingInstance:
                           showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
-                          return ErrorMessage(
-                            title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
-                            message: AppLocalizations.of(context)!.internetOrInstanceIssues,
-                            actionText: AppLocalizations.of(context)!.accountSettings,
-                            action: () => showProfileModalSheet(context),
+                          errorMessageLoading = false;
+                          return StatefulBuilder(
+                            builder: (context, setState) => ErrorMessage(
+                              title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
+                              message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+                              actions: [
+                                (
+                                  text: AppLocalizations.of(context)!.retry,
+                                  action: () {
+                                    context.read<AuthBloc>().add(CheckAuth());
+                                    setState(() => errorMessageLoading = true);
+                                  },
+                                  loading: errorMessageLoading,
+                                ),
+                                (
+                                  text: AppLocalizations.of(context)!.accountSettings,
+                                  action: () => showProfileModalSheet(context),
+                                  loading: false,
+                                ),
+                              ],
+                            ),
                           );
                       }
                     },
@@ -681,8 +699,13 @@ class _ThunderState extends State<Thunder> {
                 FlutterNativeSplash.remove();
                 return ErrorMessage(
                   message: thunderBlocState.errorMessage,
-                  action: () => {context.read<AuthBloc>().add(CheckAuth())},
-                  actionText: AppLocalizations.of(context)!.refreshContent,
+                  actions: [
+                    (
+                      text: AppLocalizations.of(context)!.refreshContent,
+                      action: () => context.read<AuthBloc>().add(CheckAuth()),
+                      loading: false,
+                    ),
+                  ],
                 );
             }
           },

@@ -1,18 +1,17 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:smooth_highlight/smooth_highlight.dart';
-
+import 'package:go_router/go_router.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/swipe_picker.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/utils/constants.dart';
 
 class GestureSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -485,6 +484,24 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                   ],
                                 )
                               : null,
+                        ),
+                        const SizedBox(height: 10),
+                        SettingsListTile(
+                          icon: Icons.color_lens_rounded,
+                          description: l10n.actionColorsRedirect,
+                          widget: const SizedBox(
+                            height: 42.0,
+                            child: Icon(Icons.chevron_right_rounded),
+                          ),
+                          onTap: () {
+                            GoRouter.of(context).push(
+                              SETTINGS_APPEARANCE_THEMES_PAGE,
+                              extra: [
+                                context.read<ThunderBloc>(),
+                                LocalSettings.actionColors,
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),

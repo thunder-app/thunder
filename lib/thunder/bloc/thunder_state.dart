@@ -14,6 +14,7 @@ class ThunderState extends Equatable {
     // Default Listing/Sort Settings
     this.defaultListingType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
+    this.useProfilePictureForDrawer = false,
 
     // NSFW Settings
     this.hideNsfwPosts = false,
@@ -32,7 +33,7 @@ class ThunderState extends Equatable {
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
     this.showUpdateChangelogs = true,
-    this.enableInboxNotifications = false,
+    this.inboxNotificationType = NotificationType.none,
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
     this.userFullNameUserNameThickness = NameThickness.normal,
@@ -52,6 +53,7 @@ class ThunderState extends Equatable {
     // Compact Related Settings
     this.useCompactView = false,
     this.showTitleFirst = false,
+    this.hideThumbnails = false,
     this.showThumbnailPreviewOnRight = false,
     this.showTextPostIndicator = false,
     this.tappableAuthorCommunity = false,
@@ -80,6 +82,7 @@ class ThunderState extends Equatable {
     this.postBodyViewType = PostBodyViewType.expanded,
     this.postBodyShowUserInstance = false,
     this.postBodyShowCommunityInstance = false,
+    this.postBodyShowCommunityAvatar = false,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -89,6 +92,7 @@ class ThunderState extends Equatable {
     this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
     this.commentShowUserInstance = false,
+    this.commentShowUserAvatar = false,
     this.combineCommentScores = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
@@ -116,6 +120,13 @@ class ThunderState extends Equatable {
     this.themeType = ThemeType.system,
     this.selectedTheme = CustomThemeType.deepBlue,
     this.useMaterialYouTheme = false,
+
+    // Color Settings
+    this.upvoteColor = const ActionColor.fromString(colorRaw: ActionColor.orange),
+    this.downvoteColor = const ActionColor.fromString(colorRaw: ActionColor.blue),
+    this.saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple),
+    this.markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal),
+    this.replyColor = const ActionColor.fromString(colorRaw: ActionColor.green),
 
     // Font Scale
     this.titleFontSizeScale = FontScale.base,
@@ -170,6 +181,7 @@ class ThunderState extends Equatable {
   final ListingType defaultListingType;
   final SortType defaultSortType;
   SortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType) ? defaultSortType : DEFAULT_SORT_TYPE;
+  final bool useProfilePictureForDrawer;
 
   // NSFW Settings
   final bool hideNsfwPosts;
@@ -188,7 +200,7 @@ class ThunderState extends Equatable {
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
   final bool showUpdateChangelogs;
-  final bool enableInboxNotifications;
+  final NotificationType inboxNotificationType;
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
   final NameThickness userFullNameUserNameThickness;
@@ -208,6 +220,7 @@ class ThunderState extends Equatable {
   /// Compact Related Settings
   final bool useCompactView;
   final bool showTitleFirst;
+  final bool hideThumbnails;
   final bool showThumbnailPreviewOnRight;
   final bool showTextPostIndicator;
   final bool tappableAuthorCommunity;
@@ -236,6 +249,7 @@ class ThunderState extends Equatable {
   final PostBodyViewType postBodyViewType;
   final bool postBodyShowUserInstance;
   final bool postBodyShowCommunityInstance;
+  final bool postBodyShowCommunityAvatar;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -245,6 +259,7 @@ class ThunderState extends Equatable {
   final bool collapseParentCommentOnGesture;
   final bool showCommentButtonActions;
   final bool commentShowUserInstance;
+  final bool commentShowUserAvatar;
   final bool combineCommentScores;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
@@ -254,6 +269,13 @@ class ThunderState extends Equatable {
   final ThemeType themeType;
   final CustomThemeType selectedTheme;
   final bool useMaterialYouTheme;
+
+  // Color Settings
+  final ActionColor upvoteColor;
+  final ActionColor downvoteColor;
+  final ActionColor saveColor;
+  final ActionColor markReadColor;
+  final ActionColor replyColor;
 
   // Font Scale
   final FontScale titleFontSizeScale;
@@ -336,6 +358,7 @@ class ThunderState extends Equatable {
     // Default Listing/Sort Settings
     ListingType? defaultListingType,
     SortType? defaultSortType,
+    bool? useProfilePictureForDrawer,
 
     // NSFW Settings
     bool? hideNsfwPosts,
@@ -353,7 +376,7 @@ class ThunderState extends Equatable {
     bool? markPostReadOnScroll,
     bool? showInAppUpdateNotification,
     bool? showUpdateChangelogs,
-    bool? enableInboxNotifications,
+    NotificationType? inboxNotificationType,
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
     NameThickness? userFullNameUserNameThickness,
@@ -373,6 +396,7 @@ class ThunderState extends Equatable {
     /// Compact Related Settings
     bool? useCompactView,
     bool? showTitleFirst,
+    bool? hideThumbnails,
     bool? showThumbnailPreviewOnRight,
     bool? showTextPostIndicator,
     bool? tappableAuthorCommunity,
@@ -400,6 +424,7 @@ class ThunderState extends Equatable {
     PostBodyViewType? postBodyViewType,
     bool? postBodyShowUserInstance,
     bool? postBodyShowCommunityInstance,
+    bool? postBodyShowCommunityAvatar,
 
     // Keyword filters
     List<String>? keywordFilters,
@@ -410,6 +435,7 @@ class ThunderState extends Equatable {
     bool? collapseParentCommentOnGesture,
     bool? showCommentButtonActions,
     bool? commentShowUserInstance,
+    bool? commentShowUserAvatar,
     bool? combineCommentScores,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
@@ -419,6 +445,13 @@ class ThunderState extends Equatable {
     ThemeType? themeType,
     CustomThemeType? selectedTheme,
     bool? useMaterialYouTheme,
+
+    // Color Settings
+    ActionColor? upvoteColor,
+    ActionColor? downvoteColor,
+    ActionColor? saveColor,
+    ActionColor? markReadColor,
+    ActionColor? replyColor,
 
     // Font Scale
     FontScale? titleFontSizeScale,
@@ -493,6 +526,7 @@ class ThunderState extends Equatable {
       /// Default Listing/Sort Settings
       defaultListingType: defaultListingType ?? this.defaultListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
+      useProfilePictureForDrawer: useProfilePictureForDrawer ?? this.useProfilePictureForDrawer,
 
       // NSFW Settings
       hideNsfwPosts: hideNsfwPosts ?? this.hideNsfwPosts,
@@ -511,7 +545,7 @@ class ThunderState extends Equatable {
       disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       showUpdateChangelogs: showUpdateChangelogs ?? this.showUpdateChangelogs,
-      enableInboxNotifications: enableInboxNotifications ?? this.enableInboxNotifications,
+      inboxNotificationType: inboxNotificationType ?? this.inboxNotificationType,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
@@ -532,6 +566,7 @@ class ThunderState extends Equatable {
       // Compact Related Settings
       useCompactView: useCompactView ?? this.useCompactView,
       showTitleFirst: showTitleFirst ?? this.showTitleFirst,
+      hideThumbnails: hideThumbnails ?? this.hideThumbnails,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
       showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
       tappableAuthorCommunity: tappableAuthorCommunity ?? this.tappableAuthorCommunity,
@@ -558,6 +593,7 @@ class ThunderState extends Equatable {
       postBodyViewType: postBodyViewType ?? this.postBodyViewType,
       postBodyShowUserInstance: postBodyShowUserInstance ?? this.postBodyShowUserInstance,
       postBodyShowCommunityInstance: postBodyShowCommunityInstance ?? this.postBodyShowCommunityInstance,
+      postBodyShowCommunityAvatar: postBodyShowCommunityAvatar ?? this.postBodyShowCommunityAvatar,
 
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
@@ -569,6 +605,7 @@ class ThunderState extends Equatable {
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
+      commentShowUserAvatar: commentShowUserAvatar ?? this.commentShowUserAvatar,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
@@ -578,6 +615,13 @@ class ThunderState extends Equatable {
       themeType: themeType ?? this.themeType,
       selectedTheme: selectedTheme ?? this.selectedTheme,
       useMaterialYouTheme: useMaterialYouTheme ?? this.useMaterialYouTheme,
+
+      // Color Settings
+      upvoteColor: upvoteColor ?? this.upvoteColor,
+      downvoteColor: downvoteColor ?? this.downvoteColor,
+      saveColor: saveColor ?? this.saveColor,
+      markReadColor: markReadColor ?? this.markReadColor,
+      replyColor: replyColor ?? this.replyColor,
 
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
@@ -659,6 +703,7 @@ class ThunderState extends Equatable {
         /// Default Listing/Sort Settings
         defaultListingType,
         defaultSortType,
+        useProfilePictureForDrawer,
 
         // NSFW Settings
         hideNsfwPosts,
@@ -676,7 +721,7 @@ class ThunderState extends Equatable {
         disableFeedFab,
         showInAppUpdateNotification,
         showUpdateChangelogs,
-        enableInboxNotifications,
+        inboxNotificationType,
         userSeparator,
         userFullNameUserNameThickness,
         userFullNameUserNameColor,
@@ -694,6 +739,7 @@ class ThunderState extends Equatable {
         /// Compact Related Settings
         useCompactView,
         showTitleFirst,
+        hideThumbnails,
         showThumbnailPreviewOnRight,
         showTextPostIndicator,
         tappableAuthorCommunity,
@@ -721,6 +767,7 @@ class ThunderState extends Equatable {
         postBodyViewType,
         postBodyShowUserInstance,
         postBodyShowCommunityInstance,
+        postBodyShowCommunityAvatar,
 
         keywordFilters,
 
@@ -732,6 +779,7 @@ class ThunderState extends Equatable {
         collapseParentCommentOnGesture,
         showCommentButtonActions,
         commentShowUserInstance,
+        commentShowUserAvatar,
         combineCommentScores,
 
         nestedCommentIndicatorStyle,
@@ -742,6 +790,13 @@ class ThunderState extends Equatable {
         themeType,
         selectedTheme,
         useMaterialYouTheme,
+
+        // Color Settings
+        upvoteColor,
+        downvoteColor,
+        saveColor,
+        markReadColor,
+        replyColor,
 
         // Font Scale
         titleFontSizeScale,

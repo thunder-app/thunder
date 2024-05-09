@@ -59,7 +59,7 @@ class PostCardViewCompact extends StatelessWidget {
 
     return Container(
       color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
-      padding: showMedia ? const EdgeInsets.only(bottom: 8.0, top: 6) : const EdgeInsets.only(left: 4.0, top: 10.0),
+      padding: showMedia ? const EdgeInsets.only(bottom: 8.0, top: 6) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -81,7 +81,9 @@ class PostCardViewCompact extends StatelessWidget {
                         WidgetSpan(
                           child: Icon(
                             Icons.lock,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.orange.shade900.withOpacity(0.55) : Colors.orange.shade900,
+                            color: indicateRead && postViewMedia.postView.read
+                                ? context.read<ThunderBloc>().state.upvoteColor.color.withOpacity(0.55)
+                                : context.read<ThunderBloc>().state.upvoteColor.color,
                             size: 15 * textScaleFactor,
                           ),
                         ),
@@ -90,7 +92,8 @@ class PostCardViewCompact extends StatelessWidget {
                         WidgetSpan(
                           child: Icon(
                             Icons.star_rounded,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            color:
+                                indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.saveColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.saveColor.color,
                             size: 17 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),
