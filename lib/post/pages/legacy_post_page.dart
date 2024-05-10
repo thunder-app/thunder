@@ -32,6 +32,7 @@ import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+@Deprecated('Use the new PostPage widget')
 class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
   final int? postId;
