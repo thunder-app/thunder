@@ -12,6 +12,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -182,6 +183,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           // Build the tree view from the flattened comments
           List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
+          CommentNode comments = buildCommentTree(getCommentsResponse.comments);
 
           Map<int, CommentView> responseMap = {};
           for (CommentView comment in getCommentsResponse.comments) {
@@ -194,6 +196,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 postId: postView?.postView.post.id,
                 postView: postView,
                 comments: commentTree,
+                commentNodes: comments,
                 commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
                 commentResponseMap: responseMap,
                 commentCount: getCommentsResponse.comments.length,
@@ -261,6 +264,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
             // Build the tree view from the flattened comments
             List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
+            CommentNode comments = buildCommentTree(getCommentsResponse.comments);
 
             Map<int, CommentView> responseMap = {};
             for (CommentView comment in getCommentsResponse.comments) {
@@ -274,6 +278,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                   newlyCreatedCommentId: state.newlyCreatedCommentId,
                   status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
                   comments: commentTree,
+                  commentNodes: comments,
                   commentResponseMap: responseMap,
                   commentPage: 1,
                   commentCount: responseMap.length,
@@ -322,11 +327,21 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           // Combine all of the previous comments list
           List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse.comments);
 
+          // Filter out any comments that are potentially duplicates (have the same [id])
+          List<CommentView> duplicates = groupBy(fullCommentResponseList, (commentView) => commentView.comment.id).values.where((list) => list.length > 1).map((list) => list.first).toList();
+
+          if (duplicates.isNotEmpty) {
+            for (CommentView duplicate in duplicates) {
+              fullCommentResponseList.remove(duplicate);
+            }
+          }
+
           for (CommentView comment in getCommentsResponse.comments) {
             state.commentResponseMap[comment.comment.id] = comment;
           }
           // Build the tree view from the flattened comments
           List<CommentViewTree> commentViewTree = buildCommentViewTree(fullCommentResponseList);
+          CommentNode comments = buildCommentTree(fullCommentResponseList);
 
           // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
           return emit(state.copyWith(
@@ -336,6 +351,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             selectedCommentId: null,
             newlyCreatedCommentId: state.newlyCreatedCommentId,
             comments: commentViewTree,
+            commentNodes: comments,
             commentResponseMap: state.commentResponseMap,
             commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
             commentCount: state.commentResponseMap.length,

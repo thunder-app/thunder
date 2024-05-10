@@ -1,5 +1,6 @@
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -82,7 +83,25 @@ Future<CommentView> saveComment(int commentId, bool save) async {
   return updatedCommentView;
 }
 
+/// Builds a tree of [CommentView] given a flattened list [CommentView].
+///
+/// We need to associate replies to the proper parent comment since we cannot guarantee order in the flattened list from the API.
+CommentNode buildCommentTree(List<CommentView> comments, {bool flatten = false}) {
+  CommentNode root = CommentNode(commentView: null, replies: []);
+
+  for (CommentView commentView in comments) {
+    List<String> commentPath = commentView.comment.path.split('.');
+    String parentId = commentPath[commentPath.length - 2];
+
+    CommentNode commentNode = CommentNode(commentView: commentView, replies: []);
+    CommentNode.insertCommentNode(root, parentId, commentNode);
+  }
+
+  return root;
+}
+
 /// Builds a tree of comments given a flattened list
+@Deprecated('This function is used only for the legacy PostPage. Use buildCommentTree instead.')
 List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool flatten = false}) {
   Map<String, CommentViewTree> commentMap = {};
 
