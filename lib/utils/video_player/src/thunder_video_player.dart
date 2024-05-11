@@ -15,9 +15,9 @@ class ThunderVideoPlayer extends StatefulWidget {
     this.navigateToPost,
   });
 
-  final String videoUrl;
-  final int? postId;
   final void Function()? navigateToPost;
+  final int? postId;
+  final String videoUrl;
 
   @override
   State<ThunderVideoPlayer> createState() => _ThunderVideoPlayerState();
@@ -39,10 +39,11 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     _initializePlayer();
   }
 
-  bool autoPlayVideo(ThunderState thunderBloc, NetworkCheckerState networkCubit) {
+  bool autoPlayVideo(ThunderState thunderBloc) {
+    final networkCubit = context.read<NetworkCheckerCubit>().state;
     if (thunderBloc.videoAutoPlay == VideoAutoPlay.always) {
       return true;
-    } else if (thunderBloc.videoAutoPlay == VideoAutoPlay.onwifi && networkCubit.internetConnectionType == InternetConnectionType.wifi) {
+    } else if (thunderBloc.videoAutoPlay == VideoAutoPlay.onWifi && networkCubit.internetConnectionType == InternetConnectionType.wifi) {
       return true;
     }
 
@@ -51,18 +52,18 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
 
   Future<void> _initializePlayer() async {
     final thunderBloc = context.read<ThunderBloc>().state;
-    final networkCubit = context.read<NetworkCheckerCubit>().state;
+
     BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
       aspectRatio: 16 / 10,
       fit: BoxFit.cover,
-      autoPlay: autoPlayVideo(thunderBloc, networkCubit),
+      autoPlay: autoPlayVideo(thunderBloc),
       fullScreenByDefault: thunderBloc.videoAutoFullscreen,
       looping: thunderBloc.videoAutoLoop,
       autoDetectFullscreenAspectRatio: true,
       autoDetectFullscreenDeviceOrientation: true,
       autoDispose: true,
-      deviceOrientationsOnFullScreen: [DeviceOrientation.portraitUp],
-      // deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp],
+      
+     
     );
     _betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,

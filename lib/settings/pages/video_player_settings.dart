@@ -32,10 +32,10 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
   /// Toggle to always loop the video when enabled
   bool videoAutoLoop = true;
 
-  /// Toggle to awlays start the video muted when enabled
+  /// Toggle to always start the video muted when enabled
   bool videoAutoMute = true;
 
-  /// Option as to when video should autoplay (never,always,onwifi)
+  /// Option as to when video should autoplay (never,always,on wifi)
   VideoAutoPlay videoAutoPlay = VideoAutoPlay.never;
 
   /// Option as to how fast the video playback speed should be (.25,.5 ... 2)
@@ -93,7 +93,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
 
       case LocalSettings.videoDefaultPlaybackSpeed:
         await prefs.setString(LocalSettings.videoDefaultPlaybackSpeed.name, value);
-        setState(() => videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(value ?? VideoAutoPlay.never));
+        setState(() => videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(value ?? VideoPlayBackSpeed.normal));
         break; 
       default:
     }
@@ -106,7 +106,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
       videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
       videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
       videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
-      videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoPlayBackSpeed.normal.name);
+      videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
       isLoading = false;
     });
   }
@@ -157,7 +157,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     options: [
                       ListPickerItem(label: VideoAutoPlay.never.label, payload: VideoAutoPlay.never),
                       ListPickerItem(label: VideoAutoPlay.always.label, payload: VideoAutoPlay.always),
-                      ListPickerItem(label: VideoAutoPlay.onwifi.label, payload: VideoAutoPlay.onwifi),
+                      ListPickerItem(label: VideoAutoPlay.onWifi.label, payload: VideoAutoPlay.onWifi),
                     ],
                     icon: Icons.play_circle,
                     onChanged: (value) async => setPreferences(LocalSettings.videoAutoPlay, value.payload.name),
@@ -165,7 +165,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                   ),
                   ListOption(
                     description: l10n.videoDefaultPlaybackSpeed,
-                    value: ListPickerItem(label: videoDefaultPlaybackSpeed.name, icon: Icons.speed, payload: videoDefaultPlaybackSpeed),
+                    value: ListPickerItem(label: videoDefaultPlaybackSpeed.label, icon: Icons.speed, payload: videoDefaultPlaybackSpeed),
                     options: [
                       ListPickerItem(label: VideoPlayBackSpeed.pointTow5x.label, payload: VideoPlayBackSpeed.pointTow5x),
                       ListPickerItem(label: VideoPlayBackSpeed.point5x.label, payload: VideoPlayBackSpeed.point5x),
