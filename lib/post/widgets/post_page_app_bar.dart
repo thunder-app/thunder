@@ -8,14 +8,34 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// Holds the app bar for the post page.
 class PostPageAppBar extends StatelessWidget {
+  /// Whether to show the view source button
+  final bool viewSource;
+
+  /// Callback when the view source button is pressed
+  final Function(bool)? onViewSource;
+
   /// Callback when an action is selected which requires a reset of the post page
   final Future<void> Function()? onReset;
 
-  const PostPageAppBar({super.key, this.onReset});
+  /// Callback when the user wants to create a cross post
+  final Function()? onCreateCrossPost;
+
+  /// Callback when the user wants to select text
+  final Function()? onSelectText;
+
+  const PostPageAppBar({
+    super.key,
+    this.viewSource = false,
+    this.onViewSource,
+    this.onReset,
+    this.onCreateCrossPost,
+    this.onSelectText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +48,15 @@ class PostPageAppBar extends StatelessWidget {
       toolbarHeight: 70.0,
       surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
       title: const PostAppBarTitle(),
-      actions: [PostAppBarActions(onReset: onReset)],
+      actions: [
+        PostAppBarActions(
+          viewSource: viewSource,
+          onViewSource: onViewSource,
+          onReset: onReset,
+          onCreateCrossPost: onCreateCrossPost,
+          onSelectText: onSelectText,
+        )
+      ],
     );
   }
 }
@@ -63,10 +91,29 @@ class PostAppBarTitle extends StatelessWidget {
 
 /// The actions of the post page app bar
 class PostAppBarActions extends StatelessWidget {
+  /// Whether to show the view source button
+  final bool viewSource;
+
+  /// Callback when the view source button is pressed
+  final Function(bool)? onViewSource;
+
   /// Callback when an action is selected which requires a reset of the post page
   final Future<void> Function()? onReset;
 
-  const PostAppBarActions({super.key, this.onReset});
+  /// Callback when the user wants to create a cross post
+  final Function()? onCreateCrossPost;
+
+  /// Callback when the user wants to select text
+  final Function()? onSelectText;
+
+  const PostAppBarActions({
+    super.key,
+    this.viewSource = false,
+    this.onViewSource,
+    this.onReset,
+    this.onCreateCrossPost,
+    this.onSelectText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -105,49 +152,21 @@ class PostAppBarActions extends StatelessWidget {
         ),
         PopupMenuButton(
           itemBuilder: (context) => [
-            //     if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
-            //       ThunderPopupMenuItem(
-            //         onTap: () => showCommunityShareSheet(context, feedBloc.state.fullCommunityView!.communityView),
-            //         icon: Icons.share_rounded,
-            //         title: l10n.share,
-            //       ),
-            //     if (feedBloc.state.fullCommunityView?.communityView != null)
-            //       ThunderPopupMenuItem(
-            //         onTap: () async {
-            //           final ThunderState state = context.read<ThunderBloc>().state;
-            //           final bool reduceAnimations = state.reduceAnimations;
-            //           final SearchBloc searchBloc = SearchBloc();
-
-            //           await Navigator.of(context).push(
-            //             SwipeablePageRoute(
-            //               transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-            //               backGestureDetectionWidth: 45,
-            //               canOnlySwipeFromEdge: true,
-            //               builder: (context) => MultiBlocProvider(
-            //                 providers: [
-            //                   // Create a new SearchBloc so it doesn't conflict with the main one
-            //                   BlocProvider.value(value: searchBloc),
-            //                   BlocProvider.value(value: thunderBloc),
-            //                 ],
-            //                 child: SearchPage(communityToSearch: feedBloc.state.fullCommunityView!.communityView, isInitiallyFocused: true),
-            //               ),
-            //             ),
-            //           );
-            //         },
-            //         icon: Icons.search_rounded,
-            //         title: l10n.search,
-            //       ),
-            //     ThunderPopupMenuItem(
-            //       onTap: () async {
-            //         await navigateToModlogPage(
-            //           context,
-            //           feedBloc: feedBloc,
-            //           communityId: feedBloc.state.fullCommunityView!.communityView.community.id,
-            //         );
-            //       },
-            //       icon: Icons.shield_rounded,
-            //       title: l10n.modlog,
-            //     ),
+            ThunderPopupMenuItem(
+              onTap: onCreateCrossPost,
+              icon: Icons.repeat_rounded,
+              title: l10n.createNewCrossPost,
+            ),
+            ThunderPopupMenuItem(
+              onTap: () => onViewSource?.call(!viewSource),
+              icon: Icons.edit_document,
+              title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
+            ),
+            ThunderPopupMenuItem(
+              onTap: onSelectText,
+              icon: Icons.select_all_rounded,
+              title: l10n.selectText,
+            ),
           ],
         ),
       ],

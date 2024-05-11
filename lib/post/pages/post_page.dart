@@ -10,6 +10,8 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
 import 'package:thunder/post/widgets/post_view.dart';
+import 'package:thunder/shared/cross_posts.dart';
+import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// A page that displays the post details and comments associated with a post.
@@ -32,6 +34,9 @@ class _PostPageState extends State<PostPage> {
 
   /// Creates a [ListController] that can be used to control the list of items in the page.
   final ListController listController = ListController();
+
+  /// Whether the post source should be displayed.
+  bool viewSource = false;
 
   /// Keeps track of which comments should be collapsed. When a comment is collapsed, its child comments are hidden.
   List<int> collapsedComments = [];
@@ -62,17 +67,33 @@ class _PostPageState extends State<PostPage> {
               controller: scrollController,
               slivers: [
                 PostPageAppBar(
-                  onReset: () async {
-                    await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized);
+                  viewSource: viewSource,
+                  onViewSource: (value) => setState(() => viewSource = value),
+                  onReset: () async => await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized),
+                  onCreateCrossPost: () {
+                    createCrossPost(
+                      context,
+                      title: state.postView?.postView.post.name ?? '',
+                      url: state.postView?.postView.post.url,
+                      text: state.postView?.postView.post.body,
+                      postUrl: state.postView?.postView.post.apId,
+                    );
+                  },
+                  onSelectText: () {
+                    showSelectableTextModal(
+                      context,
+                      title: state.postView?.postView.post.name ?? '',
+                      text: state.postView?.postView.post.body ?? '',
+                    );
                   },
                 ),
                 SliverToBoxAdapter(
                   child: PostSubview(
                     useDisplayNames: false,
                     postViewMedia: widget.postViewMedia,
-                    moderators: const [],
-                    crossPosts: const [],
-                    viewSource: false,
+                    moderators: state.moderators,
+                    crossPosts: state.crossPosts,
+                    viewSource: viewSource,
                   ),
                 ),
                 if (state.status == PostStatus.loading)
