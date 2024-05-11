@@ -390,6 +390,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 }
 
 class AdditionalCommentCard extends StatefulWidget {
+  /// The function to call when tapped
   final Function()? onTap;
 
   /// The depth of the comment in the comment tree

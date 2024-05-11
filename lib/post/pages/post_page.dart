@@ -16,12 +16,18 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// A page that displays the post details and comments associated with a post.
 class PostPage extends StatefulWidget {
-  /// The [PostViewMedia] that should be displayed in the page.
-  final PostViewMedia postViewMedia;
+  /// The initial [PostViewMedia] that should be displayed in the page.
+  /// When a post action is performed, the post bloc's [postView] is updated.
+  /// Additionally, the [onPostUpdated] function is called to update the post in the feed.
+  final PostViewMedia initialPostViewMedia;
+
+  /// Called whenever the post is updated. Used to update the post in the feed.
+  final Function(PostViewMedia)? onPostUpdated;
 
   const PostPage({
     super.key,
-    required this.postViewMedia,
+    required this.initialPostViewMedia,
+    this.onPostUpdated,
   });
 
   @override
@@ -53,12 +59,15 @@ class _PostPageState extends State<PostPage> {
         bottom: false,
         child: BlocConsumer<PostBloc, PostState>(
           listener: (context, state) {
-            if (state.status == PostStatus.loading) {}
+            if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia) {
+              widget.onPostUpdated?.call(state.postView!);
+              setState(() {});
+            }
           },
           builder: (context, state) {
             if (state.status == PostStatus.initial) {
               // This is required because listener does not get called on initial build
-              context.read<PostBloc>().add(GetPostEvent(postView: widget.postViewMedia));
+              context.read<PostBloc>().add(GetPostEvent(postView: widget.initialPostViewMedia));
             }
 
             List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
@@ -90,7 +99,7 @@ class _PostPageState extends State<PostPage> {
                 SliverToBoxAdapter(
                   child: PostSubview(
                     useDisplayNames: false,
-                    postViewMedia: widget.postViewMedia,
+                    postViewMedia: state.postView ?? widget.initialPostViewMedia,
                     moderators: state.moderators,
                     crossPosts: state.crossPosts,
                     viewSource: viewSource,

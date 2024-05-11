@@ -90,6 +90,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
   }
 
   @override
+  void didUpdateWidget(covariant PostSubview oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    postViewMedia = widget.postViewMedia;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
