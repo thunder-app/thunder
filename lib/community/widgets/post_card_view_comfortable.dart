@@ -93,7 +93,6 @@ class PostCardViewComfortable extends StatelessWidget {
       navigateToPost: navigateToPost,
       read: indicateRead && postViewMedia.postView.read,
     );
-   
     final bool useSaveButton = state.showSaveAction;
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 

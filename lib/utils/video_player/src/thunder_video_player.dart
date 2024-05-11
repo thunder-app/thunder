@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:river_player/river_player.dart';
 import 'package:thunder/core/enums/internet_connection_type.dart';
@@ -62,8 +61,6 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
       autoDetectFullscreenAspectRatio: true,
       autoDetectFullscreenDeviceOrientation: true,
       autoDispose: true,
-      
-     
     );
     _betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
@@ -77,6 +74,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Center(
         child: AspectRatio(
           aspectRatio: 16 / 10,

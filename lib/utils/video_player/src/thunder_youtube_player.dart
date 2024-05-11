@@ -58,6 +58,9 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
       )
         ..addListener(listener)
         ..setPlaybackRate(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label));
+      if (thunderBloc.videoAutoFullscreen) {
+        _ypfController.toggleFullScreenMode();
+      }
     } else {
       _controller = YoutubePlayerController(
         params: YoutubePlayerParams(
@@ -79,7 +82,6 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
     animation = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn));
     animationController.forward();
   }
-
 
   void listener() {
     if (_isPlayerReady && mounted && !_ypfController.value.isFullScreen) {

@@ -94,7 +94,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
       case LocalSettings.videoDefaultPlaybackSpeed:
         await prefs.setString(LocalSettings.videoDefaultPlaybackSpeed.name, value);
         setState(() => videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(value ?? VideoPlayBackSpeed.normal));
-        break; 
+        break;
       default:
     }
   }

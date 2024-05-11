@@ -56,4 +56,3 @@ const String SETTINGS_APPEARANCE_THEMES_PAGE = '/settings/appearance/themes';
 const String SETTINGS_VIDEO_PAGE = '/settings/video';
 
 const String THUNDER_SERVER_URL = 'https://thunderapp.dev';
-

@@ -23,7 +23,7 @@ bool isVideoUrl(String url) {
   ];
 // youtube url
   String? youtubeVideoId = YoutubePlayer.convertUrlToId(url);
- 
+
   // Get the file extension from the URL
   String fileExtension = url.split('.').last.toLowerCase();
 

@@ -2267,10 +2267,6 @@
   "@video": {
     "description": "String for video "
   },
-  "videoAutoMute": "Mute Videos",
-  "@videoAutoMute": {
-    "description": "Option to always mute videos"
-  },
   "videoAutoFullscreen": "Auto Fullscreen",
   "@videoAutoFullscreen": {
     "decription": "Option to always start the video players in landscape"
@@ -2279,13 +2275,17 @@
   "@videoAutoLoop": {
     "description": "Option to always loop a video"
   },
-  "videoDefaultPlaybackSpeed": "Default Playback speed",
-  "@videoDefaultPlaybackSpeed": {
-    "description": "Option to select the default video playback speed"
+  "videoAutoMute": "Mute Videos",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
   },
   "videoAutoPlay": "Video Autoplay",
   "@videoAutoPlay": {
     "description": "Option to always autoplay videos"
+  },
+  "videoDefaultPlaybackSpeed": "Default Playback speed",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback speed"
   },
   "viewAll": "View all",
   "@viewAll": {

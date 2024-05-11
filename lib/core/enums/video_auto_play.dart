@@ -6,6 +6,6 @@ enum VideoAutoPlay {
   const VideoAutoPlay({
     required this.label,
   });
- 
+
   final String label;
 }

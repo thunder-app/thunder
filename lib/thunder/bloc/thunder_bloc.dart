@@ -260,7 +260,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       /// -------------------------- Accessibility Related Settings --------------------------
       bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
-      
+
       /// ------------------ VIDEO PLAYER SETTINGS -----------------------------------------
       bool videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
       bool videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
@@ -268,7 +268,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
       VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
 
-      
       List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ??
           // If the user already has some accouts (i.e., an upgrade), we don't want to just throw an anonymous instance at them
           ((await Account.accounts()).isNotEmpty ? [] : ['lemmy.ml']);
@@ -428,6 +427,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations: reduceAnimations,
+
         /// ------------------ VIDEO PLAYER SETTINGS -----------------------------------------
         videoAutoMute: videoAutoMute,
         videoAutoFullscreen: videoAutoFullscreen,
