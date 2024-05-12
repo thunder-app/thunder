@@ -40,21 +40,13 @@ class UserSettingsPage extends StatefulWidget {
 }
 
 class _UserSettingsPageState extends State<UserSettingsPage> {
-  Account? originalUser;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    AuthState state = context.read<AuthBloc>().state;
-    originalUser ??= state.account;
 
     return PopScope(
-      onPopInvoked: (_) {
-        if (context.mounted) {
-          restoreUser(context, originalUser);
-        }
-      },
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 70.0,
