@@ -13,6 +13,14 @@
   },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
+  "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "accountSwitchPostNotFound": "The selected post was not found on '{instance}'. Switching back to previous account.",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
   "actionColors": "Action Colors",
   "@actionColors": {
     "description": "Setting heading for action colors"
@@ -1609,6 +1617,10 @@
   "@searchTerm": {},
   "searchUsersFederatedWith": "Search for users federated with {instance}",
   "@searchUsersFederatedWith": {},
+  "selectAccountToCommentAs": "Select account to comment as",
+  "@selectAccountToCommentAs": {
+    "description": "Profile modal heading for commenting as other user"
+  },
   "selectAccountToPostAs": "Select account to post as",
   "@selectAccountToPostAs": {
     "description": "Heading for account selector when posting"

@@ -341,8 +341,10 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 onReply: () async => navigateToCreateCommentPage(
                   context,
                   postViewMedia: widget.postViewMedia,
-                  onCommentSuccess: (commentView) {
-                    context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+                  onCommentSuccess: (commentView, userChanged) {
+                    if (!userChanged) {
+                      context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+                    }
                   },
                 ),
               ),
