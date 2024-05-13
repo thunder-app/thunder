@@ -95,8 +95,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   SharedPreferences? sharedPreferences;
 
   /// Whether to view source for posts or comments
-  bool postViewSource = false;
-  bool commentViewSource = false;
+  bool viewSource = false;
 
   @override
   void initState() {
@@ -289,8 +288,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     postViewMedia: widget.postViewMedia!,
                                     crossPosts: const [],
                                     moderators: const [],
-                                    viewSource: postViewSource,
-                                    onViewSourceToggled: () => setState(() => postViewSource = !postViewSource),
+                                    viewSource: viewSource,
+                                    onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                                     showQuickPostActionBar: false,
                                     showExpandableButton: false,
                                     selectable: true,
@@ -317,8 +316,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     isUserLoggedIn: true,
                                     isOwnComment: false,
                                     isHidden: false,
-                                    viewSource: commentViewSource,
-                                    onViewSourceToggled: () => setState(() => commentViewSource = !commentViewSource),
+                                    viewSource: viewSource,
+                                    onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                                     disableActions: true,
                                     selectable: true,
                                     showReplyEditorButtons: true,
