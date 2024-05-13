@@ -517,17 +517,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                             const SizedBox(height: 10),
                             AnimatedCrossFade(
-                              firstChild: Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(8.0),
-                                  decoration: BoxDecoration(
-                                    color: getBackgroundColor(context),
-                                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                  ),
-                                  child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
+                              firstChild: Container(
+                                margin: const EdgeInsets.only(top: 8.0),
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  color: getBackgroundColor(context),
+                                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                 ),
+                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
                               ),
                               secondChild: MarkdownTextInputField(
                                 controller: _bodyTextController,
