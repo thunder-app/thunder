@@ -16,7 +16,7 @@ Future<void> showProfileModalSheet(
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-  showModalBottomSheet(
+  await showModalBottomSheet(
     elevation: 0,
     isScrollControlled: true,
     context: context,

@@ -12,10 +12,12 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/models/account.dart';
 
 // Project imports
 import 'package:thunder/comment/cubit/create_comment_cubit.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -25,7 +27,8 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/user/widgets/user_indicator.dart';
+import 'package:thunder/user/utils/restore_user.dart';
+import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
@@ -42,7 +45,7 @@ class CreateCommentPage extends StatefulWidget {
   final CommentView? parentCommentView;
 
   /// Callback function that is triggered whenever the comment is successfully created or updated
-  final Function(CommentView commentView)? onCommentSuccess;
+  final Function(CommentView commentView, bool userChanged)? onCommentSuccess;
 
   const CreateCommentPage({
     super.key,
@@ -97,9 +100,24 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   /// Whether to view source for posts or comments
   bool viewSource = false;
 
+  /// The active user that was selected when the page was opened
+  Account? originalUser;
+
+  /// Whether the user was temporarily changed to create the comment
+  bool userChanged = false;
+
+  /// The ID of the post we're responding to
+  int? postId;
+
+  // The ID of the comment we're responding to
+  int? parentCommentId;
+
   @override
   void initState() {
     super.initState();
+
+    postId = widget.postViewMedia?.postView.post.id ?? widget.parentCommentView?.post.id;
+    parentCommentId = widget.parentCommentView?.comment.id;
 
     _bodyTextController.addListener(() {
       draftComment.text = _bodyTextController.text;
@@ -195,268 +213,278 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    originalUser ??= context.read<AuthBloc>().state.account;
 
-    return BlocProvider(
-      create: (context) => CreateCommentCubit(),
-      child: BlocConsumer<CreateCommentCubit, CreateCommentState>(
-        listener: (context, state) {
-          if (state.status == CreateCommentStatus.success && state.commentView != null) {
-            widget.onCommentSuccess?.call(state.commentView!);
-            Navigator.of(context).pop();
-          }
+    return PopScope(
+      onPopInvoked: (_) {
+        if (context.mounted) {
+          restoreUser(context, originalUser);
+        }
+      },
+      child: BlocProvider(
+        create: (context) => CreateCommentCubit(),
+        child: BlocConsumer<CreateCommentCubit, CreateCommentState>(
+          listener: (context, state) {
+            if (state.status == CreateCommentStatus.success && state.commentView != null) {
+              widget.onCommentSuccess?.call(state.commentView!, userChanged);
+              Navigator.of(context).pop();
+            }
 
-          if (state.status == CreateCommentStatus.error && state.message != null) {
-            showSnackbar(state.message!);
-            context.read<CreateCommentCubit>().clearMessage();
-          }
+            if (state.status == CreateCommentStatus.error && state.message != null) {
+              showSnackbar(state.message!);
+              context.read<CreateCommentCubit>().clearMessage();
+            }
 
-          switch (state.status) {
-            case CreateCommentStatus.imageUploadSuccess:
-              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
-              break;
-            case CreateCommentStatus.imageUploadFailure:
-              showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
-            default:
-              break;
-          }
-        },
-        builder: (context, state) {
-          return KeyboardDismissOnTap(
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
-                toolbarHeight: 70.0,
-                centerTitle: false,
-                actions: [
-                  state.status == CreateCommentStatus.submitting
-                      ? const Padding(
-                          padding: EdgeInsets.only(right: 20.0),
-                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: IconButton(
-                            onPressed: isSubmitButtonDisabled
-                                ? null
-                                : () {
-                                    draftComment.saveAsDraft = false;
+            switch (state.status) {
+              case CreateCommentStatus.imageUploadSuccess:
+                _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+                break;
+              case CreateCommentStatus.imageUploadFailure:
+                showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              default:
+                break;
+            }
+          },
+          builder: (context, state) {
+            return KeyboardDismissOnTap(
+              child: Scaffold(
+                appBar: AppBar(
+                  title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
+                  toolbarHeight: 70.0,
+                  centerTitle: false,
+                  actions: [
+                    state.status == CreateCommentStatus.submitting
+                        ? const Padding(
+                            padding: EdgeInsets.only(right: 20.0),
+                            child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: IconButton(
+                              onPressed: isSubmitButtonDisabled
+                                  ? null
+                                  : () {
+                                      draftComment.saveAsDraft = false;
 
-                                    int? postId;
-
-                                    if (widget.postViewMedia != null) {
-                                      postId = widget.postViewMedia!.postView.post.id;
-                                    } else if (widget.parentCommentView != null) {
-                                      postId = widget.parentCommentView!.post.id;
-                                    }
-
-                                    context.read<CreateCommentCubit>().createOrEditComment(
-                                          postId: postId,
-                                          parentCommentId: widget.parentCommentView?.comment.id,
-                                          content: _bodyTextController.text,
-                                          commentIdBeingEdited: widget.commentView?.comment.id,
-                                          languageId: languageId,
-                                        );
-                                  },
-                            icon: Icon(
-                              widget.commentView != null ? Icons.edit_rounded : Icons.send_rounded,
-                              semanticLabel: widget.commentView != null ? l10n.editComment : l10n.createComment,
+                                      context.read<CreateCommentCubit>().createOrEditComment(
+                                            postId: postId,
+                                            parentCommentId: parentCommentId,
+                                            content: _bodyTextController.text,
+                                            commentIdBeingEdited: widget.commentView?.comment.id,
+                                            languageId: languageId,
+                                          );
+                                    },
+                              icon: Icon(
+                                widget.commentView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                semanticLabel: widget.commentView != null ? l10n.editComment : l10n.createComment,
+                              ),
                             ),
                           ),
-                        ),
-                ],
-              ),
-              body: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            if (widget.postViewMedia != null)
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
-                                child: Container(
-                                  padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
-                                  decoration: BoxDecoration(
-                                    color: getBackgroundColor(context),
-                                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                  ),
-                                  child: PostSubview(
-                                    useDisplayNames: true,
-                                    postViewMedia: widget.postViewMedia!,
-                                    crossPosts: const [],
-                                    moderators: const [],
-                                    viewSource: viewSource,
-                                    onViewSourceToggled: () => setState(() => viewSource = !viewSource),
-                                    showQuickPostActionBar: false,
-                                    showExpandableButton: false,
-                                    selectable: true,
-                                    showReplyEditorButtons: true,
-                                  ),
-                                ),
-                              ),
-                            if (widget.parentCommentView != null) ...[
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: getBackgroundColor(context),
-                                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                  ),
-                                  child: CommentContent(
-                                    comment: widget.parentCommentView!,
-                                    onVoteAction: (_, __) {},
-                                    onSaveAction: (_, __) {},
-                                    onReplyEditAction: (_, __) {},
-                                    onReportAction: (_) {},
-                                    now: DateTime.now().toUtc(),
-                                    onDeleteAction: (_, __) {},
-                                    isUserLoggedIn: true,
-                                    isOwnComment: false,
-                                    isHidden: false,
-                                    viewSource: viewSource,
-                                    onViewSourceToggled: () => setState(() => viewSource = !viewSource),
-                                    disableActions: true,
-                                    selectable: true,
-                                    showReplyEditorButtons: true,
+                  ],
+                ),
+                body: SafeArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              if (widget.postViewMedia != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
+                                  child: Container(
+                                    padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
+                                    decoration: BoxDecoration(
+                                      color: getBackgroundColor(context),
+                                      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                    ),
+                                    child: PostSubview(
+                                      useDisplayNames: true,
+                                      postViewMedia: widget.postViewMedia!,
+                                      crossPosts: const [],
+                                      moderators: const [],
+                                      viewSource: viewSource,
+                                      onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                                      showQuickPostActionBar: false,
+                                      showExpandableButton: false,
+                                      selectable: true,
+                                      showReplyEditorButtons: true,
+                                    ),
                                   ),
                                 ),
+                              if (widget.parentCommentView != null) ...[
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: getBackgroundColor(context),
+                                      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                    ),
+                                    child: CommentContent(
+                                      comment: widget.parentCommentView!,
+                                      onVoteAction: (_, __) {},
+                                      onSaveAction: (_, __) {},
+                                      onReplyEditAction: (_, __) {},
+                                      onReportAction: (_) {},
+                                      now: DateTime.now().toUtc(),
+                                      onDeleteAction: (_, __) {},
+                                      isUserLoggedIn: true,
+                                      isOwnComment: false,
+                                      isHidden: false,
+                                      viewSource: viewSource,
+                                      onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                                      disableActions: true,
+                                      selectable: true,
+                                      showReplyEditorButtons: true,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 16.0),
+                                    child: UserSelector(
+                                      profileModalHeading: l10n.selectAccountToCommentAs,
+                                      postActorId: widget.postViewMedia?.postView.post.apId,
+                                      onPostChanged: (postView) => postId = postView.post.id,
+                                      parentCommentActorId: widget.parentCommentView?.comment.apId,
+                                      onParentCommentChanged: (parentCommentView) {
+                                        postId = parentCommentView.post.id;
+                                        parentCommentId = parentCommentView.comment.id;
+                                      },
+                                      onUserChanged: () => userChanged = true,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: LanguageSelector(
+                                      languageId: languageId,
+                                      onLanguageSelected: (Language? language) {
+                                        setState(() => languageId = language?.id);
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  AnimatedCrossFade(
+                                    firstChild: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.all(8.0),
+                                        decoration: BoxDecoration(
+                                          color: getBackgroundColor(context),
+                                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                        ),
+                                        child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
+                                      ),
+                                    ),
+                                    secondChild: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      child: MarkdownTextInputField(
+                                        controller: _bodyTextController,
+                                        focusNode: _bodyFocusNode,
+                                        label: l10n.comment,
+                                        minLines: 8,
+                                        maxLines: null,
+                                        textStyle: theme.textTheme.bodyLarge,
+                                      ),
+                                    ),
+                                    crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                    duration: const Duration(milliseconds: 120),
+                                    excludeBottomFocus: false,
+                                  )
+                                ],
                               ),
                             ],
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                  child: UserIndicator(),
-                                ),
-                                const SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                  child: LanguageSelector(
-                                    languageId: languageId,
-                                    onLanguageSelected: (Language? language) {
-                                      setState(() => languageId = language?.id);
+                          ),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      Container(
+                        color: theme.cardColor,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: IgnorePointer(
+                                ignoring: showPreview,
+                                child: MarkdownToolbar(
+                                  controller: _bodyTextController,
+                                  focusNode: _bodyFocusNode,
+                                  actions: const [
+                                    MarkdownType.image,
+                                    MarkdownType.link,
+                                    MarkdownType.bold,
+                                    MarkdownType.italic,
+                                    MarkdownType.blockquote,
+                                    MarkdownType.strikethrough,
+                                    MarkdownType.title,
+                                    MarkdownType.list,
+                                    MarkdownType.separator,
+                                    MarkdownType.code,
+                                    MarkdownType.spoiler,
+                                    MarkdownType.username,
+                                    MarkdownType.community,
+                                  ],
+                                  customTapActions: {
+                                    MarkdownType.username: () {
+                                      showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
+                                        _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                            '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                      });
                                     },
-                                  ),
+                                    MarkdownType.community: () {
+                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
+                                        _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                            '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
+                                      });
+                                    },
+                                  },
+                                  imageIsLoading: state.status == CreateCommentStatus.imageUploadInProgress,
+                                  customImageButtonAction: () async {
+                                    if (state.status == CreateCommentStatus.imageUploadInProgress) return;
+
+                                    String imagePath = await selectImageToUpload();
+                                    if (context.mounted) context.read<CreateCommentCubit>().uploadImage(imagePath);
+                                  },
                                 ),
-                                const SizedBox(height: 10),
-                                AnimatedCrossFade(
-                                  firstChild: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.all(8.0),
-                                      decoration: BoxDecoration(
-                                        color: getBackgroundColor(context),
-                                        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                      ),
-                                      child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
-                                    ),
-                                  ),
-                                  secondChild: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                    child: MarkdownTextInputField(
-                                      controller: _bodyTextController,
-                                      focusNode: _bodyFocusNode,
-                                      label: l10n.comment,
-                                      minLines: 8,
-                                      maxLines: null,
-                                      textStyle: theme.textTheme.bodyLarge,
-                                    ),
-                                  ),
-                                  crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                                  duration: const Duration(milliseconds: 120),
-                                  excludeBottomFocus: false,
-                                )
-                              ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
+                              child: IconButton(
+                                onPressed: () {
+                                  if (!showPreview) {
+                                    setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
+                                    FocusManager.instance.primaryFocus?.unfocus();
+                                  }
+
+                                  setState(() => showPreview = !showPreview);
+                                  if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
+                                },
+                                icon: Icon(
+                                  showPreview ? Icons.visibility_outlined : Icons.visibility,
+                                  color: theme.colorScheme.onSecondary,
+                                  semanticLabel: l10n.postTogglePreview,
+                                ),
+                                visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
+                                style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    const Divider(height: 1),
-                    Container(
-                      color: theme.cardColor,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: IgnorePointer(
-                              ignoring: showPreview,
-                              child: MarkdownToolbar(
-                                controller: _bodyTextController,
-                                focusNode: _bodyFocusNode,
-                                actions: const [
-                                  MarkdownType.image,
-                                  MarkdownType.link,
-                                  MarkdownType.bold,
-                                  MarkdownType.italic,
-                                  MarkdownType.blockquote,
-                                  MarkdownType.strikethrough,
-                                  MarkdownType.title,
-                                  MarkdownType.list,
-                                  MarkdownType.separator,
-                                  MarkdownType.code,
-                                  MarkdownType.spoiler,
-                                  MarkdownType.username,
-                                  MarkdownType.community,
-                                ],
-                                customTapActions: {
-                                  MarkdownType.username: () {
-                                    showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
-                                      _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                          '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
-                                    });
-                                  },
-                                  MarkdownType.community: () {
-                                    showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                      _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                          '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
-                                    });
-                                  },
-                                },
-                                imageIsLoading: state.status == CreateCommentStatus.imageUploadInProgress,
-                                customImageButtonAction: () async {
-                                  if (state.status == CreateCommentStatus.imageUploadInProgress) return;
-
-                                  String imagePath = await selectImageToUpload();
-                                  if (context.mounted) context.read<CreateCommentCubit>().uploadImage(imagePath);
-                                },
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
-                            child: IconButton(
-                              onPressed: () {
-                                if (!showPreview) {
-                                  setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                }
-
-                                setState(() => showPreview = !showPreview);
-                                if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
-                              },
-                              icon: Icon(
-                                showPreview ? Icons.visibility_outlined : Icons.visibility,
-                                color: theme.colorScheme.onSecondary,
-                                semanticLabel: l10n.postTogglePreview,
-                              ),
-                              visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
-                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
