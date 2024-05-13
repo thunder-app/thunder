@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
 
 class ThunderDivider extends StatelessWidget {
+  /// Whether to wrap the returned widget in a [SliverToBoxAdapter]
   final bool sliver;
+
+  /// Whether to apply padding around the divider
   final bool padding;
 
   const ThunderDivider({super.key, required this.sliver, this.padding = true});
