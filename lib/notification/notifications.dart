@@ -46,7 +46,7 @@ Future<void> initPushNotificationLogic({required StreamController<NotificationRe
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     // Initialize the Android-specific settings, using the splash asset as the notification icon.
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('splash');
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('icon');
     const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(
