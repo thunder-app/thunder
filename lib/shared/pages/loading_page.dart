@@ -87,11 +87,11 @@ Future<void> hideLoadingPage(BuildContext context, {bool delay = false}) async {
   }
 }
 
-void pushOnTopOfLoadingPage(BuildContext context, Route route) {
+Future<void> pushOnTopOfLoadingPage(BuildContext context, Route route) async {
   if (isLoadingPageShown) {
     isLoadingPageShown = false;
-    Navigator.of(context).pushReplacement(route);
+    await Navigator.of(context).pushReplacement(route);
   } else {
-    Navigator.of(context).push(route);
+    await Navigator.of(context).push(route);
   }
 }
