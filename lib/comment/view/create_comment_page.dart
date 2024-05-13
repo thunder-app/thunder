@@ -26,6 +26,7 @@ import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
 
@@ -92,6 +93,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   /// Used for restoring and saving drafts
   SharedPreferences? sharedPreferences;
+
+  /// Whether to view source for posts or comments
+  bool viewSource = false;
 
   @override
   void initState() {
@@ -276,7 +280,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 child: Container(
                                   padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
                                   decoration: BoxDecoration(
-                                    color: theme.dividerColor.withOpacity(0.25),
+                                    color: getBackgroundColor(context),
                                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                   ),
                                   child: PostSubview(
@@ -284,10 +288,12 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     postViewMedia: widget.postViewMedia!,
                                     crossPosts: const [],
                                     moderators: const [],
-                                    viewSource: false,
+                                    viewSource: viewSource,
+                                    onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                                     showQuickPostActionBar: false,
                                     showExpandableButton: false,
                                     selectable: true,
+                                    showReplyEditorButtons: true,
                                   ),
                                 ),
                               ),
@@ -296,7 +302,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: theme.dividerColor.withOpacity(0.25),
+                                    color: getBackgroundColor(context),
                                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                   ),
                                   child: CommentContent(
@@ -310,10 +316,11 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     isUserLoggedIn: true,
                                     isOwnComment: false,
                                     isHidden: false,
-                                    viewSource: false,
-                                    onViewSourceToggled: () {},
+                                    viewSource: viewSource,
+                                    onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                                     disableActions: true,
                                     selectable: true,
+                                    showReplyEditorButtons: true,
                                   ),
                                 ),
                               ),
@@ -343,7 +350,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       width: double.infinity,
                                       padding: const EdgeInsets.all(8.0),
                                       decoration: BoxDecoration(
-                                        color: theme.colorScheme.surfaceVariant,
+                                        color: getBackgroundColor(context),
                                         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                       ),
                                       child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),

@@ -25,9 +25,6 @@ class CommonMarkdownBody extends StatelessWidget {
   /// Whether to hide the markdown content. This is mainly used for spoiler markdown
   final bool hideContent;
 
-  /// Whether the text is selectable - defaults to false
-  final bool isSelectableText;
-
   /// Indicates if the given markdown is a comment. Depending on the markdown content, different text scaling may be applied
   /// TODO: This should be converted to an enum of possible markdown content (e.g., post, comment, general, metadata, etc.) to allow for more fined-tuned scaling of text
   final bool? isComment;
@@ -38,7 +35,6 @@ class CommonMarkdownBody extends StatelessWidget {
     super.key,
     required this.body,
     this.hideContent = false,
-    this.isSelectableText = false,
     this.isComment,
     this.imageMaxWidth,
   });
@@ -151,7 +147,6 @@ class CommonMarkdownBody extends StatelessWidget {
           },
         );
       },
-      selectable: isSelectableText,
       onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
       onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
       styleSheet: hideContent

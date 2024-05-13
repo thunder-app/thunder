@@ -1,4 +1,7 @@
 // Flutter imports
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -34,8 +37,11 @@ import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/community_chip.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/cross_posts.dart';
+import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -46,9 +52,11 @@ class PostSubview extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
   final bool viewSource;
+  final void Function()? onViewSourceToggled;
   final bool showQuickPostActionBar;
   final bool showExpandableButton;
   final bool selectable;
+  final bool showReplyEditorButtons;
 
   const PostSubview({
     super.key,
@@ -58,9 +66,11 @@ class PostSubview extends StatefulWidget {
     required this.moderators,
     required this.crossPosts,
     required this.viewSource,
+    this.onViewSourceToggled,
     this.showQuickPostActionBar = true,
     this.showExpandableButton = true,
     this.selectable = false,
+    this.showReplyEditorButtons = false,
   });
 
   @override
@@ -70,6 +80,7 @@ class PostSubview extends StatefulWidget {
 class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin {
   final ExpandableController expandableController = ExpandableController(initialExpanded: true);
   late PostViewMedia postViewMedia;
+  final FocusNode _selectableRegionFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -173,16 +184,32 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 ),
                 expanded: Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: widget.viewSource
-                      ? ScalableText(
-                          post.body ?? '',
-                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                          fontScale: thunderState.contentFontSizeScale,
-                        )
-                      : CommonMarkdownBody(
-                          body: post.body ?? '',
-                          isSelectableText: widget.selectable,
-                        ),
+                  child: ConditionalParentWidget(
+                    condition: widget.selectable,
+                    parentBuilder: (child) {
+                      return SelectableRegion(
+                        focusNode: _selectableRegionFocusNode,
+                        // See comments on [SelectableTextModal] regarding the next two properties
+                        selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
+                        contextMenuBuilder: (context, selectableRegionState) {
+                          return AdaptiveTextSelectionToolbar.buttonItems(
+                            buttonItems: selectableRegionState.contextMenuButtonItems,
+                            anchors: selectableRegionState.contextMenuAnchors,
+                          );
+                        },
+                        child: child,
+                      );
+                    },
+                    child: widget.viewSource
+                        ? ScalableText(
+                            post.body ?? '',
+                            style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                            fontScale: thunderState.contentFontSizeScale,
+                          )
+                        : CommonMarkdownBody(
+                            body: post.body ?? '',
+                          ),
+                  ),
                 ),
               ),
             const SizedBox(height: 16.0),
@@ -228,6 +255,14 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                     url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
                   ),
+                  if (widget.showReplyEditorButtons && widget.postViewMedia.postView.post.body?.isNotEmpty == true) ...[
+                    const ThunderDivider(sliver: false, padding: false),
+                    ReplyToPreviewActions(
+                      onViewSourceToggled: widget.onViewSourceToggled,
+                      viewSource: widget.viewSource,
+                      text: widget.postViewMedia.postView.post.body!,
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -311,7 +346,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   },
                 ),
               ),
-            ]
+            ],
           ],
         ),
       ),

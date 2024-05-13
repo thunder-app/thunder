@@ -20,6 +20,7 @@ import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/utils/local_notifications.dart';
 
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
@@ -167,15 +168,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               },
             ),
           ),
-          SliverToBoxAdapter(
-            child: Divider(
-              indent: 32.0,
-              height: 32.0,
-              endIndent: 32.0,
-              thickness: 2.0,
-              color: theme.dividerColor.withOpacity(0.6),
-            ),
-          ),
+          const ThunderDivider(sliver: true),
           SliverToBoxAdapter(
             child: FutureBuilder<int>(
               future: getExtendedImageCacheSize(),
@@ -382,15 +375,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               ),
             ],
           ],
-          SliverToBoxAdapter(
-            child: Divider(
-              indent: 32.0,
-              height: 32.0,
-              endIndent: 32.0,
-              thickness: 2.0,
-              color: theme.dividerColor.withOpacity(0.6),
-            ),
-          ),
+          const ThunderDivider(sliver: true),
           SliverToBoxAdapter(
             child: SettingsListTile(
               icon: Icons.edit_notifications_rounded,
