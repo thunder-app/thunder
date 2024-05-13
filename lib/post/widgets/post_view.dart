@@ -41,7 +41,7 @@ import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/media_view.dart';
-import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -257,45 +257,10 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   ),
                   if (widget.showReplyEditorButtons && widget.postViewMedia.postView.post.body?.isNotEmpty == true) ...[
                     const ThunderDivider(sliver: false, padding: false),
-                    Material(
-                      color: Colors.transparent,
-                      child: Row(
-                        children: [
-                          InkWell(
-                            onTap: widget.onViewSourceToggled,
-                            borderRadius: BorderRadius.circular(10),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(width: 5),
-                                const Icon(Icons.edit_document, size: 15),
-                                const SizedBox(width: 5),
-                                Text(widget.viewSource ? l10n.viewOriginal : l10n.viewSource),
-                                const SizedBox(width: 5),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 12.0),
-                          InkWell(
-                            onTap: () {
-                              Clipboard.setData(ClipboardData(text: widget.postViewMedia.postView.post.body!)).then((_) {
-                                showSnackbar(AppLocalizations.of(context)!.copiedToClipboard);
-                              });
-                            },
-                            borderRadius: BorderRadius.circular(10),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(width: 5),
-                                const Icon(Icons.copy_rounded, size: 15),
-                                const SizedBox(width: 5),
-                                Text(l10n.copyText),
-                                const SizedBox(width: 5),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                    ReplyToPreviewActions(
+                      onViewSourceToggled: widget.onViewSourceToggled,
+                      viewSource: widget.viewSource,
+                      text: widget.postViewMedia.postView.post.body!,
                     ),
                   ],
                 ],

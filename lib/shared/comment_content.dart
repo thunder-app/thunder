@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -10,7 +9,7 @@ import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/divider.dart';
-import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -87,7 +86,6 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
     final ThunderState state = context.read<ThunderBloc>().state;
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
     final ThemeData theme = Theme.of(context);
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return ExcludeSemantics(
       excluding: widget.excludeSemantics,
@@ -176,45 +174,10 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-              child: Material(
-                color: Colors.transparent,
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: widget.onViewSourceToggled,
-                      borderRadius: BorderRadius.circular(10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(width: 5),
-                          const Icon(Icons.edit_document, size: 15),
-                          const SizedBox(width: 5),
-                          Text(widget.viewSource ? l10n.viewOriginal : l10n.viewSource),
-                          const SizedBox(width: 5),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12.0),
-                    InkWell(
-                      onTap: () {
-                        Clipboard.setData(ClipboardData(text: cleanCommentContent(widget.comment.comment))).then((_) {
-                          showSnackbar(AppLocalizations.of(context)!.copiedToClipboard);
-                        });
-                      },
-                      borderRadius: BorderRadius.circular(10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(width: 5),
-                          const Icon(Icons.copy_rounded, size: 15),
-                          const SizedBox(width: 5),
-                          Text(l10n.copyText),
-                          const SizedBox(width: 5),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              child: ReplyToPreviewActions(
+                onViewSourceToggled: widget.onViewSourceToggled,
+                viewSource: widget.viewSource,
+                text: cleanCommentContent(widget.comment.comment),
               ),
             ),
           ],
