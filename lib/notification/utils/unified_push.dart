@@ -71,7 +71,14 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
 
-      Map<String, dynamic> data = jsonDecode(utf8.decode(message));
+      final String decodedMessage = utf8.decode(message);
+
+      if (decodedMessage == "test") {
+        // This means we successfully got a test notification from UnifiedPush.
+        showTestAndroidNotification();
+      }
+
+      Map<String, dynamic> data = jsonDecode(decodedMessage);
 
       // Notification for replies
       if (data.containsKey('reply')) {
