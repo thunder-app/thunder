@@ -623,7 +623,7 @@
   "@pending": {
     "description": "Describes the subscription status for 'Pending'"
   },
-  "permissionDenied": "Permiso denegado",
+  "permissionDenied": "Thunder no tiene permiso para mostrar notificaciones. Por favor, habilítelo en los ajustes del sistema.",
   "@permissionDenied": {
     "description": "Title for error when user denies OS permissions"
   },
@@ -719,7 +719,7 @@
   "@replyToPost": {},
   "replyingTo": "Responder a {author}",
   "@replyingTo": {},
-  "report": "Report",
+  "report": "{count, plural, zero {Reportes} one {Reporte} other {Reportes} } ",
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
@@ -1345,7 +1345,7 @@
   "@warning": {
     "description": "Heading for warning dialogs"
   },
-  "enableInboxNotifications": "Activar las notificaciones de la bandeja de entrada (experimental)",
+  "enableInboxNotifications": "Activar las notificaciones de la bandeja de entrada",
   "@enableInboxNotifications": {
     "description": "Setting name for inbox notifications"
   },
@@ -1361,7 +1361,7 @@
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
   },
-  "notificationsWarningDialog": "Las notificaciones son una función experimental que puede no funcionar correctamente en todos los dispositivos.\n\n· Las omprobaciones se producirán cada ~15 minutos y consumirán batería adicional.\n\n· Desactiva las optimizaciones de batería para una mayor probabilidad de éxito de las notificaciones.\n\nConsulte la siguiente página para obtener más información.",
+  "notificationsWarningDialog": "Las notificaciones son una **característica experimental** que puede no funcionar correctamente en todos los dispositivos.\n\n - Las comprobaciones se producirán cada ~15 minutos y consumirán batería adicional.\n\n - Desactiva las optimizaciones de batería para una mayor probabilidad de éxito de las notificaciones.\n\n Consulta la siguiente página para obtener más información.",
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
   },
@@ -1834,5 +1834,469 @@
   "userStyle": "Estilo del usuario",
   "@userStyle": {
     "description": "Heading for user style setting"
+  },
+  "comfortable": "Cómodo",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "compact": "Compacto",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "dividerAppearance": "Aspecto del divisor",
+  "@dividerAppearance": {
+    "description": "Divider appearance category"
+  },
+  "color": "Color",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "feedSettings": "Configuración del feed",
+  "@feedSettings": {
+    "description": "Feed settings category."
+  },
+  "postBodyShowCommunityInstance": "Mostrar instancia de comunidad",
+  "@postBodyShowCommunityInstance": {
+    "description": "Whether to show the community instance for post bodies"
+  },
+  "postShowUserInstance": "Mostrar instancia de usuario",
+  "@postShowUserInstance": {
+    "description": "Whether to show the user instance for post listings"
+  },
+  "postBodyShowUserInstance": "Mostrar la instancia del usuario",
+  "@postBodyShowUserInstance": {
+    "description": "Whether to show the user instance for post bodies"
+  },
+  "standard": "Estándar",
+  "@standard": {
+    "description": "Describes a standard visual density"
+  },
+  "thickness": "Espesor",
+  "@thickness": {
+    "description": "Describes a thickness (e.g., divider)"
+  },
+  "showNavigationLabels": "Mostrar etiquetas de navegación",
+  "@showNavigationLabels": {
+    "description": "Setting for showing navigation labels"
+  },
+  "showNavigationLabelsDescription": "Mostrar o no etiquetas debajo de los botones de navegación inferiores",
+  "@showNavigationLabelsDescription": {
+    "description": "Description for setting for showing navigation labels"
+  },
+  "bold": "Negrita",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "communityNameColor": "Color del nombre de la comunidad",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "communityNameThickness": "Espesor del nombre de la comunidad",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
+  "instanceNameColor": "Color del nombre de la instancia",
+  "@instanceNameColor": {
+    "description": "Setting for instance name color"
+  },
+  "instanceNameThickness": "Espesor del nombre de la instancia",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
+  "status": "Estado",
+  "@status": {
+    "description": "Status of the action"
+  },
+  "themeSecondary": "Tema secundario",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "themeTertiary": "Tema terciario",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
+  },
+  "unresolved": "Sin resolver",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
+  },
+  "userNameColor": "Color del nombre de usuario",
+  "@userNameColor": {
+    "description": "Setting for username color"
+  },
+  "userNameThickness": "Espesor del nombre del usuario",
+  "@userNameThickness": {
+    "description": "Setting for user name thickness"
+  },
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
+  "defaultColor": "Por defecto",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
+  },
+  "names": "Nombres",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
+  "themePrimary": "Tema primario",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "unableToResolveReport": "No se puede resolver el informe",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
+  },
+  "showPostAuthorSubtitle": "El autor del tema siempre se muestra en las fuentes de la comunidad",
+  "@showPostAuthorSubtitle": {
+    "description": "Subtitle for the Show Post Author setting"
+  },
+  "textActions": "Acciones del texto",
+  "@textActions": {
+    "description": "Option for text actions"
+  },
+  "viewCommentSource": "Ver el origen de los comentarios",
+  "@viewCommentSource": {
+    "description": "Menu item for viewing a comment's source"
+  },
+  "viewPostSource": "Ver origen de la publicación",
+  "@viewPostSource": {
+    "description": "Menu item for viewing a post's source"
+  },
+  "couldntFindPost": "No se puede cargar la publicación solicitada. Es posible que haya sido eliminado o eliminado.",
+  "@couldntFindPost": {
+    "description": "Error message for when we can't load a post."
+  },
+  "downvoted": "Votado en contra",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
+  "upvoted": "Votado a favor",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
+  "addDiscussionLanguage": "Añadir idioma",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "deselectUndeterminedWarning": "Si anula la selección Indeterminada, no verá la mayoría de los contenidos.",
+  "@deselectUndeterminedWarning": {},
+  "discussionLanguages": "Idiomas de debate",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "languageFilters": "¿Buscar filtros de idiomas?",
+  "@languageFilters": {},
+  "mustBeLoggedIn": "Tienes que iniciar sesión",
+  "@mustBeLoggedIn": {},
+  "noDiscussionLanguages": "No se oculta ningún contenido por motivos de idiomas.",
+  "@noDiscussionLanguages": {
+    "description": "Message for no discussion languages added"
+  },
+  "discussionLanguagesTooltip": "El contenido se filtra a los idiomas seleccionados.",
+  "@discussionLanguagesTooltip": {},
+  "deletedByCreator": "borrado por el creador",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "deletedByModerator": "borrado por el moderador",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "me": "Yo",
+  "@me": {
+    "description": "Label for the current user."
+  },
+  "originalPoster": "Cartel original",
+  "@originalPoster": {
+    "description": "Label for the original poster."
+  },
+  "commentShowUserAvatar": "Mostrar el avatar del usuario",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
+  "disablePushNotifications": "Desactivar las notificaciones push",
+  "@disablePushNotifications": {
+    "description": "Description when disabling push notifications"
+  },
+  "disabled": "Desactivar",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
+  "failedToUpdateNotificationSettings": "Error al actualizar los ajustes de las notificaciones",
+  "@failedToUpdateNotificationSettings": {
+    "description": "Error message when failed to update notification settings."
+  },
+  "localNotifications": "Notificaciones locales",
+  "@localNotifications": {
+    "description": "Describes the notification type for Local Notifications"
+  },
+  "pushNotificationServer": "Servidor de notificaciones push",
+  "@pushNotificationServer": {
+    "description": "Setting for choosing push notification server"
+  },
+  "pushNotificationServerDescription": "Configure el servidor de notificaciones push. El servidor debe estar correctamente configurado para enviar notificaciones push a tu dispositivo.\n\n **Introduzca solo un servidor en el que confíe con sus credenciales.**",
+  "@pushNotificationServerDescription": {
+    "description": "Description of choosing push notification server setting"
+  },
+  "useApplePushNotificationsDescription": "Utilizar el servicio de notificaciones push de Apple",
+  "@useApplePushNotificationsDescription": {
+    "description": "Subtitle of the setting for using APNs"
+  },
+  "useLocalNotificationsDescription": "Comprueba periódicamente si hay notificaciones en segundo plano",
+  "@useLocalNotificationsDescription": {
+    "description": "Subtitle of the setting for using local notifications"
+  },
+  "useUnifiedPushNotifications": "Utiliza las notificaciones de UnifiedPush",
+  "@useUnifiedPushNotifications": {
+    "description": "Toggle to use UnifiedPush Notifications"
+  },
+  "useUnifiedPushNotificationsDescription": "Requiere una aplicación compatible",
+  "@useUnifiedPushNotificationsDescription": {
+    "description": "Subtitle of the setting for using UnifiedPush Notifications"
+  },
+  "none": "Ninguna",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
+  "applePushNotificationService": "Servicio de notificaciones push de Apple",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
+  "hideThumbnails": "Ocultar miniaturas",
+  "@hideThumbnails": {
+    "description": "Option to hide thumbnails in feed"
+  },
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
+  },
+  "postBodyShowCommunityAvatar": "Mostrar avatar de la comunidad",
+  "@postBodyShowCommunityAvatar": {
+    "description": "Whether to show the community avatar for post bodies"
+  },
+  "pushNotification": "Notificaciones Push",
+  "@pushNotification": {
+    "description": "Setting for push notifications"
+  },
+  "pushNotificationDescription": "Si se activa, Thunder enviará su(s) token(s) JWT al servidor para sondear nuevas notificaciones. \n\n **NOTA:** Esto no tendrá efecto hasta la próxima vez que se inicie la aplicación.",
+  "@pushNotificationDescription": {
+    "description": "Description of push notification setting"
+  },
+  "unifiedPushNotifications": "Notificaciones UnifiedPush",
+  "@unifiedPushNotifications": {
+    "description": "Describes the notification type for Unified Push Notifications"
+  },
+  "showUserAvatar": "Mostrar el avatar del usuario",
+  "@showUserAvatar": {
+    "description": "Toggle to show user avatar."
+  },
+  "useApplePushNotifications": "Utilizar notificaciones APN",
+  "@useApplePushNotifications": {
+    "description": "Toggle to use APNs."
+  },
+  "useLocalNotifications": "Utilizar notificaciones locales (Experimental)",
+  "@useLocalNotifications": {
+    "description": "Toggle to use local notifications."
+  },
+  "in_": "en",
+  "@in_": {
+    "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+  },
+  "actionColors": "Colores de acción",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "blue": "Azul",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "colors": "Colores",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "green": "Verde",
+  "@green": {
+    "description": "The color green"
+  },
+  "markAsRead": "Marcar como leído",
+  "@markAsRead": {
+    "description": "Label for the action to mark a message as read"
+  },
+  "red": "Rojo",
+  "@red": {
+    "description": "The color red"
+  },
+  "saveColor": "Guardar el color",
+  "@saveColor": {
+    "description": "Name of save color setting"
+  },
+  "copySelected": "Copiar selección",
+  "@copySelected": {
+    "description": "Action for copying selected text"
+  },
+  "purple": "Morado",
+  "@purple": {
+    "description": "The color purple"
+  },
+  "selectAll": "Seleccionar todo",
+  "@selectAll": {
+    "description": "Action for selecting all text"
+  },
+  "selectText": "Seleccionar el texto",
+  "@selectText": {
+    "description": "Post and comment action for selecting text"
+  },
+  "teal": "Verde azulado",
+  "@teal": {
+    "description": "The color teal"
+  },
+  "actionColorsRedirect": "¿Buscas personalizar los colores?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
+  "copyComment": "Copiar comentario",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
+  "errorMarkingReplyRead": "Se produjo un error al marcar la respuesta como leída.",
+  "@errorMarkingReplyRead": {
+    "description": "Error message for marking a reply read"
+  },
+  "errorMarkingReplyUnread": "Se produjo un error al marcar la respuesta como no leída.",
+  "@errorMarkingReplyUnread": {
+    "description": "Error message for marking a reply unread"
+  },
+  "markReadColor": "Marcar color leído/no leído",
+  "@markReadColor": {
+    "description": "Name of mark read/unread color setting"
+  },
+  "noReplies": "No hay respuestas",
+  "@noReplies": {
+    "description": "Label for when there are no replies in the list"
+  },
+  "orange": "Naranja",
+  "@orange": {
+    "description": "The color orange"
+  },
+  "replyColor": "Color de la respuesta",
+  "@replyColor": {
+    "description": "Name of reply color setting"
+  },
+  "viewOriginal": "Mostrar el original",
+  "@viewOriginal": {
+    "description": "Action for viewing original text (as opposed to raw markdown)"
+  },
+  "viewSource": "Ver la fuente",
+  "@viewSource": {
+    "description": "Action for viewing source (raw markdown)"
+  },
+  "upvoteColor": "Color del voto positivo",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
+  },
+  "useProfilePictureForDrawer": "Usar imagen de perfil para cajón",
+  "@useProfilePictureForDrawer": {
+    "description": "Setting name for using the profile picture for the drawer"
+  },
+  "useProfilePictureForDrawerSubtitle": "Cuando inicia sesión, muestra la imagen de perfil del usuario en lugar del ícono del cajón",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Setting subtitle for using the profile picture for the drawer"
+  },
+  "downvoteColor": "Color de voto negativo",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
+  },
+  "areNotificationsAllowedBySystem": "Las notificaciones están permitidas por el sistema: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "changeNotificationSettings": "Cambiar los ajustes de notificación...",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
+  "connectedToUnifiedPushDistributorApp": "Conectado a la {app}",
+  "@connectedToUnifiedPushDistributorApp": {
+    "description": "Tell the user which UnifiedPush app we're connected to"
+  },
+  "currentNotificationsMode": "Modo actual de notificaciones: {mode}",
+  "@currentNotificationsMode": {
+    "description": "A status indicator for the current notifications mode"
+  },
+  "debugNotificationsDescription": "Utilice las siguientes opciones para solucionar problemas relacionados con las notificaciones.",
+  "@debugNotificationsDescription": {
+    "description": "A description for the notification debugging section"
+  },
+  "doNotSupportMultipleUnifiedPushApps": "Se han encontrado varias aplicaciones compatibles; instale solo una",
+  "@doNotSupportMultipleUnifiedPushApps": {
+    "description": "Tell the user we don't currently support multiple UnifiedPush apps"
+  },
+  "failedToCommunicateWithThunderNotificationServer": "Error al comunicarse con el servidor de notificación de Thunder en '{serverAddress}'",
+  "@failedToCommunicateWithThunderNotificationServer": {
+    "description": "Error message for when we fail to communicate with Thunder notification server"
+  },
+  "foundUnifiedPushDistribtorApp": "Encontrada aplicación compatible; reiniciar Thunder para conectar",
+  "@foundUnifiedPushDistribtorApp": {
+    "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
+  },
+  "havingIssuesWithNotifications": "¿Tienes problemas con las notificaciones?",
+  "@havingIssuesWithNotifications": {
+    "description": "A shortcut to navigate to the notification debugging section"
+  },
+  "no": "No",
+  "@no": {
+    "description": "A negative status"
+  },
+  "noCompatibleAppFound": "No se ha encontrado una aplicación compatible",
+  "@noCompatibleAppFound": {
+    "description": "Tell the user we didn't find a compatible UnifiedPush app"
+  },
+  "sendBackgroundTestUnifiedPushNotification": "Enviar notificación UnifiedPush de prueba en segundo plano",
+  "@sendBackgroundTestUnifiedPushNotification": {
+    "description": "The option to send a background UnifiedPUsh notification for testing"
+  },
+  "sendTestLocalNotification": "Enviar notificación local de prueba",
+  "@sendTestLocalNotification": {
+    "description": "The option to send a notification for testing"
+  },
+  "sendTestUnifiedPushNotification": "Enviar notificación UnifiedPush de prueba",
+  "@sendTestUnifiedPushNotification": {
+    "description": "The option to send a UnifiedPush notification for testing"
+  },
+  "suchAs": "tales como",
+  "@suchAs": {
+    "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
+  },
+  "testBackgroundNotificationDescription": "Thunder se cerrará e intentará generar una notificación en segundo plano. (Puede tardar unos minutos)",
+  "@testBackgroundNotificationDescription": {
+    "description": "A message describing the background test notification"
+  },
+  "testBackgroundUnifiedPushNotificationDescription": "Thunder pedirá al servidor de notificaciones que envíe una notificación diferida y luego se cerrará. (Puede tardar unos minutos)",
+  "@testBackgroundUnifiedPushNotificationDescription": {
+    "description": "A message describing the UnifiedPush background test notification"
+  },
+  "unifiedPushDistributorApp": "Aplicación Distribuidor UnifiedPush: {app} ({count} disponible)",
+  "@unifiedPushDistributorApp": {
+    "description": "A status indicator telling the current state of the UnifiedPush distributor app"
+  },
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
+  },
+  "yes": "Sí",
+  "@yes": {
+    "description": "A positive status"
+  },
+  "sendBackgroundTestLocalNotification": "Enviar notificación local de prueba en segundo plano",
+  "@sendBackgroundTestLocalNotification": {
+    "description": "The option to send a background notification for testing"
+  },
+  "confirmUnsubscription": "¿Estás seguro de que quieres darte de baja?",
+  "@confirmUnsubscription": {
+    "description": "Ask the user to confirm that they want to unsubscribe"
   }
 }
