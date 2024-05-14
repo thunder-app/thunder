@@ -49,7 +49,6 @@ class PostSubview extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool useDisplayNames;
   final int? selectedCommentId;
-  final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
   final bool viewSource;
   final void Function()? onViewSourceToggled;
@@ -63,7 +62,6 @@ class PostSubview extends StatefulWidget {
     this.selectedCommentId,
     required this.useDisplayNames,
     required this.postViewMedia,
-    required this.moderators,
     required this.crossPosts,
     required this.viewSource,
     this.onViewSourceToggled,

@@ -463,7 +463,6 @@ class _PostPageState extends State<PostPage> {
                                 scrollController: _scrollController,
                                 listController: _listController,
                                 hasReachedCommentEnd: state.hasReachedCommentEnd,
-                                moderators: state.moderators,
                                 crossPosts: state.crossPosts,
                                 viewSource: viewSource,
                               ),

@@ -32,7 +32,6 @@ class FeedCommentList extends StatelessWidget {
           children: [
             CommentReference(
               comment: commentViews[index],
-              now: DateTime.now(),
               onVoteAction: (int commentId, int voteType) => {
                 // TODO: Implement action
               },

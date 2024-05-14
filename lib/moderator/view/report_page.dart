@@ -309,7 +309,6 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                       children: [
                                         CommentReference(
                                           comment: commentView,
-                                          now: DateTime.now(),
                                           isOwnComment: commentView.creator.id == context.read<AccountBloc>().state.personView?.person.id,
                                           disableActions: true,
                                         ),

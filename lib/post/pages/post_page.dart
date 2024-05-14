@@ -5,9 +5,11 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 import 'package:thunder/comment/models/comment_node.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/comment/widgets/comment_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
 import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/shared/cross_posts.dart';
@@ -100,7 +102,6 @@ class _PostPageState extends State<PostPage> {
                   child: PostSubview(
                     useDisplayNames: false,
                     postViewMedia: state.postView ?? widget.initialPostViewMedia,
-                    moderators: state.moderators,
                     crossPosts: state.crossPosts,
                     viewSource: viewSource,
                   ),
@@ -122,12 +123,23 @@ class _PostPageState extends State<PostPage> {
                       bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
 
                       return CommentCard(
-                        now: DateTime.now().toUtc(),
                         commentView: commentView,
                         replyCount: commentNode.replies.length,
                         level: commentNode.depth,
                         collapsed: isCollapsed,
                         hidden: isHidden,
+                        onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                        onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                        onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                        onReportAction: (int commentId) => showReportCommentActionBottomSheet(context, commentId: commentId),
+                        onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+                          context,
+                          commentView: isEdit ? commentView : null,
+                          parentCommentView: isEdit ? null : commentView,
+                          onCommentSuccess: (commentView) {
+                            context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+                          },
+                        ),
                         onCollapseCommentChange: (int commentId, bool collapsed) {
                           if (collapsed) {
                             collapsedComments.add(commentId);
