@@ -98,7 +98,7 @@ Future<CommentView> deleteComment(int commentId, bool deleted) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
+  if (account?.jwt == null) throw Exception(AppLocalizations.of(GlobalContext.context)!.userNotLoggedIn);
 
   CommentResponse commentResponse = await lemmy.run(DeleteComment(
     auth: account!.jwt!,
@@ -165,6 +165,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
   return commentMap.values.where((commentView) => commentView.commentView!.comment.path.isEmpty || commentView.commentView!.comment.path == '0.${commentView.commentView!.comment.id}').toList();
 }
 
+@Deprecated('This function is used only for the legacy PostPage. Use CommentNode.insertCommentNode instead.')
 List<CommentViewTree> insertNewComment(List<CommentViewTree> comments, CommentView commentView) {
   List<String> parentIds = commentView.comment.path.split('.');
   String commentTime = commentView.comment.published.toIso8601String();
@@ -192,6 +193,7 @@ List<CommentViewTree> insertNewComment(List<CommentViewTree> comments, CommentVi
   return comments;
 }
 
+@Deprecated('This function is used only for the legacy PostPage. Use CommentNode.findCommentNode instead.')
 CommentViewTree? findParentComment(int index, List<String> parentIds, String targetId, List<CommentViewTree> comments) {
   for (CommentViewTree existing in comments) {
     if (existing.commentView?.comment.id.toString() != parentIds[index]) {
@@ -208,6 +210,7 @@ CommentViewTree? findParentComment(int index, List<String> parentIds, String tar
   return null;
 }
 
+@Deprecated('This function is used only for the legacy PostPage')
 List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTrees, int commentId, [List<int>? indexes]) {
   indexes ??= [];
 
@@ -231,6 +234,7 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
 }
 
 // Used for modifying the comment current comment tree so we don't have to refresh the whole thing
+@Deprecated('This function is used only for the legacy PostPage')
 bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentView commentView) {
   for (int i = 0; i < commentTrees.length; i++) {
     if (commentTrees[i].commentView!.comment.id == commentView.comment.id) {
