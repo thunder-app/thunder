@@ -264,7 +264,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       /// ------------------ VIDEO PLAYER SETTINGS -----------------------------------------
       bool videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
       bool videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
-      bool videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? false;
+      bool videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? true;
       VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
       VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
 

@@ -27,10 +27,10 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
   GlobalKey settingToHighlightKey = GlobalKey();
 
   /// Toggle to always start video in fullscreen landscape when enabled
-  bool videoAutoFullscreen = true;
+  bool videoAutoFullscreen = false;
 
   /// Toggle to always loop the video when enabled
-  bool videoAutoLoop = true;
+  bool videoAutoLoop = false;
 
   /// Toggle to always start the video muted when enabled
   bool videoAutoMute = true;
@@ -126,7 +126,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                 children: [
                   ToggleOption(
                     description: l10n.videoAutoFullscreen,
-                    // subtitle: l10n.videoAutoFullscreen,
+                   
                     value: videoAutoFullscreen,
                     iconEnabled: Icons.fullscreen,
                     iconDisabled: Icons.fullscreen_exit,
@@ -135,7 +135,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                   ),
                   ToggleOption(
                     description: l10n.videoAutoMute,
-                    //subtitle: l10n.sidebarBottomNavDoubleTapDescription,
+                   
                     value: videoAutoMute,
                     iconEnabled: Icons.volume_off,
                     iconDisabled: Icons.volume_up,
@@ -144,20 +144,27 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                   ),
                   ToggleOption(
                     description: l10n.videoAutoLoop,
-                    subtitle: l10n.videoAutoLoop,
+                   
                     value: videoAutoLoop,
                     iconEnabled: Icons.loop,
                     iconDisabled: Icons.loop_outlined,
                     onToggle: (bool value) => setPreferences(LocalSettings.videoAutoLoop, value),
                     highlightKey: settingToHighlight == LocalSettings.videoAutoLoop ? settingToHighlightKey : null,
                   ),
-                  ListOption(
+                  ListOption( 
                     description: l10n.videoAutoPlay,
-                    value: ListPickerItem(label: videoAutoPlay.name, icon: Icons.video_settings_outlined, payload: videoAutoPlay),
+                    value: ListPickerItem(
+                        label: switch (videoAutoPlay) {
+                          VideoAutoPlay.never => l10n.never,
+                          VideoAutoPlay.always => l10n.always,
+                          VideoAutoPlay.onWifi => l10n.onWifi,
+                        },
+                        icon: Icons.video_settings_outlined,
+                        payload: videoAutoPlay),
                     options: [
-                      ListPickerItem(label: VideoAutoPlay.never.label, payload: VideoAutoPlay.never),
-                      ListPickerItem(label: VideoAutoPlay.always.label, payload: VideoAutoPlay.always),
-                      ListPickerItem(label: VideoAutoPlay.onWifi.label, payload: VideoAutoPlay.onWifi),
+                      ListPickerItem(icon: Icons.not_interested, label: l10n.never, payload: VideoAutoPlay.never),
+                      ListPickerItem(icon: Icons.play_arrow, label: l10n.always, payload: VideoAutoPlay.always),
+                      ListPickerItem(icon: Icons.wifi, label: l10n.onWifi, payload: VideoAutoPlay.onWifi),
                     ],
                     icon: Icons.play_circle,
                     onChanged: (value) async => setPreferences(LocalSettings.videoAutoPlay, value.payload.name),
@@ -167,14 +174,14 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     description: l10n.videoDefaultPlaybackSpeed,
                     value: ListPickerItem(label: videoDefaultPlaybackSpeed.label, icon: Icons.speed, payload: videoDefaultPlaybackSpeed),
                     options: [
-                      ListPickerItem(label: VideoPlayBackSpeed.pointTow5x.label, payload: VideoPlayBackSpeed.pointTow5x),
-                      ListPickerItem(label: VideoPlayBackSpeed.point5x.label, payload: VideoPlayBackSpeed.point5x),
-                      ListPickerItem(label: VideoPlayBackSpeed.pointSeven5x.label, payload: VideoPlayBackSpeed.pointSeven5x),
-                      ListPickerItem(label: VideoPlayBackSpeed.normal.label, payload: VideoPlayBackSpeed.normal),
-                      ListPickerItem(label: VideoPlayBackSpeed.onePointTwo5x.label, payload: VideoPlayBackSpeed.onePointTwo5x),
-                      ListPickerItem(label: VideoPlayBackSpeed.onePoint5x.label, payload: VideoPlayBackSpeed.onePoint5x),
-                      ListPickerItem(label: VideoPlayBackSpeed.onePointSeven5x.label, payload: VideoPlayBackSpeed.onePointSeven5x),
-                      ListPickerItem(label: VideoPlayBackSpeed.twoX.label, payload: VideoPlayBackSpeed.twoX),
+                      ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointTow5x.label, payload: VideoPlayBackSpeed.pointTow5x),
+                      ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.point5x.label, payload: VideoPlayBackSpeed.point5x),
+                      ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointSeven5x.label, payload: VideoPlayBackSpeed.pointSeven5x),
+                      ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.normal.label, payload: VideoPlayBackSpeed.normal),
+                      ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointTwo5x.label, payload: VideoPlayBackSpeed.onePointTwo5x),
+                      ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePoint5x.label, payload: VideoPlayBackSpeed.onePoint5x),
+                      ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointSeven5x.label, payload: VideoPlayBackSpeed.onePointSeven5x),
+                      ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.twoX.label, payload: VideoPlayBackSpeed.twoX),
                     ],
                     icon: Icons.speed,
                     onChanged: (value) async => setPreferences(LocalSettings.videoDefaultPlaybackSpeed, value.payload.name),

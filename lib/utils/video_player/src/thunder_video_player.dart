@@ -68,7 +68,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     );
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _betterPlayerController.setupDataSource(_betterPlayerDataSource);
-    _betterPlayerController.setSpeed(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label));
+    _betterPlayerController.setSpeed(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
   }
 
   @override

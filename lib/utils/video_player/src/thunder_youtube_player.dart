@@ -19,10 +19,7 @@ class ThunderYoutubePlayer extends StatefulWidget {
 }
 
 class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with SingleTickerProviderStateMixin {
-  late Animation animation;
-  late AnimationController animationController;
-  bool muted = false;
-  bool visible = true;
+
 
   late YoutubePlayerController _controller;
   final bool _isPlayerReady = false;
@@ -57,7 +54,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
         ),
       )
         ..addListener(listener)
-        ..setPlaybackRate(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label));
+        ..setPlaybackRate(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
       if (thunderBloc.videoAutoFullscreen) {
         _ypfController.toggleFullScreenMode();
       }
@@ -72,22 +69,14 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
       );
       _controller
         ..loadVideoById(videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
-        ..setPlaybackRate(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label));
+        ..setPlaybackRate(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
     }
-    animationController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-
-    animation = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn));
-    animationController.forward();
+   
   }
 
   void listener() {
     if (_isPlayerReady && mounted && !_ypfController.value.isFullScreen) {
-      setState(() {
-        visible = !visible;
-      });
+     
     }
   }
 

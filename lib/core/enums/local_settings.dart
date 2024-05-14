@@ -12,7 +12,7 @@ enum LocalSettingsCategories {
   about('About'),
   debug('Debug'),
   theming('Theming'),
-  videoPlayer('videoPlayer');
+  videoPlayer('Video Player');
 
   final String value;
 

@@ -73,6 +73,8 @@
   },
   "alreadyPostedTo": "Already posted to",
   "@alreadyPostedTo": {},
+  "always": "Always",
+  "@always": {},
   "andXMore": "and {count} more",
   "@andXMore": {},
   "animations": "Animations",
@@ -1129,6 +1131,8 @@
   "@nestedCommentIndicatorStyle": {
     "description": "Setting for nested comment indicator style"
   },
+  "never": "Never",
+  "@never": {},
   "newComments": "New Comments",
   "@newComments": {},
   "newPost": "New Post",
@@ -1237,6 +1241,8 @@
   "@old": {},
   "on": "on",
   "@on": {},
+  "onWifi": "On Wifi",
+  "@onWifi": {},
   "onlyModsCanPostInCommunity": "Only moderators may post in this community",
   "@onlyModsCanPostInCommunity": {},
   "open": "Open",
@@ -2283,9 +2289,9 @@
   "@videoAutoPlay": {
     "description": "Option to always autoplay videos"
   },
-  "videoDefaultPlaybackSpeed": "Default Playback speed",
+  "videoDefaultPlaybackSpeed": "Default Playback Speed",
   "@videoDefaultPlaybackSpeed": {
-    "description": "Option to select the default video playback speed"
+    "description": "Option to select the default video playback Speed"
   },
   "viewAll": "View all",
   "@viewAll": {
