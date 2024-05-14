@@ -28,6 +28,7 @@ import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -217,8 +218,16 @@ class _PostPageState extends State<PostPage> {
                     ThunderPopupMenuItem(
                       onTap: () => setState(() => viewSource = !viewSource),
                       icon: Icons.edit_document,
-                      title: l10n.viewPostSource,
-                      trailing: viewSource ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
+                      title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
+                    ),
+                    ThunderPopupMenuItem(
+                      onTap: () => showSelectableTextModal(
+                        context,
+                        title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
+                        text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body ?? '',
+                      ),
+                      icon: Icons.select_all_rounded,
+                      title: l10n.selectText,
                     ),
                   ],
                 ),
@@ -552,8 +561,10 @@ class _PostPageState extends State<PostPage> {
       navigateToCreateCommentPage(
         context,
         postViewMedia: postViewMedia,
-        onCommentSuccess: (commentView) {
-          context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+        onCommentSuccess: (commentView, userChanged) {
+          if (!userChanged) {
+            context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+          }
         },
       );
     }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class PickerItem<T> extends StatelessWidget {
   final String label;
   final String? subtitle;
+  final Widget? subtitleWidget;
   final Widget? labelWidget;
   final IconData? icon;
   final Widget? leading;
@@ -10,11 +11,13 @@ class PickerItem<T> extends StatelessWidget {
   final void Function()? onSelected;
   final bool? isSelected;
   final TextTheme? textTheme;
+  final bool softWrap;
 
   const PickerItem({
     super.key,
     required this.label,
     this.subtitle,
+    this.subtitleWidget,
     this.labelWidget,
     required this.icon,
     required this.onSelected,
@@ -22,6 +25,7 @@ class PickerItem<T> extends StatelessWidget {
     this.trailingIcon,
     this.leading,
     this.textTheme,
+    this.softWrap = false,
   });
 
   @override
@@ -44,16 +48,17 @@ class PickerItem<T> extends StatelessWidget {
                   ),
                   textScaler: TextScaler.noScaling,
                 ),
-            subtitle: subtitle != null
-                ? Text(
-                    subtitle!,
-                    style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
-                      color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(0.5),
-                    ),
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                  )
-                : null,
+            subtitle: subtitleWidget ??
+                (subtitle != null
+                    ? Text(
+                        subtitle!,
+                        style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
+                          color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(0.5),
+                        ),
+                        softWrap: softWrap,
+                        overflow: TextOverflow.fade,
+                      )
+                    : null),
             leading: icon != null ? Icon(icon) : this.leading,
             trailing: Icon(trailingIcon),
           ),

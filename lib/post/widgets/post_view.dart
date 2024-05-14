@@ -1,4 +1,7 @@
 // Flutter imports
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -29,11 +32,16 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/widgets/post_metadata.dart';
 import 'package:thunder/post/widgets/post_quick_actions_bar.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/community_chip.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/cross_posts.dart';
+import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -44,9 +52,11 @@ class PostSubview extends StatefulWidget {
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
   final bool viewSource;
+  final void Function()? onViewSourceToggled;
   final bool showQuickPostActionBar;
   final bool showExpandableButton;
   final bool selectable;
+  final bool showReplyEditorButtons;
 
   const PostSubview({
     super.key,
@@ -56,9 +66,11 @@ class PostSubview extends StatefulWidget {
     required this.moderators,
     required this.crossPosts,
     required this.viewSource,
+    this.onViewSourceToggled,
     this.showQuickPostActionBar = true,
     this.showExpandableButton = true,
     this.selectable = false,
+    this.showReplyEditorButtons = false,
   });
 
   @override
@@ -68,6 +80,7 @@ class PostSubview extends StatefulWidget {
 class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin {
   final ExpandableController expandableController = ExpandableController(initialExpanded: true);
   late PostViewMedia postViewMedia;
+  final FocusNode _selectableRegionFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -171,35 +184,49 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 ),
                 expanded: Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: widget.viewSource
-                      ? ScalableText(
-                          post.body ?? '',
-                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                          fontScale: thunderState.contentFontSizeScale,
-                        )
-                      : CommonMarkdownBody(
-                          body: post.body ?? '',
-                          isSelectableText: widget.selectable,
-                        ),
+                  child: ConditionalParentWidget(
+                    condition: widget.selectable,
+                    parentBuilder: (child) {
+                      return SelectableRegion(
+                        focusNode: _selectableRegionFocusNode,
+                        // See comments on [SelectableTextModal] regarding the next two properties
+                        selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
+                        contextMenuBuilder: (context, selectableRegionState) {
+                          return AdaptiveTextSelectionToolbar.buttonItems(
+                            buttonItems: selectableRegionState.contextMenuButtonItems,
+                            anchors: selectableRegionState.contextMenuAnchors,
+                          );
+                        },
+                        child: child,
+                      );
+                    },
+                    child: widget.viewSource
+                        ? ScalableText(
+                            post.body ?? '',
+                            style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                            fontScale: thunderState.contentFontSizeScale,
+                          )
+                        : CommonMarkdownBody(
+                            body: post.body ?? '',
+                          ),
+                  ),
                 ),
-              ),
-            if (showCrossPosts && sortedCrossPosts.isNotEmpty)
-              CrossPosts(
-                crossPosts: sortedCrossPosts,
-                originalPost: widget.postViewMedia,
               ),
             const SizedBox(height: 16.0),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Wrap(
                 alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 runSpacing: 8.0,
                 children: [
                   Wrap(
                     spacing: 6.0,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       UserChip(
                         personId: postView.creator.id,
+                        personAvatar: UserAvatar(person: postView.creator, radius: 10, thumbnailSize: 20, format: 'png'),
                         personName: postView.creator.name,
                         personDisplayName: postView.creator.displayName ?? postView.creator.name,
                         personUrl: postView.creator.actorId,
@@ -215,6 +242,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       ),
                       CommunityChip(
                         communityId: postView.community.id,
+                        communityAvatar: CommunityAvatar(community: postView.community, radius: 10, thumbnailSize: 20, format: 'png'),
                         communityName: postView.community.name,
                         communityUrl: postView.community.actorId,
                       ),
@@ -227,9 +255,24 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                     url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
                   ),
+                  if (widget.showReplyEditorButtons && widget.postViewMedia.postView.post.body?.isNotEmpty == true) ...[
+                    const ThunderDivider(sliver: false, padding: false),
+                    ReplyToPreviewActions(
+                      onViewSourceToggled: widget.onViewSourceToggled,
+                      viewSource: widget.viewSource,
+                      text: widget.postViewMedia.postView.post.body!,
+                    ),
+                  ],
                 ],
               ),
             ),
+            if (showCrossPosts && sortedCrossPosts.isNotEmpty) ...[
+              const Divider(),
+              CrossPosts(
+                crossPosts: sortedCrossPosts,
+                originalPost: widget.postViewMedia,
+              ),
+            ],
             if (widget.showQuickPostActionBar) ...[
               const Divider(),
               PostQuickActionsBar(
@@ -298,12 +341,14 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 onReply: () async => navigateToCreateCommentPage(
                   context,
                   postViewMedia: widget.postViewMedia,
-                  onCommentSuccess: (commentView) {
-                    context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+                  onCommentSuccess: (commentView, userChanged) {
+                    if (!userChanged) {
+                      context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+                    }
                   },
                 ),
               ),
-            ]
+            ],
           ],
         ),
       ),

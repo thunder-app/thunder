@@ -1,8 +1,15 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/conditional_parent_widget.dart';
+import 'package:thunder/shared/divider.dart';
+import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -29,6 +36,7 @@ class CommentContent extends StatefulWidget {
   final bool viewSource;
   final void Function() onViewSourceToggled;
   final bool selectable;
+  final bool showReplyEditorButtons;
 
   const CommentContent({
     super.key,
@@ -49,6 +57,7 @@ class CommentContent extends StatefulWidget {
     required this.viewSource,
     required this.onViewSourceToggled,
     this.selectable = false,
+    this.showReplyEditorButtons = false,
   });
 
   @override
@@ -69,6 +78,8 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
     parent: _controller,
     curve: Curves.fastOutSlowIn,
   ));
+
+  final FocusNode _selectableRegionFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -110,17 +121,33 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                     children: [
                       Padding(
                         padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
-                        child: widget.viewSource
-                            ? ScalableText(
-                                cleanCommentContent(widget.comment.comment),
-                                style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                                fontScale: state.contentFontSizeScale,
-                              )
-                            : CommonMarkdownBody(
-                                body: cleanCommentContent(widget.comment.comment),
-                                isComment: true,
-                                isSelectableText: widget.selectable,
-                              ),
+                        child: ConditionalParentWidget(
+                          condition: widget.selectable,
+                          parentBuilder: (child) {
+                            return SelectableRegion(
+                              focusNode: _selectableRegionFocusNode,
+                              // See comments on [SelectableTextModal] regarding the next two properties
+                              selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
+                              contextMenuBuilder: (context, selectableRegionState) {
+                                return AdaptiveTextSelectionToolbar.buttonItems(
+                                  buttonItems: selectableRegionState.contextMenuButtonItems,
+                                  anchors: selectableRegionState.contextMenuAnchors,
+                                );
+                              },
+                              child: child,
+                            );
+                          },
+                          child: widget.viewSource
+                              ? ScalableText(
+                                  cleanCommentContent(widget.comment.comment),
+                                  style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                                  fontScale: state.contentFontSizeScale,
+                                )
+                              : CommonMarkdownBody(
+                                  body: cleanCommentContent(widget.comment.comment),
+                                  isComment: true,
+                                ),
+                        ),
                       ),
                       if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
                         Padding(
@@ -140,6 +167,20 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                     ],
                   ),
           ),
+          if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true) ...[
+            const Padding(
+              padding: EdgeInsets.only(left: 8.0, right: 8.0),
+              child: ThunderDivider(sliver: false, padding: false),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+              child: ReplyToPreviewActions(
+                onViewSourceToggled: widget.onViewSourceToggled,
+                viewSource: widget.viewSource,
+                text: cleanCommentContent(widget.comment.comment),
+              ),
+            ),
+          ],
         ],
       ),
     );

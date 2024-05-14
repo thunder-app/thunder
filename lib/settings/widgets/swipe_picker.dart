@@ -43,7 +43,7 @@ class SwipePicker<T> extends StatelessWidget {
                   width: 100,
                   height: 65,
                   child: Material(
-                    color: items[0].value.getColor(),
+                    color: items[0].value.getColor(context),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(12),
                       bottomLeft: Radius.circular(12),
@@ -67,9 +67,23 @@ class SwipePicker<T> extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Icon(
-                        items[0].value.getIcon(),
-                        semanticLabel: 'Short swipe right, ${items[0].value.label}',
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              items[0].value.getIcon(),
+                              semanticLabel: 'Short swipe right, ${items[0].value.label}',
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.bottomRight,
+                            child: Icon(
+                              Icons.keyboard_arrow_right_rounded,
+                              size: 20,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -79,7 +93,7 @@ class SwipePicker<T> extends StatelessWidget {
                   width: 100,
                   height: 65,
                   child: Material(
-                    color: items[1].value.getColor(),
+                    color: items[1].value.getColor(context),
                     child: InkWell(
                       onTap: () {
                         showModalBottomSheet(
@@ -95,9 +109,23 @@ class SwipePicker<T> extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Icon(
-                        items[1].value.getIcon(),
-                        semanticLabel: 'Long swipe right, ${items[1].value.label}',
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              items[1].value.getIcon(),
+                              semanticLabel: 'Long swipe right, ${items[1].value.label}',
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.bottomRight,
+                            child: Icon(
+                              Icons.keyboard_double_arrow_right_rounded,
+                              size: 20,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -114,7 +142,7 @@ class SwipePicker<T> extends StatelessWidget {
                   width: 100,
                   height: 65,
                   child: Material(
-                    color: items[1].value.getColor(),
+                    color: items[1].value.getColor(context),
                     child: InkWell(
                       onTap: () {
                         showModalBottomSheet(
@@ -130,9 +158,23 @@ class SwipePicker<T> extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Icon(
-                        items[1].value.getIcon(),
-                        semanticLabel: 'Long swipe left, ${items[1].value.label}',
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              items[1].value.getIcon(),
+                              semanticLabel: 'Long swipe left, ${items[1].value.label}',
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Icon(
+                              Icons.keyboard_double_arrow_left_rounded,
+                              size: 20,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -142,7 +184,7 @@ class SwipePicker<T> extends StatelessWidget {
                   width: 100,
                   height: 65,
                   child: Material(
-                    color: items[0].value.getColor(),
+                    color: items[0].value.getColor(context),
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(12),
                       bottomRight: Radius.circular(12),
@@ -166,9 +208,23 @@ class SwipePicker<T> extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Icon(
-                        items[0].value.getIcon(),
-                        semanticLabel: 'Short swipe left, ${items[0].value.label}',
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              items[0].value.getIcon(),
+                              semanticLabel: 'Short swipe left, ${items[0].value.label}',
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Icon(
+                              Icons.keyboard_arrow_left_rounded,
+                              size: 20,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
