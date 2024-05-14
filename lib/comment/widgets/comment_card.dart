@@ -401,7 +401,10 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
             },
           ),
           child: InkWell(
-            onTap: widget.onTap,
+            onTap: () {
+              setState(() => isLoading = true);
+              widget.onTap?.call();
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
