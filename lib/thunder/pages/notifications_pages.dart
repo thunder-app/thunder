@@ -31,6 +31,7 @@ class NotificationsReplyPage extends StatelessWidget {
             slivers: <Widget>[
               SliverAppBar(
                 flexibleSpace: const FlexibleSpaceBar(titlePadding: EdgeInsets.zero),
+                toolbarHeight: 70.0,
                 pinned: true,
                 title: ListTile(
                   title: Text(l10n.inbox, style: theme.textTheme.titleLarge),

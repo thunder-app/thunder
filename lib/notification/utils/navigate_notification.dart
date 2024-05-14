@@ -15,10 +15,14 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
+import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/pages/notifications_pages.dart';
 
 void navigateToNotificationReplyPage(BuildContext context, {required int? replyId, required String? accountId}) async {
+  // It can take a little while to set up notifications, so show a loading page
+  showLoadingPage(context);
+
   final ThunderBloc thunderBloc = context.read<ThunderBloc>();
   final bool reduceAnimations = thunderBloc.state.reduceAnimations;
   Account? account = await fetchActiveProfileAccount();
@@ -67,22 +71,25 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
   if (context.mounted) {
     final NotificationsReplyPage notificationsReplyPage = NotificationsReplyPage(replies: specificReply == null ? allReplies : [specificReply]);
 
-    Navigator.of(context)
-        .push(
-      SwipeablePageRoute(
-        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        backGestureDetectionWidth: 45,
-        canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: thunderBloc),
-          ],
-          child: notificationsReplyPage,
-        ),
+    final SwipeablePageRoute route = SwipeablePageRoute(
+      transitionDuration: isLoadingPageShown
+          ? Duration.zero
+          : reduceAnimations
+              ? const Duration(milliseconds: 100)
+              : null,
+      reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+      backGestureDetectionWidth: 45,
+      canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+      canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: thunderBloc),
+        ],
+        child: notificationsReplyPage,
       ),
-    )
-        .then((_) {
+    );
+
+    pushOnTopOfLoadingPage(context, route).then((_) {
       context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
 
       // If needed, switch back to the original account or anonymous instance

@@ -571,8 +571,10 @@ class _PostPageState extends State<PostPage> {
       navigateToCreateCommentPage(
         context,
         postViewMedia: postViewMedia,
-        onCommentSuccess: (commentView) {
-          context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+        onCommentSuccess: (commentView, userChanged) {
+          if (!userChanged) {
+            context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+          }
         },
       );
     }

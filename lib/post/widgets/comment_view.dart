@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -72,6 +74,11 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
   bool _animatingOut = false;
   bool _animatingIn = false;
   bool _removeViewFullCommentsButton = false;
+  bool _scrolledToComment = false;
+  double? _bottomSpacerHeight;
+  final GlobalKey _listKey = GlobalKey();
+  final GlobalKey _lastCommentKey = GlobalKey();
+  final GlobalKey _reachedBottomKey = GlobalKey();
 
   late final AnimationController _fullCommentsAnimation = AnimationController(
     duration: const Duration(milliseconds: 500),
@@ -79,7 +86,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
   );
   late final Animation<Offset> _fullCommentsOffsetAnimation = Tween<Offset>(
     begin: Offset.zero,
-    end: const Offset(0.0, 5),
+    end: const Offset(0.0, 15),
   ).animate(CurvedAnimation(
     parent: _fullCommentsAnimation,
     curve: Curves.easeInOut,
@@ -96,25 +103,46 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       }
     });
 
-    if (widget.selectedCommentId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // If we are looking at a comment context, scroll to the first comment.
-        // The delay is purely for aesthetics and is not required for the logic to work.
-        Future.delayed(const Duration(milliseconds: 250), () {
-          widget.listController.animateToItem(
-            index: 1,
-            scrollController: widget.scrollController,
-            alignment: 0,
-            duration: (estimatedDistance) => const Duration(milliseconds: 250),
-            curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
-          );
-        });
+    // The following logic helps us to set the size of the bottom spacer so that the user can scroll the last comment
+    // to the top of the viewport but no further.
+    // This must be run some time after the layout has been rendered so we can measure everything.
+    // It also must be run after there is something to scroll, and the easiest way to do this is to do it in a scroll listener.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.scrollController.addListener(() {
+        if (_bottomSpacerHeight == null && _lastCommentKey.currentContext != null) {
+          final double? lastCommentHeight = (_lastCommentKey.currentContext!.findRenderObject() as RenderBox?)?.size.height;
+          final double? listHeight = (_listKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+          final double? reachedBottomHeight = (_reachedBottomKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+
+          if (lastCommentHeight != null && listHeight != null && reachedBottomHeight != null) {
+            // We will make the bottom spacer the size of the list height, minus the size of the two other widgets.
+            // This will allow the last comment to be scrolled to the top, with the "reached bottom" indicator and the spacer
+            // taking up the rest of the space.
+            _bottomSpacerHeight = max(160, listHeight - lastCommentHeight - reachedBottomHeight);
+            setState(() {});
+          }
+        }
       });
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_scrolledToComment && widget.selectedCommentId != null && widget.comments.isNotEmpty) {
+      _scrolledToComment = true;
+      // If we are looking at a comment context, scroll to the first comment.
+      // The delay is purely for aesthetics and is not required for the logic to work.
+      Future.delayed(const Duration(milliseconds: 250), () {
+        widget.listController.animateToItem(
+          index: 1,
+          scrollController: widget.scrollController,
+          alignment: 0,
+          duration: (estimatedDistance) => const Duration(milliseconds: 250),
+          curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+        );
+      });
+    }
+
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
@@ -145,6 +173,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
         }
       },
       child: SuperListView.builder(
+        key: _listKey,
         addSemanticIndexes: false,
         listController: widget.listController,
         controller: widget.scrollController,
@@ -161,7 +190,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                   crossPosts: widget.crossPosts,
                   viewSource: widget.viewSource,
                 ),
-                if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
+                if (widget.selectedCommentId != null && !_animatingIn && index <= widget.comments.length)
                   Center(
                     child: Column(
                       children: [
@@ -212,8 +241,9 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
               position: _fullCommentsOffsetAnimation,
               child: Column(
                 children: [
-                  if (index != widget.comments.length + 1)
+                  if (index <= widget.comments.length)
                     CommentCard(
+                      key: index == widget.comments.length ? _lastCommentKey : null,
                       now: widget.now,
                       selectCommentId: widget.selectedCommentId,
                       selectedCommentPath: widget.selectedCommentPath,
@@ -236,6 +266,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Container(
+                            key: _reachedBottomKey,
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: ScalableText(
@@ -245,9 +276,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                               style: theme.textTheme.titleSmall,
                             ),
                           ),
-                          const SizedBox(
-                            height: 160,
-                          )
                         ],
                       )
                     ] else ...[
@@ -260,7 +288,13 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                         ],
                       )
                     ]
-                  ]
+                  ],
+                  if (index == widget.comments.length + 2)
+                    SizedBox(
+                      // Initially give this spacer more room than it needs.
+                      // When the user scrolls, we will set this to a more reasonable fixed height.
+                      height: widget.hasReachedCommentEnd ? _bottomSpacerHeight ?? MediaQuery.of(context).size.height : 160,
+                    ),
                 ],
               ),
             );
@@ -275,7 +309,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       return 2; // Show post and loading indicator since no comments have been fetched yet
     }
 
-    return widget.postViewMedia != null ? widget.comments.length + 2 : widget.comments.length + 1;
+    return widget.postViewMedia != null ? widget.comments.length + 3 : widget.comments.length + 2;
   }
 
   void onCollapseCommentChange(int commentId, bool collapsed) {

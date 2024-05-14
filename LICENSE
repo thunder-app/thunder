@@ -663,3 +663,4 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 Portions of this software are copyright of their respective authors and released
 under the MIT license:
 - marquee_widget.dart, Copyright (c) 2018 Marcel Garus
+- conditional_parent_widget.dart, Copyright (c) 2023 ltOgt
