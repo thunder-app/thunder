@@ -66,6 +66,11 @@ Future<CommentView> voteComment(int commentId, int score) async {
   return updatedCommentView;
 }
 
+/// Optimistically saves a comment without sending the network request
+CommentView optimisticallySaveComment(CommentView commentView, bool saved) {
+  return commentView.copyWith(saved: saved);
+}
+
 /// Logic to save a comment
 Future<CommentView> saveComment(int commentId, bool save) async {
   Account? account = await fetchActiveProfileAccount();
@@ -77,6 +82,28 @@ Future<CommentView> saveComment(int commentId, bool save) async {
     auth: account!.jwt!,
     commentId: commentId,
     save: save,
+  ));
+
+  CommentView updatedCommentView = commentResponse.commentView;
+  return updatedCommentView;
+}
+
+/// Optimistically deletes a comment without sending the network request
+CommentView optimisticallyDeleteComment(CommentView commentView, bool deleted) {
+  return commentView.copyWith(comment: commentView.comment.copyWith(deleted: deleted));
+}
+
+/// Logic to delete a comment
+Future<CommentView> deleteComment(int commentId, bool deleted) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  CommentResponse commentResponse = await lemmy.run(DeleteComment(
+    auth: account!.jwt!,
+    commentId: commentId,
+    deleted: deleted,
   ));
 
   CommentView updatedCommentView = commentResponse.commentView;

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -164,7 +165,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     swipeAction: swipeAction,
                     onSaveAction: (int commentId, bool saved) => widget.onSaveAction?.call(commentId, saved),
                     onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
-                    onReplyEditAction: (CommentView commentView, bool isEdit) => context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                    onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
                     voteType: widget.commentView.myVote ?? 0,
                     saved: widget.commentView.saved,
                     commentView: widget.commentView,
@@ -316,7 +317,14 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               widget.onSaveAction ?? () {},
                               widget.onDeleteAction ?? () {},
                               widget.onVoteAction ?? () {},
-                              widget.onReplyEditAction ?? () {},
+                              (CommentView commentView, bool isEdit) {
+                                return navigateToCreateCommentPage(
+                                  context,
+                                  commentView: isEdit ? commentView : null,
+                                  parentCommentView: isEdit ? null : commentView,
+                                  onCommentSuccess: (commentView) => widget.onReplyEditAction?.call(commentView, isEdit),
+                                );
+                              },
                               widget.onReportAction ?? () {},
                               () => setState(() => viewSource = !viewSource),
                               viewSource,
@@ -332,7 +340,14 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
                             onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
                             onReportAction: (int commentId) => widget.onReportAction?.call(commentId),
-                            onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                            onReplyEditAction: (CommentView commentView, bool isEdit) {
+                              return navigateToCreateCommentPage(
+                                context,
+                                commentView: isEdit ? commentView : null,
+                                parentCommentView: isEdit ? null : commentView,
+                                onCommentSuccess: (commentView) => widget.onReplyEditAction?.call(commentView, isEdit),
+                              );
+                            },
                             isOwnComment: isOwnComment,
                             isHidden: widget.collapsed,
                             viewSource: viewSource,

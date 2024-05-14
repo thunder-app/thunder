@@ -42,6 +42,21 @@ class SavePostEvent extends PostEvent {
   const SavePostEvent({required this.postId, required this.save});
 }
 
+class CommentActionEvent extends PostEvent {
+  final int commentId;
+  final CommentAction action;
+  final dynamic value;
+
+  const CommentActionEvent({required this.commentId, required this.action, required this.value});
+}
+
+final class CommentItemUpdatedEvent extends PostEvent {
+  final CommentView commentView;
+
+  const CommentItemUpdatedEvent({required this.commentView});
+}
+
+@Deprecated('Use CommentActionEvent instead')
 class VoteCommentEvent extends PostEvent {
   final int commentId;
   final int score;
@@ -49,6 +64,7 @@ class VoteCommentEvent extends PostEvent {
   const VoteCommentEvent({required this.commentId, required this.score});
 }
 
+@Deprecated('Use CommentActionEvent instead')
 class SaveCommentEvent extends PostEvent {
   final int commentId;
   final bool save;
@@ -56,6 +72,7 @@ class SaveCommentEvent extends PostEvent {
   const SaveCommentEvent({required this.commentId, required this.save});
 }
 
+@Deprecated('Use CommentActionEvent instead')
 class DeleteCommentEvent extends PostEvent {
   final int commentId;
   final bool deleted;
@@ -63,6 +80,7 @@ class DeleteCommentEvent extends PostEvent {
   const DeleteCommentEvent({required this.deleted, required this.commentId});
 }
 
+@Deprecated('Use CommentItemUpdatedEvent instead')
 class UpdateCommentEvent extends PostEvent {
   final CommentView commentView;
   final bool isEdit;

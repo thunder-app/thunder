@@ -18,6 +18,15 @@ class CommentNode {
 
   /// Adds a reply to this comment node
   void addReply(CommentNode reply) {
+    // Add the comment only if theres no other comment with the same id
+    int existingCommentNodeIndex = replies.indexWhere((node) => node.commentView?.comment.id == reply.commentView?.comment.id);
+
+    if (existingCommentNodeIndex != -1) {
+      // Replace the comment with the new comment
+      replies[existingCommentNodeIndex] = reply;
+      return;
+    }
+
     replies.add(reply);
   }
 
