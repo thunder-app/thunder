@@ -109,6 +109,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
             accountId: account.id,
             inboxType: NotificationInboxType.reply,
             group: false,
+            id: commentReplyView.commentReply.id,
           ).toJson()),
           inboxType: NotificationInboxType.reply,
         );
@@ -143,6 +144,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
             accountId: account.id,
             inboxType: NotificationInboxType.mention,
             group: false,
+            id: personMentionView.comment.id,
           ).toJson()),
           inboxType: NotificationInboxType.mention,
         );
