@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:collection/collection.dart';
+
+import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentNavigatorFab extends StatefulWidget {
-  final ItemPositionsListener itemPositionsListener;
+  /// The [ScrollController] for the scrollable list
+  final ScrollController scrollController;
+
+  /// The [ListController] for the scrollable list. This is used to navigate up and down
+  final ListController listController;
+
+  /// The initial index
+  final int initialIndex;
+
+  /// The maximum index that can be scrolled to
+  final int maxIndex;
 
   const CommentNavigatorFab({
     super.key,
-    required this.itemPositionsListener,
+    this.initialIndex = 0,
+    this.maxIndex = 0,
+    required this.scrollController,
+    required this.listController,
   });
 
   @override
@@ -18,6 +29,25 @@ class CommentNavigatorFab extends StatefulWidget {
 }
 
 class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
+  int currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    currentIndex = widget.initialIndex;
+  }
+
+  @override
+  void didUpdateWidget(covariant CommentNavigatorFab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.initialIndex != widget.initialIndex) {
+      // Reset the index if it ever changes. This could be due to an external event
+      currentIndex = widget.initialIndex;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -84,26 +114,34 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
   }
 
   void navigateUp() {
-    int? currentIndex = widget.itemPositionsListener.itemPositions.value.firstWhereOrNull((item) => item.itemLeadingEdge < 0.0)?.index;
+    if (currentIndex == 0) return;
 
-    if (currentIndex != null) {
-      currentIndex;
-    } else {
-      currentIndex = widget.itemPositionsListener.itemPositions.value.firstWhereOrNull((item) => item.itemLeadingEdge <= 0.0)?.index;
-      if (currentIndex != null) {
-        currentIndex -= 1;
-      }
-    }
+    widget.listController.animateToItem(
+      index: currentIndex - 1,
+      scrollController: widget.scrollController,
+      alignment: 0,
+      duration: (estimatedDistance) => const Duration(milliseconds: 250),
+      curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+    );
 
-    if (currentIndex != null) {
-      context.read<PostBloc>().add(NavigateCommentEvent(targetIndex: currentIndex, direction: NavigateCommentDirection.up));
-    }
+    setState(() {
+      currentIndex = currentIndex - 1;
+    });
   }
 
   void navigateDown() {
-    final int? currentIndex = widget.itemPositionsListener.itemPositions.value.lastWhereOrNull((item) => item.itemLeadingEdge <= 0.01)?.index;
-    if (currentIndex != null) {
-      context.read<PostBloc>().add(NavigateCommentEvent(targetIndex: currentIndex + 1, direction: NavigateCommentDirection.down));
-    }
+    if (currentIndex == widget.maxIndex) return;
+
+    widget.listController.animateToItem(
+      index: currentIndex + 1,
+      scrollController: widget.scrollController,
+      alignment: 0,
+      duration: (estimatedDistance) => const Duration(milliseconds: 250),
+      curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+    );
+
+    setState(() {
+      currentIndex = currentIndex + 1;
+    });
   }
 }
