@@ -109,10 +109,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
     // It also must be run after there is something to scroll, and the easiest way to do this is to do it in a scroll listener.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.itemScrollController.primaryScrollController?.addListener(() {
-        double lastCommentTopOffset = widget.itemPositionsListener.itemPositions.value.toList().reversed.skip(2).first.itemLeadingEdge;
-
-        if (_bottomSpacerHeight == null && lastCommentTopOffset > 0) {
-          final double? lastCommentHeight = (_lastCommentKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+        if (_bottomSpacerHeight == null && _lastCommentKey.currentContext != null) {
+          final double? lastCommentHeight = (_lastCommentKey.currentContext!.findRenderObject() as RenderBox?)?.size.height;
           final double? listHeight = (_listKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
           final double? reachedBottomHeight = (_reachedBottomKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
 
