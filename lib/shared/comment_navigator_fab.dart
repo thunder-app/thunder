@@ -114,34 +114,44 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
   }
 
   void navigateUp() {
-    if (currentIndex == 0) return;
+    var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
+
+    int nextIndex = currentIndex - 1;
+    if (unobstructedVisibleRange?.$1 != null && unobstructedVisibleRange!.$1 != currentIndex) {
+      nextIndex = unobstructedVisibleRange.$1;
+    } else if (currentIndex != 0) {
+      nextIndex = unobstructedVisibleRange!.$1 - 1;
+    }
 
     widget.listController.animateToItem(
-      index: currentIndex - 1,
+      index: nextIndex,
       scrollController: widget.scrollController,
       alignment: 0,
-      duration: (estimatedDistance) => const Duration(milliseconds: 250),
+      duration: (estimatedDistance) => const Duration(milliseconds: 450),
       curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
     );
 
     setState(() {
-      currentIndex = currentIndex - 1;
+      currentIndex = nextIndex;
     });
   }
 
   void navigateDown() {
-    if (currentIndex == widget.maxIndex) return;
+    var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
+
+    int nextIndex = currentIndex + 1;
+    if (unobstructedVisibleRange?.$1 != null) nextIndex = unobstructedVisibleRange!.$1 + 1;
 
     widget.listController.animateToItem(
-      index: currentIndex + 1,
+      index: nextIndex,
       scrollController: widget.scrollController,
       alignment: 0,
-      duration: (estimatedDistance) => const Duration(milliseconds: 250),
+      duration: (estimatedDistance) => const Duration(milliseconds: 450),
       curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
     );
 
     setState(() {
-      currentIndex = currentIndex + 1;
+      currentIndex = nextIndex;
     });
   }
 }
