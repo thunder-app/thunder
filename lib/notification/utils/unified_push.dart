@@ -82,34 +82,34 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
 
       // Notification for replies
       if (data.containsKey('reply')) {
-        CommentReplyView commentReplyView = CommentReplyView.fromJson(data['reply']);
+        SlimCommentReplyView commentReplyView = SlimCommentReplyView.fromJson(data['reply']);
 
-        final String commentContent = cleanCommentContent(commentReplyView.comment);
+        final String commentContent = cleanComment(commentReplyView.commentContent, commentReplyView.commentRemoved, commentReplyView.commentDeleted);
         final String htmlComment = markdownToHtml(commentContent);
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-          '${commentReplyView.post.name} · ${generateCommunityFullName(null, commentReplyView.community.name, fetchInstanceNameFromUrl(commentReplyView.community.actorId), communitySeparator: communitySeparator)}\n$htmlComment',
-          contentTitle: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
-          summaryText: generateUserFullName(null, commentReplyView.recipient.name, fetchInstanceNameFromUrl(commentReplyView.recipient.actorId), userSeparator: userSeparator),
+          '${commentReplyView.postName} · ${generateCommunityFullName(null, commentReplyView.communityName, fetchInstanceNameFromUrl(commentReplyView.communityActorId), communitySeparator: communitySeparator)}\n$htmlComment',
+          contentTitle: generateUserFullName(null, commentReplyView.creatorName, fetchInstanceNameFromUrl(commentReplyView.creatorActorId), userSeparator: userSeparator),
+          summaryText: generateUserFullName(null, commentReplyView.recipientName, fetchInstanceNameFromUrl(commentReplyView.recipientActorId), userSeparator: userSeparator),
           htmlFormatBigText: true,
         );
 
         List<Account> accounts = await Account.accounts();
-        Account account = accounts.firstWhere((Account account) => account.username == commentReplyView.recipient.name);
+        Account account = accounts.firstWhere((Account account) => account.username == commentReplyView.recipientName);
 
         showAndroidNotification(
-          id: commentReplyView.commentReply.id,
+          id: commentReplyView.commentReplyId,
           account: account,
           bigTextStyleInformation: bigTextStyleInformation,
-          title: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
+          title: generateUserFullName(null, commentReplyView.creatorName, fetchInstanceNameFromUrl(commentReplyView.creatorActorId), userSeparator: userSeparator),
           content: plaintextComment,
           payload: jsonEncode(NotificationPayload(
             type: NotificationType.unifiedPush,
             accountId: account.id,
             inboxType: NotificationInboxType.reply,
             group: false,
-            id: commentReplyView.commentReply.id,
+            id: commentReplyView.commentReplyId,
           ).toJson()),
           inboxType: NotificationInboxType.reply,
         );
