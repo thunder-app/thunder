@@ -1515,15 +1515,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
-  scrollable_positioned_list:
-    dependency: "direct main"
-    description:
-      path: "packages/scrollable_positioned_list"
-      ref: master
-      resolved-ref: "7e0cd2f967727f0a027d53b2f3cd8f3331f3495d"
-      url: "https://github.com/bitstackapp/flutter.widgets.git"
-    source: git
-    version: "0.2.3"
   share_plus:
     dependency: "direct main"
     description:
@@ -1745,6 +1736,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  super_sliver_list:
+    dependency: "direct main"
+    description:
+      name: super_sliver_list
+      sha256: b1e1e64d08ce40e459b9bb5d9f8e361617c26b8c9f3bb967760b0f436b6e3f56
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.1"
   swipeable_page_route:
     dependency: "direct main"
     description:

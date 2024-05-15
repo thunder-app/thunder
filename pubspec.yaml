@@ -75,11 +75,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   swipeable_page_route: ^0.4.0
-  scrollable_positioned_list:
-    git:
-      url: https://github.com/bitstackapp/flutter.widgets.git
-      ref: master
-      path: packages/scrollable_positioned_list/
   # There is an intentional space between the packge name and colon below. Do not remove!
   version : ^3.0.2
   expandable: ^5.0.1
@@ -117,6 +112,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.20
   river_player: ^0.1.3
   connectivity_plus: ^6.0.2
+  super_sliver_list: ^0.4.1
 
 
 dev_dependencies:
