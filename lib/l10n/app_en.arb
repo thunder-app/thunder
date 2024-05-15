@@ -447,6 +447,12 @@
   "@countUsers": {
     "description": "Describes a certain number of users"
   },
+  "crashReports": "Crash Reports",
+  "@crashReports": {
+    "description": "Initiates the process of sending a crash report to developers."
+  },
+  "crashReportsView": "View Crash Reports",
+  "@crashReportsView": {},
   "createAccount": "Create Account",
   "@createAccount": {},
   "createComment": "Create Comment",
@@ -1515,6 +1521,10 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "reportCrashLogsTooltip": "Inspect Crash Reports Before Sending to Developers",
+  "@reportCrashLogsTooltip": {
+    "description": "Provides the ability to review crash reports and their details before sending them to developers for analysis."
+  },
   "reset": "Reset",
   "@reset": {
     "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
