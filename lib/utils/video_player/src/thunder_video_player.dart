@@ -51,7 +51,10 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
 
   Future<void> _initializePlayer() async {
     final thunderBloc = context.read<ThunderBloc>().state;
-
+    _betterPlayerDataSource = BetterPlayerDataSource(
+      BetterPlayerDataSourceType.network,
+      widget.videoUrl,
+    );
     BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
       aspectRatio: 16 / 10,
       fit: BoxFit.cover,
@@ -59,16 +62,16 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
       fullScreenByDefault: thunderBloc.videoAutoFullscreen,
       looping: thunderBloc.videoAutoLoop,
       autoDetectFullscreenAspectRatio: true,
+      useRootNavigator: true,
       autoDetectFullscreenDeviceOrientation: true,
       autoDispose: true,
     );
-    _betterPlayerDataSource = BetterPlayerDataSource(
-      BetterPlayerDataSourceType.network,
-      widget.videoUrl,
-    );
+
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-    _betterPlayerController.setupDataSource(_betterPlayerDataSource);
-    _betterPlayerController.setSpeed(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
+    _betterPlayerController
+      ..setupDataSource(_betterPlayerDataSource)
+      ..setVolume(thunderBloc.videoAutoMute ? 0 : 4)
+      ..setSpeed(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
   }
 
   @override

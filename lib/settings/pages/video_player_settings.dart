@@ -126,7 +126,6 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                 children: [
                   ToggleOption(
                     description: l10n.videoAutoFullscreen,
-                   
                     value: videoAutoFullscreen,
                     iconEnabled: Icons.fullscreen,
                     iconDisabled: Icons.fullscreen_exit,
@@ -135,7 +134,6 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                   ),
                   ToggleOption(
                     description: l10n.videoAutoMute,
-                   
                     value: videoAutoMute,
                     iconEnabled: Icons.volume_off,
                     iconDisabled: Icons.volume_up,
@@ -144,14 +142,13 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                   ),
                   ToggleOption(
                     description: l10n.videoAutoLoop,
-                   
                     value: videoAutoLoop,
                     iconEnabled: Icons.loop,
                     iconDisabled: Icons.loop_outlined,
                     onToggle: (bool value) => setPreferences(LocalSettings.videoAutoLoop, value),
                     highlightKey: settingToHighlight == LocalSettings.videoAutoLoop ? settingToHighlightKey : null,
                   ),
-                  ListOption( 
+                  ListOption(
                     description: l10n.videoAutoPlay,
                     value: ListPickerItem(
                         label: switch (videoAutoPlay) {

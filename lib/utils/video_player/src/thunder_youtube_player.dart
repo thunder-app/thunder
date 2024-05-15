@@ -19,8 +19,6 @@ class ThunderYoutubePlayer extends StatefulWidget {
 }
 
 class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with SingleTickerProviderStateMixin {
-
-
   late YoutubePlayerController _controller;
   final bool _isPlayerReady = false;
   late ypf.YoutubePlayerController _ypfController;
@@ -71,13 +69,10 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
         ..loadVideoById(videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
         ..setPlaybackRate(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
     }
-   
   }
 
   void listener() {
-    if (_isPlayerReady && mounted && !_ypfController.value.isFullScreen) {
-     
-    }
+    if (_isPlayerReady && mounted && !_ypfController.value.isFullScreen) {}
   }
 
   bool autoPlayVideo() {
