@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter imports
+import 'package:catcher_2/catcher_2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,7 +71,10 @@ Future<void> initializeDatabase() async {
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
+// catcher
+  String filePath = join((await getApplicationDocumentsDirectory()).path, 'thunder_log.txt');
+  Catcher2Options debugOptions = Catcher2Options(SilentReportMode(), [FileHandler(File(filePath), printLogs: true)]);
+  Catcher2Options releaseOptions = Catcher2Options(SilentReportMode(), [FileHandler(File(filePath))]);
   // Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
@@ -90,7 +94,7 @@ void main() async {
   // Perform preference migrations
   await performSharedPreferencesMigration();
 
-  runApp(const ThunderApp());
+  Catcher2(rootWidget: const ThunderApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
 
   if (!kIsWeb && Platform.isAndroid) {
     // Set high refresh rate after app initialization
