@@ -10,7 +10,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:super_sliver_list/super_sliver_list.dart';
 
 // Project imports
 import 'package:thunder/comment/utils/navigate_comment.dart';
@@ -28,6 +28,7 @@ import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -53,8 +54,9 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final ItemScrollController _itemScrollController = ItemScrollController();
-  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
+  final ScrollController _scrollController = ScrollController();
+  final ListController _listController = ListController();
+
   bool hasScrolledToBottom = false;
   bool resetFailureMessage = true;
   bool _previousIsFabOpen = false;
@@ -217,8 +219,16 @@ class _PostPageState extends State<PostPage> {
                     ThunderPopupMenuItem(
                       onTap: () => setState(() => viewSource = !viewSource),
                       icon: Icons.edit_document,
-                      title: l10n.viewPostSource,
-                      trailing: viewSource ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
+                      title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
+                    ),
+                    ThunderPopupMenuItem(
+                      onTap: () => showSelectableTextModal(
+                        context,
+                        title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
+                        text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body ?? '',
+                      ),
+                      icon: Icons.select_all_rounded,
+                      title: l10n.selectText,
                     ),
                   ],
                 ),
@@ -237,7 +247,10 @@ class _PostPageState extends State<PostPage> {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: CommentNavigatorFab(
-                          itemPositionsListener: _itemPositionsListener,
+                          initialIndex: 0,
+                          maxIndex: state.comments.length,
+                          scrollController: _scrollController,
+                          listController: _listController,
                         ),
                       ),
                     ),
@@ -271,11 +284,13 @@ class _PostPageState extends State<PostPage> {
                                       selectedCommentPath: state.selectedCommentPath,
                                       override: singlePressAction == PostFabAction.backToTop
                                           ? () => {
-                                                _itemScrollController.scrollTo(
+                                                _listController.animateToItem(
                                                   index: 0,
-                                                  duration: const Duration(milliseconds: 500),
-                                                  curve: Curves.easeInOut,
-                                                )
+                                                  scrollController: _scrollController,
+                                                  alignment: 0,
+                                                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                                ),
                                               }
                                           : singlePressAction == PostFabAction.changeSort
                                               ? () => showSortBottomSheet(context, state)
@@ -292,11 +307,13 @@ class _PostPageState extends State<PostPage> {
                                   selectedCommentPath: state.selectedCommentPath,
                                   override: longPressAction == PostFabAction.backToTop
                                       ? () => {
-                                            _itemScrollController.scrollTo(
+                                            _listController.animateToItem(
                                               index: 0,
-                                              duration: const Duration(milliseconds: 500),
-                                              curve: Curves.easeInOut,
-                                            )
+                                              scrollController: _scrollController,
+                                              alignment: 0,
+                                              duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                              curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                            ),
                                           }
                                       : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
@@ -356,11 +373,13 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       PostFabAction.backToTop.execute(
                                           override: () => {
-                                                _itemScrollController.scrollTo(
+                                                _listController.animateToItem(
                                                   index: 0,
-                                                  duration: const Duration(milliseconds: 500),
-                                                  curve: Curves.easeInOut,
-                                                )
+                                                  scrollController: _scrollController,
+                                                  alignment: 0,
+                                                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                                ),
                                               });
                                     },
                                     title: PostFabAction.backToTop.getTitle(context),
@@ -440,8 +459,8 @@ class _PostPageState extends State<PostPage> {
                                 newlyCreatedCommentId: state.newlyCreatedCommentId,
                                 moddingCommentId: state.moddingCommentId,
                                 viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
-                                itemScrollController: _itemScrollController,
-                                itemPositionsListener: _itemPositionsListener,
+                                scrollController: _scrollController,
+                                listController: _listController,
                                 hasReachedCommentEnd: state.hasReachedCommentEnd,
                                 moderators: state.moderators,
                                 crossPosts: state.crossPosts,
@@ -552,8 +571,10 @@ class _PostPageState extends State<PostPage> {
       navigateToCreateCommentPage(
         context,
         postViewMedia: postViewMedia,
-        onCommentSuccess: (commentView) {
-          context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+        onCommentSuccess: (commentView, userChanged) {
+          if (!userChanged) {
+            context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+          }
         },
       );
     }

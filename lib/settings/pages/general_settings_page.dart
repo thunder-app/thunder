@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
@@ -10,24 +12,30 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/main.dart';
+import 'package:thunder/notification/utils/notification_settings.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/language/language.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:unifiedpush/unifiedpush.dart';
 import 'package:version/version.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
@@ -44,7 +52,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   Iterable<Locale> get supportedLocales => AppLocalizations.supportedLocales;
 
   /// The current locale
-  late Locale currentLocale;
+  Locale currentLocale = Localizations.localeOf(GlobalContext.context);
+
+  /// Whether to show the user's profile picture instead of the drawer icon
+  bool useProfilePictureForDrawer = false;
 
   /// Default listing type for posts on the feed (subscribed, all, local)
   ListingType defaultListingType = DEFAULT_LISTING_TYPE;
@@ -83,10 +94,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showUpdateChangelogs = true;
 
   /// When enabled, system-level notifications will be displayed for new inbox messages
-  bool enableInboxNotifications = false;
+  NotificationType inboxNotificationType = NotificationType.none;
 
-  /// Not a setting, but tracks whether Android is allowing Thunder to send notifications
-  bool? areAndroidNotificationsAllowed = false;
+  /// The URL of the push notification server
+  String pushNotificationServer = '';
 
   /// When enabled, authors and community names will be tappable when in compact view
   bool tappableAuthorCommunity = false;
@@ -114,6 +125,21 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
+  /// List of authenticated accounts. Used to determine if push notifications are enabled
+  List<Account> accounts = [];
+
+  /// Controller for the push notification server URL
+  TextEditingController controller = TextEditingController();
+
+  AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+  /// Whether the Android system is allowing Thunder to send notifications
+  bool? areAndroidNotificationsAllowed;
+
+  /// The UnifiedPush distributor app that we're connected to, and how many are available.
+  String? unifiedPushConnectedDistributorApp;
+  int? unifiedPushAvailableDistributorApps;
+
   Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
@@ -133,6 +159,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.appLanguageCode:
         await prefs.setString(LocalSettings.appLanguageCode.name, value.languageCode);
         setState(() => currentLocale = value);
+        break;
+      case LocalSettings.useProfilePictureForDrawer:
+        await prefs.setBool(LocalSettings.useProfilePictureForDrawer.name, value);
+        setState(() => useProfilePictureForDrawer = value);
         break;
 
       case LocalSettings.hideNsfwPosts:
@@ -193,9 +223,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showUpdateChangelogs.name, value);
         setState(() => showUpdateChangelogs = value);
         break;
-      case LocalSettings.enableInboxNotifications:
-        await prefs.setBool(LocalSettings.enableInboxNotifications.name, value);
-        setState(() => enableInboxNotifications = value);
+      case LocalSettings.inboxNotificationType:
+        await prefs.setString(LocalSettings.inboxNotificationType.name, (value as NotificationType).name);
+        setState(() => inboxNotificationType = value);
+        break;
+      case LocalSettings.pushNotificationServer:
+        await prefs.setString(LocalSettings.pushNotificationServer.name, value);
+        setState(() => pushNotificationServer = value);
         break;
 
       case LocalSettings.imageCachingMode:
@@ -216,6 +250,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
+    // Get all currently active accounts
+    List<Account> accountList = await Account.accounts();
+
     setState(() {
       // Default Sorts and Listing
       try {
@@ -228,6 +265,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
       currentLocale = Localizations.localeOf(context);
+      useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
 
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
@@ -250,16 +288,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
-      enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
-    });
-  }
+      inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
+      pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+      controller.text = pushNotificationServer;
 
-  Future<void> checkAndroidNotificationStatus() async {
-    // Check whether Android is currently allowing Thunder to send notifications
-    final AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-    final bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
-    setState(() => this.areAndroidNotificationsAllowed = areAndroidNotificationsAllowed);
+      accounts = accountList;
+    });
   }
 
   @override
@@ -267,7 +301,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _initPreferences();
-      await checkAndroidNotificationStatus();
 
       if (widget.settingToHighlight != null) {
         setState(() => settingToHighlight = widget.settingToHighlight);
@@ -289,6 +322,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           });
         });
       }
+
+      areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+      unifiedPushConnectedDistributorApp = await UnifiedPush.getDistributor();
+      unifiedPushAvailableDistributorApps = (await UnifiedPush.getDistributors()).length;
+      setState(() {});
     });
   }
 
@@ -405,6 +443,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ],
               ),
               highlightKey: settingToHighlight == LocalSettings.appLanguageCode ? settingToHighlightKey : null,
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.useProfilePictureForDrawer,
+              subtitle: l10n.useProfilePictureForDrawerSubtitle,
+              value: useProfilePictureForDrawer,
+              iconEnabled: Icons.person_rounded,
+              iconDisabled: Icons.person_outline_rounded,
+              onToggle: (value) => setPreferences(LocalSettings.useProfilePictureForDrawer, value),
+              highlightKey: settingToHighlight == LocalSettings.useProfilePictureForDrawer ? settingToHighlightKey : null,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
@@ -662,87 +712,240 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               highlightKey: settingToHighlight == LocalSettings.showUpdateChangelogs ? settingToHighlightKey : null,
             ),
           ),
-          if (!kIsWeb && Platform.isAndroid)
+          if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) ...[
             SliverToBoxAdapter(
-              child: ToggleOption(
+              child: ListOption(
                 description: l10n.enableInboxNotifications,
-                value: enableInboxNotifications,
-                iconEnabled: Icons.notifications_on_rounded,
-                iconDisabled: Icons.notifications_off_rounded,
-                onToggle: (bool value) async {
-                  // Show a warning message about the experimental nature of this feature.
-                  // This message is specific to Android.
-                  if (!kIsWeb && Platform.isAndroid && value) {
-                    bool res = false;
-                    await showThunderDialog(
-                      context: context,
-                      title: l10n.warning,
-                      contentWidgetBuilder: (_) => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(l10n.notificationsWarningDialog),
-                          const SizedBox(height: 10),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: GestureDetector(
-                              onTap: () => handleLink(context, url: 'https://dontkillmyapp.com/'),
-                              child: Text(
-                                'https://dontkillmyapp.com/',
-                                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.blue),
+                subtitleWidget: Text.rich(
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8)),
+                  softWrap: true,
+                  TextSpan(
+                    children: [
+                      TextSpan(text: accounts.isEmpty ? l10n.loginToPerformAction : inboxNotificationType.toString()),
+                      if (Platform.isAndroid &&
+                          (inboxNotificationType == NotificationType.local || inboxNotificationType == NotificationType.unifiedPush) &&
+                          areAndroidNotificationsAllowed != true) ...[
+                        const TextSpan(text: '\n'),
+                        TextSpan(
+                          text: '- ${l10n.notificationsNotAllowed}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.red.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
+                      if (Platform.isAndroid && inboxNotificationType == NotificationType.unifiedPush) ...[
+                        if (unifiedPushConnectedDistributorApp?.isNotEmpty != true) ...[
+                          if ((unifiedPushAvailableDistributorApps ?? 0) == 1) ...[
+                            const TextSpan(text: '\n'),
+                            TextSpan(
+                              text: '- ${l10n.foundUnifiedPushDistribtorApp}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.red.withOpacity(0.8),
                               ),
+                            ),
+                          ],
+                          if ((unifiedPushAvailableDistributorApps ?? 0) > 1) ...[
+                            const TextSpan(text: '\n'),
+                            TextSpan(
+                              text: '- ${l10n.doNotSupportMultipleUnifiedPushApps}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.red.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                          if ((unifiedPushAvailableDistributorApps ?? 0) == 0) ...[
+                            const TextSpan(text: '\n'),
+                            TextSpan(
+                              text: '- ${l10n.noCompatibleAppFound}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.red.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                        ],
+                        if (unifiedPushConnectedDistributorApp?.isNotEmpty == true) ...[
+                          const TextSpan(text: '\n'),
+                          TextSpan(
+                            text: l10n.connectedToUnifiedPushDistributorApp(unifiedPushConnectedDistributorApp!),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontStyle: FontStyle.italic,
+                              color: Colors.green.withOpacity(0.8),
                             ),
                           ),
                         ],
+                      ],
+                    ],
+                  ),
+                ),
+                value: const ListPickerItem(payload: -1),
+                disabled: accounts.isEmpty,
+                icon: inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded,
+                highlightKey: settingToHighlight == LocalSettings.inboxNotificationType ? settingToHighlightKey : null,
+                customListPicker: StatefulBuilder(
+                  builder: (context, setState) {
+                    return BottomSheetListPicker<NotificationType>(
+                      title: l10n.pushNotification,
+                      heading: Align(
+                        alignment: Alignment.centerLeft,
+                        child: CommonMarkdownBody(body: l10n.pushNotificationDescription),
                       ),
-                      primaryButtonText: l10n.understandEnable,
-                      onPrimaryButtonPressed: (dialogContext, _) {
-                        res = true;
-                        dialogContext.pop();
+                      previouslySelected: inboxNotificationType,
+                      items: Platform.isAndroid
+                          ? [
+                              ListPickerItem(
+                                icon: Icons.notifications_off_rounded,
+                                label: l10n.none,
+                                payload: NotificationType.none,
+                                softWrap: true,
+                              ),
+                              ListPickerItem(
+                                icon: Icons.notifications_rounded,
+                                label: l10n.useLocalNotifications,
+                                subtitle: l10n.useLocalNotificationsDescription,
+                                payload: NotificationType.local,
+                                softWrap: true,
+                              ),
+                              if (kDebugMode)
+                                ListPickerItem(
+                                  icon: Icons.notifications_active_rounded,
+                                  label: l10n.useUnifiedPushNotifications,
+                                  subtitleWidget: Text.rich(
+                                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+                                    softWrap: true,
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(text: l10n.useUnifiedPushNotificationsDescription),
+                                        const TextSpan(text: ' ('),
+                                        TextSpan(text: l10n.suchAs),
+                                        const TextSpan(text: ' '),
+                                        TextSpan(
+                                          text: 'ntfy',
+                                          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.blue),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              handleLink(context, url: 'https://f-droid.org/packages/io.heckel.ntfy/');
+                                            },
+                                        ),
+                                        const TextSpan(text: ')'),
+                                      ],
+                                    ),
+                                  ),
+                                  payload: NotificationType.unifiedPush,
+                                  softWrap: true,
+                                ),
+                            ]
+                          : [
+                              ListPickerItem(
+                                icon: Icons.notifications_off_rounded,
+                                label: l10n.disablePushNotifications,
+                                payload: NotificationType.none,
+                                softWrap: true,
+                              ),
+                              if (kDebugMode)
+                                ListPickerItem(
+                                  icon: Icons.notifications_active_rounded,
+                                  label: l10n.useApplePushNotifications,
+                                  subtitle: l10n.useApplePushNotificationsDescription,
+                                  payload: NotificationType.apn,
+                                  softWrap: true,
+                                ),
+                            ],
+                      onSelect: (ListPickerItem<NotificationType> notificationType) async {
+                        if (notificationType.payload == inboxNotificationType) return;
+
+                        bool success = await updateNotificationSettings(
+                          context,
+                          currentNotificationType: inboxNotificationType,
+                          updatedNotificationType: notificationType.payload,
+                          onUpdate: (NotificationType updatedNotificationType) async {
+                            setPreferences(LocalSettings.inboxNotificationType, updatedNotificationType);
+
+                            if (Platform.isAndroid) {
+                              areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+
+                              if (updatedNotificationType == NotificationType.unifiedPush) {
+                                unifiedPushConnectedDistributorApp = await UnifiedPush.getDistributor();
+                                unifiedPushAvailableDistributorApps = (await UnifiedPush.getDistributors()).length;
+                              }
+                            }
+                          },
+                        );
+
+                        if (!success) showSnackbar(l10n.failedToUpdateNotificationSettings);
+                        _initPreferences();
                       },
-                      secondaryButtonText: l10n.disable,
-                      onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
                     );
-
-                    // The user chose not to enable the feature
-                    if (!res) return;
-                  }
-
-                  setPreferences(LocalSettings.enableInboxNotifications, value);
-
-                  if (!kIsWeb && Platform.isAndroid && value) {
-                    // We're on Android. Request notifications permissions if needed.
-                    // This is a no-op if on SDK version < 33
-                    final AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
-                        FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-
-                    areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
-                    if (areAndroidNotificationsAllowed != true) {
-                      areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
-                    }
-
-                    // This setState has no body because async operations aren't allowed,
-                    // but its purpose is to update areAndroidNotificationsAllowed.
-                    setState(() {});
-                  }
-
-                  if (value) {
-                    // Ensure that background fetching is enabled.
-                    initBackgroundFetch();
-                    initHeadlessBackgroundFetch();
-                  } else {
-                    // Ensure that background fetching is disabled.
-                    disableBackgroundFetch();
-                  }
-                },
-                subtitle: enableInboxNotifications
-                    ? !kIsWeb && Platform.isAndroid && areAndroidNotificationsAllowed == true
-                        ? null
-                        : l10n.notificationsNotAllowed
-                    : null,
-                highlightKey: settingToHighlight == LocalSettings.enableInboxNotifications ? settingToHighlightKey : null,
+                  },
+                ),
               ),
             ),
-
+            if (inboxNotificationType == NotificationType.unifiedPush || inboxNotificationType == NotificationType.apn)
+              SliverToBoxAdapter(
+                child: SettingsListTile(
+                  icon: Icons.electrical_services_rounded,
+                  description: l10n.pushNotificationServer,
+                  subtitle: pushNotificationServer,
+                  widget: const SizedBox(
+                    height: 42.0,
+                    child: Icon(Icons.chevron_right_rounded),
+                  ),
+                  onTap: () async {
+                    showThunderDialog<void>(
+                      context: context,
+                      title: l10n.pushNotificationServer,
+                      contentWidgetBuilder: (_) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CommonMarkdownBody(body: l10n.pushNotificationServerDescription),
+                            const SizedBox(height: 32.0),
+                            TextField(
+                              textInputAction: TextInputAction.done,
+                              keyboardType: TextInputType.url,
+                              autocorrect: false,
+                              controller: controller,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                border: const OutlineInputBorder(),
+                                labelText: l10n.url,
+                                hintText: THUNDER_SERVER_URL,
+                              ),
+                              enableSuggestions: false,
+                            ),
+                          ],
+                        );
+                      },
+                      secondaryButtonText: l10n.cancel,
+                      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                      primaryButtonText: l10n.confirm,
+                      onPrimaryButtonPressed: (dialogContext, _) {
+                        setPreferences(LocalSettings.pushNotificationServer, controller.text);
+                        Navigator.of(dialogContext).pop();
+                      },
+                    );
+                  },
+                ),
+              ),
+            SliverToBoxAdapter(
+              child: SettingsListTile(
+                icon: Icons.bug_report_rounded,
+                description: l10n.havingIssuesWithNotifications,
+                widget: const SizedBox(
+                  height: 42.0,
+                  child: Icon(Icons.chevron_right_rounded),
+                ),
+                onTap: () {
+                  GoRouter.of(context).push(SETTINGS_DEBUG_PAGE, extra: [
+                    context.read<ThunderBloc>(),
+                  ]);
+                },
+              ),
+            ),
+          ],
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(

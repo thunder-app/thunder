@@ -78,6 +78,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                         label: item.capitalizeLabel ? item.label.capitalize : item.label,
                         labelWidget: item.labelWidget,
                         subtitle: item.subtitle,
+                        subtitleWidget: item.subtitleWidget,
                         icon: item.icon,
                         textTheme: item.textTheme,
                         onSelected: () async {
@@ -140,6 +141,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                           false => Icons.check_box_outline_blank_rounded,
                           null => null,
                         },
+                        softWrap: item.softWrap,
                       );
                     },
                   ).toList(),
@@ -190,6 +192,9 @@ class ListPickerItem<T> {
   /// The subtitle of the item
   final String? subtitle;
 
+  /// Customize the subtitle by providing the whole widget
+  final Widget? subtitleWidget;
+
   /// Whether to capitalize the label
   final bool capitalizeLabel;
 
@@ -205,16 +210,21 @@ class ListPickerItem<T> {
   /// Whether the item is selected
   final bool Function()? isChecked;
 
+  /// Whether the subtitle should softwrap
+  final bool softWrap;
+
   const ListPickerItem({
     this.icon,
     this.colors,
     this.label = "",
     this.textTheme,
     this.subtitle,
+    this.subtitleWidget,
     this.capitalizeLabel = true,
     this.labelWidget,
     this.customWidget,
     required this.payload,
     this.isChecked,
+    this.softWrap = false,
   });
 }

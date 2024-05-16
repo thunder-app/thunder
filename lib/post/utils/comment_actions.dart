@@ -39,17 +39,21 @@ void triggerCommentAction({
       onVoteAction(commentView.comment.id, voteType == -1 ? 0 : -1);
       return;
     case SwipeAction.reply:
-      navigateToCreateCommentPage(
-        context,
-        parentCommentView: commentView,
-        onCommentSuccess: (commentView) => onReplyEditAction?.call(commentView, false),
-      );
+      navigateToCreateCommentPage(context, parentCommentView: commentView, onCommentSuccess: (commentView, userChanged) {
+        if (!userChanged) {
+          onReplyEditAction?.call(commentView, false);
+        }
+      });
       break;
     case SwipeAction.edit:
       navigateToCreateCommentPage(
         context,
         commentView: commentView,
-        onCommentSuccess: (commentView) => onReplyEditAction?.call(commentView, true),
+        onCommentSuccess: (commentView, userChanged) {
+          if (!userChanged) {
+            return onReplyEditAction?.call(commentView, true);
+          }
+        },
       );
       break;
     case SwipeAction.save:
