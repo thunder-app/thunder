@@ -25,8 +25,7 @@ import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
-
-import '../../account/utils/profiles.dart';
+import 'package:thunder/account/utils/profiles.dart';
 
 class UserSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
