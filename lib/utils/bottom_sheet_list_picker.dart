@@ -78,6 +78,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                         label: item.capitalizeLabel ? item.label.capitalize : item.label,
                         labelWidget: item.labelWidget,
                         subtitle: item.subtitle,
+                        subtitleWidget: item.subtitleWidget,
                         icon: item.icon,
                         textTheme: item.textTheme,
                         onSelected: () async {
@@ -191,6 +192,9 @@ class ListPickerItem<T> {
   /// The subtitle of the item
   final String? subtitle;
 
+  /// Customize the subtitle by providing the whole widget
+  final Widget? subtitleWidget;
+
   /// Whether to capitalize the label
   final bool capitalizeLabel;
 
@@ -215,6 +219,7 @@ class ListPickerItem<T> {
     this.label = "",
     this.textTheme,
     this.subtitle,
+    this.subtitleWidget,
     this.capitalizeLabel = true,
     this.labelWidget,
     this.customWidget,

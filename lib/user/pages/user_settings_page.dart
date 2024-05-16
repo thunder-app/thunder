@@ -9,8 +9,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/models/account.dart';
-import 'package:thunder/account/widgets/account_placeholder.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -29,11 +27,11 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/pages/media_management_page.dart';
-import 'package:thunder/user/utils/restore_user.dart';
-import 'package:thunder/user/widgets/user_selector.dart';
+import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/account/utils/profiles.dart';
 
 class UserSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -45,21 +43,12 @@ class UserSettingsPage extends StatefulWidget {
 }
 
 class _UserSettingsPageState extends State<UserSettingsPage> {
-  Account? originalUser;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    AuthState state = context.read<AuthBloc>().state;
-    originalUser ??= state.account;
 
     return PopScope(
-      onPopInvoked: (_) {
-        if (context.mounted) {
-          restoreUser(context, originalUser);
-        }
-      },
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 70.0,
@@ -114,10 +103,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   context.read<UserSettingsBloc>().add(const GetUserBlocksEvent());
                 }
 
-                if (state.status == UserSettingsStatus.notLoggedIn) {
-                  return const AccountPlaceholder();
-                }
-
                 GetSiteResponse? getSiteResponse = state.getSiteResponse;
                 MyUserInfo? myUserInfo = getSiteResponse?.myUser;
 
@@ -126,213 +111,241 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 bool showBotAccounts = localUser?.showBotAccounts ?? true;
                 bool showScores = localUser?.showScores ?? true;
 
-                if (state.getSiteResponse == null || myUserInfo == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
                 return SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
-                        child: UserSelector(
-                          profileModalHeading: l10n.changeAccountSettingsFor,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
-                        child: Text(
-                          l10n.userSettingDescription,
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: theme.colorScheme.onBackground.withOpacity(0.75),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Text(l10n.general, style: theme.textTheme.titleMedium),
-                      ),
-                      ToggleOption(
-                        description: l10n.showReadPosts,
-                        value: showReadPosts,
-                        iconEnabled: Icons.fact_check_rounded,
-                        iconDisabled: Icons.fact_check_outlined,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
-                      ),
-                      ToggleOption(
-                        description: l10n.showScores,
-                        value: showScores,
-                        iconEnabled: Icons.onetwothree_rounded,
-                        iconDisabled: Icons.onetwothree_rounded,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
-                      ),
-                      ToggleOption(
-                        description: l10n.showBotAccounts,
-                        value: showBotAccounts,
-                        iconEnabled: Thunder.robot,
-                        iconEnabledSize: 18.0,
-                        iconDisabled: Thunder.robot,
-                        iconDisabledSize: 18.0,
-                        iconSpacing: 14.0,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
-                      ),
-                      DiscussionLanguageSelector(
-                        initialDiscussionLanguages: DiscussionLanguageSelector.getDiscussionLanguagesFromSiteResponse(state.getSiteResponse),
-                        settingToHighlight: widget.settingToHighlight,
-                      ),
-                      if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(l10n.blockedInstances, style: theme.textTheme.titleMedium),
-                              IconButton(
-                                visualDensity: VisualDensity.compact,
-                                icon: Icon(
-                                  Icons.add_rounded,
-                                  semanticLabel: l10n.add,
-                                ),
-                                onPressed: () => showInstanceInputDialog(
-                                  context,
-                                  title: l10n.blockInstance,
-                                  onInstanceSelected: (instance) {
-                                    context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id, unblock: false));
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        UserSettingBlockList(
-                          status: state.status,
-                          emptyText: l10n.noInstanceBlocks,
-                          items: getInstanceBlocks(context, state, state.instanceBlocks),
-                        ),
-                      ],
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(l10n.blockedUsers, style: theme.textTheme.titleMedium),
-                            IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: Icon(
-                                Icons.add_rounded,
-                                semanticLabel: l10n.add,
-                              ),
-                              onPressed: () => showUserInputDialog(
-                                context,
-                                title: l10n.blockUser,
-                                onUserSelected: (personViewSafe) {
-                                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personViewSafe.person.id, unblock: false));
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      UserSettingBlockList(
-                        status: state.status,
-                        emptyText: l10n.noUserBlocks,
-                        items: getPersonBlocks(context, state, state.personBlocks),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(l10n.blockedCommunities, style: theme.textTheme.titleMedium),
-                            IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: Icon(
-                                Icons.add_rounded,
-                                semanticLabel: l10n.add,
-                              ),
-                              onPressed: () => showCommunityInputDialog(
-                                context,
-                                title: l10n.blockCommunity,
-                                onCommunitySelected: (communityView) {
-                                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      UserSettingBlockList(
-                        status: state.status,
-                        emptyText: l10n.noCommunityBlocks,
-                        items: getCommunityBlocks(context, state, state.communityBlocks),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
-                      ),
                       SettingsListTile(
-                        icon: Icons.delete_forever_rounded,
-                        description: l10n.deleteAccount,
-                        widget: const SizedBox(
-                          height: 42.0,
-                          child: Icon(Icons.chevron_right_rounded),
-                        ),
-                        onTap: () async {
-                          showThunderDialog<void>(
-                            context: context,
-                            title: l10n.deleteAccount,
-                            contentText: l10n.deleteAccountDescription,
-                            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                            secondaryButtonText: l10n.cancel,
-                            onPrimaryButtonPressed: (dialogContext, _) async {
-                              if (context.mounted) {
-                                Navigator.of(context).pop();
-                                handleLink(context, url: 'https://${LemmyClient.instance.lemmyApiV3.host}/settings');
-                              }
-                            },
-                            primaryButtonText: l10n.confirm,
-                          );
-                        },
-                      ),
-                      if (LemmyClient.instance.supportsFeature(LemmyFeature.listMedia))
-                        SettingsListTile(
-                          icon: Icons.hide_image_rounded,
-                          description: l10n.manageMedia,
+                          icon: Icons.people_alt_rounded,
+                          description: l10n.manageAccounts,
                           widget: const SizedBox(
                             height: 42.0,
                             child: Icon(Icons.chevron_right_rounded),
                           ),
-                          onTap: () async {
-                            final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                            final UserSettingsBloc userSettingsBloc = context.read<UserSettingsBloc>();
-                            final AuthBloc authBloc = context.read<AuthBloc>();
+                          onTap: () => showProfileModalSheet(context)),
+                      if (state.status != UserSettingsStatus.notLoggedIn && state.getSiteResponse != null && myUserInfo != null)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Divider(
+                              indent: 32.0,
+                              height: 32.0,
+                              endIndent: 32.0,
+                              thickness: 2.0,
+                              color: theme.dividerColor.withOpacity(0.6),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.thisAccount, style: theme.textTheme.titleMedium),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 16.0, bottom: 16.0, right: 8),
+                              child: UserIndicator(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                              child: Text(
+                                l10n.userSettingDescription,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.general, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                                icon: Icons.logout_rounded,
+                                description: l10n.logOut,
+                                widget: const SizedBox(
+                                  height: 42.0,
+                                  child: Icon(Icons.chevron_right_rounded),
+                                ),
+                                onTap: () => showProfileModalSheet(context, showLogoutDialog: true)),
+                            ToggleOption(
+                              description: l10n.showReadPosts,
+                              value: showReadPosts,
+                              iconEnabled: Icons.fact_check_rounded,
+                              iconDisabled: Icons.fact_check_outlined,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                            ),
+                            ToggleOption(
+                              description: l10n.showScores,
+                              value: showScores,
+                              iconEnabled: Icons.onetwothree_rounded,
+                              iconDisabled: Icons.onetwothree_rounded,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                            ),
+                            ToggleOption(
+                              description: l10n.showBotAccounts,
+                              value: showBotAccounts,
+                              iconEnabled: Thunder.robot,
+                              iconEnabledSize: 18.0,
+                              iconDisabled: Thunder.robot,
+                              iconDisabledSize: 18.0,
+                              iconSpacing: 14.0,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                            ),
+                            DiscussionLanguageSelector(
+                              initialDiscussionLanguages: DiscussionLanguageSelector.getDiscussionLanguagesFromSiteResponse(state.getSiteResponse),
+                              settingToHighlight: widget.settingToHighlight,
+                            ),
+                            if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(l10n.blockedInstances, style: theme.textTheme.titleMedium),
+                                    IconButton(
+                                      visualDensity: VisualDensity.compact,
+                                      icon: Icon(
+                                        Icons.add_rounded,
+                                        semanticLabel: l10n.add,
+                                      ),
+                                      onPressed: () => showInstanceInputDialog(
+                                        context,
+                                        title: l10n.blockInstance,
+                                        onInstanceSelected: (instance) {
+                                          context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id, unblock: false));
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              UserSettingBlockList(
+                                status: state.status,
+                                emptyText: l10n.noInstanceBlocks,
+                                items: getInstanceBlocks(context, state, state.instanceBlocks),
+                              ),
+                            ],
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(l10n.blockedUsers, style: theme.textTheme.titleMedium),
+                                  IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    icon: Icon(
+                                      Icons.add_rounded,
+                                      semanticLabel: l10n.add,
+                                    ),
+                                    onPressed: () => showUserInputDialog(
+                                      context,
+                                      title: l10n.blockUser,
+                                      onUserSelected: (personViewSafe) {
+                                        context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personViewSafe.person.id, unblock: false));
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            UserSettingBlockList(
+                              status: state.status,
+                              emptyText: l10n.noUserBlocks,
+                              items: getPersonBlocks(context, state, state.personBlocks),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(l10n.blockedCommunities, style: theme.textTheme.titleMedium),
+                                  IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    icon: Icon(
+                                      Icons.add_rounded,
+                                      semanticLabel: l10n.add,
+                                    ),
+                                    onPressed: () => showCommunityInputDialog(
+                                      context,
+                                      title: l10n.blockCommunity,
+                                      onCommunitySelected: (communityView) {
+                                        context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            UserSettingBlockList(
+                              status: state.status,
+                              emptyText: l10n.noCommunityBlocks,
+                              items: getCommunityBlocks(context, state, state.communityBlocks),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                              icon: Icons.delete_forever_rounded,
+                              description: l10n.deleteAccount,
+                              widget: const SizedBox(
+                                height: 42.0,
+                                child: Icon(Icons.chevron_right_rounded),
+                              ),
+                              onTap: () async {
+                                showThunderDialog<void>(
+                                  context: context,
+                                  title: l10n.deleteAccount,
+                                  contentText: l10n.deleteAccountDescription,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  secondaryButtonText: l10n.cancel,
+                                  onPrimaryButtonPressed: (dialogContext, _) async {
+                                    if (context.mounted) {
+                                      Navigator.of(context).pop();
+                                      handleLink(context, url: 'https://${LemmyClient.instance.lemmyApiV3.host}/settings');
+                                    }
+                                  },
+                                  primaryButtonText: l10n.confirm,
+                                );
+                              },
+                            ),
+                            if (LemmyClient.instance.supportsFeature(LemmyFeature.listMedia))
+                              SettingsListTile(
+                                icon: Icons.hide_image_rounded,
+                                description: l10n.manageMedia,
+                                widget: const SizedBox(
+                                  height: 42.0,
+                                  child: Icon(Icons.chevron_right_rounded),
+                                ),
+                                onTap: () async {
+                                  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                                  final UserSettingsBloc userSettingsBloc = context.read<UserSettingsBloc>();
+                                  final AuthBloc authBloc = context.read<AuthBloc>();
 
-                            userSettingsBloc.add(const ListMediaEvent());
+                                  userSettingsBloc.add(const ListMediaEvent());
 
-                            await Navigator.of(context).push(
-                              SwipeablePageRoute(
-                                transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                                backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
-                                backGestureDetectionWidth: 45,
-                                canOnlySwipeFromEdge: true,
-                                builder: (otherContext) {
-                                  return MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider.value(value: userSettingsBloc),
-                                      BlocProvider.value(value: thunderBloc),
-                                      BlocProvider.value(value: authBloc),
-                                    ],
-                                    child: const MediaManagementPage(),
+                                  await Navigator.of(context).push(
+                                    SwipeablePageRoute(
+                                      transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                      backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                                      backGestureDetectionWidth: 45,
+                                      canOnlySwipeFromEdge: true,
+                                      builder: (otherContext) {
+                                        return MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider.value(value: userSettingsBloc),
+                                            BlocProvider.value(value: thunderBloc),
+                                            BlocProvider.value(value: authBloc),
+                                          ],
+                                          child: const MediaManagementPage(),
+                                        );
+                                      },
+                                    ),
                                   );
                                 },
                               ),
-                            );
-                          },
+                            const SizedBox(height: 100.0),
+                          ],
                         ),
-                      const SizedBox(height: 100.0),
                     ],
                   ),
                 );
@@ -355,6 +368,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           message: instance.domain,
           preferBelow: false,
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
@@ -415,6 +429,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           message: generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
           preferBelow: false,
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
@@ -469,6 +484,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           message: generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
           preferBelow: false,
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {

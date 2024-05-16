@@ -18,6 +18,8 @@ const String _mentionsChannelId = 'inbox_mentions';
 const String _mentionsChannelName = 'Inbox Mentions';
 const String _messagesChannelId = 'inbox_messages';
 const String _messagesChannelName = 'Inbox Messages';
+const String _testChannelId = 'troubleshooting';
+const String _testChannelName = 'Troubleshooting';
 
 /// Displays a new notification group on Android based on the accounts passed in.
 ///
@@ -105,4 +107,26 @@ void showAndroidNotification({
 
   // Show the notification!
   await flutterLocalNotificationsPlugin.show(id, title, content, notificationDetails, payload: payload);
+}
+
+Future<void> showTestAndroidNotification() async {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  // Configure Android-specific settings
+  const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+    _testChannelId,
+    _testChannelName,
+    styleInformation: BigTextStyleInformation(
+      'Test',
+      contentTitle: 'Test',
+      summaryText: 'Test',
+      htmlFormatBigText: true,
+    ),
+    groupKey: 'test',
+  );
+
+  const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+
+  // Show the notification!
+  await flutterLocalNotificationsPlugin.show(-1, 'Test', 'Test', notificationDetails);
 }

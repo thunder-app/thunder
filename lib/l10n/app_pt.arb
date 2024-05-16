@@ -1,1 +1,14 @@
-{}
+{
+  "about": "Acerca do Thunder",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accessibilityProfilesDescription": "Os perfis de acessibilidade permitem aplicar várias definições de uma só vez para satisfazer um determinado requisito de acessibilidade.",
+  "@accessibilityProfilesDescription": {},
+  "accessibility": "Acessibilidade",
+  "@accessibility": {},
+  "account": "{count, plural, zero {Contas} one {Conta} other {Contas} } ",
+  "@account": {
+    "description": "Describes the user account"
+  }
+}

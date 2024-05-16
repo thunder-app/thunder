@@ -111,7 +111,6 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
     _selectedUserOption ??= widget.selectedUserOption ?? [true, false];
     savedToggle ??= widget.savedToggle ?? PrimitiveWrapper<bool>(false);
 
-    final theme = Theme.of(context);
     final DateTime now = DateTime.now().toUtc();
     final int? currentUserId = context.read<AuthBloc>().state.account?.userId;
 
@@ -140,8 +139,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       : const SizedBox(),
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  color: theme.colorScheme.background,
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -307,9 +305,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               context,
                               commentView: isEdit ? commentView : null,
                               parentCommentView: isEdit ? null : commentView,
-                              onCommentSuccess: (commentView) {
-                                // TODO: handle success for account page changes.
-                                // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                              onCommentSuccess: (commentView, userChanged) {
+                                if (!userChanged) {
+                                  // TODO: handle success for account page changes.
+                                  // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                                }
                               },
                             ),
                             isOwnComment: widget.isAccountUser,
@@ -368,9 +368,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               context,
                               commentView: isEdit ? commentView : null,
                               parentCommentView: isEdit ? null : commentView,
-                              onCommentSuccess: (commentView) {
-                                // TODO: handle success for account page changes.
-                                // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                              onCommentSuccess: (commentView, userChanged) {
+                                if (!userChanged) {
+                                  // TODO: handle success for account page changes.
+                                  // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                                }
                               },
                             ),
                             isOwnComment: widget.isAccountUser && widget.savedComments![index].commentView!.creator.id == currentUserId,

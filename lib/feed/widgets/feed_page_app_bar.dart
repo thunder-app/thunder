@@ -24,13 +24,14 @@ import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
-class FeedPageAppBar extends StatelessWidget {
+class FeedPageAppBar extends StatefulWidget {
   const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
 
   /// Whether to show the app bar title
@@ -41,11 +42,20 @@ class FeedPageAppBar extends StatelessWidget {
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
 
   @override
+  State<FeedPageAppBar> createState() => _FeedPageAppBarState();
+}
+
+class _FeedPageAppBarState extends State<FeedPageAppBar> {
+  Person? person;
+
+  @override
   Widget build(BuildContext context) {
     final feedBloc = context.read<FeedBloc>();
     final thunderBloc = context.read<ThunderBloc>();
     final AuthState authState = context.read<AuthBloc>().state;
     final AccountState accountState = context.read<AccountBloc>().state;
+
+    person = accountState.reload ? accountState.personView?.person : person;
 
     return SliverAppBar(
       pinned: !thunderBloc.state.hideTopBarOnScroll,
@@ -53,9 +63,9 @@ class FeedPageAppBar extends StatelessWidget {
       centerTitle: false,
       toolbarHeight: 70.0,
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: FeedAppBarTitle(visible: showAppBarTitle),
-      leadingWidth: thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
-      leading: thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
+      title: FeedAppBarTitle(visible: widget.showAppBarTitle),
+      leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
+      leading: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
           ? Padding(
               padding: const EdgeInsets.only(left: 16.0),
               child: Stack(
@@ -63,21 +73,21 @@ class FeedPageAppBar extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: UserAvatar(
-                      person: accountState.personView?.person,
+                      person: person,
                     ),
                   ),
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
                       customBorder: const CircleBorder(),
-                      onTap: () => _openDrawer(context, feedBloc),
+                      onTap: () => _openDrawerOrGoBack(context, feedBloc),
                     ),
                   ),
                 ],
               ),
             )
           : IconButton(
-              icon: scaffoldStateKey == null
+              icon: widget.scaffoldStateKey == null
                   ? (!kIsWeb && Platform.isIOS
                       ? Icon(
                           Icons.arrow_back_ios_new_rounded,
@@ -85,7 +95,7 @@ class FeedPageAppBar extends StatelessWidget {
                         )
                       : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
                   : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
-              onPressed: () => _openDrawer(context, feedBloc),
+              onPressed: () => _openDrawerOrGoBack(context, feedBloc),
             ),
       actions: (feedBloc.state.status != FeedStatus.initial && feedBloc.state.status != FeedStatus.failureLoadingCommunity && feedBloc.state.status != FeedStatus.failureLoadingUser)
           ? [
@@ -97,11 +107,11 @@ class FeedPageAppBar extends StatelessWidget {
     );
   }
 
-  void _openDrawer(BuildContext context, FeedBloc feedBloc) {
+  void _openDrawerOrGoBack(BuildContext context, FeedBloc feedBloc) {
     HapticFeedback.mediumImpact();
-    (scaffoldStateKey == null && (feedBloc.state.feedType == FeedType.community || feedBloc.state.feedType == FeedType.user))
+    (widget.scaffoldStateKey == null && (feedBloc.state.feedType == FeedType.community || feedBloc.state.feedType == FeedType.user))
         ? Navigator.of(context).maybePop()
-        : scaffoldStateKey?.currentState?.openDrawer();
+        : widget.scaffoldStateKey?.currentState?.openDrawer();
   }
 }
 
@@ -391,11 +401,36 @@ bool _getFavoriteStatus(BuildContext context) {
   return accountState.favorites.any((communityView) => communityView.community.id == feedBloc.state.fullCommunityView!.communityView.community.id);
 }
 
-void _onSubscribeIconPressed(BuildContext context) {
+void _onSubscribeIconPressed(BuildContext context) async {
   final AuthBloc authBloc = context.read<AuthBloc>();
   final FeedBloc feedBloc = context.read<FeedBloc>();
-
   final FeedState feedState = feedBloc.state;
+
+  final Community community = feedBloc.state.fullCommunityView!.communityView.community;
+  final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+
+  final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+  if ((authBloc.state.isLoggedIn && feedState.fullCommunityView?.communityView.subscribed != SubscribedType.notSubscribed) || // If we're logged in and subscribed
+      currentSubscriptions.contains(community.id)) // Or this is an anonymous subscription
+  {
+    bool result = false;
+
+    await showThunderDialog<void>(
+      context: context,
+      title: l10n.confirm,
+      contentText: l10n.confirmUnsubscription,
+      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+      secondaryButtonText: l10n.cancel,
+      onPrimaryButtonPressed: (dialogContext, _) async {
+        Navigator.of(dialogContext).pop();
+        result = true;
+      },
+      primaryButtonText: l10n.confirm,
+    );
+
+    if (!result) return;
+  }
 
   if (authBloc.state.isLoggedIn) {
     context.read<CommunityBloc>().add(
@@ -407,9 +442,6 @@ void _onSubscribeIconPressed(BuildContext context) {
         );
     return;
   }
-
-  Community community = feedBloc.state.fullCommunityView!.communityView.community;
-  Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
   if (currentSubscriptions.contains(community.id)) {
     context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: {community.id}));

@@ -243,7 +243,6 @@ class _FeedViewState extends State<FeedView> {
   @override
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
-    final l10n = AppLocalizations.of(context)!;
 
     bool tabletMode = thunderBloc.state.tabletMode;
     bool markPostReadOnScroll = thunderBloc.state.markPostReadOnScroll;
@@ -490,14 +489,22 @@ class _FeedViewState extends State<FeedView> {
                     // Widget to host the feed FAB when navigating to new page
                     AnimatedOpacity(
                       opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 150),
-                      child: thunderBloc.state.isFabOpen
-                          ? ModalBarrier(
-                              color: theme.colorScheme.background.withOpacity(0.95),
+                      curve: Curves.easeInOut,
+                      duration: const Duration(milliseconds: 250),
+                      child: Stack(
+                        children: [
+                          IgnorePointer(
+                              child: Container(
+                            color: theme.colorScheme.background.withOpacity(0.95),
+                          )),
+                          if (thunderBloc.state.isFabOpen)
+                            ModalBarrier(
+                              color: null,
                               dismissible: true,
                               onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                            )
-                          : null,
+                            ),
+                        ],
+                      ),
                     ),
                     if (Navigator.of(context).canPop() &&
                         (state.communityId != null || state.communityName != null || state.userId != null || state.username != null) &&

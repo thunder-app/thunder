@@ -140,6 +140,15 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   BackgroundFetch.finish(task.taskId);
 }
 
+/// This method handles "headless" callbacks for testing
+@pragma('vm:entry-point')
+void backgroundTestFetchHeadlessTask(HeadlessTask task) async {
+  if (task.timeout) return BackgroundFetch.finish(task.taskId);
+
+  await showTestAndroidNotification();
+  BackgroundFetch.finish(task.taskId);
+}
+
 /// The method initializes background fetching while the app is running
 Future<void> initBackgroundFetch() async {
   await BackgroundFetch.configure(
@@ -168,7 +177,32 @@ Future<void> initBackgroundFetch() async {
   );
 }
 
-void disableBackgroundFetch() async {
+/// Initializes BackgroundFetch to send a test notification
+/// It uses an interval of 1 and the alarm manager so the user doesn't have to wait too long.
+Future<void> initTestBackgroundFetch() async {
+  await BackgroundFetch.configure(
+    BackgroundFetchConfig(
+      minimumFetchInterval: 1,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      enableHeadless: true,
+      requiredNetworkType: NetworkType.NONE,
+      requiresBatteryNotLow: false,
+      requiresStorageNotLow: false,
+      requiresCharging: false,
+      requiresDeviceIdle: false,
+      forceAlarmManager: true,
+    ),
+    (String taskId) async {
+      BackgroundFetch.finish(taskId);
+    },
+    (String taskId) async {
+      BackgroundFetch.finish(taskId);
+    },
+  );
+}
+
+Future<void> disableBackgroundFetch() async {
   await BackgroundFetch.configure(
     BackgroundFetchConfig(
       minimumFetchInterval: 15,
@@ -182,8 +216,13 @@ void disableBackgroundFetch() async {
 }
 
 // This method initializes background fetching while the app is not running
-void initHeadlessBackgroundFetch() async {
+void initHeadlessBackgroundFetch() {
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+}
+
+// This method initializes a test background fetch
+void initTestHeadlessBackgroundFetch() {
+  BackgroundFetch.registerHeadlessTask(backgroundTestFetchHeadlessTask);
 }
 
 // ---------------- END BACKGROUND FETCH ---------------- //

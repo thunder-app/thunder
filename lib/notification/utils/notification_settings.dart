@@ -1,10 +1,12 @@
 // Flutter imports
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 
 // Project imports
@@ -61,7 +63,7 @@ Future<bool> updateNotificationSettings(
     } else if (updatedNotificationType == NotificationType.none && !success) {
       // If we failed to remove all tokens from the server, we'll set the preference to NotificationType.none
       // The next time the app is opened, it will attempt to remove tokens from the server
-      showSnackbar(l10n.failedToDisablePushNotifications);
+      showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL));
       onUpdate?.call(updatedNotificationType);
       return true;
     }
@@ -106,8 +108,25 @@ Future<bool> updateNotificationSettings(
       if (areAndroidNotificationsAllowed != true) {
         areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
         if (areAndroidNotificationsAllowed != true) {
-          showSnackbar(l10n.permissionDenied);
-          return Future.delayed(const Duration(seconds: 2)).then((_) => false);
+          showSnackbar(
+            l10n.permissionDenied,
+            trailingIcon: Icons.settings_rounded,
+            trailingAction: () async {
+              try {
+                const AndroidIntent intent = AndroidIntent(
+                  action: "android.settings.APP_NOTIFICATION_SETTINGS",
+                  arguments: {"android.provider.extra.APP_PACKAGE": "com.hjiangsu.thunder"},
+                  flags: [ANDROID_INTENT_FLAG_ACTIVITY_NEW_TASK],
+                );
+                await intent.launch();
+              } catch (e) {
+                // Do nothing, we can't open the settings.
+              }
+            },
+          );
+
+          // Give enough time for the user to interact with this notification
+          return Future.delayed(const Duration(seconds: 10)).then((_) => false);
         }
       }
 

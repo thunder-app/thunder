@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,13 +59,16 @@ class _UserPageState extends State<UserPage> {
           appBar: AppBar(
             scrolledUnderElevation: 0,
             leading: widget.isAccountUser
-                ? IconButton(
-                    onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
-                    icon: Icon(
-                      Icons.logout,
-                      semanticLabel: AppLocalizations.of(context)!.logOut,
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
+                    child: IconButton(
+                      onPressed: () => showProfileModalSheet(context),
+                      icon: Icon(
+                        Icons.people_alt_rounded,
+                        semanticLabel: AppLocalizations.of(context)!.profiles,
+                      ),
+                      tooltip: AppLocalizations.of(context)!.profiles,
                     ),
-                    tooltip: AppLocalizations.of(context)!.logOut,
                   )
                 : null,
             actions: [
@@ -100,6 +105,7 @@ class _UserPageState extends State<UserPage> {
                       Navigator.of(context).push(
                         SwipeablePageRoute(
                           transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                          canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
                           canOnlySwipeFromEdge: !state.enableFullScreenSwipeNavigationGesture,
                           builder: (context) => MultiBlocProvider(
                             providers: [
@@ -116,18 +122,6 @@ class _UserPageState extends State<UserPage> {
                       semanticLabel: AppLocalizations.of(context)!.accountSettings,
                     ),
                     tooltip: AppLocalizations.of(context)!.accountSettings,
-                  ),
-                ),
-              if (widget.isAccountUser)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
-                  child: IconButton(
-                    onPressed: () => showProfileModalSheet(context),
-                    icon: Icon(
-                      Icons.people_alt_rounded,
-                      semanticLabel: AppLocalizations.of(context)!.profiles,
-                    ),
-                    tooltip: AppLocalizations.of(context)!.profiles,
                   ),
                 ),
             ],
@@ -149,6 +143,9 @@ class _UserPageState extends State<UserPage> {
               case UserStatus.refreshing:
               case UserStatus.success:
               case UserStatus.failedToBlock:
+                if (state.personView == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 return UserPageSuccess(
                   userId: widget.userId,
                   isAccountUser: widget.isAccountUser,

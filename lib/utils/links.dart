@@ -18,6 +18,7 @@ import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/media/image.dart';
+import 'package:thunder/utils/media/video.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -232,6 +233,15 @@ void handleLink(BuildContext context, {required String url}) async {
     }
   } catch (e) {
     // Ignore the exception and fall back.
+  }
+  // try opening as a video
+  try {
+    if (isVideoUrl(url) && context.mounted) {
+      showVideoPlayer(context, url: url, postId: postId);
+      return;
+    }
+  } catch (e) {
+    debugPrint(e.toString());
   }
 
   // Fallback: open link in browser

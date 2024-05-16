@@ -23,11 +23,11 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
       // Check if this is a reply notification
       if (payload?.inboxType == NotificationInboxType.reply) {
-        emit(state.copyWith(status: NotificationsStatus.reply, replyId: payload!.id));
+        emit(state.copyWith(status: NotificationsStatus.reply, replyId: payload!.id, accountId: payload.accountId));
       }
 
       // Reset the state
-      emit(state.copyWith(status: NotificationsStatus.none, replyId: null));
+      emit(state.copyWith(status: NotificationsStatus.none, replyId: null, accountId: payload?.accountId));
     });
   }
 

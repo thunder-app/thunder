@@ -38,6 +38,7 @@ import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
@@ -367,13 +368,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ],
               ),
               body: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             CommunitySelector(
                               communityId: communityId,
@@ -480,14 +481,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 isUserLoggedIn: true,
                               ),
                             ),
-                            if (crossPosts.isNotEmpty && widget.postView == null)
-                              Visibility(
-                                visible: url.isNotEmpty,
-                                child: CrossPosts(
-                                  crossPosts: crossPosts,
-                                  isNewPost: true,
-                                ),
+                            if (crossPosts.isNotEmpty && widget.postView == null) const SizedBox(height: 6),
+                            Visibility(
+                              visible: url.isNotEmpty && crossPosts.isNotEmpty,
+                              child: CrossPosts(
+                                crossPosts: crossPosts,
+                                isNewPost: true,
                               ),
+                            ),
                             const SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -515,31 +516,39 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               ],
                             ),
                             const SizedBox(height: 10),
-                            showPreview
-                                ? Container(
-                                    constraints: const BoxConstraints(minWidth: double.infinity),
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                                    padding: const EdgeInsets.all(12),
-                                    child: SingleChildScrollView(
-                                      child: CommonMarkdownBody(
-                                        body: _bodyTextController.text,
-                                        isComment: true,
-                                      ),
-                                    ),
-                                  )
-                                : MarkdownTextInputField(
-                                    controller: _bodyTextController,
-                                    focusNode: _bodyFocusNode,
-                                    label: l10n.postBody,
-                                    minLines: 8,
-                                    maxLines: null,
-                                    textStyle: theme.textTheme.bodyLarge,
-                                  ),
+                            AnimatedCrossFade(
+                              firstChild: Container(
+                                margin: const EdgeInsets.only(top: 8.0),
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  color: getBackgroundColor(context),
+                                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
+                              ),
+                              secondChild: MarkdownTextInputField(
+                                controller: _bodyTextController,
+                                focusNode: _bodyFocusNode,
+                                label: l10n.postBody,
+                                minLines: 8,
+                                maxLines: null,
+                                textStyle: theme.textTheme.bodyLarge,
+                              ),
+                              crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                              duration: const Duration(milliseconds: 120),
+                              excludeBottomFocus: false,
+                            ),
                           ]),
                         ),
                       ),
-                      const Divider(),
-                      Row(
+                    ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    Container(
+                      color: theme.cardColor,
+                      child: Row(
                         children: [
                           Expanded(
                             child: MarkdownToolbar(
@@ -569,8 +578,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 },
                                 MarkdownType.community: () {
                                   showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                        '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                    _bodyTextController.text = _bodyTextController.text.replaceRange(
+                                        _bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
                                   });
                                 },
                               },
@@ -584,7 +593,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
                             child: IconButton(
                               onPressed: () {
                                 if (!showPreview) {
@@ -606,8 +615,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

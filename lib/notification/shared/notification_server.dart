@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 // Project imports
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
@@ -30,7 +31,7 @@ Future<bool> sendAuthTokenToNotificationServer({
 
     // Send POST request to notification server
     http.Response response = await http.post(
-      Uri.parse(pushNotificationServer),
+      Uri.parse('$pushNotificationServer/notifications'),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode({
         'type': type.name,
@@ -62,13 +63,35 @@ Future<bool> deleteAccountFromNotificationServer() async {
 
     // Send POST request to notification server
     http.Response response = await http.delete(
-      Uri.parse(pushNotificationServer),
+      Uri.parse('$pushNotificationServer/notifications'),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode({'jwts': jwts}),
     );
 
     // Check if the request was successful
     if (response.statusCode == 200) return true;
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
+
+Future<bool> requestTestNotification() async {
+  try {
+    final prefs = (await UserPreferences.instance).sharedPreferences;
+    String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+
+    final Account? account = await fetchActiveProfileAccount();
+
+    // Send POST request to notification server
+    http.Response response = await http.post(
+      Uri.parse('$pushNotificationServer/test'),
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      body: jsonEncode({'jwt': account?.jwt}),
+    );
+
+    // Check if the request was successful
+    if (response.statusCode == 201) return true;
     return false;
   } catch (e) {
     return false;
