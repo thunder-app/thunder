@@ -18,6 +18,7 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
@@ -145,6 +146,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
       bool showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
       bool hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
+      MediaQuality thumbnailQuality = MediaQuality.values.byName(prefs.getString(LocalSettings.thumbnailQuality.name) ?? MediaQuality.medium.name);
       bool showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       bool showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
       bool tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
@@ -310,6 +312,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         useCompactView: useCompactView,
         showTitleFirst: showTitleFirst,
         hideThumbnails: hideThumbnails,
+        thumbnailQuality: thumbnailQuality,
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         showTextPostIndicator: showTextPostIndicator,
         tappableAuthorCommunity: tappableAuthorCommunity,

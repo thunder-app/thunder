@@ -16,6 +16,7 @@ import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -53,6 +54,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// When enabled, the thumbnails in compact/card mode will be hidden
   bool hideThumbnails = false;
+
+  /// The quality of the thumbnails
+  MediaQuality thumbnailQuality = MediaQuality.medium;
 
   /// When enabled, the thumbnail previews will be shown on the right. By default, they are shown on the left
   bool showThumbnailPreviewOnRight = false;
@@ -143,6 +147,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
+      thumbnailQuality = MediaQuality.values.byName(prefs.getString(LocalSettings.thumbnailQuality.name) ?? MediaQuality.medium.name);
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
@@ -193,6 +198,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.hideThumbnails:
         await prefs.setBool(LocalSettings.hideThumbnails.name, value);
         setState(() => hideThumbnails = value);
+        break;
+      case LocalSettings.thumbnailQuality:
+        await prefs.setString(LocalSettings.thumbnailQuality.name, (value as MediaQuality).name);
+        setState(() => thumbnailQuality = value);
         break;
       case LocalSettings.showPostAuthor:
         await prefs.setBool(LocalSettings.showPostAuthor.name, value);
@@ -304,6 +313,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.useCompactView.name);
     await prefs.remove(LocalSettings.hideNsfwPreviews.name);
     await prefs.remove(LocalSettings.hideThumbnails.name);
+    await prefs.remove(LocalSettings.thumbnailQuality.name);
     await prefs.remove(LocalSettings.showPostAuthor.name);
     await prefs.remove(LocalSettings.useDisplayNamesForUsers.name);
     await prefs.remove(LocalSettings.postShowUserInstance.name);
@@ -598,6 +608,22 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               iconDisabled: Icons.image_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
               highlightKey: settingToHighlight == LocalSettings.hideThumbnails ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ListOption(
+              description: l10n.thumbnailQuality,
+              subtitle: "Only supported for thumbnails hosted on instance",
+              value: ListPickerItem(label: thumbnailQuality.name, icon: Icons.high_quality_rounded, payload: thumbnailQuality),
+              options: [
+                ListPickerItem(icon: Icons.star_rounded, label: MediaQuality.full.name, payload: MediaQuality.full),
+                ListPickerItem(icon: Icons.expand_less_rounded, label: MediaQuality.high.name, payload: MediaQuality.high),
+                ListPickerItem(icon: Icons.fit_screen, label: MediaQuality.medium.name, payload: MediaQuality.medium),
+                ListPickerItem(icon: Icons.expand_more_rounded, label: MediaQuality.low.name, payload: MediaQuality.low),
+              ],
+              icon: Icons.high_quality_rounded,
+              onChanged: (value) async => setPreferences(LocalSettings.thumbnailQuality, value.payload),
+              highlightKey: settingToHighlight == LocalSettings.thumbnailQuality ? settingToHighlightKey : null,
             ),
           ),
           SliverToBoxAdapter(

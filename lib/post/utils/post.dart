@@ -240,6 +240,7 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
   bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
   bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
+  MediaQuality thumbnailQuality = MediaQuality.values.byName(prefs.getString(LocalSettings.thumbnailQuality.name) ?? MediaQuality.medium.name);
 
   List<PostView> postViewsFinal = [];
 
@@ -261,7 +262,7 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
   Iterable<Future<PostViewMedia>> postFutures = postViewsFinal
       .expand(
         (post) => [
-          if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode, scrapeMissingPreviews),
+          if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode, scrapeMissingPreviews, thumbnailQuality),
         ],
       )
       .toList();
@@ -270,7 +271,7 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
   return posts;
 }
 
-Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode, bool scrapeMissingPreviews) async {
+Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode, bool scrapeMissingPreviews, MediaQuality thumbnailQuality) async {
   List<Media> mediaList = [];
 
   // There are three sources of URLs: the main url attached to the post, the thumbnail url attached to the post, and the video url attached to the post
@@ -299,6 +300,15 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {
     // Now check to see if there is a thumbnail image. If there is, we'll use that for the image
     media.mediaUrl = thumbnailUrl;
+
+    // The thumbnail is typically from the /pictrs/ endpoint, so we can specify the height of the image. This will reduce resolution, but will speed up loading
+    if (isPictrsEndpoint(thumbnailUrl)) {
+      if (thumbnailQuality != MediaQuality.full) {
+        media.mediaUrl = '$thumbnailUrl?thumbnail=${thumbnailQuality.size}&format=png';
+      } else {
+        media.mediaUrl = '$thumbnailUrl?format=png';
+      }
+    }
   } else if (isImage) {
     // If there is no thumbnail image, but the url is an image, we'll use that for the mediaUrl
     media.mediaUrl = url;
@@ -316,7 +326,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
 
     try {
-      result = await retrieveImageDimensions(imageUrl: media.mediaUrl ?? media.originalUrl).timeout(const Duration(seconds: 2));
+      result = await retrieveImageDimensions(imageUrl: media.mediaUrl ?? media.originalUrl).timeout(const Duration(seconds: 4));
     } catch (e) {
       debugPrint('${media.mediaUrl ?? media.originalUrl} - $e: Falling back to default image size');
     }

@@ -1973,6 +1973,10 @@
   "@thickness": {
     "description": "Describes a thickness (e.g., divider)"
   },
+  "thumbnailQuality": "Thumbnail Quality",
+  "@thumbnailQuality": {
+    "description": "Setting for thumbnail quality"
+  },
   "thunderHasBeenUpdated": "Thunder updated to {version}!",
   "@thunderHasBeenUpdated": {
     "description": "Heading for changelog when Thunder has been updated"

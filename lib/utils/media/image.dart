@@ -12,9 +12,8 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/snackbar.dart';
 
-String generateRandomHeroString({int? len}) {
-  Random r = Random();
-  return String.fromCharCodes(List.generate(len ?? 32, (index) => r.nextInt(33) + 89));
+bool isPictrsEndpoint(String url) {
+  return url.contains('/pictrs/image/');
 }
 
 bool isImageUrl(String url) {
@@ -26,6 +25,7 @@ bool isImageUrl(String url) {
   } catch (e) {
     return false;
   }
+
   final path = uri.path.toLowerCase();
 
   for (final extension in imageExtensions) {
@@ -70,6 +70,7 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
       // are all PNGs.
       return getPNGImageDimensions(imageBytes);
     }
+
     // We know imageUrl is not null here due to the assertion.
     else {
       bool isImage = isImageUrl(imageUrl!);
@@ -77,6 +78,7 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
 
       final uri = Uri.parse(imageUrl);
       final path = uri.path.toLowerCase();
+      final query = uri.queryParameters;
 
       // We'll just retrieve the first part of the image
       final rangeResponse = await http.get(
@@ -86,6 +88,11 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
 
       // Read the response body as bytes
       final imageData = rangeResponse.bodyBytes;
+
+      // Override the image type if it's a Pictrs endpoint since we specify the format
+      if (isPictrsEndpoint(imageUrl) && query.containsKey("format") && query["format"] == "png") {
+        return getPNGImageDimensions(imageData);
+      }
 
       // Get the image dimensions
       if (path.endsWith('jpg') || path.endsWith('jpeg')) {
