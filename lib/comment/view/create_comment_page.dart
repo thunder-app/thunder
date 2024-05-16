@@ -448,7 +448,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   customImageButtonAction: () async {
                                     if (state.status == CreateCommentStatus.imageUploadInProgress) return;
 
-                                    String imagePath = await selectImageToUpload();
+                                    String imagePath = await selectImageToUpload(context);
                                     if (context.mounted) context.read<CreateCommentCubit>().uploadImage(imagePath);
                                   },
                                 ),

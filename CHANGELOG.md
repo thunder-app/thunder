@@ -8,6 +8,7 @@
 - Setting to use colorized usernames - contribution from @ggichure.
 - Show the number of new comments a read post has received since last visited
 - Added ability to mark read on scroll - contribution from @Fmstrat
+- Added ability to edit images before upload. - contribution from @ggichure.
 
 ## Changed
 - Small UI adjustments for account switcher

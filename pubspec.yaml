@@ -109,6 +109,7 @@ dependencies:
   drift: ^2.16.0
   sqlite3_flutter_libs: ^0.5.20
   super_sliver_list: ^0.4.1
+  image_editor_plus: ^1.0.5
 
 dev_dependencies:
   build_runner: ^2.4.6
