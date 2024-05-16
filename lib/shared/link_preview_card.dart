@@ -206,7 +206,7 @@ class LinkPreviewCard extends StatelessWidget {
                         width: ViewMode.compact.height,
                         color: theme.cardColor.darken(5),
                         child: Icon(
-                          hideNsfw ? null : Icons.language,
+                          hideNsfw ? null : Icons.play_arrow,
                           color: theme.colorScheme.onSecondaryContainer.withOpacity(read == true ? 0.55 : 1.0),
                         ),
                       ),
@@ -267,7 +267,6 @@ class LinkPreviewCard extends StatelessWidget {
         feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
       } catch (e) {}
     }
-
     if (originURL != null) {
       handleLink(context, url: originURL!);
     }

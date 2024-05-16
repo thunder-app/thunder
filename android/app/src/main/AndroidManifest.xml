@@ -7,7 +7,9 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-permission android:minSdkVersion="34" android:name="android.permission.USE_EXACT_ALARM" />
+
     <!-- The tools:replace line is needed by background_fetch -->
     <!-- requestLegacyExternalStorage is required for saving media to an album in API 29 -->
     <application
@@ -26,7 +28,12 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
+            android:resizeableActivity="true">
             android:windowSoftInputMode="adjustResize">
+            <!--Allowing support for multi windows (split-screen mode) & picture-in-picture mode -->
+            <meta-data
+            android:name="android.allow_multiple_resumed_activities"
+             android:value="true" />
             <!-- support sharing images -->
              <intent-filter
                  android:label="@string/create_post">
