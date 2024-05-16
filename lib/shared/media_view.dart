@@ -21,6 +21,7 @@ import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
+import 'package:thunder/utils/media/video.dart';
 
 class MediaView extends StatefulWidget {
   /// The post containing the media information
@@ -161,7 +162,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         },
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           return ImageViewer(
-            url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!,
+            url: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.originalUrl!,
             postId: widget.postViewMedia.postView.post.id,
             navigateToPost: widget.navigateToPost,
           );
@@ -230,6 +231,73 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     );
   }
 
+  /// Creates an video preview. This displays a thumbnail of the video, and tapping it will open the video in a fullscreen player
+  Widget buildMediaVideo() {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
+
+    return InkWell(
+      splashColor: theme.colorScheme.primary.withOpacity(0.4),
+      borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+      onTap: () => showVideoPlayer(context, url: widget.postViewMedia.media.first.mediaUrl, postId: widget.postViewMedia.postView.post.id),
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+          color: theme.colorScheme.primary.withOpacity(0.2),
+        ),
+        constraints: BoxConstraints(
+            maxHeight: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.showFullHeightImages
+                  ? widget.postViewMedia.media.first.height ?? (widget.allowUnconstrainedImageHeight ? double.infinity : ViewMode.comfortable.height)
+                  : ViewMode.comfortable.height,
+            },
+            minHeight: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? ViewMode.comfortable.height : ViewMode.comfortable.height,
+            },
+            maxWidth: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
+            },
+            minWidth: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
+            }),
+        child: Stack(
+          fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
+          alignment: Alignment.center,
+          children: [
+            widget.postViewMedia.media.first.thumbnailUrl != null
+                ? ImageFiltered(
+                    enabled: blurNSFWPreviews,
+                    imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                    child: previewImage(context),
+                  )
+                : widget.viewMode == ViewMode.compact
+                    ? Icon(
+                        Icons.play_arrow_rounded,
+                        color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                      )
+                    : Container(),
+            if (blurNSFWPreviews)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.play_arrow_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                  if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.hideThumbnails) {
@@ -243,13 +311,14 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     switch (widget.postViewMedia.media.firstOrNull?.mediaType) {
       case MediaType.image:
         return buildMediaImage();
-      case MediaType.link:
       case MediaType.video:
+        return buildMediaVideo();
+      case MediaType.link:
         return LinkPreviewCard(
           hideNsfw: widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw,
           scrapeMissingPreviews: widget.scrapeMissingPreviews!,
           originURL: widget.postViewMedia.media.first.originalUrl,
-          mediaURL: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.postView.post.thumbnailUrl,
+          mediaURL: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.postView.post.thumbnailUrl,
           mediaHeight: widget.postViewMedia.media.first.height,
           mediaWidth: widget.postViewMedia.media.first.width,
           showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
@@ -287,7 +356,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     return ExtendedImage.network(
       color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
       colorBlendMode: widget.read == true ? BlendMode.modulate : null,
-      widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!,
+      widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.originalUrl!,
       height: height,
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
@@ -327,8 +396,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
             return LinkInformation(
               viewMode: widget.viewMode,
-              mediaType: MediaType.image,
-              originURL: widget.postViewMedia.postView.post.url ?? '',
+              mediaType: widget.postViewMedia.media.first.mediaType,
+              originURL: widget.postViewMedia.media.first.originalUrl ?? '',
             );
         }
       },
