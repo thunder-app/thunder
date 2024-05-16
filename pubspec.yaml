@@ -134,6 +134,9 @@ dependency_overrides:
       url: https://github.com/hjiangsu/push.git
       ref: 70269bd08a06c4f34f6f192a2d46127ae48479a5
       path: push_android
+  # Fixes mismatch between river_player and xayn_readability dependencies
+  # If/when we host xayn_readability ourselves, we can upgrade the dependency there and remove this.
+  flutter_widget_from_html_core: ^0.14.11 
 
 # The following section is specific to Flutter packages.
 flutter:

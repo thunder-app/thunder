@@ -823,7 +823,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_widget_from_html_core:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: flutter_widget_from_html_core
       sha256: "028f4989b9ff4907466af233d50146d807772600d98a3e895662fbdb09c39225"
@@ -846,14 +846,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
-  fwfh_text_style:
-    dependency: transitive
-    description:
-      name: fwfh_text_style
-      sha256: "5f8b587fd223a6bf14aad3d3da5e7ced0628becbd0768f8e7ae25ff6b9f3d2ec"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.23.8"
   gal:
     dependency: "direct main"
     description:
