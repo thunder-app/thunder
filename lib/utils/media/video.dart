@@ -34,7 +34,9 @@ bool isVideoUrl(String url) {
 }
 
 void showVideoPlayer(BuildContext context, {String? url, int? postId}) {
-  String? videoId = YoutubePlayer.convertUrlToId(url ?? '');
+  if (url == null) return;
+
+  String? videoId = YoutubePlayer.convertUrlToId(url);
 
   Navigator.of(context).push(
     PageRouteBuilder(
@@ -42,23 +44,10 @@ void showVideoPlayer(BuildContext context, {String? url, int? postId}) {
       transitionDuration: const Duration(milliseconds: 100),
       reverseTransitionDuration: const Duration(milliseconds: 50),
       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-        return (videoId != null)
-            ? ThunderYoutubePlayer(
-                videoUrl: url!,
-                postId: postId,
-              )
-            : ThunderVideoPlayer(
-                videoUrl: url!,
-                postId: postId,
-              );
+        return (videoId != null) ? ThunderYoutubePlayer(videoUrl: url, postId: postId) : ThunderVideoPlayer(videoUrl: url, postId: postId);
       },
       transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-        return Align(
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
-        );
+        return Align(child: FadeTransition(opacity: animation, child: child));
       },
     ),
   );

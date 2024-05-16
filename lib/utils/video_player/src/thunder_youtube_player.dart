@@ -90,36 +90,55 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid || Platform.isIOS) {
-      // use youtube_player_flutter to play the videos android ios
+      // Use youtube_player_flutter to play the videos android ios
       return Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
-          child: Center(
-            child: ypf.YoutubePlayerBuilder(
-                player: ypf.YoutubePlayer(
-                  onReady: () => _ypfController.addListener(listener),
-                  aspectRatio: 16 / 10,
-                  controller: _ypfController,
-                  actionsPadding: const EdgeInsets.only(bottom: 8),
+          child: Stack(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(
+                        Icons.arrow_back,
+                        semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                        color: Colors.white.withOpacity(0.90),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Center(
+                child: ypf.YoutubePlayerBuilder(
+                  player: ypf.YoutubePlayer(
+                    onReady: () => _ypfController.addListener(listener),
+                    aspectRatio: 16 / 10,
+                    controller: _ypfController,
+                    actionsPadding: const EdgeInsets.only(bottom: 8),
+                  ),
+                  builder: (context, player) => player,
                 ),
-                builder: (context, player) {
-                  return player;
-                }),
+              ),
+            ],
           ),
         ),
       );
     } else {
-      ///  use youtube_player_iframe to play the videos
-
+      /// Use youtube_player_iframe to play the videos
       return Material(
         child: YoutubePlayerScaffold(
-            autoFullScreen: false,
-            controller: _controller,
-            builder: (context, player) {
-              return LayoutBuilder(builder: (context, constraints) {
-                return player;
-              });
-            }),
+          autoFullScreen: false,
+          controller: _controller,
+          builder: (context, player) {
+            return LayoutBuilder(builder: (context, constraints) {
+              return player;
+            });
+          },
+        ),
       );
     }
   }

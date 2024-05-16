@@ -241,7 +241,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     return InkWell(
       splashColor: theme.colorScheme.primary.withOpacity(0.4),
       borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-      onTap: () => showVideoPlayer(context, url: widget.postViewMedia.media.first.mediaUrl, postId: widget.postViewMedia.postView.post.id),
+      onTap: () => showVideoPlayer(context, url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl, postId: widget.postViewMedia.postView.post.id),
       child: Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
@@ -280,18 +280,23 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 : widget.viewMode == ViewMode.compact
                     ? Icon(
                         Icons.play_arrow_rounded,
-                        color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                        shadows: [Shadow(color: Colors.black.withOpacity(0.7), blurRadius: 16)],
                       )
                     : Container(),
-            if (blurNSFWPreviews)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.play_arrow_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                  if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
-                ],
-              ),
+            blurNSFWPreviews
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.play_arrow_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                      if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
+                    ],
+                  )
+                : Icon(
+                    Icons.play_arrow_rounded,
+                    size: widget.viewMode != ViewMode.compact ? 80 : 30,
+                    shadows: [Shadow(color: Colors.black.withOpacity(0.7), blurRadius: 16)],
+                  ),
           ],
         ),
       ),
