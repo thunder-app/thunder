@@ -444,7 +444,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   onPressed: () async {
                                     if (state.status == CreatePostStatus.postImageUploadInProgress) return;
 
-                                    String imagePath = await selectImageToUpload();
+                                    String imagePath = await selectImageToUpload(context);
                                     if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: true);
                                   },
                                   icon: state.status == CreatePostStatus.postImageUploadInProgress
@@ -587,7 +587,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               customImageButtonAction: () async {
                                 if (state.status == CreatePostStatus.imageUploadInProgress) return;
 
-                                String imagePath = await selectImageToUpload();
+                                String imagePath = await selectImageToUpload(context);
                                 if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: false);
                               },
                             ),

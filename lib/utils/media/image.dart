@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_editor_plus/image_editor_plus.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/account/models/account.dart';
@@ -186,10 +190,27 @@ void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = fa
   }
 }
 
-Future<String> selectImageToUpload() async {
+Future<String> selectImageToUpload(BuildContext context) async {
   final ImagePicker picker = ImagePicker();
 
   XFile? file = await picker.pickImage(source: ImageSource.gallery);
+  if (context.mounted) {
+    final editedImage = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageEditor(
+          image: file,
+        ),
+      ),
+    );
+    final microsecondsSinceEpoch = DateTime.now().microsecondsSinceEpoch;
+    final filePath = File(join((await getTemporaryDirectory()).path, '$microsecondsSinceEpoch.jpg'));
+
+    File editedFile = File(filePath.path);
+    await editedFile.writeAsBytes(editedImage);
+
+    return editedFile.path;
+  }
   return file!.path;
 }
 
