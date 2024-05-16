@@ -186,7 +186,9 @@ bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentView comme
   return false;
 }
 
-String cleanCommentContent(Comment comment) {
+String cleanCommentContent(Comment comment) => cleanComment(comment.content, comment.removed, comment.deleted);
+
+String cleanComment(String commentContent, bool commentRemoved, bool commentDeleted) {
   String deletedByModerator = "deleted by moderator";
   String deletedByCreator = "deleted by creator";
 
@@ -199,15 +201,15 @@ String cleanCommentContent(Comment comment) {
     // Ignore the error and move on with the default strings
   }
 
-  if (comment.removed) {
+  if (commentRemoved) {
     return '_${deletedByModerator}_';
   }
 
-  if (comment.deleted) {
+  if (commentDeleted) {
     return '_${deletedByCreator}_';
   }
 
-  return comment.content;
+  return commentContent;
 }
 
 /// Creates a placeholder comment from the given parameters. This is mainly used to display a preview of the comment

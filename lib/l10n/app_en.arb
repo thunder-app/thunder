@@ -1663,6 +1663,8 @@
   "@sensitiveContentWarning": {
     "description": "Warning for sensitive content (e.g., from modlog)"
   },
+  "sentRequestForTestNotification": "Sent request for test notification.",
+  "@sentRequestForTestNotification": {},
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
   "setAction": "Set Action",

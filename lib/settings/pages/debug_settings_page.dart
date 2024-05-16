@@ -17,6 +17,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
+import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/notification/utils/local_notifications.dart';
 
 import 'package:thunder/shared/dialogs.dart';
@@ -42,6 +43,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
   bool areNotificationsAllowed = false;
   String? unifiedPushDistributorApp;
   int unifiedPushDistributorAppCount = 0;
+  String? pushNotificationServer;
 
   @override
   void initState() {
@@ -65,6 +67,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
         // TODO: Not sure if this is the right check for iOS.
         areNotificationsAllowed = (await iosFlutterLocalNotificationsPlugin?.checkPermissions())?.isEnabled ?? false;
       }
+
+      pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
 
       setState(() {});
     });
@@ -331,8 +335,12 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                     child: Icon(Icons.chevron_right_rounded),
                   ),
                   onTap: inboxNotificationType == NotificationType.unifiedPush
-                      ? () {
-                          // TODO: Need a new server endpoint
+                      ? () async {
+                          if (await requestTestNotification()) {
+                            showSnackbar(l10n.sentRequestForTestNotification);
+                          } else {
+                            showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(pushNotificationServer ?? ''));
+                          }
                         }
                       : null,
                 ),
@@ -365,7 +373,11 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                           );
 
                           if (result) {
-                            // TODO: Need a new server endpoint
+                            if (await requestTestNotification()) {
+                              showSnackbar(l10n.sentRequestForTestNotification);
+                            } else {
+                              showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(pushNotificationServer ?? ''));
+                            }
 
                             SystemNavigator.pop();
                           }
