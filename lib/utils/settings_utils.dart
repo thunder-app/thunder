@@ -23,6 +23,7 @@ void navigateToSetting(BuildContext context, LocalSettings setting) {
         LocalSettingsCategories.theming: SETTINGS_APPEARANCE_THEMES_PAGE,
         LocalSettingsCategories.debug: SETTINGS_DEBUG_PAGE,
         LocalSettingsCategories.about: SETTINGS_ABOUT_PAGE,
+        LocalSettingsCategories.videoPlayer: SETTINGS_VIDEO_PAGE,
       }[setting.category] ??
       SETTINGS_GENERAL_PAGE;
 

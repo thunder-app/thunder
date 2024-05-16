@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/shared/divider.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
@@ -43,15 +44,7 @@ class AppearanceSettingsPage extends StatelessWidget {
               ],
             ),
           ),
-          SliverToBoxAdapter(
-            child: Divider(
-              indent: 32.0,
-              height: 32.0,
-              endIndent: 32.0,
-              thickness: 2.0,
-              color: theme.dividerColor.withOpacity(0.6),
-            ),
-          ),
+          const ThunderDivider(sliver: true),
           SliverList(
             delegate: SliverChildListDelegate(
               [

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:super_sliver_list/super_sliver_list.dart';
 
 // Project imports
 import 'package:thunder/comment/utils/navigate_comment.dart';
@@ -22,8 +22,8 @@ class PostPageSuccess extends StatefulWidget {
   final int? newlyCreatedCommentId;
   final int? moddingCommentId;
 
-  final ItemScrollController itemScrollController;
-  final ItemPositionsListener itemPositionsListener;
+  final ScrollController scrollController;
+  final ListController listController;
   final bool hasReachedCommentEnd;
 
   final bool viewFullCommentsRefreshing;
@@ -36,8 +36,8 @@ class PostPageSuccess extends StatefulWidget {
     super.key,
     required this.postView,
     this.comments = const [],
-    required this.itemScrollController,
-    required this.itemPositionsListener,
+    required this.scrollController,
+    required this.listController,
     this.hasReachedCommentEnd = false,
     this.selectedCommentId,
     this.selectedCommentPath,
@@ -57,7 +57,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => widget.itemScrollController.primaryScrollController?.addListener(_onScroll));
+    WidgetsBinding.instance.addPostFrameCallback((_) => widget.scrollController.addListener(_onScroll));
   }
 
   void _onScroll() {
@@ -67,7 +67,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
     if (widget.selectedCommentId != null || widget.hasReachedCommentEnd) {
       return;
     }
-    if ((widget.itemScrollController.primaryScrollController?.position.pixels ?? 0) >= (widget.itemScrollController.primaryScrollController?.position.maxScrollExtent ?? 0) * 0.6) {
+    if (widget.scrollController.position.pixels >= widget.scrollController.position.maxScrollExtent * 0.6) {
       context.read<PostBloc>().add(const GetPostCommentsEvent());
     }
   }
@@ -84,8 +84,8 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             selectedCommentPath: widget.selectedCommentPath,
             newlyCreatedCommentId: widget.newlyCreatedCommentId,
             now: DateTime.now().toUtc(),
-            itemScrollController: widget.itemScrollController,
-            itemPositionsListener: widget.itemPositionsListener,
+            scrollController: widget.scrollController,
+            listController: widget.listController,
             postViewMedia: widget.postView,
             comments: widget.comments,
             hasReachedCommentEnd: widget.hasReachedCommentEnd,
@@ -102,8 +102,10 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
               context,
               commentView: isEdit ? commentView : null,
               parentCommentView: isEdit ? null : commentView,
-              onCommentSuccess: (commentView) {
-                context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+              onCommentSuccess: (commentView, userChanged) {
+                if (!userChanged) {
+                  context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+                }
               },
             ),
             moderators: widget.moderators,

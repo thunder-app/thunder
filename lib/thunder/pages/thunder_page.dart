@@ -645,27 +645,12 @@ class _ThunderState extends State<Thunder> {
                             onPageChanged: (index) => setState(() => selectedPageIndex = index),
                             physics: const NeverScrollableScrollPhysics(),
                             children: <Widget>[
-                              Stack(
-                                children: [
-                                  FeedPage(
-                                    useGlobalFeedBloc: true,
-                                    feedType: FeedType.general,
-                                    postListingType: thunderBlocState.defaultListingType,
-                                    sortType: thunderBlocState.sortTypeForInstance,
-                                    scaffoldStateKey: scaffoldStateKey,
-                                  ),
-                                  AnimatedOpacity(
-                                    opacity: _isFabOpen ? 1.0 : 0.0,
-                                    duration: const Duration(milliseconds: 150),
-                                    child: _isFabOpen
-                                        ? ModalBarrier(
-                                            color: theme.colorScheme.background.withOpacity(0.95),
-                                            dismissible: true,
-                                            onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                                          )
-                                        : null,
-                                  ),
-                                ],
+                              FeedPage(
+                                useGlobalFeedBloc: true,
+                                feedType: FeedType.general,
+                                postListingType: thunderBlocState.defaultListingType,
+                                sortType: thunderBlocState.sortTypeForInstance,
+                                scaffoldStateKey: scaffoldStateKey,
                               ),
                               const SearchPage(),
                               const AccountPage(),

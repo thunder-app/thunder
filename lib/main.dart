@@ -177,6 +177,9 @@ class _ThunderAppState extends State<ThunderApp> {
         BlocProvider(
           create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
         ),
+        BlocProvider(
+          create: (context) => NetworkCheckerCubit(),
+        )
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {

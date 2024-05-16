@@ -59,13 +59,16 @@ class _UserPageState extends State<UserPage> {
           appBar: AppBar(
             scrolledUnderElevation: 0,
             leading: widget.isAccountUser
-                ? IconButton(
-                    onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
-                    icon: Icon(
-                      Icons.logout,
-                      semanticLabel: AppLocalizations.of(context)!.logOut,
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
+                    child: IconButton(
+                      onPressed: () => showProfileModalSheet(context),
+                      icon: Icon(
+                        Icons.people_alt_rounded,
+                        semanticLabel: AppLocalizations.of(context)!.profiles,
+                      ),
+                      tooltip: AppLocalizations.of(context)!.profiles,
                     ),
-                    tooltip: AppLocalizations.of(context)!.logOut,
                   )
                 : null,
             actions: [
@@ -121,18 +124,6 @@ class _UserPageState extends State<UserPage> {
                     tooltip: AppLocalizations.of(context)!.accountSettings,
                   ),
                 ),
-              if (widget.isAccountUser)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
-                  child: IconButton(
-                    onPressed: () => showProfileModalSheet(context),
-                    icon: Icon(
-                      Icons.people_alt_rounded,
-                      semanticLabel: AppLocalizations.of(context)!.profiles,
-                    ),
-                    tooltip: AppLocalizations.of(context)!.profiles,
-                  ),
-                ),
             ],
           ),
           body: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
@@ -152,6 +143,9 @@ class _UserPageState extends State<UserPage> {
               case UserStatus.refreshing:
               case UserStatus.success:
               case UserStatus.failedToBlock:
+                if (state.personView == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 return UserPageSuccess(
                   userId: widget.userId,
                   isAccountUser: widget.isAccountUser,

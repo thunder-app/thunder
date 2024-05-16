@@ -38,6 +38,7 @@ import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
@@ -515,26 +516,29 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               ],
                             ),
                             const SizedBox(height: 10),
-                            showPreview
-                                ? Container(
-                                    constraints: const BoxConstraints(minWidth: double.infinity),
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                                    padding: const EdgeInsets.all(12),
-                                    child: SingleChildScrollView(
-                                      child: CommonMarkdownBody(
-                                        body: _bodyTextController.text,
-                                        isComment: true,
-                                      ),
-                                    ),
-                                  )
-                                : MarkdownTextInputField(
-                                    controller: _bodyTextController,
-                                    focusNode: _bodyFocusNode,
-                                    label: l10n.postBody,
-                                    minLines: 8,
-                                    maxLines: null,
-                                    textStyle: theme.textTheme.bodyLarge,
-                                  ),
+                            AnimatedCrossFade(
+                              firstChild: Container(
+                                margin: const EdgeInsets.only(top: 8.0),
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  color: getBackgroundColor(context),
+                                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
+                              ),
+                              secondChild: MarkdownTextInputField(
+                                controller: _bodyTextController,
+                                focusNode: _bodyFocusNode,
+                                label: l10n.postBody,
+                                minLines: 8,
+                                maxLines: null,
+                                textStyle: theme.textTheme.bodyLarge,
+                              ),
+                              crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                              duration: const Duration(milliseconds: 120),
+                              excludeBottomFocus: false,
+                            ),
                           ]),
                         ),
                       ),

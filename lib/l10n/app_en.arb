@@ -13,6 +13,14 @@
   },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
+  "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "accountSwitchPostNotFound": "The selected post was not found on '{instance}'. Switching back to previous account.",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
   "actionColors": "Action Colors",
   "@actionColors": {
     "description": "Setting heading for action colors"
@@ -73,6 +81,8 @@
   },
   "alreadyPostedTo": "Already posted to",
   "@alreadyPostedTo": {},
+  "always": "Always",
+  "@always": {},
   "andXMore": "and {count} more",
   "@andXMore": {},
   "animations": "Animations",
@@ -398,6 +408,10 @@
   "confirmResetPostPreferences": "This will reset all post preferences. Are you sure you want to proceed?",
   "@confirmResetPostPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "confirmUnsubscription": "Are you sure you want to unsubscribe?",
+  "@confirmUnsubscription": {
+    "description": "Ask the user to confirm that they want to unsubscribe"
   },
   "connectedToUnifiedPushDistributorApp": "Conected to {app}",
   "@connectedToUnifiedPushDistributorApp": {
@@ -1125,6 +1139,8 @@
   "@nestedCommentIndicatorStyle": {
     "description": "Setting for nested comment indicator style"
   },
+  "never": "Never",
+  "@never": {},
   "newComments": "New Comments",
   "@newComments": {},
   "newPost": "New Post",
@@ -1233,6 +1249,8 @@
   "@old": {},
   "on": "on",
   "@on": {},
+  "onWifi": "On Wifi",
+  "@onWifi": {},
   "onlyModsCanPostInCommunity": "Only moderators may post in this community",
   "@onlyModsCanPostInCommunity": {},
   "open": "Open",
@@ -1605,6 +1623,10 @@
   "@searchTerm": {},
   "searchUsersFederatedWith": "Search for users federated with {instance}",
   "@searchUsersFederatedWith": {},
+  "selectAccountToCommentAs": "Select account to comment as",
+  "@selectAccountToCommentAs": {
+    "description": "Profile modal heading for commenting as other user"
+  },
   "selectAccountToPostAs": "Select account to post as",
   "@selectAccountToPostAs": {
     "description": "Heading for account selector when posting"
@@ -1647,6 +1669,8 @@
   "@sensitiveContentWarning": {
     "description": "Warning for sensitive content (e.g., from modlog)"
   },
+  "sentRequestForTestNotification": "Sent request for test notification.",
+  "@sentRequestForTestNotification": {},
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
   "setAction": "Set Action",
@@ -1955,6 +1979,10 @@
   "@thickness": {
     "description": "Describes a thickness (e.g., divider)"
   },
+  "thisAccount": "This Account",
+  "@thisAccount": {
+    "description": "Referring to the currently active account in account settings"
+  },
   "thunderHasBeenUpdated": "Thunder updated to {version}!",
   "@thunderHasBeenUpdated": {
     "description": "Heading for changelog when Thunder has been updated"
@@ -2258,6 +2286,30 @@
   "versionNumber": "Version {version}",
   "@versionNumber": {
     "description": "String for describing the current version"
+  },
+  "video": "Video",
+  "@video": {
+    "description": "String for video "
+  },
+  "videoAutoFullscreen": "Auto Fullscreen",
+  "@videoAutoFullscreen": {
+    "decription": "Option to always start the video players in landscape"
+  },
+  "videoAutoLoop": "Loop Video",
+  "@videoAutoLoop": {
+    "description": "Option to always loop a video"
+  },
+  "videoAutoMute": "Mute Videos",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
+  },
+  "videoAutoPlay": "Video Autoplay",
+  "@videoAutoPlay": {
+    "description": "Option to always autoplay videos"
+  },
+  "videoDefaultPlaybackSpeed": "Default Playback Speed",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback Speed"
   },
   "viewAll": "View all",
   "@viewAll": {

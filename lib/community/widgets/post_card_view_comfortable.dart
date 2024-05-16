@@ -81,7 +81,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
-    var mediaView = MediaView(
+    Widget mediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
       postViewMedia: postViewMedia,
       showFullHeightImages: showFullHeightImages,
@@ -93,7 +93,6 @@ class PostCardViewComfortable extends StatelessWidget {
       navigateToPost: navigateToPost,
       read: indicateRead && postViewMedia.postView.read,
     );
-
     final bool useSaveButton = state.showSaveAction;
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
