@@ -21,6 +21,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
+import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/cross_posts.dart';
@@ -229,6 +230,14 @@ class _PostPageState extends State<PostPage> {
                       ),
                       icon: Icons.select_all_rounded,
                       title: l10n.selectText,
+                    ),
+                    ThunderPopupMenuItem(
+                      onTap: () => showReportPostActionBottomSheet(
+                        context,
+                        postId: widget.postView?.postView.post.id ?? state.postView?.postView.post.id,
+                      ),
+                      icon: Icons.report_outlined,
+                      title: l10n.reportAPost,
                     ),
                   ],
                 ),
@@ -501,7 +510,7 @@ class _PostPageState extends State<PostPage> {
                             context.read<ThunderBloc>().add(const OnFabToggle(false));
                           },
                           child: Container(
-                            color: theme.colorScheme.background.withOpacity(0.95),
+                            color: theme.colorScheme.surface.withOpacity(0.95),
                           ),
                         )
                       : null,

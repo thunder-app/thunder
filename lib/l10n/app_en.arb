@@ -1359,6 +1359,10 @@
   "@postPreview": {
     "description": "Description for the post preview in Setting -> Appearance -> Posts"
   },
+  "postReported": "The post has been marked for review",
+  "@postReported": {
+    "description": "Success message shown on reporting a post"
+  },
   "postSavedAsDraft": "Post saved as draft",
   "@postSavedAsDraft": {},
   "postShowUserInstance": "Show User Instance",
@@ -1519,6 +1523,10 @@
   "@replyingTo": {},
   "report": "{count, plural, zero {Report} one {Report} other {Reports} } ",
   "@report": {},
+  "reportAPost": "Report Post",
+  "@reportAPost": {
+    "description": "This option allows users to report posts that violate community guidelines or are deemed inappropriate."
+  },
   "reportComment": "Report Comment",
   "@reportComment": {},
   "reset": "Reset",

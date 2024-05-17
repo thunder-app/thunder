@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,8 @@ import 'package:thunder/core/models/media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/widgets/report_post_dialog.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/links.dart';
@@ -330,4 +333,21 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   mediaList.add(media);
 
   return PostViewMedia(postView: postView, media: mediaList);
+}
+
+void showReportPostActionBottomSheet(
+  BuildContext context, {
+  required int? postId,
+}) {
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (_) => BlocProvider(
+      create: (context) => PostBloc(),
+      child: ReportAPostDialog(
+        postId: postId!,
+      ),
+    ),
+  );
 }

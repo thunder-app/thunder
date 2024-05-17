@@ -102,3 +102,13 @@ class ReportCommentEvent extends PostEvent {
     required this.message,
   });
 }
+
+class ReportPostEvent extends PostEvent {
+  final int postId;
+  final String message;
+
+  const ReportPostEvent({
+    required this.postId,
+    required this.message,
+  });
+}
