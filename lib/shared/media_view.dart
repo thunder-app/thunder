@@ -276,15 +276,27 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 enabled: blurNSFWPreviews,
                 imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
                 child: previewImage(context),
-              )
-            else if (widget.postViewMedia.postView.post.nsfw)
+              ),
+            if (widget.postViewMedia.postView.post.nsfw)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                  Icon(widget.viewMode != ViewMode.compact ? Icons.play_arrow_rounded : Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
                   if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
                 ],
+              )
+            else if (widget.viewMode == ViewMode.comfortable)
+              SizedBox(
+                height: 70.0,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: LinkInformation(
+                    viewMode: widget.viewMode,
+                    mediaType: widget.postViewMedia.media.first.mediaType,
+                    originURL: widget.postViewMedia.media.first.originalUrl ?? '',
+                  ),
+                ),
               ),
           ],
         ),
@@ -306,6 +318,14 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       case MediaType.image:
         return buildMediaImage();
       case MediaType.video:
+        if (widget.viewMode == ViewMode.comfortable && widget.postViewMedia.media.first.thumbnailUrl == null) {
+          return LinkInformation(
+            viewMode: widget.viewMode,
+            mediaType: widget.postViewMedia.media.first.mediaType,
+            originURL: widget.postViewMedia.media.first.originalUrl ?? '',
+          );
+        }
+
         return buildMediaVideo();
       case MediaType.link:
         return LinkPreviewCard(
@@ -370,18 +390,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             return FadeTransition(opacity: _controller, child: state.completedWidget);
           case LoadState.failed:
             _controller.reset();
-
             state.imageProvider.evict();
 
-            if (widget.viewMode == ViewMode.compact) {
-              return Container();
-            }
-
-            return LinkInformation(
-              viewMode: widget.viewMode,
-              mediaType: widget.postViewMedia.media.first.mediaType,
-              originURL: widget.postViewMedia.media.first.originalUrl ?? '',
-            );
+            return Container();
         }
       },
     );
