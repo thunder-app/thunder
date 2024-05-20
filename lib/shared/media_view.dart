@@ -271,24 +271,18 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
           alignment: Alignment.center,
           children: [
-            widget.postViewMedia.media.first.thumbnailUrl != null
-                ? ImageFiltered(
-                    enabled: blurNSFWPreviews,
-                    imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                    child: previewImage(context),
-                  )
-                : widget.viewMode == ViewMode.compact
-                    ? Icon(
-                        Icons.play_arrow_rounded,
-                        shadows: [Shadow(color: Colors.black.withOpacity(0.7), blurRadius: 16)],
-                      )
-                    : Container(),
-            if (blurNSFWPreviews)
+            if (widget.postViewMedia.media.first.thumbnailUrl != null)
+              ImageFiltered(
+                enabled: blurNSFWPreviews,
+                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                child: previewImage(context),
+              )
+            else if (widget.postViewMedia.postView.post.nsfw)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.play_arrow_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                  Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
                   if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
                 ],
               ),
@@ -380,18 +374,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             state.imageProvider.evict();
 
             if (widget.viewMode == ViewMode.compact) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: theme.colorScheme.secondary.withOpacity(0.2),
-                ),
-                child: InkWell(
-                  child: const Icon(Icons.error_outline_sharp),
-                  onTap: () {
-                    handleLink(context, url: widget.postViewMedia.postView.post.url ?? '');
-                  },
-                ),
-              );
+              return Container();
             }
 
             return LinkInformation(
