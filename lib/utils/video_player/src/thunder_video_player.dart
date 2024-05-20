@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:river_player/river_player.dart';
+
 import 'package:thunder/core/enums/internet_connection_type.dart';
 import 'package:thunder/core/enums/video_auto_play.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
@@ -94,10 +96,13 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
+        bottom: false,
+        left: false,
+        right: false,
         child: Stack(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(4.0),
@@ -106,6 +111,17 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                     icon: Icon(
                       Icons.arrow_back,
                       semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                      color: Colors.white.withOpacity(0.90),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: IconButton(
+                    onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
+                    icon: Icon(
+                      Icons.open_in_browser_rounded,
+                      semanticLabel: l10n.openInBrowser,
                       color: Colors.white.withOpacity(0.90),
                     ),
                   ),

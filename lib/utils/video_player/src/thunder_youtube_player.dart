@@ -1,12 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/core/enums/internet_connection_type.dart';
-import 'package:thunder/core/enums/video_auto_play.dart';
-import 'package:thunder/thunder/thunder.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+
+import 'package:thunder/core/enums/internet_connection_type.dart';
+import 'package:thunder/core/enums/video_auto_play.dart';
+import 'package:thunder/post/utils/comment_action_helpers.dart';
+import 'package:thunder/thunder/thunder.dart';
+import 'package:thunder/utils/links.dart';
 
 class ThunderYoutubePlayer extends StatefulWidget {
   const ThunderYoutubePlayer({super.key, required this.videoUrl, this.postId});
@@ -94,10 +98,13 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
       return Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
+          bottom: false,
+          left: false,
+          right: false,
           child: Stack(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(4.0),
@@ -106,6 +113,17 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                       icon: Icon(
                         Icons.arrow_back,
                         semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                        color: Colors.white.withOpacity(0.90),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: IconButton(
+                      onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
+                      icon: Icon(
+                        Icons.open_in_browser_rounded,
+                        semanticLabel: l10n.openInBrowser,
                         color: Colors.white.withOpacity(0.90),
                       ),
                     ),
