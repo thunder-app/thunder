@@ -322,7 +322,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   context,
                                   commentView: isEdit ? commentView : null,
                                   parentCommentView: isEdit ? null : commentView,
-                                  onCommentSuccess: (commentView) => widget.onReplyEditAction?.call(commentView, isEdit),
+                                  onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
                                 );
                               },
                               widget.onReportAction ?? () {},
@@ -345,7 +345,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 context,
                                 commentView: isEdit ? commentView : null,
                                 parentCommentView: isEdit ? null : commentView,
-                                onCommentSuccess: (commentView) => widget.onReplyEditAction?.call(commentView, isEdit),
+                                onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
                               );
                             },
                             isOwnComment: isOwnComment,
