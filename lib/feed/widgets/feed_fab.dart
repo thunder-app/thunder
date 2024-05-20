@@ -6,12 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -42,12 +41,20 @@ class FeedFAB extends StatelessWidget {
       FeedFabAction.subscriptions,
     ];
 
+    // A list of actions that are not supported through the navigated user feed
+    List<FeedFabAction> unsupportedNavigatedUserFeedFabActions = [
+      FeedFabAction.subscriptions,
+      FeedFabAction.newPost,
+      FeedFabAction.dismissRead,
+    ];
+
     FeedFabAction singlePressAction = state.feedFabSinglePressAction;
     FeedFabAction longPressAction = state.feedFabLongPressAction;
 
     // Check to see if we are in the general feeds
     bool isGeneralFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.general;
     bool isCommunityFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.community;
+    bool isUserFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.user;
     bool isNavigatedFeed = Navigator.canPop(context);
 
     bool isPostLocked = false;
@@ -60,10 +67,22 @@ class FeedFAB extends StatelessWidget {
       }
     }
 
+    List<FeedFabAction> disabledActions = [];
+
+    if (isGeneralFeed) {
+      disabledActions = unsupportedGeneralFeedFabActions;
+    } else if (isCommunityFeed && isNavigatedFeed) {
+      disabledActions = unsupportedNavigatedCommunityFeedFabActions;
+    } else if (isUserFeed && isNavigatedFeed) {
+      disabledActions = unsupportedNavigatedUserFeedFabActions;
+    }
+
     // Check single-press action
     if (isGeneralFeed && unsupportedGeneralFeedFabActions.contains(singlePressAction)) {
       singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
     } else if (isCommunityFeed && isNavigatedFeed && unsupportedNavigatedCommunityFeedFabActions.contains(singlePressAction)) {
+      singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
+    } else if (isUserFeed && unsupportedNavigatedUserFeedFabActions.contains(singlePressAction)) {
       singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
     }
 
@@ -71,6 +90,8 @@ class FeedFAB extends StatelessWidget {
     if (isGeneralFeed && unsupportedGeneralFeedFabActions.contains(longPressAction)) {
       longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
     } else if (isCommunityFeed && isNavigatedFeed && unsupportedNavigatedCommunityFeedFabActions.contains(longPressAction)) {
+      longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
+    } else if (isUserFeed && unsupportedNavigatedUserFeedFabActions.contains(longPressAction)) {
       longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
     }
 
@@ -152,7 +173,7 @@ class FeedFAB extends StatelessWidget {
                     break;
                 }
               },
-              children: getEnabledActions(context, isPostingLocked: isPostLocked),
+              children: getEnabledActions(context, isPostingLocked: isPostLocked, disabledActions: disabledActions),
             )
           : Stack(
               // This creates an invisible touch target to summon the FAB
@@ -174,16 +195,16 @@ class FeedFAB extends StatelessWidget {
     );
   }
 
-  List<ActionButton> getEnabledActions(BuildContext context, {bool isPostingLocked = false}) {
+  List<ActionButton> getEnabledActions(BuildContext context, {bool isPostingLocked = false, List<FeedFabAction> disabledActions = const []}) {
     final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
 
-    bool enableBackToTop = state.enableBackToTop;
-    bool enableSubscriptions = state.enableSubscriptions;
-    bool enableChangeSort = state.enableChangeSort;
-    bool enableRefresh = state.enableRefresh;
-    bool enableDismissRead = state.enableDismissRead;
-    bool enableNewPost = state.enableNewPost;
+    bool enableBackToTop = state.enableBackToTop && !disabledActions.contains(FeedFabAction.backToTop);
+    bool enableSubscriptions = state.enableSubscriptions && !disabledActions.contains(FeedFabAction.subscriptions);
+    bool enableChangeSort = state.enableChangeSort && !disabledActions.contains(FeedFabAction.changeSort);
+    bool enableRefresh = state.enableRefresh && !disabledActions.contains(FeedFabAction.refresh);
+    bool enableDismissRead = state.enableDismissRead && !disabledActions.contains(FeedFabAction.dismissRead);
+    bool enableNewPost = state.enableNewPost && !disabledActions.contains(FeedFabAction.newPost);
 
     List<ActionButton> actions = [
       if (enableDismissRead)
@@ -263,8 +284,9 @@ class FeedFAB extends StatelessWidget {
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
         title: l10n.sortOptions,
-        onSelect: (selected) => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
+        onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
         previouslySelected: context.read<FeedBloc>().state.sortType,
+        minimumVersion: LemmyClient.instance.version,
       ),
     );
   }

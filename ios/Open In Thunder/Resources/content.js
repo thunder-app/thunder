@@ -3,10 +3,8 @@ let instances = [
     "aussie.zone",
     "awful.systems",
     "beehaw.org",
-    "burggit.moe",
     "discuss.online",
     "discuss.tchncs.de",
-    "feddit.ch",
     "feddit.de",
     "feddit.dk",
     "feddit.it",
@@ -15,18 +13,15 @@ let instances = [
     "feddit.uk",
     "hexbear.net",
     "infosec.pub",
-    "iusearchlinux.fyi",
     "jlai.lu",
     "lemdro.id",
     "leminal.space",
     "lemm.ee",
     "lemmings.world",
-    "lemmus.org",
     "lemmy.blahaj.zone",
     "lemmy.ca",
     "lemmy.dbzer0.com",
     "lemmy.eco.br",
-    "lemmy.kya.moe",
     "lemmy.ml",
     "lemmy.nz",
     "lemmy.one",
@@ -49,7 +44,9 @@ let instances = [
     "sopuli.xyz",
     "startrek.website",
     "szmer.info",
-    "ttrpg.network"
+    "thelemmy.club",
+    "ttrpg.network",
+    "yiffit.net"
 ];
 
 document.addEventListener('readystatechange', handleNavigation);

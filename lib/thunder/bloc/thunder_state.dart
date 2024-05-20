@@ -14,6 +14,7 @@ class ThunderState extends Equatable {
     // Default Listing/Sort Settings
     this.defaultListingType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
+    this.useProfilePictureForDrawer = false,
 
     // NSFW Settings
     this.hideNsfwPosts = false,
@@ -28,23 +29,34 @@ class ThunderState extends Equatable {
     this.openInReaderMode = false,
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
+    this.markPostReadOnScroll = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
-    this.enableInboxNotifications = false,
+    this.showUpdateChangelogs = true,
+    this.inboxNotificationType = NotificationType.none,
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
+    this.userFullNameUserNameThickness = NameThickness.normal,
+    this.userFullNameUserNameColor = const NameColor.fromString(color: NameColor.defaultColor),
+    this.userFullNameInstanceNameThickness = NameThickness.light,
+    this.userFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor),
     this.communitySeparator = FullNameSeparator.dot,
+    this.communityFullNameCommunityNameThickness = NameThickness.normal,
+    this.communityFullNameCommunityNameColor = const NameColor.fromString(color: NameColor.defaultColor),
+    this.communityFullNameInstanceNameThickness = NameThickness.light,
+    this.communityFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor),
     this.imageCachingMode = ImageCachingMode.relaxed,
+    this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
     this.useCompactView = false,
     this.showTitleFirst = false,
+    this.hideThumbnails = false,
     this.showThumbnailPreviewOnRight = false,
     this.showTextPostIndicator = false,
     this.tappableAuthorCommunity = false,
-    this.postBodyViewType = PostBodyViewType.expanded,
 
     // General Settings
     this.showVoteActions = true,
@@ -54,13 +66,23 @@ class ThunderState extends Equatable {
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
     this.showPostAuthor = false,
+    this.postShowUserInstance = false,
     this.dimReadPosts = true,
-    this.useAdvancedShareSheet = true,
-    this.showCrossPosts = true,
+    this.showFullPostDate = false,
+    this.dateFormat,
+    this.feedCardDividerThickness = FeedCardDividerThickness.compact,
+    this.feedCardDividerColor = Colors.transparent,
     this.compactPostCardMetadataItems = const [],
     this.cardPostCardMetadataItems = const [],
     this.keywordFilters = const [],
     this.appLanguageCode = 'en',
+
+    // Post body settings
+    this.showCrossPosts = true,
+    this.postBodyViewType = PostBodyViewType.expanded,
+    this.postBodyShowUserInstance = false,
+    this.postBodyShowCommunityInstance = false,
+    this.postBodyShowCommunityAvatar = false,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -70,8 +92,8 @@ class ThunderState extends Equatable {
     this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
     this.commentShowUserInstance = false,
+    this.commentShowUserAvatar = false,
     this.combineCommentScores = false,
-    this.commentUseColorizedUsername = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
@@ -98,6 +120,13 @@ class ThunderState extends Equatable {
     this.themeType = ThemeType.system,
     this.selectedTheme = CustomThemeType.deepBlue,
     this.useMaterialYouTheme = false,
+
+    // Color Settings
+    this.upvoteColor = const ActionColor.fromString(colorRaw: ActionColor.orange),
+    this.downvoteColor = const ActionColor.fromString(colorRaw: ActionColor.blue),
+    this.saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple),
+    this.markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal),
+    this.replyColor = const ActionColor.fromString(colorRaw: ActionColor.green),
 
     // Font Scale
     this.titleFontSizeScale = FontScale.base,
@@ -126,6 +155,13 @@ class ThunderState extends Equatable {
     this.enableCommentNavigation = true,
     this.combineNavAndFab = true,
 
+    /// ------------------ Video Player ------------------------
+    this.videoAutoFullscreen = false,
+    this.videoAutoLoop = false,
+    this.videoAutoMute = true,
+    this.videoAutoPlay = VideoAutoPlay.never,
+    this.videoDefaultPlaybackSpeed = VideoPlayBackSpeed.normal,
+
     /// -------------------------- Accessibility Related Settings --------------------------
     this.reduceAnimations = false,
     this.anonymousInstances = const ['lemmy.ml'],
@@ -146,6 +182,8 @@ class ThunderState extends Equatable {
   // Default Listing/Sort Settings
   final ListingType defaultListingType;
   final SortType defaultSortType;
+  SortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType) ? defaultSortType : DEFAULT_SORT_TYPE;
+  final bool useProfilePictureForDrawer;
 
   // NSFW Settings
   final bool hideNsfwPosts;
@@ -160,23 +198,34 @@ class ThunderState extends Equatable {
   final bool openInReaderMode;
   final bool useDisplayNames;
   final bool markPostReadOnMediaView;
+  final bool markPostReadOnScroll;
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
-  final bool enableInboxNotifications;
+  final bool showUpdateChangelogs;
+  final NotificationType inboxNotificationType;
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
+  final NameThickness userFullNameUserNameThickness;
+  final NameColor userFullNameUserNameColor;
+  final NameThickness userFullNameInstanceNameThickness;
+  final NameColor userFullNameInstanceNameColor;
   final FullNameSeparator communitySeparator;
+  final NameThickness communityFullNameCommunityNameThickness;
+  final NameColor communityFullNameCommunityNameColor;
+  final NameThickness communityFullNameInstanceNameThickness;
+  final NameColor communityFullNameInstanceNameColor;
   final ImageCachingMode imageCachingMode;
+  final bool showNavigationLabels;
   final bool hideTopBarOnScroll;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
   final bool useCompactView;
   final bool showTitleFirst;
+  final bool hideThumbnails;
   final bool showThumbnailPreviewOnRight;
   final bool showTextPostIndicator;
   final bool tappableAuthorCommunity;
-  final PostBodyViewType postBodyViewType;
 
   // General Settings
   final bool showVoteActions;
@@ -186,13 +235,23 @@ class ThunderState extends Equatable {
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
   final bool showPostAuthor;
+  final bool postShowUserInstance;
   final bool scoreCounters;
   final bool dimReadPosts;
-  final bool useAdvancedShareSheet;
-  final bool showCrossPosts;
+  final bool showFullPostDate;
+  final DateFormat? dateFormat;
+  final FeedCardDividerThickness feedCardDividerThickness;
+  final Color feedCardDividerColor;
   final List<PostCardMetadataItem> compactPostCardMetadataItems;
   final List<PostCardMetadataItem> cardPostCardMetadataItems;
   final List<String> keywordFilters;
+
+  // Post body settings
+  final bool showCrossPosts;
+  final PostBodyViewType postBodyViewType;
+  final bool postBodyShowUserInstance;
+  final bool postBodyShowCommunityInstance;
+  final bool postBodyShowCommunityAvatar;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -202,8 +261,8 @@ class ThunderState extends Equatable {
   final bool collapseParentCommentOnGesture;
   final bool showCommentButtonActions;
   final bool commentShowUserInstance;
+  final bool commentShowUserAvatar;
   final bool combineCommentScores;
-  final bool commentUseColorizedUsername;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
@@ -212,6 +271,13 @@ class ThunderState extends Equatable {
   final ThemeType themeType;
   final CustomThemeType selectedTheme;
   final bool useMaterialYouTheme;
+
+  // Color Settings
+  final ActionColor upvoteColor;
+  final ActionColor downvoteColor;
+  final ActionColor saveColor;
+  final ActionColor markReadColor;
+  final ActionColor replyColor;
 
   // Font Scale
   final FontScale titleFontSizeScale;
@@ -271,6 +337,13 @@ class ThunderState extends Equatable {
   final List<String> anonymousInstances;
   final String currentAnonymousInstance;
 
+  /// ------------------ Video Player ------------------------
+  final bool videoAutoFullscreen;
+  final bool videoAutoLoop;
+  final bool videoAutoMute;
+  final VideoAutoPlay videoAutoPlay;
+  final VideoPlayBackSpeed videoDefaultPlaybackSpeed;
+
   /// --------------------------------- UI Events ---------------------------------
   // Expand/Close FAB event
   final bool isFabOpen;
@@ -287,6 +360,7 @@ class ThunderState extends Equatable {
     // Default Listing/Sort Settings
     ListingType? defaultListingType,
     SortType? defaultSortType,
+    bool? useProfilePictureForDrawer,
 
     // NSFW Settings
     bool? hideNsfwPosts,
@@ -301,22 +375,33 @@ class ThunderState extends Equatable {
     bool? openInReaderMode,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
+    bool? markPostReadOnScroll,
     bool? showInAppUpdateNotification,
-    bool? enableInboxNotifications,
+    bool? showUpdateChangelogs,
+    NotificationType? inboxNotificationType,
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
+    NameThickness? userFullNameUserNameThickness,
+    NameColor? userFullNameUserNameColor,
+    NameThickness? userFullNameInstanceNameThickness,
+    NameColor? userFullNameInstanceNameColor,
     FullNameSeparator? communitySeparator,
+    NameThickness? communityFullNameCommunityNameThickness,
+    NameColor? communityFullNameCommunityNameColor,
+    NameThickness? communityFullNameInstanceNameThickness,
+    NameColor? communityFullNameInstanceNameColor,
     ImageCachingMode? imageCachingMode,
+    bool? showNavigationLabels,
     bool? hideTopBarOnScroll,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
     bool? useCompactView,
     bool? showTitleFirst,
+    bool? hideThumbnails,
     bool? showThumbnailPreviewOnRight,
     bool? showTextPostIndicator,
     bool? tappableAuthorCommunity,
-    PostBodyViewType? postBodyViewType,
 
     // General Settings
     bool? showVoteActions,
@@ -326,12 +411,24 @@ class ThunderState extends Equatable {
     bool? showEdgeToEdgeImages,
     bool? showTextContent,
     bool? showPostAuthor,
+    bool? postShowUserInstance,
     bool? dimReadPosts,
-    bool? useAdvancedShareSheet,
-    bool? showCrossPosts,
+    bool? showFullPostDate,
+    DateFormat? dateFormat,
+    FeedCardDividerThickness? feedCardDividerThickness,
+    Color? feedCardDividerColor,
     List<PostCardMetadataItem>? compactPostCardMetadataItems,
     List<PostCardMetadataItem>? cardPostCardMetadataItems,
     String? appLanguageCode = 'en',
+
+    // Post body settings
+    bool? showCrossPosts,
+    PostBodyViewType? postBodyViewType,
+    bool? postBodyShowUserInstance,
+    bool? postBodyShowCommunityInstance,
+    bool? postBodyShowCommunityAvatar,
+
+    // Keyword filters
     List<String>? keywordFilters,
 
     /// -------------------------- Post Page Related Settings --------------------------
@@ -340,8 +437,8 @@ class ThunderState extends Equatable {
     bool? collapseParentCommentOnGesture,
     bool? showCommentButtonActions,
     bool? commentShowUserInstance,
+    bool? commentShowUserAvatar,
     bool? combineCommentScores,
-    bool? commentUseColorizedUsername,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
@@ -350,6 +447,13 @@ class ThunderState extends Equatable {
     ThemeType? themeType,
     CustomThemeType? selectedTheme,
     bool? useMaterialYouTheme,
+
+    // Color Settings
+    ActionColor? upvoteColor,
+    ActionColor? downvoteColor,
+    ActionColor? saveColor,
+    ActionColor? markReadColor,
+    ActionColor? replyColor,
 
     // Font Scale
     FontScale? titleFontSizeScale,
@@ -403,6 +507,13 @@ class ThunderState extends Equatable {
     List<String>? anonymousInstances,
     String? currentAnonymousInstance,
 
+    /// ------------------ Video Player ------------------------
+    bool? videoAutoFullscreen,
+    bool? videoAutoLoop,
+    bool? videoAutoMute,
+    VideoAutoPlay? videoAutoPlay,
+    VideoPlayBackSpeed? videoDefaultPlaybackSpeed,
+
     /// --------------------------------- UI Events ---------------------------------
     // Expand/Close FAB event
     bool? isFabOpen,
@@ -418,6 +529,7 @@ class ThunderState extends Equatable {
       /// Default Listing/Sort Settings
       defaultListingType: defaultListingType ?? this.defaultListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
+      useProfilePictureForDrawer: useProfilePictureForDrawer ?? this.useProfilePictureForDrawer,
 
       // NSFW Settings
       hideNsfwPosts: hideNsfwPosts ?? this.hideNsfwPosts,
@@ -432,24 +544,35 @@ class ThunderState extends Equatable {
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+      markPostReadOnScroll: markPostReadOnScroll ?? this.markPostReadOnScroll,
       disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
-      enableInboxNotifications: enableInboxNotifications ?? this.enableInboxNotifications,
+      showUpdateChangelogs: showUpdateChangelogs ?? this.showUpdateChangelogs,
+      inboxNotificationType: inboxNotificationType ?? this.inboxNotificationType,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
+      userFullNameUserNameThickness: userFullNameUserNameThickness ?? this.userFullNameUserNameThickness,
+      userFullNameUserNameColor: userFullNameUserNameColor ?? this.userFullNameUserNameColor,
+      userFullNameInstanceNameThickness: userFullNameInstanceNameThickness ?? this.userFullNameInstanceNameThickness,
+      userFullNameInstanceNameColor: userFullNameInstanceNameColor ?? this.userFullNameInstanceNameColor,
       communitySeparator: communitySeparator ?? this.communitySeparator,
+      communityFullNameCommunityNameThickness: communityFullNameCommunityNameThickness ?? this.communityFullNameCommunityNameThickness,
+      communityFullNameCommunityNameColor: communityFullNameCommunityNameColor ?? this.communityFullNameCommunityNameColor,
+      communityFullNameInstanceNameThickness: communityFullNameInstanceNameThickness ?? this.communityFullNameInstanceNameThickness,
+      communityFullNameInstanceNameColor: communityFullNameInstanceNameColor ?? this.communityFullNameInstanceNameColor,
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
+      showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
       useCompactView: useCompactView ?? this.useCompactView,
       showTitleFirst: showTitleFirst ?? this.showTitleFirst,
+      hideThumbnails: hideThumbnails ?? this.hideThumbnails,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
       showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
       tappableAuthorCommunity: tappableAuthorCommunity ?? this.tappableAuthorCommunity,
-      postBodyViewType: postBodyViewType ?? this.postBodyViewType,
 
       // General Settings
       showVoteActions: showVoteActions ?? this.showVoteActions,
@@ -459,11 +582,22 @@ class ThunderState extends Equatable {
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
+      postShowUserInstance: postShowUserInstance ?? this.postShowUserInstance,
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
-      useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
-      showCrossPosts: showCrossPosts ?? this.showCrossPosts,
+      showFullPostDate: showFullPostDate ?? this.showFullPostDate,
+      dateFormat: dateFormat ?? this.dateFormat,
+      feedCardDividerThickness: feedCardDividerThickness ?? this.feedCardDividerThickness,
+      feedCardDividerColor: feedCardDividerColor ?? this.feedCardDividerColor,
       compactPostCardMetadataItems: compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
       cardPostCardMetadataItems: cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
+
+      // Post body settings
+      showCrossPosts: showCrossPosts ?? this.showCrossPosts,
+      postBodyViewType: postBodyViewType ?? this.postBodyViewType,
+      postBodyShowUserInstance: postBodyShowUserInstance ?? this.postBodyShowUserInstance,
+      postBodyShowCommunityInstance: postBodyShowCommunityInstance ?? this.postBodyShowCommunityInstance,
+      postBodyShowCommunityAvatar: postBodyShowCommunityAvatar ?? this.postBodyShowCommunityAvatar,
+
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
@@ -474,8 +608,8 @@ class ThunderState extends Equatable {
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
+      commentShowUserAvatar: commentShowUserAvatar ?? this.commentShowUserAvatar,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
-      commentUseColorizedUsername: commentUseColorizedUsername ?? this.commentUseColorizedUsername,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
@@ -484,6 +618,13 @@ class ThunderState extends Equatable {
       themeType: themeType ?? this.themeType,
       selectedTheme: selectedTheme ?? this.selectedTheme,
       useMaterialYouTheme: useMaterialYouTheme ?? this.useMaterialYouTheme,
+
+      // Color Settings
+      upvoteColor: upvoteColor ?? this.upvoteColor,
+      downvoteColor: downvoteColor ?? this.downvoteColor,
+      saveColor: saveColor ?? this.saveColor,
+      markReadColor: markReadColor ?? this.markReadColor,
+      replyColor: replyColor ?? this.replyColor,
 
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
@@ -538,8 +679,16 @@ class ThunderState extends Equatable {
       /// -------------------------- Accessibility Related Settings --------------------------
       reduceAnimations: reduceAnimations ?? this.reduceAnimations,
 
+      /// ------------------ Video Player ------------------------
+      videoAutoFullscreen: videoAutoFullscreen ?? this.videoAutoFullscreen,
+      videoAutoLoop: videoAutoLoop ?? this.videoAutoLoop,
+      videoAutoMute: videoAutoMute ?? this.videoAutoMute,
+      videoAutoPlay: videoAutoPlay ?? this.videoAutoPlay,
+      videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed ?? this.videoDefaultPlaybackSpeed,
       anonymousInstances: anonymousInstances ?? this.anonymousInstances,
       currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
+
+      /// ------------------ Video Player ------------------------
 
       /// --------------------------------- UI Events ---------------------------------
       // Expand/Close FAB event
@@ -559,6 +708,7 @@ class ThunderState extends Equatable {
         /// Default Listing/Sort Settings
         defaultListingType,
         defaultSortType,
+        useProfilePictureForDrawer,
 
         // NSFW Settings
         hideNsfwPosts,
@@ -572,21 +722,32 @@ class ThunderState extends Equatable {
         browserMode,
         useDisplayNames,
         markPostReadOnMediaView,
+        markPostReadOnScroll,
         disableFeedFab,
         showInAppUpdateNotification,
-        enableInboxNotifications,
+        showUpdateChangelogs,
+        inboxNotificationType,
         userSeparator,
+        userFullNameUserNameThickness,
+        userFullNameUserNameColor,
+        userFullNameInstanceNameThickness,
+        userFullNameInstanceNameColor,
         communitySeparator,
+        communityFullNameCommunityNameThickness,
+        communityFullNameCommunityNameColor,
+        communityFullNameInstanceNameThickness,
+        communityFullNameInstanceNameColor,
         imageCachingMode,
+        showNavigationLabels,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings
         useCompactView,
         showTitleFirst,
+        hideThumbnails,
         showThumbnailPreviewOnRight,
         showTextPostIndicator,
         tappableAuthorCommunity,
-        postBodyViewType,
 
         // General Settings
         showVoteActions,
@@ -596,12 +757,23 @@ class ThunderState extends Equatable {
         showEdgeToEdgeImages,
         showTextContent,
         showPostAuthor,
+        postShowUserInstance,
         dimReadPosts,
-        useAdvancedShareSheet,
-        showCrossPosts,
+        showFullPostDate,
+        dateFormat,
+        feedCardDividerThickness,
+        feedCardDividerColor,
         compactPostCardMetadataItems,
         cardPostCardMetadataItems,
         appLanguageCode,
+
+        // Post body settings
+        showCrossPosts,
+        postBodyViewType,
+        postBodyShowUserInstance,
+        postBodyShowCommunityInstance,
+        postBodyShowCommunityAvatar,
+
         keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------
@@ -612,8 +784,8 @@ class ThunderState extends Equatable {
         collapseParentCommentOnGesture,
         showCommentButtonActions,
         commentShowUserInstance,
+        commentShowUserAvatar,
         combineCommentScores,
-        commentUseColorizedUsername,
 
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,
@@ -623,6 +795,13 @@ class ThunderState extends Equatable {
         themeType,
         selectedTheme,
         useMaterialYouTheme,
+
+        // Color Settings
+        upvoteColor,
+        downvoteColor,
+        saveColor,
+        markReadColor,
+        replyColor,
 
         // Font Scale
         titleFontSizeScale,
@@ -671,6 +850,13 @@ class ThunderState extends Equatable {
 
         enableCommentNavigation,
         combineNavAndFab,
+
+        /// ------------------ Video Player ------------------------
+        videoAutoFullscreen,
+        videoAutoLoop,
+        videoAutoMute,
+        videoAutoPlay,
+        videoDefaultPlaybackSpeed,
 
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations,

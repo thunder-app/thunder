@@ -6,11 +6,17 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/account/widgets/profile_modal_body.dart';
 
-void showProfileModalSheet(BuildContext context, {bool showLogoutDialog = false}) {
+Future<void> showProfileModalSheet(
+  BuildContext context, {
+  bool showLogoutDialog = false,
+  bool quickSelectMode = false,
+  String? customHeading,
+  bool reloadOnSwitch = true,
+}) async {
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-  showModalBottomSheet(
+  await showModalBottomSheet(
     elevation: 0,
     isScrollControlled: true,
     context: context,
@@ -23,7 +29,12 @@ void showProfileModalSheet(BuildContext context, {bool showLogoutDialog = false}
         ],
         child: FractionallySizedBox(
           heightFactor: 0.8,
-          child: ProfileModalBody(showLogoutDialog: showLogoutDialog),
+          child: ProfileModalBody(
+            showLogoutDialog: showLogoutDialog,
+            quickSelectMode: quickSelectMode,
+            customHeading: customHeading,
+            reloadOnSwitch: reloadOnSwitch,
+          ),
         ),
       );
     },

@@ -39,6 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
       SettingTopic(title: l10n.filters, icon: Icons.filter_alt_rounded, path: SETTINGS_FILTERS_PAGE),
       SettingTopic(title: l10n.appearance, icon: Icons.color_lens_rounded, path: SETTINGS_APPEARANCE_PAGE),
       SettingTopic(title: l10n.gestures, icon: Icons.swipe, path: SETTINGS_GESTURES_PAGE),
+      SettingTopic(title: l10n.video, icon: Icons.video_settings, path: SETTINGS_VIDEO_PAGE),
       SettingTopic(title: l10n.floatingActionButton, icon: Icons.settings_applications_rounded, path: SETTINGS_FAB_PAGE),
       SettingTopic(title: l10n.accessibility, icon: Icons.accessibility, path: SETTINGS_ACCESSIBILITY_PAGE),
       SettingTopic(title: l10n.account(0), icon: Icons.person_rounded, path: SETTINGS_ACCOUNT_PAGE),
@@ -101,6 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       LocalSettingsCategories.theming: SETTINGS_APPEARANCE_THEMES_PAGE,
                                       LocalSettingsCategories.debug: SETTINGS_DEBUG_PAGE,
                                       LocalSettingsCategories.about: SETTINGS_ABOUT_PAGE,
+                                      LocalSettingsCategories.videoPlayer: SETTINGS_VIDEO_PAGE,
                                     }[localSettings[index].category] ??
                                     SETTINGS_GENERAL_PAGE;
 
@@ -159,19 +161,9 @@ class _SettingsPageState extends State<SettingsPage> {
             hasScrollBody: false,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: FutureBuilder(
-                future: getCurrentVersion(removeInternalBuildNumber: true),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        'Thunder ${snapshot.data ?? 'N/A'}',
-                      ),
-                    );
-                  }
-                  return Container();
-                },
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Text('Thunder ${getCurrentVersion(removeInternalBuildNumber: true)}'),
               ),
             ),
           )

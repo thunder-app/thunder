@@ -1,3 +1,7 @@
 scripts/docker*
 docker
 build
+.dart_tool
+key.properties
+keystore.jks
+android

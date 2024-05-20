@@ -11,7 +11,8 @@ enum LocalSettingsCategories {
   account('Account'),
   about('About'),
   debug('Debug'),
-  theming('Theming');
+  theming('Theming'),
+  videoPlayer('Video Player');
 
   final String value;
 
@@ -33,6 +34,7 @@ enum LocalSettingsSubCategories {
   comments('comments'),
   linksBehaviourSettings('linksBehaviourSettings'),
   advanced('advanced'),
+  names('names'),
   notifications('notifications'),
   importExportSettings('importExportSettings'),
   filters('filters'),
@@ -44,7 +46,8 @@ enum LocalSettingsSubCategories {
   theme('Theme'),
   sidebar('Sidebar'),
   cardView('cardView'),
-  navigation('navigation');
+  navigation('navigation'),
+  videoPlayer('videoPlayer');
 
   final String value;
 
@@ -59,6 +62,10 @@ enum LocalSettingsSubCategories {
 }
 
 enum LocalSettings {
+  /// -------------------------- Account Settings --------------------------
+  // Discussion Languages
+  discussionLanguages(name: 'account_discussion_languages', key: 'discussionLanguages', category: LocalSettingsCategories.account),
+
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
 
@@ -90,22 +97,26 @@ enum LocalSettings {
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   markPostAsReadOnMediaView(
       name: 'setting_general_mark_post_read_on_media_view', key: 'markPostAsReadOnMediaView', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
+  markPostAsReadOnScroll(name: 'setting_general_mark_post_read_on_scroll', key: 'markPostAsReadOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   showInAppUpdateNotification(
       name: 'setting_notifications_show_inapp_update', key: 'showInAppUpdateNotifications', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
+  showUpdateChangelogs(name: 'setting_show_update_changelogs', key: 'showUpdateChangelogs', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   scoreCounters(name: 'setting_score_counters', key: "showScoreCounters", category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   appLanguageCode(name: 'setting_app_language_code', key: 'appLanguage', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
-  enableInboxNotifications(
-      name: 'setting_enable_inbox_notifications', key: 'enableInboxNotifications', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
+  useProfilePictureForDrawer(
+      name: 'setting_use_profile_picture_for_drawer', key: 'useProfilePictureForDrawer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
+  inboxNotificationType(name: 'setting_inbox_notification_type', key: 'inboxNotificationType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
+  pushNotificationServer(name: 'setting_push_notification_server', key: 'pushNotificationServer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
   useCompactView(name: 'setting_general_use_compact_view', key: 'compactView', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showPostTitleFirst(name: 'setting_general_show_title_first', key: 'showPostTitleFirst', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  hideThumbnails(name: 'setting_general_hide_thumbnails', key: 'hideThumbnails', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.feed),
   showThumbnailPreviewOnRight(
       name: 'setting_compact_show_thumbnail_on_right', key: 'showThumbnailPreviewOnRight', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showTextPostIndicator(name: 'setting_compact_show_text_post_indicator', key: 'showTextPostIndicator', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   tappableAuthorCommunity(name: 'setting_compact_tappable_author_community', key: 'tappableAuthorCommunity', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
-  postBodyViewType(name: 'setting_general_post_body_view_type', key: 'postBodyViewType', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
 
   // General Settings
   showPostVoteActions(name: 'setting_general_show_vote_actions', key: 'showPostVoteActions', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.cardView),
@@ -115,19 +126,34 @@ enum LocalSettings {
   showPostEdgeToEdgeImages(name: 'setting_general_show_edge_to_edge_images', key: 'showEdgeToEdgeImages', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.cardView),
   showPostTextContentPreview(name: 'setting_general_show_text_content', key: 'showPostTextContentPreview', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.cardView),
   showPostAuthor(name: 'setting_general_show_post_author', key: 'showPostAuthor', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  postShowUserInstance(name: 'setting_general_post_show_user_instance', key: 'postShowUserInstance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   dimReadPosts(name: 'setting_dim_read_posts', key: 'dimReadPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
-  useAdvancedShareSheet(name: 'setting_use_advanced_share_sheet', key: 'useAdvancedShareSheet', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.posts),
-  showCrossPosts(name: 'setting_show_cross_posts', key: 'showCrossPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   keywordFilters(name: 'setting_general_keyword_filters', key: 'keywordFilters', category: LocalSettingsCategories.filters, subCategory: LocalSettingsSubCategories.filters),
   hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', key: 'hideTopBarOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   compactPostCardMetadataItems(
       name: 'setting_compact_post_card_metadata_items', key: 'compactPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   cardPostCardMetadataItems(name: 'setting_card_post_card_metadata_items', key: 'cardPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  showFullPostDate(name: 'setting_general_show_full_post_date', key: 'showFullPostDate', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  dateFormat(name: 'setting_general_date_format', key: 'dateFormat', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  // This setting exists purely for the searching function
+  dividerAppearance(name: '', key: 'dividerAppearance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  feedCardDividerThickness(
+      name: 'setting_feed_card_divider_thickness', key: 'feedCardDividerThickness', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts, searchable: false),
+  feedCardDividerColor(name: 'setting_feed_card_divider_color', key: 'feedCardDividerColor', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts, searchable: false),
+
+  // Post body settings
+  showCrossPosts(name: 'setting_show_cross_posts', key: 'showCrossPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  postBodyViewType(name: 'setting_general_post_body_view_type', key: 'postBodyViewType', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  postBodyShowUserInstance(
+      name: 'setting_general_post_body_show_user_instance', key: 'postBodyShowUserInstance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  postBodyShowCommunityInstance(
+      name: 'setting_general_post_body_show_community_instance', key: 'postBodyShowCommunityInstance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  postBodyShowCommunityAvatar(
+      name: 'setting_general_post_body_show_community_avatar', key: 'postBodyShowCommunityAvatar', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
 
   // Advanced Settings
-  userFormat(name: 'user_format', key: 'userFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
-  communityFormat(name: 'community_format', key: 'communityFormat', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
   imageCachingMode(name: 'setting_advanced_image_caching_mode', key: 'imageCachingMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
+  showNavigationLabels(name: 'setting_advanced_show_navigation_labels', key: 'showNavigationLabels', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
@@ -141,13 +167,20 @@ enum LocalSettings {
   showCommentActionButtons(
       name: 'setting_general_show_comment_button_actions', key: 'showCommentActionButtons', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.general),
   commentShowUserInstance(name: 'settings_comment_show_user_instance', key: 'showUserInstance', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+  commentShowUserAvatar(name: 'settings_comment_show_user_avatar', key: 'showUserAvatar', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   combineCommentScores(name: 'setting_general_combine_comment_scores', key: 'combineCommentScores', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   nestedCommentIndicatorStyle(
       name: 'setting_general_nested_comment_indicator_style', key: 'nestedCommentIndicatorStyle', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   nestedCommentIndicatorColor(
       name: 'setting_general_nested_comment_indicator_color', key: 'nestedCommentIndicatorColor', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+  // Deprecated, use userFullNameColorizeUserName
   commentUseColorizedUsername(
-      name: 'settings_general_comments_colorized_usernames', key: 'commentUseColorizedUsername', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+    name: 'settings_general_comments_colorized_usernames',
+    key: 'commentUseColorizedUsername',
+    category: LocalSettingsCategories.comments,
+    subCategory: LocalSettingsSubCategories.comments,
+    searchable: false,
+  ),
 
   /// -------------------------- Accessibility Related Settings --------------------------
   reduceAnimations(name: 'setting_accessibility_reduce_animations', key: 'reduceAnimations', category: LocalSettingsCategories.accessibility, subCategory: LocalSettingsSubCategories.animations),
@@ -158,12 +191,66 @@ enum LocalSettings {
   appThemeAccentColor(name: 'setting_theme_custom_app_theme', key: 'themeAccentColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   useMaterialYouTheme(name: 'setting_theme_use_material_you', key: 'useMaterialYouTheme', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
 
+  // Color settings
+  // The first setting exists purely for searching
+  actionColors(name: 'setting_action_colors', key: 'actionColors', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  upvoteColor(name: 'settings_theme_upvote_color', key: 'upvoteColor', searchable: false),
+  downvoteColor(name: 'settings_theme_downvote_color', key: 'downvoteColor', searchable: false),
+  saveColor(name: 'settings_theme_save_color', key: 'saveColor', searchable: false),
+  markReadColor(name: 'settings_theme_mark_read_color', key: 'markReadColor', searchable: false),
+  replyColor(name: 'settings_theme_reply_color', key: 'replyColor', searchable: false),
+
   // Font Settings
   appFontFamily(name: 'setting_app_font_family', key: 'appFontFamily', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   titleFontSizeScale(name: 'setting_theme_title_font_size_scale', key: 'postTitleFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   contentFontSizeScale(name: 'setting_theme_content_font_size_scale', key: 'postContentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   commentFontSizeScale(name: 'setting_theme_comment_font_size_scale', key: 'commentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   metadataFontSizeScale(name: 'setting_theme_metadata_font_size_scale', key: 'metadataFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
+
+  // Theme > Names
+  userFormat(name: 'user_format', key: 'userFormat', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  // This setting exists purely for the searching function
+  userStyle(name: '', key: 'userStyle', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  userFullNameUserNameThickness(
+      name: 'user_full_name_user_name_thickness', key: 'userFullNameUserNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names, searchable: false),
+  userFullNameUserNameColor(
+      name: 'user_full_name_user_name_color', key: 'userFullNameUserNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names, searchable: false),
+  userFullNameInstanceNameThickness(
+      name: 'user_full_name_instance_name_thickness',
+      key: 'userFullNameInstanceNameThickness',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
+  userFullNameInstanceNameColor(
+      name: 'usr_full_name_instance_name_color', key: 'userFullNameInstanceNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names, searchable: false),
+
+  // This setting exists purely for the searching function
+  communityStyle(name: '', key: 'communityStyle', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  communityFormat(name: 'community_format', key: 'communityFormat', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
+  communityFullNameCommunityNameThickness(
+      name: 'community_full_name_community_name_thickness',
+      key: 'communityFullNameCommunityNameThickness',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
+  communityFullNameCommunityNameColor(
+      name: 'community_full_name_community_name_color',
+      key: 'communityFullNameCommunityNameColor',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
+  communityFullNameInstanceNameThickness(
+      name: 'community_full_name_instance_name_thickness',
+      key: 'communityFullNameInstanceNameThickness',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
+  communityFullNameInstanceNameColor(
+      name: 'community_full_name_instance_name_color',
+      key: 'communityFullNameInstanceNameColor',
+      category: LocalSettingsCategories.theming,
+      subCategory: LocalSettingsSubCategories.names,
+      searchable: false),
 
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings
@@ -218,9 +305,16 @@ enum LocalSettings {
   anonymousInstances(name: 'setting_anonymous_instances', key: ''),
   currentAnonymousInstance(name: 'setting_current_anonymous_instance', key: ''),
 
+  // This setting exists purely to save/load the user's selected advanced share options
   advancedShareOptions(name: 'advanced_share_options', key: ''),
   // import export settings
-  importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings);
+  importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
+  // video player
+  videoAutoMute(name: 'auto_mute_videos', key: 'videoAutoMute', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoAutoFullscreen(name: 'video_auto_fullscreen', key: 'videoAutoFullscreen', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoAutoLoop(name: 'video_auto_loop', key: '', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoAutoPlay(name: 'video_auto_play', key: '', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer);
 
   const LocalSettings({
     required this.name,
@@ -271,12 +365,16 @@ extension LocalizationExt on AppLocalizations {
       'openLinksInReaderMode': openLinksInReaderMode,
       'showUserDisplayNames': showUserDisplayNames,
       'markPostAsReadOnMediaView': markPostAsReadOnMediaView,
+      'markPostAsReadOnScroll': markPostAsReadOnScroll,
       'showInAppUpdateNotifications': showInAppUpdateNotifications,
-      'enableInboxNotifications': enableInboxNotifications,
+      'showUpdateChangelogs': showUpdateChangelogs,
+      'inboxNotificationType': enableInboxNotifications,
+      'pushNotificationServer': pushNotificationServer,
       'showScoreCounters': showScoreCounters,
       'appLanguage': appLanguage,
       'compactView': compactView,
       'showPostTitleFirst': showPostTitleFirst,
+      'hideThumbnails': hideThumbnails,
       'showThumbnailPreviewOnRight': showThumbnailPreviewOnRight,
       'showTextPostIndicator': showTextPostIndicator,
       'tappableAuthorCommunity': tappableAuthorCommunity,
@@ -288,20 +386,31 @@ extension LocalizationExt on AppLocalizations {
       'showEdgeToEdgeImages': showEdgeToEdgeImages,
       'showPostTextContentPreview': showPostTextContentPreview,
       'showPostAuthor': showPostAuthor,
+      'postShowUserInstance': postShowUserInstance,
       'dimReadPosts': dimReadPosts,
-      'useAdvancedShareSheet': useAdvancedShareSheet,
+      'showFullPostDate': showFullDate,
+      'dateFormat': dateFormat,
+      'dividerAppearance': dividerAppearance,
       'showCrossPosts': showCrossPosts,
+      'postBodyShowUserInstance': postBodyShowUserInstance,
+      'postBodyShowCommunityInstance': postBodyShowCommunityInstance,
+      'postBodyShowCommunityAvatar': postBodyShowCommunityAvatar,
       'keywordFilters': keywordFilters,
       'hideTopBarOnScroll': hideTopBarOnScroll,
       'compactPostCardMetadataItems': compactPostCardMetadataItems,
       'cardPostCardMetadataItems': cardPostCardMetadataItems,
       'userFormat': userFormat,
+      'userStyle': userStyle,
       'communityFormat': communityFormat,
+      'communityStyle': communityStyle,
       'imageCachingMode': imageCachingMode,
+      'showNavigationLabels': showNavigationLabels,
       'defaultCommentSortType': defaultCommentSortType,
+      'useProfilePictureForDrawer': useProfilePictureForDrawer,
       'collapseParentCommentBodyOnGesture': collapseParentCommentBodyOnGesture,
       'showCommentActionButtons': showCommentActionButtons,
       'showUserInstance': showUserInstance,
+      'showUserAvatar': showUserAvatar,
       'combineCommentScores': combineCommentScores,
       'nestedCommentIndicatorStyle': nestedCommentIndicatorStyle,
       'nestedCommentIndicatorColor': nestedCommentIndicatorColor,
@@ -309,6 +418,7 @@ extension LocalizationExt on AppLocalizations {
       'theme': theme,
       'themeAccentColor': themeAccentColor,
       'useMaterialYouTheme': useMaterialYouTheme,
+      'actionColors': actionColors,
       'appFontFamily': appFontFamily,
       'postTitleFontScale': postTitleFontScale,
       'postContentFontScale': postContentFontScale,
@@ -343,6 +453,7 @@ extension LocalizationExt on AppLocalizations {
       'linksBehaviourSettings': linksBehaviourSettings,
       'importExportSettings': importExportSettings,
       'advanced': advanced,
+      'names': names,
       'notifications': notifications(1),
       'sidebar': sidebar,
       'cardView': cardView,
@@ -353,7 +464,12 @@ extension LocalizationExt on AppLocalizations {
       'feedTypeAndSorts': feedTypeAndSorts,
       'profiles': profiles,
       'animations': animations,
-      'commentUseColorizedUsername': commentUseColorizedUsername
+      'discussionLanguages': discussionLanguages,
+      'videoAutoMute': videoAutoMute,
+      'videoAutoFullscreen': videoAutoFullscreen,
+      'videoAutoLoop': videoAutoLoop,
+      'videoAutoPlay': videoAutoPlay,
+      'videoDefaultPlaybackSpeed': videoDefaultPlaybackSpeed,
     };
 
     if (localizationMap.containsKey(key)) {

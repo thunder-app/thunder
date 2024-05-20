@@ -1022,5 +1022,273 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} за",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "medium": "Средний",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "light": "Светлая",
+  "@light": {
+    "description": "Describes using the light theme"
+  },
+  "fonts": "Шрифты",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
+  "disable": "Отключить",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "deleteAccount": "Удалить аккаунт",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "forward": "Вперед",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "confirm": "Подтвердить",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "base": "База",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "dangerZone": "Опасная зона",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "dark": "Тёмная",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "large": "Большой",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "newPost": "Новый пост",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "small": "Маленький",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "reason": "Причина",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "theme": "Тема",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "warning": "Предупреждение",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "system": "Система",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "linkHandlingExternalShort": "Внешний",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "linkHandlingInAppShort": "В приложении",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "imageCachingModeAggressiveShort": "Агрессивный",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "imageCachingModeRelaxedShort": "Расслабление",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
+  "noItems": "Нет предметов",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "reduceAnimations": "Меньше анимаций",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "exploreInstance": "Просмотреть инстансы",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
+  "extraLarge": "Очень большой",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "pureBlack": "Чистый черный",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "themeAccentColor": "Акцентные цвета",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "admin": "Админ",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "bannedUser": "Забанненый пользователь",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "moderator": "Модератор",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
+  "modTransferCommunity": "Передача сообщества",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
+  "browserMode": "Обработка ссылок",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "linkHandlingCustomTabsShort": "Прямо в приложении",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  },
+  "detailedReason": "Причина: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "removalReason": "Причина удаления",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
+  "removePost": "Удалить пост",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "user": "Пользователь",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "hidCommunity": "Скрыть сообщество",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
+  "lockPost": "Закрыть пост",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
+  "lockedPost": "Закрыть доступ к посту",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
+  "modLockPost": "Открыть/закрыть посты",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modlog": "Модлог",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "moderatedCommunities": "Управляемые сообщества",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderatorActions": "Действия модератора",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "modRemoveComment": "Удалить/вернуть комментарии",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Удалить/вернуть сообщества",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "successfullyBlockedUser": "Заблокирован {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "restorePost": "Вернуть пост",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "successfullyUnblockedUser": "Разблокирован {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "unreachable": "Недоступно",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "unlockPost": "Открыть пост",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "defaultCommentSortType": "Сортировка комментариев по умолчанию",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "userActions": "Действия пользователя",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "color": "Цвет",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "showInAppUpdateNotifications": "Уведомлять о новых релизах из GitHub",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
+  "viewAll": "Посмотреть все",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
+  "standard": "Стандартный",
+  "@standard": {
+    "description": "Describes a standard visual density"
+  },
+  "versionNumber": "Версия {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
+  },
+  "compact": "Компактный",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "bold": "Толстый",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "defaultColor": "По умолчанию",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
+  },
+  "defaultFeedType": "Тип новостей по умолчанию",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
+  "normal": "Нормальный",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
+  "status": "Статус",
+  "@status": {
+    "description": "Status of the action"
+  },
+  "thickness": "Толщина",
+  "@thickness": {
+    "description": "Describes a thickness (e.g., divider)"
+  },
+  "comfortable": "Комфортный",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "defaultFeedSortType": "Сортировка ленты по умолчанию",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  }
 }

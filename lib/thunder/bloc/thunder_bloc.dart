@@ -1,23 +1,30 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/enums/action_color.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';
+import 'package:thunder/core/enums/video_auto_play.dart';
+import 'package:thunder/core/enums/video_playback_speed.dart';
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -100,6 +107,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
+      bool useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
+
       // NSFW Settings
       bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       bool hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
@@ -112,12 +121,23 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
+      bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
-      bool enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
+      bool showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
+      NotificationType inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name) ?? NotificationType.none;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
+      NameThickness userFullNameUserNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameUserNameThickness.name) ?? NameThickness.normal.name);
+      NameColor userFullNameUserNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameUserNameColor.name) ?? NameColor.defaultColor);
+      NameThickness userFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
+      NameColor userFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
       FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+      NameThickness communityFullNameCommunityNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameCommunityNameThickness.name) ?? NameThickness.normal.name);
+      NameColor communityFullNameCommunityNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameCommunityNameColor.name) ?? NameColor.defaultColor);
+      NameThickness communityFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
+      NameColor communityFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
+      bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
@@ -126,10 +146,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Compact Related Settings
       bool useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
       bool showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
+      bool hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
       bool showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       bool showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
       bool tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
-      PostBodyViewType postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
 
       // General Settings
       bool showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
@@ -139,14 +159,24 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
+      bool postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
-      bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
-      bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+      bool showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
+      DateFormat dateFormat = DateFormat(prefs.getString(LocalSettings.dateFormat.name) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
+      FeedCardDividerThickness feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
+      Color feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.value);
       List<PostCardMetadataItem> compactPostCardMetadataItems =
           prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
       List<PostCardMetadataItem> cardPostCardMetadataItems =
           prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
+
+      // Post body settings
+      bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+      PostBodyViewType postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
+      bool postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
+      bool postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
+      bool postBodyShowCommunityAvatar = prefs.getBool(LocalSettings.postBodyShowCommunityAvatar.name) ?? false;
 
       List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
@@ -156,8 +186,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       bool commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
+      bool commentShowUserAvatar = prefs.getBool(LocalSettings.commentShowUserAvatar.name) ?? false;
       bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
-      bool commentUseColorizedUsername = prefs.getBool(LocalSettings.commentUseColorizedUsername.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
           NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
@@ -168,6 +198,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       ThemeType themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
       CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
       bool useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
+
+      // Color Settings
+      ActionColor upvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.upvoteColor.name) ?? ActionColor.orange);
+      ActionColor downvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.downvoteColor.name) ?? ActionColor.blue);
+      ActionColor saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
+      ActionColor markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
+      ActionColor replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
 
       // Font Settings
       FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
@@ -224,6 +261,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       /// -------------------------- Accessibility Related Settings --------------------------
       bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
 
+      /// ------------------ VIDEO PLAYER SETTINGS -----------------------------------------
+      bool videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
+      bool videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
+      bool videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? true;
+      VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
+      VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
+
       List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ??
           // If the user already has some accouts (i.e., an upgrade), we don't want to just throw an anonymous instance at them
           ((await Account.accounts()).isNotEmpty ? [] : ['lemmy.ml']);
@@ -236,6 +280,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         // Default Listing/Sort Settings
         defaultListingType: defaultListingType,
         defaultSortType: defaultSortType,
+        useProfilePictureForDrawer: useProfilePictureForDrawer,
 
         // NSFW Settings
         hideNsfwPosts: hideNsfwPosts,
@@ -250,22 +295,33 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         openInReaderMode: openInReaderMode,
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
+        markPostReadOnScroll: markPostReadOnScroll,
         showInAppUpdateNotification: showInAppUpdateNotification,
-        enableInboxNotifications: enableInboxNotifications,
+        showUpdateChangelogs: showUpdateChangelogs,
+        inboxNotificationType: inboxNotificationType,
         appLanguageCode: appLanguageCode,
         userSeparator: userSeparator,
+        userFullNameUserNameThickness: userFullNameUserNameThickness,
+        userFullNameUserNameColor: userFullNameUserNameColor,
+        userFullNameInstanceNameThickness: userFullNameInstanceNameThickness,
+        userFullNameInstanceNameColor: userFullNameInstanceNameColor,
         communitySeparator: communitySeparator,
+        communityFullNameCommunityNameThickness: communityFullNameCommunityNameThickness,
+        communityFullNameCommunityNameColor: communityFullNameCommunityNameColor,
+        communityFullNameInstanceNameThickness: communityFullNameInstanceNameThickness,
+        communityFullNameInstanceNameColor: communityFullNameInstanceNameColor,
         imageCachingMode: imageCachingMode,
+        showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings
         useCompactView: useCompactView,
         showTitleFirst: showTitleFirst,
+        hideThumbnails: hideThumbnails,
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         showTextPostIndicator: showTextPostIndicator,
         tappableAuthorCommunity: tappableAuthorCommunity,
-        postBodyViewType: postBodyViewType,
 
         // General Settings
         showVoteActions: showVoteActions,
@@ -275,13 +331,23 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showEdgeToEdgeImages: showEdgeToEdgeImages,
         showTextContent: showTextContent,
         showPostAuthor: showPostAuthor,
+        postShowUserInstance: postShowUserInstance,
         scoreCounters: scoreCounters,
         dimReadPosts: dimReadPosts,
-        useAdvancedShareSheet: useAdvancedShareSheet,
-        showCrossPosts: showCrossPosts,
+        showFullPostDate: showFullPostDate,
+        dateFormat: dateFormat,
+        feedCardDividerThickness: feedCardDividerThickness,
+        feedCardDividerColor: feedCardDividerColor,
         compactPostCardMetadataItems: compactPostCardMetadataItems,
         cardPostCardMetadataItems: cardPostCardMetadataItems,
         keywordFilters: keywordFilters,
+
+        // Post body settings
+        showCrossPosts: showCrossPosts,
+        postBodyViewType: postBodyViewType,
+        postBodyShowUserInstance: postBodyShowUserInstance,
+        postBodyShowCommunityInstance: postBodyShowCommunityInstance,
+        postBodyShowCommunityAvatar: postBodyShowCommunityAvatar,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings
@@ -289,16 +355,23 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
         showCommentButtonActions: showCommentButtonActions,
         commentShowUserInstance: commentShowUserInstance,
+        commentShowUserAvatar: commentShowUserAvatar,
         combineCommentScores: combineCommentScores,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,
-        commentUseColorizedUsername: commentUseColorizedUsername,
 
         /// -------------------------- Theme Related Settings --------------------------
         // Theme Settings
         themeType: themeType,
         selectedTheme: selectedTheme,
         useMaterialYouTheme: useMaterialYouTheme,
+
+        // Color Settings
+        upvoteColor: upvoteColor,
+        downvoteColor: downvoteColor,
+        saveColor: saveColor,
+        markReadColor: markReadColor,
+        replyColor: replyColor,
 
         // Font Settings
         titleFontSizeScale: titleFontSizeScale,
@@ -354,6 +427,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations: reduceAnimations,
+
+        /// ------------------ VIDEO PLAYER SETTINGS -----------------------------------------
+        videoAutoMute: videoAutoMute,
+        videoAutoFullscreen: videoAutoFullscreen,
+        videoAutoLoop: videoAutoLoop,
+        videoAutoPlay: videoAutoPlay,
+        videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed,
 
         anonymousInstances: anonymousInstances,
         currentAnonymousInstance: currentAnonymousInstance,

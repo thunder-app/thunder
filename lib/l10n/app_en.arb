@@ -13,6 +13,22 @@
   },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
+  "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "accountSwitchPostNotFound": "The selected post was not found on '{instance}'. Switching back to previous account.",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "actionColors": "Action Colors",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "actionColorsRedirect": "Looking to customize colors?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
   "actions": "Actions",
   "@actions": {},
   "active": "Active",
@@ -25,6 +41,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
+  "addDiscussionLanguage": "Add Language",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
   "addKeywordFilter": "Add Keyword",
   "@addKeywordFilter": {
     "description": "Hint for text field to add keyword"
@@ -35,6 +55,18 @@
   },
   "addedCommunityToSubscriptions": "Subscribed to community",
   "@addedCommunityToSubscriptions": {},
+  "addedInstanceMod": "Added Instance Mod",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "addedModToCommunity": "Added Mod to Community",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "Role name for admin"
+  },
   "advanced": "Advanced",
   "@advanced": {
     "description": "Heading for advanced settings"
@@ -49,6 +81,8 @@
   },
   "alreadyPostedTo": "Already posted to",
   "@alreadyPostedTo": {},
+  "always": "Always",
+  "@always": {},
   "andXMore": "and {count} more",
   "@andXMore": {},
   "animations": "Animations",
@@ -64,10 +98,18 @@
   "@appearance": {
     "description": "Title of Appearance in Settings -> Appearance"
   },
+  "applePushNotificationService": "Apple Push Notification Service",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
   "applied": "Applied",
   "@applied": {},
   "apply": "Apply",
   "@apply": {},
+  "areNotificationsAllowedBySystem": "Notifications are allowed by system: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
   "back": "Back",
   "@back": {},
   "backButton": "Back button",
@@ -77,6 +119,14 @@
   "backgroundCheckWarning": "Note that notification checks will consume additional battery",
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
+  },
+  "bannedUser": "Banned User",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "bannedUserFromCommunity": "Banned User from Community",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
   },
   "base": "Base",
   "@base": {
@@ -94,6 +144,30 @@
   "@blockedInstances": {},
   "blockedUsers": "Blocked Users",
   "@blockedUsers": {},
+  "blue": "Blue",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "bold": "Bold",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "boldCommunityName": "Bold Community Name",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "boldInstanceName": "Bold Instance Name",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "Bold User Name",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
   "browserMode": "Link handling",
   "@browserMode": {
     "description": "Title for link handling setting (called browserMode internally)"
@@ -124,6 +198,14 @@
   "@cardViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
+  "changeAccountSettingsFor": "Change account settings for",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
+  "changeNotificationSettings": "Change notification settings...",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
   "changeSort": "Change Sort",
   "@changeSort": {},
   "clearCache": "Clear Cache ({cacheSize})",
@@ -150,6 +232,10 @@
   "@clearedUserPreferences": {},
   "close": "Close",
   "@close": {},
+  "collapse": "Collapse",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
   "collapseCommentPreview": "Collapse Comment Preview",
   "@collapseCommentPreview": {
     "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
@@ -172,6 +258,26 @@
   "@collapseSpoiler": {
     "description": "Label for collapsing spoiler"
   },
+  "color": "Color",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "colorizeCommunityName": "Colorize Community Name",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "colorizeInstanceName": "Colorize Instance Name",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "colorizeUserName": "Colorize User Name",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
+  "colors": "Colors",
+  "@colors": {
+    "description": "Heading for colors"
+  },
   "combineCommentScores": "Combine Comment Scores",
   "@combineCommentScores": {
     "description": "Toggle to combine comment scores."
@@ -184,6 +290,10 @@
   "@combineNavAndFab": {},
   "combineNavAndFabDescription": "Floating Action Button will be shown between navigation buttons.",
   "@combineNavAndFabDescription": {},
+  "comfortable": "Comfortable",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
   "comment": "Comment",
   "@comment": {},
   "commentBehaviourSettings": "Comments",
@@ -202,6 +312,10 @@
   "@commentReported": {},
   "commentSavedAsDraft": "Comment saved as draft",
   "@commentSavedAsDraft": {},
+  "commentShowUserAvatar": "Show User Avatar",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
   "commentShowUserInstance": "Show User Instance",
   "@commentShowUserInstance": {
     "description": "Settings toggle to display user instance alongside their display name in comments"
@@ -214,19 +328,39 @@
   },
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "@commentSwipeGesturesHint": {},
-  "commentUseColorizedUsername": "Colorized Usernames",
-  "@commentUseColorizedUsername": {
-    "description": "Setting used to toggle colorized comments creator display name."
-  },
   "comments": "Comments",
   "@comments": {},
   "communities": "Communities",
   "@communities": {},
   "community": "Community",
   "@community": {},
+  "communityActions": "Community Actions",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "Community '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
   "communityFormat": "Community Format",
   "@communityFormat": {
     "description": "Setting for community full name format"
+  },
+  "communityNameColor": "Community Name Color",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "communityNameThickness": "Community Name Thickness",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
+  "communityStyle": "Community Style",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "compact": "Compact",
+  "@compact": {
+    "description": "Describes a compact visual density"
   },
   "compactPostCardMetadataItems": "Compact View Metadata",
   "@compactPostCardMetadataItems": {
@@ -276,12 +410,28 @@
   "@confirmResetPostPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
   },
+  "confirmUnsubscription": "Are you sure you want to unsubscribe?",
+  "@confirmUnsubscription": {
+    "description": "Ask the user to confirm that they want to unsubscribe"
+  },
+  "connectedToUnifiedPushDistributorApp": "Conected to {app}",
+  "@connectedToUnifiedPushDistributorApp": {
+    "description": "Tell the user which UnifiedPush app we're connected to"
+  },
   "controversial": "Controversial",
   "@controversial": {},
   "copiedToClipboard": "Copied to clipboard",
   "@copiedToClipboard": {},
   "copy": "Copy",
   "@copy": {},
+  "copyComment": "Copy Comment",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
+  "copySelected": "Copy selected",
+  "@copySelected": {
+    "description": "Action for copying selected text"
+  },
   "copyText": "Copy Text",
   "@copyText": {},
   "couldNotDetermineCommentDelete": "Error: Could not determine post to delete the comment.",
@@ -290,6 +440,10 @@
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Your comment report could not be submitted at this time. Please try again later",
   "@couldntCreateReport": {},
+  "couldntFindPost": "Unable to load the requested post. It may have been deleted or removed.",
+  "@couldntFindPost": {
+    "description": "Error message for when we can't load a post."
+  },
   "countSubscribers": "{count} subscribers",
   "@countSubscribers": {},
   "countUsers": "{count} users",
@@ -316,6 +470,10 @@
   "@crossPostedTo": {},
   "currentLongPress": "Currently set as long press",
   "@currentLongPress": {},
+  "currentNotificationsMode": "Current notifications mode: {mode}",
+  "@currentNotificationsMode": {
+    "description": "A status indicator for the current notifications mode"
+  },
   "currentSinglePress": "Currently set as single press",
   "@currentSinglePress": {},
   "customizeSwipeActions": "Customize swipe actions (tap to change)",
@@ -328,6 +486,10 @@
   "@dark": {
     "description": "Describes using the dark theme"
   },
+  "dateFormat": "Date Format",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
   "debug": "Debug",
   "@debug": {
     "description": "Debug settings category."
@@ -335,6 +497,14 @@
   "debugDescription": "The following debug settings should only be used for troubleshooting purposes.",
   "@debugDescription": {
     "description": "Explanation for debug settings page"
+  },
+  "debugNotificationsDescription": "Use the following options to troubleshoot issues related to notifications.",
+  "@debugNotificationsDescription": {
+    "description": "A description for the notification debugging section"
+  },
+  "defaultColor": "Default",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
   },
   "defaultCommentSortType": "Default Comment Sort Type",
   "@defaultCommentSortType": {
@@ -374,6 +544,20 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
+  "deletedByCreator": "deleted by creator",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "deletedByModerator": "deleted by moderator",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
+  "deselectUndeterminedWarning": "If you deselect Undetermined, you will not see most content.",
+  "@deselectUndeterminedWarning": {},
+  "detailedReason": "Reason: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
   "dimReadPosts": "Dim Read Posts",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
@@ -382,16 +566,52 @@
   "@disable": {
     "description": "Action for disabling something"
   },
+  "disablePushNotifications": "Disable Push Notifications",
+  "@disablePushNotifications": {
+    "description": "Description when disabling push notifications"
+  },
+  "disabled": "Disabled",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
+  "discussionLanguages": "Discussion Languages",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "discussionLanguagesTooltip": "Content is filtered to the selected languages.",
+  "@discussionLanguagesTooltip": {},
   "dismissRead": "Dismiss Read",
   "@dismissRead": {},
   "displayUserScore": "Display User Scores (Karma).",
   "@displayUserScore": {
     "description": "Option for displaying user scores or karma."
   },
+  "dividerAppearance": "Divider Appearance",
+  "@dividerAppearance": {
+    "description": "Divider appearance category"
+  },
+  "doNotShowAgain": "Do Not Show Again",
+  "@doNotShowAgain": {
+    "description": "Action for hiding something permanently"
+  },
+  "doNotSupportMultipleUnifiedPushApps": "Found multiple compatible apps; please install only one",
+  "@doNotSupportMultipleUnifiedPushApps": {
+    "description": "Tell the user we don't currently support multiple UnifiedPush apps"
+  },
   "downloadingMedia": "Downloading media to share…",
   "@downloadingMedia": {},
   "downvote": "Downvote",
-  "@downvote": {},
+  "@downvote": {
+    "description": "Action for downvoting a post/comment"
+  },
+  "downvoteColor": "Downvote Color",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
+  },
+  "downvoted": "Downvoted",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
   "downvotesDisabled": "Downvotes are turned off on this instance.",
   "@downvotesDisabled": {},
   "edit": "Edit",
@@ -426,7 +646,7 @@
   "@enableFloatingButtonOnPosts": {
     "description": "Setting for enable floating button on posts"
   },
-  "enableInboxNotifications": "Enable Inbox Notifications (Experimental)",
+  "enableInboxNotifications": "Enable Inbox Notifications",
   "@enableInboxNotifications": {
     "description": "Setting name for inbox notifications"
   },
@@ -438,9 +658,21 @@
   "@endSearch": {},
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
+  "errorMarkingReplyRead": "There was an error marking the reply as read.",
+  "@errorMarkingReplyRead": {
+    "description": "Error message for marking a reply read"
+  },
+  "errorMarkingReplyUnread": "There was an error marking the reply as unread.",
+  "@errorMarkingReplyUnread": {
+    "description": "Error message for marking a reply unread"
+  },
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
+  },
+  "expand": "Expand",
+  "@expand": {
+    "description": "Action to expand something"
   },
   "expandCommentPreview": "Expand Comment Preview",
   "@expandCommentPreview": {
@@ -466,25 +698,45 @@
   "@expanded": {
     "description": "Expanded post body view type"
   },
+  "exploreInstance": "Explore instance",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
   "extraLarge": "Extra Large",
   "@extraLarge": {
     "description": "Description for extra large font scale"
   },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
+  "failedToCommunicateWithThunderNotificationServer": "Failed to communicate with Thunder notification server at '{serverAddress}'",
+  "@failedToCommunicateWithThunderNotificationServer": {
+    "description": "Error message for when we fail to communicate with Thunder notification server"
+  },
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
   "@failedToLoadBlocks": {},
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
+  "failedToUpdateNotificationSettings": "Failed to update notification settings",
+  "@failedToUpdateNotificationSettings": {
+    "description": "Error message when failed to update notification settings."
+  },
   "favorites": "Favorites",
   "@favorites": {
     "description": "The favorited communities on the drawer"
+  },
+  "featuredPost": "Featured Post",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
   },
   "feed": "Feed",
   "@feed": {},
   "feedBehaviourSettings": "Feed",
   "@feedBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
+  },
+  "feedSettings": "Feed Settings",
+  "@feedSettings": {
+    "description": "Feed settings category."
   },
   "feedTypeAndSorts": "Default Feed Type and Sorting",
   "@feedTypeAndSorts": {
@@ -524,6 +776,10 @@
   "@forward": {
     "description": "Label for navigating forward (e.g., in a browser)"
   },
+  "foundUnifiedPushDistribtorApp": "Found compatible app; restart Thunder to connect",
+  "@foundUnifiedPushDistribtorApp": {
+    "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
+  },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
   "fullscreenSwipeGestures": "Fullscreen Swipe Gestures",
@@ -542,16 +798,32 @@
   "@gestures": {},
   "gettingStarted": "Getting Started",
   "@gettingStarted": {},
+  "green": "Green",
+  "@green": {
+    "description": "The color green"
+  },
+  "havingIssuesWithNotifications": "Having issues with notifications?",
+  "@havingIssuesWithNotifications": {
+    "description": "A shortcut to navigate to the notification debugging section"
+  },
+  "hidCommunity": "Hid Community",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
   "hideNsfwPostsFromFeed": "Hide NSFW Posts from Feed",
   "@hideNsfwPostsFromFeed": {
     "description": "Toggle to hide NSFW posts from the feed."
   },
-  "hideNsfwPreviews": "Hide NSFW Previews",
+  "hideNsfwPreviews": "Blur NSFW Previews",
   "@hideNsfwPreviews": {
-    "description": "Toggle to hide NSFW previews."
+    "description": "Toggle to blur NSFW previews."
   },
   "hidePassword": "Hide Password",
   "@hidePassword": {},
+  "hideThumbnails": "Hide Thumbnails",
+  "@hideThumbnails": {
+    "description": "Option to hide thumbnails in feed"
+  },
   "hideTopBarOnScroll": "Hide Top Bar on Scroll",
   "@hideTopBarOnScroll": {
     "description": "Settings toggle to hide the top bar on scroll"
@@ -590,6 +862,10 @@
   },
   "inReplyTo": "In reply to {post} in {community}",
   "@inReplyTo": {},
+  "in_": "in",
+  "@in_": {
+    "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+  },
   "inbox": "Inbox",
   "@inbox": {},
   "includeCommunity": "Include Community",
@@ -608,10 +884,28 @@
   "@information": {
     "description": "Information heading - used in the FAB settings page"
   },
-  "instance": "Instance",
-  "@instance": {},
+  "instance": "{count, plural, zero {Instance} one {Instance} other {Instances} } ",
+  "@instance": {
+    "description": "Heading for an instance"
+  },
+  "instanceActions": "Instance Actions",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "instanceEntry": "Instance '{username}'",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
+  },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
   "@instanceHasAlreadyBenAdded": {},
+  "instanceNameColor": "Instance Name Color",
+  "@instanceNameColor": {
+    "description": "Setting for instance name color"
+  },
+  "instanceNameThickness": "Instance Name Thickness",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
   "keywordFilterDescription": "Filters posts containing any keywords in the title or body",
@@ -620,12 +914,14 @@
   },
   "keywordFilters": "Keyword Filters",
   "@keywordFilters": {
-    "description": "Subcategory in Setting -> General"
+    "description": "Subcategory in Settings -> Filters"
   },
   "language": "Language",
   "@language": {
     "description": "Label when creating or editing a post."
   },
+  "languageFilters": "Looking for language filters?",
+  "@languageFilters": {},
   "languageNotAllowed": "The community you are posting to does not allow posts in the language that you have selected. Try another language.",
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
@@ -684,11 +980,19 @@
   "@loadMoreSingular": {},
   "local": "Local",
   "@local": {},
+  "localNotifications": "Local Notifications",
+  "@localNotifications": {
+    "description": "Describes the notification type for Local Notifications"
+  },
   "localPosts": "Local Posts",
   "@localPosts": {},
   "lockPost": "Lock Post",
   "@lockPost": {
     "description": "Action for locking a post (moderator action)"
+  },
+  "lockedPost": "Locked Post",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
   },
   "logOut": "Log out",
   "@logOut": {},
@@ -712,9 +1016,25 @@
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
+  "markAsRead": "Mark as read",
+  "@markAsRead": {
+    "description": "Label for the action to mark a message as read"
+  },
   "markPostAsReadOnMediaView": "Mark Read After Viewing Media",
   "@markPostAsReadOnMediaView": {
     "description": "Toggle to mark posts as read after viewing media."
+  },
+  "markPostAsReadOnScroll": "Mark Read On Scroll",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "markReadColor": "Mark Read/Unread Color",
+  "@markReadColor": {
+    "description": "Name of mark read/unread color setting"
+  },
+  "me": "Me",
+  "@me": {
+    "description": "Label for the current user."
   },
   "medium": "Medium",
   "@medium": {
@@ -730,20 +1050,74 @@
   },
   "missingErrorMessage": "No error message available",
   "@missingErrorMessage": {},
+  "modAdd": "Add/Remove Instance Moderators",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modAddCommunity": "Add/Remove Moderators to Communities",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "modBan": "Ban/Unban Instance Moderators",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance moderators"
+  },
+  "modBanFromCommunity": "Ban/Unban Users from Communities",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "modFeaturePost": "Feature/Unfeature Posts",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modLockPost": "Lock/Unlock Posts",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modRemoveComment": "Remove/Restore Comments",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Remove/Restore Communities",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "modRemovePost": "Remove/Restore Posts",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "modTransferCommunity": "Transferring Communities",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
   "moderatedCommunities": "Moderated Communities",
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderator": "Moderator",
+  "@moderator": {
+    "description": "Role name for moderator"
   },
   "moderatorActions": "Moderator Actions",
   "@moderatorActions": {
     "description": "Actions for moderators to perform on posts"
   },
+  "modlog": "Modlog",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
   "mostComments": "Most Comments",
   "@mostComments": {},
+  "mustBeLoggedIn": "You need to be logged in",
+  "@mustBeLoggedIn": {},
   "mustBeLoggedInComment": "You need to be logged in to comment",
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
   "@mustBeLoggedInPost": {},
+  "names": "Names",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
   "navbarDoubleTapGestures": "Navbar Double Tap Gestures",
   "@navbarDoubleTapGestures": {
     "description": "Setting for navbar double tap gestures"
@@ -766,6 +1140,8 @@
   "@nestedCommentIndicatorStyle": {
     "description": "Setting for nested comment indicator style"
   },
+  "never": "Never",
+  "@never": {},
   "newComments": "New Comments",
   "@newComments": {},
   "newPost": "New Post",
@@ -774,6 +1150,10 @@
   },
   "new_": "New",
   "@new_": {},
+  "no": "No",
+  "@no": {
+    "description": "A negative status"
+  },
   "noComments": "Oh. There are no comments.",
   "@noComments": {},
   "noCommentsFound": "No comments found.",
@@ -782,6 +1162,14 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
+  "noCompatibleAppFound": "No compatible app found",
+  "@noCompatibleAppFound": {
+    "description": "Tell the user we didn't find a compatible UnifiedPush app"
+  },
+  "noDiscussionLanguages": "No content is hidden based on language.",
+  "@noDiscussionLanguages": {
+    "description": "Message for no discussion languages added"
+  },
   "noFavoritedCommunities": "No favorited communities",
   "@noFavoritedCommunities": {
     "description": "Message for no favorited communities on the drawer"
@@ -794,7 +1182,7 @@
   },
   "noKeywordFilters": "No keyword filters added",
   "@noKeywordFilters": {
-    "description": "Message for no keywords added"
+    "description": "Message for no keyword filters added"
   },
   "noLanguage": "No language",
   "@noLanguage": {
@@ -802,6 +1190,10 @@
   },
   "noPostsFound": "No posts found.",
   "@noPostsFound": {},
+  "noReplies": "No replies",
+  "@noReplies": {
+    "description": "Label for when there are no replies in the list"
+  },
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
   "noSubscriptions": "No Subscriptions",
@@ -812,6 +1204,14 @@
   "@noUserBlocks": {},
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
+  "none": "None",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
   "notValidUrl": "Not a valid URL",
@@ -830,9 +1230,17 @@
   "@notificationsNotAllowed": {
     "description": "Description for when notifications are now allowed for app"
   },
-  "notificationsWarningDialog": "Notifications are an experimental feature which may not function correctly on all devices.\n\n· Checks will occur every ~15 minutes and will consume additional battery.\n\n· Disable battery optimizations for a higher likelihood of successful notifications.\n\nSee the following page for more information.",
+  "notificationsWarningDialog": "Notifications are an **experimental feature** which may not function correctly on all devices.\n\n - Checks will occur every ~15 minutes and will consume additional battery.\n\n - Disable battery optimizations for a higher likelihood of successful notifications.\n\n See the following page for more information.",
   "@notificationsWarningDialog": {
     "description": "The content of the warning dialog for the notifications feature"
+  },
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
+  },
+  "nsfwWarning": "NSFW - Tap to reveal",
+  "@nsfwWarning": {
+    "description": "Warning for NSFW posts"
   },
   "off": "off",
   "@off": {},
@@ -842,6 +1250,8 @@
   "@old": {},
   "on": "on",
   "@on": {},
+  "onWifi": "On Wifi",
+  "@onWifi": {},
   "onlyModsCanPostInCommunity": "Only moderators may post in this community",
   "@onlyModsCanPostInCommunity": {},
   "open": "Open",
@@ -868,6 +1278,14 @@
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
   },
+  "orange": "Orange",
+  "@orange": {
+    "description": "The color orange"
+  },
+  "originalPoster": "Original Poster",
+  "@originalPoster": {
+    "description": "Label for the original poster."
+  },
   "overview": "Overview",
   "@overview": {},
   "password": "Password",
@@ -876,7 +1294,7 @@
   "@pending": {
     "description": "Describes the subscription status for 'Pending'"
   },
-  "permissionDenied": "Permission Denied",
+  "permissionDenied": "Thunder has not been granted permission to display notifications. Please enable in system settings.",
   "@permissionDenied": {
     "description": "Title for error when user denies OS permissions"
   },
@@ -906,6 +1324,18 @@
   "@postBodySettingsDescription": {
     "description": "Description of post body settings"
   },
+  "postBodyShowCommunityAvatar": "Show Community Avatar",
+  "@postBodyShowCommunityAvatar": {
+    "description": "Whether to show the community avatar for post bodies"
+  },
+  "postBodyShowCommunityInstance": "Show Community Instance",
+  "@postBodyShowCommunityInstance": {
+    "description": "Whether to show the community instance for post bodies"
+  },
+  "postBodyShowUserInstance": "Show User Instance",
+  "@postBodyShowUserInstance": {
+    "description": "Whether to show the user instance for post bodies"
+  },
   "postBodyViewType": "Post Body View Type",
   "@postBodyViewType": {
     "description": "Setting name for the post body view type setting"
@@ -932,6 +1362,10 @@
   },
   "postSavedAsDraft": "Post saved as draft",
   "@postSavedAsDraft": {},
+  "postShowUserInstance": "Show User Instance",
+  "@postShowUserInstance": {
+    "description": "Whether to show the user instance for post listings"
+  },
   "postSwipeActions": "Post Swipe Actions",
   "@postSwipeActions": {
     "description": "Setting for post swipe actions"
@@ -966,6 +1400,42 @@
   "@pureBlack": {
     "description": "Describes using the pure black theme"
   },
+  "purgedComment": "Purged Comment",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "purgedCommunity": "Purged Community",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "purgedPerson": "Purged Person",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "purgedPost": "Purged Post",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
+  "purple": "Purple",
+  "@purple": {
+    "description": "The color purple"
+  },
+  "pushNotification": "Push Notifications",
+  "@pushNotification": {
+    "description": "Setting for push notifications"
+  },
+  "pushNotificationDescription": "If enabled, Thunder will send your JWT token(s) to the server in order to poll for new notifications. \n\n **NOTE:** This will not take effect until the next time the app is launched.",
+  "@pushNotificationDescription": {
+    "description": "Description of push notification setting"
+  },
+  "pushNotificationServer": "Push Notification Server",
+  "@pushNotificationServer": {
+    "description": "Setting for choosing push notification server"
+  },
+  "pushNotificationServerDescription": "Configure the push notification server. The server must be properly configured to send push notifications to your device.\n\n **Only enter a server that you trust with your credentials.**",
+  "@pushNotificationServerDescription": {
+    "description": "Description of choosing push notification server setting"
+  },
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
@@ -973,6 +1443,10 @@
   "reason": "Reason",
   "@reason": {
     "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "red": "Red",
+  "@red": {
+    "description": "The color red"
   },
   "reduceAnimations": "Reduce Animations",
   "@reduceAnimations": {
@@ -1000,27 +1474,51 @@
   "@removeInstance": {},
   "removeKeyword": "Remove \"{keyword}\"?",
   "@removeKeyword": {
-    "description": "Description of removing a keyword"
+    "description": "Description of removing a keyword filter"
   },
   "removeKeywordFilter": "Remove Keyword",
   "@removeKeywordFilter": {
-    "description": "Title for dialig to remove keyword"
+    "description": "Title for dialog to remove keyword filter"
   },
   "removePost": "Remove Post",
   "@removePost": {
     "description": "Action to remove a post (moderator action)"
   },
+  "removedComment": "Removed Comment",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removedCommunity": "Removed Community",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
   "@removedCommunityFromSubscriptions": {},
+  "removedInstanceMod": "Removed Instance Mod",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "removedModFromCommunity": "Removed Mod from Community",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "removedPost": "Removed Post",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},
+  "replyColor": "Reply Color",
+  "@replyColor": {
+    "description": "Name of reply color setting"
+  },
   "replyNotSupported": "Replying from this view is currently not supported yet",
   "@replyNotSupported": {},
   "replyToPost": "Reply to Post",
   "@replyToPost": {},
   "replyingTo": "Replying to {author}",
   "@replyingTo": {},
-  "report": "Report",
+  "report": "{count, plural, zero {Report} one {Report} other {Reports} } ",
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
@@ -1048,8 +1546,20 @@
   "@restorePost": {
     "description": "Action to restore a post (moderator action)"
   },
+  "restoredComment": "Restored Comment",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
   "restoredCommentFromDraft": "Restored comment from draft",
   "@restoredCommentFromDraft": {},
+  "restoredCommunity": "Restored Community",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "restoredPost": "Restored Post",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
   "restoredPostFromDraft": "Restored post from draft",
   "@restoredPostFromDraft": {},
   "retry": "Retry",
@@ -1064,6 +1574,10 @@
   },
   "save": "Save",
   "@save": {},
+  "saveColor": "Save Color",
+  "@saveColor": {
+    "description": "Name of save color setting"
+  },
   "saveSettings": "Save Settings",
   "@saveSettings": {
     "description": "Action to save the application settings."
@@ -1098,6 +1612,10 @@
   "@searchCommunitiesFederatedWith": {},
   "searchInstance": "Search {instance}",
   "@searchInstance": {},
+  "searchInstancesFederatedWith": "Search for instances federated with {instance}",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
   "searchPostSearchType": "Select Post Search Type",
   "@searchPostSearchType": {},
   "searchPostsFederatedWith": "Search for posts federated with {instance}",
@@ -1106,16 +1624,54 @@
   "@searchTerm": {},
   "searchUsersFederatedWith": "Search for users federated with {instance}",
   "@searchUsersFederatedWith": {},
+  "selectAccountToCommentAs": "Select account to comment as",
+  "@selectAccountToCommentAs": {
+    "description": "Profile modal heading for commenting as other user"
+  },
+  "selectAccountToPostAs": "Select account to post as",
+  "@selectAccountToPostAs": {
+    "description": "Heading for account selector when posting"
+  },
+  "selectAll": "Select all",
+  "@selectAll": {
+    "description": "Action for selecting all text"
+  },
   "selectCommunity": "Select a community",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
   "@selectFeedType": {},
-  "selectLanguage": "Select language",
+  "selectLanguage": "Select Language",
   "@selectLanguage": {
     "description": "The prompt to select a language in the post creation page"
   },
   "selectSearchType": "Select Search Type",
   "@selectSearchType": {},
+  "selectText": "Select Text",
+  "@selectText": {
+    "description": "Post and comment action for selecting text"
+  },
+  "sendBackgroundTestLocalNotification": "Send background test local notification",
+  "@sendBackgroundTestLocalNotification": {
+    "description": "The option to send a background notification for testing"
+  },
+  "sendBackgroundTestUnifiedPushNotification": "Send background test UnifiedPush notification",
+  "@sendBackgroundTestUnifiedPushNotification": {
+    "description": "The option to send a background UnifiedPUsh notification for testing"
+  },
+  "sendTestLocalNotification": "Send test local notification",
+  "@sendTestLocalNotification": {
+    "description": "The option to send a notification for testing"
+  },
+  "sendTestUnifiedPushNotification": "Send test UnifiedPush notification",
+  "@sendTestUnifiedPushNotification": {
+    "description": "The option to send a UnifiedPush notification for testing"
+  },
+  "sensitiveContentWarning": "May contain sensitive content. Tap to reveal.",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
+  "sentRequestForTestNotification": "Sent request for test notification.",
+  "@sentRequestForTestNotification": {},
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
   "setAction": "Set Action",
@@ -1136,12 +1692,52 @@
   },
   "share": "Share",
   "@share": {},
-  "shareLink": "Share Link",
+  "shareComment": "Share Comment Link",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "shareCommentLocal": "Share Comment Link (My Instance)",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "shareCommunity": "Share Community",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "shareCommunityLink": "Share Community Link",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "shareCommunityLinkLocal": "Share Community Link (My Instance)",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "shareLemmyLink": "Share Lemmy Link",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
+  },
+  "shareLink": "Share External Link",
   "@shareLink": {},
   "shareMedia": "Share Media",
   "@shareMedia": {},
-  "sharePost": "Share Post",
+  "sharePost": "Share Post Link",
   "@sharePost": {},
+  "sharePostLocal": "Share Post Link (My Instance)",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareUser": "Share User",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "shareUserLink": "Share User Link",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "shareUserLinkLocal": "Share User Link (My Instance)",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
   "showAll": "Show All",
   "@showAll": {},
   "showBotAccounts": "Show Bot Accounts",
@@ -1160,6 +1756,14 @@
   "@showEdgeToEdgeImages": {
     "description": "Toggle to view edge to edge images."
   },
+  "showFullDate": "Show Full Date",
+  "@showFullDate": {
+    "description": "Toggle to show full date on posts"
+  },
+  "showFullDateDescription": "Show full date on posts",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
+  },
   "showFullHeightImages": "Show Full Height Images",
   "@showFullHeightImages": {
     "description": "Toggle to view full height images."
@@ -1168,15 +1772,27 @@
   "@showInAppUpdateNotifications": {
     "description": "Toggle to get notified of new GitHub releases."
   },
-  "showLess": "Show fewer",
+  "showLess": "Show less",
   "@showLess": {},
   "showMore": "Show more",
   "@showMore": {},
+  "showNavigationLabels": "Show Navigation Labels",
+  "@showNavigationLabels": {
+    "description": "Setting for showing navigation labels"
+  },
+  "showNavigationLabelsDescription": "Whether to display labels beneath the bottom navigation buttons",
+  "@showNavigationLabelsDescription": {
+    "description": "Description for setting for showing navigation labels"
+  },
   "showPassword": "Show Password",
   "@showPassword": {},
   "showPostAuthor": "Show Post Author",
   "@showPostAuthor": {
     "description": "Toggle to show post author."
+  },
+  "showPostAuthorSubtitle": "Post author is always shown in community feeds",
+  "@showPostAuthorSubtitle": {
+    "description": "Subtitle for the Show Post Author setting"
   },
   "showPostCommunityIcons": "Show Community Icons",
   "@showPostCommunityIcons": {
@@ -1218,6 +1834,18 @@
   "@showThumbnailPreviewOnRight": {
     "description": "Toggle to show thumbnails on the right side."
   },
+  "showUpdateChangelogs": "Show Update Changelogs",
+  "@showUpdateChangelogs": {
+    "description": "Setting for showing changelogs after updates"
+  },
+  "showUpdateChangelogsSubtitle": "Display a list of changes after an update",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Subtitle for setting for showing changelogs after updates"
+  },
+  "showUserAvatar": "Show User Avatar",
+  "@showUserAvatar": {
+    "description": "Toggle to show user avatar."
+  },
   "showUserDisplayNames": "Show User Display Names",
   "@showUserDisplayNames": {
     "description": "Toggle to show user display names."
@@ -1248,6 +1876,14 @@
   "@spoiler": {
     "description": "Placeholder label for spoiler"
   },
+  "standard": "Standard",
+  "@standard": {
+    "description": "Describes a standard visual density"
+  },
+  "status": "Status",
+  "@status": {
+    "description": "Status of the action"
+  },
   "submit": "Submit",
   "@submit": {},
   "subscribe": "Subscribe",
@@ -1264,10 +1900,22 @@
   "@successfullyBlocked": {},
   "successfullyBlockedCommunity": "Blocked {communityName}",
   "@successfullyBlockedCommunity": {},
+  "successfullyBlockedUser": "Blocked {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
   "successfullyUnblocked": "Unblocked.",
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "Unblocked {communityName}",
   "@successfullyUnblockedCommunity": {},
+  "successfullyUnblockedUser": "Unblocked {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "suchAs": "such as",
+  "@suchAs": {
+    "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
+  },
   "suggestedTitle": "Suggested title",
   "@suggestedTitle": {
     "description": "Suggested title for the post."
@@ -1286,8 +1934,24 @@
   "@tappableAuthorCommunity": {
     "description": "Toggle to make authors and communities tappable."
   },
+  "teal": "Teal",
+  "@teal": {
+    "description": "The color teal"
+  },
+  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It may take a few minutes.)",
+  "@testBackgroundNotificationDescription": {
+    "description": "A message describing the background test notification"
+  },
+  "testBackgroundUnifiedPushNotificationDescription": "Thunder will ask the notification server to send a delayed notification and then close itself. (It may take a few minutes.)",
+  "@testBackgroundUnifiedPushNotificationDescription": {
+    "description": "A message describing the UnifiedPush background test notification"
+  },
   "text": "Text",
   "@text": {},
+  "textActions": "Text Actions",
+  "@textActions": {
+    "description": "Option for text actions"
+  },
   "theme": "Theme",
   "@theme": {
     "description": "Setting for theme"
@@ -1296,9 +1960,33 @@
   "@themeAccentColor": {
     "description": "Setting for theme accent color"
   },
+  "themePrimary": "Theme Primary",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "themeSecondary": "Theme Secondary",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "themeTertiary": "Theme Tertiary",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
+  },
   "theming": "Theming",
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "thickness": "Thickness",
+  "@thickness": {
+    "description": "Describes a thickness (e.g., divider)"
+  },
+  "thisAccount": "This Account",
+  "@thisAccount": {
+    "description": "Referring to the currently active account in account settings"
+  },
+  "thunderHasBeenUpdated": "Thunder updated to {version}!",
+  "@thunderHasBeenUpdated": {
+    "description": "Heading for changelog when Thunder has been updated"
   },
   "timeoutComments": "Error: Timeout when attempting to fetch comments",
   "@timeoutComments": {},
@@ -1346,6 +2034,10 @@
   "@topYear": {},
   "totp": "TOTP (optional)",
   "@totp": {},
+  "transferredModToCommunity": "Transferred Community",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
   "translationsMayNotBeComplete": "Please note that the translations may not be complete",
   "@translationsMayNotBeComplete": {
     "description": "Warning that translations may not be complete when selecting a language in the settings"
@@ -1362,14 +2054,24 @@
   "@unableToFindCommunityName": {
     "description": "Error message for when we are unable to find a community, including the name"
   },
+  "unableToFindCommunityOnInstance": "Unable to find the selected community on the selected user's instance.",
+  "@unableToFindCommunityOnInstance": {
+    "description": "An error message for when we can't find a community on an instance"
+  },
   "unableToFindInstance": "Unable to find instance",
   "@unableToFindInstance": {},
   "unableToFindLanguage": "Unable to find language",
   "@unableToFindLanguage": {
     "description": "Error message when language cannot be found."
   },
+  "unableToFindPost": "Unable to find post",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
   "unableToFindUser": "Unable to find user",
   "@unableToFindUser": {},
+  "unableToFindUserName": "Unable to find user '{username}'",
+  "@unableToFindUserName": {},
   "unableToLoadImage": "Unable to load image",
   "@unableToLoadImage": {
     "description": "Placeholder for when we are unable to load a binary image"
@@ -1388,6 +2090,22 @@
   "@unableToNavigateToInstance": {
     "description": "Error message for when we can't navigate to a Lemmy instance"
   },
+  "unableToResolveReport": "Unable to resolve report",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
+  },
+  "unableToRetrieveChangelog": "Unable to retrieve changelog for version {version}.",
+  "@unableToRetrieveChangelog": {
+    "description": "Error message for when we are unable to retrieve the changelog."
+  },
+  "unbannedUser": "Unbanned User",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "unbannedUserFromCommunity": "Unbanned User from Community",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
@@ -1398,13 +2116,45 @@
   },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
+  "unfeaturedPost": "Unfeatured Post",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "unhidCommunity": "Unhid Community",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
+  "unifiedPushDistributorApp": "UnifiedPush Distributor app: {app} ({count} available)",
+  "@unifiedPushDistributorApp": {
+    "description": "A status indicator telling the current state of the UnifiedPush distributor app"
+  },
+  "unifiedPushNotifications": "UnifiedPush Notifications",
+  "@unifiedPushNotifications": {
+    "description": "Describes the notification type for UnifiedPush Notifications"
+  },
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
+  },
   "unlockPost": "Unlock Post",
   "@unlockPost": {
     "description": "Action for unlocking a post (moderator action)"
   },
+  "unlockedPost": "Unlocked Post",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
+  },
   "unpinFromCommunity": "Unpin from Community",
   "@unpinFromCommunity": {
     "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "unreachable": "Unreachable",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "unresolved": "Unresolved",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
   },
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
@@ -1421,7 +2171,17 @@
   "uploadImage": "Upload image",
   "@uploadImage": {},
   "upvote": "Upvote",
-  "@upvote": {},
+  "@upvote": {
+    "description": "Action for upvoting a post/comment"
+  },
+  "upvoteColor": "Upvote Color",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
+  },
+  "upvoted": "Upvoted",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
   "uriNotSupported": "This type of link is not supported at the moment.",
   "@uriNotSupported": {
     "description": "Unsupported link type at the present time."
@@ -1432,9 +2192,25 @@
   "@useAdvancedShareSheet": {
     "description": "Toggle to use advanced share sheet."
   },
+  "useApplePushNotifications": "Use APNs Notifications",
+  "@useApplePushNotifications": {
+    "description": "Toggle to use APNs."
+  },
+  "useApplePushNotificationsDescription": "Uses Apple's Push Notification service",
+  "@useApplePushNotificationsDescription": {
+    "description": "Subtitle of the setting for using APNs"
+  },
   "useCompactView": "Enable for small posts, disable for big.",
   "@useCompactView": {
     "description": "Option to enable or disable compact view for small posts."
+  },
+  "useLocalNotifications": "Use Local Notifications (Experimental)",
+  "@useLocalNotifications": {
+    "description": "Toggle to use local notifications."
+  },
+  "useLocalNotificationsDescription": "Periodically checks for notifications in the background",
+  "@useLocalNotificationsDescription": {
+    "description": "Subtitle of the setting for using local notifications"
   },
   "useMaterialYouTheme": "Use Material You Theme",
   "@useMaterialYouTheme": {
@@ -1444,11 +2220,47 @@
   "@useMaterialYouThemeDescription": {
     "description": "Subtitle of the setting for using Material You theme"
   },
+  "useProfilePictureForDrawer": "Use Profile Picture for Drawer",
+  "@useProfilePictureForDrawer": {
+    "description": "Setting name for using the profile picture for the drawer"
+  },
+  "useProfilePictureForDrawerSubtitle": "When logged in, shows the user's profile picture in place of the drawer icon",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Setting subtitle for using the profile picture for the drawer"
+  },
   "useSuggestedTitle": "Use suggested title: {title}",
   "@useSuggestedTitle": {},
+  "useUnifiedPushNotifications": "Use UnifiedPush Notifications",
+  "@useUnifiedPushNotifications": {
+    "description": "Toggle to use UnifiedPush Notifications"
+  },
+  "useUnifiedPushNotificationsDescription": "Requires a compatible app",
+  "@useUnifiedPushNotificationsDescription": {
+    "description": "Subtitle of the setting for using UnifiedPush Notifications"
+  },
+  "user": "User",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "userActions": "User Actions",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "userEntry": "User '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
+  },
   "userFormat": "User Format",
   "@userFormat": {
     "description": "Setting for user full name format"
+  },
+  "userNameColor": "User Name Color",
+  "@userNameColor": {
+    "description": "Setting for username color"
+  },
+  "userNameThickness": "User Name Thickness",
+  "@userNameThickness": {
+    "description": "Setting for user name thickness"
   },
   "userNotLoggedIn": "User not logged in",
   "@userNotLoggedIn": {},
@@ -1460,12 +2272,68 @@
   "@userSettingDescription": {
     "description": "Description which explains that the settings are applied globally to the current user."
   },
+  "userStyle": "User Style",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  },
   "username": "Username",
   "@username": {},
+  "usernameFormattingRedirect": "Looking for username formatting?",
+  "@usernameFormattingRedirect": {
+    "description": "Setting title for sending the user to the new formatting options"
+  },
   "users": "Users",
   "@users": {},
+  "versionNumber": "Version {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
+  },
+  "video": "Video",
+  "@video": {
+    "description": "String for video "
+  },
+  "videoAutoFullscreen": "Auto Fullscreen",
+  "@videoAutoFullscreen": {
+    "decription": "Option to always start the video players in landscape"
+  },
+  "videoAutoLoop": "Loop Video",
+  "@videoAutoLoop": {
+    "description": "Option to always loop a video"
+  },
+  "videoAutoMute": "Mute Videos",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
+  },
+  "videoAutoPlay": "Video Autoplay",
+  "@videoAutoPlay": {
+    "description": "Option to always autoplay videos"
+  },
+  "videoDefaultPlaybackSpeed": "Default Playback Speed",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback Speed"
+  },
+  "viewAll": "View all",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
+  "viewCommentSource": "View Comment Source",
+  "@viewCommentSource": {
+    "description": "Menu item for viewing a comment's source"
+  },
+  "viewOriginal": "View original",
+  "@viewOriginal": {
+    "description": "Action for viewing original text (as opposed to raw markdown)"
+  },
+  "viewPostSource": "View post source",
+  "@viewPostSource": {
+    "description": "Menu item for viewing a post's source"
+  },
+  "viewSource": "View source",
+  "@viewSource": {
+    "description": "Action for viewing source (raw markdown)"
+  },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
   "visitInstance": "Visit Instance",
@@ -1483,5 +2351,9 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "yes": "Yes",
+  "@yes": {
+    "description": "A positive status"
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:expandable/expandable.dart';
 import 'package:collection/collection.dart';
@@ -12,10 +13,14 @@ import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
+import 'package:thunder/core/enums/custom_theme_type.dart';
+import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
+import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
@@ -45,6 +50,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// When enabled, posts on the feed will be compacted
   bool useCompactView = false;
+
+  /// When enabled, the thumbnails in compact/card mode will be hidden
+  bool hideThumbnails = false;
 
   /// When enabled, the thumbnail previews will be shown on the right. By default, they are shown on the left
   bool showThumbnailPreviewOnRight = false;
@@ -76,8 +84,26 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// When enabled, the author of the post will be shown on the post
   bool showPostAuthor = false;
 
+  /// When toggled on, user instance is displayed alongside the display name/username
+  bool postShowUserInstance = false;
+
   /// When enabled, posts that have been marked as read will be dimmed
   bool dimReadPosts = true;
+
+  /// When enabled, the full date will be shown
+  bool showFullPostDate = false;
+
+  /// The selected date format. This is only used when `showFullPostDate` is enabled
+  DateFormat? selectedDateFormat;
+
+  /// The thickness of the divider between the post cards
+  FeedCardDividerThickness feedCardDividerThickness = FeedCardDividerThickness.compact;
+
+  /// The color of the divider between the post cards
+  Color feedCardDividerColor = Colors.transparent;
+
+  /// List of available date formats to select from
+  List<DateFormat> dateFormats = [DateFormat.yMMMMd(Intl.systemLocale).add_jm()];
 
   /// When enabled, cross posts will be shown on the post page
   bool showCrossPosts = true;
@@ -87,6 +113,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// Determines how post bodies are displayed
   PostBodyViewType postBodyViewType = PostBodyViewType.expanded;
+
+  /// When enabled, shows the instance of the user in posts
+  bool postBodyShowUserInstance = false;
+
+  /// When enabled, shows the instance of the community in posts
+  bool postBodyShowCommunityInstance = false;
+
+  /// When enabled, shows the avatar of the community in chips
+  bool postBodyShowCommunityAvatar = false;
 
   /// List of compact post card metadata items to show on the post card
   /// The order of the items is important as they will be displayed in that order
@@ -107,9 +142,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       // General Settings
       useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
+      hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
+      postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
+      showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
+      selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : dateFormats.first;
+      feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
+      feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.value);
 
       // Compact View Settings
       compactPostCardMetadataItems =
@@ -130,6 +171,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       // Post body settings
       showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
+      postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
+      postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
+      postBodyShowCommunityAvatar = prefs.getBool(LocalSettings.postBodyShowCommunityAvatar.name) ?? false;
     });
   }
 
@@ -146,6 +190,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setBool(LocalSettings.hideNsfwPreviews.name, value);
         setState(() => hideNsfwPreviews = value);
         break;
+      case LocalSettings.hideThumbnails:
+        await prefs.setBool(LocalSettings.hideThumbnails.name, value);
+        setState(() => hideThumbnails = value);
+        break;
       case LocalSettings.showPostAuthor:
         await prefs.setBool(LocalSettings.showPostAuthor.name, value);
         setState(() => showPostAuthor = value);
@@ -154,9 +202,29 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
         setState(() => useDisplayNames = value);
         break;
+      case LocalSettings.postShowUserInstance:
+        await prefs.setBool(LocalSettings.postShowUserInstance.name, value);
+        setState(() => postShowUserInstance = value);
+        break;
       case LocalSettings.dimReadPosts:
         await prefs.setBool(LocalSettings.dimReadPosts.name, value);
         setState(() => dimReadPosts = value);
+        break;
+      case LocalSettings.showFullPostDate:
+        await prefs.setBool(LocalSettings.showFullPostDate.name, value);
+        setState(() => showFullPostDate = value);
+        break;
+      case LocalSettings.dateFormat:
+        await prefs.setString(LocalSettings.dateFormat.name, (value as DateFormat).pattern ?? dateFormats.first.pattern!);
+        setState(() => selectedDateFormat = value);
+        break;
+      case LocalSettings.feedCardDividerThickness:
+        await prefs.setString(LocalSettings.feedCardDividerThickness.name, (value as FeedCardDividerThickness).name);
+        setState(() => feedCardDividerThickness = value);
+        break;
+      case LocalSettings.feedCardDividerColor:
+        await prefs.setInt(LocalSettings.feedCardDividerColor.name, value.value);
+        setState(() => feedCardDividerColor = value);
         break;
 
       case LocalSettings.compactPostCardMetadataItems:
@@ -210,6 +278,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setString(LocalSettings.postBodyViewType.name, (value as PostBodyViewType).name);
         setState(() => postBodyViewType = value);
         break;
+      case LocalSettings.postBodyShowUserInstance:
+        await prefs.setBool(LocalSettings.postBodyShowUserInstance.name, value);
+        setState(() => postBodyShowUserInstance = value);
+        break;
+      case LocalSettings.postBodyShowCommunityInstance:
+        await prefs.setBool(LocalSettings.postBodyShowCommunityInstance.name, value);
+        setState(() => postBodyShowCommunityInstance = value);
+        break;
+      case LocalSettings.postBodyShowCommunityAvatar:
+        await prefs.setBool(LocalSettings.postBodyShowCommunityAvatar.name, value);
+        setState(() => postBodyShowCommunityAvatar = value);
+        break;
     }
 
     if (context.mounted) {
@@ -223,9 +303,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
     await prefs.remove(LocalSettings.useCompactView.name);
     await prefs.remove(LocalSettings.hideNsfwPreviews.name);
+    await prefs.remove(LocalSettings.hideThumbnails.name);
     await prefs.remove(LocalSettings.showPostAuthor.name);
     await prefs.remove(LocalSettings.useDisplayNamesForUsers.name);
+    await prefs.remove(LocalSettings.postShowUserInstance.name);
     await prefs.remove(LocalSettings.dimReadPosts.name);
+    await prefs.remove(LocalSettings.showFullPostDate.name);
+    await prefs.remove(LocalSettings.dateFormat.name);
+    await prefs.remove(LocalSettings.feedCardDividerThickness.name);
+    await prefs.remove(LocalSettings.feedCardDividerColor.name);
     await prefs.remove(LocalSettings.compactPostCardMetadataItems.name);
     await prefs.remove(LocalSettings.showThumbnailPreviewOnRight.name);
     await prefs.remove(LocalSettings.showTextPostIndicator.name);
@@ -239,6 +325,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.showPostCommunityIcons.name);
     await prefs.remove(LocalSettings.showCrossPosts.name);
     await prefs.remove(LocalSettings.postBodyViewType.name);
+    await prefs.remove(LocalSettings.postBodyShowUserInstance.name);
+    await prefs.remove(LocalSettings.postBodyShowCommunityInstance.name);
+    await prefs.remove(LocalSettings.postBodyShowCommunityAvatar.name);
 
     await initPreferences();
 
@@ -252,6 +341,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     PostViewMedia? postViewMediaText = await createExamplePost(
       postTitle: 'Example Text Post',
       personName: 'Lightning',
+      personInstance: 'lemmy.world',
       communityName: 'Thunder',
       postBody: 'Thunder is an open source, cross platform app for interacting, and exploring Lemmy communities.',
       read: dimReadPosts,
@@ -263,6 +353,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       postTitle: 'Example Image Post',
       personName: 'Lightning',
       personDisplayName: 'User',
+      personInstance: 'lemmy.world',
       communityName: 'Thunder',
       postUrl: 'https://lemmy.ml/pictrs/image/4ff0a2f3-970c-4493-b143-a6d46d378c95.jpeg',
       nsfw: true,
@@ -275,6 +366,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       postTitle: 'Example Link Post',
       personName: 'Lightning',
       personDisplayName: 'User',
+      personInstance: 'lemmy.world',
       communityName: 'Thunder',
       postUrl: 'https://github.com/thunder-app/thunder',
       read: false,
@@ -289,6 +381,23 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      DateTime date = DateTime.now();
+      DateFormat systemDateFormat = dateFormats.first;
+
+      // Add predefined date formats
+      for (DateFormat dateFormat in [
+        DateFormat('MMMM dd, yyyy HH:mm'),
+        DateFormat('E, dd MMM yyyy HH:mm Z'),
+        DateFormat('yyyy-MM-dd HH:mm'),
+        DateFormat('dd/MM/yyyy HH:mm'),
+        DateFormat('MM/dd/yyyy HH:mm'),
+        DateFormat('yyyy-MM-ddTHH:mm')
+      ]) {
+        if (systemDateFormat.format(date) != dateFormat.format(date)) {
+          dateFormats.add(dateFormat);
+        }
+      }
+
       initPreferences();
 
       if (widget.settingToHighlight != null) {
@@ -409,7 +518,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                     ? IgnorePointer(
                                         child: PostCardViewCompact(
                                           postViewMedia: snapshot.data![index]!,
-                                          communityMode: false,
+                                          feedType: FeedType.general,
                                           isUserLoggedIn: true,
                                           listingType: ListingType.all,
                                           indicateRead: dimReadPosts,
@@ -418,10 +527,11 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                     : IgnorePointer(
                                         child: PostCardViewComfortable(
                                           postViewMedia: snapshot.data![index]!,
+                                          hideThumbnails: hideThumbnails,
                                           showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
                                           showPostAuthor: showPostAuthor,
                                           hideNsfwPreviews: hideNsfwPreviews,
-                                          communityMode: false,
+                                          feedType: FeedType.general,
                                           markPostReadOnMediaView: false,
                                           isUserLoggedIn: true,
                                           listingType: ListingType.all,
@@ -437,7 +547,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                           onSaveAction: (saved) {},
                                         ),
                                       ),
-                                const Divider(),
+                                const FeedCardDivider(),
                               ],
                             );
                           },
@@ -454,7 +564,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.generalSettings, style: theme.textTheme.titleMedium),
+              child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
@@ -466,7 +576,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.cardView, payload: false),
               ],
               icon: Icons.view_list_rounded,
-              onChanged: (value) => setPreferences(LocalSettings.useCompactView, value.payload),
+              onChanged: (value) async => setPreferences(LocalSettings.useCompactView, value.payload),
               highlightKey: settingToHighlight == LocalSettings.useCompactView ? settingToHighlightKey : null,
             ),
           ),
@@ -482,7 +592,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           SliverToBoxAdapter(
             child: ToggleOption(
+              description: l10n.hideThumbnails,
+              value: hideThumbnails,
+              iconEnabled: Icons.hide_image_outlined,
+              iconDisabled: Icons.image_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
+              highlightKey: settingToHighlight == LocalSettings.hideThumbnails ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
               description: l10n.showPostAuthor,
+              subtitle: l10n.showPostAuthorSubtitle,
               value: showPostAuthor,
               iconEnabled: Icons.person_rounded,
               iconDisabled: Icons.person_off_rounded,
@@ -502,6 +623,16 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           SliverToBoxAdapter(
             child: ToggleOption(
+              description: l10n.showUserInstance,
+              value: postShowUserInstance,
+              iconEnabled: Icons.dns_sharp,
+              iconDisabled: Icons.dns_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.postShowUserInstance, value),
+              highlightKey: settingToHighlight == LocalSettings.postShowUserInstance ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
               description: l10n.dimReadPosts,
               subtitle: l10n.dimReadPosts,
               value: dimReadPosts,
@@ -509,6 +640,134 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               iconDisabled: Icons.chrome_reader_mode_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
               highlightKey: settingToHighlight == LocalSettings.dimReadPosts ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showFullDate,
+              subtitle: l10n.showFullDateDescription,
+              value: showFullPostDate,
+              iconEnabled: Icons.date_range_rounded,
+              iconDisabled: Icons.date_range_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.showFullPostDate, value),
+              highlightKey: settingToHighlight == LocalSettings.showFullPostDate ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ListOption(
+              description: l10n.dateFormat,
+              disabled: !showFullPostDate,
+              value: ListPickerItem(
+                label: (selectedDateFormat == null || selectedDateFormat!.pattern == dateFormats.first.pattern) ? l10n.system : selectedDateFormat!.pattern!,
+                icon: Icons.access_time_filled_rounded,
+                payload: selectedDateFormat,
+                capitalizeLabel: false,
+              ),
+              options: dateFormats
+                  .map(
+                    (DateFormat dateFormat) => ListPickerItem(
+                      icon: Icons.access_time_filled_rounded,
+                      label: dateFormat.format(DateTime.now()),
+                      payload: dateFormat,
+                      subtitle: dateFormat.pattern == dateFormats.first.pattern ? l10n.system : dateFormat.pattern,
+                    ),
+                  )
+                  .toList(),
+              icon: Icons.access_time_filled_rounded,
+              onChanged: (value) async => setPreferences(LocalSettings.dateFormat, value.payload),
+              highlightKey: settingToHighlight == LocalSettings.dateFormat ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ListOption(
+              description: l10n.dividerAppearance,
+              value: const ListPickerItem(payload: -1),
+              icon: Icons.splitscreen_rounded,
+              highlightKey: settingToHighlight == LocalSettings.dividerAppearance ? settingToHighlightKey : null,
+              customListPicker: StatefulBuilder(
+                builder: (context, setState) {
+                  return BottomSheetListPicker(
+                    title: l10n.dividerAppearance,
+                    heading: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l10n.preview, style: theme.textTheme.titleMedium),
+                        const SizedBox(height: 20.0),
+                        const FeedCardDivider(),
+                        const SizedBox(height: 16.0),
+                      ],
+                    ),
+                    items: [
+                      ListPickerItem<int>(
+                        customWidget: ListTile(
+                          title: Text(l10n.thickness),
+                          contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                          trailing: DropdownButton<FeedCardDividerThickness>(
+                            value: feedCardDividerThickness,
+                            underline: const SizedBox(),
+                            items: [
+                              DropdownMenuItem(
+                                value: FeedCardDividerThickness.compact,
+                                child: Text(l10n.compact),
+                              ),
+                              DropdownMenuItem(
+                                value: FeedCardDividerThickness.standard,
+                                child: Text(l10n.standard),
+                              ),
+                              DropdownMenuItem(
+                                value: FeedCardDividerThickness.comfortable,
+                                child: Text(l10n.comfortable),
+                              )
+                            ],
+                            onChanged: (FeedCardDividerThickness? value) {
+                              setPreferences(LocalSettings.feedCardDividerThickness, value);
+                              setState(() {}); // Trigger rebuild
+                            },
+                          ),
+                        ),
+                        payload: -1,
+                      ),
+                      ListPickerItem<int>(
+                        customWidget: ListTile(
+                          title: Text(l10n.color),
+                          contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                          trailing: DropdownButton<Color>(
+                            menuMaxHeight: 500.0,
+                            value: feedCardDividerColor,
+                            underline: const SizedBox(),
+                            items: CustomThemeType.values
+                                .map((CustomThemeType customThemeType) => DropdownMenuItem<Color>(
+                                      alignment: Alignment.center,
+                                      value: Color(customThemeType.primaryColor.value),
+                                      child: CircleAvatar(
+                                        radius: 16.0,
+                                        backgroundColor: Color.alphaBlend(
+                                          theme.colorScheme.primaryContainer.withOpacity(0.6),
+                                          Color(customThemeType.primaryColor.value),
+                                        ),
+                                      ),
+                                    ))
+                                .toList()
+                              ..insert(
+                                0,
+                                const DropdownMenuItem<Color>(
+                                  alignment: Alignment.center,
+                                  value: Colors.transparent,
+                                  child: CircleAvatar(radius: 16.0, child: Text('D')),
+                                ),
+                              ),
+                            onChanged: (Color? value) {
+                              setPreferences(LocalSettings.feedCardDividerColor, value);
+                              setState(() {}); // Trigger rebuild
+                            },
+                          ),
+                        ),
+                        payload: -1,
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 32.0)),
@@ -768,8 +1027,38 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
               ],
               icon: Icons.view_list_rounded,
-              onChanged: (value) => setPreferences(LocalSettings.postBodyViewType, value.payload),
+              onChanged: (value) async => setPreferences(LocalSettings.postBodyViewType, value.payload),
               highlightKey: settingToHighlight == LocalSettings.postBodyViewType ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showUserInstance,
+              value: postBodyShowUserInstance,
+              iconEnabled: Icons.dns_sharp,
+              iconDisabled: Icons.dns_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowUserInstance, value),
+              highlightKey: settingToHighlight == LocalSettings.postBodyShowUserInstance ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.postBodyShowCommunityInstance,
+              value: postBodyShowCommunityInstance,
+              iconEnabled: Icons.dns_sharp,
+              iconDisabled: Icons.dns_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityInstance, value),
+              highlightKey: settingToHighlight == LocalSettings.postBodyShowCommunityInstance ? settingToHighlightKey : null,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.postBodyShowCommunityAvatar,
+              value: postBodyShowCommunityAvatar,
+              iconEnabled: Icons.image,
+              iconDisabled: Icons.image_not_supported,
+              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityAvatar, value),
+              highlightKey: settingToHighlight == LocalSettings.postBodyShowCommunityAvatar ? settingToHighlightKey : null,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),
@@ -796,14 +1085,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ), // Title
           const SizedBox(height: 4.0),
         ],
-        Container(
-          height: showFullHeightImages ? 150 : 100,
-          margin: const EdgeInsets.symmetric(vertical: 8.0),
-          decoration: BoxDecoration(
-            color: theme.dividerColor,
-            borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+        if (!hideThumbnails)
+          Container(
+            height: showFullHeightImages ? 150 : 100,
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+            ),
           ),
-        ),
         if (!showTitleFirst) ...[
           const SizedBox(height: 4.0),
           Container(
@@ -909,17 +1199,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          !showThumbnailPreviewOnRight
-              ? Container(
-                  width: 75,
-                  height: 75,
-                  margin: const EdgeInsets.only(right: 8.0),
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor,
-                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                  ),
-                )
-              : const SizedBox(width: 0),
+          if (!hideThumbnails)
+            !showThumbnailPreviewOnRight
+                ? Container(
+                    width: ViewMode.compact.height,
+                    height: ViewMode.compact.height,
+                    margin: const EdgeInsets.only(right: 8.0),
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  )
+                : const SizedBox(width: 0),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(right: showThumbnailPreviewOnRight ? 8.0 : 0),
@@ -962,17 +1253,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ),
             ),
           ),
-          showThumbnailPreviewOnRight
-              ? Container(
-                  width: 75,
-                  height: 75,
-                  margin: const EdgeInsets.only(right: 8.0),
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor,
-                    borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                  ),
-                )
-              : const SizedBox(width: 0),
+          if (!hideThumbnails)
+            showThumbnailPreviewOnRight
+                ? Container(
+                    width: ViewMode.compact.height,
+                    height: ViewMode.compact.height,
+                    margin: const EdgeInsets.only(right: 8.0),
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor,
+                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                    ),
+                  )
+                : const SizedBox(width: 0),
         ],
       ),
     );
@@ -1045,7 +1337,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
                   ),
                 ),
           onLeave: (data) => HapticFeedback.mediumImpact(),
-          onWillAccept: (data) {
+          onWillAcceptWithDetails: (data) {
             if (!containedPostCardMetadataItems.contains(data)) {
               return true;
             }

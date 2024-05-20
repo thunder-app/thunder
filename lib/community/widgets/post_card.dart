@@ -12,28 +12,34 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/feed/widgets/widgets.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
-  final bool communityMode;
+  final FeedType? feedType;
   final bool indicateRead;
 
   final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
   final Function(bool) onReadAction;
+  final Function(double) onUpAction;
+  final Function() onDownAction;
 
   final ListingType? listingType;
 
   const PostCard({
     super.key,
     required this.postViewMedia,
-    required this.communityMode,
+    required this.feedType,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onReadAction,
+    required this.onUpAction,
+    required this.onDownAction,
     required this.listingType,
     required this.indicateRead,
   });
@@ -64,6 +70,9 @@ class _PostCardState extends State<PostCard> {
   /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
   bool isOverridingSwipeGestureAction = false;
 
+  /// The vertical drag distance between moves
+  double verticalDragDistance = 0;
+
   @override
   void initState() {
     super.initState();
@@ -81,7 +90,9 @@ class _PostCardState extends State<PostCard> {
 
     return Listener(
       behavior: HitTestBehavior.opaque,
-      onPointerDown: (event) => {},
+      onPointerDown: (PointerDownEvent event) {
+        widget.onDownAction();
+      },
       onPointerUp: (event) {
         setState(() => isOverridingSwipeGestureAction = false);
 
@@ -98,11 +109,16 @@ class _PostCardState extends State<PostCard> {
             postViewMedia: widget.postViewMedia,
           );
         }
+
+        widget.onUpAction(verticalDragDistance);
       },
       onPointerCancel: (event) => {},
       onPointerMove: (PointerMoveEvent event) {
         // Get the horizontal drag distance
         double horizontalDragDistance = event.delta.dx;
+
+        // Set the vertical drag distance
+        verticalDragDistance = event.delta.dy;
 
         // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
         // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
@@ -118,15 +134,6 @@ class _PostCardState extends State<PostCard> {
       },
       child: Column(
         children: [
-          Divider(
-            height: 1.0,
-            thickness: 4.0,
-            color: ElevationOverlay.applySurfaceTint(
-              Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.surfaceTint,
-              10,
-            ),
-          ),
           Dismissible(
             direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
             key: ObjectKey(widget.postViewMedia.postView.post.id),
@@ -172,7 +179,8 @@ class _PostCardState extends State<PostCard> {
             background: dismissDirection == DismissDirection.startToEnd
                 ? AnimatedContainer(
                     alignment: Alignment.centerLeft,
-                    color: swipeAction == null ? state.leftPrimaryPostGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                    color:
+                        swipeAction == null ? state.leftPrimaryPostGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(context),
                     duration: const Duration(milliseconds: 200),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
@@ -181,7 +189,9 @@ class _PostCardState extends State<PostCard> {
                   )
                 : AnimatedContainer(
                     alignment: Alignment.centerRight,
-                    color: swipeAction == null ? state.rightPrimaryPostGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                    color: swipeAction == null
+                        ? state.rightPrimaryPostGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                        : (swipeAction ?? SwipeAction.none).getColor(context),
                     duration: const Duration(milliseconds: 200),
                     child: SizedBox(
                       width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
@@ -192,18 +202,20 @@ class _PostCardState extends State<PostCard> {
               child: state.useCompactView
                   ? PostCardViewCompact(
                       postViewMedia: widget.postViewMedia,
-                      communityMode: widget.communityMode,
+                      feedType: widget.feedType,
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
                       navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead,
+                      showMedia: !state.hideThumbnails,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
+                      hideThumbnails: state.hideThumbnails,
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,
-                      communityMode: widget.communityMode,
+                      feedType: widget.feedType,
                       showPostAuthor: state.showPostAuthor,
                       showFullHeightImages: state.showFullHeightImages,
                       edgeToEdgeImages: state.showEdgeToEdgeImages,
@@ -222,22 +234,6 @@ class _PostCardState extends State<PostCard> {
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
                 widget.postViewMedia,
-                actionsToInclude: [
-                  PostCardAction.visitInstance,
-                  PostCardAction.visitProfile,
-                  PostCardAction.blockUser,
-                  PostCardAction.blockInstance,
-                  PostCardAction.visitCommunity,
-                  widget.postViewMedia.postView.subscribed == SubscribedType.notSubscribed ? PostCardAction.subscribeToCommunity : PostCardAction.unsubscribeFromCommunity,
-                  PostCardAction.blockCommunity,
-                ],
-                multiActionsToInclude: [
-                  PostCardAction.upvote,
-                  PostCardAction.downvote,
-                  PostCardAction.save,
-                  PostCardAction.toggleRead,
-                  PostCardAction.share,
-                ],
               ),
               onTap: () async {
                 PostView postView = widget.postViewMedia.postView;
@@ -246,6 +242,7 @@ class _PostCardState extends State<PostCard> {
               },
             ),
           ),
+          const FeedCardDivider(),
         ],
       ),
     );

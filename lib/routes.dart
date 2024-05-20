@@ -17,6 +17,7 @@ import 'package:thunder/settings/pages/general_settings_page.dart';
 import 'package:thunder/settings/pages/gesture_settings_page.dart';
 import 'package:thunder/settings/pages/post_appearance_settings_page.dart';
 import 'package:thunder/settings/pages/theme_settings_page.dart';
+import 'package:thunder/settings/pages/video_player_settings.dart';
 import 'package:thunder/settings/settings.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
@@ -35,7 +36,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: 'settings',
       path: '/settings',
-      builder: (BuildContext context, GoRouterState state) => SettingsPage(),
+      builder: (BuildContext context, GoRouterState state) => const SettingsPage(),
       routes: <GoRoute>[
         GoRoute(
           name: 'general',
@@ -106,6 +107,16 @@ final GoRouter router = GoRouter(
             return BlocProvider.value(
               value: (state.extra! as List)[0] as ThunderBloc,
               child: GestureSettingsPage(settingToHighlight: (state.extra! as List).elementAtOrNull(1) as LocalSettings?),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'video',
+          path: 'video',
+          builder: (context, state) {
+            return BlocProvider.value(
+              value: (state.extra! as List)[0] as ThunderBloc,
+              child: VideoPlayerSettingsPage(settingToHighlight: (state.extra! as List).elementAtOrNull(1) as LocalSettings?),
             );
           },
         ),

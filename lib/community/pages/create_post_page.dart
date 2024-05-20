@@ -1,20 +1,22 @@
+// Dart imports
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
+// Flutter imports
 import 'package:flutter/material.dart';
+
+// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-import 'package:markdown_editable_textinput/format_markdown.dart';
-import 'package:markdown_editable_textinput/markdown_buttons.dart';
-import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Project imports
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
@@ -26,17 +28,20 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
-import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/cross_posts.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
+import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/link_preview_card.dart';
-import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/user/utils/restore_user.dart';
+import 'package:thunder/user/widgets/user_selector.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/debounce.dart';
-import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/utils/media/image.dart';
 
 class CreatePostPage extends StatefulWidget {
   final int? communityId;
@@ -61,7 +66,7 @@ class CreatePostPage extends StatefulWidget {
   final PostView? postView;
 
   /// Callback function that is triggered whenever the post is successfully created or updated
-  final Function(PostViewMedia postViewMedia)? onPostSuccess;
+  final Function(PostViewMedia postViewMedia, bool userChanged)? onPostSuccess;
 
   const CreatePostPage({
     super.key,
@@ -139,6 +144,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   final imageBloc = ImageBloc();
 
+  Account? originalUser;
+  bool userChanged = false;
+
   @override
   void initState() {
     super.initState();
@@ -173,12 +181,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          uploadImage(
-            context,
-            imageBloc,
-            postImage: true,
-            imagePath: widget.image?.path,
-          );
+          if (context.mounted) context.read<CreatePostCubit>().uploadImage(widget.image!.path, isPostImage: true);
         });
       }
 
@@ -291,13 +294,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    originalUser ??= context.read<AuthBloc>().state.account;
 
-    return BlocProvider(
-      create: (context) => CreatePostCubit(),
+    return PopScope(
+      onPopInvoked: (_) {
+        if (context.mounted) {
+          restoreUser(context, originalUser);
+        }
+      },
       child: BlocConsumer<CreatePostCubit, CreatePostState>(
         listener: (context, state) {
           if (state.status == CreatePostStatus.success && state.postViewMedia != null) {
-            widget.onPostSuccess?.call(state.postViewMedia!);
+            widget.onPostSuccess?.call(state.postViewMedia!, userChanged);
             Navigator.of(context).pop();
           }
 
@@ -360,13 +368,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ],
               ),
               body: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             CommunitySelector(
                               communityId: communityId,
@@ -380,9 +388,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               },
                             ),
                             const SizedBox(height: 4.0),
-                            const UserIndicator(),
+                            UserSelector(
+                              profileModalHeading: l10n.selectAccountToPostAs,
+                              communityActorId: communityView?.community.actorId,
+                              onCommunityChanged: (CommunityView? cv) {
+                                if (cv == null) {
+                                  showSnackbar(l10n.unableToFindCommunityOnInstance);
+                                }
+
+                                setState(() {
+                                  communityId = cv?.community.id;
+                                  communityView = cv;
+                                });
+                                _validateSubmission();
+                              },
+                              onUserChanged: () => userChanged = true,
+                            ),
                             const SizedBox(height: 12.0),
                             TypeAheadField<String>(
+                              controller: _titleTextController,
                               suggestionsCallback: (String pattern) async {
                                 if (pattern.isEmpty) {
                                   String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
@@ -390,7 +414,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     return [linkTitle!];
                                   }
                                 }
-                                return const Iterable.empty();
+                                return [];
                               },
                               itemBuilder: (BuildContext context, String itemData) {
                                 return ListTile(
@@ -398,11 +422,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   subtitle: Text(l10n.suggestedTitle),
                                 );
                               },
-                              onSuggestionSelected: (String suggestion) {
+                              onSelected: (String suggestion) {
                                 _titleTextController.text = suggestion;
                               },
-                              textFieldConfiguration: TextFieldConfiguration(
-                                controller: _titleTextController,
+                              builder: (context, controller, focusNode) => TextField(
+                                controller: controller,
+                                focusNode: focusNode,
                                 decoration: InputDecoration(hintText: l10n.postTitle),
                               ),
                               hideOnEmpty: true,
@@ -456,19 +481,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 isUserLoggedIn: true,
                               ),
                             ),
-                            if (crossPosts.isNotEmpty && widget.postView == null)
-                              Visibility(
-                                visible: url.isNotEmpty,
-                                child: CrossPosts(
-                                  crossPosts: crossPosts,
-                                  isNewPost: true,
-                                ),
+                            if (crossPosts.isNotEmpty && widget.postView == null) const SizedBox(height: 6),
+                            Visibility(
+                              visible: url.isNotEmpty && crossPosts.isNotEmpty,
+                              child: CrossPosts(
+                                crossPosts: crossPosts,
+                                isNewPost: true,
                               ),
+                            ),
                             const SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Expanded(
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60),
                                   child: LanguageSelector(
                                     languageId: languageId,
                                     onLanguageSelected: (Language? language) {
@@ -476,10 +502,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     },
                                   ),
                                 ),
-                                Row(
+                                Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
-                                    Text(l10n.postNSFW),
-                                    const SizedBox(width: 10),
+                                    Text(l10n.nsfw),
+                                    const SizedBox(width: 4.0),
                                     Switch(
                                       value: isNSFW,
                                       onChanged: (bool value) => setState(() => isNSFW = value),
@@ -489,34 +516,42 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               ],
                             ),
                             const SizedBox(height: 10),
-                            showPreview
-                                ? Container(
-                                    constraints: const BoxConstraints(minWidth: double.infinity),
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                                    padding: const EdgeInsets.all(12),
-                                    child: SingleChildScrollView(
-                                      child: CommonMarkdownBody(
-                                        body: _bodyTextController.text,
-                                        isComment: true,
-                                      ),
-                                    ),
-                                  )
-                                : MarkdownTextInputField(
-                                    controller: _bodyTextController,
-                                    focusNode: _bodyFocusNode,
-                                    label: l10n.postBody,
-                                    minLines: 8,
-                                    maxLines: null,
-                                    textStyle: theme.textTheme.bodyLarge,
-                                  ),
+                            AnimatedCrossFade(
+                              firstChild: Container(
+                                margin: const EdgeInsets.only(top: 8.0),
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  color: getBackgroundColor(context),
+                                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
+                              ),
+                              secondChild: MarkdownTextInputField(
+                                controller: _bodyTextController,
+                                focusNode: _bodyFocusNode,
+                                label: l10n.postBody,
+                                minLines: 8,
+                                maxLines: null,
+                                textStyle: theme.textTheme.bodyLarge,
+                              ),
+                              crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                              duration: const Duration(milliseconds: 120),
+                              excludeBottomFocus: false,
+                            ),
                           ]),
                         ),
                       ),
-                      const Divider(),
-                      Row(
+                    ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    Container(
+                      color: theme.cardColor,
+                      child: Row(
                         children: [
                           Expanded(
-                            child: MarkdownButtons(
+                            child: MarkdownToolbar(
                               controller: _bodyTextController,
                               focusNode: _bodyFocusNode,
                               actions: const [
@@ -530,6 +565,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 MarkdownType.list,
                                 MarkdownType.separator,
                                 MarkdownType.code,
+                                MarkdownType.spoiler,
                                 MarkdownType.username,
                                 MarkdownType.community,
                               ],
@@ -542,8 +578,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 },
                                 MarkdownType.community: () {
                                   showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                        '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                    _bodyTextController.text = _bodyTextController.text.replaceRange(
+                                        _bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
                                   });
                                 },
                               },
@@ -557,7 +593,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
                             child: IconButton(
                               onPressed: () {
                                 if (!showPreview) {
@@ -579,8 +615,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -635,80 +671,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 }
 
-/// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language
-///
-/// Passing in [languageId] will set the initial state of the widget to display that given language.
-/// A callback function [onLanguageSelected] will be triggered whenever a new language is selected from the dropdown.
-class LanguageSelector extends StatefulWidget {
-  const LanguageSelector({
-    super.key,
-    required this.languageId,
-    required this.onLanguageSelected,
-  });
-
-  /// The initial language id to be passed in
-  final int? languageId;
-
-  /// A callback function to trigger whenever a language is selected from the dropdown
-  final Function(Language?) onLanguageSelected;
-
-  @override
-  State<LanguageSelector> createState() => _LanguageSelectorState();
-}
-
-class _LanguageSelectorState extends State<LanguageSelector> {
-  late int? _languageId;
-  late Language? _language;
-
-  @override
-  void initState() {
-    super.initState();
-    _languageId = widget.languageId;
-
-    // Determine the language from the languageId
-    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
-    _language = languages.firstWhereOrNull((Language language) => language.id == _languageId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-
-    return Transform.translate(
-      offset: const Offset(-8, 0),
-      child: InkWell(
-        onTap: () {
-          showLanguageInputDialog(
-            context,
-            title: l10n.language,
-            onLanguageSelected: (language) {
-              if (language.id == -1) {
-                setState(() => _languageId = _language = null);
-                widget.onLanguageSelected(null);
-              } else {
-                setState(() {
-                  _languageId = language.id;
-                  _language = language;
-                });
-                widget.onLanguageSelected(language);
-              }
-            },
-          );
-        },
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
-          child: Text(
-            '${l10n.language}: ${_language?.name ?? l10n.selectLanguage}',
-            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// Creates a widget which displays a preview of a pre-selected community, with the ability to change the selected community
 ///
 /// Passing in either [communityId] or [communityView] will set the initial state of the widget to display that given community.
@@ -735,17 +697,6 @@ class CommunitySelector extends StatefulWidget {
 }
 
 class _CommunitySelectorState extends State<CommunitySelector> {
-  int? _communityId;
-  CommunityView? _communityView;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _communityId = widget.communityId;
-    _communityView = widget.communityView;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -758,52 +709,47 @@ class _CommunitySelectorState extends State<CommunitySelector> {
           showCommunityInputDialog(
             context,
             title: l10n.community,
-            onCommunitySelected: (cv) {
-              setState(() {
-                _communityId = cv.community.id;
-                _communityView = cv;
-              });
-
-              widget.onCommunitySelected(cv);
-            },
+            onCommunitySelected: widget.onCommunitySelected,
           );
         },
         borderRadius: const BorderRadius.all(Radius.circular(50)),
         child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
+          padding: const EdgeInsets.only(left: 8, top: 4, bottom: 4),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CommunityAvatar(community: _communityView?.community, radius: 16),
-              const SizedBox(width: 12),
-              _communityId != null
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${_communityView?.community.title} '),
-                        FutureBuilder(
-                          future: getLemmyCommunity(_communityView?.community.actorId ?? ''),
-                          builder: (context, snapshot) {
-                            return Text(
-                              snapshot.data ?? '',
-                              style: theme.textTheme.bodySmall,
-                            );
-                          },
-                        ),
-                      ],
-                    )
-                  : SizedBox(
-                      height: 36,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          l10n.selectCommunity,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: theme.colorScheme.error,
+              Row(
+                children: [
+                  CommunityAvatar(community: widget.communityView?.community, radius: 16),
+                  const SizedBox(width: 12),
+                  widget.communityId != null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${widget.communityView?.community.title} '),
+                            CommunityFullNameWidget(
+                              context,
+                              widget.communityView?.community.name,
+                              fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                            )
+                          ],
+                        )
+                      : SizedBox(
+                          height: 36,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              l10n.selectCommunity,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: theme.colorScheme.error,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                ],
+              ),
+              const Icon(Icons.chevron_right_rounded),
             ],
           ),
         ),

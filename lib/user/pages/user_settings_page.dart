@@ -5,16 +5,17 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/widgets/account_placeholder.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/settings/widgets/discussion_language_selector.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -24,7 +25,7 @@ import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
+import 'package:thunder/account/utils/profiles.dart';
 
 class UserSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -41,242 +42,274 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 70.0,
-        centerTitle: false,
-        title: AutoSizeText(l10n.accountSettings),
-        scrolledUnderElevation: 0.0,
-      ),
-      body: BlocProvider(
-        create: (context) => UserSettingsBloc()..add(const GetUserSettingsEvent()),
-        child: BlocListener<AccountBloc, AccountState>(
-          listener: (context, state) {
-            context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
-            context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
-          },
-          child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
+    return PopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 70.0,
+          centerTitle: false,
+          title: AutoSizeText(l10n.accountSettings),
+          scrolledUnderElevation: 0.0,
+        ),
+        body: BlocProvider(
+          create: (context) => UserSettingsBloc()..add(const GetUserSettingsEvent()),
+          child: BlocListener<AccountBloc, AccountState>(
             listener: (context, state) {
-              if (state.status == UserSettingsStatus.success) {
-                context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
-              }
-
-              if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) &&
-                  (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                showSnackbar(state.status == UserSettingsStatus.failure
-                    ? l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage)
-                    : l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
-              } else if (state.status == UserSettingsStatus.failure) {
-                showSnackbar(l10n.failedToLoadBlocks(state.errorMessage ?? l10n.missingErrorMessage));
-              }
-
-              if (state.status == UserSettingsStatus.successBlock && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                showSnackbar(
-                  l10n.successfullyUnblocked,
-                  trailingIcon: Icons.undo_rounded,
-                  trailingAction: () {
-                    if (state.personBeingBlocked != 0) {
-                      context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBeingBlocked, unblock: false));
-                    } else if (state.communityBeingBlocked != 0) {
-                      context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: state.communityBeingBlocked, unblock: false));
-                    } else if (state.instanceBeingBlocked != 0) {
-                      context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: state.instanceBeingBlocked, unblock: false));
-                    }
-                  },
-                );
-              }
-
-              if (state.status == UserSettingsStatus.revert && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                showSnackbar(l10n.successfullyBlocked);
-              }
+              context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
+              context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
             },
-            builder: (context, state) {
-              if (state.status == UserSettingsStatus.initial) {
-                context.read<UserSettingsBloc>().add(const GetUserBlocksEvent());
-              }
+            child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
+              listener: (context, state) {
+                if (state.status == UserSettingsStatus.success) {
+                  context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
+                }
 
-              if (state.status == UserSettingsStatus.notLoggedIn) {
-                return const AccountPlaceholder();
-              }
+                if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) &&
+                    (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
+                  showSnackbar(state.status == UserSettingsStatus.failure
+                      ? l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage)
+                      : l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
+                } else if (state.status == UserSettingsStatus.failure) {
+                  showSnackbar(l10n.failedToLoadBlocks(state.errorMessage ?? l10n.missingErrorMessage));
+                }
 
-              GetSiteResponse? getSiteResponse = state.getSiteResponse;
-              MyUserInfo? myUserInfo = getSiteResponse?.myUser;
+                if (state.status == UserSettingsStatus.successBlock && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
+                  showSnackbar(
+                    l10n.successfullyUnblocked,
+                    trailingIcon: Icons.undo_rounded,
+                    trailingAction: () {
+                      if (state.personBeingBlocked != 0) {
+                        context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBeingBlocked, unblock: false));
+                      } else if (state.communityBeingBlocked != 0) {
+                        context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: state.communityBeingBlocked, unblock: false));
+                      } else if (state.instanceBeingBlocked != 0) {
+                        context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: state.instanceBeingBlocked, unblock: false));
+                      }
+                    },
+                  );
+                }
 
-              LocalUser? localUser = myUserInfo?.localUserView.localUser;
-              bool showReadPosts = localUser?.showReadPosts ?? true;
-              bool showBotAccounts = localUser?.showBotAccounts ?? true;
-              bool showScores = localUser?.showScores ?? true;
+                if (state.status == UserSettingsStatus.revert && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
+                  showSnackbar(l10n.successfullyBlocked);
+                }
+              },
+              builder: (context, state) {
+                if (state.status == UserSettingsStatus.initial) {
+                  context.read<UserSettingsBloc>().add(const GetUserBlocksEvent());
+                }
 
-              if (state.getSiteResponse == null || myUserInfo == null) {
-                return const Center(child: CircularProgressIndicator());
-              }
+                GetSiteResponse? getSiteResponse = state.getSiteResponse;
+                MyUserInfo? myUserInfo = getSiteResponse?.myUser;
 
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 16.0, bottom: 16.0),
-                      child: UserIndicator(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
-                      child: Text(
-                        l10n.userSettingDescription,
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: theme.colorScheme.onBackground.withOpacity(0.75),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Text(l10n.general, style: theme.textTheme.titleMedium),
-                    ),
-                    ToggleOption(
-                      description: l10n.showReadPosts,
-                      value: showReadPosts,
-                      iconEnabled: Icons.fact_check_rounded,
-                      iconDisabled: Icons.fact_check_outlined,
-                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
-                    ),
-                    ToggleOption(
-                      description: l10n.showScores,
-                      value: showScores,
-                      iconEnabled: Icons.onetwothree_rounded,
-                      iconDisabled: Icons.onetwothree_rounded,
-                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
-                    ),
-                    ToggleOption(
-                      description: l10n.showBotAccounts,
-                      value: showBotAccounts,
-                      iconEnabled: Thunder.robot,
-                      iconEnabledSize: 18.0,
-                      iconDisabled: Thunder.robot,
-                      iconDisabledSize: 18.0,
-                      iconSpacing: 14.0,
-                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
-                    ),
-                    if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                LocalUser? localUser = myUserInfo?.localUserView.localUser;
+                bool showReadPosts = localUser?.showReadPosts ?? true;
+                bool showBotAccounts = localUser?.showBotAccounts ?? true;
+                bool showScores = localUser?.showScores ?? true;
+
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SettingsListTile(
+                          icon: Icons.people_alt_rounded,
+                          description: l10n.manageAccounts,
+                          widget: const SizedBox(
+                            height: 42.0,
+                            child: Icon(Icons.chevron_right_rounded),
+                          ),
+                          onTap: () => showProfileModalSheet(context)),
+                      if (state.status != UserSettingsStatus.notLoggedIn && state.getSiteResponse != null && myUserInfo != null)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(l10n.blockedInstances, style: theme.textTheme.titleMedium),
-                            IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: Icon(
-                                Icons.add_rounded,
-                                semanticLabel: l10n.add,
-                              ),
-                              onPressed: () => showInstanceInputDialog(
-                                context,
-                                title: l10n.blockInstance,
-                                onInstanceSelected: (instance) {
-                                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id, unblock: false));
-                                },
+                            Divider(
+                              indent: 32.0,
+                              height: 32.0,
+                              endIndent: 32.0,
+                              thickness: 2.0,
+                              color: theme.dividerColor.withOpacity(0.6),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.thisAccount, style: theme.textTheme.titleMedium),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 16.0, bottom: 16.0, right: 8),
+                              child: UserIndicator(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                              child: Text(
+                                l10n.userSettingDescription,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                ),
                               ),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.general, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                                icon: Icons.logout_rounded,
+                                description: l10n.logOut,
+                                widget: const SizedBox(
+                                  height: 42.0,
+                                  child: Icon(Icons.chevron_right_rounded),
+                                ),
+                                onTap: () => showProfileModalSheet(context, showLogoutDialog: true)),
+                            ToggleOption(
+                              description: l10n.showReadPosts,
+                              value: showReadPosts,
+                              iconEnabled: Icons.fact_check_rounded,
+                              iconDisabled: Icons.fact_check_outlined,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                            ),
+                            ToggleOption(
+                              description: l10n.showScores,
+                              value: showScores,
+                              iconEnabled: Icons.onetwothree_rounded,
+                              iconDisabled: Icons.onetwothree_rounded,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                            ),
+                            ToggleOption(
+                              description: l10n.showBotAccounts,
+                              value: showBotAccounts,
+                              iconEnabled: Thunder.robot,
+                              iconEnabledSize: 18.0,
+                              iconDisabled: Thunder.robot,
+                              iconDisabledSize: 18.0,
+                              iconSpacing: 14.0,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                            ),
+                            DiscussionLanguageSelector(
+                              initialDiscussionLanguages: DiscussionLanguageSelector.getDiscussionLanguagesFromSiteResponse(state.getSiteResponse),
+                              settingToHighlight: widget.settingToHighlight,
+                            ),
+                            if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(l10n.blockedInstances, style: theme.textTheme.titleMedium),
+                                    IconButton(
+                                      visualDensity: VisualDensity.compact,
+                                      icon: Icon(
+                                        Icons.add_rounded,
+                                        semanticLabel: l10n.add,
+                                      ),
+                                      onPressed: () => showInstanceInputDialog(
+                                        context,
+                                        title: l10n.blockInstance,
+                                        onInstanceSelected: (instance) {
+                                          context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id, unblock: false));
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              UserSettingBlockList(
+                                status: state.status,
+                                emptyText: l10n.noInstanceBlocks,
+                                items: getInstanceBlocks(context, state, state.instanceBlocks),
+                              ),
+                            ],
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(l10n.blockedUsers, style: theme.textTheme.titleMedium),
+                                  IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    icon: Icon(
+                                      Icons.add_rounded,
+                                      semanticLabel: l10n.add,
+                                    ),
+                                    onPressed: () => showUserInputDialog(
+                                      context,
+                                      title: l10n.blockUser,
+                                      onUserSelected: (personViewSafe) {
+                                        context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personViewSafe.person.id, unblock: false));
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            UserSettingBlockList(
+                              status: state.status,
+                              emptyText: l10n.noUserBlocks,
+                              items: getPersonBlocks(context, state, state.personBlocks),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(l10n.blockedCommunities, style: theme.textTheme.titleMedium),
+                                  IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    icon: Icon(
+                                      Icons.add_rounded,
+                                      semanticLabel: l10n.add,
+                                    ),
+                                    onPressed: () => showCommunityInputDialog(
+                                      context,
+                                      title: l10n.blockCommunity,
+                                      onCommunitySelected: (communityView) {
+                                        context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            UserSettingBlockList(
+                              status: state.status,
+                              emptyText: l10n.noCommunityBlocks,
+                              items: getCommunityBlocks(context, state, state.communityBlocks),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                              icon: Icons.delete_forever_rounded,
+                              description: l10n.deleteAccount,
+                              widget: const SizedBox(
+                                height: 42.0,
+                                child: Icon(Icons.chevron_right_rounded),
+                              ),
+                              onTap: () async {
+                                showThunderDialog<void>(
+                                  context: context,
+                                  title: l10n.deleteAccount,
+                                  contentText: l10n.deleteAccountDescription,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  secondaryButtonText: l10n.cancel,
+                                  onPrimaryButtonPressed: (dialogContext, _) async {
+                                    if (context.mounted) {
+                                      Navigator.of(context).pop();
+                                      handleLink(context, url: 'https://${LemmyClient.instance.lemmyApiV3.host}/settings');
+                                    }
+                                  },
+                                  primaryButtonText: l10n.confirm,
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 100.0),
                           ],
                         ),
-                      ),
-                      UserSettingBlockList(
-                        status: state.status,
-                        emptyText: l10n.noInstanceBlocks,
-                        items: getInstanceBlocks(context, state, state.instanceBlocks),
-                      ),
                     ],
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(l10n.blockedUsers, style: theme.textTheme.titleMedium),
-                          IconButton(
-                            visualDensity: VisualDensity.compact,
-                            icon: Icon(
-                              Icons.add_rounded,
-                              semanticLabel: l10n.add,
-                            ),
-                            onPressed: () => showUserInputDialog(
-                              context,
-                              title: l10n.blockUser,
-                              onUserSelected: (personViewSafe) {
-                                context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personViewSafe.person.id, unblock: false));
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    UserSettingBlockList(
-                      status: state.status,
-                      emptyText: l10n.noUserBlocks,
-                      items: getPersonBlocks(context, state, state.personBlocks),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(l10n.blockedCommunities, style: theme.textTheme.titleMedium),
-                          IconButton(
-                            visualDensity: VisualDensity.compact,
-                            icon: Icon(
-                              Icons.add_rounded,
-                              semanticLabel: l10n.add,
-                            ),
-                            onPressed: () => showCommunityInputDialog(
-                              context,
-                              title: l10n.blockCommunity,
-                              onCommunitySelected: (communityView) {
-                                context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    UserSettingBlockList(
-                      status: state.status,
-                      emptyText: l10n.noCommunityBlocks,
-                      items: getCommunityBlocks(context, state, state.communityBlocks),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
-                    ),
-                    SettingsListTile(
-                      icon: Icons.delete_forever_rounded,
-                      description: l10n.deleteAccount,
-                      widget: const SizedBox(
-                        height: 42.0,
-                        child: Icon(Icons.chevron_right_rounded),
-                      ),
-                      onTap: () async {
-                        showThunderDialog<void>(
-                          context: context,
-                          title: l10n.deleteAccount,
-                          contentText: l10n.deleteAccountDescription,
-                          onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                          secondaryButtonText: l10n.cancel,
-                          onPrimaryButtonPressed: (dialogContext, _) async {
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                              handleLink(context, url: 'https://${LemmyClient.instance.lemmyApiV3.host}/settings');
-                            }
-                          },
-                          primaryButtonText: l10n.confirm,
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 100.0),
-                  ],
-                ),
-              );
-            },
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -294,6 +327,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           message: instance.domain,
           preferBelow: false,
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
@@ -354,6 +388,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           message: generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
           preferBelow: false,
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
@@ -366,10 +401,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   community.title,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(
-                  generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                subtitle: CommunityFullNameWidget(
+                  context,
+                  community.name,
+                  fetchInstanceNameFromUrl(community.actorId) ?? '-',
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
@@ -408,10 +443,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           message: generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
           preferBelow: false,
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
-                navigateToUserPage(context, username: '${person.name}@${fetchInstanceNameFromUrl(person.actorId)}');
+                navigateToFeedPage(context, feedType: FeedType.user, username: '${person.name}@${fetchInstanceNameFromUrl(person.actorId)}');
               },
               child: ListTile(
                 leading: UserAvatar(person: person),
@@ -420,10 +456,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   person.displayName ?? person.name,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(
-                  generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                subtitle: UserFullNameWidget(
+                  context,
+                  person.name,
+                  fetchInstanceNameFromUrl(person.actorId) ?? '-',
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id

@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -12,6 +15,7 @@ import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 
 class FilterSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -85,6 +89,8 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    AuthState authState = context.read<AuthBloc>().state;
+    AccountState accountState = context.read<AccountBloc>().state;
 
     return Scaffold(
       body: CustomScrollView(
@@ -176,6 +182,34 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                         );
                       },
                     ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          SliverToBoxAdapter(
+            child: SettingsListTile(
+              icon: Icons.language,
+              description: l10n.languageFilters,
+              widget: const SizedBox(
+                height: 42.0,
+                child: Icon(Icons.chevron_right_rounded),
+              ),
+              onTap: () {
+                // Can only set discussion language if user is logged in
+                if (authState.isLoggedIn && accountState.status == AccountStatus.success && accountState.personView != null) {
+                  GoRouter.of(context).push(SETTINGS_ACCOUNT_PAGE, extra: [
+                    context.read<ThunderBloc>(),
+                    LocalSettings.discussionLanguages,
+                  ]);
+                } else {
+                  showThunderDialog(
+                    context: context,
+                    title: l10n.userNotLoggedIn,
+                    contentText: l10n.mustBeLoggedIn,
+                    primaryButtonText: l10n.ok,
+                    onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) => Navigator.of(dialogContext).pop(),
+                  );
+                }
+              },
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),

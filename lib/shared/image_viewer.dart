@@ -21,7 +21,7 @@ import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/media/image.dart';
 
 class ImageViewer extends StatefulWidget {
   final String? url;
@@ -53,6 +53,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   bool slideZooming = false;
   bool fullscreen = false;
   Offset downCoord = Offset.zero;
+  double delta = 0.0;
   bool areImageDimensionsLoaded = false;
 
   /// User Settings
@@ -67,7 +68,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     setState(() {
       maybeSlideZooming = true;
     });
-    Timer(const Duration(milliseconds: 300), () {
+    Timer(const Duration(milliseconds: 500), () {
       if (context.mounted) {
         setState(() {
           maybeSlideZooming = false;
@@ -115,15 +116,23 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   }
 
   Future<void> getImageSize() async {
-    Size decodedImage = await retrieveImageDimensions(imageUrl: widget.url, imageBytes: widget.bytes);
+    try {
+      Size decodedImage = await retrieveImageDimensions(imageUrl: widget.url, imageBytes: widget.bytes).timeout(const Duration(seconds: 2));
 
-    setState(() {
-      imageWidth = decodedImage.width;
-      imageHeight = decodedImage.height;
-      maxZoomLevel = max(imageWidth, imageHeight) / 128;
-      debugPrint("$imageWidth + $imageHeight + $maxZoomLevel");
-      areImageDimensionsLoaded = true;
-    });
+      setState(() {
+        imageWidth = decodedImage.width;
+        imageHeight = decodedImage.height;
+        maxZoomLevel = max(imageWidth, imageHeight) / 128;
+        areImageDimensionsLoaded = true;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+
+      setState(() {
+        maxZoomLevel = 3;
+        areImageDimensionsLoaded = true;
+      });
+    }
   }
 
   @override
@@ -207,9 +216,12 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     child: areImageDimensionsLoaded // Only display the image if dimensions are loaded
                         ? Listener(
                             // Start watching for double tap zoom
-                            onPointerUp: (details) {
+                            onPointerDown: (details) {
                               downCoord = details.position;
-                              if (!slideZooming) {
+                            },
+                            onPointerUp: (details) {
+                              delta = (downCoord - details.position).distance;
+                              if (!slideZooming && delta < 0.5) {
                                 _maybeSlide(context);
                               }
                             },

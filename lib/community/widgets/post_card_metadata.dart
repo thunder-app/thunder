@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
@@ -5,120 +6,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/user/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
-
-const Color upVoteColor = Colors.orange;
-const Color downVoteColor = Colors.blue;
-
-@Deprecated("Use [PostViewMetaData] instead")
-class PostCardMetaData extends StatelessWidget {
-  final int score;
-  final int voteType;
-  final int unreadComments;
-  final int comments;
-  final bool hasBeenEdited;
-  final DateTime published;
-  final String? hostURL;
-  final Color? readColor;
-
-  const PostCardMetaData({
-    super.key,
-    required this.score,
-    required this.voteType,
-    required this.unreadComments,
-    required this.comments,
-    required this.hasBeenEdited,
-    required this.published,
-    this.hostURL,
-    this.readColor,
-  });
-
-  final MaterialColor upVoteColor = Colors.orange;
-  final MaterialColor downVoteColor = Colors.blue;
-
-  @override
-  Widget build(BuildContext context) {
-    final AuthState authState = context.watch<AuthBloc>().state;
-    final showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
-    final theme = Theme.of(context);
-
-    return BlocBuilder<ThunderBloc, ThunderState>(
-      builder: (context, state) {
-        return Wrap(
-          children: [
-            IconText(
-              fontScale: state.metadataFontSizeScale,
-              text: showScores ? formatNumberToK(score) : null,
-              textColor: voteType == 1
-                  ? upVoteColor
-                  : voteType == -1
-                      ? downVoteColor
-                      : readColor,
-              icon: Icon(voteType == 1 ? Icons.arrow_upward : (voteType == -1 ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
-                  size: 20.0,
-                  color: voteType == 1
-                      ? upVoteColor
-                      : voteType == -1
-                          ? downVoteColor
-                          : readColor),
-              padding: 2.0,
-            ),
-            const SizedBox(width: 8.0),
-            IconText(
-              fontScale: state.metadataFontSizeScale,
-              icon: Icon(
-                unreadComments > 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded : Icons.chat,
-                size: 18.0,
-                color: unreadComments > 0 && unreadComments != comments ? theme.primaryColor : readColor,
-              ),
-              text: unreadComments > 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' : formatNumberToK(comments),
-              textColor: unreadComments > 0 && unreadComments != comments ? theme.primaryColor : readColor,
-              padding: 5.0,
-            ),
-            const SizedBox(width: 8.0),
-            IconText(
-              fontScale: state.metadataFontSizeScale,
-              icon: Icon(
-                hasBeenEdited ? Icons.edit : Icons.history_rounded,
-                size: 18.0,
-                color: readColor,
-              ),
-              text: formatTimeToString(dateTime: published.toIso8601String()),
-              textColor: readColor,
-            ),
-            const SizedBox(width: 8.0),
-            if (hostURL != null)
-              Tooltip(
-                message: hostURL,
-                preferBelow: false,
-                child: IconText(
-                  fontScale: state.metadataFontSizeScale,
-                  icon: Icon(
-                    Icons.public,
-                    size: 17.0,
-                    color: readColor,
-                  ),
-                  text: Uri.parse(hostURL!).host.replaceFirst('www.', ''),
-                  textColor: readColor,
-                ),
-              ),
-          ],
-        );
-      },
-    );
-  }
-}
 
 /// Contains metadata related to a given post. This is generally displayed as part of the post card.
 ///
@@ -186,6 +84,7 @@ class PostCardMetadata extends StatelessWidget {
 
     return Wrap(
       spacing: 8.0,
+      runSpacing: 4.0,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: postCardMetadataItems.map(
         (PostCardMetadataItem postCardMetadataItem) {
@@ -230,8 +129,8 @@ class ScorePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (voteType) {
-      1 => upVoteColor,
-      -1 => downVoteColor,
+      1 => context.read<ThunderBloc>().state.upvoteColor.color,
+      -1 => context.read<ThunderBloc>().state.downvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -240,14 +139,25 @@ class ScorePostCardMetaData extends StatelessWidget {
       crossAxisAlignment: WrapCrossAlignment.center,
       runAlignment: WrapAlignment.center,
       children: [
-        Icon(Icons.arrow_upward, size: 17.0, color: color),
+        SizedBox(
+          width: 21,
+          height: 17,
+          child: Stack(
+            children: [
+              Align(alignment: Alignment.topLeft, child: Icon(Icons.arrow_upward, size: 13.5, color: voteType == -1 ? readColor : color)),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Icon(Icons.arrow_downward, size: 13.5, color: voteType == 1 ? readColor : color),
+              ),
+            ],
+          ),
+        ),
         ScalableText(
           formatNumberToK(score ?? 0),
           semanticsLabel: l10n.xScore(formatNumberToK(score ?? 0)),
           fontScale: state.metadataFontSizeScale,
           style: theme.textTheme.bodyMedium?.copyWith(color: color),
         ),
-        Icon(Icons.arrow_downward, size: 17.0, color: color),
       ],
     );
   }
@@ -278,7 +188,7 @@ class UpvotePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isUpvoted) {
-      true => upVoteColor,
+      true => context.read<ThunderBloc>().state.upvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -317,7 +227,7 @@ class DownvotePostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (isDownvoted) {
-      true => downVoteColor,
+      true => context.read<ThunderBloc>().state.downvoteColor.color,
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
@@ -396,12 +306,12 @@ class DateTimePostCardMetaData extends StatelessWidget {
 
     final color = switch (hasBeenRead) {
       true => readColor,
-      _ => theme.textTheme.bodyMedium?.color,
+      _ => state.showFullPostDate ? theme.textTheme.bodyMedium?.color?.withOpacity(0.75) : theme.textTheme.bodyMedium?.color,
     };
 
     return IconText(
       fontScale: state.metadataFontSizeScale,
-      text: formatTimeToString(dateTime: dateTime),
+      text: state.showFullPostDate ? state.dateFormat?.format(DateTime.parse(dateTime)) : formatTimeToString(dateTime: dateTime),
       textColor: color,
       padding: 2.0,
       icon: Icon(hasBeenEdited ? Icons.edit : Icons.history_rounded, size: 17.0, color: color),
@@ -452,56 +362,39 @@ class UrlPostCardMetaData extends StatelessWidget {
   }
 }
 
-class PostViewMetaData extends StatelessWidget {
-  final int unreadComments;
-  final int comments;
-  final bool hasBeenEdited;
-  final DateTime published;
-  final bool saved;
+/// Display metadata for a cross-post, used in the expanded cross-posts view
+class CrossPostMetaData extends StatelessWidget {
+  /// Accepts the PostView of a cross-post
+  final PostView crossPost;
 
-  const PostViewMetaData({
+  const CrossPostMetaData({
     super.key,
-    required this.unreadComments,
-    required this.comments,
-    required this.hasBeenEdited,
-    required this.published,
-    required this.saved,
+    required this.crossPost,
   });
-
-  final MaterialColor upVoteColor = Colors.orange;
-  final MaterialColor downVoteColor = Colors.blue;
-  final MaterialColor savedColor = Colors.purple;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconText(
-              fontScale: state.metadataFontSizeScale,
-              icon: Icon(
-                Icons.chat,
-                size: 17.0,
-                color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-              ),
-              text: formatNumberToK(comments),
-              textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
-              padding: 5.0,
+            ScorePostCardMetaData(
+              score: crossPost.counts.score,
+              voteType: crossPost.myVote,
+              hasBeenRead: true,
             ),
             const SizedBox(width: 10.0),
-            IconText(
-              fontScale: state.metadataFontSizeScale,
-              icon: Icon(
-                hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
-                size: 19.0,
-                color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-              ),
-              text: formatTimeToString(dateTime: published.toIso8601String()),
-              textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+            CommentCountPostCardMetaData(
+              commentCount: crossPost.counts.comments,
+              unreadCommentCount: crossPost.unreadComments,
+              hasBeenRead: true,
+            ),
+            const SizedBox(width: 10.0),
+            DateTimePostCardMetaData(
+              dateTime: crossPost.post.published.toIso8601String(),
+              hasBeenEdited: crossPost.post.updated != null ? true : false,
+              hasBeenRead: true,
             ),
           ],
         );
@@ -515,19 +408,19 @@ class PostCommunityAndAuthor extends StatelessWidget {
     super.key,
     required this.postView,
     required this.showCommunityIcons,
-    required this.communityMode,
-    this.textStyleAuthor,
-    this.textStyleCommunity,
+    required this.feedType,
+    this.authorColorTransformation,
+    this.communityColorTransformation,
     required this.compactMode,
     required this.showCommunitySubscription,
   });
 
   final bool showCommunityIcons;
-  final bool communityMode;
+  final FeedType? feedType;
   final bool compactMode;
   final PostView postView;
-  final TextStyle? textStyleAuthor;
-  final TextStyle? textStyleCommunity;
+  final Color? Function(Color?)? authorColorTransformation;
+  final Color? Function(Color?)? communityColorTransformation;
   final bool showCommunitySubscription;
 
   @override
@@ -536,6 +429,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
 
     return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
       final String? creatorName = postView.creator.displayName != null && state.useDisplayNames ? postView.creator.displayName : postView.creator.name;
+      final bool showUsername = (state.showPostAuthor || feedType == FeedType.community) && feedType != FeedType.user;
+      final bool showCommunityName = feedType != FeedType.community;
 
       return Row(
         children: [
@@ -555,19 +450,23 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 alignment: WrapAlignment.start,
                 crossAxisAlignment: WrapCrossAlignment.end,
                 children: [
-                  if (state.showPostAuthor || communityMode)
+                  if (showUsername)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         InkWell(
-                            borderRadius: BorderRadius.circular(6),
-                            onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToUserPage(context, userId: postView.creator.id),
-                            child: ScalableText(
-                              '$creatorName',
-                              fontScale: state.metadataFontSizeScale,
-                              style: textStyleAuthor,
-                            )),
-                        if (!communityMode)
+                          borderRadius: BorderRadius.circular(6),
+                          onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id),
+                          child: UserFullNameWidget(
+                            context,
+                            creatorName,
+                            fetchInstanceNameFromUrl(postView.creator.actorId),
+                            includeInstance: state.postShowUserInstance,
+                            fontScale: state.metadataFontSizeScale,
+                            transformColor: authorColorTransformation,
+                          ),
+                        ),
+                        if (showUsername && showCommunityName)
                           ScalableText(
                             ' to ',
                             fontScale: state.metadataFontSizeScale,
@@ -583,11 +482,13 @@ class PostCommunityAndAuthor extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (!communityMode)
-                          ScalableText(
-                            generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId)),
+                        if (showCommunityName)
+                          CommunityFullNameWidget(
+                            context,
+                            postView.community.name,
+                            fetchInstanceNameFromUrl(postView.community.actorId),
                             fontScale: state.metadataFontSizeScale,
-                            style: textStyleCommunity,
+                            transformColor: communityColorTransformation,
                           ),
                         if (showCommunitySubscription)
                           Padding(
@@ -598,7 +499,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             child: Icon(
                               Icons.playlist_add_check_rounded,
                               size: 16.0,
-                              color: textStyleCommunity?.color,
+                              color: communityColorTransformation?.call(theme.textTheme.bodyMedium?.color),
                             ),
                           ),
                       ],

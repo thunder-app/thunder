@@ -17,7 +17,9 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_comment_list.dart';
 import 'package:thunder/feed/view/feed_widget.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
@@ -27,7 +29,10 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/utils/cache.dart';
+import 'package:thunder/user/widgets/user_header.dart';
+import 'package:thunder/user/widgets/user_sidebar.dart';
+import 'package:thunder/utils/colors.dart';
+import 'package:thunder/utils/global_context.dart';
 
 enum FeedType { community, user, general }
 
@@ -38,8 +43,6 @@ enum FeedType { community, user, general }
 /// If [FeedType.community] is provided, one of [communityId] or [communityName] must be provided. If both are provided, [communityId] will take precedence.
 /// If [FeedType.user] is provided, one of [userId] or [username] must be provided. If both are provided, [userId] will take precedence.
 /// If [FeedType.general] is provided, [postListingType] must be provided.
-///
-/// TODO: Add support for user feeds here
 class FeedPage extends StatefulWidget {
   const FeedPage({
     super.key,
@@ -167,8 +170,22 @@ class _FeedViewState extends State<FeedView> {
   /// Boolean which indicates whether the community sidebar should be shown
   bool showCommunitySidebar = false;
 
+  /// Boolean which indicates whether the user sidebar should be shown
+  bool showUserSidebar = false;
+
+  /// Indicates which "tab" is selected. This is used for user profiles, where we can switch between posts and comments
+  List<bool> selectedUserOption = [true, false];
+
+  /// List of tabs for user profiles
+  List<Widget> userOptionTypes = <Widget>[
+    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
+    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
+  ];
+
   /// List of post ids to queue for removal. The ids in this list allow us to remove posts in a staggered method
   List<int> queuedForRemoval = [];
+
+  String? tagline;
 
   @override
   void initState() {
@@ -184,7 +201,7 @@ class _FeedViewState extends State<FeedView> {
 
       // Fetches new posts when the user has scrolled past 70% list
       if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
-        context.read<FeedBloc>().add(const FeedFetchedEvent());
+        context.read<FeedBloc>().add(FeedFetchedEvent(feedTypeSubview: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment));
       }
     });
 
@@ -226,9 +243,9 @@ class _FeedViewState extends State<FeedView> {
   @override
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
-    final l10n = AppLocalizations.of(context)!;
 
     bool tabletMode = thunderBloc.state.tabletMode;
+    bool markPostReadOnScroll = thunderBloc.state.markPostReadOnScroll;
     bool hideTopBarOnScroll = thunderBloc.state.hideTopBarOnScroll;
 
     return MultiBlocListener(
@@ -242,10 +259,8 @@ class _FeedViewState extends State<FeedView> {
         ),
         BlocListener<UserBloc, UserState>(
           listener: (context, state) {
-            if ((state.status == UserStatus.failure || state.status == UserStatus.failedToBlock) && state.errorMessage != null) {
-              showSnackbar(state.errorMessage!);
-            } else if (state.status == UserStatus.success && state.blockedPerson != null) {
-              showSnackbar(l10n.successfullyBlocked);
+            if (state.message != null) {
+              showSnackbar(state.message!);
             }
           },
         ),
@@ -268,14 +283,14 @@ class _FeedViewState extends State<FeedView> {
               return true;
             },
             listener: (context, state) {
-              // Continue to fetch more posts as long as the device view is not scrollable.
-              // This is to avoid cases where more posts cannot be fetched because the conditions are not met
-              if (state.status == FeedStatus.success && state.hasReachedEnd == false) {
+              // Continue to fetch more items as long as the device view is not scrollable.
+              // This is to avoid cases where more items cannot be fetched because the conditions are not met
+              if (state.status == FeedStatus.success && ((selectedUserOption[0] && state.hasReachedPostsEnd == false) || (selectedUserOption[1] && state.hasReachedCommentsEnd == false))) {
                 bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
                 if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
               }
 
-              if ((state.status == FeedStatus.failure || state.status == FeedStatus.failureLoadingCommunity) && state.message != null) {
+              if ((state.status == FeedStatus.failure || state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser) && state.message != null) {
                 showSnackbar(state.message!);
                 context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
               }
@@ -283,6 +298,12 @@ class _FeedViewState extends State<FeedView> {
             builder: (context, state) {
               final theme = Theme.of(context);
               List<PostViewMedia> postViewMedias = state.postViewMedias;
+              List<CommentView> commentViews = state.commentViews;
+
+              if (state.status == FeedStatus.initial) {
+                final GetSiteResponse? site = context.read<AuthBloc>().state.getSiteResponse;
+                tagline = site?.taglines.isNotEmpty == true ? site?.taglines[Random().nextInt(site.taglines.length)].content : null;
+              }
 
               return RefreshIndicator(
                 onRefresh: () async {
@@ -293,7 +314,7 @@ class _FeedViewState extends State<FeedView> {
                 child: Stack(
                   children: [
                     CustomScrollView(
-                      physics: showCommunitySidebar ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community sidebar is open
+                      physics: (showCommunitySidebar || showUserSidebar) ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community/user sidebar is open
                       controller: _scrollController,
                       slivers: <Widget>[
                         FeedPageAppBar(
@@ -306,16 +327,16 @@ class _FeedViewState extends State<FeedView> {
                             hasScrollBody: false,
                             child: Center(child: CircularProgressIndicator()),
                           ),
-                        if (state.status == FeedStatus.failureLoadingCommunity)
+                        if (state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser)
                           SliverToBoxAdapter(
                             child: Container(),
                           ),
                         // Display tagline and list of posts once they are fetched
-                        if (state.status != FeedStatus.initial && state.status != FeedStatus.failureLoadingCommunity) ...[
+                        if (state.status != FeedStatus.initial && (state.status != FeedStatus.failureLoadingCommunity || state.status != FeedStatus.failureLoadingUser)) ...[
                           SliverToBoxAdapter(
                             child: Visibility(
                               visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
-                              child: const TagLine(),
+                              child: tagline?.isNotEmpty == true ? TagLine(tagline: tagline!) : Container(),
                             ),
                           ),
                           if (state.fullCommunityView != null)
@@ -333,15 +354,68 @@ class _FeedViewState extends State<FeedView> {
                                 ),
                               ),
                             ),
+                          if (state.fullPersonView != null)
+                            SliverToBoxAdapter(
+                              child: Visibility(
+                                visible: state.feedType == FeedType.user,
+                                child: Column(
+                                  children: [
+                                    UserHeader(
+                                      getPersonDetailsResponse: state.fullPersonView!,
+                                      showUserSidebar: showUserSidebar,
+                                      onToggle: (bool toggled) {
+                                        // Scroll to top first before showing the sidebar
+                                        _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                                        setState(() => showUserSidebar = toggled);
+                                      },
+                                    ),
+                                    AnimatedSize(
+                                      duration: const Duration(milliseconds: 100),
+                                      curve: Curves.easeInOut,
+                                      child: Container(
+                                        height: showUserSidebar ? 0 : null,
+                                        margin: showUserSidebar ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 8.0),
+                                        child: ToggleButtons(
+                                          constraints: showUserSidebar
+                                              ? const BoxConstraints(minHeight: 0.0, maxHeight: 0.0, minWidth: 0.0, maxWidth: 0.0)
+                                              : BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length)) - 12.0),
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          direction: Axis.horizontal,
+                                          onPressed: (int index) {
+                                            setState(() {
+                                              // The button that is tapped is set to true, and the others to false.
+                                              for (int i = 0; i < selectedUserOption.length; i++) {
+                                                selectedUserOption[i] = i == index;
+                                              }
+                                            });
+                                          },
+                                          borderRadius: showUserSidebar ? null : const BorderRadius.all(Radius.circular(8)),
+                                          isSelected: selectedUserOption,
+                                          children: userOptionTypes,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           SliverStack(
                             children: [
-                              // Widget representing the list of posts on the feed
-                              FeedPostList(
-                                postViewMedias: postViewMedias,
-                                tabletMode: tabletMode,
-                                queuedForRemoval: queuedForRemoval,
-                              ),
-                              // Widgets to display on the feed when feedType == FeedType.community
+                              selectedUserOption[1]
+                                  // Widget representing the list of user comments on the feed
+                                  ? FeedCommentList(
+                                      commentViews: commentViews,
+                                      tabletMode: tabletMode,
+                                    )
+                                  :
+                                  // Widget representing the list of posts on the feed
+                                  FeedPostList(
+                                      postViewMedias: postViewMedias,
+                                      tabletMode: tabletMode,
+                                      markPostReadOnScroll: markPostReadOnScroll,
+                                      queuedForRemoval: queuedForRemoval,
+                                    ),
+                              // Widgets to display on the feed when feedType == FeedType.community or feedType == FeedType.user
                               SliverToBoxAdapter(
                                 child: AnimatedSwitcher(
                                   switchInCurve: Curves.easeOut,
@@ -355,9 +429,12 @@ class _FeedViewState extends State<FeedView> {
                                     );
                                   },
                                   duration: const Duration(milliseconds: 300),
-                                  child: showCommunitySidebar
+                                  child: (showCommunitySidebar || showUserSidebar)
                                       ? GestureDetector(
-                                          onTap: () => setState(() => showCommunitySidebar = !showCommunitySidebar),
+                                          onTap: () => setState(() {
+                                            if (state.feedType == FeedType.community) showCommunitySidebar = !showCommunitySidebar;
+                                            if (state.feedType == FeedType.user) showUserSidebar = !showUserSidebar;
+                                          }),
                                           child: Container(
                                             height: MediaQuery.of(context).size.height,
                                             width: MediaQuery.of(context).size.width,
@@ -367,7 +444,7 @@ class _FeedViewState extends State<FeedView> {
                                       : null,
                                 ),
                               ),
-                              // Contains the widget for the community sidebar
+                              // Contains the widget for the community/user sidebar
                               SliverToBoxAdapter(
                                 child: AnimatedSwitcher(
                                   switchInCurve: Curves.easeOut,
@@ -384,45 +461,61 @@ class _FeedViewState extends State<FeedView> {
                                           getCommunityResponse: state.fullCommunityView,
                                           onDismiss: () => setState(() => showCommunitySidebar = false),
                                         )
-                                      : Container(),
+                                      : showUserSidebar
+                                          ? UserSidebar(
+                                              getPersonDetailsResponse: state.fullPersonView,
+                                              onDismiss: () => setState(() => showUserSidebar = false),
+                                            )
+                                          : null,
                                 ),
                               ),
                             ],
                           ),
                           // Widget representing the bottom of the feed (reached end or loading more posts indicators)
-                          SliverToBoxAdapter(
-                            child: state.hasReachedEnd
-                                ? const FeedReachedEnd()
-                                : Container(
-                                    height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                    child: const CircularProgressIndicator(),
-                                  ),
-                          ),
+                          if (state.status != FeedStatus.failureLoadingCommunity && state.status != FeedStatus.failureLoadingUser)
+                            SliverToBoxAdapter(
+                              child: ((selectedUserOption[0] && state.hasReachedPostsEnd) || (selectedUserOption[1] && state.hasReachedCommentsEnd))
+                                  ? const FeedReachedEnd()
+                                  : Container(
+                                      height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                      child: const CircularProgressIndicator(),
+                                    ),
+                            ),
                         ],
                       ],
                     ),
                     // Widget to host the feed FAB when navigating to new page
                     AnimatedOpacity(
                       opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 150),
-                      child: thunderBloc.state.isFabOpen
-                          ? ModalBarrier(
-                              color: theme.colorScheme.background.withOpacity(0.95),
+                      curve: Curves.easeInOut,
+                      duration: const Duration(milliseconds: 250),
+                      child: Stack(
+                        children: [
+                          IgnorePointer(
+                              child: Container(
+                            color: theme.colorScheme.background.withOpacity(0.95),
+                          )),
+                          if (thunderBloc.state.isFabOpen)
+                            ModalBarrier(
+                              color: null,
                               dismissible: true,
                               onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                            )
-                          : null,
+                            ),
+                        ],
+                      ),
                     ),
-                    if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null) && thunderBloc.state.enableFeedsFab)
+                    if (Navigator.of(context).canPop() &&
+                        (state.communityId != null || state.communityName != null || state.userId != null || state.username != null) &&
+                        thunderBloc.state.enableFeedsFab)
                       AnimatedOpacity(
                         opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 150),
                         curve: Curves.easeIn,
                         child: Container(
                           margin: const EdgeInsets.all(16),
-                          child: FeedFAB(heroTag: state.communityName),
+                          child: FeedFAB(heroTag: state.communityName ?? state.username),
                         ),
                       ),
                   ],
@@ -438,9 +531,15 @@ class _FeedViewState extends State<FeedView> {
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
     final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
 
-    // If the sidebar is open, close it
+    // If the community sidebar is open, close it
     if (topOfNavigationStack && showCommunitySidebar) {
       setState(() => showCommunitySidebar = false);
+      return true;
+    }
+
+    // If the user sidebar is open, close it
+    if (topOfNavigationStack && showUserSidebar) {
+      setState(() => showUserSidebar = false);
       return true;
     }
 
@@ -465,7 +564,7 @@ class _FeedViewState extends State<FeedView> {
     if (!canPop && (desiredListingType != currentListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
-          sortType: thunderBloc.state.defaultSortType,
+          sortType: thunderBloc.state.sortTypeForInstance,
           reset: true,
           postListingType: desiredListingType,
           feedType: FeedType.general,
@@ -492,7 +591,7 @@ class FeedHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          getCommunityName(feedBloc.state),
+          getAppBarTitle(feedBloc.state),
           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -513,79 +612,123 @@ class FeedHeader extends StatelessWidget {
   }
 }
 
-class TagLine extends StatelessWidget {
-  const TagLine({super.key});
+class TagLine extends StatefulWidget {
+  final String tagline;
+
+  const TagLine({super.key, required this.tagline});
+
+  @override
+  State<TagLine> createState() => _TagLineState();
+}
+
+class _TagLineState extends State<TagLine> {
+  final GlobalKey taglineBodyKey = GlobalKey();
+  bool taglineIsLong = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        taglineIsLong = (taglineBodyKey.currentContext?.size?.height ?? 0) > 40;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final taglineToShowCache = Cache<String>();
-
-    final fullSiteView = context.read<AuthBloc>().state.getSiteResponse;
-    if (fullSiteView == null || fullSiteView.taglines.isEmpty) return Container();
-
-    String tagline = taglineToShowCache.getOrSet(() {
-      String tagline = fullSiteView.taglines[Random().nextInt(fullSiteView.taglines.length)].content;
-      return tagline;
-    }, const Duration(seconds: 1));
-
-    final bool taglineIsLong = tagline.length > 200;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Container(
         decoration: BoxDecoration(
-          color: theme.splashColor,
+          color: getBackgroundColor(context),
           borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: !taglineIsLong
-              // TODO: Eventually pass in textScalingFactor
-              ? CommonMarkdownBody(body: tagline)
-              : ExpandableNotifier(
-                  child: Column(
-                    children: [
-                      Expandable(
-                        collapsed: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: AnimatedCrossFade(
+            crossFadeState: taglineIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: 250),
+            // TODO: Eventually pass in textScalingFactor
+            firstChild: CommonMarkdownBody(key: taglineBodyKey, body: widget.tagline),
+            secondChild: ExpandableNotifier(
+              child: Column(
+                children: [
+                  Expandable(
+                    collapsed: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Stack(
                           children: [
-                            // TODO: Eventually pass in textScalingFactor
-                            CommonMarkdownBody(
-                              body: '${tagline.substring(0, 150)}...',
-                            ),
-                            ExpandableButton(
-                              theme: const ExpandableThemeData(
-                                useInkWell: false,
+                            LimitedBox(
+                              maxHeight: 60,
+                              // Note: This Wrap is critical to prevent the LimitedBox from having a render overflow
+                              child: Wrap(
+                                children: [
+                                  // TODO: Eventually pass in textScalingFactor
+                                  CommonMarkdownBody(body: widget.tagline),
+                                ],
                               ),
-                              child: Text(
-                                AppLocalizations.of(context)!.showMore,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              height: 40,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    stops: const [0.0, 0.5, 1.0],
+                                    colors: [
+                                      getBackgroundColor(context).withOpacity(0.0),
+                                      getBackgroundColor(context),
+                                      getBackgroundColor(context),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              child: ExpandableButton(
+                                theme: const ExpandableThemeData(useInkWell: false),
+                                child: Text(
+                                  AppLocalizations.of(context)!.showMore,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        expanded: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            CommonMarkdownBody(body: tagline),
-                            ExpandableButton(
-                              theme: const ExpandableThemeData(useInkWell: false),
-                              child: Text(
-                                AppLocalizations.of(context)!.showLess,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
-                                ),
-                              ),
+                      ],
+                    ),
+                    expanded: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        CommonMarkdownBody(body: widget.tagline),
+                        ExpandableButton(
+                          theme: const ExpandableThemeData(useInkWell: false),
+                          child: Text(
+                            AppLocalizations.of(context)!.showLess,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -24,10 +24,6 @@ class PostCardActions extends StatelessWidget {
     required this.onSaveAction,
   });
 
-  final MaterialColor upVoteColor = Colors.orange;
-  final MaterialColor downVoteColor = Colors.blue;
-  final MaterialColor savedColor = Colors.purple;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThunderBloc, ThunderState>(
@@ -47,7 +43,7 @@ class PostCardActions extends StatelessWidget {
                     Icons.arrow_upward,
                     semanticLabel: voteType == 1 ? 'Upvoted' : 'Upvote',
                   ),
-                  color: voteType == 1 ? upVoteColor : null,
+                  color: voteType == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
@@ -59,7 +55,7 @@ class PostCardActions extends StatelessWidget {
                   Icons.arrow_downward,
                   semanticLabel: voteType == -1 ? 'Downvoted' : 'Downvote',
                 ),
-                color: voteType == -1 ? downVoteColor : null,
+                color: voteType == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : null,
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
@@ -72,7 +68,7 @@ class PostCardActions extends StatelessWidget {
                   saved ? Icons.star_rounded : Icons.star_border_rounded,
                   semanticLabel: saved ? 'Saved' : 'Save',
                 ),
-                color: saved ? savedColor : null,
+                color: saved ? context.read<ThunderBloc>().state.saveColor.color : null,
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();

@@ -96,15 +96,17 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         child: NavigationBar(
           selectedIndex: widget.selectedPageIndex,
           backgroundColor: theme.colorScheme.surface,
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          labelBehavior: state.showNavigationLabels ? NavigationDestinationLabelBehavior.alwaysShow : NavigationDestinationLabelBehavior.alwaysHide,
           elevation: 1,
           destinations: [
             NavigationDestination(
-              icon: const Icon(Icons.dashboard_rounded),
+              icon: const Icon(Icons.dashboard_outlined),
+              selectedIcon: const Icon(Icons.dashboard_rounded),
               label: l10n.feed,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.search_rounded),
+              icon: const Icon(Icons.search_outlined),
+              selectedIcon: const Icon(Icons.search_rounded),
               label: l10n.search,
             ),
             GestureDetector(
@@ -113,7 +115,8 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 showProfileModalSheet(context);
               },
               child: NavigationDestination(
-                icon: const Icon(Icons.person_rounded),
+                icon: const Icon(Icons.person_outline_rounded),
+                selectedIcon: const Icon(Icons.person_rounded),
                 label: l10n.account(1),
                 tooltip: '', // Disable tooltip so that gesture detector triggers properly
               ),
@@ -122,12 +125,18 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               icon: Badge(
                 isLabelVisible: inboxState.totalUnreadCount != 0,
                 label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
+                child: const Icon(Icons.inbox_outlined),
+              ),
+              selectedIcon: Badge(
+                isLabelVisible: inboxState.totalUnreadCount != 0,
+                label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
                 child: const Icon(Icons.inbox_rounded),
               ),
               label: l10n.inbox,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.settings_rounded),
+              icon: const Icon(Icons.settings_outlined),
+              selectedIcon: const Icon(Icons.settings_rounded),
               label: l10n.settings,
             ),
           ],

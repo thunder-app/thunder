@@ -1,5 +1,9 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:thunder/core/singletons/database.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:drift/drift.dart';
+
+import 'package:thunder/core/database/database.dart';
+import 'package:thunder/main.dart';
 
 class LocalCommunity {
   final int id;
@@ -26,41 +30,33 @@ class AnonymousSubscriptions {
 
   // To insert multiple communities to database
   static Future<void> insertCommunities(Set<LocalCommunity> communities) async {
-    Database? database = await DB.instance.database;
-    if (database == null) return;
-
-    Batch batch = database.batch();
-    for (var element in communities) {
-      batch.insert("anonymous_subscriptions", element.toMap());
+    try {
+      for (LocalCommunity community in communities) {
+        await database
+            .into(database.localSubscriptions)
+            .insert(LocalSubscriptionsCompanion.insert(name: community.name, title: community.title, actorId: community.actorId, icon: Value(community.icon)));
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
-    batch.commit();
   }
 
   static Future<void> deleteCommunities(Set<int> ids) async {
-    Database? database = await DB.instance.database;
-    if (database == null) return;
-
-    Batch batch = database.batch();
-    for (var element in ids) {
-      batch.delete("anonymous_subscriptions", where: 'id = ?', whereArgs: [element]);
+    try {
+      await (database.delete(database.localSubscriptions)..where((t) => t.id.isIn(ids))).go();
+    } catch (e) {
+      debugPrint(e.toString());
     }
-    batch.commit();
   }
 
   static Future<List<LocalCommunity>> getSubscribedCommunities() async {
-    Database? database = await DB.instance.database;
-    if (database == null) return [];
-
-    final List<Map<String, dynamic>> maps = await database.query('anonymous_subscriptions');
-
-    return List.generate(maps.length, (i) {
-      return LocalCommunity(
-        id: maps[i]["id"],
-        name: maps[i]["name"],
-        title: maps[i]["title"],
-        actorId: maps[i]["actorId"],
-        icon: maps[i]["icon"],
-      );
-    });
+    try {
+      return (await database.localSubscriptions.all().get())
+          .map((favorite) => LocalCommunity(id: favorite.id, name: favorite.name, title: favorite.title, actorId: favorite.actorId, icon: favorite.icon))
+          .toList();
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
   }
 }

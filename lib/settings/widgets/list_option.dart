@@ -7,41 +7,47 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
 class ListOption<T> extends StatelessWidget {
   // Appearance
-  final IconData icon;
+  final IconData? icon;
 
   // General
   final String description;
+  final String? subtitle;
+  final Widget? subtitleWidget;
   final Widget? bottomSheetHeading;
   final ListPickerItem<T> value;
   final List<ListPickerItem<T>> options;
 
   // Callback
-  final void Function(ListPickerItem<T>) onChanged;
+  final Future<void> Function(ListPickerItem<T>)? onChanged;
 
-  final BottomSheetListPicker? customListPicker;
+  final Widget? customListPicker;
   final bool? isBottomModalScrollControlled;
 
   final bool disabled;
   final Widget? valueDisplay;
   final bool closeOnSelect;
+  final Widget Function()? onUpdateHeading;
 
   /// A key to assign to this widget when it should be highlighted
   final GlobalKey? highlightKey;
 
   const ListOption({
     super.key,
-    required this.description,
+    this.description = '',
+    this.subtitle,
+    this.subtitleWidget,
     this.bottomSheetHeading,
     required this.value,
-    required this.options,
-    required this.icon,
-    required this.onChanged,
+    this.options = const [],
+    this.icon,
+    this.onChanged,
     this.customListPicker,
     this.isBottomModalScrollControlled,
     this.disabled = false,
     this.valueDisplay,
     this.closeOnSelect = true,
     this.highlightKey,
+    this.onUpdateHeading,
   });
 
   @override
@@ -69,10 +75,9 @@ class ListOption<T> extends StatelessWidget {
                         BottomSheetListPicker(
                           title: description,
                           heading: bottomSheetHeading,
+                          onUpdateHeading: onUpdateHeading,
                           items: options,
-                          onSelect: (value) {
-                            onChanged(value);
-                          },
+                          onSelect: onChanged ?? (value) async {},
                           previouslySelected: value.payload,
                           closeOnSelect: closeOnSelect,
                         ),
@@ -87,7 +92,17 @@ class ListOption<T> extends StatelessWidget {
                   children: [
                     Icon(icon),
                     const SizedBox(width: 8.0),
-                    Text(description, style: theme.textTheme.bodyMedium),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(description, style: theme.textTheme.bodyMedium),
+                          if (subtitleWidget != null) subtitleWidget!,
+                          if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 Row(

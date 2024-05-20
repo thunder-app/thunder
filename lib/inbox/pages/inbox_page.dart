@@ -11,8 +11,8 @@ import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/dialogs.dart';
-import 'package:thunder/shared/error_message.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/shared/snackbar.dart';
 
 enum InboxType { replies, mentions, messages }
 
@@ -102,19 +102,28 @@ class _InboxPageState extends State<InboxPage> {
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(45.0),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Center(
-              child: InboxCategoryWidget(
-                inboxType: inboxType,
-                onSelected: (InboxType? selected) {
-                  _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
-                  setState(() {
-                    inboxType = selected;
-                  });
-                },
-              ),
-            ),
+          child: BlocBuilder<InboxBloc, InboxState>(
+            builder: (context, state) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Center(
+                  child: InboxCategoryWidget(
+                    inboxType: inboxType,
+                    onSelected: (InboxType? selected) {
+                      _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
+                      setState(() {
+                        inboxType = selected;
+                      });
+                    },
+                    unreadCounts: {
+                      InboxType.replies: state.repliesUnreadCount,
+                      InboxType.mentions: state.mentionsUnreadCount,
+                      InboxType.messages: state.messagesUnreadCount,
+                    },
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -153,17 +162,20 @@ class _InboxPageState extends State<InboxPage> {
                         );
                       case InboxStatus.refreshing:
                       case InboxStatus.success:
+                      case InboxStatus.failure:
+                        if (state.errorMessage?.isNotEmpty == true) {
+                          showSnackbar(
+                            state.errorMessage!,
+                            trailingIcon: Icons.refresh_rounded,
+                            trailingAction: () => context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll)),
+                          );
+                        }
+
                         if (inboxType == InboxType.mentions) return InboxMentionsView(mentions: state.mentions);
                         if (inboxType == InboxType.messages) return InboxPrivateMessagesView(privateMessages: state.privateMessages);
                         if (inboxType == InboxType.replies) return InboxRepliesView(replies: state.replies, showAll: showAll);
                       case InboxStatus.empty:
                         return Center(child: Text(l10n.emptyInbox));
-                      case InboxStatus.failure:
-                        return ErrorMessage(
-                          message: state.errorMessage,
-                          actionText: l10n.refreshContent,
-                          action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
-                        );
                     }
 
                     return Container();

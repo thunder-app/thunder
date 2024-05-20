@@ -18,6 +18,8 @@ class CommentCardActions extends StatelessWidget {
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
   final Function(int) onReportAction;
+  final void Function() onViewSourceToggled;
+  final bool viewSource;
 
   const CommentCardActions({
     super.key,
@@ -28,10 +30,9 @@ class CommentCardActions extends StatelessWidget {
     required this.onDeleteAction,
     required this.onReplyEditAction,
     required this.onReportAction,
+    required this.onViewSourceToggled,
+    required this.viewSource,
   });
-
-  final MaterialColor upVoteColor = Colors.orange;
-  final MaterialColor downVoteColor = Colors.blue;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +64,8 @@ class CommentCardActions extends StatelessWidget {
                       onVoteAction,
                       onReplyEditAction,
                       onReportAction,
+                      onViewSourceToggled,
+                      viewSource,
                     );
                     HapticFeedback.mediumImpact();
                   }),
@@ -88,7 +91,7 @@ class CommentCardActions extends StatelessWidget {
                     semanticLabel: voteType == 1 ? 'Upvoted' : 'Upvote',
                     size: iconSize,
                   ),
-                  color: voteType == 1 ? upVoteColor : null,
+                  color: voteType == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
@@ -105,7 +108,7 @@ class CommentCardActions extends StatelessWidget {
                     semanticLabel: voteType == -1 ? 'Downvoted' : 'Downvote',
                     size: iconSize,
                   ),
-                  color: voteType == -1 ? downVoteColor : null,
+                  color: voteType == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
