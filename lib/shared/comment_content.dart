@@ -37,6 +37,7 @@ class CommentContent extends StatefulWidget {
   final void Function() onViewSourceToggled;
   final bool selectable;
   final bool showReplyEditorButtons;
+  final void Function(String? selection)? onSelectionChanged;
 
   const CommentContent({
     super.key,
@@ -58,6 +59,7 @@ class CommentContent extends StatefulWidget {
     required this.onViewSourceToggled,
     this.selectable = false,
     this.showReplyEditorButtons = false,
+    this.onSelectionChanged,
   });
 
   @override
@@ -134,6 +136,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                                   anchors: selectableRegionState.contextMenuAnchors,
                                 );
                               },
+                              onSelectionChanged: (value) => widget.onSelectionChanged?.call(value?.plainText),
                               child: child,
                             );
                           },

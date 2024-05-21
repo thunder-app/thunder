@@ -57,6 +57,7 @@ class PostSubview extends StatefulWidget {
   final bool showExpandableButton;
   final bool selectable;
   final bool showReplyEditorButtons;
+  final void Function(String? selection)? onSelectionChanged;
 
   const PostSubview({
     super.key,
@@ -71,6 +72,7 @@ class PostSubview extends StatefulWidget {
     this.showExpandableButton = true,
     this.selectable = false,
     this.showReplyEditorButtons = false,
+    this.onSelectionChanged,
   });
 
   @override
@@ -197,6 +199,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             anchors: selectableRegionState.contextMenuAnchors,
                           );
                         },
+                        onSelectionChanged: (value) => widget.onSelectionChanged?.call(value?.plainText),
                         child: child,
                       );
                     },

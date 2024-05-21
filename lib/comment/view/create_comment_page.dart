@@ -109,8 +109,11 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   /// The ID of the post we're responding to
   int? postId;
 
-  // The ID of the comment we're responding to
+  /// The ID of the comment we're responding to
   int? parentCommentId;
+
+  /// Contains the text that is currently being selected in the post/comment that we are replying to
+  String? replyViewSelection;
 
   @override
   void initState() {
@@ -311,6 +314,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       showExpandableButton: false,
                                       selectable: true,
                                       showReplyEditorButtons: true,
+                                      onSelectionChanged: (selection) => replyViewSelection = selection,
                                     ),
                                   ),
                                 ),
@@ -338,6 +342,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       disableActions: true,
                                       selectable: true,
                                       showReplyEditorButtons: true,
+                                      onSelectionChanged: (selection) => replyViewSelection = selection,
                                     ),
                                   ),
                                 ),
@@ -451,6 +456,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     String imagePath = await selectImageToUpload();
                                     if (context.mounted) context.read<CreateCommentCubit>().uploadImage(imagePath);
                                   },
+                                  getAlternativeSelection: () => replyViewSelection,
                                 ),
                               ),
                             ),
