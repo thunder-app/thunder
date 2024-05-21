@@ -89,7 +89,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               GetPersonMentions(
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
-                sort: CommentSortType.new_,
+                sort: event.commentSortType,
                 limit: limit,
                 page: 1,
               ),
@@ -100,7 +100,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
-                sort: CommentSortType.new_,
+                sort: event.commentSortType,  
                 page: 1,
               ),
             );
@@ -152,7 +152,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             GetPersonMentions(
               auth: account.jwt!,
               unreadOnly: !event.showAll,
-              sort: CommentSortType.new_,
+              sort: event.commentSortType,
               limit: limit,
               page: state.inboxMentionPage,
             ),
@@ -163,7 +163,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               auth: account.jwt!,
               unreadOnly: !event.showAll,
               limit: limit,
-              sort: CommentSortType.new_,
+              sort: event.commentSortType,
               page: state.inboxReplyPage,
             ),
           );

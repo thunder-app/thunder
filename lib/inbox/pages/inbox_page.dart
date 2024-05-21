@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 
 import 'package:thunder/inbox/widgets/inbox_categories_widget.dart';
@@ -10,6 +12,7 @@ import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
 import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -26,6 +29,7 @@ class InboxPage extends StatefulWidget {
 class _InboxPageState extends State<InboxPage> {
   bool showAll = false;
   InboxType? inboxType = InboxType.replies;
+  CommentSortType commentSortType = CommentSortType.new_;
   final _scrollController = ScrollController(initialScrollOffset: 0);
 
   @override
@@ -44,6 +48,30 @@ class _InboxPageState extends State<InboxPage> {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
       context.read<InboxBloc>().add(const GetInboxEvent());
     }
+  }
+
+  void showSortBottomSheet() {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    showModalBottomSheet<void>(
+      showDragHandle: true,
+      context: context,
+      builder: (builderContext) => CommentSortPicker(
+        title: l10n.sortOptions,
+        onSelect: (selected) async {
+          setState(() {
+            commentSortType = selected.payload;
+          });
+          context.read<InboxBloc>().add(GetInboxEvent(
+                reset: true,
+                showAll: showAll,
+                commentSortType: selected.payload,
+              ));
+        },
+        previouslySelected: commentSortType,
+        minimumVersion: LemmyClient.instance.version,
+      ),
+    );
   }
 
   @override
@@ -88,6 +116,12 @@ class _InboxPageState extends State<InboxPage> {
               context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll));
             },
           ),
+          IconButton(
+              onPressed: () => showSortBottomSheet(),
+              icon: Icon(
+                Icons.sort,
+                semanticLabel: l10n.sortBy,
+              )),
           FilterChip(
             shape: const StadiumBorder(),
             visualDensity: VisualDensity.compact,
