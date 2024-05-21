@@ -1,37 +1,36 @@
+// Dart imports
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:back_button_interceptor/back_button_interceptor.dart';
+// Flutter imports
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// Package imports
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:super_sliver_list/super_sliver_list.dart';
+
+// Project imports
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
-import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../shared/gesture_fab.dart';
 
 class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
@@ -55,8 +54,9 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final ItemScrollController _itemScrollController = ItemScrollController();
-  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
+  final ScrollController _scrollController = ScrollController();
+  final ListController _listController = ListController();
+
   bool hasScrolledToBottom = false;
   bool resetFailureMessage = true;
   bool _previousIsFabOpen = false;
@@ -219,8 +219,16 @@ class _PostPageState extends State<PostPage> {
                     ThunderPopupMenuItem(
                       onTap: () => setState(() => viewSource = !viewSource),
                       icon: Icons.edit_document,
-                      title: l10n.viewPostSource,
-                      trailing: viewSource ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
+                      title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
+                    ),
+                    ThunderPopupMenuItem(
+                      onTap: () => showSelectableTextModal(
+                        context,
+                        title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
+                        text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body ?? '',
+                      ),
+                      icon: Icons.select_all_rounded,
+                      title: l10n.selectText,
                     ),
                   ],
                 ),
@@ -239,7 +247,10 @@ class _PostPageState extends State<PostPage> {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: CommentNavigatorFab(
-                          itemPositionsListener: _itemPositionsListener,
+                          initialIndex: 0,
+                          maxIndex: state.comments.length,
+                          scrollController: _scrollController,
+                          listController: _listController,
                         ),
                       ),
                     ),
@@ -273,16 +284,18 @@ class _PostPageState extends State<PostPage> {
                                       selectedCommentPath: state.selectedCommentPath,
                                       override: singlePressAction == PostFabAction.backToTop
                                           ? () => {
-                                                _itemScrollController.scrollTo(
+                                                _listController.animateToItem(
                                                   index: 0,
-                                                  duration: const Duration(milliseconds: 500),
-                                                  curve: Curves.easeInOut,
-                                                )
+                                                  scrollController: _scrollController,
+                                                  alignment: 0,
+                                                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                                ),
                                               }
                                           : singlePressAction == PostFabAction.changeSort
                                               ? () => showSortBottomSheet(context, state)
                                               : singlePressAction == PostFabAction.replyToPost
-                                                  ? () => replyToPost(context, postLocked: postLocked)
+                                                  ? () => replyToPost(context, widget.postView, postLocked: postLocked)
                                                   : singlePressAction == PostFabAction.search
                                                       ? () => startCommentSearch(context)
                                                       : null),
@@ -294,16 +307,18 @@ class _PostPageState extends State<PostPage> {
                                   selectedCommentPath: state.selectedCommentPath,
                                   override: longPressAction == PostFabAction.backToTop
                                       ? () => {
-                                            _itemScrollController.scrollTo(
+                                            _listController.animateToItem(
                                               index: 0,
-                                              duration: const Duration(milliseconds: 500),
-                                              curve: Curves.easeInOut,
-                                            )
+                                              scrollController: _scrollController,
+                                              alignment: 0,
+                                              duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                              curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                            ),
                                           }
                                       : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : longPressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context, postLocked: postLocked)
+                                              ? () => replyToPost(context, widget.postView, postLocked: postLocked)
                                               : null),
                               children: [
                                 if (enableRefresh)
@@ -330,7 +345,7 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.replyToPost.execute(
-                                        override: () => replyToPost(context, postLocked: postLocked),
+                                        override: () => replyToPost(context, widget.postView, postLocked: postLocked),
                                       );
                                     },
                                     title: PostFabAction.replyToPost.getTitle(context),
@@ -358,11 +373,13 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       PostFabAction.backToTop.execute(
                                           override: () => {
-                                                _itemScrollController.scrollTo(
+                                                _listController.animateToItem(
                                                   index: 0,
-                                                  duration: const Duration(milliseconds: 500),
-                                                  curve: Curves.easeInOut,
-                                                )
+                                                  scrollController: _scrollController,
+                                                  alignment: 0,
+                                                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                                ),
                                               });
                                     },
                                     title: PostFabAction.backToTop.getTitle(context),
@@ -442,8 +459,8 @@ class _PostPageState extends State<PostPage> {
                                 newlyCreatedCommentId: state.newlyCreatedCommentId,
                                 moddingCommentId: state.moddingCommentId,
                                 viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
-                                itemScrollController: _itemScrollController,
-                                itemPositionsListener: _itemPositionsListener,
+                                scrollController: _scrollController,
+                                listController: _listController,
                                 hasReachedCommentEnd: state.hasReachedCommentEnd,
                                 moderators: state.moderators,
                                 crossPosts: state.crossPosts,
@@ -539,70 +556,27 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void replyToPost(BuildContext context, {bool postLocked = false}) async {
+  void replyToPost(BuildContext context, PostViewMedia? postViewMedia, {bool postLocked = false}) async {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final state = context.read<AuthBloc>().state;
 
     if (postLocked) {
       showSnackbar(l10n.postLocked);
       return;
     }
-    PostBloc postBloc = context.read<PostBloc>();
-    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    AuthBloc authBloc = context.read<AuthBloc>();
-    AccountBloc accountBloc = context.read<AccountBloc>();
 
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final bool reduceAnimations = state.reduceAnimations;
-
-    if (!authBloc.state.isLoggedIn) {
+    if (!state.isLoggedIn) {
       showSnackbar(l10n.mustBeLoggedInComment);
     } else {
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      DraftComment? newDraftComment;
-      DraftComment? previousDraftComment;
-      String draftId = '${LocalSettings.draftsCache.name}-${(widget.postView ?? postBloc.state.postView)!.postView.post.id}';
-      String? draftCommentJson = prefs.getString(draftId);
-      if (draftCommentJson != null) {
-        previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-      }
-      Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-        if (newDraftComment?.isNotEmpty == true) {
-          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-        }
-      });
-
-      Navigator.of(context)
-          .push(
-        SwipeablePageRoute(
-          transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-          canOnlySwipeFromEdge: true,
-          backGestureDetectionWidth: 45,
-          builder: (context) {
-            return MultiBlocProvider(
-                providers: [
-                  BlocProvider<PostBloc>.value(value: postBloc),
-                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                  BlocProvider<AccountBloc>.value(value: accountBloc),
-                ],
-                child: CreateCommentPage(
-                  postView: widget.postView ?? postBloc.state.postView,
-                  previousDraftComment: previousDraftComment,
-                  onUpdateDraft: (c) => newDraftComment = c,
-                ));
-          },
-        ),
-      )
-          .whenComplete(() async {
-        timer.cancel();
-
-        if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
-          await Future.delayed(const Duration(milliseconds: 300));
-          showSnackbar(l10n.commentSavedAsDraft);
-          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-        } else {
-          prefs.remove(draftId);
-        }
-      });
+      navigateToCreateCommentPage(
+        context,
+        postViewMedia: postViewMedia,
+        onCommentSuccess: (commentView, userChanged) {
+          if (!userChanged) {
+            context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+          }
+        },
+      );
     }
   }
 

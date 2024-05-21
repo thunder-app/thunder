@@ -58,7 +58,7 @@ import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
-import 'package:thunder/utils/notifications_navigation.dart';
+import 'package:thunder/notification/utils/navigate_notification.dart';
 
 String? currentIntent;
 
@@ -263,7 +263,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   Future<void> _navigateToPost(String link) async {
-    final postId = await getLemmyPostId(link);
+    final postId = await getLemmyPostId(context, link);
     if (context.mounted && postId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
@@ -333,7 +333,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   Future<void> _navigateToComment(String link) async {
-    final commentId = await getLemmyCommentId(link);
+    final commentId = await getLemmyCommentId(context, link);
     if (context.mounted && commentId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
@@ -399,7 +399,7 @@ class _ThunderState extends State<Thunder> {
           BlocListener<NotificationsCubit, NotificationsState>(
             listener: (context, state) {
               if (state.status == NotificationsStatus.reply) {
-                navigateToNotificationReplyPage(context, replyId: state.replyId);
+                navigateToNotificationReplyPage(context, replyId: state.replyId, accountId: state.accountId);
               }
             },
           ),
@@ -634,27 +634,12 @@ class _ThunderState extends State<Thunder> {
                             onPageChanged: (index) => setState(() => selectedPageIndex = index),
                             physics: const NeverScrollableScrollPhysics(),
                             children: <Widget>[
-                              Stack(
-                                children: [
-                                  FeedPage(
-                                    useGlobalFeedBloc: true,
-                                    feedType: FeedType.general,
-                                    postListingType: thunderBlocState.defaultListingType,
-                                    sortType: thunderBlocState.sortTypeForInstance,
-                                    scaffoldStateKey: scaffoldStateKey,
-                                  ),
-                                  AnimatedOpacity(
-                                    opacity: _isFabOpen ? 1.0 : 0.0,
-                                    duration: const Duration(milliseconds: 150),
-                                    child: _isFabOpen
-                                        ? ModalBarrier(
-                                            color: theme.colorScheme.background.withOpacity(0.95),
-                                            dismissible: true,
-                                            onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                                          )
-                                        : null,
-                                  ),
-                                ],
+                              FeedPage(
+                                useGlobalFeedBloc: true,
+                                feedType: FeedType.general,
+                                postListingType: thunderBlocState.defaultListingType,
+                                sortType: thunderBlocState.sortTypeForInstance,
+                                scaffoldStateKey: scaffoldStateKey,
                               ),
                               const SearchPage(),
                               const AccountPage(),

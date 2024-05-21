@@ -170,14 +170,14 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
 }
 
 // Used for modifying the comment current comment tree so we don't have to refresh the whole thing
-bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentResponse moddedComment) {
+bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentView commentView) {
   for (int i = 0; i < commentTrees.length; i++) {
-    if (commentTrees[i].commentView!.comment.id == moddedComment.commentView.comment.id) {
-      commentTrees[i].commentView = moddedComment.commentView;
+    if (commentTrees[i].commentView!.comment.id == commentView.comment.id) {
+      commentTrees[i].commentView = commentView;
       return true;
     }
 
-    bool done = updateModifiedComment(commentTrees[i].replies, moddedComment);
+    bool done = updateModifiedComment(commentTrees[i].replies, commentView);
     if (done) {
       return done;
     }
@@ -186,18 +186,30 @@ bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentResponse m
   return false;
 }
 
-String cleanCommentContent(Comment comment) {
-  final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+String cleanCommentContent(Comment comment) => cleanComment(comment.content, comment.removed, comment.deleted);
 
-  if (comment.removed) {
-    return '_${l10n.deletedByModerator}_';
+String cleanComment(String commentContent, bool commentRemoved, bool commentDeleted) {
+  String deletedByModerator = "deleted by moderator";
+  String deletedByCreator = "deleted by creator";
+
+  try {
+    // Try to load these strings from localizations
+    final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+    deletedByModerator = l10n.deletedByModerator;
+    deletedByCreator = l10n.deletedByCreator;
+  } catch (e) {
+    // Ignore the error and move on with the default strings
   }
 
-  if (comment.deleted) {
-    return '_${l10n.deletedByCreator}_';
+  if (commentRemoved) {
+    return '_${deletedByModerator}_';
   }
 
-  return comment.content;
+  if (commentDeleted) {
+    return '_${deletedByCreator}_';
+  }
+
+  return commentContent;
 }
 
 /// Creates a placeholder comment from the given parameters. This is mainly used to display a preview of the comment

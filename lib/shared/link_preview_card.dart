@@ -6,14 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/utils/utils.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/shared/link_information.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
 
 class LinkPreviewCard extends StatelessWidget {
@@ -130,7 +128,10 @@ class LinkPreviewCard extends StatelessWidget {
                     ],
                   ),
                 ),
-              linkInformation(context),
+              LinkInformation(
+                viewMode: viewMode,
+                originURL: originURL,
+              ),
               Positioned.fill(
                 child: Material(
                   color: Colors.transparent,
@@ -205,7 +206,7 @@ class LinkPreviewCard extends StatelessWidget {
                         width: ViewMode.compact.height,
                         color: theme.cardColor.darken(5),
                         child: Icon(
-                          hideNsfw ? null : Icons.language,
+                          hideNsfw ? null : Icons.play_arrow,
                           color: theme.colorScheme.onSecondaryContainer.withOpacity(read == true ? 0.55 : 1.0),
                         ),
                       ),
@@ -266,43 +267,8 @@ class LinkPreviewCard extends StatelessWidget {
         feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
       } catch (e) {}
     }
-
     if (originURL != null) {
       handleLink(context, url: originURL!);
     }
-  }
-
-  Widget linkInformation(BuildContext context) {
-    final theme = Theme.of(context);
-    return Semantics(
-      excludeSemantics: true,
-      child: Container(
-        color: ElevationOverlay.applySurfaceTint(
-          Theme.of(context).colorScheme.surface.withOpacity(0.8),
-          Theme.of(context).colorScheme.surfaceTint,
-          10,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(
-                Icons.link,
-                color: theme.colorScheme.onSecondaryContainer,
-              ),
-            ),
-            if (viewMode != ViewMode.compact)
-              Expanded(
-                child: Text(
-                  originURL!,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
   }
 }

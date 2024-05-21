@@ -53,6 +53,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   bool slideZooming = false;
   bool fullscreen = false;
   Offset downCoord = Offset.zero;
+  double delta = 0.0;
   bool areImageDimensionsLoaded = false;
 
   /// User Settings
@@ -67,7 +68,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     setState(() {
       maybeSlideZooming = true;
     });
-    Timer(const Duration(milliseconds: 300), () {
+    Timer(const Duration(milliseconds: 500), () {
       if (context.mounted) {
         setState(() {
           maybeSlideZooming = false;
@@ -215,9 +216,12 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     child: areImageDimensionsLoaded // Only display the image if dimensions are loaded
                         ? Listener(
                             // Start watching for double tap zoom
-                            onPointerUp: (details) {
+                            onPointerDown: (details) {
                               downCoord = details.position;
-                              if (!slideZooming) {
+                            },
+                            onPointerUp: (details) {
+                              delta = (downCoord - details.position).distance;
+                              if (!slideZooming && delta < 0.5) {
                                 _maybeSlide(context);
                               }
                             },

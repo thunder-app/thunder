@@ -25,6 +25,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final Function(bool) onSaveAction;
 
   final PostViewMedia postViewMedia;
+  final bool hideThumbnails;
   final bool showThumbnailPreviewOnRight;
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
@@ -45,6 +46,7 @@ class PostCardViewComfortable extends StatelessWidget {
   const PostCardViewComfortable({
     super.key,
     required this.postViewMedia,
+    required this.hideThumbnails,
     required this.showThumbnailPreviewOnRight,
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
@@ -79,18 +81,18 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
-    var mediaView = MediaView(
+    Widget mediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
       postViewMedia: postViewMedia,
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,
+      hideThumbnails: hideThumbnails,
       edgeToEdgeImages: edgeToEdgeImages,
       markPostReadOnMediaView: markPostReadOnMediaView,
       isUserLoggedIn: isUserLoggedIn,
       navigateToPost: navigateToPost,
       read: indicateRead && postViewMedia.postView.read,
     );
-
     final bool useSaveButton = state.showSaveAction;
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
@@ -113,7 +115,8 @@ class PostCardViewComfortable extends StatelessWidget {
                       WidgetSpan(
                           child: Icon(
                         Icons.lock,
-                        color: indicateRead && postViewMedia.postView.read ? Colors.orange.shade900.withOpacity(0.55) : Colors.orange.shade900,
+                        color:
+                            indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.upvoteColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.upvoteColor.color,
                         size: 15 * textScaleFactor,
                       )),
                     ],
@@ -121,7 +124,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       WidgetSpan(
                         child: Icon(
                           Icons.star_rounded,
-                          color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                          color: indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.saveColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.saveColor.color,
                           size: 17 * textScaleFactor,
                           semanticLabel: 'Saved',
                         ),
@@ -196,7 +199,8 @@ class PostCardViewComfortable extends StatelessWidget {
                         WidgetSpan(
                             child: Icon(
                           Icons.lock,
-                          color: indicateRead && postViewMedia.postView.read ? Colors.orange.shade900.withOpacity(0.55) : Colors.orange.shade900,
+                          color:
+                              indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.upvoteColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.upvoteColor.color,
                           size: 15 * textScaleFactor,
                         )),
                       ],
@@ -204,7 +208,8 @@ class PostCardViewComfortable extends StatelessWidget {
                         WidgetSpan(
                           child: Icon(
                             Icons.star_rounded,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            color:
+                                indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.saveColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.saveColor.color,
                             size: 17 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),

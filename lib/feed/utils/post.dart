@@ -119,7 +119,7 @@ Future<PostView> createPost({required int communityId, required String name, Str
       url: url?.isEmpty == true ? null : url,
       nsfw: nsfw,
       postId: postIdBeingEdited,
-      languageId: languageId ?? 0,
+      languageId: languageId,
     ));
   } else {
     postResponse = await lemmy.run(CreatePost(
@@ -129,7 +129,7 @@ Future<PostView> createPost({required int communityId, required String name, Str
       body: body,
       url: url?.isEmpty == true ? null : url,
       nsfw: nsfw,
-      languageId: languageId ?? 0,
+      languageId: languageId,
     ));
   }
 

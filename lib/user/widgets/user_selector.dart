@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 
 /// Creates a widget which displays a preview of the currently selected account, with the ability to change accounts.
@@ -13,17 +14,32 @@ import 'package:thunder/user/widgets/user_indicator.dart';
 /// By passing in a [communityActorId], it will attempt to resolve the community to the new user's instance (if changed),
 /// and will invoke [onCommunityChanged]. If the community could not be resolved, the callback will pass [null].
 class UserSelector extends StatefulWidget {
-  final String? communityActorId;
-  final void Function(CommunityView?)? onCommunityChanged;
   final void Function()? onUserChanged;
   final String? profileModalHeading;
 
+  // Pass these when dealing with a community (i.e., creating a post)
+  final String? communityActorId;
+  final void Function(CommunityView?)? onCommunityChanged;
+
+  // Pass these when dealing with a post (i.e., creating a comment)
+  // Unlike posts, where it's valid to have a null community (i.e., you're forced to pick a different one)
+  // It's not valid to have a null parent post/comment. Therefore if we can't resolve the objects,
+  // we will block the account switch, and the onChanged methods will never pass a null value.
+  final String? postActorId;
+  final void Function(PostView)? onPostChanged;
+  final String? parentCommentActorId;
+  final void Function(CommentView)? onParentCommentChanged;
+
   const UserSelector({
     super.key,
-    this.communityActorId,
-    this.onCommunityChanged,
     this.onUserChanged,
     this.profileModalHeading,
+    this.communityActorId,
+    this.onCommunityChanged,
+    this.postActorId,
+    this.onPostChanged,
+    this.parentCommentActorId,
+    this.onParentCommentChanged,
   });
 
   @override
@@ -60,7 +76,7 @@ class _UserSelectorState extends State<UserSelector> {
               setState(() {});
               widget.onUserChanged?.call();
 
-              //If there is a selected community, see if we can resolve it to the new user's instance.
+              // If there is a selected community, see if we can resolve it to the new user's instance.
               if (widget.communityActorId?.isNotEmpty == true && widget.onCommunityChanged != null) {
                 CommunityView? resolvedCommunity;
                 try {
@@ -70,6 +86,44 @@ class _UserSelectorState extends State<UserSelector> {
                   // We'll just return null if we can't find it.
                 }
                 widget.onCommunityChanged!(resolvedCommunity);
+              }
+
+              // If there is a selected post, see if we can resolve it to the new user's instance.
+              if (widget.postActorId?.isNotEmpty == true && widget.onPostChanged != null) {
+                PostView? resolvedPost;
+                try {
+                  final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: widget.postActorId!));
+                  resolvedPost = resolveObjectResponse.post;
+                  if (resolvedPost != null) {
+                    widget.onPostChanged!(resolvedPost);
+                  }
+                } catch (e) {
+                  // We will handle this below.
+                }
+                if (resolvedPost == null) {
+                  // This is not allowed, so we must block the account switch.
+                  showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance!));
+                  if (context.mounted) context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
+                }
+              }
+
+              // If there is a selected parent comment, see if we can resolve it to the new user's instance.
+              if (widget.parentCommentActorId?.isNotEmpty == true && widget.onParentCommentChanged != null) {
+                CommentView? resolvedComment;
+                try {
+                  final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: widget.parentCommentActorId!));
+                  resolvedComment = resolveObjectResponse.comment;
+                  if (resolvedComment != null) {
+                    widget.onParentCommentChanged!(resolvedComment);
+                  }
+                } catch (e) {
+                  // We will handle this below.
+                }
+                if (resolvedComment == null) {
+                  // This is not allowed, so we must block the accout switch.
+                  showSnackbar(l10n.accountSwitchParentCommentNotFound(newUser.instance!));
+                  if (context.mounted) context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
+                }
               }
             }
           }

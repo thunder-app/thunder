@@ -31,6 +31,7 @@ class NotificationsReplyPage extends StatelessWidget {
             slivers: <Widget>[
               SliverAppBar(
                 flexibleSpace: const FlexibleSpaceBar(titlePadding: EdgeInsets.zero),
+                toolbarHeight: 70.0,
                 pinned: true,
                 title: ListTile(
                   title: Text(l10n.inbox, style: theme.textTheme.titleLarge),
@@ -41,7 +42,7 @@ class NotificationsReplyPage extends StatelessWidget {
                 child: Material(
                   child: BlocConsumer<InboxBloc, InboxState>(
                     listener: (BuildContext context, InboxState state) {
-                      if (state.replies.isEmpty) {
+                      if (state.replies.isEmpty && (ModalRoute.of(context)?.isCurrent ?? false)) {
                         Navigator.of(context).pop();
                       }
                     },

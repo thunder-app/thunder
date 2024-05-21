@@ -1,32 +1,32 @@
+// Dart imports
 import 'dart:io';
-import 'dart:async';
-import 'dart:convert';
 
+// Flutter imports
 import 'package:flutter/material.dart';
+
+// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// Project imports
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
-import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
-import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/swipe.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InboxMentionsView extends StatelessWidget {
   final List<PersonMentionView> mentions;
@@ -36,6 +36,8 @@ class InboxMentionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     if (mentions.isEmpty) {
       return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No mentions'));
@@ -63,6 +65,7 @@ class InboxMentionsView extends StatelessWidget {
                   transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                   backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
                   backGestureDetectionWidth: 45,
+                  canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
                   canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
                   builder: (context) => MultiBlocProvider(
                     providers: [
@@ -88,21 +91,35 @@ class InboxMentionsView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      UserFullNameWidget(
+                        context,
                         mentions[index].creator.name,
-                        style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
+                        fetchInstanceNameFromUrl(mentions[index].creator.actorId),
                       ),
                       Text(formatTimeToString(dateTime: mentions[index].comment.published.toIso8601String()))
                     ],
                   ),
-                  GestureDetector(
-                    child: CommunityFullNameWidget(
-                      context,
-                      mentions[index].community.name,
-                      fetchInstanceNameFromUrl(mentions[index].community.actorId),
-                      transformColor: (color) => color?.withOpacity(0.75),
-                    ),
-                    onTap: () => onTapCommunityName(context, mentions[index].community.id),
+                  Row(
+                    children: [
+                      ExcludeSemantics(
+                        child: ScalableText(
+                          l10n.in_,
+                          fontScale: thunderState.contentFontSizeScale,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5.0),
+                      GestureDetector(
+                        child: CommunityFullNameWidget(
+                          context,
+                          mentions[index].community.name,
+                          fetchInstanceNameFromUrl(mentions[index].community.actorId),
+                        ),
+                        onTap: () => onTapCommunityName(context, mentions[index].community.id),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   CommonMarkdownBody(body: mentions[index].comment.content),
@@ -122,64 +139,23 @@ class InboxMentionsView extends StatelessWidget {
                           visualDensity: VisualDensity.compact,
                         ),
                       IconButton(
-                        onPressed: () async {
-                          InboxBloc inboxBloc = context.read<InboxBloc>();
-                          PostBloc postBloc = context.read<PostBloc>();
-                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                          AccountBloc accountBloc = context.read<AccountBloc>();
-
-                          final ThunderState state = context.read<ThunderBloc>().state;
-                          final bool reduceAnimations = state.reduceAnimations;
-
-                          SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                          DraftComment? newDraftComment;
-                          DraftComment? previousDraftComment;
-                          String draftId = '${LocalSettings.draftsCache.name}-${mentions[index].comment.id}';
-                          String? draftCommentJson = prefs.getString(draftId);
-                          if (draftCommentJson != null) {
-                            previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-                          }
-                          Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                            if (newDraftComment?.isNotEmpty == true) {
-                              prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                            }
-                          });
-
-                          Navigator.of(context)
-                              .push(
-                            SwipeablePageRoute(
-                              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                              canOnlySwipeFromEdge: true,
-                              backGestureDetectionWidth: 45,
-                              builder: (context) {
-                                return MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider<InboxBloc>.value(value: inboxBloc),
-                                      BlocProvider<PostBloc>.value(value: postBloc),
-                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                      BlocProvider<AccountBloc>.value(value: accountBloc),
-                                    ],
-                                    child: CreateCommentPage(
-                                      comment: mentions[index].comment,
-                                      parentCommentAuthor: mentions[index].creator.name,
-                                      previousDraftComment: previousDraftComment,
-                                      onUpdateDraft: (c) => newDraftComment = c,
-                                    ));
-                              },
-                            ),
-                          )
-                              .whenComplete(() async {
-                            timer.cancel();
-
-                            if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
-                              await Future.delayed(const Duration(milliseconds: 300));
-                              showSnackbar(AppLocalizations.of(context)!.commentSavedAsDraft);
-                              prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                            } else {
-                              prefs.remove(draftId);
-                            }
-                          });
-                        },
+                        onPressed: () async => navigateToCreateCommentPage(
+                          context,
+                          parentCommentView: CommentView(
+                            comment: mentions[index].comment,
+                            creator: mentions[index].creator,
+                            post: mentions[index].post,
+                            community: mentions[index].community,
+                            counts: mentions[index].counts,
+                            creatorBannedFromCommunity: mentions[index].creatorBannedFromCommunity,
+                            subscribed: mentions[index].subscribed,
+                            saved: mentions[index].saved,
+                            creatorBlocked: mentions[index].creatorBlocked,
+                          ),
+                          onCommentSuccess: (commentView, userChanged) {
+                            // TODO: Handle
+                          },
+                        ),
                         icon: const Icon(
                           Icons.reply_rounded,
                           semanticLabel: 'Reply',

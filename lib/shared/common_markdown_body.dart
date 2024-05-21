@@ -1,4 +1,3 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jovial_svg/jovial_svg.dart';
@@ -7,8 +6,8 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
+import 'package:thunder/utils/colors.dart';
 
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/links.dart';
@@ -26,9 +25,6 @@ class CommonMarkdownBody extends StatelessWidget {
   /// Whether to hide the markdown content. This is mainly used for spoiler markdown
   final bool hideContent;
 
-  /// Whether the text is selectable - defaults to false
-  final bool isSelectableText;
-
   /// Indicates if the given markdown is a comment. Depending on the markdown content, different text scaling may be applied
   /// TODO: This should be converted to an enum of possible markdown content (e.g., post, comment, general, metadata, etc.) to allow for more fined-tuned scaling of text
   final bool? isComment;
@@ -39,7 +35,6 @@ class CommonMarkdownBody extends StatelessWidget {
     super.key,
     required this.body,
     this.hideContent = false,
-    this.isSelectableText = false,
     this.isComment,
     this.imageMaxWidth,
   });
@@ -152,16 +147,39 @@ class CommonMarkdownBody extends StatelessWidget {
           },
         );
       },
-      selectable: isSelectableText,
       onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
       onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
       styleSheet: hideContent
           ? spoilerMarkdownStyleSheet
           : MarkdownStyleSheet.fromTheme(theme).copyWith(
               textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
-              blockquoteDecoration: const BoxDecoration(
-                color: Colors.transparent,
-                border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+              blockquoteDecoration: BoxDecoration(
+                color: getBackgroundColor(context),
+                border: Border(left: BorderSide(color: theme.colorScheme.primary.withOpacity(0.75), width: 4)),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              codeblockDecoration: BoxDecoration(
+                color: getBackgroundColor(context),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              code: theme.textTheme.bodyMedium?.copyWith(
+                backgroundColor: getBackgroundColor(context),
+                fontFamily: 'monospace',
+                fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.85,
+              ),
+              tableBorder: TableBorder.all(
+                color: Colors.grey,
+                width: 1,
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
+              ),
+              horizontalRuleDecoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
+                border: Border(
+                  top: BorderSide(
+                    width: 3,
+                    color: theme.colorScheme.primary.withOpacity(0.75),
+                  ),
+                ),
               ),
             ),
     );
@@ -383,12 +401,9 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
-    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
-    final Color backgroundColor = darkTheme ? theme.dividerColor.darken(5) : theme.dividerColor.lighten(20);
-
     return Ink(
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: getBackgroundColor(context),
         borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
       ),
       child: Column(

@@ -205,6 +205,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       swipeAction: swipeAction,
                       onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
                       onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
+                      onReplyEditAction: (CommentView commentView, bool isEdit) {
+                        context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+                      },
                       voteType: myVote ?? 0,
                       saved: saved,
                       commentView: widget.commentViewTree.commentView!,
@@ -298,7 +301,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   background: dismissDirection == DismissDirection.startToEnd
                       ? AnimatedContainer(
                           alignment: Alignment.centerLeft,
-                          color: swipeAction == null ? state.leftPrimaryCommentGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                          color: swipeAction == null
+                              ? state.leftPrimaryCommentGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                              : (swipeAction ?? SwipeAction.none).getColor(context),
                           duration: const Duration(milliseconds: 200),
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width * dismissThreshold,
@@ -307,8 +312,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                         )
                       : AnimatedContainer(
                           alignment: Alignment.centerRight,
-                          color:
-                              swipeAction == null ? (state.rightPrimaryCommentGesture).getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                          color: swipeAction == null
+                              ? (state.rightPrimaryCommentGesture).getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                              : (swipeAction ?? SwipeAction.none).getColor(context),
                           duration: const Duration(milliseconds: 200),
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width * dismissThreshold,
@@ -342,7 +348,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               ),
                       ),
                       child: Material(
-                        color: highlightComment ? theme.highlightColor : theme.colorScheme.background,
+                        color: highlightComment ? theme.highlightColor : null,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
