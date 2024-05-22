@@ -2,13 +2,14 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/feed/feed.dart';
 
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/snackbar.dart';
 
 class ReportAPostDialog extends StatefulWidget {
-  const ReportAPostDialog({super.key, required this.postId});
-
+  const ReportAPostDialog({super.key, required this.postId, this.onReport});
+  final void Function(String)? onReport;
   final int postId;
   @override
   State<ReportAPostDialog> createState() => _ReportAPostDialogState();
@@ -84,67 +85,116 @@ class _ReportAPostDialogState extends State<ReportAPostDialog> {
                   const SizedBox(
                     width: 8,
                   ),
-                  FilledButton(
-                      onPressed: () {
-                        if (messageController.text.isNotEmpty) {
-                          context.read<PostBloc>().add(
-                                ReportPostEvent(
-                                  postId: widget.postId,
-                                  message: messageController.text,
-                                ),
-                              );
-                        }
-                      },
-                      child: BlocConsumer<PostBloc, PostState>(
-                        bloc: context.read<PostBloc>(),
-                        listener: (context, state) {
-                          switch (state.status) {
-                            case PostStatus.loading:
-                              setState(() {
-                                hasError = false;
-                              });
-                            case PostStatus.refreshing:
-                              setState(() {
-                                hasError = false;
-                              });
-                            case PostStatus.success:
-                              showSnackbar(AppLocalizations.of(context)!.postReported);
-                              Navigator.of(context).pop();
-                              break;
-                            case PostStatus.failure:
-                              setState(() {
-                                hasError = true;
-                                errorMessage = state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError;
-                              });
+                  if (widget.onReport != null)
+                    BlocProvider.value(
+                      value: context.read<FeedBloc>(),
+                      child: FilledButton(
+                          onPressed: () {
+                            if (messageController.text.isNotEmpty) {
+                              widget.onReport!(messageController.text);
+                            }
+                          },
+                          child: BlocConsumer<FeedBloc, FeedState>(
+                            listener: (context, state) {
+                              switch (state.status) {
+                                case FeedStatus.fetching:
+                                  setState(() {
+                                    hasError = false;
+                                  });
 
-                            default:
+                                case FeedStatus.success:
+                                  showSnackbar(AppLocalizations.of(context)!.postReported);
+                                  Navigator.of(context).pop();
+
+                                  break;
+                                case FeedStatus.failure:
+                                  setState(() {
+                                    hasError = true;
+                                    errorMessage = state.message ?? AppLocalizations.of(context)!.unexpectedError;
+                                  });
+
+                                default:
+                              }
+                            },
+                            builder: (context, state) {
+                              switch (state.status) {
+                                case FeedStatus.fetching:
+                                  return const SizedBox(
+                                      width: 15,
+                                      height: 15,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ));
+                                default:
+                                  return Text(
+                                    AppLocalizations.of(context)!.submit,
+                                  );
+                              }
+                            },
+                          )),
+                    )
+                  else
+                    FilledButton(
+                        onPressed: () {
+                          if (messageController.text.isNotEmpty) {
+                            context.read<PostBloc>().add(
+                                  ReportPostEvent(
+                                    postId: widget.postId,
+                                    message: messageController.text,
+                                  ),
+                                );
                           }
                         },
-                        builder: (context, state) {
-                          switch (state.status) {
-                            case PostStatus.loading:
-                              return const SizedBox(
-                                width: 15,
-                                height: 15,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
-                              );
+                        child: BlocConsumer<PostBloc, PostState>(
+                          bloc: context.read<PostBloc>(),
+                          listener: (context, state) {
+                            switch (state.status) {
+                              case PostStatus.loading:
+                                setState(() {
+                                  hasError = false;
+                                });
+                              case PostStatus.refreshing:
+                                setState(() {
+                                  hasError = false;
+                                });
+                              case PostStatus.success:
+                                showSnackbar(AppLocalizations.of(context)!.postReported);
+                                Navigator.of(context).pop();
+                                break;
+                              case PostStatus.failure:
+                                setState(() {
+                                  hasError = true;
+                                  errorMessage = state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError;
+                                });
 
-                            case PostStatus.refreshing:
-                              return const SizedBox(
+                              default:
+                            }
+                          },
+                          builder: (context, state) {
+                            switch (state.status) {
+                              case PostStatus.loading:
+                                return const SizedBox(
                                   width: 15,
                                   height: 15,
                                   child: CircularProgressIndicator(
                                     color: Colors.white,
-                                  ));
-                            default:
-                              return Text(
-                                AppLocalizations.of(context)!.submit,
-                              );
-                          }
-                        },
-                      ))
+                                  ),
+                                );
+
+                              case PostStatus.refreshing:
+                                return const SizedBox(
+                                    width: 15,
+                                    height: 15,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ));
+                              default:
+                                return Text(
+                                  AppLocalizations.of(context)!.submit,
+                                );
+                            }
+                          },
+                        ))
                 ],
               ),
               const SizedBox(

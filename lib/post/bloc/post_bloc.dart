@@ -684,17 +684,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         newlyCreatedCommentId: state.newlyCreatedCommentId,
       ));
 
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-      if (account?.jwt == null) {
-        return emit(state.copyWith(
-            status: PostStatus.failure,
-            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
-            selectedCommentId: state.selectedCommentId,
-            selectedCommentPath: state.selectedCommentPath));
-      }
-      await lemmy.run(CreatePostReport(postId: event.postId, reason: event.message, auth: account!.jwt!));
+      await reportPost(event.postId, event.message);
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));

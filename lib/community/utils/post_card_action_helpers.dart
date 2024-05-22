@@ -698,7 +698,11 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
         action = () => showRemovePostReasonBottomSheet(widget.outerContext, widget.postViewMedia);
         break;
       case PostCardAction.reportPost:
-        action = () => showReportPostActionBottomSheet(widget.outerContext, postId: widget.postViewMedia.postView.post.id);
+        action = () => showReportPostActionBottomSheet(
+              widget.outerContext,
+              postId: widget.postViewMedia.postView.post.id,
+              onReport: (String reason) => widget.outerContext.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.report, postId: widget.postViewMedia.postView.post.id, value: reason)),
+            );
         break;
     }
 
