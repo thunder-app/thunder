@@ -100,7 +100,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
-                sort: event.commentSortType,  
+                sort: event.commentSortType,
                 page: 1,
               ),
             );
