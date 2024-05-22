@@ -94,7 +94,9 @@ enum LocalSettings {
   openByDefault(name: 'setting_links_open_by_default', key: 'openByDefault', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   openLinksInReaderMode(
       name: 'setting_links_open_in_reader_mode', key: 'openLinksInReaderMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
-  useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  useDisplayNamesForCommunities(
+      name: 'setting_use_display_names_for_communities', key: 'showCommunityDisplayNames', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   markPostAsReadOnMediaView(
       name: 'setting_general_mark_post_read_on_media_view', key: 'markPostAsReadOnMediaView', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   markPostAsReadOnScroll(name: 'setting_general_mark_post_read_on_scroll', key: 'markPostAsReadOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
@@ -363,6 +365,7 @@ extension LocalizationExt on AppLocalizations {
       'openByDefault': openByDefault,
       'openLinksInReaderMode': openLinksInReaderMode,
       'showUserDisplayNames': showUserDisplayNames,
+      'showCommunityDisplayNames': showCommunityDisplayNames,
       'markPostAsReadOnMediaView': markPostAsReadOnMediaView,
       'markPostAsReadOnScroll': markPostAsReadOnScroll,
       'showInAppUpdateNotifications': showInAppUpdateNotifications,

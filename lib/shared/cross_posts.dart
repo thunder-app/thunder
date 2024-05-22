@@ -95,7 +95,12 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                     style: crossPostTextStyle,
                                   ),
                                   Text(
-                                    generateCommunityFullName(context, widget.crossPosts[index].community.name, fetchInstanceNameFromUrl(widget.crossPosts[index].community.actorId)),
+                                    generateCommunityFullName(
+                                      context,
+                                      widget.crossPosts[index].community.name,
+                                      widget.crossPosts[index].community.title,
+                                      fetchInstanceNameFromUrl(widget.crossPosts[index].community.actorId),
+                                    ),
                                     style: crossPostLinkTextStyle,
                                   ),
                                   const Spacer(),
@@ -137,7 +142,12 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                         TextSpan(
                           text: _areCrossPostsExpanded
                               ? ''
-                              : '${generateCommunityFullName(context, widget.crossPosts[0].community.name, fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId))} ',
+                              : '${generateCommunityFullName(
+                                  context,
+                                  widget.crossPosts[0].community.name,
+                                  widget.crossPosts[0].community.title,
+                                  fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId),
+                                )} ',
                           style: crossPostLinkTextStyle?.copyWith(fontSize: 12),
                         ),
                         TextSpan(

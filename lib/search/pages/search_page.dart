@@ -404,7 +404,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                       showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
                                         setState(() {
                                           _currentCommunityFilter = communityView.community.id;
-                                          _currentCommunityFilterName = generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId));
+                                          _currentCommunityFilterName = generateCommunityFullName(
+                                            context,
+                                            communityView.community.name,
+                                            communityView.community.title,
+                                            fetchInstanceNameFromUrl(communityView.community.actorId),
+                                          );
                                         });
                                         _doSearch();
                                       });
@@ -433,7 +438,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                     showUserInputDialog(context, title: l10n.creator, onUserSelected: (personView) {
                                       setState(() {
                                         _currentCreatorFilter = personView.person.id;
-                                        _currentCreatorFilterName = generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId));
+                                        _currentCreatorFilterName = generateUserFullName(
+                                          context,
+                                          personView.person.name,
+                                          personView.person.displayName,
+                                          fetchInstanceNameFromUrl(personView.person.actorId),
+                                        );
                                       });
                                       _doSearch();
                                     });

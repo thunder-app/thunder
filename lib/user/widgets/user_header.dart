@@ -110,8 +110,11 @@ class _UserHeaderState extends State<UserHeader> {
                                 UserFullNameWidget(
                                   context,
                                   widget.getPersonDetailsResponse.personView.person.name,
+                                  widget.getPersonDetailsResponse.personView.person.displayName,
                                   fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId),
                                   autoSize: true,
+                                  // Override because we're showing display name above
+                                  useDisplayName: false,
                                 ),
                                 const SizedBox(height: 8.0),
                                 Row(

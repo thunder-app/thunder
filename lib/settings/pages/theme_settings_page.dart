@@ -90,6 +90,12 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   NameThickness communityFullNameInstanceNameThickness = NameThickness.light;
   NameColor communityFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor);
 
+  /// When enabled, displays the user's display name instead of the username
+  bool useDisplayNamesForUsers = false;
+
+  /// When enabled, displays the community's display name instead of the community name
+  bool useDisplayNamesForCommunities = false;
+
   // Loading
   bool isLoading = true;
 
@@ -204,6 +210,14 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         await prefs.setString(LocalSettings.communityFullNameInstanceNameColor.name, value);
         setState(() => communityFullNameInstanceNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
+      case LocalSettings.useDisplayNamesForUsers:
+        await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
+        setState(() => useDisplayNamesForUsers = value);
+        break;
+      case LocalSettings.useDisplayNamesForCommunities:
+        await prefs.setBool(LocalSettings.useDisplayNamesForCommunities.name, value);
+        setState(() => useDisplayNamesForCommunities = value);
+        break;
     }
 
     if (context.mounted) {
@@ -245,6 +259,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       communityFullNameCommunityNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameCommunityNameColor.name) ?? NameColor.defaultColor);
       communityFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
       communityFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
+      useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+      useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
 
       isLoading = false;
     });
@@ -469,7 +485,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ListOption(
                           description: l10n.userFormat,
                           value: ListPickerItem(
-                            label: generateSampleUserFullName(userSeparator),
+                            label: generateSampleUserFullName(userSeparator, useDisplayNamesForUsers),
                             labelWidget: generateSampleUserFullNameWidget(
                               userSeparator,
                               userNameThickness: userFullNameUserNameThickness,
@@ -485,7 +501,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: [
                             ListPickerItem(
                               icon: const IconData(0x2022),
-                              label: generateSampleUserFullName(FullNameSeparator.dot),
+                              label: generateSampleUserFullName(FullNameSeparator.dot, useDisplayNamesForUsers),
                               labelWidget: generateSampleUserFullNameWidget(
                                 FullNameSeparator.dot,
                                 userNameThickness: userFullNameUserNameThickness,
@@ -499,7 +515,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleUserFullName(FullNameSeparator.at),
+                              label: generateSampleUserFullName(FullNameSeparator.at, useDisplayNamesForUsers),
                               labelWidget: generateSampleUserFullNameWidget(
                                 FullNameSeparator.at,
                                 userNameThickness: userFullNameUserNameThickness,
@@ -513,7 +529,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleUserFullName(FullNameSeparator.lemmy),
+                              label: generateSampleUserFullName(FullNameSeparator.lemmy, useDisplayNamesForUsers),
                               labelWidget: generateSampleUserFullNameWidget(
                                 FullNameSeparator.lemmy,
                                 userNameThickness: userFullNameUserNameThickness,
@@ -687,7 +703,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ListOption(
                           description: l10n.communityFormat,
                           value: ListPickerItem(
-                            label: generateSampleCommunityFullName(communitySeparator),
+                            label: generateSampleCommunityFullName(communitySeparator, useDisplayNamesForCommunities),
                             labelWidget: generateSampleCommunityFullNameWidget(
                               communitySeparator,
                               communityNameThickness: communityFullNameCommunityNameThickness,
@@ -703,7 +719,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: [
                             ListPickerItem(
                               icon: const IconData(0x2022),
-                              label: generateSampleCommunityFullName(FullNameSeparator.dot),
+                              label: generateSampleCommunityFullName(FullNameSeparator.dot, useDisplayNamesForCommunities),
                               labelWidget: generateSampleCommunityFullNameWidget(
                                 FullNameSeparator.dot,
                                 communityNameThickness: communityFullNameCommunityNameThickness,
@@ -717,7 +733,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleCommunityFullName(FullNameSeparator.at),
+                              label: generateSampleCommunityFullName(FullNameSeparator.at, useDisplayNamesForCommunities),
                               labelWidget: generateSampleCommunityFullNameWidget(
                                 FullNameSeparator.at,
                                 communityNameThickness: communityFullNameCommunityNameThickness,
@@ -731,7 +747,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleCommunityFullName(FullNameSeparator.lemmy),
+                              label: generateSampleCommunityFullName(FullNameSeparator.lemmy, useDisplayNamesForCommunities),
                               labelWidget: generateSampleCommunityFullNameWidget(
                                 FullNameSeparator.lemmy,
                                 communityNameThickness: communityFullNameCommunityNameThickness,
@@ -901,6 +917,22 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                               );
                             },
                           ),
+                        ),
+                        ToggleOption(
+                          description: l10n.showUserDisplayNames,
+                          value: useDisplayNamesForUsers,
+                          iconEnabled: Icons.person_rounded,
+                          iconDisabled: Icons.person_off_rounded,
+                          onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
+                          highlightKey: settingToHighlight == LocalSettings.useDisplayNamesForUsers ? settingToHighlightKey : null,
+                        ),
+                        ToggleOption(
+                          description: l10n.showCommunityDisplayNames,
+                          value: useDisplayNamesForCommunities,
+                          iconEnabled: Icons.people_rounded,
+                          iconDisabled: Icons.people_outline_rounded,
+                          onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForCommunities, value),
+                          highlightKey: settingToHighlight == LocalSettings.useDisplayNamesForCommunities ? settingToHighlightKey : null,
                         ),
                       ],
                     ),

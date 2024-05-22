@@ -19,11 +19,11 @@ import 'package:thunder/utils/instance.dart';
 class UserChip extends StatelessWidget {
   const UserChip({
     super.key,
-    this.personId,
-    this.personAvatar,
-    this.personName,
-    this.personDisplayName,
-    this.personUrl,
+    required this.personId,
+    required this.personAvatar,
+    required this.personName,
+    required this.personDisplayName,
+    required this.personUrl,
     this.includeInstance = false,
     this.userGroups = const [],
     this.opacity = 1.0,
@@ -68,7 +68,12 @@ class UserChip extends StatelessWidget {
       ignoring: ignorePointerEvents,
       child: Tooltip(
         excludeFromSemantics: true,
-        message: '${generateUserFullName(context, personName, fetchInstanceNameFromUrl(personUrl) ?? '-')}${fetchUserGroupDescriptor(userGroups)}',
+        message: '${generateUserFullName(
+          context,
+          personName!,
+          personDisplayName,
+          fetchInstanceNameFromUrl(personUrl),
+        )}${fetchUserGroupDescriptor(userGroups)}',
         preferBelow: false,
         child: Material(
           color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onBackground : Colors.transparent,
@@ -86,7 +91,8 @@ class UserChip extends StatelessWidget {
                   if (showUserAvatar && personAvatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
                   UserFullNameWidget(
                     context,
-                    personDisplayName != null && state.useDisplayNames ? personDisplayName! : personName,
+                    personName,
+                    personDisplayName,
                     fetchInstanceNameFromUrl(personUrl),
                     includeInstance: includeInstance,
                     fontScale: state.metadataFontSizeScale,

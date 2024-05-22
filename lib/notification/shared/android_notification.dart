@@ -29,6 +29,7 @@ void showNotificationGroups({required NotificationType type, required List<Accou
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
   final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
+  final bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
 
   for (Account account in accounts) {
     for (NotificationInboxType inboxType in inboxTypes) {
@@ -36,7 +37,14 @@ void showNotificationGroups({required NotificationType type, required List<Accou
       final InboxStyleInformation inboxStyleInformationSummary = InboxStyleInformation(
         [],
         contentTitle: '',
-        summaryText: generateUserFullName(null, account.username, account.instance, userSeparator: userSeparator),
+        summaryText: generateUserFullName(
+          null,
+          account.username!,
+          account.displayName,
+          account.instance,
+          userSeparator: userSeparator,
+          useDisplayName: useDisplayNamesForUsers,
+        ),
       );
 
       final AndroidNotificationDetails androidNotificationDetailsSummary = AndroidNotificationDetails(

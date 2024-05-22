@@ -119,7 +119,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // General Settings
       bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
       bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
-      bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
+      bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+      bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
@@ -293,7 +294,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         scrapeMissingPreviews: scrapeMissingPreviews,
         browserMode: browserMode,
         openInReaderMode: openInReaderMode,
-        useDisplayNames: useDisplayNames,
+        useDisplayNamesForUsers: useDisplayNamesForUsers,
+        useDisplayNamesForCommunities: useDisplayNamesForCommunities,
         markPostReadOnMediaView: markPostReadOnMediaView,
         markPostReadOnScroll: markPostReadOnScroll,
         showInAppUpdateNotification: showInAppUpdateNotification,

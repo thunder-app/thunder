@@ -65,7 +65,7 @@ class CommentHeader extends StatelessWidget {
                   personId: comment.creator.id,
                   personAvatar: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
                   personName: comment.creator.name,
-                  personDisplayName: comment.creator.displayName ?? comment.creator.name,
+                  personDisplayName: comment.creator.displayName,
                   personUrl: comment.creator.actorId,
                   userGroups: userGroups,
                   includeInstance: state.commentShowUserInstance,

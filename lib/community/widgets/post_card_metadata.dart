@@ -428,7 +428,6 @@ class PostCommunityAndAuthor extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
-      final String? creatorName = postView.creator.displayName != null && state.useDisplayNames ? postView.creator.displayName : postView.creator.name;
       final bool showUsername = (state.showPostAuthor || feedType == FeedType.community) && feedType != FeedType.user;
       final bool showCommunityName = feedType != FeedType.community;
 
@@ -459,7 +458,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
                           onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id),
                           child: UserFullNameWidget(
                             context,
-                            creatorName,
+                            postView.creator.name,
+                            postView.creator.displayName,
                             fetchInstanceNameFromUrl(postView.creator.actorId),
                             includeInstance: state.postShowUserInstance,
                             fontScale: state.metadataFontSizeScale,
@@ -486,6 +486,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                           CommunityFullNameWidget(
                             context,
                             postView.community.name,
+                            postView.community.title,
                             fetchInstanceNameFromUrl(postView.community.actorId),
                             fontScale: state.metadataFontSizeScale,
                             transformColor: communityColorTransformation,

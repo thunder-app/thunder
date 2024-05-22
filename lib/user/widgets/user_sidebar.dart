@@ -243,11 +243,14 @@ class UserModeratorList extends StatelessWidget {
                         CommunityFullNameWidget(
                           context,
                           mods.community.name,
+                          mods.community.title,
                           fetchInstanceNameFromUrl(mods.community.actorId),
                           textStyle: const TextStyle(
                             fontSize: 13,
                           ),
                           transformColor: (color) => color?.withOpacity(0.6),
+                          // Override because we're showing display name above
+                          useDisplayName: false,
                         ),
                       ],
                     ),

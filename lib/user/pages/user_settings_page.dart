@@ -385,7 +385,12 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
       return Padding(
         padding: const EdgeInsets.only(left: 10, right: 10),
         child: Tooltip(
-          message: generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
+          message: generateCommunityFullName(
+            context,
+            community.name,
+            community.title,
+            fetchInstanceNameFromUrl(community.actorId),
+          ),
           preferBelow: false,
           child: Material(
             color: Colors.transparent,
@@ -404,7 +409,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 subtitle: CommunityFullNameWidget(
                   context,
                   community.name,
+                  community.title,
                   fetchInstanceNameFromUrl(community.actorId) ?? '-',
+                  // Override because we're showing display name above
+                  useDisplayName: false,
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
@@ -440,7 +448,12 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
       return Padding(
         padding: const EdgeInsets.only(left: 10, right: 10),
         child: Tooltip(
-          message: generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
+          message: generateUserFullName(
+            context,
+            person.name,
+            person.displayName,
+            fetchInstanceNameFromUrl(person.actorId),
+          ),
           preferBelow: false,
           child: Material(
             color: Colors.transparent,
@@ -459,7 +472,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 subtitle: UserFullNameWidget(
                   context,
                   person.name,
+                  person.displayName,
                   fetchInstanceNameFromUrl(person.actorId) ?? '-',
+                  // Override because we're showing display name above
+                  useDisplayName: false,
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                 trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id

@@ -43,7 +43,12 @@ class CommunityListEntry extends StatelessWidget {
 
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${communityView.community.title}\n${generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId))}',
+      message: '${communityView.community.title}\n${generateCommunityFullName(
+        context,
+        communityView.community.name,
+        communityView.community.title,
+        fetchInstanceNameFromUrl(communityView.community.actorId),
+      )}',
       preferBelow: false,
       child: ListTile(
         leading: CommunityAvatar(community: communityView.community, radius: 25),
@@ -56,7 +61,10 @@ class CommunityListEntry extends StatelessWidget {
             child: CommunityFullNameWidget(
               context,
               communityView.community.name,
+              communityView.community.title,
               fetchInstanceNameFromUrl(communityView.community.actorId),
+              // Override because we're showing display name above
+              useDisplayName: false,
             ),
           ),
           Text(
@@ -79,7 +87,7 @@ class CommunityListEntry extends StatelessWidget {
                   SubscribedType? subscriptionStatus = getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions);
                   onSubscribeIconPressed?.call(isUserLoggedIn, context, communityView);
                   showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
-                  context.read<AccountBloc>().add(GetAccountSubscriptions());
+                  context.read<AccountBloc>().add(const GetAccountSubscriptions());
                 },
                 icon: Icon(
                   switch (getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions)) {

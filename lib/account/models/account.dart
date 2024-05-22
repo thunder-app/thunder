@@ -8,6 +8,7 @@ import 'package:thunder/main.dart';
 class Account {
   final String id;
   final String? username;
+  final String? displayName;
   final String? jwt;
   final String? instance;
   final int? userId;
@@ -15,6 +16,7 @@ class Account {
   const Account({
     required this.id,
     this.username,
+    this.displayName,
     this.jwt,
     this.instance,
     this.userId,

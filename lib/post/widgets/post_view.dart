@@ -47,7 +47,6 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostSubview extends StatefulWidget {
   final PostViewMedia postViewMedia;
-  final bool useDisplayNames;
   final int? selectedCommentId;
   final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
@@ -61,7 +60,6 @@ class PostSubview extends StatefulWidget {
   const PostSubview({
     super.key,
     this.selectedCommentId,
-    required this.useDisplayNames,
     required this.postViewMedia,
     required this.moderators,
     required this.crossPosts,
@@ -244,6 +242,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         communityId: postView.community.id,
                         communityAvatar: CommunityAvatar(community: postView.community, radius: 10, thumbnailSize: 20, format: 'png'),
                         communityName: postView.community.name,
+                        communityTitle: postView.community.title,
                         communityUrl: postView.community.actorId,
                       ),
                     ],

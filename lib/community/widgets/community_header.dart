@@ -109,7 +109,10 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                 CommunityFullNameWidget(
                                   context,
                                   widget.getCommunityResponse.communityView.community.name,
+                                  widget.getCommunityResponse.communityView.community.title,
                                   fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A',
+                                  // Override because we're showing right above
+                                  useDisplayName: false,
                                 ),
                                 const SizedBox(height: 8.0),
                                 Row(

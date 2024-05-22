@@ -100,7 +100,12 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.userActions,
     icon: Icons.person_rounded,
     label: l10n.user,
-    getSubtitleLabel: (context, postViewMedia) => generateUserFullName(context, postViewMedia.postView.creator.name, fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId)),
+    getSubtitleLabel: (context, postViewMedia) => generateUserFullName(
+      context,
+      postViewMedia.postView.creator.name,
+      postViewMedia.postView.creator.displayName,
+      fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId),
+    ),
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
@@ -118,7 +123,12 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.communityActions,
     icon: Icons.people_rounded,
     label: l10n.community,
-    getSubtitleLabel: (context, postViewMedia) => generateCommunityFullName(context, postViewMedia.postView.community.name, fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)),
+    getSubtitleLabel: (context, postViewMedia) => generateCommunityFullName(
+      context,
+      postViewMedia.postView.community.name,
+      postViewMedia.postView.community.title,
+      fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId),
+    ),
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
