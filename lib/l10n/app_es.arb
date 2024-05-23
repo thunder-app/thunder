@@ -2346,5 +2346,9 @@
   "videoDefaultPlaybackSpeed": "Velocidad de reproducción predeterminada",
   "@videoDefaultPlaybackSpeed": {
     "description": "Option to select the default video playback Speed"
+  },
+  "failedToLoadVideo": "No se pudo cargar el video. ¿Abrir enlace en el navegador?",
+  "@failedToLoadVideo": {
+    "description": "Error message that displays when we fail to load a video"
   }
 }
