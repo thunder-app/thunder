@@ -24,25 +24,17 @@ class ThunderYoutubePlayer extends StatefulWidget {
 
 class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with SingleTickerProviderStateMixin {
   late YoutubePlayerController _controller;
-  final bool _isPlayerReady = false;
   late ypf.YoutubePlayerController _ypfController;
 
-  @override
-  void dispose() {
-    super.dispose();
-
-    if (Platform.isAndroid || Platform.isIOS) {
-      _ypfController.dispose();
-    } else {
-      _controller.close();
-    }
-  }
+  /// Whether or not the video is muted.
+  bool muted = false;
 
   @override
   void initState() {
     super.initState();
 
-    final thunderBloc = context.read<ThunderBloc>().state;
+    final state = context.read<ThunderBloc>().state;
+
     if (Platform.isAndroid || Platform.isIOS) {
       _ypfController = ypf.YoutubePlayerController(
         initialVideoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!,
@@ -51,40 +43,45 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
           autoPlay: autoPlayVideo(),
           enableCaption: false,
           hideControls: false,
-          loop: thunderBloc.videoAutoLoop,
-          mute: thunderBloc.videoAutoMute,
+          loop: state.videoAutoLoop,
+          mute: state.videoAutoMute,
         ),
-      )
-        ..addListener(listener)
-        ..setPlaybackRate(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
-      if (thunderBloc.videoAutoFullscreen) {
-        _ypfController.toggleFullScreenMode();
-      }
+      )..setPlaybackRate(double.parse(state.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
+      if (state.videoAutoFullscreen) _ypfController.toggleFullScreenMode();
     } else {
       _controller = YoutubePlayerController(
         params: YoutubePlayerParams(
           showControls: true,
-          mute: thunderBloc.videoAutoMute,
+          mute: state.videoAutoMute,
           showFullscreenButton: true,
-          loop: thunderBloc.videoAutoLoop,
+          loop: state.videoAutoLoop,
         ),
       );
       _controller
         ..loadVideoById(videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
-        ..setPlaybackRate(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
+        ..setPlaybackRate(double.parse(state.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
     }
+
+    setState(() => muted = state.videoAutoMute);
   }
 
-  void listener() {
-    if (_isPlayerReady && mounted && !_ypfController.value.isFullScreen) {}
+  @override
+  void dispose() {
+    if (Platform.isAndroid || Platform.isIOS) {
+      _ypfController.dispose();
+    } else {
+      _controller.close();
+    }
+    super.dispose();
   }
 
   bool autoPlayVideo() {
-    final thunderBloc = context.read<ThunderBloc>().state;
+    final state = context.read<ThunderBloc>().state;
     final networkCubit = context.read<NetworkCheckerCubit>().state;
-    if (thunderBloc.videoAutoPlay == VideoAutoPlay.always) {
+
+    if (state.videoAutoPlay == VideoAutoPlay.always) {
       return true;
-    } else if (thunderBloc.videoAutoPlay == VideoAutoPlay.onWifi && networkCubit.internetConnectionType == InternetConnectionType.wifi) {
+    } else if (state.videoAutoPlay == VideoAutoPlay.onWifi && networkCubit.internetConnectionType == InternetConnectionType.wifi) {
       return true;
     }
 
@@ -133,10 +130,21 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
               Center(
                 child: ypf.YoutubePlayerBuilder(
                   player: ypf.YoutubePlayer(
-                    onReady: () => _ypfController.addListener(listener),
                     aspectRatio: 16 / 10,
                     controller: _ypfController,
                     actionsPadding: const EdgeInsets.only(bottom: 8),
+                    topActions: [
+                      IconButton(
+                        onPressed: () {
+                          muted ? _ypfController.unMute() : _ypfController.mute();
+                          setState(() => muted = !muted);
+                        },
+                        icon: Icon(
+                          muted ? Icons.volume_off : Icons.volume_up,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
                   ),
                   builder: (context, player) => player,
                 ),
