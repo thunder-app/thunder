@@ -2298,5 +2298,53 @@
   "confirmUnsubscription": "¿Estás seguro de que quieres darte de baja?",
   "@confirmUnsubscription": {
     "description": "Ask the user to confirm that they want to unsubscribe"
+  },
+  "sentRequestForTestNotification": "Solicitud enviada para notificación de prueba.",
+  "@sentRequestForTestNotification": {},
+  "always": "Siempre",
+  "@always": {},
+  "never": "Nunca",
+  "@never": {},
+  "onWifi": "En Wifi",
+  "@onWifi": {},
+  "thisAccount": "Esta cuenta",
+  "@thisAccount": {
+    "description": "Referring to the currently active account in account settings"
+  },
+  "video": "Vídeo",
+  "@video": {
+    "description": "String for video "
+  },
+  "videoAutoFullscreen": "Pantalla completa automática",
+  "@videoAutoFullscreen": {
+    "decription": "Option to always start the video players in landscape"
+  },
+  "videoAutoLoop": "Vídeo en bucle",
+  "@videoAutoLoop": {
+    "description": "Option to always loop a video"
+  },
+  "videoAutoMute": "Silenciar vídeos",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
+  },
+  "videoAutoPlay": "Reproducción automática del vídeo",
+  "@videoAutoPlay": {
+    "description": "Option to always autoplay videos"
+  },
+  "accountSwitchParentCommentNotFound": "El comentario seleccionado no se encontró en '{instance}'. Volver a la cuenta anterior.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "accountSwitchPostNotFound": "La publicación seleccionada no se encontró en '{instance}'. Volver a la cuenta anterior.",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "selectAccountToCommentAs": "Seleccione cuenta para comentar como",
+  "@selectAccountToCommentAs": {
+    "description": "Profile modal heading for commenting as other user"
+  },
+  "videoDefaultPlaybackSpeed": "Velocidad de reproducción predeterminada",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback Speed"
   }
 }
