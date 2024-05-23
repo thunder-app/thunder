@@ -713,6 +713,10 @@
   },
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
   "@failedToLoadBlocks": {},
+  "failedToLoadVideo": "Failed to load video. Open link in browser?",
+  "@failedToLoadVideo": {
+    "description": "Error message that displays when we fail to load a video"
+  },
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
   "failedToUpdateNotificationSettings": "Failed to update notification settings",
