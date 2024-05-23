@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
@@ -147,6 +148,9 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                     ],
                   ),
                   builder: (context, player) => player,
+                  onExitFullScreen: () {
+                    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+                  },
                 ),
               ),
             ],
