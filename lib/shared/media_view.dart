@@ -237,7 +237,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final l10n = AppLocalizations.of(context)!;
 
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
-
+    if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
+      FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
+      feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postViewMedia.postView.post.id, value: true));
+    }
     return InkWell(
       splashColor: theme.colorScheme.primary.withOpacity(0.4),
       borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
