@@ -2350,5 +2350,9 @@
   "failedToLoadVideo": "No se pudo cargar el video. ¿Abrir enlace en el navegador?",
   "@failedToLoadVideo": {
     "description": "Error message that displays when we fail to load a video"
+  },
+  "viewingAll": "Mostrando todo",
+  "@viewingAll": {
+    "description": "Chip for viewing all possible search results"
   }
 }
