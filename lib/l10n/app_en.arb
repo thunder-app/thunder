@@ -2337,6 +2337,10 @@
   "@viewSource": {
     "description": "Action for viewing source (raw markdown)"
   },
+  "viewingAll": "Viewing all",
+  "@viewingAll": {
+    "description": "Chip for viewing all possible search results"
+  },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
   "visitInstance": "Visit Instance",

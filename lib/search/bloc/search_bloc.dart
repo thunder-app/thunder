@@ -67,7 +67,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   Future<void> _resetSearch(ResetSearch event, Emitter<SearchState> emit) async {
-    emit(state.copyWith(status: SearchStatus.initial, trendingCommunities: []));
+    emit(state.copyWith(status: SearchStatus.initial, trendingCommunities: [], viewingAll: false));
     await _getTrendingCommunitiesEvent(GetTrendingCommunitiesEvent(), emit);
   }
 
@@ -102,7 +102,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         }
 
         // Put the initial, full list in the UI now
-        emit(state.copyWith(status: SearchStatus.success, instances: instances));
+        emit(state.copyWith(status: SearchStatus.success, instances: instances, viewingAll: event.query.isEmpty));
 
         // Now go through and fill the rest of the information about the instances. Periodically update the UI with this info.
         for (final MapEntry<int, GetInstanceInfoResponse> entry in instances.asMap().entries) {
@@ -188,6 +188,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         posts: await parsePostViews(searchResponse?.posts ?? []),
         instances: instances,
         page: 2,
+        viewingAll: event.query.isEmpty,
       ));
     } catch (e) {
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
