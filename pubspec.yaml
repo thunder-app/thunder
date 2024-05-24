@@ -74,11 +74,7 @@ dependencies:
   back_button_interceptor: ^7.0.0
   flutter_localizations:
     sdk: flutter
-  swipeable_page_route:
-    git:
-      # Switch back to original repository when the PR is merged
-      url: https://github.com/1l0/swipeable_page_route.git
-      ref: 74135cceba0d14082e2429a87e8c5c864b675a8e
+  swipeable_page_route: ^0.4.3
   # There is an intentional space between the packge name and colon below. Do not remove!
   version : ^3.0.2
   expandable: ^5.0.1
