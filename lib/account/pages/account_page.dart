@@ -43,7 +43,7 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
       ],
       child: (authState.isLoggedIn)
           ? UserPage(
-              userId: accountState.personView!.person.id,
+              userId: accountState.personView?.person.id,
               isAccountUser: true,
               selectedUserOption: selectedUserOption,
               savedToggle: savedToggle,
