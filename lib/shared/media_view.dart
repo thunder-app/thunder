@@ -276,7 +276,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             }),
         child: Stack(
           fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
-          alignment: Alignment.center,
+          alignment: Alignment.bottomLeft,
           children: [
             if (widget.postViewMedia.media.first.thumbnailUrl != null)
               ImageFiltered(
