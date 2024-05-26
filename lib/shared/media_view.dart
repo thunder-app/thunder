@@ -237,14 +237,18 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final l10n = AppLocalizations.of(context)!;
 
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
-    if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
-      FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
-      feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postViewMedia.postView.post.id, value: true));
-    }
+
     return InkWell(
       splashColor: theme.colorScheme.primary.withOpacity(0.4),
       borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-      onTap: () => showVideoPlayer(context, url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl, postId: widget.postViewMedia.postView.post.id),
+      onTap: () {
+        if (widget.isUserLoggedIn && widget.markPostReadOnMediaView && widget.postViewMedia.postView.read == false) {
+          FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
+          feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postViewMedia.postView.post.id, value: true));
+        }
+
+        showVideoPlayer(context, url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl, postId: widget.postViewMedia.postView.post.id);
+      },
       child: Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
