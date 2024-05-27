@@ -10,6 +10,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/cubits/network_checker_cubit/network_checker_cubit.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class ThunderVideoPlayer extends StatefulWidget {
   const ThunderVideoPlayer({
@@ -34,6 +35,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   @override
   void dispose() async {
     _betterPlayerController.dispose();
+    WakelockPlus.disable();
     super.dispose();
   }
 
@@ -41,6 +43,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   void initState() {
     super.initState();
     _initializePlayer();
+    WakelockPlus.enable();
   }
 
   bool autoPlayVideo(ThunderState thunderBloc) {
