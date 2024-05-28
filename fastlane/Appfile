@@ -1,2 +1,8 @@
-json_key_file("~/credentials/thunder_play_store_key.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
-package_name("com.hjiangsu.thunder")
+for_platform :android do
+  package_name("com.hjiangsu.thunder")
+  json_key_file("~/Credentials/Thunder/thunder_play_store_key.json")
+end
+
+for_platform :ios do
+  app_identifier("com.hjiangsu.thunder")
+end
