@@ -37,6 +37,10 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
     onNewEndpoint: (String endpoint, String instance) async {
       debugPrint("Connected to new UnifiedPush endpoint: $instance @ $endpoint");
 
+      // Save the endpoint to preferences so we can retrieve it later for troubleshooting
+      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      prefs.setString('unified_push_endpoint', endpoint);
+
       List<Account> accounts = await Account.accounts();
 
       // We should remove any previously sent tokens, and send them again
@@ -52,12 +56,20 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
     onRegistrationFailed: (String instance) async {
       debugPrint("UnifiedPush registration failed for $instance");
 
+      // Clear the endpoint from preferences
+      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      prefs.remove('unified_push_endpoint');
+
       // We should remove any previously sent tokens, and send them again
       bool removed = await deleteAccountFromNotificationServer();
       if (!removed) debugPrint("Failed to delete previous device token from server.");
     },
     onUnregistered: (String instance) async {
       debugPrint("UnifiedPush unregistered from $instance");
+
+      // Clear the endpoint from preferences
+      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      prefs.remove('unified_push_endpoint');
 
       // We should remove any previously sent tokens, and send them again
       bool removed = await deleteAccountFromNotificationServer();

@@ -1247,6 +1247,10 @@
   },
   "off": "off",
   "@off": {},
+  "offline": "offline",
+  "@offline": {
+    "description": "Describes a service that is unavailable"
+  },
   "ok": "OK",
   "@ok": {},
   "old": "Old",
@@ -1991,6 +1995,10 @@
   "@thunderHasBeenUpdated": {
     "description": "Heading for changelog when Thunder has been updated"
   },
+  "thunderNotificationServer": "Thunder Notification Server: {server}",
+  "@thunderNotificationServer": {
+    "description": "Text for the user to know what the currently selected notification server is"
+  },
   "timeoutComments": "Error: Timeout when attempting to fetch comments",
   "@timeoutComments": {},
   "timeoutErrorMessage": "There was a timeout waiting for a response.",
@@ -2134,6 +2142,10 @@
   "unifiedPushNotifications": "UnifiedPush Notifications",
   "@unifiedPushNotifications": {
     "description": "Describes the notification type for UnifiedPush Notifications"
+  },
+  "unifiedPushServer": "UnifiedPush Server: {server}",
+  "@unifiedPushServer": {
+    "description": "Debug text that tells the user what UnifiedPush server is being used"
   },
   "unifiedpush": "UnifiedPush",
   "@unifiedpush": {
