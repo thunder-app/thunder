@@ -6,6 +6,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -73,9 +74,12 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           emit(state.copyWith(status: CommunityStatus.fetching));
 
           // Wait for one second before fetching the community information to get any updated information
-          Future.delayed(const Duration(seconds: 1)).then((value) async {
+          await Future.delayed(const Duration(seconds: 1)).then((value) async {
             GetCommunityResponse? getCommunityResponse = await fetchCommunityInformation(id: event.communityId);
             emit(state.copyWith(status: CommunityStatus.success, communityView: getCommunityResponse.communityView));
+
+            // Update subscribed status in feed
+            event.postViewMedia?.postView = event.postViewMedia!.postView.copyWith(subscribed: getCommunityResponse.communityView.subscribed);
           });
         } catch (e) {
           return emit(state.copyWith(status: CommunityStatus.failure));

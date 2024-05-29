@@ -280,11 +280,13 @@ void showPostActionBottomModalSheet(
   BuildContext context,
   PostViewMedia postViewMedia, {
   PostActionBottomSheetPage page = PostActionBottomSheetPage.general,
+  void Function(int userId)? onBlockedUser,
+  void Function(int userId)? onBlockedCommunity,
 }) {
   final bool isOwnPost = postViewMedia.postView.creator.id == context.read<AuthBloc>().state.account?.userId;
-
   final bool isModerator =
       context.read<AccountBloc>().state.moderates.any((CommunityModeratorView communityModeratorView) => communityModeratorView.community.id == postViewMedia.postView.community.id);
+  final int? currentUserId = context.read<AuthBloc>().state.account?.userId;
 
   // Generate the list of default actions for the general page
   final List<ExtendedPostCardActions> defaultPostCardActions = postCardActionItems
@@ -354,7 +356,7 @@ void showPostActionBottomModalSheet(
   final List<ExtendedPostCardActions> userActions = postCardActionItems
       .where((extendedAction) => [
             PostCardAction.visitProfile,
-            PostCardAction.blockUser,
+            if (postViewMedia.postView.creator.id != currentUserId) PostCardAction.blockUser,
           ].contains(extendedAction.postCardAction))
       .toList();
 
@@ -410,6 +412,8 @@ void showPostActionBottomModalSheet(
         PostActionBottomSheetPage.instance: l10n.instanceActions,
       },
       outerContext: context,
+      onBlockedUser: onBlockedUser,
+      onBlockedCommunity: onBlockedCommunity,
     ),
   );
 }
@@ -433,6 +437,12 @@ class PostCardActionPicker extends StatefulWidget {
   /// The context from whoever invoked this sheet (useful for blocs that would otherwise be missing)
   final BuildContext outerContext;
 
+  /// Callback used to notify that we blocked a user
+  final void Function(int userId)? onBlockedUser;
+
+  /// Callback used to notify that we blocked a community
+  final Function(int userId)? onBlockedCommunity;
+
   const PostCardActionPicker({
     super.key,
     required this.postViewMedia,
@@ -441,6 +451,8 @@ class PostCardActionPicker extends StatefulWidget {
     required this.multiPostCardActions,
     required this.titles,
     required this.outerContext,
+    required this.onBlockedUser,
+    required this.onBlockedCommunity,
   });
 
   @override
@@ -630,8 +642,10 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
         pop = false;
         break;
       case PostCardAction.blockCommunity:
-        action =
-            () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: widget.postViewMedia.postView.community.id, value: true));
+        action = () {
+          widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: widget.postViewMedia.postView.community.id, value: true));
+          widget.onBlockedCommunity?.call(widget.postViewMedia.postView.community.id);
+        };
         break;
       case PostCardAction.upvote:
         action = () => widget.outerContext
@@ -656,15 +670,26 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
         action = () => setState(() => page = PostActionBottomSheetPage.share);
         break;
       case PostCardAction.blockUser:
-        action = () => widget.outerContext.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: widget.postViewMedia.postView.creator.id, value: true));
+        action = () {
+          widget.outerContext.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: widget.postViewMedia.postView.creator.id, value: true));
+          widget.onBlockedCommunity?.call(widget.postViewMedia.postView.creator.id);
+        };
         break;
       case PostCardAction.subscribeToCommunity:
-        action =
-            () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: widget.postViewMedia.postView.community.id, value: true));
+        action = () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(
+              communityAction: CommunityAction.follow,
+              communityId: widget.postViewMedia.postView.community.id,
+              value: true,
+              postViewMedia: widget.postViewMedia,
+            ));
         break;
       case PostCardAction.unsubscribeFromCommunity:
-        action =
-            () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: widget.postViewMedia.postView.community.id, value: false));
+        action = () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(
+              communityAction: CommunityAction.follow,
+              communityId: widget.postViewMedia.postView.community.id,
+              value: false,
+              postViewMedia: widget.postViewMedia,
+            ));
         break;
       case PostCardAction.delete:
         action = () => widget.outerContext

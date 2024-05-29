@@ -15,6 +15,7 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -323,6 +324,8 @@ class PostCardViewComfortable extends StatelessWidget {
                       showPostActionBottomModalSheet(
                         context,
                         postViewMedia,
+                        onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
+                        onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
                       );
                       HapticFeedback.mediumImpact();
                     }),
