@@ -50,6 +50,7 @@ enum PostCardAction {
   blockInstance,
   sharePost,
   sharePostLocal,
+  shareThumbnail,
   shareMedia,
   shareLink,
   shareAdvanced,
@@ -175,10 +176,16 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     getSubtitleLabel: (context, postViewMedia) => LemmyClient.instance.generatePostUrl(postViewMedia.postView.post.id),
   ),
   ExtendedPostCardActions(
-    postCardAction: PostCardAction.shareMedia,
+    postCardAction: PostCardAction.shareThumbnail,
     icon: Icons.image_rounded,
-    label: l10n.shareMedia,
+    label: l10n.shareThumbnailAsImage,
     getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.thumbnailUrl,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.shareMedia,
+    icon: Icons.personal_video_rounded,
+    label: l10n.shareMediaLink,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.mediaUrl,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.shareLink,
@@ -326,6 +333,7 @@ void showPostActionBottomModalSheet(
       .where((extendedAction) => [
             PostCardAction.sharePost,
             PostCardAction.sharePostLocal,
+            PostCardAction.shareThumbnail,
             PostCardAction.shareMedia,
             PostCardAction.shareLink,
             PostCardAction.shareAdvanced,
@@ -334,14 +342,17 @@ void showPostActionBottomModalSheet(
 
   // Remove the share link option if there is no link
   // Or if the media link is the same as the external link
-  if (postViewMedia.media.isEmpty ||
-      (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image) ||
-      postViewMedia.media.first.originalUrl == postViewMedia.media.first.thumbnailUrl) {
+  if (postViewMedia.media.isEmpty || postViewMedia.media.first.originalUrl == postViewMedia.media.first.thumbnailUrl || postViewMedia.media.first.originalUrl == postViewMedia.media.first.mediaUrl) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareLink);
   }
 
-  // Remove the share media option if there is no media
+  // Remove the share thumbnail option if there is no thumbnail
   if (postViewMedia.media.isEmpty || postViewMedia.media.first.thumbnailUrl == null) {
+    sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareThumbnail);
+  }
+
+  // Remove the share media option if there is no media
+  if (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl?.isNotEmpty != true) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareMedia);
   }
 
@@ -580,7 +591,7 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
       case PostCardAction.sharePostLocal:
         action = () => Share.share(LemmyClient.instance.generatePostUrl(widget.postViewMedia.postView.post.id));
         break;
-      case PostCardAction.shareMedia:
+      case PostCardAction.shareThumbnail:
         action = () async {
           if (widget.postViewMedia.media.first.thumbnailUrl != null) {
             try {
@@ -604,6 +615,9 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
             }
           }
         };
+        break;
+      case PostCardAction.shareMedia:
+        action = () => Share.share(widget.postViewMedia.media.first.mediaUrl!);
         break;
       case PostCardAction.shareLink:
         action = () {

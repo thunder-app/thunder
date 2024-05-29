@@ -1723,11 +1723,27 @@
   "@shareLink": {},
   "shareMedia": "Share Media",
   "@shareMedia": {},
+  "shareMediaLink": "Share Media Link",
+  "@shareMediaLink": {
+    "description": "Action for sharing the link to the media associated with a post"
+  },
+  "shareOriginalLink": "Share Original Link",
+  "@shareOriginalLink": {
+    "description": "Action for sharing the original link associated with a post"
+  },
   "sharePost": "Share Post Link",
   "@sharePost": {},
   "sharePostLocal": "Share Post Link (My Instance)",
   "@sharePostLocal": {
     "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareThumbnail": "Share Thumbnail",
+  "@shareThumbnail": {
+    "description": "Action for sharing the thumbnail of a post"
+  },
+  "shareThumbnailAsImage": "Share Thumbnail As Image",
+  "@shareThumbnailAsImage": {
+    "description": "Action for sharing the thumbnail of a post as an image"
   },
   "shareUser": "Share User",
   "@shareUser": {
