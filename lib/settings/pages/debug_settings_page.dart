@@ -427,10 +427,10 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Experimental Features', style: theme.textTheme.titleMedium),
+                  Text(l10n.experimentalFeatures, style: theme.textTheme.titleMedium),
                   const SizedBox(height: 8.0),
                   Text(
-                    'These features are still in development and may be unstable. Use them at your own risk. You must restart Thunder to take effect.',
+                    l10n.experimentalFeaturesDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                     ),
@@ -442,7 +442,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
           const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
           SliverToBoxAdapter(
             child: ToggleOption(
-              description: 'Enable experimental features',
+              description: l10n.enableExperimentalFeatures,
               value: enableExperimentalFeatures,
               iconEnabled: Icons.construction_rounded,
               iconDisabled: Icons.construction_outlined,

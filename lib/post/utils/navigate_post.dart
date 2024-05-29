@@ -55,7 +55,7 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
     feedBloc?.add(FeedItemActionedEvent(postId: postViewMedia?.postView.post.id ?? postId, postAction: PostAction.read, value: true));
   }
 
-  bool useExperimentalPostPage = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
+  bool enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
 
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
@@ -79,7 +79,7 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
           if (communityBloc != null) BlocProvider.value(value: communityBloc),
           if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
         ],
-        child: useExperimentalPostPage
+        child: enableExperimentalFeatures
             ? PostPage(
                 initialPostViewMedia: postViewMedia!,
                 onPostUpdated: (PostViewMedia postViewMedia) {

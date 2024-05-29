@@ -10,7 +10,8 @@ class CommentNode {
   /// The replies to this comment
   final List<CommentNode> replies;
 
-  /// Gets the depth/level of the comment in the tree
+  /// Gets the depth/level of the comment in the tree. A depth of 0 indicates a root comment.
+  /// The [commentView.comment.path] is a dot-separated string of comment ids starting from 0 (post). For example: `0.103315`
   get depth => commentView == null ? 0 : commentView!.comment.path.split('.').length - 2;
 
   /// Gets the total number of replies
