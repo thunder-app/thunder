@@ -43,7 +43,6 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   void initState() {
     super.initState();
     _initializePlayer();
-    WakelockPlus.enable();
   }
 
   bool autoPlayVideo(ThunderState thunderBloc) {
@@ -79,19 +78,25 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     _betterPlayerController
       ..setupDataSource(_betterPlayerDataSource)
       ..setVolume(thunderBloc.videoAutoMute ? 0 : 4)
-      ..setSpeed(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
-
-    _betterPlayerController.addEventsListener((event) {
-      if (event.betterPlayerEventType == BetterPlayerEventType.exception) {
-        showSnackbar(
-          l10n.failedToLoadVideo,
-          trailingIcon: Icons.chevron_right_rounded,
-          trailingAction: () {
-            handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true);
-          },
-        );
-      }
-    });
+      ..setSpeed(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')))
+      ..addEventsListener((event) {
+        switch (event.betterPlayerEventType) {
+          case BetterPlayerEventType.exception:
+            showSnackbar(
+              l10n.failedToLoadVideo,
+              trailingIcon: Icons.chevron_right_rounded,
+              trailingAction: () {
+                handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true);
+              },
+            );
+            break;
+          case BetterPlayerEventType.pause:
+            WakelockPlus.disable();
+          case BetterPlayerEventType.play:
+            WakelockPlus.enable();
+          default:
+        }
+      });
   }
 
   @override

@@ -50,7 +50,6 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
         ),
       )..setPlaybackRate(double.parse(state.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
       if (state.videoAutoFullscreen) _ypfController.toggleFullScreenMode();
-      WakelockPlus.enable();
     } else {
       _controller = YoutubePlayerController(
         params: YoutubePlayerParams(
@@ -64,7 +63,6 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
         ..loadVideoById(videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
         ..setPlaybackRate(double.parse(state.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
     }
-
     setState(() => muted = state.videoAutoMute);
   }
 
@@ -90,6 +88,19 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
     }
 
     return false;
+  }
+
+  void listener() {
+    if (mounted) {
+      switch (_ypfController.value.playerState) {
+        case ypf.PlayerState.playing:
+          WakelockPlus.enable();
+
+        case ypf.PlayerState.paused:
+          WakelockPlus.disable();
+        default:
+      }
+    }
   }
 
   @override
@@ -135,7 +146,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                 child: ypf.YoutubePlayerBuilder(
                   player: ypf.YoutubePlayer(
                     aspectRatio: 16 / 10,
-                    controller: _ypfController,
+                    controller: _ypfController..addListener(listener),
                     actionsPadding: const EdgeInsets.only(bottom: 8),
                     topActions: [
                       IconButton(
