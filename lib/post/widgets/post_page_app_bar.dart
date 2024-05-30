@@ -61,7 +61,7 @@ class PostPageAppBar extends StatelessWidget {
   }
 }
 
-/// The title of the app bar. This shows the title (feed type, community, user) and the sort type
+/// The title of the app bar. This shows the sort type of the comments
 class PostAppBarTitle extends StatelessWidget {
   const PostAppBarTitle({super.key});
 
@@ -69,6 +69,7 @@ class PostAppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final (sortType, sortIcon) = getSort(context);
 
     return ListTile(
       title: Text(
@@ -79,9 +80,9 @@ class PostAppBarTitle extends StatelessWidget {
       ),
       subtitle: Row(
         children: [
-          Icon(getSortIcon(context), size: 13),
+          Icon(sortIcon, size: 13),
           const SizedBox(width: 4),
-          Text(getSortName(context)),
+          Text(sortType),
         ],
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
@@ -174,28 +175,15 @@ class PostAppBarActions extends StatelessWidget {
   }
 }
 
-String getSortName(BuildContext context) {
+(String, IconData?) getSort(BuildContext context) {
   final state = context.watch<PostBloc>().state;
 
   if (state.status == PostStatus.initial) {
-    return '';
+    return ('', null);
   }
 
   final sortTypeItemIndex = CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.instance.version).indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
   final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
 
-  return sortTypeItem?.label ?? '';
-}
-
-IconData? getSortIcon(BuildContext context) {
-  final state = context.watch<PostBloc>().state;
-
-  if (state.status == PostStatus.initial) {
-    return null;
-  }
-
-  final sortTypeItemIndex = CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.instance.version).indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
-  final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
-
-  return sortTypeItem?.icon;
+  return (sortTypeItem?.label ?? '', sortTypeItem?.icon);
 }
