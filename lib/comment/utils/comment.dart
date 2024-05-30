@@ -11,26 +11,41 @@ import 'package:thunder/utils/global_context.dart';
 // Optimistically updates a comment
 CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, int voteType) {
   int newScore = commentViewTree.commentView!.counts.score;
+  int newUpvotes = commentViewTree.commentView!.counts.upvotes;
+  int newDownvotes = commentViewTree.commentView!.counts.downvotes;
   int? existingVoteType = commentViewTree.commentView!.myVote;
 
   switch (voteType) {
     case -1:
       newScore--;
+      newDownvotes++;
+      if (existingVoteType == 1) newUpvotes--;
       break;
     case 1:
       newScore++;
+      newUpvotes++;
+      if (existingVoteType == -1) newDownvotes--;
       break;
     case 0:
       // Determine score from existing
       if (existingVoteType == -1) {
         newScore++;
+        newDownvotes--;
       } else if (existingVoteType == 1) {
         newScore--;
+        newUpvotes--;
       }
       break;
   }
 
-  return commentViewTree.commentView!.copyWith(myVote: voteType, counts: commentViewTree.commentView!.counts.copyWith(score: newScore));
+  return commentViewTree.commentView!.copyWith(
+    myVote: voteType,
+    counts: commentViewTree.commentView!.counts.copyWith(
+      score: newScore,
+      upvotes: newUpvotes,
+      downvotes: newDownvotes,
+    ),
+  );
 }
 
 /// Logic to vote on a comment
