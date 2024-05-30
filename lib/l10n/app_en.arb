@@ -1715,6 +1715,10 @@
   "@shareCommunityLinkLocal": {
     "description": "Menu item for sharing a local community link"
   },
+  "shareImage": "Share Image",
+  "@shareImage": {
+    "description": "Action for sharing an image"
+  },
   "shareLemmyLink": "Share Lemmy Link",
   "@shareLemmyLink": {
     "description": "Menu item for sharing a Lemmy link"

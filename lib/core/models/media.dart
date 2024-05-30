@@ -1,4 +1,5 @@
 import 'package:thunder/core/enums/media_type.dart';
+import 'package:thunder/utils/media/image.dart';
 
 /// The Media class represents information for a given media source.
 class Media {
@@ -28,6 +29,9 @@ class Media {
 
   /// Indicates the type of media it holds
   MediaType mediaType;
+
+  /// Gets the full-size image URL, if any
+  String? get imageUrl => isImageUrl(mediaUrl ?? '') ? mediaUrl : thumbnailUrl;
 
   @override
   String toString() {
