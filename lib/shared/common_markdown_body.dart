@@ -441,7 +441,10 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
             collapsed: Container(),
             expanded: Padding(
               padding: const EdgeInsets.only(left: 4, right: 4, bottom: 4),
-              child: CommonMarkdownBody(body: widget.body ?? ''),
+              child: CommonMarkdownBody(
+                body: widget.body ?? '',
+                isComment: true,
+              ),
             ),
           ),
         ],
