@@ -32,7 +32,7 @@ class UserSelector extends StatefulWidget {
 
   /// Whether the user is allowed to change the active account
   /// (e.g., it should not be allowed during edit)
-  final bool allowChange;
+  final bool enableAccountSwitching;
 
   const UserSelector({
     super.key,
@@ -44,7 +44,7 @@ class UserSelector extends StatefulWidget {
     this.onPostChanged,
     this.parentCommentActorId,
     this.onParentCommentChanged,
-    this.allowChange = true,
+    this.enableAccountSwitching = true,
   });
 
   @override
@@ -60,7 +60,7 @@ class _UserSelectorState extends State<UserSelector> {
       offset: const Offset(-8, 0),
       child: InkWell(
         borderRadius: const BorderRadius.all(Radius.circular(50)),
-        onTap: !widget.allowChange
+        onTap: !widget.enableAccountSwitching
             ? null
             : () async {
                 final Account? originalUser = context.read<AuthBloc>().state.account;
@@ -141,7 +141,7 @@ class _UserSelectorState extends State<UserSelector> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const UserIndicator(),
-              if (widget.allowChange) const Icon(Icons.chevron_right_rounded),
+              if (widget.enableAccountSwitching) const Icon(Icons.chevron_right_rounded),
             ],
           ),
         ),

@@ -357,7 +357,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         parentCommentId = parentCommentView.comment.id;
                                       },
                                       onUserChanged: () => userChanged = true,
-                                      allowChange: widget.commentView == null,
+                                      enableAccountSwitching: widget.commentView == null,
                                     ),
                                   ),
                                   const SizedBox(height: 10),
