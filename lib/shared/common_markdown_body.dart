@@ -220,12 +220,11 @@ class LemmyLinkSyntax extends md.InlineSyntax {
 /// ~subscript with space~ and text~subscript with space~
 /// ```
 class SubscriptInlineSyntax extends md.InlineSyntax {
-  SubscriptInlineSyntax() : super(r'([^~]*)~([^~\s]+)~');
+  SubscriptInlineSyntax() : super(r'~([^~\s]+)~');
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
-    parser.addNode(md.Element.text("text", match[1]!));
-    parser.addNode(md.Element.text("sub", match[2]!));
+    parser.addNode(md.Element.text("sub", match[1]!));
     return true;
   }
 }
@@ -243,12 +242,11 @@ class SubscriptInlineSyntax extends md.InlineSyntax {
 /// ^superscript with space^ and text^superscript with space^
 /// ```
 class SuperscriptInlineSyntax extends md.InlineSyntax {
-  SuperscriptInlineSyntax() : super(r'([^\\^]*)\^([^\s^]+)\^');
+  SuperscriptInlineSyntax() : super(r'\^([^\s^]+)\^');
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
-    parser.addNode(md.Element.text("text", match[1]!));
-    parser.addNode(md.Element.text("sup", match[2]!));
+    parser.addNode(md.Element.text("sup", match[1]!));
     return true;
   }
 }
