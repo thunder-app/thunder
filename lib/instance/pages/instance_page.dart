@@ -17,6 +17,7 @@ import 'package:thunder/search/widgets/search_action_chip.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/persistent_header.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_list_entry.dart';
@@ -55,6 +56,7 @@ class _InstancePageState extends State<InstancePage> {
   // Use the existing SearchType enum to represent what we're showing in the instance page
   // with SearchType.all representing the about page
   SearchType viewType = SearchType.all;
+  SortType sortType = SortType.topAll;
 
   /// Context for [_onScroll] to use
   BuildContext? buildContext;
@@ -148,14 +150,37 @@ class _InstancePageState extends State<InstancePage> {
                                 semanticLabel: isBlocked! ? l10n.unblockInstance : l10n.blockInstance,
                               ),
                             ),
-                          IconButton(
-                            tooltip: l10n.openInBrowser,
-                            onPressed: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
-                            icon: Icon(
-                              Icons.open_in_browser_rounded,
-                              semanticLabel: l10n.openInBrowser,
+                          if (viewType == SearchType.all)
+                            IconButton(
+                              tooltip: l10n.openInBrowser,
+                              onPressed: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
+                              icon: Icon(
+                                Icons.open_in_browser_rounded,
+                                semanticLabel: l10n.openInBrowser,
+                              ),
                             ),
-                          ),
+                          if (viewType != SearchType.all)
+                            IconButton(
+                              icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
+                              onPressed: () {
+                                HapticFeedback.mediumImpact();
+
+                                showModalBottomSheet<void>(
+                                  showDragHandle: true,
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (builderContext) => SortPicker(
+                                    title: l10n.sortOptions,
+                                    onSelect: (selected) async {
+                                      sortType = selected.payload;
+                                      _doLoad(context);
+                                    },
+                                    previouslySelected: sortType,
+                                    minimumVersion: LemmyClient.instance.version,
+                                  ),
+                                );
+                              },
+                            ),
                           PopupMenuButton(
                             itemBuilder: (context) => [
                               ThunderPopupMenuItem(
@@ -171,6 +196,12 @@ class _InstancePageState extends State<InstancePage> {
                                 icon: Icons.shield_rounded,
                                 title: l10n.modlog,
                               ),
+                              if (viewType != SearchType.all)
+                                ThunderPopupMenuItem(
+                                  onTap: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
+                                  icon: Icons.open_in_browser_rounded,
+                                  title: l10n.openInBrowser,
+                                ),
                             ],
                           ),
                         ],
@@ -199,7 +230,7 @@ class _InstancePageState extends State<InstancePage> {
                                     ],
                                     onPressed: () async {
                                       viewType = SearchType.communities;
-                                      await context.read<InstancePageCubit>().loadCommunities(page: 1);
+                                      await context.read<InstancePageCubit>().loadCommunities(page: 1, sortType: sortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
                                   ),
@@ -214,7 +245,7 @@ class _InstancePageState extends State<InstancePage> {
                                       ],
                                       onPressed: () async {
                                         viewType = SearchType.users;
-                                        await context.read<InstancePageCubit>().loadUsers(page: 1);
+                                        await context.read<InstancePageCubit>().loadUsers(page: 1, sortType: sortType);
                                         WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                       },
                                     ),
@@ -227,7 +258,7 @@ class _InstancePageState extends State<InstancePage> {
                                     ],
                                     onPressed: () async {
                                       viewType = SearchType.posts;
-                                      await context.read<InstancePageCubit>().loadPosts(page: 1);
+                                      await context.read<InstancePageCubit>().loadPosts(page: 1, sortType: sortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
                                   ),
@@ -239,7 +270,7 @@ class _InstancePageState extends State<InstancePage> {
                                     ],
                                     onPressed: () async {
                                       viewType = SearchType.comments;
-                                      await context.read<InstancePageCubit>().loadComments(page: 1);
+                                      await context.read<InstancePageCubit>().loadComments(page: 1, sortType: sortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
                                   ),
@@ -362,16 +393,16 @@ class _InstancePageState extends State<InstancePage> {
 
     switch (viewType) {
       case SearchType.communities:
-        await instancePageCubit.loadCommunities(page: page ?? 1);
+        await instancePageCubit.loadCommunities(page: page ?? 1, sortType: sortType);
         break;
       case SearchType.users:
-        await instancePageCubit.loadUsers(page: page ?? 1);
+        await instancePageCubit.loadUsers(page: page ?? 1, sortType: sortType);
         break;
       case SearchType.posts:
-        await instancePageCubit.loadPosts(page: page ?? 1);
+        await instancePageCubit.loadPosts(page: page ?? 1, sortType: sortType);
         break;
       case SearchType.comments:
-        await instancePageCubit.loadComments(page: page ?? 1);
+        await instancePageCubit.loadComments(page: page ?? 1, sortType: sortType);
         break;
       default:
         break;

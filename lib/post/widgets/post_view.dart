@@ -49,7 +49,6 @@ class PostSubview extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool useDisplayNames;
   final int? selectedCommentId;
-  final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
   final bool viewSource;
   final void Function()? onViewSourceToggled;
@@ -64,7 +63,6 @@ class PostSubview extends StatefulWidget {
     this.selectedCommentId,
     required this.useDisplayNames,
     required this.postViewMedia,
-    required this.moderators,
     required this.crossPosts,
     required this.viewSource,
     this.onViewSourceToggled,
@@ -88,6 +86,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
   void initState() {
     super.initState();
 
+    postViewMedia = widget.postViewMedia;
+  }
+
+  @override
+  void didUpdateWidget(covariant PostSubview oldWidget) {
+    super.didUpdateWidget(oldWidget);
     postViewMedia = widget.postViewMedia;
   }
 
