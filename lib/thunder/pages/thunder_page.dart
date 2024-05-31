@@ -175,12 +175,7 @@ class _ThunderState extends State<Thunder> {
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
-
-        if (reduceAnimations) {
-          widget.pageController.jumpToPage(selectedPageIndex);
-        } else {
-          widget.pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-        }
+        widget.pageController.jumpToPage(selectedPageIndex);
       });
       return true;
     }
@@ -449,12 +444,7 @@ class _ThunderState extends State<Thunder> {
                       ? CommunityDrawer(
                           navigateToAccount: () {
                             Navigator.of(context).pop();
-
-                            if (reduceAnimations) {
-                              widget.pageController.jumpToPage(2);
-                            } else {
-                              widget.pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                            }
+                            widget.pageController.jumpToPage(2);
                           },
                         )
                       : null,
@@ -472,12 +462,7 @@ class _ThunderState extends State<Thunder> {
                     onPageChange: (int index) {
                       setState(() {
                         selectedPageIndex = index;
-
-                        if (reduceAnimations) {
-                          widget.pageController.jumpToPage(index);
-                        } else {
-                          widget.pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                        }
+                        widget.pageController.jumpToPage(index);
                       });
                     },
                   ),
