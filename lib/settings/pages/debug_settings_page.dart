@@ -404,6 +404,50 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               ),
             ],
           ],
+          if (!kIsWeb && Platform.isIOS) ...[
+            const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
+                child: Text(l10n.applePushNotificationService, style: theme.textTheme.titleSmall),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: SettingsListTile(
+                icon: Icons.circle_notifications_rounded,
+                description: l10n.sendTestNotification,
+                widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                onTap: inboxNotificationType == NotificationType.apn
+                    ? () async {
+                        bool result = false;
+
+                        await showThunderDialog(
+                          context: context,
+                          title: l10n.confirm,
+                          contentWidgetBuilder: (setPrimaryButtonEnabled) => Text(l10n.sendTestAPNsNotification),
+                          primaryButtonText: l10n.confirm,
+                          primaryButtonInitialEnabled: true,
+                          onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+                            dialogContext.pop();
+                            result = true;
+                          },
+                          secondaryButtonText: l10n.cancel,
+                          onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
+                        );
+
+                        if (result) {
+                          showSnackbar(l10n.sentRequestForTestNotification);
+                          bool success = await requestTestNotification(delay: 5);
+
+                          if (!success) {
+                            showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(pushNotificationServer ?? ''));
+                          }
+                        }
+                      }
+                    : null,
+              ),
+            ),
+          ],
           const ThunderDivider(sliver: true),
           SliverToBoxAdapter(
             child: SettingsListTile(

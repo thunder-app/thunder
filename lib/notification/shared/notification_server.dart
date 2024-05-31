@@ -76,12 +76,14 @@ Future<bool> deleteAccountFromNotificationServer() async {
   }
 }
 
-Future<bool> requestTestNotification() async {
+Future<bool> requestTestNotification({int? delay}) async {
   try {
     final prefs = (await UserPreferences.instance).sharedPreferences;
     String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
 
     final Account? account = await fetchActiveProfileAccount();
+
+    await Future.delayed(Duration(seconds: delay ?? 0));
 
     // Send POST request to notification server
     http.Response response = await http.post(

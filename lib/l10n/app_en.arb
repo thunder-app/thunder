@@ -1673,8 +1673,16 @@
   "@sendBackgroundTestUnifiedPushNotification": {
     "description": "The option to send a background UnifiedPUsh notification for testing"
   },
+  "sendTestAPNsNotification": "Thunder will send a test notification to your device in a few seconds. Please close the app to test the notification server.",
+  "@sendTestAPNsNotification": {
+    "description": "The option to send a notification for testing on iOS devices"
+  },
   "sendTestLocalNotification": "Send test local notification",
   "@sendTestLocalNotification": {
+    "description": "The option to send a notification for testing"
+  },
+  "sendTestNotification": "Send test notification",
+  "@sendTestNotification": {
     "description": "The option to send a notification for testing"
   },
   "sendTestUnifiedPushNotification": "Send test UnifiedPush notification",
