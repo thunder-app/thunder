@@ -336,15 +336,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           // Combine all of the previous comments list
           List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse.comments);
 
-          // Filter out any comments that are potentially duplicates (have the same [id])
-          List<CommentView> duplicates = groupBy(fullCommentResponseList, (commentView) => commentView.comment.id).values.where((list) => list.length > 1).map((list) => list.first).toList();
-
-          if (duplicates.isNotEmpty) {
-            for (CommentView duplicate in duplicates) {
-              fullCommentResponseList.remove(duplicate);
-            }
-          }
-
           for (CommentView comment in getCommentsResponse.comments) {
             state.commentResponseMap[comment.comment.id] = comment;
           }

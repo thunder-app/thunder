@@ -10,11 +10,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 
 // Optimistically updates a comment
-CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, int voteType) {
-  int newScore = commentViewTree.commentView!.counts.score;
-  int newUpvotes = commentViewTree.commentView!.counts.upvotes;
-  int newDownvotes = commentViewTree.commentView!.counts.downvotes;
-  int? existingVoteType = commentViewTree.commentView!.myVote;
+CommentView optimisticallyVoteComment(CommentView commentView, int voteType) {
+  int newScore = commentView.counts.score;
+  int newUpvotes = commentView.counts.upvotes;
+  int newDownvotes = commentView.counts.downvotes;
+  int? existingVoteType = commentView.myVote;
 
   switch (voteType) {
     case -1:
@@ -39,9 +39,9 @@ CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, int voteT
       break;
   }
 
-  return commentViewTree.commentView!.copyWith(
+  return commentView.copyWith(
     myVote: voteType,
-    counts: commentViewTree.commentView!.counts.copyWith(
+    counts: commentView.counts.copyWith(
       score: newScore,
       upvotes: newUpvotes,
       downvotes: newDownvotes,
@@ -118,7 +118,7 @@ CommentNode buildCommentTree(List<CommentView> comments, {bool flatten = false})
 
   for (CommentView commentView in comments) {
     List<String> commentPath = commentView.comment.path.split('.');
-    String parentId = commentPath[commentPath.length - 2];
+    String parentId = commentPath.length > 2 ? commentPath[commentPath.length - 2] : commentPath.first;
 
     CommentNode commentNode = CommentNode(commentView: commentView, replies: []);
     CommentNode.insertCommentNode(root, parentId, commentNode);
