@@ -140,6 +140,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   String? unifiedPushConnectedDistributorApp;
   int? unifiedPushAvailableDistributorApps;
 
+  /// Enable experimental features in the app.
+  bool enableExperimentalFeatures = false;
+
   Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
@@ -293,6 +296,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       controller.text = pushNotificationServer;
 
       accounts = accountList;
+
+      enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
     });
   }
 
@@ -809,7 +814,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.local,
                                 softWrap: true,
                               ),
-                              if (kDebugMode)
+                              if (enableExperimentalFeatures)
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useUnifiedPushNotifications,
@@ -845,7 +850,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.none,
                                 softWrap: true,
                               ),
-                              if (kDebugMode)
+                              if (enableExperimentalFeatures)
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useApplePushNotifications,
