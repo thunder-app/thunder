@@ -18,7 +18,6 @@ import 'comment_header.dart';
 
 class CommentContent extends StatefulWidget {
   final CommentView comment;
-  final DateTime now;
   final bool isUserLoggedIn;
   final bool isOwnComment;
   final bool isHidden;
@@ -32,7 +31,6 @@ class CommentContent extends StatefulWidget {
   final Function(CommentView, bool) onReplyEditAction;
 
   final int? moddingCommentId;
-  final List<CommunityModeratorView>? moderators;
   final bool viewSource;
   final void Function() onViewSourceToggled;
   final bool selectable;
@@ -41,7 +39,6 @@ class CommentContent extends StatefulWidget {
   const CommentContent({
     super.key,
     required this.comment,
-    required this.now,
     required this.isUserLoggedIn,
     required this.onVoteAction,
     required this.onSaveAction,
@@ -51,7 +48,6 @@ class CommentContent extends StatefulWidget {
     required this.isOwnComment,
     required this.isHidden,
     this.moddingCommentId,
-    this.moderators,
     this.excludeSemantics = false,
     this.disableActions = false,
     required this.viewSource,
@@ -98,10 +94,8 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
             CommentHeader(
               moddingCommentId: widget.moddingCommentId ?? -1,
               comment: widget.comment,
-              now: widget.now,
               isOwnComment: widget.isOwnComment,
               isHidden: widget.isHidden,
-              moderators: widget.moderators ?? [],
             ),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 130),

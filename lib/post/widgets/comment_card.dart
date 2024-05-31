@@ -30,10 +30,6 @@ class CommentCard extends StatefulWidget {
   final int? newlyCreatedCommentId;
   final int? moddingCommentId;
 
-  final DateTime now;
-
-  final List<CommunityModeratorView>? moderators;
-
   const CommentCard({
     super.key,
     required this.commentViewTree,
@@ -44,14 +40,12 @@ class CommentCard extends StatefulWidget {
     required this.onCollapseCommentChange,
     required this.onReplyEditAction,
     required this.onReportAction,
-    required this.now,
     this.collapsedCommentSet = const {},
     this.selectCommentId,
     this.selectedCommentPath,
     this.newlyCreatedCommentId,
     this.moddingCommentId,
     required this.onDeleteAction,
-    required this.moderators,
   });
 
   /// CommentViewTree containing relevant information
@@ -375,7 +369,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               child: CommentContent(
                                 comment: widget.commentViewTree.commentView!,
                                 isUserLoggedIn: isUserLoggedIn,
-                                now: widget.now,
                                 onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
                                 onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
                                 onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
@@ -383,7 +376,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,
-                                moderators: widget.moderators,
                                 viewSource: viewSource,
                                 onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                               ),
@@ -474,7 +466,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               selectedCommentPath: widget.selectedCommentPath,
                               selectCommentId: widget.selectCommentId,
                               newlyCreatedCommentId: widget.newlyCreatedCommentId,
-                              now: widget.now,
                               commentViewTree: widget.commentViewTree.replies[index],
                               collapsedCommentSet: widget.collapsedCommentSet,
                               collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].commentView!.comment.id),
@@ -485,7 +476,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               onCollapseCommentChange: widget.onCollapseCommentChange,
                               onDeleteAction: widget.onDeleteAction,
                               onReplyEditAction: widget.onReplyEditAction,
-                              moderators: widget.moderators,
                             ),
                             itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
                           ),

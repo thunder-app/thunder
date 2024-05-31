@@ -12,6 +12,8 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -52,6 +54,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<GetPostCommentsEvent>(
       _getPostCommentsEvent,
       transformer: throttleDroppable(throttleDuration),
+    );
+    on<CommentActionEvent>(
+      _commentActionEvent,
+      transformer: throttleDroppable(Duration.zero),
+    );
+    on<CommentItemUpdatedEvent>(
+      _commentItemUpdatedEvent,
+      transformer: throttleDroppable(Duration.zero),
     );
     on<VoteCommentEvent>(
       _voteCommentEvent,
@@ -182,6 +192,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           // Build the tree view from the flattened comments
           List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
+          CommentNode comments = buildCommentTree(getCommentsResponse.comments);
 
           Map<int, CommentView> responseMap = {};
           for (CommentView comment in getCommentsResponse.comments) {
@@ -194,6 +205,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 postId: postView?.postView.post.id,
                 postView: postView,
                 comments: commentTree,
+                commentNodes: comments,
                 commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
                 commentResponseMap: responseMap,
                 commentCount: getCommentsResponse.comments.length,
@@ -261,6 +273,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
             // Build the tree view from the flattened comments
             List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
+            CommentNode comments = buildCommentTree(getCommentsResponse.comments);
 
             Map<int, CommentView> responseMap = {};
             for (CommentView comment in getCommentsResponse.comments) {
@@ -274,6 +287,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                   newlyCreatedCommentId: state.newlyCreatedCommentId,
                   status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
                   comments: commentTree,
+                  commentNodes: comments,
                   commentResponseMap: responseMap,
                   commentPage: 1,
                   commentCount: responseMap.length,
@@ -327,6 +341,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
           // Build the tree view from the flattened comments
           List<CommentViewTree> commentViewTree = buildCommentViewTree(fullCommentResponseList);
+          CommentNode comments = buildCommentTree(fullCommentResponseList);
 
           // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
           return emit(state.copyWith(
@@ -336,6 +351,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             selectedCommentId: null,
             newlyCreatedCommentId: state.newlyCreatedCommentId,
             comments: commentViewTree,
+            commentNodes: comments,
             commentResponseMap: state.commentResponseMap,
             commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
             commentCount: state.commentResponseMap.length,
@@ -403,16 +419,118 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
   }
 
+  /// Handles comment related actions on a given item within the post
+  Future<void> _commentActionEvent(CommentActionEvent event, Emitter<PostState> emit) async {
+    emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+
+    if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure));
+
+    CommentNode? existingCommentNode = CommentNode.findCommentNode(state.commentNodes!, event.commentId.toString());
+    if (existingCommentNode == null) return emit(state.copyWith(status: PostStatus.failure));
+
+    List<String> commentPath = existingCommentNode.commentView!.comment.path.split('.');
+    String parentId = commentPath[commentPath.length - 2];
+
+    switch (event.action) {
+      case CommentAction.vote:
+        try {
+          CommentNode newCommentNode = CommentNode(commentView: optimisticallyVoteComment(existingCommentNode.commentView!, event.value), replies: existingCommentNode.replies);
+          CommentNode.insertCommentNode(state.commentNodes!, parentId, newCommentNode);
+
+          // Immediately set the status, and continue
+          emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+
+          await voteComment(event.commentId, event.value).timeout(timeout, onTimeout: () {
+            // Restore the original comment if vote fails
+            CommentNode.insertCommentNode(state.commentNodes!, parentId, existingCommentNode);
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutUpvoteComment);
+          });
+
+          return emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+        } catch (e) {
+          return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+        }
+      case CommentAction.save:
+        try {
+          CommentNode newCommentNode = CommentNode(commentView: optimisticallySaveComment(existingCommentNode.commentView!, event.value), replies: existingCommentNode.replies);
+          CommentNode.insertCommentNode(state.commentNodes!, parentId, newCommentNode);
+
+          // Immediately set the status, and continue
+          emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+
+          await saveComment(event.commentId, event.value).timeout(timeout, onTimeout: () {
+            // Restore the original comment if vote fails
+            CommentNode.insertCommentNode(state.commentNodes!, parentId, existingCommentNode);
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutUpvoteComment);
+          });
+
+          return emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+        } catch (e) {
+          return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+        }
+      case CommentAction.delete:
+        try {
+          CommentNode newCommentNode = CommentNode(commentView: optimisticallyDeleteComment(existingCommentNode.commentView!, event.value), replies: existingCommentNode.replies);
+          CommentNode.insertCommentNode(state.commentNodes!, parentId, newCommentNode);
+
+          // Immediately set the status, and continue
+          emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+
+          await deleteComment(event.commentId, event.value).timeout(timeout, onTimeout: () {
+            // Restore the original comment if vote fails
+            CommentNode.insertCommentNode(state.commentNodes!, parentId, existingCommentNode);
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutUpvoteComment);
+          });
+
+          return emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+        } catch (e) {
+          return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+        }
+      default:
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Unsupported action: ${event.action}'));
+    }
+  }
+
+  Future<void> _commentItemUpdatedEvent(CommentItemUpdatedEvent event, Emitter<PostState> emit) async {
+    if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure));
+    emit(state.copyWith(status: PostStatus.refreshing));
+
+    CommentNode? commentNode = CommentNode.findCommentNode(state.commentNodes!, event.commentView.comment.id.toString());
+    List<String> commentPath = event.commentView.comment.path.split('.');
+    String parentId = commentPath[commentPath.length - 2];
+
+    if (commentNode == null) {
+      // This is most likely a new comment
+      CommentNode.insertCommentNode(state.commentNodes!, parentId, CommentNode(commentView: event.commentView, replies: []));
+
+      return emit(state.copyWith(
+        status: PostStatus.success,
+        selectedCommentId: null,
+        selectedCommentPath: null,
+        newlyCreatedCommentId: event.commentView.comment.id,
+      ));
+    }
+
+    // This is an existing comment - update it
+    CommentNode.insertCommentNode(state.commentNodes!, parentId, CommentNode(commentView: event.commentView, replies: commentNode.replies));
+
+    return emit(state.copyWith(
+      status: PostStatus.success,
+      moddingCommentId: -1,
+      selectedCommentId: state.selectedCommentId,
+      selectedCommentPath: state.selectedCommentPath,
+    ));
+  }
+
   Future<void> _voteCommentEvent(VoteCommentEvent event, Emitter<PostState> emit) async {
     try {
       emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
 
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
       CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
-
-      // if (commentIndexes.length == 1) {
-      //   currentTree = currentTree.replies.first; // Traverse to the next CommentViewTree
-      // }
 
       for (int i = 1; i < commentIndexes.length; i++) {
         currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
@@ -421,7 +539,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // Optimistically update the comment
       CommentView? originalCommentView = currentTree.commentView;
 
-      CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
+      CommentView updatedCommentView = optimisticallyVoteComment(currentTree.commentView!, event.score);
       currentTree.commentView = updatedCommentView;
 
       // Immediately set the status, and continue
