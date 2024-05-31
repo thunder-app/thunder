@@ -135,7 +135,6 @@ class CommonMarkdownBody extends StatelessWidget {
                           isComment: isComment,
                           showFullHeightImages: true,
                           maxWidth: imageMaxWidth,
-                          showPlaceholder: true,
                         )
                       : ScalableImageWidget.fromSISource(
                           si: ScalableImageSource.fromSvgHttpUrl(uri),

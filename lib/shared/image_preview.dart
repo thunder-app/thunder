@@ -26,7 +26,6 @@ class ImagePreview extends StatefulWidget {
   final void Function()? navigateToPost;
   final bool? isComment;
   final bool? read;
-  final bool showPlaceholder;
 
   const ImagePreview({
     super.key,
@@ -43,7 +42,6 @@ class ImagePreview extends StatefulWidget {
     this.navigateToPost,
     this.isComment,
     this.read,
-    this.showPlaceholder = false,
   }) : assert(url != null || bytes != null);
 
   @override
@@ -119,7 +117,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                   cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
                   loadStateChanged: (state) {
                     if (state.extendedImageLoadState == LoadState.loading) {
-                      return Container(color: widget.showPlaceholder ? getBackgroundColor(context) : null);
+                      return Container(color: getBackgroundColor(context));
                     }
                     if (state.extendedImageLoadState == LoadState.failed) {
                       return Container(
@@ -150,7 +148,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                   cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
                   loadStateChanged: (state) {
                     if (state.extendedImageLoadState == LoadState.loading) {
-                      return Container(color: widget.showPlaceholder ? getBackgroundColor(context) : null);
+                      return Container(color: getBackgroundColor(context));
                     }
                     if (state.extendedImageLoadState == LoadState.failed) {
                       return Text(
