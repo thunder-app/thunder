@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:thunder/comment/enums/comment_action.dart';
 
+import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/models/comment_node.dart';
-import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/comment/widgets/comment_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -14,6 +14,7 @@ import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
 import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/shared/cross_posts.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -52,9 +53,10 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<ThunderBloc>().state;
-
-    bool hideTopBarOnScroll = state.hideTopBarOnScroll;
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final thunderState = context.read<ThunderBloc>().state;
+    bool hideTopBarOnScroll = thunderState.hideTopBarOnScroll;
 
     return Scaffold(
       body: SafeArea(
@@ -146,6 +148,28 @@ class _PostPageState extends State<PostPage> {
                       );
                     },
                   ),
+                SliverToBoxAdapter(
+                  child: state.hasReachedCommentEnd == true
+                      ? Container(
+                          color: theme.dividerColor.withOpacity(0.1),
+                          padding: const EdgeInsets.symmetric(vertical: 32.0),
+                          child: ScalableText(
+                            flattenedComments.isEmpty ? l10n.noComments : l10n.reachedTheBottom,
+                            fontScale: thunderState.metadataFontSizeScale,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.titleSmall,
+                          ),
+                        )
+                      : Visibility(
+                          visible: state.status == PostStatus.success,
+                          child: Container(
+                            height: 100.0,
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: const CircularProgressIndicator(),
+                          ),
+                        ),
+                ),
                 const SliverToBoxAdapter(child: SizedBox(height: 100)),
               ],
             );
