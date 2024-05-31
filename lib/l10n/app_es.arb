@@ -2354,5 +2354,17 @@
   "viewingAll": "Mostrando todo",
   "@viewingAll": {
     "description": "Chip for viewing all possible search results"
+  },
+  "experimentalFeatures": "Funciones experimentales",
+  "@experimentalFeatures": {
+    "description": "Name of setting for experimental features"
+  },
+  "enableExperimentalFeatures": "Activar funciones experimentales",
+  "@enableExperimentalFeatures": {
+    "description": "Setting to enable experimental features"
+  },
+  "experimentalFeaturesDescription": "Estas funciones aún están en desarrollo y pueden ser inestables. Usélos bajo su propio riesgo. Debes reiniciar Thunder para que surta efecto.",
+  "@experimentalFeaturesDescription": {
+    "description": "Description for experimental features setting"
   }
 }
