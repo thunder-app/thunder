@@ -21,17 +21,13 @@ class CommentHeader extends StatelessWidget {
   final bool isOwnComment;
   final bool isHidden;
   final int moddingCommentId;
-  final DateTime now;
-  final List<CommunityModeratorView>? moderators;
 
   const CommentHeader({
     super.key,
     required this.comment,
-    required this.now,
     this.isOwnComment = false,
     required this.isHidden,
     this.moddingCommentId = -1,
-    required this.moderators,
   });
 
   @override
@@ -44,7 +40,7 @@ class CommentHeader extends StatelessWidget {
 
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
-    bool? isCommentNew = now.difference(comment.comment.published).inMinutes < 15;
+    bool? isCommentNew = DateTime.now().toUtc().difference(comment.comment.published).inMinutes < 15;
 
     List<UserType> userGroups = [];
 

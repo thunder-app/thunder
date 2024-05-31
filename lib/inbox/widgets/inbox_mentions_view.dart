@@ -19,7 +19,7 @@ import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/pages/post_page.dart';
+import 'package:thunder/post/pages/legacy_post_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';

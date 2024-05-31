@@ -27,7 +27,6 @@ class CommentListEntry extends StatelessWidget {
       create: (BuildContext context) => post_bloc.PostBloc(),
       child: CommentReference(
         comment: commentView,
-        now: DateTime.now().toUtc(),
         onVoteAction: (int commentId, int voteType) => onVoteAction?.call(commentId, voteType),
         onSaveAction: (int commentId, bool save) => onSaveAction?.call(commentId, save),
         // Only swipe actions are supported here, and delete is not one of those, so no implementation

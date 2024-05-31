@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 import 'dart:io';
+import 'package:thunder/globals.dart';
 
 /// This script automatically generates the release files for the current version,
 /// and stores the release files in /release directory.
@@ -16,9 +17,8 @@ void buildRelease() {
   }
 
   // Get current release version
-  print('\nFetching current version from pubspec.yaml...');
-  ProcessResult ciderResult = Process.runSync('cider', ['version']);
-  String version = ciderResult.stdout.toString().trim();
+  print('\nFetching current version from globals.dart...');
+  String version = currentVersion;
   print(version);
 
   print('\nRemoving previous build artifacts...');

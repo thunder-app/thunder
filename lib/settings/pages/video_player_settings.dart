@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/video_auto_play.dart';
 import 'package:thunder/core/enums/video_playback_speed.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
 class VideoPlayerSettingsPage extends StatefulWidget {
@@ -97,12 +101,16 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
         break;
       default:
     }
+
+    if (context.mounted) {
+      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+    }
   }
 
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
     setState(() {
-      videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? false;
+      videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? true;
       videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
       videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
       videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);

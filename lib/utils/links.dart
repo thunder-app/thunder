@@ -134,7 +134,7 @@ void _openLink(BuildContext context, {required String url}) async {
 /// A universal way of handling links in Thunder.
 /// Attempts to perform in-app navigtion to communities, users, posts, and comments
 /// Before falling back to opening in the browser (either Custom Tabs or system browser, as specified by the user).
-void handleLink(BuildContext context, {required String url}) async {
+void handleLink(BuildContext context, {required String url, bool forceOpenInBrowser = false}) async {
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
   Account? account = await fetchActiveProfileAccount();
 
@@ -234,9 +234,10 @@ void handleLink(BuildContext context, {required String url}) async {
   } catch (e) {
     // Ignore the exception and fall back.
   }
+
   // try opening as a video
   try {
-    if (isVideoUrl(url) && context.mounted) {
+    if (isVideoUrl(url) && context.mounted && !forceOpenInBrowser) {
       showVideoPlayer(context, url: url, postId: postId);
       return;
     }

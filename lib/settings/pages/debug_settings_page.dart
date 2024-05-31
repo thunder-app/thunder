@@ -20,6 +20,7 @@ import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/notification/utils/local_notifications.dart';
+import 'package:thunder/settings/widgets/toggle_option.dart';
 
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
@@ -49,6 +50,20 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
   int unifiedPushDistributorAppCount = 0;
   String? pushNotificationServer;
 
+  /// Enable experimental features in the app.
+  bool enableExperimentalFeatures = false;
+
+  Future<void> setPreferences(attribute, value) async {
+    final prefs = (await UserPreferences.instance).sharedPreferences;
+
+    switch (attribute) {
+      case LocalSettings.enableExperimentalFeatures:
+        await prefs.setBool(LocalSettings.enableExperimentalFeatures.name, value);
+        setState(() => enableExperimentalFeatures = value);
+        break;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -74,7 +89,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
 
       pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
 
-      setState(() {});
+      setState(() {
+        enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
+      });
 
       if (widget.settingToHighlight != null) {
         setState(() => settingToHighlight = widget.settingToHighlight);
@@ -280,7 +297,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               highlightedSetting: settingToHighlight,
             ),
           ),
-          if (!kIsWeb && Platform.isAndroid && kDebugMode) ...[
+          if (!kIsWeb && Platform.isAndroid && enableExperimentalFeatures) ...[
             const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
             SliverToBoxAdapter(
               child: SettingsListTile(
@@ -365,7 +382,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 highlightedSetting: settingToHighlight,
               ),
             ),
-            if (kDebugMode) ...[
+            if (enableExperimentalFeatures) ...[
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
@@ -457,6 +474,37 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   LocalSettings.inboxNotificationType,
                 ]);
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.experimentalFeatures, style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    l10n.experimentalFeaturesDescription,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.enableExperimentalFeatures,
+              value: enableExperimentalFeatures,
+              iconEnabled: Icons.construction_rounded,
+              iconDisabled: Icons.construction_outlined,
+              onToggle: (value) => setPreferences(LocalSettings.enableExperimentalFeatures, value),
               highlightKey: settingToHighlightKey,
               setting: null,
               highlightedSetting: settingToHighlight,

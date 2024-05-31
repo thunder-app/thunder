@@ -41,14 +41,18 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
           },
         ),
       ],
-      child: (authState.isLoggedIn)
-          ? UserPage(
-              userId: accountState.personView!.person.id,
-              isAccountUser: true,
-              selectedUserOption: selectedUserOption,
-              savedToggle: savedToggle,
-            )
-          : const AccountPlaceholder(),
+      child: BlocBuilder<AccountBloc, AccountState>(
+        builder: (context, state) {
+          if (authState.isLoggedIn != true) return const AccountPlaceholder();
+
+          return UserPage(
+            userId: accountState.personView?.person.id,
+            isAccountUser: true,
+            selectedUserOption: selectedUserOption,
+            savedToggle: savedToggle,
+          );
+        },
+      ),
     );
   }
 

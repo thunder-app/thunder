@@ -297,7 +297,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                               physics: const NeverScrollableScrollPhysics(),
                               children: [
                                 CommentCard(
-                                  now: DateTime.now(),
                                   commentViewTree: snapshot.data!,
                                   onSaveAction: (int commentId, bool save) => {},
                                   onVoteAction: (int commentId, int voteType) => {},
@@ -305,7 +304,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                                   onDeleteAction: (int commentId, bool deleted) => {},
                                   onReportAction: (int commentId) => {},
                                   onReplyEditAction: (CommentView commentView, bool isEdit) => {},
-                                  moderators: const [],
                                 ),
                               ],
                             ),
