@@ -11,7 +11,7 @@ import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/shared/link_information.dart';
-import 'package:thunder/utils/links.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/core/enums/view_mode.dart';
@@ -186,7 +186,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-          color: theme.colorScheme.primary.withOpacity(0.2),
+          color: getBackgroundColor(context),
         ),
         constraints: BoxConstraints(
             maxHeight: switch (widget.viewMode) {
@@ -253,7 +253,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-          color: theme.colorScheme.primary.withOpacity(0.2),
+          color: getBackgroundColor(context),
         ),
         constraints: BoxConstraints(
             maxHeight: switch (widget.viewMode) {
@@ -278,6 +278,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
           alignment: Alignment.bottomLeft,
           children: [
+            if (widget.postViewMedia.media.first.thumbnailUrl?.isNotEmpty != true)
+              Icon(
+                Icons.video_camera_back_outlined,
+                color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+              ),
             if (widget.postViewMedia.media.first.thumbnailUrl != null)
               ImageFiltered(
                 enabled: blurNSFWPreviews,
@@ -399,7 +404,16 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             _controller.reset();
             state.imageProvider.evict();
 
-            return Container();
+            return Icon(
+              switch (widget.postViewMedia.media.first.mediaType) {
+                MediaType.image => Icons.image_not_supported_outlined,
+                MediaType.video => Icons.video_camera_back_outlined,
+                MediaType.link => Icons.language_rounded,
+                // Should never come here
+                MediaType.text => Icons.text_fields_rounded,
+              },
+              color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+            );
         }
       },
     );
