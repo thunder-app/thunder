@@ -257,7 +257,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               onTap: null,
             ),
           ),
-          if (!kIsWeb && Platform.isAndroid && kDebugMode) ...[
+          if (!kIsWeb && Platform.isAndroid && enableExperimentalFeatures) ...[
             const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
             SliverToBoxAdapter(
               child: SettingsListTile(
@@ -333,7 +333,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                     : null,
               ),
             ),
-            if (kDebugMode) ...[
+            if (enableExperimentalFeatures) ...[
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
