@@ -703,7 +703,7 @@
   },
   "experimentalFeatures": "Experimental Features",
   "@experimentalFeatures": {
-    @description "Name of setting for experimental features"
+    "description": "Name of setting for experimental features"
   },
   "experimentalFeaturesDescription": "These features are still in development and may be unstable. Use them at your own risk. You must restart Thunder to take effect.",
   "@experimentalFeaturesDescription": {
