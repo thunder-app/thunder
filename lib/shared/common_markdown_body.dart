@@ -128,19 +128,17 @@ class CommonMarkdownBody extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  !snapshot.hasData
-                      ? Container()
-                      : snapshot.data == true
-                          ? ScalableImageWidget.fromSISource(
-                              si: ScalableImageSource.fromSvgHttpUrl(uri),
-                            )
-                          : ImagePreview(
-                              url: uri.toString(),
-                              isExpandable: true,
-                              isComment: isComment,
-                              showFullHeightImages: true,
-                              maxWidth: imageMaxWidth,
-                            ),
+                  snapshot.data != true
+                      ? ImagePreview(
+                          url: uri.toString(),
+                          isExpandable: true,
+                          isComment: isComment,
+                          showFullHeightImages: true,
+                          maxWidth: imageMaxWidth,
+                        )
+                      : ScalableImageWidget.fromSISource(
+                          si: ScalableImageSource.fromSvgHttpUrl(uri),
+                        )
                 ],
               ),
             );
