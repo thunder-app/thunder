@@ -1372,6 +1372,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
             PostCardMetadataItem.url => const UrlPostCardMetaData(url: 'https://github.com/thunder-app/thunder'),
             PostCardMetadataItem.upvote => const UpvotePostCardMetaData(upvotes: 2412),
             PostCardMetadataItem.downvote => const DownvotePostCardMetaData(downvotes: 532),
+            PostCardMetadataItem.language => const LanguagePostCardMetaData(languageId: -1),
           },
         ),
       ),

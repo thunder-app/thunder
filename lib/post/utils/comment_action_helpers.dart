@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/community/widgets/metadata_chip.dart';
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -433,6 +435,12 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                     ),
                   ),
                 ),
+              ),
+              // Post metadata chips
+              Row(
+                children: [
+                  MetadataChip(child: LanguagePostCardMetaData(languageId: widget.commentView.comment.languageId)),
+                ],
               ),
               if (widget.multiCommentCardActions[page]?.isNotEmpty == true)
                 MultiPickerItem(

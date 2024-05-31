@@ -11,6 +11,8 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/community/widgets/metadata_chip.dart';
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -512,6 +514,12 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                     ),
                   ),
                 ),
+              ),
+              // Post metadata chips
+              Row(
+                children: [
+                  MetadataChip(child: LanguagePostCardMetaData(languageId: widget.postViewMedia.postView.post.languageId)),
+                ],
               ),
               if (widget.multiPostCardActions[page ?? widget.page]?.isNotEmpty == true)
                 MultiPickerItem(
