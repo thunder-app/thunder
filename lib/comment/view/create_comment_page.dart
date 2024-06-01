@@ -348,7 +348,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     child: UserSelector(
                                       profileModalHeading: l10n.selectAccountToCommentAs,
                                       postActorId: widget.postViewMedia?.postView.post.apId,
-                                      onPostChanged: (postView) => postId = postView.post.id,
+                                      onPostChanged: (postViewMedia) => postId = postViewMedia.postView.post.id,
                                       parentCommentActorId: widget.parentCommentView?.comment.apId,
                                       onParentCommentChanged: (parentCommentView) {
                                         postId = parentCommentView.post.id;
