@@ -110,9 +110,11 @@ class _ThunderState extends State<Thunder> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handleSharedFilesAndText();
-      BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
-      BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
-      BlocProvider.of<NotificationsCubit>(context).handleNotifications();
+      if (Platform.isAndroid || Platform.isIOS) {
+        BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
+        BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
+        BlocProvider.of<NotificationsCubit>(context).handleNotifications();
+      }
     });
 
     BackButtonInterceptor.add(_handleBackButtonPress);
