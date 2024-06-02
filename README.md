@@ -171,6 +171,16 @@ You can also run your local development environment for Android via the Docker c
 ./scripts/docker-dev-android.sh
 ```
 
+### Troubleshooting
+
+```shell
+Could not determine the dependencies of task ':unifiedpush_android:compileReleaseKotlin'.
+> Cannot find a Java installation on your machine matching this tasks requirements: {languageVersion=8, vendor=any, implementation=vendor-specific}
+   > No locally installed toolchains match and toolchain download repositories have not been configured.
+```
+
+Resolution: Ensure you have a valid Java 8 installation on your machine.
+
 ## Conventions
 
 While there are no specific conventions that must be followed, do try to follow best practices whenever possible.
