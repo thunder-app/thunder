@@ -133,7 +133,7 @@ Contributions are always welcome, but please abide by our community [code of con
 
 To contribute potential features or bug-fixes:
 
-1. Fork this repository
+1. Fork this repository, and clone with submodules: `git clone --recurse-submodules -j8 git@github.com:thunder-app/thunder.git`
 2. Base the feature or fix off the `develop` branch. This is to allow for pre-release versions without affecting the main general releases.
 3. Apply any changes and/or additions based off an existing issue (or create a new issue for the feature/fix you are working on)
 4. Create a pull request to have your changes reviewed and merged
