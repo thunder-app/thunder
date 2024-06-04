@@ -19,7 +19,13 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
   /// [link] is the URL to be analyzed.
   Future<void> getLinkType(String link) async {
     try {
-      if (link.contains("/u/")) {
+      if (link.startsWith('thunder://')) {
+        emit(state.copyWith(
+          deepLinkStatus: DeepLinkStatus.success,
+          link: link,
+          linkType: LinkType.thunder,
+        ));
+      } else if (link.contains("/u/")) {
         emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,
           link: link,

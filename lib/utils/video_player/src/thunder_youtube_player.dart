@@ -47,7 +47,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
           loop: state.videoAutoLoop,
           mute: state.videoAutoMute,
         ),
-      )..setPlaybackRate(double.parse(state.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
+      )..setPlaybackRate(state.videoDefaultPlaybackSpeed.value);
       if (state.videoAutoFullscreen) _ypfController.toggleFullScreenMode();
     } else {
       _controller = YoutubePlayerController(
@@ -60,7 +60,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
       );
       _controller
         ..loadVideoById(videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
-        ..setPlaybackRate(double.parse(state.videoDefaultPlaybackSpeed.label.replaceAll('x', '')));
+        ..setPlaybackRate(state.videoDefaultPlaybackSpeed.value);
     }
 
     setState(() => muted = state.videoAutoMute);
