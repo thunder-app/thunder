@@ -641,6 +641,10 @@
   "@enableCommentNavigation": {
     "description": "Setting for enable comment navigation"
   },
+  "enableExperimentalFeatures": "Enable experimental features",
+  "@enableExperimentalFeatures": {
+    "description": "Setting to enable experimental features"
+  },
   "enableFeedFab": "Enable Floating Button on Feeds",
   "@enableFeedFab": {
     "description": "Enable the Floating Action Button for the feed"
@@ -709,6 +713,14 @@
   "@expanded": {
     "description": "Expanded post body view type"
   },
+  "experimentalFeatures": "Experimental Features",
+  "@experimentalFeatures": {
+    "description": "Name of setting for experimental features"
+  },
+  "experimentalFeaturesDescription": "These features are still in development and may be unstable. Use them at your own risk. You must restart Thunder to take effect.",
+  "@experimentalFeaturesDescription": {
+    "description": "Description for experimental features setting"
+  },
   "exploreInstance": "Explore instance",
   "@exploreInstance": {
     "description": "Button for exploring an instance"
@@ -725,6 +737,10 @@
   },
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
   "@failedToLoadBlocks": {},
+  "failedToLoadVideo": "Failed to load video. Open link in browser?",
+  "@failedToLoadVideo": {
+    "description": "Error message that displays when we fail to load a video"
+  },
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
   "failedToUpdateNotificationSettings": "Failed to update notification settings",
@@ -2364,6 +2380,10 @@
   "viewSource": "View source",
   "@viewSource": {
     "description": "Action for viewing source (raw markdown)"
+  },
+  "viewingAll": "Viewing all",
+  "@viewingAll": {
+    "description": "Chip for viewing all possible search results"
   },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},

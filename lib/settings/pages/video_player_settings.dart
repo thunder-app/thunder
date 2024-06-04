@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/video_auto_play.dart';
 import 'package:thunder/core/enums/video_playback_speed.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
 class VideoPlayerSettingsPage extends StatefulWidget {
@@ -97,12 +101,16 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
         break;
       default:
     }
+
+    if (context.mounted) {
+      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+    }
   }
 
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
     setState(() {
-      videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? false;
+      videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? true;
       videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
       videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
       videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
@@ -130,7 +138,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     iconEnabled: Icons.fullscreen,
                     iconDisabled: Icons.fullscreen_exit,
                     onToggle: (bool value) => setPreferences(LocalSettings.videoAutoFullscreen, value),
-                    highlightKey: settingToHighlight == LocalSettings.videoAutoFullscreen ? settingToHighlightKey : null,
+                    highlightKey: settingToHighlightKey,
+                    setting: LocalSettings.videoAutoFullscreen,
+                    highlightedSetting: settingToHighlight,
                   ),
                   ToggleOption(
                     description: l10n.videoAutoMute,
@@ -138,7 +148,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     iconEnabled: Icons.volume_off,
                     iconDisabled: Icons.volume_up,
                     onToggle: (bool value) => setPreferences(LocalSettings.videoAutoMute, value),
-                    highlightKey: settingToHighlight == LocalSettings.videoAutoMute ? settingToHighlightKey : null,
+                    highlightKey: settingToHighlightKey,
+                    setting: LocalSettings.videoAutoMute,
+                    highlightedSetting: settingToHighlight,
                   ),
                   ToggleOption(
                     description: l10n.videoAutoLoop,
@@ -146,7 +158,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     iconEnabled: Icons.loop,
                     iconDisabled: Icons.loop_outlined,
                     onToggle: (bool value) => setPreferences(LocalSettings.videoAutoLoop, value),
-                    highlightKey: settingToHighlight == LocalSettings.videoAutoLoop ? settingToHighlightKey : null,
+                    highlightKey: settingToHighlightKey,
+                    setting: LocalSettings.videoAutoLoop,
+                    highlightedSetting: settingToHighlight,
                   ),
                   ListOption(
                     description: l10n.videoAutoPlay,
@@ -165,7 +179,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     ],
                     icon: Icons.play_circle,
                     onChanged: (value) async => setPreferences(LocalSettings.videoAutoPlay, value.payload.name),
-                    highlightKey: settingToHighlight == LocalSettings.videoAutoPlay ? settingToHighlightKey : null,
+                    highlightKey: settingToHighlightKey,
+                    setting: LocalSettings.videoAutoPlay,
+                    highlightedSetting: settingToHighlight,
                   ),
                   ListOption(
                     description: l10n.videoDefaultPlaybackSpeed,
@@ -182,7 +198,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     ],
                     icon: Icons.speed,
                     onChanged: (value) async => setPreferences(LocalSettings.videoDefaultPlaybackSpeed, value.payload.name),
-                    highlightKey: settingToHighlight == LocalSettings.videoDefaultPlaybackSpeed ? settingToHighlightKey : null,
+                    highlightKey: settingToHighlightKey,
+                    setting: LocalSettings.videoDefaultPlaybackSpeed,
+                    highlightedSetting: settingToHighlight,
                   ),
                 ],
               ),
