@@ -133,7 +133,7 @@ Contributions are always welcome, but please abide by our community [code of con
 
 To contribute potential features or bug-fixes:
 
-1. Fork this repository
+1. Fork this repository, and clone with submodules: `git clone --recurse-submodules -j8 git@github.com:thunder-app/thunder.git`
 2. Base the feature or fix off the `develop` branch. This is to allow for pre-release versions without affecting the main general releases.
 3. Apply any changes and/or additions based off an existing issue (or create a new issue for the feature/fix you are working on)
 4. Create a pull request to have your changes reviewed and merged
@@ -170,6 +170,16 @@ You can also run your local development environment for Android via the Docker c
 ```
 ./scripts/docker-dev-android.sh
 ```
+
+### Troubleshooting
+
+```shell
+Could not determine the dependencies of task ':unifiedpush_android:compileReleaseKotlin'.
+> Cannot find a Java installation on your machine matching this tasks requirements: {languageVersion=8, vendor=any, implementation=vendor-specific}
+   > No locally installed toolchains match and toolchain download repositories have not been configured.
+```
+
+Resolution: Ensure you have a valid Java 8 installation on your machine.
 
 ## Conventions
 

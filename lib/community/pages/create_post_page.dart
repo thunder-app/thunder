@@ -403,6 +403,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 _validateSubmission();
                               },
                               onUserChanged: () => userChanged = true,
+                              enableAccountSwitching: widget.postView == null,
                             ),
                             const SizedBox(height: 12.0),
                             TypeAheadField<String>(

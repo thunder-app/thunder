@@ -35,9 +35,7 @@ class CommentSubview extends StatefulWidget {
 
   final bool hasReachedCommentEnd;
   final bool viewFullCommentsRefreshing;
-  final DateTime now;
 
-  final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
   final bool viewSource;
 
@@ -59,8 +57,6 @@ class CommentSubview extends StatefulWidget {
     required this.listController,
     this.hasReachedCommentEnd = false,
     this.viewFullCommentsRefreshing = false,
-    required this.now,
-    required this.moderators,
     required this.crossPosts,
     required this.viewSource,
   });
@@ -185,7 +181,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                 PostSubview(
                   selectedCommentId: widget.selectedCommentId,
                   postViewMedia: widget.postViewMedia!,
-                  moderators: widget.moderators,
                   crossPosts: widget.crossPosts,
                   viewSource: widget.viewSource,
                 ),
@@ -243,7 +238,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                   if (index <= widget.comments.length)
                     CommentCard(
                       key: index == widget.comments.length ? _lastCommentKey : null,
-                      now: widget.now,
                       selectCommentId: widget.selectedCommentId,
                       selectedCommentPath: widget.selectedCommentPath,
                       newlyCreatedCommentId: widget.newlyCreatedCommentId,
@@ -257,7 +251,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
                       onReportAction: (int commentId) => widget.onReportAction(commentId),
                       onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
-                      moderators: widget.moderators,
                     ),
                   if (index == widget.comments.length + 1) ...[
                     if (widget.hasReachedCommentEnd == true) ...[

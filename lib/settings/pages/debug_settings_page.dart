@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -19,6 +20,7 @@ import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/notification/utils/local_notifications.dart';
+import 'package:thunder/settings/widgets/toggle_option.dart';
 
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
@@ -39,11 +41,28 @@ class DebugSettingsPage extends StatefulWidget {
 }
 
 class _DebugSettingsPageState extends State<DebugSettingsPage> {
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
+
   NotificationType? inboxNotificationType = NotificationType.none;
   bool areNotificationsAllowed = false;
   String? unifiedPushDistributorApp;
   int unifiedPushDistributorAppCount = 0;
   String? pushNotificationServer;
+
+  /// Enable experimental features in the app.
+  bool enableExperimentalFeatures = false;
+
+  Future<void> setPreferences(attribute, value) async {
+    final prefs = (await UserPreferences.instance).sharedPreferences;
+
+    switch (attribute) {
+      case LocalSettings.enableExperimentalFeatures:
+        await prefs.setBool(LocalSettings.enableExperimentalFeatures.name, value);
+        setState(() => enableExperimentalFeatures = value);
+        break;
+    }
+  }
 
   @override
   void initState() {
@@ -70,7 +89,30 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
 
       pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
 
-      setState(() {});
+      setState(() {
+        enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
+      });
+
+      if (widget.settingToHighlight != null) {
+        setState(() => settingToHighlight = widget.settingToHighlight);
+
+        // Need some delay to finish building, even though we're in a post-frame callback.
+        Timer(const Duration(milliseconds: 500), () {
+          if (settingToHighlightKey.currentContext != null) {
+            // Ensure that the selected setting is visible on the screen
+            Scrollable.ensureVisible(
+              settingToHighlightKey.currentContext!,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          // Give time for the highlighting to appear, then turn it off
+          Timer(const Duration(seconds: 1), () {
+            setState(() => settingToHighlight = null);
+          });
+        });
+      }
     });
   }
 
@@ -136,6 +178,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   primaryButtonText: l10n.clearPreferences,
                 );
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
@@ -170,6 +215,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   primaryButtonText: l10n.clearDatabase,
                 );
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const ThunderDivider(sliver: true),
@@ -190,6 +238,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       if (context.mounted) showSnackbar(l10n.clearedCache);
                       setState(() {}); // Trigger a rebuild to refresh the cache size
                     },
+                    highlightKey: settingToHighlightKey,
+                    setting: null,
+                    highlightedSetting: settingToHighlight,
                   );
                 }
                 return Container();
@@ -229,6 +280,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               description: l10n.currentNotificationsMode(inboxNotificationType.toString()),
               widget: Container(),
               onTap: null,
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
@@ -238,9 +292,12 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               description: l10n.areNotificationsAllowedBySystem(areNotificationsAllowed ? l10n.yes : l10n.no),
               widget: Container(),
               onTap: null,
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
-          if (!kIsWeb && Platform.isAndroid && kDebugMode) ...[
+          if (!kIsWeb && Platform.isAndroid && enableExperimentalFeatures) ...[
             const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
             SliverToBoxAdapter(
               child: SettingsListTile(
@@ -248,6 +305,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 description: l10n.unifiedPushDistributorApp(unifiedPushDistributorApp ?? l10n.none, unifiedPushDistributorAppCount),
                 widget: Container(),
                 onTap: null,
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           ],
@@ -274,6 +334,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         showTestAndroidNotification();
                       }
                     : null,
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
@@ -314,9 +377,12 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         }
                       }
                     : null,
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
               ),
             ),
-            if (kDebugMode) ...[
+            if (enableExperimentalFeatures) ...[
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
@@ -343,6 +409,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                           }
                         }
                       : null,
+                  highlightKey: settingToHighlightKey,
+                  setting: null,
+                  highlightedSetting: settingToHighlight,
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
@@ -383,6 +452,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                           }
                         }
                       : null,
+                  highlightKey: settingToHighlightKey,
+                  setting: null,
+                  highlightedSetting: settingToHighlight,
                 ),
               ),
             ],
@@ -402,6 +474,40 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   LocalSettings.inboxNotificationType,
                 ]);
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.experimentalFeatures, style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    l10n.experimentalFeaturesDescription,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.enableExperimentalFeatures,
+              value: enableExperimentalFeatures,
+              iconEnabled: Icons.construction_rounded,
+              iconDisabled: Icons.construction_outlined,
+              onToggle: (value) => setPreferences(LocalSettings.enableExperimentalFeatures, value),
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 48)),

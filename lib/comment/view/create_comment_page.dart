@@ -303,7 +303,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     child: PostSubview(
                                       postViewMedia: widget.postViewMedia!,
                                       crossPosts: const [],
-                                      moderators: const [],
                                       viewSource: viewSource,
                                       onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                                       showQuickPostActionBar: false,
@@ -327,7 +326,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       onSaveAction: (_, __) {},
                                       onReplyEditAction: (_, __) {},
                                       onReportAction: (_) {},
-                                      now: DateTime.now().toUtc(),
                                       onDeleteAction: (_, __) {},
                                       isUserLoggedIn: true,
                                       isOwnComment: false,
@@ -356,6 +354,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         parentCommentId = parentCommentView.comment.id;
                                       },
                                       onUserChanged: () => userChanged = true,
+                                      enableAccountSwitching: widget.commentView == null,
                                     ),
                                   ),
                                   const SizedBox(height: 10),
