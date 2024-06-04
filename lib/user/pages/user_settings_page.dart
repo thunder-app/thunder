@@ -362,6 +362,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                     ),
                                   );
                                 },
+                                highlightKey: null,
+                                setting: null,
+                                highlightedSetting: null,
                               ),
                             const SizedBox(height: 100.0),
                           ],
