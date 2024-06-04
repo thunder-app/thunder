@@ -69,14 +69,13 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final highlightKey = settingToHighlight == LocalSettings.discussionLanguages ? settingToHighlightKey : null;
 
     return Column(
       children: [
         SmoothHighlight(
-          key: highlightKey,
-          useInitialHighLight: highlightKey != null,
-          enabled: highlightKey != null,
+          key: settingToHighlight == LocalSettings.discussionLanguages ? settingToHighlightKey : null,
+          useInitialHighLight: settingToHighlight == LocalSettings.discussionLanguages,
+          enabled: settingToHighlight == LocalSettings.discussionLanguages,
           color: theme.colorScheme.primaryContainer,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),

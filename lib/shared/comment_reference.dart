@@ -20,7 +20,6 @@ import 'package:thunder/utils/numbers.dart';
 
 class CommentReference extends StatefulWidget {
   final CommentView comment;
-  final DateTime now;
   final bool isOwnComment;
   final bool disableActions;
   final Function(int, int)? onVoteAction;
@@ -33,7 +32,6 @@ class CommentReference extends StatefulWidget {
   const CommentReference({
     super.key,
     required this.comment,
-    required this.now,
     this.onVoteAction,
     this.onSaveAction,
     this.onDeleteAction,
@@ -302,7 +300,6 @@ class _CommentReferenceState extends State<CommentReference> {
                       child: CommentContent(
                         comment: widget.comment,
                         isUserLoggedIn: isUserLoggedIn,
-                        now: widget.now,
                         onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
                         onVoteAction: (int commentId, int voteType) => widget.onVoteAction?.call(commentId, voteType),
                         onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),

@@ -95,26 +95,40 @@ Future<bool> deletePost(int postId, bool delete) async {
 // Optimistically updates a post. This changes the value of the post locally, without sending the network request
 PostView optimisticallyVotePost(PostViewMedia postViewMedia, int voteType) {
   int newScore = postViewMedia.postView.counts.score;
-  int? existingint = postViewMedia.postView.myVote;
+  int newUpvotes = postViewMedia.postView.counts.upvotes;
+  int newDownvotes = postViewMedia.postView.counts.downvotes;
+  int? existingVoteType = postViewMedia.postView.myVote;
 
   switch (voteType) {
     case -1:
-      existingint == 1 ? newScore -= 2 : newScore--;
-      break;
+      existingVoteType == 1 ? newScore -= 2 : newScore--;
+      newDownvotes++;
+      if (existingVoteType == 1) newUpvotes--;
     case 1:
-      existingint == -1 ? newScore += 2 : newScore++;
+      existingVoteType == -1 ? newScore += 2 : newScore++;
+      newUpvotes++;
+      if (existingVoteType == -1) newDownvotes--;
       break;
     case 0:
       // Determine score from existing
-      if (existingint == -1) {
+      if (existingVoteType == -1) {
         newScore++;
-      } else if (existingint == 1) {
+        newDownvotes--;
+      } else if (existingVoteType == 1) {
         newScore--;
+        newUpvotes--;
       }
       break;
   }
 
-  return postViewMedia.postView.copyWith(myVote: voteType, counts: postViewMedia.postView.counts.copyWith(score: newScore));
+  return postViewMedia.postView.copyWith(
+    myVote: voteType,
+    counts: postViewMedia.postView.counts.copyWith(
+      score: newScore,
+      upvotes: newUpvotes,
+      downvotes: newDownvotes,
+    ),
+  );
 }
 
 // Optimistically saves a post. This changes the value of the post locally, without sending the network request
@@ -276,11 +290,11 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   // There are three sources of URLs: the main url attached to the post, the thumbnail url attached to the post, and the video url attached to the post
   String? url = postView.post.url ?? '';
   String? thumbnailUrl = postView.post.thumbnailUrl;
-  String? videoUrl = postView.post.embedVideoUrl; // @TODO: Add support for videos
+  String? videoUrl = postView.post.embedVideoUrl;
 
   // First, check what type of link we're dealing with based on the url (MediaType.image, MediaType.video, MediaType.link, MediaType.text)
   bool isImage = isImageUrl(url);
-  bool isVideo = isVideoUrl(url);
+  bool isVideo = isVideoUrl(videoUrl ?? url);
 
   MediaType mediaType;
 
@@ -296,29 +310,37 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
 
   Media media = Media(mediaType: mediaType, originalUrl: url);
 
+  // Determine the thumbnail url
   if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {
     // Now check to see if there is a thumbnail image. If there is, we'll use that for the image
-    media.mediaUrl = thumbnailUrl;
+    media.thumbnailUrl = thumbnailUrl;
   } else if (isImage) {
-    // If there is no thumbnail image, but the url is an image, we'll use that for the mediaUrl
-    media.mediaUrl = url;
+    // If there is no thumbnail image, but the url is an image, we'll use that for the thumbnailUrl
+    media.thumbnailUrl = url;
   } else if (scrapeMissingPreviews) {
     // If there is no thumbnail image, we'll see if we should try to fetch the link metadata
     LinkInfo linkInfo = await getLinkInfo(url);
 
     if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
-      media.mediaUrl = linkInfo.imageURL!;
+      media.thumbnailUrl = linkInfo.imageURL!;
     }
   }
 
-  // Finally, check to see if we need to fetch the image dimensions
-  if (fetchImageDimensions && media.mediaUrl != null) {
+  // Determine the media url
+  if (isImage) {
+    media.mediaUrl = url;
+  } else if (isVideo) {
+    media.mediaUrl = videoUrl;
+  }
+
+  // Finally, check to see if we need to fetch the image dimensions for the thumbnail url
+  if (fetchImageDimensions && media.thumbnailUrl != null) {
     Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
 
     try {
-      result = await retrieveImageDimensions(imageUrl: media.mediaUrl ?? media.originalUrl).timeout(const Duration(seconds: 2));
+      result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(const Duration(seconds: 2));
     } catch (e) {
-      debugPrint('${media.mediaUrl ?? media.originalUrl} - $e: Falling back to default image size');
+      debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
     }
 
     Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);

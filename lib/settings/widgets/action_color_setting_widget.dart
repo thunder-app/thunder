@@ -53,7 +53,9 @@ class ActionColorSettingWidget extends StatelessWidget {
             value: const ListPickerItem(payload: -1),
             description: l10n.actionColors,
             icon: Icons.color_lens_rounded,
-            highlightKey: settingToHighlight == LocalSettings.actionColors ? settingToHighlightKey : null,
+            highlightKey: settingToHighlightKey,
+            setting: LocalSettings.actionColors,
+            highlightedSetting: settingToHighlight,
             customListPicker: StatefulBuilder(
               builder: (context, setState) {
                 return BottomSheetListPicker(

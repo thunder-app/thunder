@@ -128,19 +128,17 @@ class CommonMarkdownBody extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  !snapshot.hasData
-                      ? Container()
-                      : snapshot.data == true
-                          ? ScalableImageWidget.fromSISource(
-                              si: ScalableImageSource.fromSvgHttpUrl(uri),
-                            )
-                          : ImagePreview(
-                              url: uri.toString(),
-                              isExpandable: true,
-                              isComment: isComment,
-                              showFullHeightImages: true,
-                              maxWidth: imageMaxWidth,
-                            ),
+                  snapshot.data != true
+                      ? ImagePreview(
+                          url: uri.toString(),
+                          isExpandable: true,
+                          isComment: isComment,
+                          showFullHeightImages: true,
+                          maxWidth: imageMaxWidth,
+                        )
+                      : ScalableImageWidget.fromSISource(
+                          si: ScalableImageSource.fromSvgHttpUrl(uri),
+                        )
                 ],
               ),
             );
@@ -220,12 +218,11 @@ class LemmyLinkSyntax extends md.InlineSyntax {
 /// ~subscript with space~ and text~subscript with space~
 /// ```
 class SubscriptInlineSyntax extends md.InlineSyntax {
-  SubscriptInlineSyntax() : super(r'([^~]*)~([^~\s]+)~');
+  SubscriptInlineSyntax() : super(r'~([^~\s]+)~');
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
-    parser.addNode(md.Element.text("text", match[1]!));
-    parser.addNode(md.Element.text("sub", match[2]!));
+    parser.addNode(md.Element.text("sub", match[1]!));
     return true;
   }
 }
@@ -243,12 +240,11 @@ class SubscriptInlineSyntax extends md.InlineSyntax {
 /// ^superscript with space^ and text^superscript with space^
 /// ```
 class SuperscriptInlineSyntax extends md.InlineSyntax {
-  SuperscriptInlineSyntax() : super(r'([^\\^]*)\^([^\s^]+)\^');
+  SuperscriptInlineSyntax() : super(r'\^([^\s^]+)\^');
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
-    parser.addNode(md.Element.text("text", match[1]!));
-    parser.addNode(md.Element.text("sup", match[2]!));
+    parser.addNode(md.Element.text("sup", match[1]!));
     return true;
   }
 }
@@ -443,7 +439,10 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
             collapsed: Container(),
             expanded: Padding(
               padding: const EdgeInsets.only(left: 4, right: 4, bottom: 4),
-              child: CommonMarkdownBody(body: widget.body ?? ''),
+              child: CommonMarkdownBody(
+                body: widget.body ?? '',
+                isComment: true,
+              ),
             ),
           ),
         ],

@@ -111,7 +111,6 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
     _selectedUserOption ??= widget.selectedUserOption ?? [true, false];
     savedToggle ??= widget.savedToggle ?? PrimitiveWrapper<bool>(false);
 
-    final DateTime now = DateTime.now().toUtc();
     final int? currentUserId = context.read<AuthBloc>().state.account?.userId;
 
     return BlocProvider<post_bloc.PostBloc>(
@@ -287,7 +286,6 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           ),
                           CommentReference(
                             comment: widget.commentViewTrees![index].commentView!,
-                            now: now,
                             onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                             onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                             onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
@@ -350,7 +348,6 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           ),
                           CommentReference(
                             comment: widget.savedComments![index].commentView!,
-                            now: now,
                             onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                             onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                             onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),

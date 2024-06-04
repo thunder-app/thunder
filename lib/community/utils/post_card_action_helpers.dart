@@ -178,7 +178,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.shareMedia,
     icon: Icons.image_rounded,
     label: l10n.shareMedia,
-    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.mediaUrl,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.thumbnailUrl,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.shareLink,
@@ -336,12 +336,12 @@ void showPostActionBottomModalSheet(
   // Or if the media link is the same as the external link
   if (postViewMedia.media.isEmpty ||
       (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image) ||
-      postViewMedia.media.first.originalUrl == postViewMedia.media.first.mediaUrl) {
+      postViewMedia.media.first.originalUrl == postViewMedia.media.first.thumbnailUrl) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareLink);
   }
 
   // Remove the share media option if there is no media
-  if (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl == null) {
+  if (postViewMedia.media.isEmpty || postViewMedia.media.first.thumbnailUrl == null) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareMedia);
   }
 
@@ -582,10 +582,10 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
         break;
       case PostCardAction.shareMedia:
         action = () async {
-          if (widget.postViewMedia.media.first.mediaUrl != null) {
+          if (widget.postViewMedia.media.first.thumbnailUrl != null) {
             try {
               // Try to get the cached image first
-              var media = await DefaultCacheManager().getFileFromCache(widget.postViewMedia.media.first.mediaUrl!);
+              var media = await DefaultCacheManager().getFileFromCache(widget.postViewMedia.media.first.thumbnailUrl!);
               File? mediaFile = media?.file;
 
               if (media == null) {
@@ -593,7 +593,7 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                 showSnackbar(AppLocalizations.of(widget.outerContext)!.downloadingMedia);
 
                 // Download
-                mediaFile = await DefaultCacheManager().getSingleFile(widget.postViewMedia.media.first.mediaUrl!);
+                mediaFile = await DefaultCacheManager().getSingleFile(widget.postViewMedia.media.first.thumbnailUrl!);
               }
 
               // Share

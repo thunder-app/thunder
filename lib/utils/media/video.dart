@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:thunder/utils/video_player/video_player.dart';
-import 'package:thunder/utils/youtube_link_checker.dart';
+
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
+import 'package:thunder/utils/video_player/video_player.dart';
 
 bool isVideoUrl(String url) {
   List<String> videoExtensions = [
@@ -21,7 +22,8 @@ bool isVideoUrl(String url) {
     "ts",
     "vob",
   ];
-// youtube url
+
+  // YouTube url
   String? youtubeVideoId = YoutubePlayer.convertUrlToId(url);
 
   // Get the file extension from the URL
@@ -31,8 +33,10 @@ bool isVideoUrl(String url) {
   return videoExtensions.contains(fileExtension) || (youtubeVideoId?.isNotEmpty ?? false);
 }
 
-void showVideoPlayer(BuildContext context, {String? url, int? postId, void Function()? navigateToPost}) {
-  bool youTubeLink = isYouTubeLink(url) ?? false;
+void showVideoPlayer(BuildContext context, {String? url, int? postId}) {
+  if (url == null) return;
+
+  String? videoId = YoutubePlayer.convertUrlToId(url);
 
   Navigator.of(context).push(
     PageRouteBuilder(
@@ -40,23 +44,10 @@ void showVideoPlayer(BuildContext context, {String? url, int? postId, void Funct
       transitionDuration: const Duration(milliseconds: 100),
       reverseTransitionDuration: const Duration(milliseconds: 50),
       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-        return (youTubeLink)
-            ? ThunderYoutubePlayer(
-                videoUrl: url!,
-                postId: postId,
-              )
-            : ThunderVideoPlayer(
-                videoUrl: url!,
-                postId: postId,
-              );
+        return (videoId != null) ? ThunderYoutubePlayer(videoUrl: url, postId: postId) : ThunderVideoPlayer(videoUrl: url, postId: postId);
       },
       transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-        return Align(
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
-        );
+        return Align(child: FadeTransition(opacity: animation, child: child));
       },
     ),
   );

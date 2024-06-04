@@ -299,6 +299,8 @@ enum LocalSettings {
   enableCommentNavigation(name: 'setting_enable_comment_navigation', key: 'enableCommentNavigation', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
   combineNavAndFab(name: 'setting_combine_nav_and_fab', key: 'combineNavAndFab', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
 
+  enableExperimentalFeatures(name: 'setting_enable_experimental_features', key: 'enableExperimentalFeatures', category: LocalSettingsCategories.debug),
+
   draftsCache(name: 'drafts_cache', key: ''),
 
   anonymousInstances(name: 'setting_anonymous_instances', key: ''),

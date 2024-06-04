@@ -15,6 +15,7 @@ class SearchState extends Equatable {
     this.page = 1,
     this.sortType,
     this.focusSearchId = 0,
+    this.viewingAll = false,
   });
 
   final SearchStatus status;
@@ -31,6 +32,7 @@ class SearchState extends Equatable {
   final SortType? sortType;
 
   final int focusSearchId;
+  final bool viewingAll;
 
   SearchState copyWith({
     SearchStatus? status,
@@ -44,6 +46,7 @@ class SearchState extends Equatable {
     int? page,
     SortType? sortType,
     int? focusSearchId,
+    bool? viewingAll,
   }) {
     return SearchState(
       status: status ?? this.status,
@@ -57,9 +60,19 @@ class SearchState extends Equatable {
       page: page ?? this.page,
       sortType: sortType ?? this.sortType,
       focusSearchId: focusSearchId ?? this.focusSearchId,
+      viewingAll: viewingAll ?? this.viewingAll,
     );
   }
 
   @override
-  List<Object?> get props => [status, communities, trendingCommunities, users, errorMessage, page, focusSearchId];
+  List<Object?> get props => [
+        status,
+        communities,
+        trendingCommunities,
+        users,
+        errorMessage,
+        page,
+        focusSearchId,
+        viewingAll,
+      ];
 }
