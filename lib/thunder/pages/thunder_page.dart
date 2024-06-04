@@ -59,6 +59,7 @@ import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/notification/utils/navigate_notification.dart';
+import 'package:thunder/utils/settings_utils.dart';
 
 String? currentIntent;
 
@@ -110,9 +111,11 @@ class _ThunderState extends State<Thunder> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handleSharedFilesAndText();
-      BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
-      BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
-      BlocProvider.of<NotificationsCubit>(context).handleNotifications();
+      if (Platform.isAndroid || Platform.isIOS) {
+        BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
+        BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
+        BlocProvider.of<NotificationsCubit>(context).handleNotifications();
+      }
     });
 
     BackButtonInterceptor.add(_handleBackButtonPress);
@@ -175,12 +178,7 @@ class _ThunderState extends State<Thunder> {
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
-
-        if (reduceAnimations) {
-          widget.pageController.jumpToPage(selectedPageIndex);
-        } else {
-          widget.pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-        }
+        widget.pageController.jumpToPage(selectedPageIndex);
       });
       return true;
     }
@@ -239,6 +237,8 @@ class _ThunderState extends State<Thunder> {
         if (context.mounted) await _navigateToModlog(link);
       case LinkType.instance:
         if (context.mounted) await _navigateToInstance(link);
+      case LinkType.thunder:
+        if (context.mounted) await _navigateToInternal(link);
       case LinkType.unknown:
         if (context.mounted) {
           _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link);
@@ -375,6 +375,14 @@ class _ThunderState extends State<Thunder> {
     }
   }
 
+  Future<void> _navigateToInternal(String link) async {
+    link = link.replaceFirst('https://', '');
+    if (link.startsWith('setting-')) {
+      String setting = link.replaceFirst('setting-', '');
+      navigateToSetting(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
+    }
+  }
+
   void _showLinkProcessingError(BuildContext context, String error, String link) {
     showSnackbar(
       error,
@@ -449,12 +457,7 @@ class _ThunderState extends State<Thunder> {
                       ? CommunityDrawer(
                           navigateToAccount: () {
                             Navigator.of(context).pop();
-
-                            if (reduceAnimations) {
-                              widget.pageController.jumpToPage(2);
-                            } else {
-                              widget.pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                            }
+                            widget.pageController.jumpToPage(2);
                           },
                         )
                       : null,
@@ -472,12 +475,7 @@ class _ThunderState extends State<Thunder> {
                     onPageChange: (int index) {
                       setState(() {
                         selectedPageIndex = index;
-
-                        if (reduceAnimations) {
-                          widget.pageController.jumpToPage(index);
-                        } else {
-                          widget.pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                        }
+                        widget.pageController.jumpToPage(index);
                       });
                     },
                   ),

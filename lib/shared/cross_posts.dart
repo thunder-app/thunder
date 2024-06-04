@@ -77,6 +77,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [

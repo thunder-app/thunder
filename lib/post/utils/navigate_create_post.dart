@@ -68,7 +68,7 @@ Future<void> navigateToCreatePostPage(
                     l10n.postCreatedSuccessfully,
                     trailingIcon: Icons.remove_red_eye_rounded,
                     trailingAction: () {
-                      navigateToPost(context, postId: postViewMedia.postView.post.id);
+                      navigateToPost(context, postViewMedia: postViewMedia);
                     },
                   );
 
