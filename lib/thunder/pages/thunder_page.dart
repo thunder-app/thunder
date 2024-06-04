@@ -59,6 +59,7 @@ import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/notification/utils/navigate_notification.dart';
+import 'package:thunder/utils/settings_utils.dart';
 
 String? currentIntent;
 
@@ -110,9 +111,11 @@ class _ThunderState extends State<Thunder> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handleSharedFilesAndText();
-      BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
-      BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
-      BlocProvider.of<NotificationsCubit>(context).handleNotifications();
+      if (Platform.isAndroid || Platform.isIOS) {
+        BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
+        BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
+        BlocProvider.of<NotificationsCubit>(context).handleNotifications();
+      }
     });
 
     BackButtonInterceptor.add(_handleBackButtonPress);
@@ -234,6 +237,8 @@ class _ThunderState extends State<Thunder> {
         if (context.mounted) await _navigateToModlog(link);
       case LinkType.instance:
         if (context.mounted) await _navigateToInstance(link);
+      case LinkType.thunder:
+        if (context.mounted) await _navigateToInternal(link);
       case LinkType.unknown:
         if (context.mounted) {
           _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link);
@@ -367,6 +372,14 @@ class _ThunderState extends State<Thunder> {
 
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+    }
+  }
+
+  Future<void> _navigateToInternal(String link) async {
+    link = link.replaceFirst('https://', '');
+    if (link.startsWith('setting-')) {
+      String setting = link.replaceFirst('setting-', '');
+      navigateToSetting(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
     }
   }
 
