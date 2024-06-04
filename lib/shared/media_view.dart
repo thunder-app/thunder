@@ -278,7 +278,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
           alignment: Alignment.bottomLeft,
           children: [
-            if (widget.postViewMedia.media.first.thumbnailUrl?.isNotEmpty != true)
+            if (!blurNSFWPreviews && widget.postViewMedia.media.first.thumbnailUrl?.isNotEmpty != true)
               Icon(
                 Icons.video_camera_back_outlined,
                 color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
