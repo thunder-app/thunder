@@ -2366,5 +2366,17 @@
   "experimentalFeaturesDescription": "Estas funciones aún están en desarrollo y pueden ser inestables. Usélos bajo su propio riesgo. Debes reiniciar Thunder para que surta efecto.",
   "@experimentalFeaturesDescription": {
     "description": "Description for experimental features setting"
+  },
+  "createdToday": "Creada hoy",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
+  "accountBirthday": "Cuenta creada el {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "xYearsOld": "{count, plural, zero {{x} años} one {{x} año} other {{x} años}}",
+  "@xYearsOld": {
+    "description": "An account descriptor representing how old an account is"
   }
 }
