@@ -59,14 +59,14 @@ String fetchUserGroupDescriptor(List<UserType> userGroups, Person? person) {
   if (userGroups.contains(UserType.admin)) descriptors.add(l10n.admin);
   if (userGroups.contains(UserType.moderator)) descriptors.add(l10n.moderator);
   if (userGroups.contains(UserType.bot)) descriptors.add(l10n.bot);
+  if (descriptors.isNotEmpty) descriptor = ' (${descriptors.join(', ')})';
+
   if (userGroups.contains(UserType.birthday) && person != null) {
     int yearsOld = DateTime.now().year - person.published.year;
-    descriptors.add(l10n.accountBirthday(
-      yearsOld == 0 ? ' (${l10n.createdToday})' : ' (${l10n.xYearsOld(yearsOld, yearsOld)})',
-    ));
+    descriptor += '\n${l10n.accountBirthday(
+      yearsOld == 0 ? '(${l10n.createdToday})' : '(${l10n.xYearsOld(yearsOld, yearsOld)})',
+    )}';
   }
-
-  if (descriptors.isNotEmpty) descriptor = ' (${descriptors.join(', ')})';
 
   return descriptor;
 }
