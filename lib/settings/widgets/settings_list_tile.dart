@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/utils/settings_utils.dart';
 
 class SettingsListTile extends StatelessWidget {
   // Appearance
@@ -19,6 +21,12 @@ class SettingsListTile extends StatelessWidget {
   /// A key to assign to this widget when it should be highlighted
   final GlobalKey? highlightKey;
 
+  /// The setting that this widget controls.
+  final LocalSettings? setting;
+
+  /// The highlighted setting, if any.
+  final LocalSettings? highlightedSetting;
+
   const SettingsListTile({
     super.key,
     required this.description,
@@ -28,7 +36,9 @@ class SettingsListTile extends StatelessWidget {
     this.icon,
     this.onTap,
     this.onLongPress,
-    this.highlightKey,
+    required this.highlightKey,
+    required this.setting,
+    required this.highlightedSetting,
   });
 
   @override
@@ -36,9 +46,9 @@ class SettingsListTile extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SmoothHighlight(
-      key: highlightKey,
-      useInitialHighLight: highlightKey != null,
-      enabled: highlightKey != null,
+      key: highlightedSetting == setting && setting != null ? highlightKey : null,
+      useInitialHighLight: highlightedSetting == setting && setting != null,
+      enabled: highlightedSetting == setting && setting != null,
       color: theme.colorScheme.primaryContainer,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
@@ -47,7 +57,7 @@ class SettingsListTile extends StatelessWidget {
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(50)),
             onTap: onTap,
-            onLongPress: onLongPress,
+            onLongPress: onLongPress ?? (onTap == null ? null : () => shareSetting(context, setting, description)),
             child: Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Row(

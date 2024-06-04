@@ -49,8 +49,6 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime now = DateTime.now().toUtc();
-
     if (widget.replies.isEmpty) {
       return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text(l10n.noReplies));
     }
@@ -74,7 +72,6 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
             ),
             CommentReference(
               comment: widget.replies[index].toCommentView(),
-              now: now,
               onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
               onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
               onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),

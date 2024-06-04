@@ -179,6 +179,9 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                               onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                             );
                           },
+                          highlightKey: settingToHighlightKey,
+                          setting: null,
+                          highlightedSetting: settingToHighlight,
                         );
                       },
                     ),
@@ -210,6 +213,9 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                   );
                 }
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),

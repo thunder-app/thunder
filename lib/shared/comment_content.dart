@@ -18,7 +18,6 @@ import 'comment_header.dart';
 
 class CommentContent extends StatefulWidget {
   final CommentView comment;
-  final DateTime now;
   final bool isUserLoggedIn;
   final bool isOwnComment;
   final bool isHidden;
@@ -32,7 +31,6 @@ class CommentContent extends StatefulWidget {
   final Function(CommentView, bool) onReplyEditAction;
 
   final int? moddingCommentId;
-  final List<CommunityModeratorView>? moderators;
   final bool viewSource;
   final void Function() onViewSourceToggled;
   final bool selectable;
@@ -41,7 +39,6 @@ class CommentContent extends StatefulWidget {
   const CommentContent({
     super.key,
     required this.comment,
-    required this.now,
     required this.isUserLoggedIn,
     required this.onVoteAction,
     required this.onSaveAction,
@@ -51,7 +48,6 @@ class CommentContent extends StatefulWidget {
     required this.isOwnComment,
     required this.isHidden,
     this.moddingCommentId,
-    this.moderators,
     this.excludeSemantics = false,
     this.disableActions = false,
     required this.viewSource,
@@ -89,99 +85,100 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
 
     return ExcludeSemantics(
       excluding: widget.excludeSemantics,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CommentHeader(
-            moddingCommentId: widget.moddingCommentId ?? -1,
-            comment: widget.comment,
-            now: widget.now,
-            isOwnComment: widget.isOwnComment,
-            isHidden: widget.isHidden,
-            moderators: widget.moderators ?? [],
-          ),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 130),
-            switchInCurve: Curves.easeInOut,
-            switchOutCurve: Curves.easeInOut,
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return SizeTransition(
-                sizeFactor: animation,
-                child: SlideTransition(
-                  position: _offsetAnimation,
-                  child: child,
-                ),
-              );
-            },
-            child: (widget.isHidden && collapseParentCommentOnGesture)
-                ? Container()
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
-                        child: ConditionalParentWidget(
-                          condition: widget.selectable,
-                          parentBuilder: (child) {
-                            return SelectableRegion(
-                              focusNode: _selectableRegionFocusNode,
-                              // See comments on [SelectableTextModal] regarding the next two properties
-                              selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
-                              contextMenuBuilder: (context, selectableRegionState) {
-                                return AdaptiveTextSelectionToolbar.buttonItems(
-                                  buttonItems: selectableRegionState.contextMenuButtonItems,
-                                  anchors: selectableRegionState.contextMenuAnchors,
-                                );
-                              },
-                              child: child,
-                            );
-                          },
-                          child: widget.viewSource
-                              ? ScalableText(
-                                  cleanCommentContent(widget.comment.comment),
-                                  style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                                  fontScale: state.contentFontSizeScale,
-                                )
-                              : CommonMarkdownBody(
-                                  body: cleanCommentContent(widget.comment.comment),
-                                  isComment: true,
-                                ),
-                        ),
-                      ),
-                      if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 250),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CommentHeader(
+              moddingCommentId: widget.moddingCommentId ?? -1,
+              comment: widget.comment,
+              isOwnComment: widget.isOwnComment,
+              isHidden: widget.isHidden,
+            ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 130),
+              switchInCurve: Curves.easeInOut,
+              switchOutCurve: Curves.easeInOut,
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return SizeTransition(
+                  sizeFactor: animation,
+                  child: SlideTransition(
+                    position: _offsetAnimation,
+                    child: child,
+                  ),
+                );
+              },
+              child: (widget.isHidden && collapseParentCommentOnGesture)
+                  ? Container()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
-                          child: CommentCardActions(
-                            commentView: widget.comment,
-                            onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
-                            isEdit: widget.isOwnComment,
-                            onSaveAction: widget.onSaveAction,
-                            onDeleteAction: widget.onDeleteAction,
-                            onReplyEditAction: widget.onReplyEditAction,
-                            onReportAction: widget.onReportAction,
-                            onViewSourceToggled: widget.onViewSourceToggled,
-                            viewSource: widget.viewSource,
+                          padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
+                          child: ConditionalParentWidget(
+                            condition: widget.selectable,
+                            parentBuilder: (child) {
+                              return SelectableRegion(
+                                focusNode: _selectableRegionFocusNode,
+                                // See comments on [SelectableTextModal] regarding the next two properties
+                                selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
+                                contextMenuBuilder: (context, selectableRegionState) {
+                                  return AdaptiveTextSelectionToolbar.buttonItems(
+                                    buttonItems: selectableRegionState.contextMenuButtonItems,
+                                    anchors: selectableRegionState.contextMenuAnchors,
+                                  );
+                                },
+                                child: child,
+                              );
+                            },
+                            child: widget.viewSource
+                                ? ScalableText(
+                                    cleanCommentContent(widget.comment.comment),
+                                    style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                                    fontScale: state.contentFontSizeScale,
+                                  )
+                                : CommonMarkdownBody(
+                                    body: cleanCommentContent(widget.comment.comment),
+                                    isComment: true,
+                                  ),
                           ),
                         ),
-                    ],
-                  ),
-          ),
-          if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true) ...[
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0, right: 8.0),
-              child: ThunderDivider(sliver: false, padding: false),
+                        if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
+                            child: CommentCardActions(
+                              commentView: widget.comment,
+                              onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
+                              isEdit: widget.isOwnComment,
+                              onSaveAction: widget.onSaveAction,
+                              onDeleteAction: widget.onDeleteAction,
+                              onReplyEditAction: widget.onReplyEditAction,
+                              onReportAction: widget.onReportAction,
+                              onViewSourceToggled: widget.onViewSourceToggled,
+                              viewSource: widget.viewSource,
+                            ),
+                          ),
+                      ],
+                    ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-              child: ReplyToPreviewActions(
-                onViewSourceToggled: widget.onViewSourceToggled,
-                viewSource: widget.viewSource,
-                text: cleanCommentContent(widget.comment.comment),
+            if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true) ...[
+              const Padding(
+                padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                child: ThunderDivider(sliver: false, padding: false),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                child: ReplyToPreviewActions(
+                  onViewSourceToggled: widget.onViewSourceToggled,
+                  viewSource: widget.viewSource,
+                  text: cleanCommentContent(widget.comment.comment),
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
