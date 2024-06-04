@@ -15,7 +15,7 @@ import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/pages/post_page.dart';
+import 'package:thunder/post/pages/legacy_post_page.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';

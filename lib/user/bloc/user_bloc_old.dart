@@ -351,7 +351,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (currentTrees.isNotEmpty) {
         // Optimistically update the comment
         for (CommentViewTree currentTree in currentTrees) {
-          currentTree.commentView = optimisticallyVoteComment(currentTree, event.score);
+          currentTree.commentView = optimisticallyVoteComment(currentTree.commentView!, event.score);
         }
 
         // Immediately set the status, and continue
