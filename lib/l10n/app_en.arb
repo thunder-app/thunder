@@ -11,6 +11,10 @@
   "@account": {
     "description": "Describes the user account"
   },
+  "accountBirthday": "Account Birthday {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
@@ -457,6 +461,10 @@
   "@createNewCrossPost": {},
   "createPost": "Create Post",
   "@createPost": {},
+  "createdToday": "Created Today",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
   "creator": "Creator",
   "@creator": {
     "description": "The creator filter for searches."
@@ -2371,6 +2379,10 @@
   },
   "xUpvotes": "{x} upvotes",
   "@xUpvotes": {},
+  "xYearsOld": "{count, plural, zero {{x} years old} one {{x} year old} other {{x} years old}}",
+  "@xYearsOld": {
+    "description": "An account descriptor representing how old an account is"
+  },
   "yes": "Yes",
   "@yes": {
     "description": "A positive status"
