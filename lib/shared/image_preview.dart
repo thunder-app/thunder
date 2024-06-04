@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/colors.dart';
 
 import 'package:thunder/utils/media/image.dart';
 
@@ -116,16 +117,15 @@ class _ImagePreviewState extends State<ImagePreview> {
                   cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
                   loadStateChanged: (state) {
                     if (state.extendedImageLoadState == LoadState.loading) {
-                      return Container();
+                      return Container(color: getBackgroundColor(context));
                     }
                     if (state.extendedImageLoadState == LoadState.failed) {
-                      return Text(
-                        l10n.unableToLoadImageFrom(Uri.parse(widget.url!).host),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
-                        ),
+                      return Container(
+                        color: getBackgroundColor(context),
+                        child: const Icon(Icons.image_not_supported_outlined),
                       );
                     }
+                    return null;
                   },
                 )
               : ExtendedImage.memory(
@@ -148,7 +148,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                   cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
                   loadStateChanged: (state) {
                     if (state.extendedImageLoadState == LoadState.loading) {
-                      return Container();
+                      return Container(color: getBackgroundColor(context));
                     }
                     if (state.extendedImageLoadState == LoadState.failed) {
                       return Text(
@@ -158,6 +158,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                         ),
                       );
                     }
+                    return null;
                   },
                 ),
           TweenAnimationBuilder<double>(
