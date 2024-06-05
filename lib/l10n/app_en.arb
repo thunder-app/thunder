@@ -2369,6 +2369,10 @@
   "@viewOriginal": {
     "description": "Action for viewing original text (as opposed to raw markdown)"
   },
+  "viewPostAsDifferentAccount": "View post as different account",
+  "@viewPostAsDifferentAccount": {
+    "description": "Action for viewing a post as a different account"
+  },
   "viewPostSource": "View post source",
   "@viewPostSource": {
     "description": "Menu item for viewing a post's source"
