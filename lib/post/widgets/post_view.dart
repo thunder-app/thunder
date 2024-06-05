@@ -122,6 +122,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     if (postView.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (postView.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
     if (postView.creator.id == authState.account?.userId) userGroups.add(UserType.self);
+    if (postView.creator.published.month == DateTime.now().month && postView.creator.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
 
     return ExpandableNotifier(
       controller: expandableController,
@@ -227,11 +228,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       UserChip(
-                        personId: postView.creator.id,
+                        person: postView.creator,
                         personAvatar: UserAvatar(person: postView.creator, radius: 10, thumbnailSize: 20, format: 'png'),
-                        personName: postView.creator.name,
-                        personDisplayName: postView.creator.displayName,
-                        personUrl: postView.creator.actorId,
                         userGroups: userGroups,
                         includeInstance: thunderState.postBodyShowCommunityInstance,
                       ),

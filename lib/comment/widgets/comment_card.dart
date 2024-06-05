@@ -104,6 +104,21 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   /// Whether we should display the comment's raw markdown source
   bool viewSource = false;
 
+  /// Animation controller for AdditionalCommentCard
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 100),
+    vsync: this,
+  );
+
+  /// Animation for AdditionalCommentCard
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.fastOutSlowIn,
+  ));
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -361,10 +376,23 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               ),
             ),
             if (widget.replyCount == 0 && widget.commentView.counts.childCount > 0)
-              AdditionalCommentCard(
-                depth: widget.level,
-                replies: widget.commentView.counts.childCount,
-                onTap: () => context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: widget.commentView.comment.id)),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                switchInCurve: Curves.easeInOutCubicEmphasized,
+                switchOutCurve: Curves.easeInOutCubicEmphasized,
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: SlideTransition(position: _offsetAnimation, child: child),
+                  );
+                },
+                child: widget.collapsed
+                    ? Container()
+                    : AdditionalCommentCard(
+                        depth: widget.level,
+                        replies: widget.commentView.counts.childCount,
+                        onTap: () => context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: widget.commentView.comment.id)),
+                      ),
               ),
           ],
         ),

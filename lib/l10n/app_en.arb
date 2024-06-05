@@ -11,6 +11,10 @@
   "@account": {
     "description": "Describes the user account"
   },
+  "accountBirthday": "Account Birthday {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
@@ -457,6 +461,10 @@
   "@createNewCrossPost": {},
   "createPost": "Create Post",
   "@createPost": {},
+  "createdToday": "Created Today",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
   "creator": "Creator",
   "@creator": {
     "description": "The creator filter for searches."
@@ -1727,6 +1735,10 @@
   "@shareCommunityLinkLocal": {
     "description": "Menu item for sharing a local community link"
   },
+  "shareImage": "Share Image",
+  "@shareImage": {
+    "description": "Action for sharing an image"
+  },
   "shareLemmyLink": "Share Lemmy Link",
   "@shareLemmyLink": {
     "description": "Menu item for sharing a Lemmy link"
@@ -1735,11 +1747,27 @@
   "@shareLink": {},
   "shareMedia": "Share Media",
   "@shareMedia": {},
+  "shareMediaLink": "Share Media Link",
+  "@shareMediaLink": {
+    "description": "Action for sharing the link to the media associated with a post"
+  },
+  "shareOriginalLink": "Share Original Link",
+  "@shareOriginalLink": {
+    "description": "Action for sharing the original link associated with a post"
+  },
   "sharePost": "Share Post Link",
   "@sharePost": {},
   "sharePostLocal": "Share Post Link (My Instance)",
   "@sharePostLocal": {
     "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareThumbnail": "Share Thumbnail",
+  "@shareThumbnail": {
+    "description": "Action for sharing the thumbnail of a post"
+  },
+  "shareThumbnailAsImage": "Share Thumbnail As Image",
+  "@shareThumbnailAsImage": {
+    "description": "Action for sharing the thumbnail of a post as an image"
   },
   "shareUser": "Share User",
   "@shareUser": {
@@ -2345,6 +2373,10 @@
   "@viewOriginal": {
     "description": "Action for viewing original text (as opposed to raw markdown)"
   },
+  "viewPostAsDifferentAccount": "View post as different account",
+  "@viewPostAsDifferentAccount": {
+    "description": "Action for viewing a post as a different account"
+  },
   "viewPostSource": "View post source",
   "@viewPostSource": {
     "description": "Menu item for viewing a post's source"
@@ -2375,6 +2407,10 @@
   },
   "xUpvotes": "{x} upvotes",
   "@xUpvotes": {},
+  "xYearsOld": "{count, plural, zero {{x} years old} one {{x} year old} other {{x} years old}}",
+  "@xYearsOld": {
+    "description": "An account descriptor representing how old an account is"
+  },
   "yes": "Yes",
   "@yes": {
     "description": "A positive status"

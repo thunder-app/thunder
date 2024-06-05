@@ -162,7 +162,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         },
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           return ImageViewer(
-            url: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.originalUrl!,
+            url: widget.postViewMedia.media.first.imageUrl,
             postId: widget.postViewMedia.postView.post.id,
             navigateToPost: widget.navigateToPost,
           );
