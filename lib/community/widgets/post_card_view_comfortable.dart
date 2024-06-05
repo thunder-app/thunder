@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html/parser.dart';
 import 'package:html_unescape/html_unescape_small.dart';
-
 import 'package:lemmy_api_client/v3.dart';
+import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
@@ -268,12 +269,12 @@ class PostCardViewComfortable extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
               child: ScalableText(
-                textContent,
+                parse(markdownToHtml(textContent)).documentElement?.text.trim() ?? textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 fontScale: state.contentFontSizeScale,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: readColor,
+                  color: postViewMedia.postView.read ? readColor : theme.textTheme.bodyMedium?.color?.withOpacity(0.70),
                 ),
               ),
             ),
