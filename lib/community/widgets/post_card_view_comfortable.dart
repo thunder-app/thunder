@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html/parser.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown/markdown.dart' hide Text;
@@ -97,9 +98,6 @@ class PostCardViewComfortable extends StatelessWidget {
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
-
-    /// Document which is used to parse markdown into AST nodes. This is used to generate text from the raw markdown for text previews
-    final Document document = Document();
 
     return Container(
       color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
@@ -271,7 +269,7 @@ class PostCardViewComfortable extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
               child: ScalableText(
-                document.parse(textContent).map((node) => node.textContent.trim()).join("\n\n"),
+                parse(markdownToHtml(textContent)).documentElement?.text.trim() ?? textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 fontScale: state.contentFontSizeScale,
