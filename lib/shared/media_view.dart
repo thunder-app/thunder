@@ -278,7 +278,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
           alignment: Alignment.bottomLeft,
           children: [
-            if (!blurNSFWPreviews && widget.postViewMedia.media.first.thumbnailUrl?.isNotEmpty != true)
+            if (!widget.postViewMedia.postView.post.nsfw && widget.postViewMedia.media.first.thumbnailUrl?.isNotEmpty != true)
               Icon(
                 Icons.video_camera_back_outlined,
                 color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
@@ -404,16 +404,18 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             _controller.reset();
             state.imageProvider.evict();
 
-            return Icon(
-              switch (widget.postViewMedia.media.first.mediaType) {
-                MediaType.image => Icons.image_not_supported_outlined,
-                MediaType.video => Icons.video_camera_back_outlined,
-                MediaType.link => Icons.language_rounded,
-                // Should never come here
-                MediaType.text => Icons.text_fields_rounded,
-              },
-              color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
-            );
+            return widget.postViewMedia.postView.post.nsfw
+                ? Container()
+                : Icon(
+                    switch (widget.postViewMedia.media.first.mediaType) {
+                      MediaType.image => Icons.image_not_supported_outlined,
+                      MediaType.video => Icons.video_camera_back_outlined,
+                      MediaType.link => Icons.language_rounded,
+                      // Should never come here
+                      MediaType.text => Icons.text_fields_rounded,
+                    },
+                    color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                  );
         }
       },
     );
