@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/database/database.dart' hide Account;
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
@@ -1014,11 +1015,20 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: SettingsListTile(
               icon: Icons.settings_rounded,
               description: l10n.saveSettings,
+              subtitle: l10n.exportSettingsSubtitle,
               widget: const SizedBox(
                 height: 42.0,
                 child: Icon(Icons.chevron_right_rounded),
               ),
-              onTap: () async => await UserPreferences.exportToJson(),
+              onTap: () async {
+                String? savedFilePath = await UserPreferences.exportToJson();
+
+                if (savedFilePath?.isNotEmpty == true) {
+                  showSnackbar(l10n.settingsExportedSuccessfully(savedFilePath!));
+                } else {
+                  showSnackbar(l10n.settingsNotExportedSuccessfully);
+                }
+              },
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.importExportSettings,
               highlightedSetting: settingToHighlight,
@@ -1033,11 +1043,79 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 child: Icon(Icons.chevron_right_rounded),
               ),
               onTap: () async {
-                await UserPreferences.importFromJson();
+                bool? importedSuccessfully = await UserPreferences.importFromJson();
 
-                if (context.mounted) {
-                  _initPreferences();
-                  context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                if (importedSuccessfully == true) {
+                  showSnackbar(l10n.settingsImportedSuccessfully);
+
+                  if (context.mounted) {
+                    _initPreferences();
+                    context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                  } else {
+                    showSnackbar(l10n.settingsNotImportedSuccessfully);
+                  }
+                }
+              },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SettingsListTile(
+              icon: Icons.dashboard_customize_rounded,
+              description: l10n.exportDatabase,
+              subtitle: l10n.exportDatabaseSubtitle,
+              widget: const SizedBox(
+                height: 42.0,
+                child: Icon(Icons.chevron_right_rounded),
+              ),
+              onTap: () async {
+                bool result = false;
+
+                await showThunderDialog<void>(
+                  context: context,
+                  title: l10n.warning,
+                  contentText: l10n.databaseExportWarning,
+                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                  secondaryButtonText: l10n.cancel,
+                  onPrimaryButtonPressed: (dialogContext, _) async {
+                    Navigator.of(dialogContext).pop();
+                    result = true;
+                  },
+                  primaryButtonText: l10n.yes,
+                );
+
+                if (!result) return;
+
+                String? savedFilePath = await exportDatabase();
+
+                if (savedFilePath?.isNotEmpty == true) {
+                  showSnackbar(l10n.databaseExportedSuccessfully(savedFilePath!));
+                } else {
+                  showSnackbar(l10n.databaseNotExportedSuccessfully);
+                }
+              },
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.importExportDatabase,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SettingsListTile(
+              icon: Icons.dashboard_customize_outlined,
+              description: l10n.importDatabase,
+              widget: const SizedBox(
+                height: 42.0,
+                child: Icon(Icons.chevron_right_rounded),
+              ),
+              onTap: () async {
+                bool importedSuccessfully = await importDatabase();
+
+                if (importedSuccessfully == true) {
+                  showSnackbar(l10n.databaseImportedSuccessfully);
+                } else {
+                  showSnackbar(l10n.databaseNotImportedSuccessfully);
                 }
               },
               highlightKey: settingToHighlightKey,

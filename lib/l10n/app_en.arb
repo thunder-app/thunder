@@ -493,6 +493,26 @@
   "@dark": {
     "description": "Describes using the dark theme"
   },
+  "databaseExportWarning": "The database may contain sensitive information related to your Lemmy account. If you export it, you should not share it with anyone. Do you want to proceed?",
+  "@databaseExportWarning": {
+    "description": "Message shown to the user when exporting the db"
+  },
+  "databaseExportedSuccessfully": "The database was successfully exported to '{savedFilePath}'",
+  "@databaseExportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully exported"
+  },
+  "databaseImportedSuccessfully": "The database was imported successfully!",
+  "@databaseImportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully imported"
+  },
+  "databaseNotExportedSuccessfully": "The database was not exported successfully or the operation was canceled.",
+  "@databaseNotExportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully exported"
+  },
+  "databaseNotImportedSuccessfully": "The database was not imported successfully, or the operation was canceled.",
+  "@databaseNotImportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully imported"
+  },
   "dateFormat": "Date Format",
   "@dateFormat": {
     "description": "Setting for date format"
@@ -721,6 +741,18 @@
   "@exploreInstance": {
     "description": "Button for exploring an instance"
   },
+  "exportDatabase": "Export Database",
+  "@exportDatabase": {
+    "description": "Name of the setting for exporting the db"
+  },
+  "exportDatabaseSubtitle": "The database contains info about accounts, favorites, and anonymous subcriptions.",
+  "@exportDatabaseSubtitle": {
+    "description": "Subtitle of setting for exporting the db"
+  },
+  "exportSettingsSubtitle": "The settings includes all of the preferences that you have configured in Thunder.",
+  "@exportSettingsSubtitle": {
+    "description": "Subtitle of setting for exporting settings"
+  },
   "extraLarge": "Extra Large",
   "@extraLarge": {
     "description": "Description for extra large font scale"
@@ -874,6 +906,14 @@
   "imageCachingModeRelaxedShort": "Relaxed",
   "@imageCachingModeRelaxedShort": {
     "description": "Short description for relaxed image caching mode"
+  },
+  "importDatabase": "Import Database",
+  "@importDatabase": {
+    "description": "Name of setting for importing the db"
+  },
+  "importExportDatabase": "Import/Export Database",
+  "@importExportDatabase": {
+    "description": "Overall name of setting for importing or exporting the db (for searching)"
   },
   "importExportSettings": "Import/Export Settings",
   "@importExportSettings": {
@@ -1709,9 +1749,25 @@
   "@settingTypeNotSupported": {},
   "settings": "Settings",
   "@settings": {},
+  "settingsExportedSuccessfully": "Settings were successfully saved to '{savedFilePath}'",
+  "@settingsExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported successfully"
+  },
   "settingsFeedCards": "These settings apply to the cards in the main feed, actions are always available when actually opening posts.",
   "@settingsFeedCards": {
     "description": "Settings for controlling the display of cards in the main feed."
+  },
+  "settingsImportedSuccessfully": "Settings were imported successfully!",
+  "@settingsImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported successfully"
+  },
+  "settingsNotExportedSuccessfully": "Settings were not saved successfully, or the operation was canceled.",
+  "@settingsNotExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported unsuccessfully"
+  },
+  "settingsNotImportedSuccessfully": "Settings were not imported successfully or the operation was canceled.",
+  "@settingsNotImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported unsuccessfully"
   },
   "share": "Share",
   "@share": {},
