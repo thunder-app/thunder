@@ -22,3 +22,9 @@ class LocalSubscriptions extends Table {
   TextColumn get actorId => text()();
   TextColumn get icon => text().nullable()();
 }
+
+class UserLabels extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get username => text()();
+  TextColumn get label => text()();
+}

@@ -57,6 +57,10 @@
   "@addToFavorites": {
     "description": "Action to add a community in drawer to favorites"
   },
+  "addUserLabel": "Add User Label",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
   "addedCommunityToSubscriptions": "Subscribed to community",
   "@addedCommunityToSubscriptions": {},
   "addedInstanceMod": "Added Instance Mod",
@@ -938,6 +942,10 @@
   "keywordFilters": "Keyword Filters",
   "@keywordFilters": {
     "description": "Subcategory in Settings -> Filters"
+  },
+  "label": "Label",
+  "@label": {
+    "description": "Text field label for a user label"
   },
   "language": "Language",
   "@language": {
@@ -2296,6 +2304,10 @@
   "userFormat": "User Format",
   "@userFormat": {
     "description": "Setting for user full name format"
+  },
+  "userLabelHint": "This is my favorite user",
+  "@userLabelHint": {
+    "description": "Hint text for adding a new user label"
   },
   "userNameColor": "User Name Color",
   "@userNameColor": {
