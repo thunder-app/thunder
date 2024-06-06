@@ -2378,5 +2378,29 @@
   "xYearsOld": "{count, plural, zero {{x} años} one {{x} año} other {{x} años}}",
   "@xYearsOld": {
     "description": "An account descriptor representing how old an account is"
+  },
+  "shareImage": "Compartir imagen",
+  "@shareImage": {
+    "description": "Action for sharing an image"
+  },
+  "shareMediaLink": "Compartir enlace multimedia",
+  "@shareMediaLink": {
+    "description": "Action for sharing the link to the media associated with a post"
+  },
+  "shareThumbnail": "Compartir miniatura",
+  "@shareThumbnail": {
+    "description": "Action for sharing the thumbnail of a post"
+  },
+  "viewPostAsDifferentAccount": "Ver publicación como una cuenta diferente",
+  "@viewPostAsDifferentAccount": {
+    "description": "Action for viewing a post as a different account"
+  },
+  "shareOriginalLink": "Compartir enlace original",
+  "@shareOriginalLink": {
+    "description": "Action for sharing the original link associated with a post"
+  },
+  "shareThumbnailAsImage": "Compartir miniatura como imagen",
+  "@shareThumbnailAsImage": {
+    "description": "Action for sharing the thumbnail of a post as an image"
   }
 }
