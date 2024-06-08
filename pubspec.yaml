@@ -101,8 +101,6 @@ dependencies:
   youtube_player_flutter: ^8.1.2
   smooth_highlight: ^0.1.1
   visibility_detector: ^0.4.0+2
-  push:
-    path: packages/push/push
   unifiedpush: ^5.0.1
   flutter_sharing_intent: ^1.1.1
   drift: ^2.16.0
