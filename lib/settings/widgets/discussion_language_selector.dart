@@ -60,11 +60,13 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
                 title: Text(l10n.discussionLanguages),
               ),
               if (discussionLanguages.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(left: 28.0, right: 20.0, bottom: 20.0),
-                  child: Text(
-                    l10n.noDiscussionLanguages,
-                    style: TextStyle(color: theme.hintColor),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 28.0, right: 20.0, bottom: 20.0),
+                    child: Text(
+                      l10n.noDiscussionLanguages,
+                      style: TextStyle(color: theme.hintColor),
+                    ),
                   ),
                 ),
               SliverList.builder(
