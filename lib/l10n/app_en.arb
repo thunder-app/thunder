@@ -2475,5 +2475,6 @@
   "@yes": {
     "description": "A positive status"
   },
-  "accountSettingOverrideWarning": "Your account settings override the following settings"
+  "accountSettingOverrideWarning": "Your account settings override the following settings",
+  "blockManagement": "Block Management"
 }

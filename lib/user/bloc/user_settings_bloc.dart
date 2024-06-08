@@ -113,6 +113,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
             ),
             localUser: localUser,
           ),
+          discussionLanguages: event.discussionLanguages ?? state.getSiteResponse!.discussionLanguages,
         ),
       );
 
