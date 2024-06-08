@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
+import 'package:thunder/notification/utils/notification_utils.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:markdown/markdown.dart';
 
@@ -97,7 +98,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         SlimCommentReplyView commentReplyView = SlimCommentReplyView.fromJson(data['reply']);
 
         final String commentContent = cleanComment(commentReplyView.commentContent, commentReplyView.commentRemoved, commentReplyView.commentDeleted);
-        final String htmlComment = markdownToHtml(commentContent);
+        final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
@@ -108,7 +109,10 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         );
 
         List<Account> accounts = await Account.accounts();
-        Account account = accounts.firstWhere((Account account) => account.username == commentReplyView.recipientName);
+        Account account = accounts.firstWhere((Account account) => account.actorId == commentReplyView.recipientActorId);
+
+        // Create a notification group for the account
+        showNotificationGroups(accounts: [account], inboxTypes: [NotificationInboxType.reply], type: NotificationType.unifiedPush);
 
         showAndroidNotification(
           id: commentReplyView.commentReplyId,
@@ -132,7 +136,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         PersonMentionView personMentionView = PersonMentionView.fromJson(data['mention']);
 
         final String commentContent = cleanCommentContent(personMentionView.comment);
-        final String htmlComment = markdownToHtml(commentContent);
+        final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
@@ -143,7 +147,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         );
 
         List<Account> accounts = await Account.accounts();
-        Account account = accounts.firstWhere((Account account) => account.username == personMentionView.recipient.name);
+        Account account = accounts.firstWhere((Account account) => account.actorId == personMentionView.recipient.actorId);
 
         showAndroidNotification(
           id: personMentionView.comment.id,
