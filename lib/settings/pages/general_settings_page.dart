@@ -140,6 +140,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   String? unifiedPushConnectedDistributorApp;
   int? unifiedPushAvailableDistributorApps;
 
+  /// Enable experimental features in the app.
+  bool enableExperimentalFeatures = false;
+
   Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
@@ -293,6 +296,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       controller.text = pushNotificationServer;
 
       accounts = accountList;
+
+      enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
     });
   }
 
@@ -361,7 +366,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ],
               icon: Icons.filter_alt_rounded,
               onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),
-              highlightKey: settingToHighlight == LocalSettings.defaultFeedListingType ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.defaultFeedListingType,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -393,7 +400,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   ),
                 ],
               ),
-              highlightKey: settingToHighlight == LocalSettings.defaultFeedSortType ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.defaultFeedSortType,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -421,7 +430,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   ),
                 ],
               ),
-              highlightKey: settingToHighlight == LocalSettings.defaultCommentSortType ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.defaultCommentSortType,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -442,7 +453,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   ),
                 ],
               ),
-              highlightKey: settingToHighlight == LocalSettings.appLanguageCode ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.appLanguageCode,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
@@ -454,7 +467,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.person_rounded,
               iconDisabled: Icons.person_outline_rounded,
               onToggle: (value) => setPreferences(LocalSettings.useProfilePictureForDrawer, value),
-              highlightKey: settingToHighlight == LocalSettings.useProfilePictureForDrawer ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.useProfilePictureForDrawer,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
@@ -471,7 +486,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.no_adult_content,
               iconDisabled: Icons.no_adult_content,
               onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
-              highlightKey: settingToHighlight == LocalSettings.hideNsfwPosts ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.hideNsfwPosts,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -481,7 +498,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.touch_app_rounded,
               iconDisabled: Icons.touch_app_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.tappableAuthorCommunity, value),
-              highlightKey: settingToHighlight == LocalSettings.tappableAuthorCommunity ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.tappableAuthorCommunity,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -491,7 +510,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.visibility,
               iconDisabled: Icons.remove_red_eye_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnMediaView, value),
-              highlightKey: settingToHighlight == LocalSettings.markPostAsReadOnMediaView ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.markPostAsReadOnMediaView,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -501,7 +522,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.playlist_add_check,
               iconDisabled: Icons.playlist_add,
               onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnScroll, value),
-              highlightKey: settingToHighlight == LocalSettings.markPostAsReadOnScroll ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.markPostAsReadOnScroll,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -511,7 +534,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.tablet_rounded,
               iconDisabled: Icons.smartphone_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.useTabletMode, value),
-              highlightKey: settingToHighlight == LocalSettings.useTabletMode ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.useTabletMode,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -521,7 +546,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.app_settings_alt_outlined,
               iconDisabled: Icons.app_settings_alt_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.hideTopBarOnScroll, value),
-              highlightKey: settingToHighlight == LocalSettings.hideTopBarOnScroll ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.hideTopBarOnScroll,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
@@ -538,7 +565,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.mode_comment_outlined,
               iconDisabled: Icons.comment_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.collapseParentCommentBodyOnGesture, value),
-              highlightKey: settingToHighlight == LocalSettings.collapseParentCommentBodyOnGesture ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.collapseParentCommentBodyOnGesture,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -548,7 +577,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.unfold_more_rounded,
               iconDisabled: Icons.unfold_less_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.enableCommentNavigation, value),
-              highlightKey: settingToHighlight == LocalSettings.enableCommentNavigation ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.enableCommentNavigation,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -559,7 +590,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.join_full_rounded,
               iconDisabled: Icons.join_inner_rounded,
               onToggle: enableCommentNavigation != true ? null : (bool value) => setPreferences(LocalSettings.combineNavAndFab, value),
-              highlightKey: settingToHighlight == LocalSettings.combineNavAndFab ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.combineNavAndFab,
+              highlightedSetting: settingToHighlight,
             ),
           ),
 
@@ -589,7 +622,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ],
               icon: Icons.link_rounded,
               onChanged: (value) => setPreferences(LocalSettings.browserMode, value.payload.name),
-              highlightKey: settingToHighlight == LocalSettings.browserMode ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.browserMode,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           if (!kIsWeb && Platform.isIOS)
@@ -600,7 +635,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 iconEnabled: Icons.menu_book_rounded,
                 iconDisabled: Icons.menu_book_rounded,
                 onToggle: (bool value) => setPreferences(LocalSettings.openLinksInReaderMode, value),
-                highlightKey: settingToHighlight == LocalSettings.openLinksInReaderMode ? settingToHighlightKey : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.openLinksInReaderMode,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           // TODO:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
@@ -627,7 +664,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 },
                 subtitle: l10n.allowOpenSupportedLinks,
                 description: l10n.openByDefault,
-                highlightKey: settingToHighlight == LocalSettings.openByDefault ? settingToHighlightKey : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.openByDefault,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           SliverToBoxAdapter(
@@ -638,7 +677,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.image_search_rounded,
               iconDisabled: Icons.link_off_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.scrapeMissingPreviews, value),
-              highlightKey: settingToHighlight == LocalSettings.scrapeMissingPreviews ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.scrapeMissingPreviews,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
@@ -669,7 +710,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   ImageCachingMode.relaxed => Icons.broken_image_outlined,
                 },
                 onChanged: (value) => setPreferences(LocalSettings.imageCachingMode, value.payload.name),
-                highlightKey: settingToHighlight == LocalSettings.imageCachingMode ? settingToHighlightKey : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.imageCachingMode,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           SliverToBoxAdapter(
@@ -680,7 +723,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.short_text_rounded,
               iconDisabled: Icons.short_text_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.showNavigationLabels, value),
-              highlightKey: settingToHighlight == LocalSettings.showNavigationLabels ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.showNavigationLabels,
+              highlightedSetting: settingToHighlight,
             ),
           ),
 
@@ -698,7 +743,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.update_rounded,
               iconDisabled: Icons.update_disabled_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.showInAppUpdateNotification, value),
-              highlightKey: settingToHighlight == LocalSettings.showInAppUpdateNotification ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.showInAppUpdateNotification,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -709,7 +756,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.featured_play_list_rounded,
               iconDisabled: Icons.featured_play_list_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.showUpdateChangelogs, value),
-              highlightKey: settingToHighlight == LocalSettings.showUpdateChangelogs ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.showUpdateChangelogs,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) ...[
@@ -784,7 +833,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 value: const ListPickerItem(payload: -1),
                 disabled: accounts.isEmpty,
                 icon: inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded,
-                highlightKey: settingToHighlight == LocalSettings.inboxNotificationType ? settingToHighlightKey : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.inboxNotificationType,
+                highlightedSetting: settingToHighlight,
                 customListPicker: StatefulBuilder(
                   builder: (context, setState) {
                     return BottomSheetListPicker<NotificationType>(
@@ -809,7 +860,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.local,
                                 softWrap: true,
                               ),
-                              if (kDebugMode)
+                              if (enableExperimentalFeatures)
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useUnifiedPushNotifications,
@@ -845,7 +896,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.none,
                                 softWrap: true,
                               ),
-                              if (kDebugMode)
+                              if (enableExperimentalFeatures)
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useApplePushNotifications,
@@ -928,6 +979,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       },
                     );
                   },
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.pushNotificationServer,
+                  highlightedSetting: settingToHighlight,
                 ),
               ),
             SliverToBoxAdapter(
@@ -943,6 +997,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     context.read<ThunderBloc>(),
                   ]);
                 },
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           ],
@@ -962,7 +1019,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 child: Icon(Icons.chevron_right_rounded),
               ),
               onTap: () async => await UserPreferences.exportToJson(),
-              highlightKey: settingToHighlight == LocalSettings.importExportSettings ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.importExportSettings,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -981,6 +1040,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
                 }
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),

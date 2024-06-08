@@ -337,7 +337,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: themeOptions,
                           icon: Icons.wallpaper_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.appTheme, value.payload.index),
-                          highlightKey: settingToHighlight == LocalSettings.appTheme ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.appTheme,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.themeAccentColor,
@@ -385,7 +387,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           icon: Icons.wallpaper_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
                           closeOnSelect: false,
-                          highlightKey: settingToHighlight == LocalSettings.appThemeAccentColor ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.appThemeAccentColor,
+                          highlightedSetting: settingToHighlight,
                         ),
                         if (!kIsWeb && Platform.isAndroid) ...[
                           ToggleOption(
@@ -395,7 +399,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             iconEnabled: Icons.color_lens_rounded,
                             iconDisabled: Icons.color_lens_rounded,
                             onToggle: (bool value) => setPreferences(LocalSettings.useMaterialYouTheme, value),
-                            highlightKey: settingToHighlight == LocalSettings.useMaterialYouTheme ? settingToHighlightKey : null,
+                            highlightKey: settingToHighlightKey,
+                            setting: LocalSettings.useMaterialYouTheme,
+                            highlightedSetting: settingToHighlight,
                           )
                         ],
                       ],
@@ -427,7 +433,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
-                          highlightKey: settingToHighlight == LocalSettings.titleFontSizeScale ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.titleFontSizeScale,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.postContentFontScale,
@@ -435,7 +443,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
-                          highlightKey: settingToHighlight == LocalSettings.contentFontSizeScale ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.contentFontSizeScale,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.commentFontScale,
@@ -443,7 +453,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
-                          highlightKey: settingToHighlight == LocalSettings.commentFontSizeScale ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.commentFontSizeScale,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.metadataFontScale,
@@ -451,7 +463,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
-                          highlightKey: settingToHighlight == LocalSettings.metadataFontSizeScale ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.metadataFontSizeScale,
+                          highlightedSetting: settingToHighlight,
                         ),
                       ],
                     ),
@@ -528,14 +542,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ],
                           icon: Icons.person_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.userFormat, value.payload.name),
-                          highlightKey: settingToHighlight == LocalSettings.userFormat ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.userFormat,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           isBottomModalScrollControlled: true,
                           value: const ListPickerItem(payload: -1),
                           description: l10n.userStyle,
                           icon: Icons.person_rounded,
-                          highlightKey: settingToHighlight == LocalSettings.userStyle ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.userStyle,
+                          highlightedSetting: settingToHighlight,
                           customListPicker: StatefulBuilder(
                             builder: (context, setState) {
                               return BottomSheetListPicker(
@@ -746,14 +764,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ],
                           icon: Icons.people_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),
-                          highlightKey: settingToHighlight == LocalSettings.communityFormat ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.communityFormat,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           isBottomModalScrollControlled: true,
                           value: const ListPickerItem(payload: -1),
                           description: l10n.communityStyle,
                           icon: Icons.person_rounded,
-                          highlightKey: settingToHighlight == LocalSettings.communityStyle ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.communityStyle,
+                          highlightedSetting: settingToHighlight,
                           customListPicker: StatefulBuilder(
                             builder: (context, setState) {
                               return BottomSheetListPicker(

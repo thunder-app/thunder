@@ -21,17 +21,13 @@ class CommentHeader extends StatelessWidget {
   final bool isOwnComment;
   final bool isHidden;
   final int moddingCommentId;
-  final DateTime now;
-  final List<CommunityModeratorView>? moderators;
 
   const CommentHeader({
     super.key,
     required this.comment,
-    required this.now,
     this.isOwnComment = false,
     required this.isHidden,
     this.moddingCommentId = -1,
-    required this.moderators,
   });
 
   @override
@@ -44,7 +40,7 @@ class CommentHeader extends StatelessWidget {
 
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
-    bool? isCommentNew = now.difference(comment.comment.published).inMinutes < 15;
+    bool? isCommentNew = DateTime.now().toUtc().difference(comment.comment.published).inMinutes < 15;
 
     List<UserType> userGroups = [];
 
@@ -53,6 +49,7 @@ class CommentHeader extends StatelessWidget {
     if (comment.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
     if (comment.post.creatorId == comment.creator.id) userGroups.add(UserType.op);
     if (comment.creator.id == accountState.personView?.person.id) userGroups.add(UserType.self);
+    if (comment.creator.published.month == DateTime.now().month && comment.creator.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(userGroups.isNotEmpty ? 8.0 : 8.0, 10.0, 8.0, 10.0),
@@ -62,11 +59,8 @@ class CommentHeader extends StatelessWidget {
             child: Row(
               children: [
                 UserChip(
-                  personId: comment.creator.id,
+                  person: comment.creator,
                   personAvatar: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
-                  personName: comment.creator.name,
-                  personDisplayName: comment.creator.displayName ?? comment.creator.name,
-                  personUrl: comment.creator.actorId,
                   userGroups: userGroups,
                   includeInstance: state.commentShowUserInstance,
                   ignorePointerEvents: isHidden && collapseParentCommentOnGesture,

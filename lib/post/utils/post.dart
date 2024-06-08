@@ -95,26 +95,40 @@ Future<bool> deletePost(int postId, bool delete) async {
 // Optimistically updates a post. This changes the value of the post locally, without sending the network request
 PostView optimisticallyVotePost(PostViewMedia postViewMedia, int voteType) {
   int newScore = postViewMedia.postView.counts.score;
-  int? existingint = postViewMedia.postView.myVote;
+  int newUpvotes = postViewMedia.postView.counts.upvotes;
+  int newDownvotes = postViewMedia.postView.counts.downvotes;
+  int? existingVoteType = postViewMedia.postView.myVote;
 
   switch (voteType) {
     case -1:
-      existingint == 1 ? newScore -= 2 : newScore--;
-      break;
+      existingVoteType == 1 ? newScore -= 2 : newScore--;
+      newDownvotes++;
+      if (existingVoteType == 1) newUpvotes--;
     case 1:
-      existingint == -1 ? newScore += 2 : newScore++;
+      existingVoteType == -1 ? newScore += 2 : newScore++;
+      newUpvotes++;
+      if (existingVoteType == -1) newDownvotes--;
       break;
     case 0:
       // Determine score from existing
-      if (existingint == -1) {
+      if (existingVoteType == -1) {
         newScore++;
-      } else if (existingint == 1) {
+        newDownvotes--;
+      } else if (existingVoteType == 1) {
         newScore--;
+        newUpvotes--;
       }
       break;
   }
 
-  return postViewMedia.postView.copyWith(myVote: voteType, counts: postViewMedia.postView.counts.copyWith(score: newScore));
+  return postViewMedia.postView.copyWith(
+    myVote: voteType,
+    counts: postViewMedia.postView.counts.copyWith(
+      score: newScore,
+      upvotes: newUpvotes,
+      downvotes: newDownvotes,
+    ),
+  );
 }
 
 // Optimistically saves a post. This changes the value of the post locally, without sending the network request

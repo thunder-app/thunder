@@ -77,6 +77,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _betterPlayerController
       ..setupDataSource(_betterPlayerDataSource)
+
       ..setVolume(thunderBloc.videoAutoMute ? 0 : 4)
       ..setSpeed(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')))
       ..addEventsListener((event) {

@@ -60,7 +60,7 @@ class PickerItem<T> extends StatelessWidget {
                       )
                     : null),
             leading: icon != null ? Icon(icon) : this.leading,
-            trailing: Icon(trailingIcon),
+            trailing: trailingIcon != null ? Icon(trailingIcon) : null,
           ),
         ),
       ),
