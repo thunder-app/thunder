@@ -16,7 +16,7 @@ void showSnackbar(
   IconData? leadingIcon,
   Color? trailingIconColor,
   IconData? trailingIcon,
-  bool? closable,
+  bool closable = true,
   void Function()? trailingAction,
 }) {
   int wordCount = RegExp(r'[\w-]+').allMatches(text).length;
@@ -35,29 +35,31 @@ void showSnackbar(
                 if (leadingIcon != null) ...[Icon(leadingIcon, color: leadingIconColor), const SizedBox(width: 8.0)],
                 Expanded(child: Text(text)),
                 if (trailingIcon != null)
-                  GestureDetector(
-                    onTap: trailingAction != null
-                        ? () {
-                            OverlaySupportEntry.of(context)?.dismiss();
-                            trailingAction();
-                          }
-                        : null,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: trailingAction != null
+                          ? () {
+                              OverlaySupportEntry.of(context)?.dismiss();
+                              trailingAction();
+                            }
+                          : null,
                       child: Icon(trailingIcon, color: trailingIconColor ?? Theme.of(context).colorScheme.inversePrimary),
                     ),
                   ),
-                if (closable == true)
-                  GestureDetector(
-                    onTap: () => OverlaySupportEntry.of(context)?.dismiss(),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
+                if (closable)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: () => OverlaySupportEntry.of(context)?.dismiss(),
                       child: Icon(Icons.close_rounded, color: Theme.of(context).colorScheme.surface),
                     ),
                   ),
               ],
             ),
-            closable: closable ?? false,
+            closable: closable,
           ),
           progress: progress,
         );
@@ -151,7 +153,7 @@ class ThunderSnackbar extends StatefulWidget {
   /// See https://m3.material.io/components/snackbar/specs#c7b5d52a-24e7-45ca-8db6-7ce7d80a1cea
   final bool closable;
 
-  const ThunderSnackbar({super.key, required this.content, this.closable = false});
+  const ThunderSnackbar({super.key, required this.content, this.closable = true});
 
   @override
   State<ThunderSnackbar> createState() => _ThunderSnackbarState();
