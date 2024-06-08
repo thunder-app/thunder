@@ -2,6 +2,7 @@ ani.social
 aussie.zone
 awful.systems
 beehaw.org
+burggit.moe
 discuss.online
 discuss.tchncs.de
 feddit.de
@@ -27,7 +28,6 @@ lemmy.one
 lemmy.sdf.org
 lemmy.today
 lemmy.world
-lemmy.wtf
 lemmy.zip
 lemmygrad.ml
 lemmynsfw.com

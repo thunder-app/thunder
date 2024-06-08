@@ -78,6 +78,7 @@
               <data android:host="aussie.zone" />
               <data android:host="awful.systems" />
               <data android:host="beehaw.org" />
+              <data android:host="burggit.moe" />
               <data android:host="discuss.online" />
               <data android:host="discuss.tchncs.de" />
               <data android:host="feddit.de" />
@@ -103,7 +104,6 @@
               <data android:host="lemmy.sdf.org" />
               <data android:host="lemmy.today" />
               <data android:host="lemmy.world" />
-              <data android:host="lemmy.wtf" />
               <data android:host="lemmy.zip" />
               <data android:host="lemmygrad.ml" />
               <data android:host="lemmynsfw.com" />
