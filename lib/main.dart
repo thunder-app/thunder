@@ -42,7 +42,6 @@ import 'package:thunder/routes.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/preferences.dart';
@@ -180,7 +179,7 @@ class _ThunderAppState extends State<ThunderApp> {
         ),
         BlocProvider(
           create: (context) => NetworkCheckerCubit()..getConnectionType(),
-        ),
+        )
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
