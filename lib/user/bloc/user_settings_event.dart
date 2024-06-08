@@ -28,11 +28,14 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
   /// The matrix user id associated with the user
   final String? matrixUserId;
 
+  /// The default listing type for the feed
+  final ListingType? defaultListingType;
+
+  /// The default sort type for the feed
+  final SortType? defaultSortType;
+
   /// Whether or not NSFW content should be shown
   final bool? showNsfw;
-
-  /// Whether or not NSFW content should be blurred
-  final bool? blurNsfw;
 
   /// Whether or not read posts should be shown
   final bool? showReadPosts;
@@ -51,8 +54,9 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
     this.bio,
     this.email,
     this.matrixUserId,
+    this.defaultListingType,
+    this.defaultSortType,
     this.showNsfw,
-    this.blurNsfw,
     this.showReadPosts,
     this.showScores,
     this.showBotAccounts,

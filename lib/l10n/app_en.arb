@@ -15,6 +15,10 @@
   "@accountBirthday": {
     "description": "User descriptor for accounts created on today's date"
   },
+  "accountSettingOverrideWarning": "Your account settings override the following settings",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
@@ -139,6 +143,10 @@
   "@blockCommunity": {},
   "blockInstance": "Block Instance",
   "@blockInstance": {},
+  "blockManagement": "Block Management",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
   "blockSettingLabel": "User/Community/Instance Blocks",
   "@blockSettingLabel": {
     "description": "Setting for user, community, and instance block settings"
@@ -154,10 +162,6 @@
   "blue": "Blue",
   "@blue": {
     "description": "The color blue"
-  },
-  "blurNsfwContent": "Blur NSFW Content",
-  "@blurNsfwContent": {
-    "description": "Toggle to blur NSFW content"
   },
   "bold": "Bold",
   "@bold": {
@@ -852,6 +856,14 @@
   "green": "Green",
   "@green": {
     "description": "The color green"
+  },
+  "guestModeFeedSettings": "Guest Mode Feed Settings",
+  "@guestModeFeedSettings": {
+    "description": "Feed settings for guest accounts"
+  },
+  "guestModeFeedSettingsLabel": "The following settings are only applied to guest accounts. To adjust feed settings for your account, go to Account Settings.",
+  "@guestModeFeedSettingsLabel": {
+    "description": "Description for guest mode feed settings"
   },
   "havingIssuesWithNotifications": "Having issues with notifications?",
   "@havingIssuesWithNotifications": {
@@ -2474,7 +2486,5 @@
   "yes": "Yes",
   "@yes": {
     "description": "A positive status"
-  },
-  "accountSettingOverrideWarning": "Your account settings override the following settings",
-  "blockManagement": "Block Management"
+  }
 }

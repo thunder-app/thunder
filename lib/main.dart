@@ -181,7 +181,6 @@ class _ThunderAppState extends State<ThunderApp> {
         BlocProvider(
           create: (context) => NetworkCheckerCubit()..getConnectionType(),
         ),
-        BlocProvider(create: (context) => UserSettingsBloc()),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {

@@ -7,20 +7,25 @@ import "package:swipeable_page_route/swipeable_page_route.dart";
 
 import "package:thunder/account/bloc/account_bloc.dart";
 import "package:thunder/account/widgets/account_placeholder.dart";
+import "package:thunder/core/auth/bloc/auth_bloc.dart";
 import "package:thunder/core/enums/local_settings.dart";
 import "package:thunder/core/singletons/lemmy_client.dart";
 import "package:thunder/settings/widgets/discussion_language_selector.dart";
+import "package:thunder/settings/widgets/list_option.dart";
 import "package:thunder/settings/widgets/settings_list_tile.dart";
 import "package:thunder/settings/widgets/toggle_option.dart";
 import "package:thunder/shared/dialogs.dart";
 import "package:thunder/shared/snackbar.dart";
+import "package:thunder/shared/sort_picker.dart";
 import "package:thunder/thunder/bloc/thunder_bloc.dart";
 import "package:thunder/thunder/thunder_icons.dart";
 import "package:thunder/user/bloc/user_settings_bloc.dart";
 import "package:thunder/user/pages/user_settings_block_page.dart";
 import "package:thunder/user/widgets/user_indicator.dart";
+import "package:thunder/utils/bottom_sheet_list_picker.dart";
 import "package:thunder/utils/links.dart";
 import "package:thunder/account/utils/profiles.dart";
+import "package:version/version.dart";
 
 /// A widget that displays the user's account settings. These settings are synchronized with the instance and should be preferred over the app settings.
 class UserSettingsPage extends StatefulWidget {
@@ -70,6 +75,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             listener: (context, state) {
               if (state.status == UserSettingsStatus.failure) {
                 showSnackbar(state.errorMessage ?? l10n.unexpectedError);
+              }
+
+              if (state.status == UserSettingsStatus.success) {
+                context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
               }
             },
             builder: (context, state) {
@@ -261,9 +270,52 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 ),
                               ),
                             ),
+                            ListOption(
+                              description: l10n.defaultFeedType,
+                              value: ListPickerItem(label: localUser!.defaultListingType.value, icon: Icons.feed, payload: localUser.defaultListingType),
+                              options: [
+                                ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
+                                ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
+                                ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
+                              ],
+                              icon: Icons.filter_alt_rounded,
+                              onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultListingType: value.payload)),
+                            ),
+                            ListOption(
+                              description: l10n.defaultFeedSortType,
+                              value: ListPickerItem(label: localUser.defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: localUser.defaultSortType),
+                              options: [
+                                ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                                ...topSortTypeItems
+                              ],
+                              icon: Icons.sort_rounded,
+                              onChanged: (_) async {},
+                              isBottomModalScrollControlled: true,
+                              customListPicker: SortPicker(
+                                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
+                                title: l10n.defaultFeedSortType,
+                                onSelect: (value) async {
+                                  context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultSortType: value.payload));
+                                },
+                                previouslySelected: localUser.defaultSortType,
+                              ),
+                              valueDisplay: Row(
+                                children: [
+                                  Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).icon, size: 13),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).label,
+                                    style: theme.textTheme.titleSmall,
+                                  ),
+                                ],
+                              ),
+                              highlightKey: null,
+                              setting: null,
+                              highlightedSetting: null,
+                            ),
                             ToggleOption(
                               description: l10n.showNsfwContent,
-                              value: localUser?.showNsfw,
+                              value: localUser.showNsfw,
                               iconEnabled: Icons.no_adult_content,
                               iconDisabled: Icons.no_adult_content,
                               onToggle: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
@@ -272,18 +324,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               highlightedSetting: null,
                             ),
                             ToggleOption(
-                              description: l10n.blurNsfwContent,
-                              value: localUser?.blurNsfw,
-                              iconEnabled: Icons.no_adult_content,
-                              iconDisabled: Icons.no_adult_content,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(blurNsfw: value))},
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
-                            ),
-                            ToggleOption(
                               description: l10n.showScores,
-                              value: localUser?.showScores,
+                              value: localUser.showScores,
                               iconEnabled: Icons.onetwothree_rounded,
                               iconDisabled: Icons.onetwothree_rounded,
                               onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
@@ -293,7 +335,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             ),
                             ToggleOption(
                               description: l10n.showReadPosts,
-                              value: localUser?.showReadPosts,
+                              value: localUser.showReadPosts,
                               iconEnabled: Icons.fact_check_rounded,
                               iconDisabled: Icons.fact_check_outlined,
                               onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
@@ -303,7 +345,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             ),
                             ToggleOption(
                               description: l10n.showBotAccounts,
-                              value: localUser?.showBotAccounts,
+                              value: localUser.showBotAccounts,
                               iconEnabled: Thunder.robot,
                               iconDisabled: Thunder.robot,
                               iconSpacing: 14.0,

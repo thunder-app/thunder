@@ -358,8 +358,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Guest Mode Feed Settings", style: theme.textTheme.titleMedium),
-                      const Text("These settings are only applied to guest accounts. To adjust feed settings for your account, go to Account Settings."),
+                      Text(l10n.guestModeFeedSettings, style: theme.textTheme.titleMedium),
+                      Text(l10n.guestModeFeedSettingsLabel),
                     ],
                   ),
                 ),

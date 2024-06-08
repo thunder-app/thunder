@@ -100,7 +100,8 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         showScores: event.showScores ?? state.getSiteResponse!.myUser!.localUserView.localUser.showScores,
         showBotAccounts: event.showBotAccounts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showBotAccounts,
         showNsfw: event.showNsfw ?? state.getSiteResponse!.myUser!.localUserView.localUser.showNsfw,
-        blurNsfw: event.blurNsfw ?? state.getSiteResponse!.myUser!.localUserView.localUser.blurNsfw,
+        defaultListingType: event.defaultListingType ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultListingType,
+        defaultSortType: event.defaultSortType ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType,
       );
 
       GetSiteResponse updatedGetSiteResponse = state.getSiteResponse!.copyWith(
@@ -129,8 +130,9 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         email: event.email,
         matrixUserId: event.matrixUserId,
         displayName: event.displayName,
+        defaultListingType: event.defaultListingType,
+        defaultSortType: event.defaultSortType,
         showNsfw: event.showNsfw,
-        blurNsfw: event.blurNsfw,
         showReadPosts: event.showReadPosts,
         showScores: event.showScores,
         showBotAccounts: event.showBotAccounts,

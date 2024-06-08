@@ -88,8 +88,8 @@ Future<void> navigateToFeedPage(
     return context.read<FeedBloc>().add(
           FeedFetchedEvent(
             feedType: feedType,
-            postListingType: postListingType,
-            sortType: sortType ?? thunderBloc.state.sortTypeForInstance,
+            postListingType: postListingType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType,
+            sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
             communityId: communityId,
             communityName: communityName,
             userId: userId,
@@ -121,12 +121,12 @@ Future<void> navigateToFeedPage(
       child: Material(
         child: FeedPage(
           feedType: feedType,
-          sortType: sortType ?? thunderBloc.state.sortTypeForInstance,
+          sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
           communityName: communityName,
           communityId: communityId,
           userId: userId,
           username: username,
-          postListingType: postListingType,
+          postListingType: postListingType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType,
         ),
       ),
     ),

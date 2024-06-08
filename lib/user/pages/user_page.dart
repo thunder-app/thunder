@@ -103,7 +103,8 @@ class _UserPageState extends State<UserPage> {
                     onPressed: () {
                       final AccountBloc accountBloc = context.read<AccountBloc>();
                       final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                      final UserSettingsBloc userSettingsBloc = context.read<UserSettingsBloc>();
+                      final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
+
                       Navigator.of(context).push(
                         SwipeablePageRoute(
                           transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
