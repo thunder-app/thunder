@@ -27,6 +27,7 @@ import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -349,60 +350,83 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             toolbarHeight: 70.0,
             pinned: true,
           ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Guest Mode Feed Settings", style: theme.textTheme.titleMedium),
+                      const Text("These settings are only applied to guest accounts. To adjust feed settings for your account, go to Account Settings."),
+                    ],
+                  ),
+                ),
+                ListOption(
+                  description: l10n.defaultFeedType,
+                  value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
+                  options: [
+                    ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
+                    ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
+                    ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
+                  ],
+                  icon: Icons.filter_alt_rounded,
+                  onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.defaultFeedListingType,
+                  highlightedSetting: settingToHighlight,
+                ),
+                ListOption(
+                  description: l10n.defaultFeedSortType,
+                  value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
+                  options: [
+                    ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                    ...topSortTypeItems
+                  ],
+                  icon: Icons.sort_rounded,
+                  onChanged: (_) async {},
+                  isBottomModalScrollControlled: true,
+                  customListPicker: SortPicker(
+                    minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
+                    title: l10n.defaultFeedSortType,
+                    onSelect: (value) async {
+                      setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
+                    },
+                    previouslySelected: defaultSortType,
+                  ),
+                  valueDisplay: Row(
+                    children: [
+                      Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).icon, size: 13),
+                      const SizedBox(width: 4),
+                      Text(
+                        allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).label,
+                        style: theme.textTheme.titleSmall,
+                      ),
+                    ],
+                  ),
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.defaultFeedSortType,
+                  highlightedSetting: settingToHighlight,
+                ),
+                ToggleOption(
+                  description: l10n.hideNsfwPostsFromFeed,
+                  value: hideNsfwPosts,
+                  iconEnabled: Icons.no_adult_content,
+                  iconDisabled: Icons.no_adult_content,
+                  onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.hideNsfwPosts,
+                  highlightedSetting: settingToHighlight,
+                ),
+                const ThunderDivider(sliver: false),
+              ],
+            ),
+          ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.feedTypeAndSorts, style: theme.textTheme.titleMedium),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.defaultFeedType,
-              value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
-              options: [
-                ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
-                ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
-                ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
-              ],
-              icon: Icons.filter_alt_rounded,
-              onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.defaultFeedListingType,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.defaultFeedSortType,
-              value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
-              options: [
-                ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
-                ...topSortTypeItems
-              ],
-              icon: Icons.sort_rounded,
-              onChanged: (_) async {},
-              isBottomModalScrollControlled: true,
-              customListPicker: SortPicker(
-                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
-                title: l10n.defaultFeedSortType,
-                onSelect: (value) async {
-                  setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
-                },
-                previouslySelected: defaultSortType,
-              ),
-              valueDisplay: Row(
-                children: [
-                  Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).icon, size: 13),
-                  const SizedBox(width: 4),
-                  Text(
-                    allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).label,
-                    style: theme.textTheme.titleSmall,
-                  ),
-                ],
-              ),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.defaultFeedSortType,
-              highlightedSetting: settingToHighlight,
+              child: Text(l10n.feedBehaviourSettings, style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
@@ -458,7 +482,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               highlightedSetting: settingToHighlight,
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: ToggleOption(
               description: l10n.useProfilePictureForDrawer,
@@ -469,25 +492,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               onToggle: (value) => setPreferences(LocalSettings.useProfilePictureForDrawer, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.useProfilePictureForDrawer,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.feedBehaviourSettings, style: theme.textTheme.titleMedium),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.hideNsfwPostsFromFeed,
-              value: hideNsfwPosts,
-              iconEnabled: Icons.no_adult_content,
-              iconDisabled: Icons.no_adult_content,
-              onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.hideNsfwPosts,
               highlightedSetting: settingToHighlight,
             ),
           ),
