@@ -1081,9 +1081,9 @@
   "@modAddCommunity": {
     "description": "Description for modlog filter for actions that add moderators to communities"
   },
-  "modBan": "Ban/Unban Instance Moderators",
+  "modBan": "Ban/Unban Instance Users",
   "@modBan": {
-    "description": "Description for modlog filter for actions that ban instance moderators"
+    "description": "Description for modlog filter for actions that ban instance users"
   },
   "modBanFromCommunity": "Ban/Unban Users from Communities",
   "@modBanFromCommunity": {
