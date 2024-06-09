@@ -6,8 +6,14 @@ import 'package:thunder/main.dart';
 import 'package:thunder/utils/instance.dart';
 
 class UserLabel {
+  /// The ID of the object in the database (should never need to be set explicitly).
   final String id;
+
+  /// The username of the user being labeled (in the form user@instance.tld).
+  /// Use [usernameFromParts] to consistently generate this.
   final String username;
+
+  /// The label which is being applied to the user.
   final String label;
 
   const UserLabel({
