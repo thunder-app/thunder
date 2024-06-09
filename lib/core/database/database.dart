@@ -21,9 +21,16 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
-          if (from == 1) {
-            // The only change from schema 1 is the UserLabels table
+          // If we are migrating from 1 to anything higher
+          if (from == 1 && to > 1) {
+            // Create the UserLabels table
             await migrator.createTable(userLabels);
+          }
+
+          // If we are downgrading from 2 or higher to 1
+          if (from >= 2 && to == 1) {
+            // Delete the UserBales table
+            await migrator.deleteTable('user_labels');
           }
         },
       );
