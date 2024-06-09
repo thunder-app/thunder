@@ -42,26 +42,35 @@ Future<T?> showThunderDialog<T>({
                 ),
         ),
         actions: [
-          if (tertiaryButtonText != null)
-            TextButton(
-              onPressed: onTertiaryButtonPressed == null ? null : () => onTertiaryButtonPressed(context),
-              child: Text(tertiaryButtonText),
-            ),
-          if (secondaryButtonText != null)
-            TextButton(
-              onPressed: onSecondaryButtonPressed == null ? null : () => onSecondaryButtonPressed(context),
-              child: Text(secondaryButtonText),
-            ),
-          if (primaryButtonText != null)
-            FilledButton(
-              onPressed: !primaryButtonEnabled || onPrimaryButtonPressed == null
-                  ? null
-                  : () => onPrimaryButtonPressed(
-                        context,
-                        (enabled) => setState(() => primaryButtonEnabled = enabled),
-                      ),
-              child: Text(primaryButtonText),
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              if (tertiaryButtonText != null) ...[
+                TextButton(
+                  onPressed: onTertiaryButtonPressed == null ? null : () => onTertiaryButtonPressed(context),
+                  child: Text(tertiaryButtonText),
+                ),
+                const Spacer(),
+              ],
+              if (secondaryButtonText != null) ...[
+                TextButton(
+                  onPressed: onSecondaryButtonPressed == null ? null : () => onSecondaryButtonPressed(context),
+                  child: Text(secondaryButtonText),
+                ),
+                const SizedBox(width: 5),
+              ],
+              if (primaryButtonText != null)
+                FilledButton(
+                  onPressed: !primaryButtonEnabled || onPrimaryButtonPressed == null
+                      ? null
+                      : () => onPrimaryButtonPressed(
+                            context,
+                            (enabled) => setState(() => primaryButtonEnabled = enabled),
+                          ),
+                  child: Text(primaryButtonText),
+                ),
+            ],
+          ),
         ],
       ),
     );
