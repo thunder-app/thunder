@@ -24,6 +24,7 @@ import 'package:thunder/main.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
+import 'package:thunder/notification/utils/notification_utils.dart';
 import 'package:thunder/utils/instance.dart';
 
 const String _lastPollTimeId = 'thunder_last_notifications_poll_time';
@@ -97,7 +98,7 @@ Future<void> pollRepliesAndShowNotifications() async {
 
     for (CommentReplyView commentReplyView in replies) {
       final String commentContent = cleanCommentContent(commentReplyView.comment);
-      final String htmlComment = markdownToHtml(commentContent);
+      final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
       final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
       final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(

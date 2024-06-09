@@ -9,6 +9,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
+import 'package:thunder/notification/utils/notification_utils.dart';
 
 import 'package:thunder/shared/link_information.dart';
 import 'package:thunder/utils/colors.dart';
@@ -103,7 +104,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     String? plainTextComment;
     if (widget.postViewMedia.postView.post.body?.isNotEmpty == true) {
-      final String htmlComment = markdownToHtml(widget.postViewMedia.postView.post.body!);
+      final String htmlComment = cleanImagesFromHtml(markdownToHtml(widget.postViewMedia.postView.post.body!));
       plainTextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? widget.postViewMedia.postView.post.body!;
     }
 
