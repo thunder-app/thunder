@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,6 +50,10 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
   String? unifiedPushDistributorApp;
   int unifiedPushDistributorAppCount = 0;
   String? pushNotificationServer;
+  String? unifiedPushServer;
+  String? thunderNotificationServer;
+  String? thunderNotificationServerPing;
+  bool pingDone = false;
 
   /// Enable experimental features in the app.
   bool enableExperimentalFeatures = false;
@@ -76,10 +81,37 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
         AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
             FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
+        // Check if notifications are allowed
         areNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled() ?? false;
 
+        // Find the current and available UnifiedPush distributor apps
         unifiedPushDistributorApp = await UnifiedPush.getDistributor();
         unifiedPushDistributorAppCount = (await UnifiedPush.getDistributors()).length;
+
+        // Find the UnifiedPush server endpoint
+        Uri? unifiedPushEnpoint = Uri.tryParse(prefs.getString('unified_push_endpoint') ?? '');
+        if (unifiedPushEnpoint != null) {
+          unifiedPushServer = '${unifiedPushEnpoint.scheme}://${unifiedPushEnpoint.host}';
+        }
+
+        // Find the Thunder notification server
+        thunderNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name);
+
+        // Ping the Thunder notification server
+        Uri? thunderNotificationServerUri = Uri.tryParse(thunderNotificationServer ?? '');
+        if (thunderNotificationServerUri != null) {
+          Future.microtask(() async {
+            PingData pingData = await Ping(
+              thunderNotificationServerUri.host,
+              count: 1,
+              timeout: 5,
+            ).stream.first;
+            setState(() {
+              pingDone = true;
+              thunderNotificationServerPing = pingData.response?.time == null ? null : '${pingData.response?.time?.inMilliseconds}ms';
+            });
+          });
+        }
       } else if (!kIsWeb && Platform.isIOS) {
         IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
@@ -303,6 +335,30 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               child: SettingsListTile(
                 icon: Icons.info_rounded,
                 description: l10n.unifiedPushDistributorApp(unifiedPushDistributorApp ?? l10n.none, unifiedPushDistributorAppCount),
+                widget: Container(),
+                onTap: null,
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
+              ),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+            SliverToBoxAdapter(
+              child: SettingsListTile(
+                icon: Icons.info_rounded,
+                description: '${l10n.thunderNotificationServer(thunderNotificationServer ?? l10n.none)} ${pingDone ? '(${thunderNotificationServerPing ?? l10n.offline})' : ''}',
+                widget: Container(),
+                onTap: null,
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
+              ),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+            SliverToBoxAdapter(
+              child: SettingsListTile(
+                icon: Icons.info_rounded,
+                description: l10n.unifiedPushServer(unifiedPushServer ?? l10n.none),
                 widget: Container(),
                 onTap: null,
                 highlightKey: settingToHighlightKey,
