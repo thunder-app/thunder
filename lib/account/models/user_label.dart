@@ -5,6 +5,8 @@ import 'package:thunder/core/database/database.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/utils/instance.dart';
 
+/// Represents a UserLabel, which is used to associate a textual description along with a Lemmy user.
+/// Contains helper methods to load/save corresponding objects in the database.
 class UserLabel {
   /// The ID of the object in the database (should never need to be set explicitly).
   final String id;
