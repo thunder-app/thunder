@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
@@ -27,6 +28,8 @@ Color? fetchUserGroupColor(BuildContext context, List<UserType> userGroups) {
     color = UserType.moderator.color;
   } else if (userGroups.contains(UserType.bot)) {
     color = UserType.bot.color;
+  } else if (userGroups.contains(UserType.birthday)) {
+    color = UserType.birthday.color;
   }
 
   if (color != null) {
@@ -45,7 +48,7 @@ Color? fetchUserGroupColor(BuildContext context, List<UserType> userGroups) {
 /// Fetches the user group descriptor based on the given [userGroups].
 ///
 /// If the user is in multiple groups, the descriptor will contain all of them.
-String fetchUserGroupDescriptor(List<UserType> userGroups) {
+String fetchUserGroupDescriptor(List<UserType> userGroups, Person? person) {
   List<String> descriptors = [];
   String descriptor = '';
 
@@ -56,8 +59,14 @@ String fetchUserGroupDescriptor(List<UserType> userGroups) {
   if (userGroups.contains(UserType.admin)) descriptors.add(l10n.admin);
   if (userGroups.contains(UserType.moderator)) descriptors.add(l10n.moderator);
   if (userGroups.contains(UserType.bot)) descriptors.add(l10n.bot);
-
   if (descriptors.isNotEmpty) descriptor = ' (${descriptors.join(', ')})';
+
+  if (userGroups.contains(UserType.birthday) && person != null) {
+    int yearsOld = DateTime.now().year - person.published.year;
+    descriptor += '\n${l10n.accountBirthday(
+      yearsOld == 0 ? '(${l10n.createdToday})' : '(${l10n.xYearsOld(yearsOld, yearsOld)})',
+    )}';
+  }
 
   return descriptor;
 }

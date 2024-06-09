@@ -52,6 +52,7 @@ enum PostCardAction {
   blockInstance,
   sharePost,
   sharePostLocal,
+  shareImage,
   shareMedia,
   shareLink,
   shareAdvanced,
@@ -177,10 +178,16 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     getSubtitleLabel: (context, postViewMedia) => LemmyClient.instance.generatePostUrl(postViewMedia.postView.post.id),
   ),
   ExtendedPostCardActions(
-    postCardAction: PostCardAction.shareMedia,
+    postCardAction: PostCardAction.shareImage,
     icon: Icons.image_rounded,
-    label: l10n.shareMedia,
-    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.thumbnailUrl,
+    label: l10n.shareImage,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.imageUrl,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.shareMedia,
+    icon: Icons.personal_video_rounded,
+    label: l10n.shareMediaLink,
+    getSubtitleLabel: (context, postViewMedia) => postViewMedia.media.first.mediaUrl,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.shareLink,
@@ -328,6 +335,7 @@ void showPostActionBottomModalSheet(
       .where((extendedAction) => [
             PostCardAction.sharePost,
             PostCardAction.sharePostLocal,
+            PostCardAction.shareImage,
             PostCardAction.shareMedia,
             PostCardAction.shareLink,
             PostCardAction.shareAdvanced,
@@ -336,14 +344,17 @@ void showPostActionBottomModalSheet(
 
   // Remove the share link option if there is no link
   // Or if the media link is the same as the external link
-  if (postViewMedia.media.isEmpty ||
-      (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image) ||
-      postViewMedia.media.first.originalUrl == postViewMedia.media.first.thumbnailUrl) {
+  if (postViewMedia.media.isEmpty || postViewMedia.media.first.originalUrl == postViewMedia.media.first.imageUrl || postViewMedia.media.first.originalUrl == postViewMedia.media.first.mediaUrl) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareLink);
   }
 
+  // Remove the share image option if there is no image
+  if (postViewMedia.media.isEmpty || postViewMedia.media.first.imageUrl?.isNotEmpty != true) {
+    sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareImage);
+  }
+
   // Remove the share media option if there is no media
-  if (postViewMedia.media.isEmpty || postViewMedia.media.first.thumbnailUrl == null) {
+  if (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl?.isNotEmpty != true) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareMedia);
   }
 
@@ -588,12 +599,12 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
       case PostCardAction.sharePostLocal:
         action = () => Share.share(LemmyClient.instance.generatePostUrl(widget.postViewMedia.postView.post.id));
         break;
-      case PostCardAction.shareMedia:
+      case PostCardAction.shareImage:
         action = () async {
-          if (widget.postViewMedia.media.first.thumbnailUrl != null) {
+          if (widget.postViewMedia.media.first.imageUrl != null) {
             try {
               // Try to get the cached image first
-              var media = await DefaultCacheManager().getFileFromCache(widget.postViewMedia.media.first.thumbnailUrl!);
+              var media = await DefaultCacheManager().getFileFromCache(widget.postViewMedia.media.first.imageUrl!);
               File? mediaFile = media?.file;
 
               if (media == null) {
@@ -601,7 +612,7 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                 showSnackbar(AppLocalizations.of(widget.outerContext)!.downloadingMedia);
 
                 // Download
-                mediaFile = await DefaultCacheManager().getSingleFile(widget.postViewMedia.media.first.thumbnailUrl!);
+                mediaFile = await DefaultCacheManager().getSingleFile(widget.postViewMedia.media.first.imageUrl!);
               }
 
               // Share
@@ -612,6 +623,9 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
             }
           }
         };
+        break;
+      case PostCardAction.shareMedia:
+        action = () => Share.share(widget.postViewMedia.media.first.mediaUrl!);
         break;
       case PostCardAction.shareLink:
         action = () {
