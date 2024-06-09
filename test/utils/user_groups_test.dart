@@ -18,21 +18,21 @@ void main() {
     testWidgets('fetchUsernameDescriptor returns empty string if user is in no groups', (tester) async {
       await tester.pumpWidget(const BaseWidget());
 
-      String result = fetchUserGroupDescriptor([]);
+      String result = fetchUserGroupDescriptor([], null);
       expect(result, '');
     });
 
     testWidgets('fetchUsernameDescriptor returns correct string for a single group', (tester) async {
       await tester.pumpWidget(const BaseWidget());
 
-      String result = fetchUserGroupDescriptor([UserType.admin]);
+      String result = fetchUserGroupDescriptor([UserType.admin], null);
       expect(result, ' (Admin)');
     });
 
     testWidgets('fetchUsernameDescriptor returns correct string for multiple groups', (tester) async {
       await tester.pumpWidget(const BaseWidget());
 
-      String result = fetchUserGroupDescriptor([UserType.admin, UserType.moderator]);
+      String result = fetchUserGroupDescriptor([UserType.admin, UserType.moderator], null);
       expect(result, ' (Admin, Moderator)');
     });
 

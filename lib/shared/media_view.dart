@@ -9,9 +9,10 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
+import 'package:thunder/notification/utils/notification_utils.dart';
 
 import 'package:thunder/shared/link_information.dart';
-import 'package:thunder/utils/links.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/core/enums/view_mode.dart';
@@ -103,7 +104,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     String? plainTextComment;
     if (widget.postViewMedia.postView.post.body?.isNotEmpty == true) {
-      final String htmlComment = markdownToHtml(widget.postViewMedia.postView.post.body!);
+      final String htmlComment = cleanImagesFromHtml(markdownToHtml(widget.postViewMedia.postView.post.body!));
       plainTextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? widget.postViewMedia.postView.post.body!;
     }
 
@@ -162,7 +163,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         },
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           return ImageViewer(
-            url: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.originalUrl!,
+            url: widget.postViewMedia.media.first.imageUrl,
             postId: widget.postViewMedia.postView.post.id,
             navigateToPost: widget.navigateToPost,
           );
@@ -186,7 +187,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-          color: theme.colorScheme.primary.withOpacity(0.2),
+          color: getBackgroundColor(context),
         ),
         constraints: BoxConstraints(
             maxHeight: switch (widget.viewMode) {
@@ -253,7 +254,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-          color: theme.colorScheme.primary.withOpacity(0.2),
+          color: getBackgroundColor(context),
         ),
         constraints: BoxConstraints(
             maxHeight: switch (widget.viewMode) {
@@ -278,6 +279,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
           alignment: Alignment.bottomLeft,
           children: [
+            if (!widget.postViewMedia.postView.post.nsfw && widget.postViewMedia.media.first.thumbnailUrl?.isNotEmpty != true)
+              Icon(
+                Icons.video_camera_back_outlined,
+                color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+              ),
             if (widget.postViewMedia.media.first.thumbnailUrl != null)
               ImageFiltered(
                 enabled: blurNSFWPreviews,
@@ -399,7 +405,18 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             _controller.reset();
             state.imageProvider.evict();
 
-            return Container();
+            return widget.postViewMedia.postView.post.nsfw
+                ? Container()
+                : Icon(
+                    switch (widget.postViewMedia.media.first.mediaType) {
+                      MediaType.image => Icons.image_not_supported_outlined,
+                      MediaType.video => Icons.video_camera_back_outlined,
+                      MediaType.link => Icons.language_rounded,
+                      // Should never come here
+                      MediaType.text => Icons.text_fields_rounded,
+                    },
+                    color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                  );
         }
       },
     );
