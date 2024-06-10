@@ -43,6 +43,9 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
   /// Whether or not post/comment scores should be shown
   final bool? showScores;
 
+  /// Whether the current user is a bot
+  final bool? botAccount;
+
   /// Whether or not bot accounts should be shown
   final bool? showBotAccounts;
 
@@ -59,6 +62,7 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
     this.showNsfw,
     this.showReadPosts,
     this.showScores,
+    this.botAccount,
     this.showBotAccounts,
     this.discussionLanguages,
   });

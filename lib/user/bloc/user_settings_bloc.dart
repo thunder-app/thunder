@@ -108,6 +108,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         myUser: state.getSiteResponse!.myUser!.copyWith(
           localUserView: state.getSiteResponse!.myUser!.localUserView.copyWith(
             person: state.getSiteResponse!.myUser!.localUserView.person.copyWith(
+              botAccount: event.botAccount ?? state.getSiteResponse!.myUser!.localUserView.person.botAccount,
               bio: event.bio ?? state.getSiteResponse!.myUser!.localUserView.person.bio,
               displayName: event.displayName ?? state.getSiteResponse!.myUser!.localUserView.person.displayName,
               matrixUserId: event.matrixUserId ?? state.getSiteResponse!.myUser!.localUserView.person.matrixUserId,
@@ -123,9 +124,6 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       await lemmy.run(SaveUserSettings(
         auth: account.jwt,
-        // botAccount is placed here because of a bug with lemmy not able to save
-        // see: https://github.com/LemmyNet/lemmy/issues/3565#issuecomment-1628980050
-        botAccount: state.getSiteResponse!.myUser!.localUserView.person.botAccount,
         bio: event.bio,
         email: event.email,
         matrixUserId: event.matrixUserId,
@@ -135,6 +133,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         showNsfw: event.showNsfw,
         showReadPosts: event.showReadPosts,
         showScores: event.showScores,
+        botAccount: event.botAccount,
         showBotAccounts: event.showBotAccounts,
         discussionLanguages: event.discussionLanguages,
       ));

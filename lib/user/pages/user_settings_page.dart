@@ -344,6 +344,17 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               highlightedSetting: null,
                             ),
                             ToggleOption(
+                              description: l10n.bot,
+                              value: person?.botAccount,
+                              iconEnabled: Thunder.robot,
+                              iconDisabled: Thunder.robot,
+                              iconSpacing: 14.0,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
+                              highlightKey: null,
+                              setting: null,
+                              highlightedSetting: null,
+                            ),
+                            ToggleOption(
                               description: l10n.showBotAccounts,
                               value: localUser.showBotAccounts,
                               iconEnabled: Thunder.robot,
