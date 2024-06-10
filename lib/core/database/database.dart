@@ -13,12 +13,29 @@ import 'package:thunder/core/database/tables.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions])
+@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          // If we are migrating from 1 to anything higher
+          if (from == 1 && to > 1) {
+            // Create the UserLabels table
+            await migrator.createTable(userLabels);
+          }
+
+          // If we are downgrading from 2 or higher to 1
+          if (from >= 2 && to == 1) {
+            // Delete the UserBales table
+            await migrator.deleteTable('user_labels');
+          }
+        },
+      );
 }
 
 /// Opens a connection to the database.
