@@ -431,36 +431,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           ),
           SliverToBoxAdapter(
             child: ListOption(
-              description: l10n.defaultCommentSortType,
-              value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
-              options: CommentSortPicker.getCommentSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
-              icon: Icons.comment_bank_rounded,
-              onChanged: (_) async {},
-              customListPicker: CommentSortPicker(
-                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
-                title: l10n.commentSortType,
-                onSelect: (value) async {
-                  setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
-                },
-                previouslySelected: defaultCommentSortType,
-              ),
-              valueDisplay: Row(
-                children: [
-                  Icon(CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).icon, size: 13),
-                  const SizedBox(width: 4),
-                  Text(
-                    CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).label,
-                    style: theme.textTheme.titleSmall,
-                  ),
-                ],
-              ),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.defaultCommentSortType,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
               description: l10n.appLanguage,
               bottomSheetHeading: Align(alignment: Alignment.centerLeft, child: Text(l10n.translationsMayNotBeComplete)),
               value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
@@ -560,6 +530,36 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(l10n.commentBehaviourSettings, style: theme.textTheme.titleMedium),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ListOption(
+              description: l10n.defaultCommentSortType,
+              value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
+              options: CommentSortPicker.getCommentSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+              icon: Icons.comment_bank_rounded,
+              onChanged: (_) async {},
+              customListPicker: CommentSortPicker(
+                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
+                title: l10n.commentSortType,
+                onSelect: (value) async {
+                  setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
+                },
+                previouslySelected: defaultCommentSortType,
+              ),
+              valueDisplay: Row(
+                children: [
+                  Icon(CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).icon, size: 13),
+                  const SizedBox(width: 4),
+                  Text(
+                    CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).label,
+                    style: theme.textTheme.titleSmall,
+                  ),
+                ],
+              ),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.defaultCommentSortType,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
