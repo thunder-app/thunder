@@ -1,9 +1,11 @@
 import "package:flutter/material.dart";
 
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:html/parser.dart";
 import "package:lemmy_api_client/v3.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:swipeable_page_route/swipeable_page_route.dart";
+import 'package:markdown/markdown.dart' hide Text;
 
 import "package:thunder/account/bloc/account_bloc.dart";
 import "package:thunder/account/widgets/account_placeholder.dart";
@@ -177,7 +179,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             SettingsListTile(
                               icon: Icons.note_rounded,
                               description: l10n.profileBio,
-                              subtitle: person?.bio?.isNotEmpty == true ? person?.bio : l10n.noProfileBioSet,
+                              subtitle: person?.bio?.isNotEmpty == true ? parse(markdownToHtml(person?.bio ?? "")).documentElement?.text.trim() : l10n.noProfileBioSet,
+                              subtitleMaxLines: 1,
                               widget: const Padding(padding: EdgeInsets.all(20.0)),
                               onTap: () {
                                 bioTextController.text = person?.bio ?? "";
@@ -186,7 +189,13 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   title: l10n.profileBio,
                                   contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
                                     controller: bioTextController,
-                                    decoration: InputDecoration(hintText: l10n.profileBio),
+                                    minLines: 8,
+                                    maxLines: 8,
+                                    keyboardType: TextInputType.multiline,
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(),
+                                      hintText: l10n.profileBio,
+                                    ),
                                   ),
                                   primaryButtonText: l10n.save,
                                   onPrimaryButtonPressed: (dialogContext, _) {
