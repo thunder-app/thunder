@@ -15,6 +15,10 @@
   "@accountBirthday": {
     "description": "User descriptor for accounts created on today's date"
   },
+  "accountSettingOverrideWarning": "Your account settings override the following settings",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
@@ -143,6 +147,14 @@
   "@blockCommunity": {},
   "blockInstance": "Block Instance",
   "@blockInstance": {},
+  "blockManagement": "Block Management",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "blockSettingLabel": "User/Community/Instance Blocks",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
   "blockUser": "Block User",
   "@blockUser": {},
   "blockedCommunities": "Blocked Communities",
@@ -212,6 +224,14 @@
   "changeNotificationSettings": "Change notification settings...",
   "@changeNotificationSettings": {
     "description": "A shortcut to navigate to the notification settings"
+  },
+  "changePassword": "Change Password",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "changePasswordWarning": "To change your password, you will be redirected to your instance site. \\n\\nAre you sure you want to continue?",
+  "@changePasswordWarning": {
+    "description": "Warning label for changing password"
   },
   "changeSort": "Change Sort",
   "@changeSort": {},
@@ -425,6 +445,10 @@
   "@connectedToUnifiedPushDistributorApp": {
     "description": "Tell the user which UnifiedPush app we're connected to"
   },
+  "contentManagement": "Content Management",
+  "@contentManagement": {
+    "description": "Setting for content management (languages/blocking)"
+  },
   "controversial": "Controversial",
   "@controversial": {},
   "copiedToClipboard": "Copied to clipboard",
@@ -613,6 +637,10 @@
   "@discussionLanguagesTooltip": {},
   "dismissRead": "Dismiss Read",
   "@dismissRead": {},
+  "displayName": "Display Name",
+  "@displayName": {
+    "description": "Label for display name"
+  },
   "displayUserScore": "Display User Scores (Karma).",
   "@displayUserScore": {
     "description": "Option for displaying user scores or karma."
@@ -652,6 +680,10 @@
   "editPost": "Edit Post",
   "@editPost": {
     "description": "Title when editing a post."
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Label for email input"
   },
   "empty": "Empty",
   "@empty": {},
@@ -861,6 +893,14 @@
   "@green": {
     "description": "The color green"
   },
+  "guestModeFeedSettings": "Guest Mode Feed Settings",
+  "@guestModeFeedSettings": {
+    "description": "Feed settings for guest accounts"
+  },
+  "guestModeFeedSettingsLabel": "The following settings are only applied to guest accounts. To adjust feed settings for your account, go to Account Settings.",
+  "@guestModeFeedSettingsLabel": {
+    "description": "Description for guest mode feed settings"
+  },
   "havingIssuesWithNotifications": "Having issues with notifications?",
   "@havingIssuesWithNotifications": {
     "description": "A shortcut to navigate to the notification debugging section"
@@ -972,6 +1012,10 @@
   "instanceNameThickness": "Instance Name Thickness",
   "@instanceNameThickness": {
     "description": "Setting for instance name thickness"
+  },
+  "instances": "Instances",
+  "@instances": {
+    "description": "Title for settings related to instances"
   },
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
@@ -1102,6 +1146,10 @@
   "markReadColor": "Mark Read/Unread Color",
   "@markReadColor": {
     "description": "Name of mark read/unread color setting"
+  },
+  "matrixUser": "Matrix User",
+  "@matrixUser": {
+    "description": "Label for Matrix user id"
   },
   "me": "Me",
   "@me": {
@@ -1241,6 +1289,14 @@
   "@noDiscussionLanguages": {
     "description": "Message for no discussion languages added"
   },
+  "noDisplayNameSet": "No display name set",
+  "@noDisplayNameSet": {
+    "description": "Message for no display name set"
+  },
+  "noEmailSet": "No email set",
+  "@noEmailSet": {
+    "description": "Message for no email set"
+  },
   "noFavoritedCommunities": "No favorited communities",
   "@noFavoritedCommunities": {
     "description": "Message for no favorited communities on the drawer"
@@ -1259,8 +1315,16 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
+  "noMatrixUserSet": "No matrix user set",
+  "@noMatrixUserSet": {
+    "description": "Message for no matrix user set"
+  },
   "noPostsFound": "No posts found.",
   "@noPostsFound": {},
+  "noProfileBioSet": "No profile bio set",
+  "@noProfileBioSet": {
+    "description": "Message for no profile bio set"
+  },
   "noReplies": "No replies",
   "@noReplies": {
     "description": "Label for when there are no replies in the list"
@@ -1469,6 +1533,10 @@
   "@preview": {},
   "profileAppliedSuccessfully": "{profile} applied successfully!",
   "@profileAppliedSuccessfully": {},
+  "profileBio": "Profile Bio",
+  "@profileBio": {
+    "description": "Setting for profile bio"
+  },
   "profiles": "Profiles",
   "@profiles": {},
   "pureBlack": "Pure Black",
@@ -1757,6 +1825,10 @@
   "@setLongPress": {},
   "setShortPress": "Set as short-press action",
   "@setShortPress": {},
+  "settingOverrideLabel": "These settings override Thunder's default settings.",
+  "@settingOverrideLabel": {
+    "description": "Message which indicates that the (instance) settings override the app settings"
+  },
   "settingTypeNotSupported": "Settings of type {settingType} are not yet supported.",
   "@settingTypeNotSupported": {},
   "settings": "Settings",
@@ -1894,6 +1966,10 @@
   "showNavigationLabelsDescription": "Whether to display labels beneath the bottom navigation buttons",
   "@showNavigationLabelsDescription": {
     "description": "Description for setting for showing navigation labels"
+  },
+  "showNsfwContent": "Show NSFW Content",
+  "@showNsfwContent": {
+    "description": "Toggle to show NSFW content."
   },
   "showPassword": "Show Password",
   "@showPassword": {},

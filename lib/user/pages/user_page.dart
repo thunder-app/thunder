@@ -13,6 +13,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc_old.dart';
@@ -102,6 +103,8 @@ class _UserPageState extends State<UserPage> {
                     onPressed: () {
                       final AccountBloc accountBloc = context.read<AccountBloc>();
                       final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                      final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
+
                       Navigator.of(context).push(
                         SwipeablePageRoute(
                           transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
@@ -111,6 +114,7 @@ class _UserPageState extends State<UserPage> {
                             providers: [
                               BlocProvider.value(value: accountBloc),
                               BlocProvider.value(value: thunderBloc),
+                              BlocProvider.value(value: userSettingsBloc),
                             ],
                             child: const UserSettingsPage(),
                           ),

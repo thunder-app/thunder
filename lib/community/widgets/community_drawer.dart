@@ -177,7 +177,7 @@ class FeedDrawerItems extends StatelessWidget {
                 isSelected: destination.listingType == feedState.postListingType,
                 onTap: () {
                   Navigator.of(context).pop();
-                  navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType, sortType: thunderState.sortTypeForInstance);
+                  navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType);
                 },
                 label: destination.label,
                 icon: destination.icon,
@@ -228,6 +228,7 @@ class FavoriteCommunities extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    AuthState authState = context.watch<AuthBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
     AccountState accountState = context.watch<AccountBloc>().state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
@@ -264,7 +265,7 @@ class FavoriteCommunities extends StatelessWidget {
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
                           feedType: FeedType.community,
-                          sortType: thunderState.sortTypeForInstance,
+                          sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                           communityId: community.id,
                           reset: true,
                         ),
@@ -288,6 +289,7 @@ class SubscribedCommunities extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    AuthState authState = context.watch<AuthBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
     AccountState accountState = context.watch<AccountBloc>().state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
@@ -341,7 +343,7 @@ class SubscribedCommunities extends StatelessWidget {
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: thunderState.sortTypeForInstance,
+                            sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
                           ),
@@ -375,6 +377,7 @@ class ModeratedCommunities extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    AuthState authState = context.watch<AuthBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
     AccountState accountState = context.watch<AccountBloc>().state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
@@ -411,7 +414,7 @@ class ModeratedCommunities extends StatelessWidget {
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: thunderState.sortTypeForInstance,
+                            sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
                           ),
