@@ -1605,7 +1605,7 @@
   "@modLockPost": {
     "description": "Description for modlog filter for actions that lock posts"
   },
-  "modBan": "Bloquear/Desbloquear moderadores de instancia",
+  "modBan": "Bloquear/Desbloquear usuarios de la instancia",
   "@modBan": {
     "description": "Description for modlog filter for actions that ban instance moderators"
   },
@@ -2402,5 +2402,17 @@
   "shareThumbnailAsImage": "Compartir miniatura como imagen",
   "@shareThumbnailAsImage": {
     "description": "Action for sharing the thumbnail of a post as an image"
+  },
+  "offline": "sin conexión",
+  "@offline": {
+    "description": "Describes a service that is unavailable"
+  },
+  "thunderNotificationServer": "Servidor de notificaciones de Thunder: {server}",
+  "@thunderNotificationServer": {
+    "description": "Text for the user to know what the currently selected notification server is"
+  },
+  "unifiedPushServer": "Servidor UnifiedPush: {server}",
+  "@unifiedPushServer": {
+    "description": "Debug text that tells the user what UnifiedPush server is being used"
   }
 }
