@@ -50,8 +50,8 @@ Future<T?> showThunderDialog<T>({
                   onPressed: onTertiaryButtonPressed == null ? null : () => onTertiaryButtonPressed(context),
                   child: Text(tertiaryButtonText),
                 ),
-                const Spacer(),
               ],
+              const Spacer(),
               if (secondaryButtonText != null) ...[
                 TextButton(
                   onPressed: onSecondaryButtonPressed == null ? null : () => onSecondaryButtonPressed(context),
