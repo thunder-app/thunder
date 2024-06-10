@@ -309,6 +309,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
                         hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                         url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                        languageId: postViewMedia.postView.post.languageId,
                         hasBeenRead: indicateRead && postViewMedia.postView.read,
                       ),
                     ],

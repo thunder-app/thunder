@@ -8,6 +8,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/account/models/user_label.dart';
 import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -442,6 +443,13 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                     ),
                   ),
                 ),
+              ),
+              // Post metadata chips
+              Row(
+                children: [
+                  const SizedBox(width: 20),
+                  LanguagePostCardMetaData(languageId: widget.commentView.comment.languageId),
+                ],
               ),
               if (widget.multiCommentCardActions[page]?.isNotEmpty == true)
                 MultiPickerItem(
