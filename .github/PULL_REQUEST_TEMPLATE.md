@@ -14,6 +14,6 @@ Issue Number: N/A
 
 ## Checklist
 
-- [ ] Did you update CHANGELOG.md?
-- [ ] Did you use localized strings where applicable?
+- [ ] If a new package was added, did you ensure it uses an appropriate license and is actively maintained?
+- [ ] Did you use localized strings (and added appropriate descriptions) where applicable?
 - [ ] Did you add `semanticLabel`s where applicable for accessibility?
