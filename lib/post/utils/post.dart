@@ -32,11 +32,21 @@ Future<bool> markPostAsRead(int postId, bool read) async {
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
-    auth: account!.jwt!,
-    postId: postId,
-    read: read,
-  ));
+  MarkPostAsReadResponse markPostAsReadResponse;
+
+  if (LemmyClient.instance.supportsFeature(LemmyFeature.multiRead)) {
+    markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
+      auth: account!.jwt!,
+      postIds: [postId],
+      read: read,
+    ));
+  } else {
+    markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
+      auth: account!.jwt!,
+      postId: postId,
+      read: read,
+    ));
+  }
 
   return markPostAsReadResponse.isSuccess();
 }
