@@ -159,72 +159,64 @@ class ThunderSnackbar extends StatefulWidget {
   State<ThunderSnackbar> createState() => _ThunderSnackbarState();
 }
 
-class _ThunderSnackbarState extends State<ThunderSnackbar> {
+class _ThunderSnackbarState extends State<ThunderSnackbar> with WidgetsBindingObserver {
+  final double horizontalPadding = 16.0;
+  final double singleLineVerticalPadding = 14.0;
+
+  double snackbarBottomPadding = 0;
   Widget child = Container();
 
-  @override
-  void initState() {
-    super.initState();
+  double calculateBottomPadding() {
+    final double minimumPadding = MediaQuery.viewPaddingOf(context).bottom + kBottomNavigationBarHeight + singleLineVerticalPadding;
+    final double bottomViewInsets = MediaQuery.viewInsetsOf(context).bottom;
 
-    // Initialize the widget here. We do this so that we can change the state of the widget to an empty Container when we dismiss the snackbar.
-    // Doing so prevents the snackbar from showing back up after it has been dismissed.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      const double horizontalPadding = 16.0;
-      const double singleLineVerticalPadding = 14.0;
+    return max(minimumPadding, bottomViewInsets);
+  }
 
-      final ThemeData theme = Theme.of(context);
-      final SnackBarThemeData snackBarTheme = theme.snackBarTheme;
+  void rebuildSnackbar() {
+    final ThemeData theme = Theme.of(context);
+    final SnackBarThemeData snackBarTheme = theme.snackBarTheme;
 
-      final double elevation = snackBarTheme.elevation ?? 6.0;
-      final Color backgroundColor = theme.colorScheme.inverseSurface;
-      final ShapeBorder shape = snackBarTheme.shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0));
+    final double elevation = snackBarTheme.elevation ?? 6.0;
+    final Color backgroundColor = theme.colorScheme.inverseSurface;
+    final ShapeBorder shape = snackBarTheme.shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0));
 
-      double snackbarBottomPadding = 0;
-
-      if (MediaQuery.of(context).viewInsets.bottom == 0) {
-        // If there is no inset padding, we'll add in some padding for the bottom navigation bar.
-        snackbarBottomPadding += MediaQuery.of(context).viewPadding.bottom + kBottomNavigationBarHeight + singleLineVerticalPadding;
-      } else {
-        snackbarBottomPadding += MediaQuery.of(context).viewInsets.bottom;
-      }
-
-      child = SafeArea(
-        child: Container(
-          padding: EdgeInsets.only(bottom: snackbarBottomPadding),
-          child: ClipRect(
-            child: Align(
-              alignment: AlignmentDirectional.bottomStart,
-              child: Semantics(
-                container: true,
-                liveRegion: true,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                  child: Material(
-                    shape: shape,
-                    elevation: elevation,
-                    color: backgroundColor,
-                    clipBehavior: Clip.none,
-                    child: Theme(
-                      data: theme,
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.only(start: horizontalPadding, end: widget.closable ? 12.0 : 8.0),
-                        child: Wrap(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: singleLineVerticalPadding),
-                                    child: DefaultTextStyle(
-                                      style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onInverseSurface),
-                                      child: widget.content,
-                                    ),
+    child = SafeArea(
+      child: Container(
+        padding: EdgeInsets.only(bottom: calculateBottomPadding()),
+        child: ClipRect(
+          child: Align(
+            alignment: AlignmentDirectional.bottomStart,
+            child: Semantics(
+              container: true,
+              liveRegion: true,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                child: Material(
+                  shape: shape,
+                  elevation: elevation,
+                  color: backgroundColor,
+                  clipBehavior: Clip.none,
+                  child: Theme(
+                    data: theme,
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.only(start: horizontalPadding, end: widget.closable ? 12.0 : 8.0),
+                      child: Wrap(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: singleLineVerticalPadding),
+                                  child: DefaultTextStyle(
+                                    style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onInverseSurface),
+                                    child: widget.content,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -233,8 +225,36 @@ class _ThunderSnackbarState extends State<ThunderSnackbar> {
             ),
           ),
         ),
-      );
-    });
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize the widget here. We do this so that we can change the state of the widget to an empty Container when we dismiss the snackbar.
+    // Doing so prevents the snackbar from showing back up after it has been dismissed.
+    WidgetsBinding.instance.addPostFrameCallback((_) => rebuildSnackbar());
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    double newSnackbarBottomPadding = calculateBottomPadding();
+
+    if (snackbarBottomPadding != newSnackbarBottomPadding) {
+      snackbarBottomPadding = newSnackbarBottomPadding;
+      rebuildSnackbar();
+      setState(() {});
+    }
   }
 
   @override
