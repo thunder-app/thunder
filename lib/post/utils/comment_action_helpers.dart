@@ -585,7 +585,6 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                       hintText: l10n.userLabelHint,
                     ),
                     autofocus: true,
-                    enableSuggestions: false,
                   ),
                 ],
               );
