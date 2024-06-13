@@ -1019,7 +1019,7 @@
   },
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
-  "keywordFilterDescription": "Filters posts containing any keywords in the title or body",
+  "keywordFilterDescription": "Filters posts containing any keywords in the title, body, or URL",
   "@keywordFilterDescription": {
     "description": "Description of keyword filter settings"
   },
