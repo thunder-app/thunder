@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/enums/video_playback_speed.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:thunder/core/enums/internet_connection_type.dart';
@@ -81,8 +84,6 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     _videoPlayerController.initialize().then(
       (value) {
         setState(() {});
-        _videoPlayerController.play();
-
         if (autoPlayVideo(thunderBloc)) {
           _videoPlayerController.play();
         }
@@ -208,23 +209,62 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Wrap(
-            alignment: WrapAlignment.start,
-            crossAxisAlignment: WrapCrossAlignment.center,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                onPressed: () {
-                  widget.controller.value.isPlaying ? widget.controller.pause() : widget.controller.play();
-                  setState(() {});
-                },
-                icon: Icon(
-                  widget.controller.value.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                  color: Colors.white.withOpacity(0.90),
-                ),
+              Wrap(
+                alignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      widget.controller.value.isPlaying ? widget.controller.pause() : widget.controller.play();
+                      setState(() {});
+                    },
+                    icon: Icon(
+                      widget.controller.value.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                      color: Colors.white.withOpacity(0.90),
+                    ),
+                  ),
+                  Text(
+                    '${formatTime(widget.controller.value.position)} / ${formatTime(widget.controller.value.duration)}',
+                    style: TextStyle(color: Colors.white.withOpacity(0.90)),
+                  ),
+                ],
               ),
-              Text(
-                '${formatTime(widget.controller.value.position)} / ${formatTime(widget.controller.value.duration)}',
-                style: TextStyle(color: Colors.white.withOpacity(0.90)),
+              Wrap(
+                alignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      widget.controller.value.volume == 0 ? widget.controller.setVolume(1) : widget.controller.setVolume(0);
+                      setState(() {});
+                    },
+                    icon: Icon(
+                      widget.controller.value.volume == 0 ? Icons.volume_mute_rounded : Icons.volume_up_rounded,
+                      color: Colors.white.withOpacity(0.90),
+                    ),
+                  ),
+                  PopupMenuButton(
+                    itemBuilder: (context) => VideoPlayBackSpeed.values
+                        .map(
+                          (videoPlaybackSpeed) => ThunderPopupMenuItem(
+                            onTap: () {
+                              widget.controller.setPlaybackSpeed(videoPlaybackSpeed.value);
+                              setState(() {});
+                            },
+                            icon: Icons.speed_rounded,
+                            title: videoPlaybackSpeed.label,
+                          ),
+                        )
+                        .toList(),
+                    icon: Icon(
+                      Icons.speed_rounded,
+                      color: Colors.white.withOpacity(0.90),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -237,6 +277,11 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
               widget.controller,
               allowScrubbing: true,
               padding: EdgeInsets.zero,
+              colors: const VideoProgressColors(
+                playedColor: Colors.white70,
+                bufferedColor: Colors.white12,
+                backgroundColor: Colors.white10,
+              ),
             ),
           ),
         ],
