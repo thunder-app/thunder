@@ -8,5 +8,151 @@
   "actions": "Ações",
   "@actions": {},
   "accessibility": "Acessibilidade",
-  "@accessibility": {}
+  "@accessibility": {},
+  "addAnonymousInstance": "Adicionar Instância Anônima",
+  "@addAnonymousInstance": {},
+  "addKeywordFilter": "Adicionar Palavra-chave",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "Adicionar aos favoritos",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addedCommunityToSubscriptions": "Inscrito na comunidade",
+  "@addedCommunityToSubscriptions": {},
+  "advanced": "Avançado",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "blue": "Azul",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "animations": "Animações",
+  "@animations": {},
+  "anonymous": "Anônimo",
+  "@anonymous": {},
+  "allowOpenSupportedLinks": "Permitir que o aplicativo abra links suportados.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "andXMore": "e {count} mais",
+  "@andXMore": {},
+  "appLanguage": "Idioma do Aplicativo",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "appearance": "Aparência",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "applied": "Aplicado",
+  "@applied": {},
+  "browsingAnonymously": "Você está navegando {instance} anonimamente.",
+  "@browsingAnonymously": {},
+  "cancel": "Cancelar",
+  "@cancel": {},
+  "cantBlockYourself": "Você não pode bloquear a si mesmo.",
+  "@cantBlockYourself": {},
+  "close": "Fechar",
+  "@close": {},
+  "communities": "Comunidades",
+  "@communities": {},
+  "community": "Comunidade",
+  "@community": {},
+  "always": "Sempre",
+  "@always": {},
+  "accountSettings": "Configurações da Conta",
+  "@accountSettings": {},
+  "addAccount": "Adicionar Conta",
+  "@addAccount": {},
+  "add": "Adicionar",
+  "@add": {},
+  "addAccountToSeeProfile": "Faça login para ver sua conta.",
+  "@addAccountToSeeProfile": {},
+  "addDiscussionLanguage": "Adicionar Idioma",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "blockedInstances": "Instâncias Bloqueadas",
+  "@blockedInstances": {},
+  "blockedUsers": "Usuários Bloqueados",
+  "@blockedUsers": {},
+  "cantBlockAdmin": "Você não pode bloquear um administrador da instância.",
+  "@cantBlockAdmin": {},
+  "color": "Cor",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "communityActions": "Ações da Comunidade",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "commentBehaviourSettings": "Comentários",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "communityEntry": "Comunidade '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "changePassword": "Mudar Senha",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "changeAccountSettingsFor": "Mudar configurações de conta para",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
+  "clearSearch": "Limpar Pesquisa",
+  "@clearSearch": {},
+  "bold": "Negrito",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "all": "Todos",
+  "@all": {},
+  "allPosts": "Todos os Posts",
+  "@allPosts": {},
+  "cannotReportOwnComment": "Você não pode denunciar seu próprio comentário.",
+  "@cannotReportOwnComment": {},
+  "colors": "Cores",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "comfortable": "Confortável",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "commentSavedAsDraft": "Comentário salvo como rascunho",
+  "@commentSavedAsDraft": {},
+  "blockedCommunities": "Comunidades Bloqueadas",
+  "@blockedCommunities": {},
+  "apply": "Aplicar",
+  "@apply": {},
+  "back": "Voltar",
+  "@back": {},
+  "backButton": "Botão de voltar",
+  "@backButton": {},
+  "backToTop": "Voltar Ao Topo",
+  "@backToTop": {},
+  "blockCommunity": "Bloquear Comunidade",
+  "@blockCommunity": {},
+  "blockInstance": "Bloquear Instância",
+  "@blockInstance": {},
+  "bannedUser": "Usuário Banido",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "blockUser": "Bloquear Usuário",
+  "@blockUser": {},
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  }
 }
