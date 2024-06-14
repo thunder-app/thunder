@@ -33,6 +33,9 @@ class ThunderVideoPlayer extends StatefulWidget {
 class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   late VideoPlayerController _videoPlayerController;
 
+  /// Used to toggle the fullscreen mode
+  bool isFullScreen = false;
+
   @override
   void dispose() async {
     _videoPlayerController.dispose();
@@ -58,16 +61,16 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   }
 
   Future<void> _initializePlayer() async {
-    final thunderBloc = context.read<ThunderBloc>().state;
+    final state = context.read<ThunderBloc>().state;
 
     _videoPlayerController = VideoPlayerController.networkUrl(
       Uri.parse(widget.videoUrl),
       videoPlayerOptions: VideoPlayerOptions(),
     );
 
-    _videoPlayerController.setVolume(thunderBloc.videoAutoMute ? 0 : 1);
-    _videoPlayerController.setPlaybackSpeed(thunderBloc.videoDefaultPlaybackSpeed.value);
-    _videoPlayerController.setLooping(thunderBloc.videoAutoLoop);
+    _videoPlayerController.setVolume(state.videoAutoMute ? 0 : 1);
+    _videoPlayerController.setPlaybackSpeed(state.videoDefaultPlaybackSpeed.value);
+    _videoPlayerController.setLooping(state.videoAutoLoop);
 
     _videoPlayerController.addListener(() {
       if (_videoPlayerController.value.hasError) {
@@ -83,8 +86,11 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
 
     _videoPlayerController.initialize().then(
       (value) {
-        setState(() {});
-        if (autoPlayVideo(thunderBloc)) {
+        setState(() {
+          isFullScreen = state.videoAutoFullscreen;
+        });
+
+        if (autoPlayVideo(state)) {
           _videoPlayerController.play();
         }
       },
@@ -96,61 +102,64 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: Stack(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(
-                      Icons.arrow_back,
-                      semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                      color: Colors.white.withOpacity(0.90),
+        child: RotatedBox(
+          quarterTurns: isFullScreen ? 0 : 1,
+          child: Stack(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(
+                        Icons.arrow_back,
+                        semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                        color: Colors.white.withOpacity(0.90),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: IconButton(
-                    onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
-                    icon: Icon(
-                      Icons.open_in_browser_rounded,
-                      semanticLabel: l10n.openInBrowser,
-                      color: Colors.white.withOpacity(0.90),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: IconButton(
+                      onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
+                      icon: Icon(
+                        Icons.open_in_browser_rounded,
+                        semanticLabel: l10n.openInBrowser,
+                        color: Colors.white.withOpacity(0.90),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Center(
-              child: AspectRatio(
-                aspectRatio: _videoPlayerController.value.aspectRatio,
-                child: Stack(children: [
-                  VideoPlayer(_videoPlayerController),
-                  GestureDetector(
-                    onTap: () {
-                      if (_videoPlayerController.value.isPlaying) {
-                        _videoPlayerController.pause();
-                      } else {
-                        _videoPlayerController.play();
-                      }
-
-                      setState(() {});
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOutCubicEmphasized,
-                      color: _videoPlayerController.value.isPlaying ? Colors.transparent : Colors.black.withOpacity(0.2),
-                    ),
-                  ),
-                ]),
+                ],
               ),
-            ),
-            VideoPlayerControls(controller: _videoPlayerController),
-          ],
+              Center(
+                child: AspectRatio(
+                  aspectRatio: _videoPlayerController.value.aspectRatio,
+                  child: Stack(children: [
+                    VideoPlayer(_videoPlayerController),
+                    GestureDetector(
+                      onTap: () {
+                        if (_videoPlayerController.value.isPlaying) {
+                          _videoPlayerController.pause();
+                        } else {
+                          _videoPlayerController.play();
+                        }
+
+                        setState(() {});
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOutCubicEmphasized,
+                        color: _videoPlayerController.value.isPlaying ? Colors.transparent : Colors.black.withOpacity(0.2),
+                      ),
+                    ),
+                  ]),
+                ),
+              ),
+              VideoPlayerControls(controller: _videoPlayerController, onToggleFullScreen: () => setState(() => isFullScreen = !isFullScreen)),
+            ],
+          ),
         ),
       ),
     );
@@ -158,9 +167,13 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
 }
 
 class VideoPlayerControls extends StatefulWidget {
+  /// The [VideoPlayerController] that this widget is controlling
   final VideoPlayerController controller;
 
-  const VideoPlayerControls({super.key, required this.controller});
+  /// Used to toggle the fullscreen mode
+  final VoidCallback onToggleFullScreen;
+
+  const VideoPlayerControls({super.key, required this.controller, required this.onToggleFullScreen});
 
   @override
   State<VideoPlayerControls> createState() => _VideoPlayerControlsState();
@@ -261,6 +274,16 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                         .toList(),
                     icon: Icon(
                       Icons.speed_rounded,
+                      color: Colors.white.withOpacity(0.90),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      widget.onToggleFullScreen();
+                      setState(() {});
+                    },
+                    icon: Icon(
+                      Icons.fullscreen_rounded,
                       color: Colors.white.withOpacity(0.90),
                     ),
                   ),
