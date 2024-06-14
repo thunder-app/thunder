@@ -83,6 +83,10 @@
   "@advanced": {
     "description": "Heading for advanced settings"
   },
+  "ago": "{time} ago",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
   "all": "All",
   "@all": {},
   "allPosts": "All Posts",
@@ -475,11 +479,41 @@
   "@couldntFindPost": {
     "description": "Error message for when we can't load a post."
   },
-  "countSubscribers": "{count} subscribers",
-  "@countSubscribers": {},
+  "countComments": "{count} Comments",
+  "@countComments": {
+    "description": "Number of comments"
+  },
+  "countLocalSubscribers": "{count} Local Subscribers",
+  "@countLocalSubscribers": {
+    "description": "Number of local subscribers"
+  },
+  "countPosts": "{count} Posts",
+  "@countPosts": {
+    "description": "Number of posts"
+  },
+  "countSubscribers": "{count} Subscribers",
+  "@countSubscribers": {
+    "description": "Number of subscribers"
+  },
   "countUsers": "{count} users",
   "@countUsers": {
     "description": "Describes a certain number of users"
+  },
+  "countUsersActiveDay": "{count} users/day",
+  "@countUsersActiveDay": {
+    "description": "Number of users active in the last day"
+  },
+  "countUsersActiveHalfYear": "{count} users/6 mo",
+  "@countUsersActiveHalfYear": {
+    "description": "Number of users active in the last half year"
+  },
+  "countUsersActiveMonth": "{count} users/mo",
+  "@countUsersActiveMonth": {
+    "description": "Number of users active in the last month"
+  },
+  "countUsersActiveWeek": "{count} users/wk",
+  "@countUsersActiveWeek": {
+    "description": "Number of users active in the last week"
   },
   "createAccount": "Create Account",
   "@createAccount": {},
@@ -489,6 +523,10 @@
   "@createNewCrossPost": {},
   "createPost": "Create Post",
   "@createPost": {},
+  "created": "Created {date}",
+  "@created": {
+    "description": "The date that something was created"
+  },
   "createdToday": "Created Today",
   "@createdToday": {
     "description": "An account descriptor for an account with a birthday today"
@@ -927,6 +965,10 @@
   "@hideTopBarOnScroll": {
     "description": "Settings toggle to hide the top bar on scroll"
   },
+  "hostInstance": "Host Instance",
+  "@hostInstance": {
+    "description": "The instance hosting a community"
+  },
   "hot": "Hot",
   "@hot": {},
   "image": "Image",
@@ -1099,6 +1141,10 @@
   "@localNotifications": {
     "description": "Describes the notification type for Local Notifications"
   },
+  "localOnly": "Local Only",
+  "@localOnly": {
+    "description": "Local community visibility"
+  },
   "localPosts": "Local Posts",
   "@localPosts": {},
   "lockPost": "Lock Post",
@@ -1213,7 +1259,7 @@
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
   },
-  "moderator": "Moderator",
+  "moderator": "{count, plural, zero {Moderator} one {Moderator} other {Moderators}}",
   "@moderator": {
     "description": "Role name for moderator"
   },
@@ -1539,6 +1585,10 @@
   },
   "profiles": "Profiles",
   "@profiles": {},
+  "public": "Public",
+  "@public": {
+    "description": "Public community visibility"
+  },
   "pureBlack": "Pure Black",
   "@pureBlack": {
     "description": "Describes using the pure black theme"
@@ -2067,6 +2117,10 @@
   "@standard": {
     "description": "Describes a standard visual density"
   },
+  "stats": "Stats",
+  "@stats": {
+    "description": "Community statistics"
+  },
   "status": "Status",
   "@status": {
     "description": "Status of the action"
@@ -2296,6 +2350,10 @@
   "unbannedUserFromCommunity": "Unbanned User from Community",
   "@unbannedUserFromCommunity": {
     "description": "Short decription for moderator action to unban a user from a community"
+  },
+  "unblockCommunity": "Unblock Community",
+  "@unblockCommunity": {
+    "description": "Action to unblock a community"
   },
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
@@ -2541,6 +2599,10 @@
   "@viewingAll": {
     "description": "Chip for viewing all possible search results"
   },
+  "visibility": "Visibility: {visibility}",
+  "@visibility": {
+    "description": "Visibility heading for community"
+  },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
   "visitInstance": "Visit Instance",
@@ -2559,7 +2621,7 @@
   },
   "xUpvotes": "{x} upvotes",
   "@xUpvotes": {},
-  "xYearsOld": "{count, plural, zero {{x} years old} one {{x} year old} other {{x} years old}}",
+  "xYearsOld": "{count, plural, zero {{x} year old} one {{x} year old} other {{x} years old}}",
   "@xYearsOld": {
     "description": "An account descriptor representing how old an account is"
   },
