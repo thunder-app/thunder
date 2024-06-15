@@ -505,7 +505,7 @@ class CommunityItem extends StatelessWidget {
 
     return Row(
       children: [
-        CommunityAvatar(community: community, radius: 16),
+        CommunityAvatar(community: community, radius: 16, thumbnailSize: 100, format: 'png'),
         const SizedBox(width: 16.0),
         Expanded(
           child: Tooltip(
