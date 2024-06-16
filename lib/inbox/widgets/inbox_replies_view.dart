@@ -7,11 +7,8 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Project imports
-import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/divider.dart';
 
@@ -51,8 +48,16 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
         key: PageStorageKey<String>(l10n.reply(10)),
         slivers: [
           SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
-          if (state.status == InboxStatus.loading) const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),
-          if (widget.replies.isEmpty) SliverFillRemaining(child: Center(child: Text(l10n.noReplies))),
+          if (state.status == InboxStatus.loading)
+            const SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          if (widget.replies.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(child: Text(l10n.noReplies)),
+            ),
           SliverList.builder(
             itemCount: widget.replies.length,
             itemBuilder: (context, index) {
@@ -82,7 +87,15 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
               );
             },
           ),
-          if (state.hasReachedInboxReplyEnd) SliverToBoxAdapter(child: Text(l10n.reachedTheBottom)),
+          if (state.hasReachedInboxReplyEnd && widget.replies.isNotEmpty)
+            SliverToBoxAdapter(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 40.0),
+                  child: Text(l10n.reachedTheBottom),
+                ),
+              ),
+            ),
         ],
       );
     });

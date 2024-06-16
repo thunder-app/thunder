@@ -7,6 +7,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -48,10 +49,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       // a user might try to do in quick succession to multiple messages
       transformer: throttleDroppable(Duration.zero),
     );
-    on<CreateInboxCommentReplyEvent>(
-      _createCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
     on<MarkAllAsReadEvent>(
       _markAllAsRead,
       // Do not throttle mark as read because it's something
@@ -61,22 +58,46 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
-    int attemptCount = 0;
     int limit = 20;
 
+    Account? account = await fetchActiveProfileAccount();
+    if (account?.jwt == null) return emit(state.copyWith(status: InboxStatus.empty));
+
     try {
-      Object? exception;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      Account? account = await fetchActiveProfileAccount();
+      PrivateMessagesResponse? privateMessagesResponse;
+      GetPersonMentionsResponse? getPersonMentionsResponse;
+      GetRepliesResponse? getRepliesResponse;
 
-      while (attemptCount < 2) {
-        try {
-          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      if (event.reset) {
+        emit(state.copyWith(status: InboxStatus.loading, errorMessage: ''));
 
-          if (event.reset) {
-            emit(state.copyWith(status: InboxStatus.loading, errorMessage: ''));
-            // Fetch all the things
-            PrivateMessagesResponse privateMessagesResponse = await lemmy.run(
+        switch (event.inboxType) {
+          case InboxType.replies:
+            getRepliesResponse = await lemmy.run(
+              GetReplies(
+                auth: account!.jwt!,
+                unreadOnly: !event.showAll,
+                limit: limit,
+                sort: CommentSortType.new_,
+                page: 1,
+              ),
+            );
+            break;
+          case InboxType.mentions:
+            getPersonMentionsResponse = await lemmy.run(
+              GetPersonMentions(
+                auth: account!.jwt!,
+                unreadOnly: !event.showAll,
+                sort: CommentSortType.new_,
+                limit: limit,
+                page: 1,
+              ),
+            );
+            break;
+          case InboxType.messages:
+            privateMessagesResponse = await lemmy.run(
               GetPrivateMessages(
                 auth: account!.jwt!,
                 unreadOnly: !event.showAll,
@@ -84,123 +105,102 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 page: 1,
               ),
             );
+            break;
+          default:
+            break;
+        }
 
-            GetPersonMentionsResponse getPersonMentionsResponse = await lemmy.run(
-              GetPersonMentions(
-                auth: account.jwt!,
-                unreadOnly: !event.showAll,
-                sort: CommentSortType.new_,
-                limit: limit,
-                page: 1,
-              ),
-            );
+        GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(GetUnreadCount(auth: account!.jwt!));
+        int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
-            GetRepliesResponse getRepliesResponse = await lemmy.run(
-              GetReplies(
-                auth: account.jwt!,
-                unreadOnly: !event.showAll,
-                limit: limit,
-                sort: CommentSortType.new_,
-                page: 1,
-              ),
-            );
+        return emit(
+          state.copyWith(
+            status: InboxStatus.success,
+            privateMessages: cleanDeletedMessages(privateMessagesResponse?.privateMessages ?? []),
+            mentions: cleanDeletedMentions(getPersonMentionsResponse?.mentions ?? []),
+            replies: getRepliesResponse?.replies.toList() ?? [], // Copy this list so that it is modifyable
+            showUnreadOnly: !event.showAll,
+            inboxMentionPage: 2,
+            inboxReplyPage: 2,
+            inboxPrivateMessagePage: 2,
+            totalUnreadCount: totalUnreadCount,
+            repliesUnreadCount: getUnreadCountResponse.replies,
+            mentionsUnreadCount: getUnreadCountResponse.mentions,
+            messagesUnreadCount: getUnreadCountResponse.privateMessages,
+            hasReachedInboxReplyEnd: getRepliesResponse?.replies.isEmpty == true || (getRepliesResponse?.replies.length ?? 0) < limit,
+            hasReachedInboxMentionEnd: getPersonMentionsResponse?.mentions.isEmpty == true || (getPersonMentionsResponse?.mentions.length ?? 0) < limit,
+            hasReachedInboxPrivateMessageEnd: privateMessagesResponse?.privateMessages.isEmpty == true || (privateMessagesResponse?.privateMessages.length ?? 0) < limit,
+          ),
+        );
+      }
 
-            GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(
-              GetUnreadCount(
-                auth: account.jwt!,
-              ),
-            );
+      // Prevent fetching if we're already fetching
+      if (state.status == InboxStatus.refreshing) return;
+      emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
 
-            int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
+      switch (event.inboxType) {
+        case InboxType.replies:
+          if (state.hasReachedInboxReplyEnd) return;
 
-            return emit(
-              state.copyWith(
-                status: InboxStatus.success,
-                privateMessages: cleanDeletedMessages(privateMessagesResponse.privateMessages),
-                mentions: cleanDeletedMentions(getPersonMentionsResponse.mentions),
-                replies: getRepliesResponse.replies.toList(), // Copy this list so that it is modifyable
-                showUnreadOnly: !event.showAll,
-                inboxMentionPage: 2,
-                inboxReplyPage: 2,
-                inboxPrivateMessagePage: 2,
-                totalUnreadCount: totalUnreadCount,
-                repliesUnreadCount: getUnreadCountResponse.replies,
-                mentionsUnreadCount: getUnreadCountResponse.mentions,
-                messagesUnreadCount: getUnreadCountResponse.privateMessages,
-                hasReachedInboxReplyEnd: getRepliesResponse.replies.isEmpty || getRepliesResponse.replies.length < limit,
-                hasReachedInboxMentionEnd: getPersonMentionsResponse.mentions.isEmpty || getPersonMentionsResponse.mentions.length < limit,
-                hasReachedInboxPrivateMessageEnd: privateMessagesResponse.privateMessages.isEmpty || privateMessagesResponse.privateMessages.length < limit,
-              ),
-            );
-          }
+          print('Fetching inbox ${event.inboxType}... page ${state.inboxReplyPage}');
 
-          // Prevent duplicate requests if we're done fetching
-          if (state.hasReachedInboxReplyEnd && state.hasReachedInboxMentionEnd && state.hasReachedInboxPrivateMessageEnd) return;
-          emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
-
-          // Fetch all the things
-          PrivateMessagesResponse privateMessagesResponse = await lemmy.run(
-            GetPrivateMessages(
-              auth: account!.jwt!,
-              unreadOnly: !event.showAll,
-              limit: limit,
-              page: state.inboxPrivateMessagePage,
-            ),
-          );
-
-          GetPersonMentionsResponse getPersonMentionsResponse = await lemmy.run(
-            GetPersonMentions(
-              auth: account.jwt!,
-              unreadOnly: !event.showAll,
-              sort: CommentSortType.new_,
-              limit: limit,
-              page: state.inboxMentionPage,
-            ),
-          );
-
-          GetRepliesResponse getRepliesResponse = await lemmy.run(
+          getRepliesResponse = await lemmy.run(
             GetReplies(
-              auth: account.jwt!,
-              unreadOnly: !event.showAll,
+              auth: account!.jwt!,
+              unreadOnly: state.showUnreadOnly,
               limit: limit,
               sort: CommentSortType.new_,
               page: state.inboxReplyPage,
             ),
           );
+          break;
+        case InboxType.mentions:
+          if (state.hasReachedInboxMentionEnd) return;
 
-          List<CommentReplyView> replies = List.from(state.replies)..addAll(getRepliesResponse.replies);
-          List<PersonMentionView> mentions = List.from(state.mentions)..addAll(getPersonMentionsResponse.mentions);
-          List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessagesResponse.privateMessages);
-
-          return emit(
-            state.copyWith(
-              status: InboxStatus.success,
-              privateMessages: cleanDeletedMessages(privateMessages),
-              mentions: cleanDeletedMentions(mentions),
-              replies: replies,
-              showUnreadOnly: state.showUnreadOnly,
-              inboxMentionPage: state.inboxMentionPage + 1,
-              inboxReplyPage: state.inboxReplyPage + 1,
-              inboxPrivateMessagePage: state.inboxPrivateMessagePage + 1,
-              hasReachedInboxReplyEnd: getRepliesResponse.replies.isEmpty || getRepliesResponse.replies.length < limit,
-              hasReachedInboxMentionEnd: getPersonMentionsResponse.mentions.isEmpty || getPersonMentionsResponse.mentions.length < limit,
-              hasReachedInboxPrivateMessageEnd: privateMessagesResponse.privateMessages.isEmpty || privateMessagesResponse.privateMessages.length < limit,
+          getPersonMentionsResponse = await lemmy.run(
+            GetPersonMentions(
+              auth: account!.jwt!,
+              unreadOnly: state.showUnreadOnly,
+              sort: CommentSortType.new_,
+              limit: limit,
+              page: state.inboxMentionPage,
             ),
           );
-        } catch (e) {
-          exception = e;
-          attemptCount++;
-        }
+          break;
+        case InboxType.messages:
+          if (state.hasReachedInboxPrivateMessageEnd) return;
+          privateMessagesResponse = await lemmy.run(
+            GetPrivateMessages(
+              auth: account!.jwt!,
+              unreadOnly: state.showUnreadOnly,
+              limit: limit,
+              page: state.inboxPrivateMessagePage,
+            ),
+          );
+          break;
+        default:
+          break;
       }
 
-      emit(state.copyWith(
-        status: InboxStatus.failure,
-        errorMessage: exception.toString(),
-        totalUnreadCount: 0,
-        repliesUnreadCount: 0,
-        mentionsUnreadCount: 0,
-        messagesUnreadCount: 0,
-      ));
+      List<CommentReplyView> replies = List.from(state.replies)..addAll(getRepliesResponse?.replies ?? []);
+      List<PersonMentionView> mentions = List.from(state.mentions)..addAll(getPersonMentionsResponse?.mentions ?? []);
+      List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessagesResponse?.privateMessages ?? []);
+
+      return emit(
+        state.copyWith(
+          status: InboxStatus.success,
+          privateMessages: cleanDeletedMessages(privateMessages),
+          mentions: cleanDeletedMentions(mentions),
+          replies: replies,
+          showUnreadOnly: state.showUnreadOnly,
+          inboxMentionPage: state.inboxMentionPage + 1,
+          inboxReplyPage: state.inboxReplyPage + 1,
+          inboxPrivateMessagePage: state.inboxPrivateMessagePage + 1,
+          hasReachedInboxReplyEnd: getRepliesResponse?.replies.isEmpty == true || (getRepliesResponse?.replies.length ?? 0) < limit,
+          hasReachedInboxMentionEnd: getPersonMentionsResponse?.mentions.isEmpty == true || (getPersonMentionsResponse?.mentions.length ?? 0) < limit,
+          hasReachedInboxPrivateMessageEnd: privateMessagesResponse?.privateMessages.isEmpty == true || (privateMessagesResponse?.privateMessages.length ?? 0) < limit,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(
         status: InboxStatus.failure,
@@ -295,33 +295,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         personMentionId: event.personMentionId,
         read: event.read,
       ));
-
-      add(GetInboxEvent(showAll: !state.showUnreadOnly));
-    } catch (e) {
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
-    }
-  }
-
-  Future<void> _createCommentEvent(CreateInboxCommentReplyEvent event, Emitter<InboxState> emit) async {
-    try {
-      emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
-
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-      if (account?.jwt == null) {
-        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'You are not logged in. Cannot create a comment'));
-      }
-
-      await lemmy.run(CreateComment(
-        auth: account!.jwt!,
-        content: event.content,
-        postId: event.postId,
-        parentId: event.parentCommentId,
-      ));
-
-      add(GetInboxEvent(showAll: !state.showUnreadOnly));
-      return emit(state.copyWith(status: InboxStatus.success));
     } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
@@ -342,8 +315,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       await lemmy.run(MarkAllAsRead(
         auth: account!.jwt!,
       ));
-
-      add(GetInboxEvent(reset: true, showAll: !state.showUnreadOnly));
     } catch (e) {
       emit(state.copyWith(
         status: InboxStatus.failure,

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
+import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
 import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
@@ -28,6 +29,12 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
   /// Whether to show all inbox mentions, replies, and private messages or not
   bool showAll = false;
 
+  InboxType get inboxType => tabController.index == 0
+      ? InboxType.replies
+      : tabController.index == 1
+          ? InboxType.mentions
+          : InboxType.messages;
+
   @override
   void initState() {
     super.initState();
@@ -38,12 +45,12 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
         ScrollController controller = nestedScrollViewKey.currentState!.innerController;
 
         if (controller.position.pixels >= controller.position.maxScrollExtent * 0.7 && context.read<InboxBloc>().state.status == InboxStatus.success) {
-          context.read<InboxBloc>().add(const GetInboxEvent());
+          context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType));
         }
       }),
     );
 
-    context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
+    context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true));
   }
 
   @override
@@ -67,7 +74,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
             showSnackbar(
               state.errorMessage!,
               trailingIcon: Icons.refresh_rounded,
-              trailingAction: () => context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll)),
+              trailingAction: () => context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll)),
             );
           }
         },
@@ -104,7 +111,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                       ),
                       IconButton(
                         icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
-                        onPressed: () => context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll)),
+                        onPressed: () => context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll)),
                       ),
                       FilterChip(
                         shape: const StadiumBorder(),
@@ -113,13 +120,16 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                         selected: showAll,
                         onSelected: (bool selected) {
                           setState(() => showAll = !showAll);
-                          context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: selected));
+                          context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: selected));
                         },
                       ),
                       const SizedBox(width: 16.0),
                     ],
                     bottom: TabBar(
                       controller: tabController,
+                      onTap: (index) {
+                        context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll));
+                      },
                       tabs: [
                         Tab(
                           child: Wrap(
@@ -156,6 +166,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
             },
             body: TabBarView(
               controller: tabController,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 InboxRepliesView(replies: state.replies),
                 InboxMentionsView(mentions: state.mentions),

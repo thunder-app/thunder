@@ -8,10 +8,16 @@ abstract class InboxEvent extends Equatable {
 }
 
 class GetInboxEvent extends InboxEvent {
+  /// The inbox type to fetch from. If null, it will not fetch anything. If [reset] is true, it will only fetch the total unread counts
+  final InboxType? inboxType;
+
+  /// If true, it will fetch read and unread messages
   final bool showAll;
+
+  /// If true, it will reset the inbox and re-fetch everything depending on [inboxType]
   final bool reset;
 
-  const GetInboxEvent({this.showAll = false, this.reset = false});
+  const GetInboxEvent({this.inboxType, this.showAll = false, this.reset = false});
 }
 
 class MarkReplyAsReadEvent extends InboxEvent {
@@ -27,14 +33,6 @@ class MarkMentionAsReadEvent extends InboxEvent {
   final bool read;
 
   const MarkMentionAsReadEvent({required this.personMentionId, required this.read});
-}
-
-class CreateInboxCommentReplyEvent extends InboxEvent {
-  final String content;
-  final int postId;
-  final int parentCommentId;
-
-  const CreateInboxCommentReplyEvent({required this.content, required this.postId, required this.parentCommentId});
 }
 
 class MarkAllAsReadEvent extends InboxEvent {}
