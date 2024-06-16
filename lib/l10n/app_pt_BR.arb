@@ -154,5 +154,25 @@
   "bot": "Bot",
   "@bot": {
     "description": "Label for a bot user."
+  },
+  "actionColorsRedirect": "Querendo customizar cores?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
+  "accountBirthday": "Aniversário da Cona {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "accessibilityProfilesDescription": "Perfis de acessibilidade permitem aplicar múltiplas configurações de uma vez para acomodar um requisito específico de acessibilidade.",
+  "@accessibilityProfilesDescription": {},
+  "alreadyPostedTo": "Já postado em",
+  "@alreadyPostedTo": {},
+  "accountSettingOverrideWarning": "Suas configurações de conta sobrescrevem as configurações a seguir",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "addUserLabel": "Adicionar Etiqueta de Usuário",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
   }
 }
