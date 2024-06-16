@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/inbox/bloc/inbox_bloc.dart';
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
-import 'package:thunder/inbox/widgets/inbox_categories_widget.dart';
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
 import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/dialogs.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/snackbar.dart';
 
-enum InboxType { replies, mentions, messages }
-
+/// A widget that displays the user's inbox replies, mentions, and private messages.
 class InboxPage extends StatefulWidget {
   const InboxPage({super.key});
 
@@ -23,168 +18,152 @@ class InboxPage extends StatefulWidget {
   State<InboxPage> createState() => _InboxPageState();
 }
 
-class _InboxPageState extends State<InboxPage> {
+class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMixin {
+  /// The controller for the tab bar used for switching between inbox types.
+  late TabController tabController;
+
+  /// The global key for the nested scroll view.
+  final GlobalKey<NestedScrollViewState> nestedScrollViewKey = GlobalKey();
+
+  /// Whether to show all inbox mentions, replies, and private messages or not
   bool showAll = false;
-  InboxType? inboxType = InboxType.replies;
-  final _scrollController = ScrollController(initialScrollOffset: 0);
 
   @override
   void initState() {
-    _scrollController.addListener(_onScroll);
     super.initState();
+    tabController = TabController(vsync: this, length: 3);
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => nestedScrollViewKey.currentState!.innerController.addListener(() {
+        ScrollController controller = nestedScrollViewKey.currentState!.innerController;
+
+        if (controller.position.pixels >= controller.position.maxScrollExtent * 0.7 && context.read<InboxBloc>().state.status == InboxStatus.success) {
+          context.read<InboxBloc>().add(const GetInboxEvent());
+        }
+      }),
+    );
+
+    context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    tabController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
-      context.read<InboxBloc>().add(const GetInboxEvent());
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 80.0,
-        centerTitle: false,
-        title: AutoSizeText(l10n.inbox, style: theme.textTheme.titleLarge),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.checklist,
-              semanticLabel: l10n.readAll,
-            ),
-            onPressed: () async {
-              await showThunderDialog<bool>(
-                context: context,
-                title: l10n.confirmMarkAllAsReadTitle,
-                contentText: l10n.confirmMarkAllAsReadBody,
-                onSecondaryButtonPressed: (dialogContext) {
-                  Navigator.of(dialogContext).pop();
-                },
-                secondaryButtonText: l10n.cancel,
-                onPrimaryButtonPressed: (dialogContext, _) {
-                  Navigator.of(dialogContext).pop();
-                  context.read<InboxBloc>().add(MarkAllAsReadEvent());
-                },
-                primaryButtonText: l10n.markAllAsRead,
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.refresh_rounded,
-              semanticLabel: l10n.refresh,
-            ),
-            onPressed: () {
-              context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll));
-            },
-          ),
-          FilterChip(
-            shape: const StadiumBorder(),
-            visualDensity: VisualDensity.compact,
-            label: Text(l10n.showAll),
-            selected: showAll,
-            onSelected: (bool selected) {
-              setState(() => showAll = !showAll);
-              context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: selected));
-            },
-          ),
-          const SizedBox(width: 16.0),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(45.0),
-          child: BlocBuilder<InboxBloc, InboxState>(
-            builder: (context, state) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Center(
-                  child: InboxCategoryWidget(
-                    inboxType: inboxType,
-                    onSelected: (InboxType? selected) {
-                      _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
-                      setState(() {
-                        inboxType = selected;
-                      });
-                    },
-                    unreadCounts: {
-                      InboxType.replies: state.repliesUnreadCount,
-                      InboxType.mentions: state.mentionsUnreadCount,
-                      InboxType.messages: state.messagesUnreadCount,
-                    },
+      body: BlocConsumer<InboxBloc, InboxState>(
+        listener: (context, state) {
+          if (state.status == InboxStatus.initial || state.status == InboxStatus.loading) {
+            nestedScrollViewKey.currentState?.innerController.jumpTo(0);
+          }
+
+          if (state.errorMessage?.isNotEmpty == true) {
+            showSnackbar(
+              state.errorMessage!,
+              trailingIcon: Icons.refresh_rounded,
+              trailingAction: () => context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll)),
+            );
+          }
+        },
+        builder: (context, state) {
+          return NestedScrollView(
+            key: nestedScrollViewKey,
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar(
+                    pinned: true,
+                    centerTitle: false,
+                    toolbarHeight: 70.0,
+                    forceElevated: innerBoxIsScrolled,
+                    title: Text(l10n.inbox),
+                    actions: [
+                      IconButton(
+                        icon: Icon(Icons.checklist, semanticLabel: l10n.readAll),
+                        onPressed: () async {
+                          await showThunderDialog<bool>(
+                            context: context,
+                            title: l10n.confirmMarkAllAsReadTitle,
+                            contentText: l10n.confirmMarkAllAsReadBody,
+                            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                            secondaryButtonText: l10n.cancel,
+                            onPrimaryButtonPressed: (dialogContext, _) {
+                              Navigator.of(dialogContext).pop();
+                              context.read<InboxBloc>().add(MarkAllAsReadEvent());
+                            },
+                            primaryButtonText: l10n.markAllAsRead,
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
+                        onPressed: () => context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll)),
+                      ),
+                      FilterChip(
+                        shape: const StadiumBorder(),
+                        visualDensity: VisualDensity.compact,
+                        label: Text(l10n.showAll),
+                        selected: showAll,
+                        onSelected: (bool selected) {
+                          setState(() => showAll = !showAll);
+                          context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: selected));
+                        },
+                      ),
+                      const SizedBox(width: 16.0),
+                    ],
+                    bottom: TabBar(
+                      controller: tabController,
+                      tabs: [
+                        Tab(
+                          child: Wrap(
+                            spacing: 4.0,
+                            children: [
+                              Text(l10n.reply(10)),
+                              if (state.repliesUnreadCount > 0) Badge(label: Text(state.repliesUnreadCount > 99 ? '99+' : state.repliesUnreadCount.toString())),
+                            ],
+                          ),
+                        ),
+                        Tab(
+                          child: Wrap(
+                            spacing: 4.0,
+                            children: [
+                              Text(l10n.mention(10)),
+                              if (state.mentionsUnreadCount > 0) Badge(label: Text(state.mentionsUnreadCount > 99 ? '99+' : state.mentionsUnreadCount.toString())),
+                            ],
+                          ),
+                        ),
+                        Tab(
+                          child: Wrap(
+                            spacing: 4.0,
+                            children: [
+                              Text(l10n.message(10)),
+                              if (state.messagesUnreadCount > 0) Badge(label: Text(state.messagesUnreadCount > 99 ? '99+' : state.messagesUnreadCount.toString())),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              );
+              ];
             },
-          ),
-        ),
-      ),
-      body: BlocProvider(
-        create: (context) => PostBloc(),
-        child: RefreshIndicator(
-          onRefresh: () async {
-            context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll));
-          },
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            body: TabBarView(
+              controller: tabController,
               children: [
-                BlocBuilder<InboxBloc, InboxState>(
-                  builder: (context, InboxState state) {
-                    if (context.read<AuthBloc>().state.isLoggedIn == false) {
-                      return Align(alignment: Alignment.topCenter, child: Text(l10n.loginToSeeInbox, style: theme.textTheme.titleMedium));
-                    }
-
-                    switch (state.status) {
-                      case InboxStatus.initial:
-                        context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
-                      case InboxStatus.loading:
-                        return const Padding(
-                          padding: EdgeInsets.all(24.0),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                        );
-                      case InboxStatus.refreshing:
-                      case InboxStatus.success:
-                      case InboxStatus.failure:
-                        if (state.errorMessage?.isNotEmpty == true) {
-                          showSnackbar(
-                            state.errorMessage!,
-                            trailingIcon: Icons.refresh_rounded,
-                            trailingAction: () => context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll)),
-                          );
-                        }
-
-                        if (inboxType == InboxType.mentions) return InboxMentionsView(mentions: state.mentions);
-                        if (inboxType == InboxType.messages) return InboxPrivateMessagesView(privateMessages: state.privateMessages);
-                        if (inboxType == InboxType.replies) return InboxRepliesView(replies: state.replies, showAll: showAll);
-                      case InboxStatus.empty:
-                        return Center(child: Text(l10n.emptyInbox));
-                    }
-
-                    return Container();
-                  },
-                ),
+                InboxRepliesView(replies: state.replies),
+                InboxMentionsView(mentions: state.mentions),
+                InboxPrivateMessagesView(privateMessages: state.privateMessages),
               ],
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

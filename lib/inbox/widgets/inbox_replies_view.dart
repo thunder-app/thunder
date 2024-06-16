@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Project imports
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/feed/utils/utils.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/comment_reference.dart';
+import 'package:thunder/shared/divider.dart';
 
 extension on CommentReplyView {
   CommentView toCommentView() {
@@ -33,9 +33,8 @@ extension on CommentReplyView {
 
 class InboxRepliesView extends StatefulWidget {
   final List<CommentReplyView> replies;
-  final bool showAll;
 
-  const InboxRepliesView({super.key, this.replies = const [], required this.showAll});
+  const InboxRepliesView({super.key, this.replies = const []});
 
   @override
   State<InboxRepliesView> createState() => _InboxRepliesViewState();
@@ -43,74 +42,49 @@ class InboxRepliesView extends StatefulWidget {
 
 class _InboxRepliesViewState extends State<InboxRepliesView> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (widget.replies.isEmpty) {
-      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text(l10n.noReplies));
-    }
+    final l10n = AppLocalizations.of(context)!;
+    final state = context.read<InboxBloc>().state;
 
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: widget.replies.length,
-      itemBuilder: (context, index) {
-        return Column(
-          children: [
-            Divider(
-              height: 1.0,
-              thickness: 1.0,
-              color: ElevationOverlay.applySurfaceTint(
-                Theme.of(context).colorScheme.surface,
-                Theme.of(context).colorScheme.surfaceTint,
-                10,
-              ),
-            ),
-            CommentReference(
-              comment: widget.replies[index].toCommentView(),
-              onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-              onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-              onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-              onReportAction: (int commentId) {
-                showReportCommentActionBottomSheet(
-                  context,
-                  commentId: commentId,
-                );
-              },
-              onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
-                context,
-                commentView: isEdit ? commentView : null,
-                parentCommentView: isEdit ? null : commentView,
-                onCommentSuccess: (commentView, userChanged) {
-                  if (!userChanged) {
-                    context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
-                  }
-                },
-              ),
-              isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
-              child: IconButton(
-                onPressed: () {
-                  context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply.id, read: !widget.replies[index].commentReply.read, showAll: widget.showAll));
-                },
-                icon: Icon(
-                  Icons.check,
-                  semanticLabel: l10n.markAsRead,
-                  color: widget.replies[index].commentReply.read ? Colors.green : null,
-                ),
-                visualDensity: VisualDensity.compact,
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+    return Builder(builder: (context) {
+      return CustomScrollView(
+        key: PageStorageKey<String>(l10n.reply(10)),
+        slivers: [
+          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+          if (state.status == InboxStatus.loading) const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),
+          if (widget.replies.isEmpty) SliverFillRemaining(child: Center(child: Text(l10n.noReplies))),
+          SliverList.builder(
+            itemCount: widget.replies.length,
+            itemBuilder: (context, index) {
+              CommentReplyView commentReplyView = widget.replies[index];
+              CommentReply commentReply = commentReplyView.commentReply;
 
-  void onTapCommunityName(BuildContext context, int communityId) {
-    navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId);
+              return Column(
+                children: [
+                  CommentReference(
+                    disableActions: true,
+                    comment: commentReplyView.toCommentView(),
+                    isOwnComment: commentReplyView.creator.id == context.read<AuthBloc>().state.account?.userId,
+                    child: IconButton(
+                      onPressed: () {
+                        context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: commentReply.id, read: !commentReply.read, showAll: !state.showUnreadOnly));
+                      },
+                      icon: Icon(
+                        Icons.check,
+                        semanticLabel: l10n.markAsRead,
+                        color: commentReply.read ? Colors.green : null,
+                      ),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  ),
+                  const ThunderDivider(sliver: false, padding: false),
+                ],
+              );
+            },
+          ),
+          if (state.hasReachedInboxReplyEnd) SliverToBoxAdapter(child: Text(l10n.reachedTheBottom)),
+        ],
+      );
+    });
   }
 }
