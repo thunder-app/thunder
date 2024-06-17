@@ -88,7 +88,7 @@ Future<void> navigateToFeedPage(
     return context.read<FeedBloc>().add(
           FeedFetchedEvent(
             feedType: feedType,
-            postListingType: postListingType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType,
+            postListingType: postListingType,
             sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
             communityId: communityId,
             communityName: communityName,
@@ -126,7 +126,7 @@ Future<void> navigateToFeedPage(
           communityId: communityId,
           userId: userId,
           username: username,
-          postListingType: postListingType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType,
+          postListingType: postListingType,
         ),
       ),
     ),
