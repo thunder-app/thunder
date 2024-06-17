@@ -67,13 +67,10 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
               return Column(
                 children: [
                   CommentReference(
-                    disableActions: true,
                     comment: personMentionView.toCommentView(),
                     isOwnComment: personMentionView.creator.id == context.read<AuthBloc>().state.account?.userId,
                     child: IconButton(
-                      onPressed: () {
-                        context.read<InboxBloc>().add(MarkMentionAsReadEvent(personMentionId: personMention.id, read: !personMention.read));
-                      },
+                      onPressed: () => context.read<InboxBloc>().add(MarkMentionAsReadEvent(personMentionId: personMention.id, read: !personMention.read)),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,

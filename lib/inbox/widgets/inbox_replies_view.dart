@@ -67,13 +67,10 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
               return Column(
                 children: [
                   CommentReference(
-                    disableActions: true,
                     comment: commentReplyView.toCommentView(),
                     isOwnComment: commentReplyView.creator.id == context.read<AuthBloc>().state.account?.userId,
                     child: IconButton(
-                      onPressed: () {
-                        context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: commentReply.id, read: !commentReply.read, showAll: !state.showUnreadOnly));
-                      },
+                      onPressed: () => context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: commentReply.id, read: !commentReply.read, showAll: !state.showUnreadOnly)),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,
