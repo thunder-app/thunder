@@ -174,5 +174,87 @@
   "addUserLabel": "Adicionar Etiqueta de Usuário",
   "@addUserLabel": {
     "description": "Action for adding a user label"
+  },
+  "changePasswordWarning": "Para mudar sua senha, você será redirecionado(a) ao site da sua instância. \\n\\nTem certeza que deseja continuar?",
+  "@changePasswordWarning": {
+    "description": "Warning label for changing password"
+  },
+  "clearCache": "Limpar Cache ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "collapseCommentPreview": "Colapsar Prévia de Comentário",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "commentPreview": "Mostrar prévia dos comentários com as configurações aplicadas",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "comments": "Comentários",
+  "@comments": {},
+  "clearPreferences": "Limpar Preferências",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "clearedCache": "Cache limpado com sucesso.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "compact": "Compactar",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "communityStyle": "Estilo da Comunidade",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "clearedUserPreferences": "As preferências de usuários foram limpas",
+  "@clearedUserPreferences": {},
+  "collapse": "Colapsar",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "collapseInformation": "Colapsar Informação",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "clearedDatabase": "O banco de dados local foi limpo. Reinicie o Thunder para que as mudanças sejam aplicadas.",
+  "@clearedDatabase": {},
+  "collapsePost": "Colapsar post",
+  "@collapsePost": {},
+  "commentReported": "O comentário foi marcado para revisão.",
+  "@commentReported": {},
+  "colorizeCommunityName": "Colorir Nome da Comunidade",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "addedModToCommunity": "Moderador Adicionado à Comunidade",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "changeNotificationSettings": "Mudar configurações de notificação.",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
+  "colorizeInstanceName": "Colorir Nome da Instância",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "colorizeUserName": "Colorir Nome de Usuário",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
+  "communityFormat": "Formato da Comunidade",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "clearDatabase": "Limpar Banco de Dados",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "commentShowUserAvatar": "Mostrar Avatar do Usuário",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
   }
 }
