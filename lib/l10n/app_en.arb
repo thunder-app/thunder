@@ -781,7 +781,7 @@
   "@exportDatabase": {
     "description": "Name of the setting for exporting the db"
   },
-  "exportDatabaseSubtitle": "The database contains info about accounts, favorites, and anonymous subcriptions.",
+  "exportDatabaseSubtitle": "The database contains info about accounts, favorites, anonymous subscriptions, and user labels.",
   "@exportDatabaseSubtitle": {
     "description": "Subtitle of setting for exporting the db"
   },
