@@ -201,6 +201,7 @@ enum LocalSettings {
   replyColor(name: 'settings_theme_reply_color', key: 'replyColor', searchable: false),
 
   // Font Settings
+  appFontFamily(name: 'setting_app_font_family', key: 'appFontFamily', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   titleFontSizeScale(name: 'setting_theme_title_font_size_scale', key: 'postTitleFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   contentFontSizeScale(name: 'setting_theme_content_font_size_scale', key: 'postContentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   commentFontSizeScale(name: 'setting_theme_comment_font_size_scale', key: 'commentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
@@ -421,6 +422,7 @@ extension LocalizationExt on AppLocalizations {
       'themeAccentColor': themeAccentColor,
       'useMaterialYouTheme': useMaterialYouTheme,
       'actionColors': actionColors,
+      'appFontFamily': appFontFamily,
       'postTitleFontScale': postTitleFontScale,
       'postContentFontScale': postContentFontScale,
       'commentFontScale': commentFontScale,

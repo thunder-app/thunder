@@ -61,6 +61,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   ActionColor replyColor = const ActionColor.fromString(colorRaw: ActionColor.green);
 
   // Font Settings
+  String appFontFamily = '';
   FontScale titleFontSizeScale = FontScale.base;
   FontScale contentFontSizeScale = FontScale.base;
   FontScale commentFontSizeScale = FontScale.base;
@@ -142,6 +143,11 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         break;
 
       // Font Settings
+      case LocalSettings.appFontFamily:
+        await prefs.setString(LocalSettings.appFontFamily.name, value);
+        setState(() => appFontFamily = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
       case LocalSettings.titleFontSizeScale:
         await prefs.setString(LocalSettings.titleFontSizeScale.name, (value as FontScale).name);
         setState(() => titleFontSizeScale = value);
@@ -229,6 +235,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
 
       // Font Settings
+      appFontFamily = prefs.getString(LocalSettings.appFontFamily.name) ?? '';
       titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
       contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
       commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
@@ -426,6 +433,52 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         Padding(
                           padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                           child: Text(l10n.fonts, style: theme.textTheme.titleLarge),
+                        ),
+                        ListOption(
+                          description: l10n.appFontFamily,
+                          value: ListPickerItem(label: appFontFamily.isEmpty ? l10n.system : appFontFamily, icon: Icons.font_download_rounded, payload: appFontFamily),
+                          options: [
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: l10n.system,
+                              payload: '',
+                              textTheme: theme.textTheme.apply(fontFamily: ''),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Poppins',
+                              payload: 'Poppins',
+                              textTheme: theme.textTheme.apply(fontFamily: 'Poppins'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Roboto Slab',
+                              payload: 'RobotoSlab',
+                              textTheme: theme.textTheme.apply(fontFamily: 'RobotoSlab'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Noto Sans',
+                              payload: 'NotoSans',
+                              textTheme: theme.textTheme.apply(fontFamily: 'NotoSans'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Noto Serif',
+                              payload: 'NotoSerif',
+                              textTheme: theme.textTheme.apply(fontFamily: 'NotoSerif'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Noto Sans Mono',
+                              payload: 'NotoSansMono',
+                              textTheme: theme.textTheme.apply(fontFamily: 'NotoSansMono'),
+                            ),
+                          ],
+                          icon: Icons.font_download_rounded,
+                          onChanged: (value) => setPreferences(LocalSettings.appFontFamily, value.payload),
+                          closeOnSelect: false,
+                          highlightKey: settingToHighlight == LocalSettings.appFontFamily ? settingToHighlightKey : null,
                         ),
                         ListOption(
                           description: l10n.postTitleFontScale,
