@@ -128,14 +128,12 @@ class _PostPageState extends State<PostPage> {
                     onSelectText: () {
                       showSelectableTextModal(
                         context,
-
                         title: state.postView?.postView.post.name ?? '',
                         text: state.postView?.postView.post.body ?? '',
                       );
                     },
                     onUserChanged: () => userChanged = true,
                     onPostChanged: (newPostViewMedia) => context.read<PostBloc>().add(GetPostEvent(postView: newPostViewMedia)),
-
                   ),
                   SliverToBoxAdapter(
                     child: PostSubview(
@@ -181,9 +179,7 @@ class _PostPageState extends State<PostPage> {
 
                             setState(() {});
                           },
-
                         );
-
                       },
                     ),
                   SliverToBoxAdapter(

@@ -7,6 +7,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
@@ -200,6 +201,14 @@ class PostAppBarActions extends StatelessWidget {
               },
               icon: Icons.people_alt_rounded,
               title: l10n.viewPostAsDifferentAccount,
+            ),
+            ThunderPopupMenuItem(
+              onTap: () => showReportPostActionBottomSheet(
+                context,
+                postId: state.postView?.postView.post.id,
+              ),
+              icon: Icons.report_outlined,
+              title: l10n.reportAPost,
             ),
           ],
         ),

@@ -163,11 +163,6 @@ PostView optimisticallyLockPost(PostView postView, bool lock) {
   return postView.copyWith(post: postView.post.copyWith(locked: lock));
 }
 
-// Optimistically marks a post as read. This changes the value of the post locally, without sending the network request
-PostView optimisticallyReportPost(PostViewMedia postViewMedia, bool read) {
-  return postViewMedia.postView.copyWith(read: read);
-}
-
 /// Logic to lock a post
 Future<bool> lockPost(int postId, bool lock) async {
   Account? account = await fetchActiveProfileAccount();
@@ -401,7 +396,7 @@ void showReportPostActionBottomSheet(
             value: context.read<FeedBloc>(),
           ),
       ],
-      child: ReportAPostDialog(postId: postId!, onReport: onReport),
+      child: ReportPostDialog(postId: postId!, onReport: onReport),
     ),
   );
 }

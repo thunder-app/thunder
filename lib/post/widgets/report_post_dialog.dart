@@ -7,21 +7,30 @@ import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/snackbar.dart';
 
-class ReportAPostDialog extends StatefulWidget {
-  const ReportAPostDialog({super.key, required this.postId, this.onReport});
+class ReportPostDialog extends StatefulWidget {
+  const ReportPostDialog({super.key, required this.postId, this.onReport});
+
+  /// A callback function that returns the reason for the report as a [String] to PostCardAction.reportPost:
+  /// A post can either be reported using `FeedBloc` (From feed_page) or `PostBloc` (from post_page)
+
   final void Function(String)? onReport;
+
+  /// An integer representing the ID of the post being reported.
+
   final int postId;
+
   @override
-  State<ReportAPostDialog> createState() => _ReportAPostDialogState();
+  State<ReportPostDialog> createState() => _ReportPostDialogState();
 }
 
-class _ReportAPostDialogState extends State<ReportAPostDialog> {
+class _ReportPostDialogState extends State<ReportPostDialog> {
+  /// This variable is used to display the error message to the user when an error occurs.
+  String errorMessage = '';
+
+  /// When this flag is set to `true`, it indicates that an error has occurred.
+  bool hasError = false;
+
   late TextEditingController messageController;
-  @override
-  void initState() {
-    messageController = TextEditingController();
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -29,34 +38,32 @@ class _ReportAPostDialogState extends State<ReportAPostDialog> {
     super.dispose();
   }
 
-  bool hasError = false;
-  String errorMessage = '';
+  @override
+  void initState() {
+    super.initState();
+    messageController = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Material(
       child: Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 18.0,
-            vertical: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AutoSizeText(
-                AppLocalizations.of(context)!.reportAPost,
-              ),
-              const SizedBox(
-                height: 12,
-              ),
+              AutoSizeText(l10n.reportAPost),
+              const SizedBox(height: 12),
               TextFormField(
                 decoration: InputDecoration(
                   isDense: true,
                   border: const OutlineInputBorder(),
-                  labelText: AppLocalizations.of(context)!.message(0),
+                  labelText: l10n.message(0),
                 ),
                 autofocus: true,
                 controller: messageController,
@@ -79,9 +86,7 @@ class _ReportAPostDialogState extends State<ReportAPostDialog> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text(
-                        AppLocalizations.of(context)!.cancel,
-                      )),
+                      child: Text(l10n.cancel)),
                   const SizedBox(
                     width: 8,
                   ),
@@ -98,19 +103,17 @@ class _ReportAPostDialogState extends State<ReportAPostDialog> {
                             listener: (context, state) {
                               switch (state.status) {
                                 case FeedStatus.fetching:
-                                  setState(() {
-                                    hasError = false;
-                                  });
+                                  setState(() => hasError = false);
 
                                 case FeedStatus.success:
-                                  showSnackbar(AppLocalizations.of(context)!.postReported);
+                                  showSnackbar(l10n.postReported);
                                   Navigator.of(context).pop();
 
                                   break;
                                 case FeedStatus.failure:
                                   setState(() {
                                     hasError = true;
-                                    errorMessage = state.message ?? AppLocalizations.of(context)!.unexpectedError;
+                                    errorMessage = state.message ?? l10n.unexpectedError;
                                   });
 
                                 default:
@@ -126,9 +129,7 @@ class _ReportAPostDialogState extends State<ReportAPostDialog> {
                                         color: Colors.white,
                                       ));
                                 default:
-                                  return Text(
-                                    AppLocalizations.of(context)!.submit,
-                                  );
+                                  return Text(l10n.submit);
                               }
                             },
                           )),
@@ -137,12 +138,7 @@ class _ReportAPostDialogState extends State<ReportAPostDialog> {
                     FilledButton(
                         onPressed: () {
                           if (messageController.text.isNotEmpty) {
-                            context.read<PostBloc>().add(
-                                  ReportPostEvent(
-                                    postId: widget.postId,
-                                    message: messageController.text,
-                                  ),
-                                );
+                            context.read<PostBloc>().add(ReportPostEvent(postId: widget.postId, message: messageController.text));
                           }
                         },
                         child: BlocConsumer<PostBloc, PostState>(
@@ -150,21 +146,17 @@ class _ReportAPostDialogState extends State<ReportAPostDialog> {
                           listener: (context, state) {
                             switch (state.status) {
                               case PostStatus.loading:
-                                setState(() {
-                                  hasError = false;
-                                });
+                                setState(() => hasError = false);
                               case PostStatus.refreshing:
-                                setState(() {
-                                  hasError = false;
-                                });
+                                setState(() => hasError = false);
                               case PostStatus.success:
-                                showSnackbar(AppLocalizations.of(context)!.postReported);
+                                showSnackbar(l10n.postReported);
                                 Navigator.of(context).pop();
-                                break;
+
                               case PostStatus.failure:
                                 setState(() {
                                   hasError = true;
-                                  errorMessage = state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError;
+                                  errorMessage = state.errorMessage ?? l10n.unexpectedError;
                                 });
 
                               default:
@@ -173,25 +165,12 @@ class _ReportAPostDialogState extends State<ReportAPostDialog> {
                           builder: (context, state) {
                             switch (state.status) {
                               case PostStatus.loading:
-                                return const SizedBox(
-                                  width: 15,
-                                  height: 15,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                );
+                                return const SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Colors.white));
 
                               case PostStatus.refreshing:
-                                return const SizedBox(
-                                    width: 15,
-                                    height: 15,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ));
+                                return const SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Colors.white));
                               default:
-                                return Text(
-                                  AppLocalizations.of(context)!.submit,
-                                );
+                                return Text(l10n.submit);
                             }
                           },
                         ))

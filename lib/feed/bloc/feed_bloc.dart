@@ -291,7 +291,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         PostView originalPostView = postViewMedia.postView;
 
         try {
-          PostView updatedPostView = optimisticallyReportPost(postViewMedia, true);
+          // Optimistically mark post as read
+          PostView updatedPostView = optimisticallyReadPost(postViewMedia, true);
           state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
 
           emit(state.copyWith(status: FeedStatus.fetching));
@@ -299,12 +300,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           bool success = await reportPost(originalPostView.post.id, event.value);
 
           //mark post as read
-          if (success) add(FeedItemActionedEvent(postAction: PostAction.read, postId: originalPostView.post.id, value: true));
+          if (success) {
+            add(FeedItemActionedEvent(postAction: PostAction.read, postId: originalPostView.post.id, value: true));
+          } else {
+            // Restore the original post contents if not successful
+            state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
 
-          // Restore the original post contents if not successful
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
-
-          return emit(state.copyWith(status: FeedStatus.failure));
+            return emit(state.copyWith(status: FeedStatus.failure));
+          }
         } catch (e) {
           // Restore the original post contents
           state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
