@@ -304,7 +304,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       useDisplayNames: true,
                                       postViewMedia: widget.postViewMedia!,
                                       crossPosts: const [],
-                                      moderators: const [],
                                       viewSource: viewSource,
                                       onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                                       showQuickPostActionBar: false,
@@ -328,7 +327,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       onSaveAction: (_, __) {},
                                       onReplyEditAction: (_, __) {},
                                       onReportAction: (_) {},
-                                      now: DateTime.now().toUtc(),
                                       onDeleteAction: (_, __) {},
                                       isUserLoggedIn: true,
                                       isOwnComment: false,
@@ -350,13 +348,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     child: UserSelector(
                                       profileModalHeading: l10n.selectAccountToCommentAs,
                                       postActorId: widget.postViewMedia?.postView.post.apId,
-                                      onPostChanged: (postView) => postId = postView.post.id,
+                                      onPostChanged: (postViewMedia) => postId = postViewMedia.postView.post.id,
                                       parentCommentActorId: widget.parentCommentView?.comment.apId,
                                       onParentCommentChanged: (parentCommentView) {
                                         postId = parentCommentView.post.id;
                                         parentCommentId = parentCommentView.comment.id;
                                       },
                                       onUserChanged: () => userChanged = true,
+                                      enableAccountSwitching: widget.commentView == null,
                                     ),
                                   ),
                                   const SizedBox(height: 10),

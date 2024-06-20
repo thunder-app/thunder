@@ -1,5 +1,6 @@
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -9,28 +10,43 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 
 // Optimistically updates a comment
-CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, int voteType) {
-  int newScore = commentViewTree.commentView!.counts.score;
-  int? existingVoteType = commentViewTree.commentView!.myVote;
+CommentView optimisticallyVoteComment(CommentView commentView, int voteType) {
+  int newScore = commentView.counts.score;
+  int newUpvotes = commentView.counts.upvotes;
+  int newDownvotes = commentView.counts.downvotes;
+  int? existingVoteType = commentView.myVote;
 
   switch (voteType) {
     case -1:
       newScore--;
+      newDownvotes++;
+      if (existingVoteType == 1) newUpvotes--;
       break;
     case 1:
       newScore++;
+      newUpvotes++;
+      if (existingVoteType == -1) newDownvotes--;
       break;
     case 0:
       // Determine score from existing
       if (existingVoteType == -1) {
         newScore++;
+        newDownvotes--;
       } else if (existingVoteType == 1) {
         newScore--;
+        newUpvotes--;
       }
       break;
   }
 
-  return commentViewTree.commentView!.copyWith(myVote: voteType, counts: commentViewTree.commentView!.counts.copyWith(score: newScore));
+  return commentView.copyWith(
+    myVote: voteType,
+    counts: commentView.counts.copyWith(
+      score: newScore,
+      upvotes: newUpvotes,
+      downvotes: newDownvotes,
+    ),
+  );
 }
 
 /// Logic to vote on a comment
@@ -50,6 +66,11 @@ Future<CommentView> voteComment(int commentId, int score) async {
   return updatedCommentView;
 }
 
+/// Optimistically saves a comment without sending the network request
+CommentView optimisticallySaveComment(CommentView commentView, bool saved) {
+  return commentView.copyWith(saved: saved);
+}
+
 /// Logic to save a comment
 Future<CommentView> saveComment(int commentId, bool save) async {
   Account? account = await fetchActiveProfileAccount();
@@ -67,7 +88,47 @@ Future<CommentView> saveComment(int commentId, bool save) async {
   return updatedCommentView;
 }
 
+/// Optimistically deletes a comment without sending the network request
+CommentView optimisticallyDeleteComment(CommentView commentView, bool deleted) {
+  return commentView.copyWith(comment: commentView.comment.copyWith(deleted: deleted));
+}
+
+/// Logic to delete a comment
+Future<CommentView> deleteComment(int commentId, bool deleted) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception(AppLocalizations.of(GlobalContext.context)!.userNotLoggedIn);
+
+  CommentResponse commentResponse = await lemmy.run(DeleteComment(
+    auth: account!.jwt!,
+    commentId: commentId,
+    deleted: deleted,
+  ));
+
+  CommentView updatedCommentView = commentResponse.commentView;
+  return updatedCommentView;
+}
+
+/// Builds a tree of [CommentView] given a flattened list [CommentView].
+///
+/// We need to associate replies to the proper parent comment since we cannot guarantee order in the flattened list from the API.
+CommentNode buildCommentTree(List<CommentView> comments, {bool flatten = false}) {
+  CommentNode root = CommentNode(commentView: null, replies: []);
+
+  for (CommentView commentView in comments) {
+    List<String> commentPath = commentView.comment.path.split('.');
+    String parentId = commentPath.length > 2 ? commentPath[commentPath.length - 2] : commentPath.first;
+
+    CommentNode commentNode = CommentNode(commentView: commentView, replies: []);
+    CommentNode.insertCommentNode(root, parentId, commentNode);
+  }
+
+  return root;
+}
+
 /// Builds a tree of comments given a flattened list
+@Deprecated('This function is used only for the legacy PostPage. Use buildCommentTree instead.')
 List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool flatten = false}) {
   Map<String, CommentViewTree> commentMap = {};
 
@@ -104,6 +165,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
   return commentMap.values.where((commentView) => commentView.commentView!.comment.path.isEmpty || commentView.commentView!.comment.path == '0.${commentView.commentView!.comment.id}').toList();
 }
 
+@Deprecated('This function is used only for the legacy PostPage. Use CommentNode.insertCommentNode instead.')
 List<CommentViewTree> insertNewComment(List<CommentViewTree> comments, CommentView commentView) {
   List<String> parentIds = commentView.comment.path.split('.');
   String commentTime = commentView.comment.published.toIso8601String();
@@ -131,6 +193,7 @@ List<CommentViewTree> insertNewComment(List<CommentViewTree> comments, CommentVi
   return comments;
 }
 
+@Deprecated('This function is used only for the legacy PostPage. Use CommentNode.findCommentNode instead.')
 CommentViewTree? findParentComment(int index, List<String> parentIds, String targetId, List<CommentViewTree> comments) {
   for (CommentViewTree existing in comments) {
     if (existing.commentView?.comment.id.toString() != parentIds[index]) {
@@ -147,6 +210,7 @@ CommentViewTree? findParentComment(int index, List<String> parentIds, String tar
   return null;
 }
 
+@Deprecated('This function is used only for the legacy PostPage')
 List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTrees, int commentId, [List<int>? indexes]) {
   indexes ??= [];
 
@@ -170,6 +234,7 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
 }
 
 // Used for modifying the comment current comment tree so we don't have to refresh the whole thing
+@Deprecated('This function is used only for the legacy PostPage')
 bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentView commentView) {
   for (int i = 0; i < commentTrees.length; i++) {
     if (commentTrees[i].commentView!.comment.id == commentView.comment.id) {

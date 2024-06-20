@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/utils/settings_utils.dart';
 
 class ToggleOption extends StatelessWidget {
   /// The icon to display when enabled
@@ -45,11 +47,17 @@ class ToggleOption extends StatelessWidget {
 
   final List<Widget>? additionalWidgets;
 
+  /// Override the default padding
+  final EdgeInsets? padding;
+
   /// A key to assign to this widget when it should be highlighted
   final GlobalKey? highlightKey;
 
-  /// Override the default padding
-  final EdgeInsets? padding;
+  /// The setting that this widget controls.
+  final LocalSettings? setting;
+
+  /// The highlighted setting, if any.
+  final LocalSettings? highlightedSetting;
 
   const ToggleOption({
     super.key,
@@ -66,8 +74,10 @@ class ToggleOption extends StatelessWidget {
     this.additionalWidgets,
     this.onTap,
     this.onLongPress,
-    this.highlightKey,
     this.padding,
+    required this.setting,
+    required this.highlightedSetting,
+    required this.highlightKey,
   });
 
   void onTapInkWell() {
@@ -83,9 +93,9 @@ class ToggleOption extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SmoothHighlight(
-      key: highlightKey,
-      useInitialHighLight: highlightKey != null,
-      enabled: highlightKey != null,
+      key: highlightedSetting == setting && setting != null ? highlightKey : null,
+      useInitialHighLight: highlightedSetting == setting && setting != null,
+      enabled: highlightedSetting == setting && setting != null,
       color: theme.colorScheme.primaryContainer,
       child: Padding(
         padding: padding ?? const EdgeInsets.symmetric(horizontal: 16.0),
@@ -94,7 +104,7 @@ class ToggleOption extends StatelessWidget {
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(50)),
             onTap: onToggle == null ? null : onTapInkWell,
-            onLongPress: onToggle == null ? null : () => onLongPress?.call(),
+            onLongPress: onToggle == null ? null : onLongPress ?? () => shareSetting(context, setting, description),
             child: Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Row(

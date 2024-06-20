@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
@@ -19,31 +20,19 @@ import 'package:thunder/utils/instance.dart';
 class UserChip extends StatelessWidget {
   const UserChip({
     super.key,
-    this.personId,
-    this.personAvatar,
-    this.personName,
-    this.personDisplayName,
-    this.personUrl,
+    required this.person,
+    required this.personAvatar,
     this.includeInstance = false,
     this.userGroups = const [],
     this.opacity = 1.0,
     this.ignorePointerEvents = false,
   });
 
-  /// The ID of the user
-  final int? personId;
+  /// The person that this chip represents.
+  final Person person;
 
   /// The avatar of the user
   final UserAvatar? personAvatar;
-
-  /// The username of the user
-  final String? personName;
-
-  /// The display name of the user
-  final String? personDisplayName;
-
-  /// The URL of the user's profile
-  final String? personUrl;
 
   /// Whether or not to include the instance name
   final bool includeInstance;
@@ -68,7 +57,7 @@ class UserChip extends StatelessWidget {
       ignoring: ignorePointerEvents,
       child: Tooltip(
         excludeFromSemantics: true,
-        message: '${generateUserFullName(context, personName, fetchInstanceNameFromUrl(personUrl) ?? '-')}${fetchUserGroupDescriptor(userGroups)}',
+        message: '${generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-')}${fetchUserGroupDescriptor(userGroups, person)}',
         preferBelow: false,
         child: Material(
           color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onBackground : Colors.transparent,
@@ -76,7 +65,7 @@ class UserChip extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(5),
             onTap: () {
-              navigateToFeedPage(context, feedType: FeedType.user, userId: personId);
+              navigateToFeedPage(context, feedType: FeedType.user, userId: person.id);
             },
             child: Padding(
               padding: userGroups.isNotEmpty ? const EdgeInsets.symmetric(horizontal: 5.0) : EdgeInsets.zero,
@@ -86,8 +75,8 @@ class UserChip extends StatelessWidget {
                   if (showUserAvatar && personAvatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
                   UserFullNameWidget(
                     context,
-                    personDisplayName != null && state.useDisplayNames ? personDisplayName! : personName,
-                    fetchInstanceNameFromUrl(personUrl),
+                    person.displayName != null && state.useDisplayNames ? person.displayName! : person.name,
+                    fetchInstanceNameFromUrl(person.actorId),
                     includeInstance: includeInstance,
                     fontScale: state.metadataFontSizeScale,
                     transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withOpacity(opacity),
@@ -134,6 +123,15 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1, right: 2),
                       child: Icon(
                         Thunder.robot,
+                        size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
+                        color: theme.colorScheme.onBackground,
+                      ),
+                    ),
+                  if (userGroups.contains(UserType.birthday))
+                    Padding(
+                      padding: const EdgeInsets.only(left: 1, right: 2),
+                      child: Icon(
+                        Icons.cake_rounded,
                         size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onBackground,
                       ),

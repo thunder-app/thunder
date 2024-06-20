@@ -694,13 +694,196 @@ class LocalSubscriptionsCompanion extends UpdateCompanion<LocalSubscription> {
   }
 }
 
+class $UserLabelsTable extends UserLabels with TableInfo<$UserLabelsTable, UserLabel> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserLabelsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
+      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _usernameMeta = const VerificationMeta('username');
+  @override
+  late final GeneratedColumn<String> username = GeneratedColumn<String>('username', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>('label', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, username, label];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_labels';
+  @override
+  VerificationContext validateIntegrity(Insertable<UserLabel> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('username')) {
+      context.handle(_usernameMeta, username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
+    } else if (isInserting) {
+      context.missing(_usernameMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(_labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UserLabel map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserLabel(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      username: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}username'])!,
+      label: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}label'])!,
+    );
+  }
+
+  @override
+  $UserLabelsTable createAlias(String alias) {
+    return $UserLabelsTable(attachedDatabase, alias);
+  }
+}
+
+class UserLabel extends DataClass implements Insertable<UserLabel> {
+  final int id;
+  final String username;
+  final String label;
+  const UserLabel({required this.id, required this.username, required this.label});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['username'] = Variable<String>(username);
+    map['label'] = Variable<String>(label);
+    return map;
+  }
+
+  UserLabelsCompanion toCompanion(bool nullToAbsent) {
+    return UserLabelsCompanion(
+      id: Value(id),
+      username: Value(username),
+      label: Value(label),
+    );
+  }
+
+  factory UserLabel.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserLabel(
+      id: serializer.fromJson<int>(json['id']),
+      username: serializer.fromJson<String>(json['username']),
+      label: serializer.fromJson<String>(json['label']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'username': serializer.toJson<String>(username),
+      'label': serializer.toJson<String>(label),
+    };
+  }
+
+  UserLabel copyWith({int? id, String? username, String? label}) => UserLabel(
+        id: id ?? this.id,
+        username: username ?? this.username,
+        label: label ?? this.label,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('UserLabel(')
+          ..write('id: $id, ')
+          ..write('username: $username, ')
+          ..write('label: $label')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, username, label);
+  @override
+  bool operator ==(Object other) => identical(this, other) || (other is UserLabel && other.id == this.id && other.username == this.username && other.label == this.label);
+}
+
+class UserLabelsCompanion extends UpdateCompanion<UserLabel> {
+  final Value<int> id;
+  final Value<String> username;
+  final Value<String> label;
+  const UserLabelsCompanion({
+    this.id = const Value.absent(),
+    this.username = const Value.absent(),
+    this.label = const Value.absent(),
+  });
+  UserLabelsCompanion.insert({
+    this.id = const Value.absent(),
+    required String username,
+    required String label,
+  })  : username = Value(username),
+        label = Value(label);
+  static Insertable<UserLabel> custom({
+    Expression<int>? id,
+    Expression<String>? username,
+    Expression<String>? label,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (username != null) 'username': username,
+      if (label != null) 'label': label,
+    });
+  }
+
+  UserLabelsCompanion copyWith({Value<int>? id, Value<String>? username, Value<String>? label}) {
+    return UserLabelsCompanion(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      label: label ?? this.label,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (username.present) {
+      map['username'] = Variable<String>(username.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserLabelsCompanion(')
+          ..write('id: $id, ')
+          ..write('username: $username, ')
+          ..write('label: $label')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final $AccountsTable accounts = $AccountsTable(this);
   late final $FavoritesTable favorites = $FavoritesTable(this);
   late final $LocalSubscriptionsTable localSubscriptions = $LocalSubscriptionsTable(this);
+  late final $UserLabelsTable userLabels = $UserLabelsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels];
 }

@@ -185,6 +185,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       case PostAction.read:
         // Optimistically read the post
         int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+        if (existingPostViewMediaIndex == -1) return emit(state.copyWith(status: FeedStatus.failure));
 
         PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
         PostView originalPostView = postViewMedia.postView;
