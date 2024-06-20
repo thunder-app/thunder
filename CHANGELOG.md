@@ -9,6 +9,7 @@
 - Show the number of new comments a read post has received since last visited
 - Added ability to mark read on scroll - contribution from @Fmstrat
 - Added barebones support for video players. Youtube and video codecs - contribution from @ggichure.
+- Ability to report posts - contribution from @ggichure.
 
 ## Changed
 - Small UI adjustments for account switcher

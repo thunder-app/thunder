@@ -21,6 +21,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/post/widgets/reason_bottom_sheet.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/picker_item.dart';
@@ -60,6 +61,7 @@ enum PostCardAction {
   toggleRead,
   share,
   delete,
+  reportPost,
   moderatorActions,
   moderatorLockPost,
   moderatorPinCommunity,
@@ -161,6 +163,12 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.blockInstance,
     icon: Icons.block_rounded,
     label: l10n.blockInstance,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.reportPost,
+    icon: Icons.report_outlined,
+    label: l10n.reportAPost,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
@@ -299,6 +307,7 @@ void showPostActionBottomModalSheet(
             PostCardAction.userActions,
             PostCardAction.communityActions,
             PostCardAction.instanceActions,
+            PostCardAction.reportPost,
           ].contains(extendedAction.postCardAction))
       .toList();
 
@@ -708,6 +717,13 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
         break;
       case PostCardAction.moderatorRemovePost:
         action = () => showRemovePostReasonBottomSheet(widget.outerContext, widget.postViewMedia);
+        break;
+      case PostCardAction.reportPost:
+        action = () => showReportPostActionBottomSheet(
+              widget.outerContext,
+              postId: widget.postViewMedia.postView.post.id,
+              onReport: (String reason) => widget.outerContext.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.report, postId: widget.postViewMedia.postView.post.id, value: reason)),
+            );
         break;
     }
 
