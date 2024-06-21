@@ -121,7 +121,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
       case ModlogActionType.adminPurgePerson:
         return l10n.admin;
       default:
-        return l10n.moderator;
+        return l10n.moderator(1);
     }
   }
 

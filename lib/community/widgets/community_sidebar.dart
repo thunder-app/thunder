@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
@@ -43,6 +44,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
@@ -115,18 +117,18 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                               imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
                             ),
                           ),
-                          const SidebarSectionHeader(value: "Stats"),
+                          SidebarSectionHeader(value: l10n.stats),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: CommunityStatsList(communityView: communityView),
                           ),
-                          const SidebarSectionHeader(value: "Moderators"),
+                          SidebarSectionHeader(value: l10n.moderator(2)),
                           CommunityModeratorList(getCommunityResponse: widget.getCommunityResponse!),
                           Container(
                             child: widget.getCommunityResponse!.site != null
                                 ? Column(
                                     children: [
-                                      const SidebarSectionHeader(value: "Host Instance"),
+                                      SidebarSectionHeader(value: l10n.hostInstance),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                         child: InstanceView(
@@ -159,43 +161,63 @@ class CommunityStatsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (communityView.community.visibility != null) ...[
+          SidebarStat(
+            icon: switch (communityView.community.visibility!) {
+              CommunityVisibility.public => Icons.language_rounded,
+              CommunityVisibility.localOnly => Icons.house_rounded,
+            },
+            value: l10n.visibility(switch (communityView.community.visibility!) {
+              CommunityVisibility.public => l10n.public,
+              CommunityVisibility.localOnly => l10n.localOnly,
+            }),
+          ),
+          const SizedBox(height: 8.0),
+        ],
         // TODO Make this use device date format
         SidebarStat(
           icon: Icons.cake_rounded,
-          value: 'Created ${DateFormat.yMMMMd().format(communityView.community.published)} · ${formatTimeToString(dateTime: communityView.community.published.toIso8601String())} ago',
+          value: '${l10n.created(DateFormat.yMMMMd().format(communityView.community.published))} · ${l10n.ago(formatTimeToString(dateTime: communityView.community.published.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
           icon: Icons.people_rounded,
-          value: '${NumberFormat("#,###,###,###").format(communityView.counts.subscribers)} Subscribers',
+          value: l10n.countSubscribers(NumberFormat("#,###,###,###").format(communityView.counts.subscribers)),
         ),
+        if (communityView.counts.subscribersLocal != null)
+          SidebarStat(
+            icon: Icons.people_rounded,
+            value: l10n.countLocalSubscribers(NumberFormat("#,###,###,###").format(communityView.counts.subscribersLocal)),
+          ),
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: '${NumberFormat("#,###,###,###").format(communityView.counts.posts)} Posts',
+          value: l10n.countPosts(NumberFormat("#,###,###,###").format(communityView.counts.posts)),
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: '${NumberFormat("#,###,###,###").format(communityView.counts.comments)} Comments',
+          value: l10n.countComments(NumberFormat("#,###,###,###").format(communityView.counts.comments)),
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
           icon: Icons.calendar_month_rounded,
-          value: '${NumberFormat("#,###,###,###").format(communityView.counts.usersActiveHalfYear)} users/6 mo',
+          value: l10n.countUsersActiveHalfYear(NumberFormat("#,###,###,###").format(communityView.counts.usersActiveHalfYear)),
         ),
         SidebarStat(
           icon: Icons.calendar_view_month_rounded,
-          value: '${NumberFormat("#,###,###,###").format(communityView.counts.usersActiveMonth)} users/mo',
+          value: l10n.countUsersActiveMonth(NumberFormat("#,###,###,###").format(communityView.counts.usersActiveMonth)),
         ),
         SidebarStat(
           icon: Icons.calendar_view_week_rounded,
-          value: '${NumberFormat("#,###,###,###").format(communityView.counts.usersActiveWeek)} users/wk',
+          value: l10n.countUsersActiveWeek(NumberFormat("#,###,###,###").format(communityView.counts.usersActiveWeek)),
         ),
         SidebarStat(
           icon: Icons.calendar_view_day_rounded,
-          value: '${NumberFormat("#,###,###,###").format(communityView.counts.usersActiveDay)} users/day',
+          value: l10n.countUsersActiveDay(NumberFormat("#,###,###,###").format(communityView.counts.usersActiveDay)),
         ),
       ],
     );
@@ -276,6 +298,8 @@ class BlockCommunityButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<CommunityBloc, CommunityState>(
       builder: (context, state) {
         bool blocked = false;
@@ -305,7 +329,7 @@ class BlockCommunityButton extends StatelessWidget {
               children: [
                 Icon(blocked ? Icons.undo_rounded : Icons.block_rounded),
                 const SizedBox(width: 4.0),
-                Text(blocked ? 'Unblock Community' : 'Block Community'),
+                Text(blocked ? l10n.unblockCommunity : l10n.blockCommunity),
               ],
             ),
           ),
@@ -323,6 +347,8 @@ class CommunityActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     CommunityView communityView = getCommunityResponse.communityView;
 
     return Row(
@@ -342,12 +368,12 @@ class CommunityActions extends StatelessWidget {
             ),
             child: Semantics(
               focused: true,
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.library_books_rounded),
-                  SizedBox(width: 4.0),
-                  Text('New Post', style: TextStyle(color: null)),
+                  const Icon(Icons.library_books_rounded),
+                  const SizedBox(width: 4.0),
+                  Text(l10n.newPost, style: const TextStyle(color: null)),
                 ],
               ),
             ),
@@ -381,9 +407,9 @@ class CommunityActions extends StatelessWidget {
                 const SizedBox(width: 4.0),
                 Text(
                   switch (communityView.subscribed) {
-                    SubscribedType.notSubscribed => 'Subscribe',
-                    SubscribedType.pending => 'Pending...',
-                    SubscribedType.subscribed => 'Unsubscribe',
+                    SubscribedType.notSubscribed => l10n.subscribe,
+                    SubscribedType.pending => '${l10n.pending}...',
+                    SubscribedType.subscribed => l10n.unsubscribe,
                   },
                 ),
               ],
