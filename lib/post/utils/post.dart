@@ -348,7 +348,10 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
 
     try {
-      result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(const Duration(seconds: 2));
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      int imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+
+      result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
     } catch (e) {
       debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
     }

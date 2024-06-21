@@ -951,6 +951,10 @@
   "@imageCachingModeRelaxedShort": {
     "description": "Short description for relaxed image caching mode"
   },
+  "imageDimensionTimeout": "Image Dimension Timeout",
+  "@imageDimensionTimeout": {
+    "description": "Setting for how long to wait for the image dimensions to be fetched"
+  },
   "importDatabase": "Import Database",
   "@importDatabase": {
     "description": "Name of setting for importing the db"
