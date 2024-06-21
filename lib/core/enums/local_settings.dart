@@ -300,6 +300,7 @@ enum LocalSettings {
   combineNavAndFab(name: 'setting_combine_nav_and_fab', key: 'combineNavAndFab', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
 
   enableExperimentalFeatures(name: 'setting_enable_experimental_features', key: 'enableExperimentalFeatures', category: LocalSettingsCategories.debug),
+  imageDimensionTimeout(name: 'setting_image_dimension_timeout', key: 'imageDimensionTimeout', category: LocalSettingsCategories.debug),
 
   draftsCache(name: 'drafts_cache', key: ''),
 
