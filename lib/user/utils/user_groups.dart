@@ -57,7 +57,7 @@ String fetchUserGroupDescriptor(List<UserType> userGroups, Person? person) {
   if (userGroups.contains(UserType.op)) descriptors.add(l10n.originalPoster);
   if (userGroups.contains(UserType.self)) descriptors.add(l10n.me);
   if (userGroups.contains(UserType.admin)) descriptors.add(l10n.admin);
-  if (userGroups.contains(UserType.moderator)) descriptors.add(l10n.moderator);
+  if (userGroups.contains(UserType.moderator)) descriptors.add(l10n.moderator(1));
   if (userGroups.contains(UserType.bot)) descriptors.add(l10n.bot);
   if (descriptors.isNotEmpty) descriptor = ' (${descriptors.join(', ')})';
 
