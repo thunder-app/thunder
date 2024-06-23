@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,6 +89,9 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
       (value) {
         setState(() {
           isFullScreen = state.videoAutoFullscreen;
+          if (isFullScreen) {
+            SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+          }
         });
 
         if (autoPlayVideo(state)) {
@@ -103,7 +107,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
       backgroundColor: Colors.black,
       body: SafeArea(
         child: RotatedBox(
-          quarterTurns: isFullScreen ? 0 : 1,
+          quarterTurns: !isFullScreen ? 0 : 1,
           child: Stack(
             children: [
               Row(
@@ -157,7 +161,19 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                   ]),
                 ),
               ),
-              VideoPlayerControls(controller: _videoPlayerController, onToggleFullScreen: () => setState(() => isFullScreen = !isFullScreen)),
+              VideoPlayerControls(
+                controller: _videoPlayerController,
+                onToggleFullScreen: () => setState(
+                  () {
+                    isFullScreen = !isFullScreen;
+                    if (isFullScreen) {
+                      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+                    } else {
+                      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+                    }
+                  },
+                ),
+              ),
             ],
           ),
         ),
