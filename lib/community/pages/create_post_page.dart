@@ -535,6 +535,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 minLines: 8,
                                 maxLines: null,
                                 textStyle: theme.textTheme.bodyLarge,
+                                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                               ),
                               crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                               duration: const Duration(milliseconds: 120),

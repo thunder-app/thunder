@@ -391,6 +391,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         minLines: 8,
                                         maxLines: null,
                                         textStyle: theme.textTheme.bodyLarge,
+                                        spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                                       ),
                                     ),
                                     crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
