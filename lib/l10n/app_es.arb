@@ -2414,5 +2414,121 @@
   "unifiedPushServer": "Servidor UnifiedPush: {server}",
   "@unifiedPushServer": {
     "description": "Debug text that tells the user what UnifiedPush server is being used"
+  },
+  "changePassword": "Cambiar Contraseña",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "contentManagement": "Gestión de Contenido",
+  "@contentManagement": {
+    "description": "Setting for content management (languages/blocking)"
+  },
+  "countComments": "{count} Comentarios",
+  "@countComments": {
+    "description": "Number of comments"
+  },
+  "countPosts": "{count} Publicaciones",
+  "@countPosts": {
+    "description": "Number of posts"
+  },
+  "countUsersActiveMonth": "{count} usuarios/mes",
+  "@countUsersActiveMonth": {
+    "description": "Number of users active in the last month"
+  },
+  "countUsersActiveWeek": "{count} usuarios/semana",
+  "@countUsersActiveWeek": {
+    "description": "Number of users active in the last week"
+  },
+  "created": "Creado {date}",
+  "@created": {
+    "description": "The date that something was created"
+  },
+  "noMatrixUserSet": "Usuario Matrix no establecido",
+  "@noMatrixUserSet": {
+    "description": "Message for no matrix user set"
+  },
+  "importDatabase": "Importar Base de Datos",
+  "@importDatabase": {
+    "description": "Name of setting for importing the db"
+  },
+  "label": "Etiqueta",
+  "@label": {
+    "description": "Text field label for a user label"
+  },
+  "blockSettingLabel": "Bloqueo Usuario/Comunidad/Instancia",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "profileBio": "Biografía de Perfil",
+  "@profileBio": {
+    "description": "Setting for profile bio"
+  },
+  "settingOverrideLabel": "Estas configuraciones sobrescriben las configuraciones por defecto de Thunder.",
+  "@settingOverrideLabel": {
+    "description": "Message which indicates that the (instance) settings override the app settings"
+  },
+  "settingsImportedSuccessfully": "¡Las configuraciones fueron importadas exitosamente!",
+  "@settingsImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported successfully"
+  },
+  "blockManagement": "Bloquear Gestión",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "ago": "Hace {time}",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "countLocalSubscribers": "{count} Subscriptores Locales",
+  "@countLocalSubscribers": {
+    "description": "Number of local subscribers"
+  },
+  "changePasswordWarning": "Para cambiar su contraseña, será direccionado a su instancia principal. \\n\\n¿Seguro que desea continuar?",
+  "@changePasswordWarning": {
+    "description": "Warning label for changing password"
+  },
+  "countUsersActiveDay": "{count} usuarios/dia",
+  "@countUsersActiveDay": {
+    "description": "Number of users active in the last day"
+  },
+  "countUsersActiveHalfYear": "{count} usuarios/6 meses",
+  "@countUsersActiveHalfYear": {
+    "description": "Number of users active in the last half year"
+  },
+  "importExportDatabase": "Importar/Exportar Base de Datos",
+  "@importExportDatabase": {
+    "description": "Overall name of setting for importing or exporting the db (for searching)"
+  },
+  "instances": "Instancias",
+  "@instances": {
+    "description": "Title for settings related to instances"
+  },
+  "localOnly": "Solo Local",
+  "@localOnly": {
+    "description": "Local community visibility"
+  },
+  "settingsExportedSuccessfully": "Las configuraciones fueron guardadas exitosamente en '{savedFilePath}'",
+  "@settingsExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported successfully"
+  },
+  "public": "Público",
+  "@public": {
+    "description": "Public community visibility"
+  },
+  "noProfileBioSet": "Biografía de perfíl no establecida",
+  "@noProfileBioSet": {
+    "description": "Message for no profile bio set"
+  },
+  "noDisplayNameSet": "Nombre para mostrar no establecido",
+  "@noDisplayNameSet": {
+    "description": "Message for no display name set"
+  },
+  "noEmailSet": "Correo electrónico no establecido",
+  "@noEmailSet": {
+    "description": "Message for no email set"
+  },
+  "settingsNotExportedSuccessfully": "Las configuraciones no fueron guardadas exitosamente, o la operación fue cancelada.",
+  "@settingsNotExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported unsuccessfully"
   }
 }
