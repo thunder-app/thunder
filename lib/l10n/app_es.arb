@@ -233,7 +233,7 @@
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Su comentario no ha podido ser enviado en este momento. Vuelva a intentarlo más tarde",
   "@couldntCreateReport": {},
-  "countSubscribers": "{count} suscriptores",
+  "countSubscribers": "{count} Subscriptores",
   "@countSubscribers": {},
   "countUsers": "{count} usuarios",
   "@countUsers": {
@@ -2530,5 +2530,49 @@
   "settingsNotExportedSuccessfully": "Las configuraciones no fueron guardadas exitosamente, o la operación fue cancelada.",
   "@settingsNotExportedSuccessfully": {
     "description": "Message shown to the user when the settings were exported unsuccessfully"
+  },
+  "databaseExportedSuccessfully": "La base de datos fue exportada exitosamente a '{savedFilePath}'",
+  "@databaseExportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully exported"
+  },
+  "databaseImportedSuccessfully": "¡La base de datos fue importada exitosamente!",
+  "@databaseImportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully imported"
+  },
+  "settingsNotImportedSuccessfully": "Las configuraciones no fueron importadas exitosamente o la operación fue cancelada.",
+  "@settingsNotImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported unsuccessfully"
+  },
+  "showNsfwContent": "Mostrar Contenido NSFW",
+  "@showNsfwContent": {
+    "description": "Toggle to show NSFW content."
+  },
+  "stats": "Stats",
+  "@stats": {
+    "description": "Community statistics"
+  },
+  "unblockCommunity": "Desbloquear Cominudad",
+  "@unblockCommunity": {
+    "description": "Action to unblock a community"
+  },
+  "visibility": "Visibilidad: {visibility}",
+  "@visibility": {
+    "description": "Visibility heading for community"
+  },
+  "accountSettingOverrideWarning": "Su configuración de cuenta sobreescribe las siguientes configuraciones",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "addUserLabel": "Agregar Etiqueta de Usuario",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
+  "databaseExportWarning": "La base de datos puede contener información sensible relacionada con su cuenta de Lemmy. Si es exportada, no debería compartirla con nadie. ¿Desea continuar?",
+  "@databaseExportWarning": {
+    "description": "Message shown to the user when exporting the db"
+  },
+  "userLabelHint": "Este es mi usuario favorito",
+  "@userLabelHint": {
+    "description": "Hint text for adding a new user label"
   }
 }
