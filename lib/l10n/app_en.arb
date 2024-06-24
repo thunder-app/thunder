@@ -233,7 +233,7 @@
   "@changePassword": {
     "description": "Label for action to change password"
   },
-  "changePasswordWarning": "To change your password, you will be redirected to your instance site. \\n\\nAre you sure you want to continue?",
+  "changePasswordWarning": "To change your password, you will be redirected to your instance site.\n\nAre you sure you want to continue?",
   "@changePasswordWarning": {
     "description": "Warning label for changing password"
   },
