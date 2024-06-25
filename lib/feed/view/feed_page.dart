@@ -240,6 +240,27 @@ class _FeedViewState extends State<FeedView> {
     }
   }
 
+  Future<void> dismissBlockedUsersAndCommunities(int? userId, int? communityId) async {
+    ThunderState state = context.read<ThunderBloc>().state;
+
+    FeedBloc feedBloc = context.read<FeedBloc>();
+    List<PostViewMedia> postViewMedias = feedBloc.state.postViewMedias;
+
+    if (postViewMedias.isNotEmpty) {
+      for (PostViewMedia postViewMedia in postViewMedias) {
+        if (postViewMedia.postView.creator.id == userId || postViewMedia.postView.community.id == communityId) {
+          setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
+          await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
+        }
+      }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      feedBloc.add(FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
+      setState(() => queuedForRemoval.clear());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
@@ -280,6 +301,7 @@ class _FeedViewState extends State<FeedView> {
               if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
               if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
               if (previous.dismissReadId != current.dismissReadId) dismissRead();
+              if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
               return true;
             },
             listener: (context, state) {

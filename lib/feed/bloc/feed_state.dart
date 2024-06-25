@@ -22,6 +22,8 @@ final class FeedState extends Equatable {
     this.message,
     this.scrollId = 0,
     this.dismissReadId = 0,
+    this.dismissBlockedUserId,
+    this.dismissBlockedCommunityId,
     this.insertedPostIds = const [],
   });
 
@@ -79,6 +81,12 @@ final class FeedState extends Equatable {
   /// This id is used for dismissing already read posts in the feed
   final int dismissReadId;
 
+  /// This id is used for dismissing posts from blocked users
+  final int? dismissBlockedUserId;
+
+  /// This id is used for dismissing posts from blocked communities
+  final int? dismissBlockedCommunityId;
+
   /// The inserted post ids. This is used to prevent duplicate posts
   final List<int> insertedPostIds;
 
@@ -101,6 +109,8 @@ final class FeedState extends Equatable {
     String? message,
     int? scrollId,
     int? dismissReadId,
+    int? dismissBlockedUserId,
+    int? dismissBlockedCommunityId,
     List<int>? insertedPostIds,
   }) {
     return FeedState(
@@ -122,6 +132,8 @@ final class FeedState extends Equatable {
       message: message,
       scrollId: scrollId ?? this.scrollId,
       dismissReadId: dismissReadId ?? this.dismissReadId,
+      dismissBlockedUserId: dismissBlockedUserId,
+      dismissBlockedCommunityId: dismissBlockedCommunityId,
       insertedPostIds: insertedPostIds ?? this.insertedPostIds,
     );
   }
@@ -151,6 +163,8 @@ final class FeedState extends Equatable {
         message,
         scrollId,
         dismissReadId,
+        dismissBlockedUserId,
+        dismissBlockedCommunityId,
         insertedPostIds
       ];
 }

@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'community_event.dart';
@@ -73,9 +74,17 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           emit(state.copyWith(status: CommunityStatus.fetching));
 
           // Wait for one second before fetching the community information to get any updated information
-          Future.delayed(const Duration(seconds: 1)).then((value) async {
+          await Future.delayed(const Duration(seconds: 1)).then((value) async {
             GetCommunityResponse? getCommunityResponse = await fetchCommunityInformation(id: event.communityId);
             emit(state.copyWith(status: CommunityStatus.success, communityView: getCommunityResponse.communityView));
+
+            if (GlobalContext.context.mounted) {
+              if (event.value) {
+                showSnackbar(AppLocalizations.of(GlobalContext.context)!.subscribed);
+              } else {
+                showSnackbar(AppLocalizations.of(GlobalContext.context)!.unsubscribed);
+              }
+            }
           });
         } catch (e) {
           return emit(state.copyWith(status: CommunityStatus.failure));
