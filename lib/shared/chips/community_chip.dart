@@ -23,19 +23,19 @@ class CommunityChip extends StatelessWidget {
   });
 
   /// The ID of the community.
-  final int? communityId;
+  final int communityId;
 
   /// The avatar of the community.
-  final CommunityAvatar? communityAvatar;
+  final CommunityAvatar communityAvatar;
 
   /// The name of the community.
-  final String? communityName;
+  final String communityName;
 
   /// The title of the community.
-  final String? communityTitle;
+  final String communityTitle;
 
   /// The URL of the community.
-  final String? communityUrl;
+  final String communityUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class CommunityChip extends StatelessWidget {
         excludeFromSemantics: true,
         message: generateCommunityFullName(
           context,
-          communityName!,
+          communityName,
           communityTitle,
           fetchInstanceNameFromUrl(communityUrl) ?? '-',
         ),
@@ -58,7 +58,7 @@ class CommunityChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (showCommunityAvatar && communityAvatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: communityAvatar!),
+            if (showCommunityAvatar) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: communityAvatar),
             CommunityFullNameWidget(
               context,
               communityName,
