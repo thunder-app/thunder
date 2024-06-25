@@ -18,10 +18,7 @@ final class CommunityActionEvent extends CommunityEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  /// An optional post associated with this action
-  final PostViewMedia? postViewMedia;
-
-  const CommunityActionEvent({required this.communityId, required this.communityAction, this.value, this.postViewMedia});
+  const CommunityActionEvent({required this.communityId, required this.communityAction, this.value});
 }
 
 final class CommunityClearMessageEvent extends CommunityEvent {}

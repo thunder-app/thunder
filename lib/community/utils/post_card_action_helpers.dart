@@ -701,7 +701,6 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
               communityAction: CommunityAction.follow,
               communityId: widget.postViewMedia.postView.community.id,
               value: true,
-              postViewMedia: widget.postViewMedia,
             ));
         break;
       case PostCardAction.unsubscribeFromCommunity:
@@ -709,7 +708,6 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
               communityAction: CommunityAction.follow,
               communityId: widget.postViewMedia.postView.community.id,
               value: false,
-              postViewMedia: widget.postViewMedia,
             ));
         break;
       case PostCardAction.delete:
