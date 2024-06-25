@@ -91,7 +91,12 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.userActions,
     icon: Icons.person_rounded,
     label: l10n.user,
-    getSubtitleLabel: (context, commentView) => generateUserFullName(context, commentView.creator.name, fetchInstanceNameFromUrl(commentView.creator.actorId)),
+    getSubtitleLabel: (context, commentView) => generateUserFullName(
+      context,
+      commentView.creator.name,
+      commentView.creator.displayName,
+      fetchInstanceNameFromUrl(commentView.creator.actorId),
+    ),
     getTrailingIcon: () => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(

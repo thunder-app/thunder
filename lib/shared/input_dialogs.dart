@@ -80,7 +80,12 @@ Future<List<PersonView>> getUserSuggestions(String query) async {
 
 Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void Function(PersonView)? onSelected}) {
   return Tooltip(
-    message: generateUserFullName(context, payload.person.name, fetchInstanceNameFromUrl(payload.person.actorId)),
+    message: generateUserFullName(
+      context,
+      payload.person.name,
+      payload.person.displayName,
+      fetchInstanceNameFromUrl(payload.person.actorId),
+    ),
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
@@ -97,7 +102,14 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
             animationDuration: const Duration(seconds: 2),
             backDuration: const Duration(seconds: 2),
             pauseDuration: const Duration(seconds: 1),
-            child: UserFullNameWidget(context, payload.person.name, fetchInstanceNameFromUrl(payload.person.actorId)),
+            child: UserFullNameWidget(
+              context,
+              payload.person.name,
+              payload.person.displayName,
+              fetchInstanceNameFromUrl(payload.person.actorId),
+              // Override because we're showing display name above
+              useDisplayName: false,
+            ),
           ),
         ),
       ),
@@ -182,7 +194,12 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
   final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
 
   return Tooltip(
-    message: generateCommunityFullName(context, payload.community.name, fetchInstanceNameFromUrl(payload.community.actorId)),
+    message: generateCommunityFullName(
+      context,
+      payload.community.name,
+      payload.community.title,
+      fetchInstanceNameFromUrl(payload.community.actorId),
+    ),
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
@@ -202,7 +219,14 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
                 animationDuration: const Duration(seconds: 2),
                 backDuration: const Duration(seconds: 2),
                 pauseDuration: const Duration(seconds: 1),
-                child: CommunityFullNameWidget(context, payload.community.name, fetchInstanceNameFromUrl(payload.community.actorId)),
+                child: CommunityFullNameWidget(
+                  context,
+                  payload.community.name,
+                  payload.community.title,
+                  fetchInstanceNameFromUrl(payload.community.actorId),
+                  // Override because we're showing display name above
+                  useDisplayName: false,
+                ),
               ),
               Row(
                 children: [

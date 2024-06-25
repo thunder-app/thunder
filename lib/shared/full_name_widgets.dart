@@ -13,6 +13,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 class UserFullNameWidget extends StatelessWidget {
   final BuildContext? outerContext;
   final String? name;
+  final String? displayName;
   final String? instance;
   final FullNameSeparator? userSeparator;
   final NameThickness? userNameThickness;
@@ -24,10 +25,12 @@ class UserFullNameWidget extends StatelessWidget {
   final FontScale? fontScale;
   final bool autoSize;
   final Color? Function(Color?)? transformColor;
+  final bool? useDisplayName;
 
   const UserFullNameWidget(
     this.outerContext,
     this.name,
+    this.displayName,
     this.instance, {
     super.key,
     this.userSeparator,
@@ -40,12 +43,13 @@ class UserFullNameWidget extends StatelessWidget {
     this.fontScale,
     this.autoSize = false,
     this.transformColor,
+    this.useDisplayName,
   })  : assert(outerContext != null || (userSeparator != null && userNameThickness != null && userNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
         assert(outerContext != null || textStyle != null);
 
   @override
   Widget build(BuildContext context) {
-    String prefix = generateUserFullNamePrefix(outerContext, name, userSeparator: userSeparator);
+    String prefix = generateUserFullNamePrefix(outerContext, name, displayName, userSeparator: userSeparator, useDisplayName: useDisplayName);
     String suffix = generateUserFullNameSuffix(outerContext, instance, userSeparator: userSeparator);
     NameThickness userNameThickness = this.userNameThickness ?? outerContext!.read<ThunderBloc>().state.userFullNameUserNameThickness;
     NameColor userNameColor = this.userNameColor ?? outerContext!.read<ThunderBloc>().state.userFullNameUserNameColor;
@@ -102,6 +106,7 @@ class UserFullNameWidget extends StatelessWidget {
 class CommunityFullNameWidget extends StatelessWidget {
   final BuildContext? outerContext;
   final String? name;
+  final String? displayName;
   final String? instance;
   final FullNameSeparator? communitySeparator;
   final NameThickness? communityNameThickness;
@@ -113,10 +118,12 @@ class CommunityFullNameWidget extends StatelessWidget {
   final FontScale? fontScale;
   final bool autoSize;
   final Color? Function(Color?)? transformColor;
+  final bool? useDisplayName;
 
   const CommunityFullNameWidget(
     this.outerContext,
     this.name,
+    this.displayName,
     this.instance, {
     super.key,
     this.communitySeparator,
@@ -129,12 +136,13 @@ class CommunityFullNameWidget extends StatelessWidget {
     this.fontScale,
     this.autoSize = false,
     this.transformColor,
+    this.useDisplayName,
   })  : assert(outerContext != null || (communitySeparator != null && communityNameThickness != null && communityNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
         assert(outerContext != null || textStyle != null);
 
   @override
   Widget build(BuildContext context) {
-    String prefix = generateCommunityFullNamePrefix(outerContext, name, communitySeparator: communitySeparator);
+    String prefix = generateCommunityFullNamePrefix(outerContext, name, displayName, communitySeparator: communitySeparator, useDisplayName: useDisplayName);
     String suffix = generateCommunityFullNameSuffix(outerContext, instance, communitySeparator: communitySeparator);
     NameThickness communityNameThickness = this.communityNameThickness ?? outerContext!.read<ThunderBloc>().state.communityFullNameCommunityNameThickness;
     NameColor communityNameColor = this.communityNameColor ?? outerContext!.read<ThunderBloc>().state.communityFullNameCommunityNameColor;

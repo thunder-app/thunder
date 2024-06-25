@@ -57,7 +57,12 @@ class UserChip extends StatelessWidget {
       ignoring: ignorePointerEvents,
       child: Tooltip(
         excludeFromSemantics: true,
-        message: '${generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-')}${fetchUserGroupDescriptor(userGroups, person)}',
+        message: '${generateUserFullName(
+          context,
+          person.name,
+          person.displayName,
+          fetchInstanceNameFromUrl(person.actorId),
+        )}${fetchUserGroupDescriptor(userGroups, person)}',
         preferBelow: false,
         child: Material(
           color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onBackground : Colors.transparent,
@@ -75,7 +80,8 @@ class UserChip extends StatelessWidget {
                   if (showUserAvatar && personAvatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
                   UserFullNameWidget(
                     context,
-                    person.displayName != null && state.useDisplayNames ? person.displayName! : person.name,
+                    person.name,
+                    person.displayName,
                     fetchInstanceNameFromUrl(person.actorId),
                     includeInstance: includeInstance,
                     fontScale: state.metadataFontSizeScale,

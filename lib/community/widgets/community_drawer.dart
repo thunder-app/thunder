@@ -510,7 +510,12 @@ class CommunityItem extends StatelessWidget {
         Expanded(
           child: Tooltip(
             excludeFromSemantics: true,
-            message: '${community.title}\n${generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId))}',
+            message: '${community.title}\n${generateCommunityFullName(
+              context,
+              community.name,
+              community.title,
+              fetchInstanceNameFromUrl(community.actorId),
+            )}',
             preferBelow: false,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,

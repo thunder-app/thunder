@@ -93,7 +93,14 @@ class NameColor {
 
 /// --- SAMPLES ---
 
-String generateSampleUserFullName(FullNameSeparator separator) => generateUserFullName(null, 'name', 'instance.tld', userSeparator: separator);
+String generateSampleUserFullName(FullNameSeparator separator, bool useDisplayName) => generateUserFullName(
+      null,
+      'name',
+      'name',
+      'instance.tld',
+      userSeparator: separator,
+      useDisplayName: useDisplayName,
+    );
 
 Widget generateSampleUserFullNameWidget(
   FullNameSeparator separator, {
@@ -106,6 +113,7 @@ Widget generateSampleUserFullNameWidget(
     UserFullNameWidget(
       null,
       'name',
+      'name',
       'instance.tld',
       userSeparator: separator,
       userNameThickness: userNameThickness,
@@ -115,7 +123,14 @@ Widget generateSampleUserFullNameWidget(
       textStyle: textStyle,
     );
 
-String generateSampleCommunityFullName(FullNameSeparator separator) => generateCommunityFullName(null, 'name', 'instance.tld', communitySeparator: separator);
+String generateSampleCommunityFullName(FullNameSeparator separator, bool useDisplayName) => generateCommunityFullName(
+      null,
+      'name',
+      'name',
+      'instance.tld',
+      communitySeparator: separator,
+      useDisplayName: useDisplayName,
+    );
 
 Widget generateSampleCommunityFullNameWidget(
   FullNameSeparator separator, {
@@ -128,6 +143,7 @@ Widget generateSampleCommunityFullNameWidget(
     CommunityFullNameWidget(
       null,
       'name',
+      'name',
       'instance.tld',
       communitySeparator: separator,
       communityNameThickness: communityNameThickness,
@@ -139,17 +155,18 @@ Widget generateSampleCommunityFullNameWidget(
 
 /// --- USERS ---
 
-String generateUserFullNamePrefix(BuildContext? context, name, {FullNameSeparator? userSeparator}) {
-  assert(context != null || userSeparator != null);
+String generateUserFullNamePrefix(BuildContext? context, String? name, String? displayName, {FullNameSeparator? userSeparator, bool? useDisplayName}) {
+  assert(context != null || (userSeparator != null && useDisplayName != null));
   userSeparator ??= context!.read<ThunderBloc>().state.userSeparator;
+  useDisplayName ??= context!.read<ThunderBloc>().state.useDisplayNamesForUsers;
   return switch (userSeparator) {
-    FullNameSeparator.dot => '$name',
-    FullNameSeparator.at => '$name',
-    FullNameSeparator.lemmy => '@$name',
+    FullNameSeparator.dot => (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '',
+    FullNameSeparator.at => (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '',
+    FullNameSeparator.lemmy => '@${(useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? ''}',
   };
 }
 
-String generateUserFullNameSuffix(BuildContext? context, instance, {FullNameSeparator? userSeparator}) {
+String generateUserFullNameSuffix(BuildContext? context, String? instance, {FullNameSeparator? userSeparator}) {
   assert(context != null || userSeparator != null);
   userSeparator ??= context!.read<ThunderBloc>().state.userSeparator;
   return switch (userSeparator) {
@@ -159,27 +176,26 @@ String generateUserFullNameSuffix(BuildContext? context, instance, {FullNameSepa
   };
 }
 
-String generateUserFullName(BuildContext? context, name, instance, {FullNameSeparator? userSeparator}) {
-  assert(context != null || userSeparator != null);
-  userSeparator ??= context!.read<ThunderBloc>().state.userSeparator;
-  String prefix = generateUserFullNamePrefix(context, name, userSeparator: userSeparator);
+String generateUserFullName(BuildContext? context, String? name, String? displayName, instance, {FullNameSeparator? userSeparator, bool? useDisplayName}) {
+  String prefix = generateUserFullNamePrefix(context, name, displayName, userSeparator: userSeparator, useDisplayName: useDisplayName);
   String suffix = generateUserFullNameSuffix(context, instance, userSeparator: userSeparator);
   return '$prefix$suffix';
 }
 
 /// --- COMMUNITIES ---
 
-String generateCommunityFullNamePrefix(BuildContext? context, name, {FullNameSeparator? communitySeparator}) {
-  assert(context != null || communitySeparator != null);
+String generateCommunityFullNamePrefix(BuildContext? context, String? name, String? displayName, {FullNameSeparator? communitySeparator, bool? useDisplayName}) {
+  assert(context != null || (communitySeparator != null && useDisplayName != null));
   communitySeparator ??= context!.read<ThunderBloc>().state.communitySeparator;
+  useDisplayName ??= context!.read<ThunderBloc>().state.useDisplayNamesForCommunities;
   return switch (communitySeparator) {
-    FullNameSeparator.dot => '$name',
-    FullNameSeparator.at => '$name',
-    FullNameSeparator.lemmy => '!$name',
+    FullNameSeparator.dot => (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '',
+    FullNameSeparator.at => (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '',
+    FullNameSeparator.lemmy => '!${(useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? ''}',
   };
 }
 
-String generateCommunityFullNameSuffix(BuildContext? context, instance, {FullNameSeparator? communitySeparator}) {
+String generateCommunityFullNameSuffix(BuildContext? context, String? instance, {FullNameSeparator? communitySeparator}) {
   assert(context != null || communitySeparator != null);
   communitySeparator ??= context!.read<ThunderBloc>().state.communitySeparator;
   return switch (communitySeparator) {
@@ -189,10 +205,8 @@ String generateCommunityFullNameSuffix(BuildContext? context, instance, {FullNam
   };
 }
 
-String generateCommunityFullName(BuildContext? context, name, instance, {FullNameSeparator? communitySeparator}) {
-  assert(context != null || communitySeparator != null);
-  communitySeparator ??= context!.read<ThunderBloc>().state.communitySeparator;
-  String prefix = generateCommunityFullNamePrefix(context, name, communitySeparator: communitySeparator);
+String generateCommunityFullName(BuildContext? context, String? name, String? displayName, instance, {FullNameSeparator? communitySeparator, bool? useDisplayName}) {
+  String prefix = generateCommunityFullNamePrefix(context, name, displayName, communitySeparator: communitySeparator, useDisplayName: useDisplayName);
   String suffix = generateCommunityFullNameSuffix(context, instance, communitySeparator: communitySeparator);
   return '$prefix$suffix';
 }

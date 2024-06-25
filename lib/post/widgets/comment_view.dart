@@ -180,7 +180,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
               children: [
                 PostSubview(
                   selectedCommentId: widget.selectedCommentId,
-                  useDisplayNames: state.useDisplayNames,
                   postViewMedia: widget.postViewMedia!,
                   crossPosts: widget.crossPosts,
                   viewSource: widget.viewSource,

@@ -1985,6 +1985,10 @@
   "@showCommentActionButtons": {
     "description": "Toggle to show comment action buttons."
   },
+  "showCommunityDisplayNames": "Show Community Display Names",
+  "@showCommunityDisplayNames": {
+    "description": "Setting for showing community display names"
+  },
   "showCrossPosts": "Show Cross Posts",
   "@showCrossPosts": {
     "description": "Toggle to show cross posts."
