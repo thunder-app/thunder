@@ -38,7 +38,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     );
     on<ChangeCommunitySubsciptionStatusEvent>(
       _changeCommunitySubsciptionStatusEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero),
     );
     on<ResetSearch>(
       _resetSearch,
@@ -287,7 +287,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       ));
 
       List<CommunityView> communities;
-      if (event.query.isNotEmpty) {
+      if (event.query.isNotEmpty || state.viewingAll) {
         communities = state.communities ?? [];
 
         communities = state.communities?.map((CommunityView communityView) {
@@ -321,7 +321,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         id: event.communityId,
       ));
 
-      if (event.query.isNotEmpty) {
+      if (event.query.isNotEmpty || state.viewingAll) {
         communities = state.communities ?? [];
 
         communities = state.communities?.map((CommunityView communityView) {
@@ -332,7 +332,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             }).toList() ??
             [];
 
-        return emit(state.copyWith(status: event.query.isNotEmpty ? SearchStatus.success : SearchStatus.trending, communities: communities));
+        return emit(state.copyWith(status: event.query.isNotEmpty || state.viewingAll ? SearchStatus.success : SearchStatus.trending, communities: communities));
       } else {
         communities = state.trendingCommunities ?? [];
 

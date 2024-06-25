@@ -11,8 +11,8 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -533,6 +533,13 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                     ),
                   ),
                 ),
+              ),
+              // Post metadata chips
+              Row(
+                children: [
+                  const SizedBox(width: 20),
+                  LanguagePostCardMetaData(languageId: widget.postViewMedia.postView.post.languageId),
+                ],
               ),
               if (widget.multiPostCardActions[page ?? widget.page]?.isNotEmpty == true)
                 MultiPickerItem(

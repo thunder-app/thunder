@@ -68,22 +68,25 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
       leading: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
           ? Padding(
               padding: const EdgeInsets.only(left: 16.0),
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: UserAvatar(
-                      person: person,
+              child: Semantics(
+                label: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: UserAvatar(
+                        person: person,
+                      ),
                     ),
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: () => _openDrawerOrGoBack(context, feedBloc),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: () => _openDrawerOrGoBack(context, feedBloc),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             )
           : IconButton(

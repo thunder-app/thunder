@@ -61,6 +61,18 @@ class _PostPageState extends State<PostPage> {
   bool userChanged = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    scrollController.addListener(() {
+      // Fetches new comments when the user has scrolled past 70% list
+      if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.7 && context.read<PostBloc>().state.status == PostStatus.success) {
+        context.read<PostBloc>().add(const GetPostCommentsEvent());
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;

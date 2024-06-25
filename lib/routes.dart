@@ -20,6 +20,7 @@ import 'package:thunder/settings/pages/theme_settings_page.dart';
 import 'package:thunder/settings/pages/video_player_settings.dart';
 import 'package:thunder/settings/settings.dart';
 import 'package:thunder/thunder/thunder.dart';
+import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 
 PageController thunderPageController = PageController(initialPage: 0);
@@ -144,8 +145,12 @@ final GoRouter router = GoRouter(
           name: 'account',
           path: 'account',
           builder: (context, state) {
-            return BlocProvider.value(
-              value: (state.extra! as List)[0] as ThunderBloc,
+            UserSettingsBloc userSettingsBloc = UserSettingsBloc();
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: (state.extra! as List)[0] as ThunderBloc),
+                BlocProvider.value(value: userSettingsBloc),
+              ],
               child: UserSettingsPage(settingToHighlight: (state.extra! as List).elementAtOrNull(1) as LocalSettings?),
             );
           },
