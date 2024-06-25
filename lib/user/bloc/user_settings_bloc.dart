@@ -104,21 +104,33 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       return emit(state.copyWith(status: UserSettingsStatus.notLoggedIn));
     }
 
-    GetSiteResponse originalGetSiteResponse = state.getSiteResponse!;
+    GetSiteResponse? originalGetSiteResponse = state.getSiteResponse;
+    if (originalGetSiteResponse == null) emit(state.copyWith(status: UserSettingsStatus.failure));
 
     try {
       // Optimistically update settings
       LocalUser localUser = state.getSiteResponse!.myUser!.localUserView.localUser.copyWith(
+        email: event.email ?? state.getSiteResponse!.myUser!.localUserView.localUser.email,
         showReadPosts: event.showReadPosts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showReadPosts,
         showScores: event.showScores ?? state.getSiteResponse!.myUser!.localUserView.localUser.showScores,
         showBotAccounts: event.showBotAccounts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showBotAccounts,
+        showNsfw: event.showNsfw ?? state.getSiteResponse!.myUser!.localUserView.localUser.showNsfw,
+        defaultListingType: event.defaultListingType ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultListingType,
+        defaultSortType: event.defaultSortType ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType,
       );
 
       GetSiteResponse updatedGetSiteResponse = state.getSiteResponse!.copyWith(
         myUser: state.getSiteResponse!.myUser!.copyWith(
           localUserView: state.getSiteResponse!.myUser!.localUserView.copyWith(
+            person: state.getSiteResponse!.myUser!.localUserView.person.copyWith(
+              botAccount: event.botAccount ?? state.getSiteResponse!.myUser!.localUserView.person.botAccount,
+              bio: event.bio ?? state.getSiteResponse!.myUser!.localUserView.person.bio,
+              displayName: event.displayName ?? state.getSiteResponse!.myUser!.localUserView.person.displayName,
+              matrixUserId: event.matrixUserId ?? state.getSiteResponse!.myUser!.localUserView.person.matrixUserId,
+            ),
             localUser: localUser,
           ),
+          discussionLanguages: event.discussionLanguages ?? state.getSiteResponse!.discussionLanguages,
         ),
       );
 
@@ -127,11 +139,16 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       await lemmy.run(SaveUserSettings(
         auth: account.jwt,
-        // botAccount is placed here because of a bug with lemmy not able to save
-        // see: https://github.com/LemmyNet/lemmy/issues/3565#issuecomment-1628980050
-        botAccount: state.getSiteResponse!.myUser!.localUserView.person.botAccount,
+        bio: event.bio,
+        email: event.email,
+        matrixUserId: event.matrixUserId,
+        displayName: event.displayName,
+        defaultListingType: event.defaultListingType,
+        defaultSortType: event.defaultSortType,
+        showNsfw: event.showNsfw,
         showReadPosts: event.showReadPosts,
         showScores: event.showScores,
+        botAccount: event.botAccount,
         showBotAccounts: event.showBotAccounts,
         discussionLanguages: event.discussionLanguages,
       ));

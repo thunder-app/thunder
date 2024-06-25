@@ -16,12 +16,56 @@ class GetUserSettingsEvent extends UserSettingsEvent {
 }
 
 class UpdateUserSettingsEvent extends UserSettingsEvent {
+  /// The display name associated with the user
+  final String? displayName;
+
+  /// The profile bio associated with the user
+  final String? bio;
+
+  /// The email associated with the user
+  final String? email;
+
+  /// The matrix user id associated with the user
+  final String? matrixUserId;
+
+  /// The default listing type for the feed
+  final ListingType? defaultListingType;
+
+  /// The default sort type for the feed
+  final SortType? defaultSortType;
+
+  /// Whether or not NSFW content should be shown
+  final bool? showNsfw;
+
+  /// Whether or not read posts should be shown
   final bool? showReadPosts;
+
+  /// Whether or not post/comment scores should be shown
   final bool? showScores;
+
+  /// Whether the current user is a bot
+  final bool? botAccount;
+
+  /// Whether or not bot accounts should be shown
   final bool? showBotAccounts;
+
+  /// The languages associated with the user
   final List<int>? discussionLanguages;
 
-  const UpdateUserSettingsEvent({this.showReadPosts, this.showScores, this.showBotAccounts, this.discussionLanguages});
+  const UpdateUserSettingsEvent({
+    this.displayName,
+    this.bio,
+    this.email,
+    this.matrixUserId,
+    this.defaultListingType,
+    this.defaultSortType,
+    this.showNsfw,
+    this.showReadPosts,
+    this.showScores,
+    this.botAccount,
+    this.showBotAccounts,
+    this.discussionLanguages,
+  });
 }
 
 class GetUserBlocksEvent extends UserSettingsEvent {

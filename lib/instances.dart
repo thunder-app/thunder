@@ -3,6 +3,7 @@ const List<String> instances = [
   'aussie.zone',
   'awful.systems',
   'beehaw.org',
+  'burggit.moe',
   'discuss.online',
   'discuss.tchncs.de',
   'feddit.de',

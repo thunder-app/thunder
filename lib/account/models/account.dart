@@ -28,6 +28,8 @@ class Account {
         userId: userId,
       );
 
+  String get actorId => 'https://$instance/u/$username';
+
   static Future<Account?> insertAccount(Account account) async {
     // If we are given a brand new account to insert with an existing id, something is wrong.
     assert(account.id.isEmpty);

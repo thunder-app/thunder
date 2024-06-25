@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/widgets/user_selector.dart';
 
 /// Holds the app bar for the post page.
 class PostPageAppBar extends StatelessWidget {
@@ -28,6 +30,12 @@ class PostPageAppBar extends StatelessWidget {
   /// Callback when the user wants to select text
   final Function()? onSelectText;
 
+  /// Callback for when the user changes
+  final void Function()? onUserChanged;
+
+  /// Callback for when the post changes
+  final void Function(PostViewMedia)? onPostChanged;
+
   const PostPageAppBar({
     super.key,
     this.viewSource = false,
@@ -35,6 +43,8 @@ class PostPageAppBar extends StatelessWidget {
     this.onReset,
     this.onCreateCrossPost,
     this.onSelectText,
+    this.onUserChanged,
+    this.onPostChanged,
   });
 
   @override
@@ -55,6 +65,8 @@ class PostPageAppBar extends StatelessWidget {
           onReset: onReset,
           onCreateCrossPost: onCreateCrossPost,
           onSelectText: onSelectText,
+          onUserChanged: onUserChanged,
+          onPostChanged: onPostChanged,
         )
       ],
     );
@@ -107,6 +119,12 @@ class PostAppBarActions extends StatelessWidget {
   /// Callback when the user wants to select text
   final Function()? onSelectText;
 
+  /// Callback for when the user changes
+  final void Function()? onUserChanged;
+
+  /// Callback for when the post changes
+  final void Function(PostViewMedia)? onPostChanged;
+
   const PostAppBarActions({
     super.key,
     this.viewSource = false,
@@ -114,6 +132,8 @@ class PostAppBarActions extends StatelessWidget {
     this.onReset,
     this.onCreateCrossPost,
     this.onSelectText,
+    this.onUserChanged,
+    this.onPostChanged,
   });
 
   @override
@@ -167,6 +187,19 @@ class PostAppBarActions extends StatelessWidget {
               onTap: onSelectText,
               icon: Icons.select_all_rounded,
               title: l10n.selectText,
+            ),
+            ThunderPopupMenuItem(
+              onTap: () async {
+                await temporarilySwitchAccount(
+                  context,
+                  profileModalHeading: l10n.viewPostAsDifferentAccount,
+                  onUserChanged: onUserChanged,
+                  postActorId: context.read<PostBloc>().state.postView?.postView.post.apId,
+                  onPostChanged: onPostChanged,
+                );
+              },
+              icon: Icons.people_alt_rounded,
+              title: l10n.viewPostAsDifferentAccount,
             ),
           ],
         ),
