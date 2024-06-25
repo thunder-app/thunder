@@ -565,6 +565,7 @@ class _FeedViewState extends State<FeedView> {
       return true;
     }
 
+    AuthBloc authBloc = context.read<AuthBloc>();
     FeedBloc feedBloc = context.read<FeedBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -572,7 +573,7 @@ class _FeedViewState extends State<FeedView> {
     final canPop = Navigator.of(context).canPop();
 
     // Get the desired post listing so we can check against current
-    final desiredListingType = thunderBloc.state.defaultListingType;
+    final desiredListingType = authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBloc.state.defaultListingType;
     final currentListingType = feedBloc.state.postListingType;
 
     // See if we're in a community
@@ -586,7 +587,7 @@ class _FeedViewState extends State<FeedView> {
     if (!canPop && (desiredListingType != currentListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
-          sortType: thunderBloc.state.sortTypeForInstance,
+          sortType: authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
           reset: true,
           postListingType: desiredListingType,
           feedType: FeedType.general,

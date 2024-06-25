@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
@@ -57,6 +57,9 @@ class PostCardMetadata extends StatelessWidget {
   /// The URL to display in the metadata. If null, no URL will be displayed.
   final String? url;
 
+  /// The language to display in the metadata. If null, no language will be displayed.
+  final int? languageId;
+
   const PostCardMetadata({
     super.key,
     required this.postCardViewType,
@@ -70,6 +73,7 @@ class PostCardMetadata extends StatelessWidget {
     this.hasBeenEdited = false,
     this.hasBeenRead = false,
     this.url,
+    this.languageId,
   });
 
   @override
@@ -95,6 +99,7 @@ class PostCardMetadata extends StatelessWidget {
             PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(commentCount: commentCount, unreadCommentCount: unreadCommentCount ?? 0, hasBeenRead: hasBeenRead ?? false),
             PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: dateTime!, hasBeenRead: hasBeenRead ?? false, hasBeenEdited: hasBeenEdited ?? false),
             PostCardMetadataItem.url => UrlPostCardMetaData(url: url, hasBeenRead: hasBeenRead ?? false),
+            PostCardMetadataItem.language => LanguagePostCardMetaData(languageId: languageId, hasBeenRead: hasBeenRead ?? false),
           };
         },
       ).toList(),
@@ -357,6 +362,53 @@ class UrlPostCardMetaData extends StatelessWidget {
         textColor: color,
         padding: 3.0,
         icon: Icon(Icons.public, size: 17.0, color: color),
+      ),
+    );
+  }
+}
+
+/// Contains metadata related to the language of a given post. This is used in the [PostCardMetadata] widget.
+class LanguagePostCardMetaData extends StatelessWidget {
+  /// The language to display in the metadata. If null, no language will be displayed.
+  /// Pass `-1` to indicate that this widget is for demonstration purposes, and `English` will be displayed.
+  final int? languageId;
+
+  /// Whether or not the post has been read. This is used to determine the color.
+  final bool hasBeenRead;
+
+  const LanguagePostCardMetaData({
+    super.key,
+    this.languageId,
+    this.hasBeenRead = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final Color? readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+
+    final color = switch (hasBeenRead) {
+      true => readColor,
+      _ => theme.textTheme.bodyMedium?.color,
+    };
+
+    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
+    Language? language = languages.firstWhereOrNull((Language language) => language.id == languageId);
+
+    if ((language?.name.isNotEmpty != true || language?.id == 0) && languageId != -1) {
+      return Container();
+    }
+
+    return Tooltip(
+      message: languageId == -1 ? 'English' : language!.name,
+      preferBelow: false,
+      child: IconText(
+        fontScale: state.metadataFontSizeScale,
+        text: languageId == -1 ? 'English' : language!.name,
+        textColor: color,
+        padding: 3.0,
+        icon: Icon(Icons.map_rounded, size: 17.0, color: color),
       ),
     );
   }

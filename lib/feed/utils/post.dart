@@ -52,13 +52,14 @@ Future<Map<String, dynamic>> fetchFeedItems({
       // Remove deleted posts
       getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
 
-      // Remove posts that contain any of the keywords in the title or body
+      // Remove posts that contain any of the keywords in the title, body, or url
       getPostsResponse = getPostsResponse.copyWith(
         posts: getPostsResponse.posts.where((postView) {
           final title = postView.post.name.toLowerCase();
           final body = postView.post.body?.toLowerCase() ?? '';
+          final url = postView.post.url?.toLowerCase() ?? '';
 
-          return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()));
+          return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()) || url.contains(keyword.toLowerCase()));
         }).toList(),
       );
 

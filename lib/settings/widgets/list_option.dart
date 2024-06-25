@@ -31,10 +31,10 @@ class ListOption<T> extends StatelessWidget {
   final Widget Function()? onUpdateHeading;
 
   /// A key to assign to this widget when it should be highlighted
-  final GlobalKey highlightKey;
+  final GlobalKey? highlightKey;
 
   /// The setting that this widget controls.
-  final LocalSettings setting;
+  final LocalSettings? setting;
 
   /// The highlighted setting, if any.
   final LocalSettings? highlightedSetting;
@@ -55,9 +55,9 @@ class ListOption<T> extends StatelessWidget {
     this.valueDisplay,
     this.closeOnSelect = true,
     this.onUpdateHeading,
-    required this.highlightKey,
-    required this.setting,
-    required this.highlightedSetting,
+    this.highlightKey,
+    this.setting,
+    this.highlightedSetting,
   });
 
   @override
@@ -65,9 +65,9 @@ class ListOption<T> extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SmoothHighlight(
-      key: highlightedSetting == setting ? highlightKey : null,
-      useInitialHighLight: highlightedSetting == setting,
-      enabled: highlightedSetting == setting,
+      key: highlightedSetting == setting && setting != null ? highlightKey : null,
+      useInitialHighLight: highlightedSetting == setting && setting != null,
+      enabled: highlightedSetting == setting && setting != null,
       color: theme.colorScheme.primaryContainer,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),

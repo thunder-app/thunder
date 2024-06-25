@@ -300,6 +300,7 @@ enum LocalSettings {
   combineNavAndFab(name: 'setting_combine_nav_and_fab', key: 'combineNavAndFab', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
 
   enableExperimentalFeatures(name: 'setting_enable_experimental_features', key: 'enableExperimentalFeatures', category: LocalSettingsCategories.debug),
+  imageDimensionTimeout(name: 'setting_image_dimension_timeout', key: 'imageDimensionTimeout', category: LocalSettingsCategories.debug),
 
   draftsCache(name: 'drafts_cache', key: ''),
 
@@ -310,6 +311,7 @@ enum LocalSettings {
   advancedShareOptions(name: 'advanced_share_options', key: ''),
   // import export settings
   importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
+  importExportDatabase(name: 'import_export_database', key: 'importExportDatabase', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
   // video player
   videoAutoMute(name: 'auto_mute_videos', key: 'videoAutoMute', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
@@ -452,6 +454,7 @@ extension LocalizationExt on AppLocalizations {
       'comments': comments,
       'linksBehaviourSettings': linksBehaviourSettings,
       'importExportSettings': importExportSettings,
+      'importExportDatabase': importExportDatabase,
       'advanced': advanced,
       'names': names,
       'notifications': notifications(1),
