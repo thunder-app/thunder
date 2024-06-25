@@ -110,6 +110,7 @@ dependencies:
   river_player: ^0.1.3
   connectivity_plus: ^6.0.2
   super_sliver_list: ^0.4.1
+  freezed_annotation: ^2.4.1
 
 
 dev_dependencies:
