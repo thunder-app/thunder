@@ -92,7 +92,8 @@ enum LemmyFeature {
   sortTypeScaled(0, 19, 0, preRelease: ["rc", "1"]),
   commentSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
   blockInstance(0, 19, 0, preRelease: ["rc", "1"]),
-  multiRead(0, 19, 0, preRelease: ["rc", "1"]);
+  multiRead(0, 19, 0, preRelease: ["rc", "1"]),
+  listMedia(0, 19, 4, preRelease: ["beta", "4"]);
 
   final int major;
   final int minor;
