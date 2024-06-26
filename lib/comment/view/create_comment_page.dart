@@ -320,7 +320,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                     ),
                                     child: PostSubview(
-                                      useDisplayNames: true,
                                       postViewMedia: widget.postViewMedia!,
                                       crossPosts: const [],
                                       viewSource: viewSource,

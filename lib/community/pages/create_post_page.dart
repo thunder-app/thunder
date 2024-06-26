@@ -747,7 +747,10 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                             CommunityFullNameWidget(
                               context,
                               widget.communityView?.community.name,
+                              widget.communityView?.community.title,
                               fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                              // Override, because we have the display name right above
+                              useDisplayName: false,
                             )
                           ],
                         )

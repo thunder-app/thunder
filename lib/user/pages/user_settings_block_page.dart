@@ -46,12 +46,24 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
 
     return persons.map((person) {
       return Tooltip(
-        message: generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? "-"),
+        message: generateUserFullName(
+          context,
+          person.name,
+          person.displayName,
+          fetchInstanceNameFromUrl(person.actorId),
+        ),
         preferBelow: false,
         child: ListTile(
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
           title: Text(person.displayName ?? person.name, overflow: TextOverflow.ellipsis),
-          subtitle: UserFullNameWidget(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? "-"),
+          subtitle: UserFullNameWidget(
+            context,
+            person.name,
+            person.displayName,
+            fetchInstanceNameFromUrl(person.actorId) ?? '-',
+            // Override because we're showing display name above
+            useDisplayName: false,
+          ),
           leading: UserAvatar(person: person),
           trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id
               ? const Padding(
@@ -79,12 +91,24 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
 
     return communities.map((community) {
       return Tooltip(
-        message: generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? "-"),
+        message: generateCommunityFullName(
+          context,
+          community.name,
+          community.title,
+          fetchInstanceNameFromUrl(community.actorId),
+        ),
         preferBelow: false,
         child: ListTile(
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
           title: Text(community.title, overflow: TextOverflow.ellipsis),
-          subtitle: CommunityFullNameWidget(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? "-"),
+          subtitle: CommunityFullNameWidget(
+            context,
+            community.title,
+            community.title,
+            fetchInstanceNameFromUrl(community.actorId) ?? '-',
+            // Override because we're showing display name above
+            useDisplayName: false,
+          ),
           leading: CommunityAvatar(community: community, radius: 16.0),
           trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
               ? const Padding(

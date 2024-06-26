@@ -239,6 +239,8 @@ class _PostCardState extends State<PostCard> {
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
                 widget.postViewMedia,
+                onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
+                onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
               ),
               onTap: () async {
                 PostView postView = widget.postViewMedia.postView;

@@ -45,9 +45,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// Blurs any posts that are marked as NSFW
   bool hideNsfwPreviews = true;
 
-  /// When enabled, displays the user's display name instead of the username
-  bool useDisplayNames = true;
-
   /// When enabled, posts on the feed will be compacted
   bool useCompactView = false;
 
@@ -144,7 +141,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
-      useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
@@ -197,10 +193,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.showPostAuthor:
         await prefs.setBool(LocalSettings.showPostAuthor.name, value);
         setState(() => showPostAuthor = value);
-        break;
-      case LocalSettings.useDisplayNamesForUsers:
-        await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
-        setState(() => useDisplayNames = value);
         break;
       case LocalSettings.postShowUserInstance:
         await prefs.setBool(LocalSettings.postShowUserInstance.name, value);
@@ -305,7 +297,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.hideNsfwPreviews.name);
     await prefs.remove(LocalSettings.hideThumbnails.name);
     await prefs.remove(LocalSettings.showPostAuthor.name);
-    await prefs.remove(LocalSettings.useDisplayNamesForUsers.name);
     await prefs.remove(LocalSettings.postShowUserInstance.name);
     await prefs.remove(LocalSettings.dimReadPosts.name);
     await prefs.remove(LocalSettings.showFullPostDate.name);
@@ -616,18 +607,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showPostAuthor,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showUserDisplayNames,
-              value: useDisplayNames,
-              iconEnabled: Icons.person_rounded,
-              iconDisabled: Icons.person_off_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.useDisplayNamesForUsers,
               highlightedSetting: settingToHighlight,
             ),
           ),

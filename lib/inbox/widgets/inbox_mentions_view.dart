@@ -94,6 +94,7 @@ class InboxMentionsView extends StatelessWidget {
                       UserFullNameWidget(
                         context,
                         mentions[index].creator.name,
+                        mentions[index].creator.displayName,
                         fetchInstanceNameFromUrl(mentions[index].creator.actorId),
                       ),
                       Text(formatTimeToString(dateTime: mentions[index].comment.published.toIso8601String()))
@@ -115,6 +116,7 @@ class InboxMentionsView extends StatelessWidget {
                         child: CommunityFullNameWidget(
                           context,
                           mentions[index].community.name,
+                          mentions[index].community.title,
                           fetchInstanceNameFromUrl(mentions[index].community.actorId),
                         ),
                         onTap: () => onTapCommunityName(context, mentions[index].community.id),

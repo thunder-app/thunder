@@ -135,7 +135,6 @@ class _PostPageState extends State<PostPage> {
                   ),
                   SliverToBoxAdapter(
                     child: PostSubview(
-                      useDisplayNames: false,
                       postViewMedia: state.postView ?? widget.initialPostViewMedia,
                       crossPosts: state.crossPosts,
                       viewSource: viewSource,
