@@ -51,7 +51,12 @@ class MediaManagementPage extends StatelessWidget {
                         l10n.manageMedia,
                         style: theme.textTheme.titleLarge,
                       ),
-                      subtitle: UserFullNameWidget(context, context.read<AuthBloc>().state.account?.username, context.read<AuthBloc>().state.account?.instance),
+                      subtitle: UserFullNameWidget(
+                        context,
+                        context.read<AuthBloc>().state.account?.username,
+                        context.read<AuthBloc>().state.account?.displayName,
+                        context.read<AuthBloc>().state.account?.instance,
+                      ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                     ),
                   ),
