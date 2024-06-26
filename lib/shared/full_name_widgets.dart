@@ -27,24 +27,20 @@ class UserFullNameWidget extends StatelessWidget {
   final Color? Function(Color?)? transformColor;
   final bool? useDisplayName;
 
-  const UserFullNameWidget(
-    this.outerContext,
-    this.name,
-    this.displayName,
-    this.instance, {
-    super.key,
-    this.userSeparator,
-    this.userNameThickness,
-    this.userNameColor,
-    this.instanceNameThickness,
-    this.instanceNameColor,
-    this.textStyle,
-    this.includeInstance = true,
-    this.fontScale,
-    this.autoSize = false,
-    this.transformColor,
-    this.useDisplayName,
-  })  : assert(outerContext != null || (userSeparator != null && userNameThickness != null && userNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
+  const UserFullNameWidget(this.outerContext, this.name, this.displayName, this.instance,
+      {super.key,
+      this.userSeparator,
+      this.userNameThickness,
+      this.userNameColor,
+      this.instanceNameThickness,
+      this.instanceNameColor,
+      this.textStyle,
+      this.includeInstance = true,
+      this.fontScale,
+      this.autoSize = false,
+      this.transformColor,
+      this.useDisplayName})
+      : assert(outerContext != null || (userSeparator != null && userNameThickness != null && userNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
         assert(outerContext != null || textStyle != null);
 
   @override
