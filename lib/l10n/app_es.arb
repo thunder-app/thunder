@@ -2375,7 +2375,7 @@
   "@accountBirthday": {
     "description": "User descriptor for accounts created on today's date"
   },
-  "xYearsOld": "{count, plural, zero {{x} años} one {{x} año} other {{x} años}}",
+  "xYearsOld": "{count, plural, zero {{x} año} one {{x} años} other {{x} años}}",
   "@xYearsOld": {
     "description": "An account descriptor representing how old an account is"
   },
@@ -2483,7 +2483,7 @@
   "@countLocalSubscribers": {
     "description": "Number of local subscribers"
   },
-  "changePasswordWarning": "Para cambiar su contraseña, será direccionado a su instancia principal. \\n\\n¿Seguro que desea continuar?",
+  "changePasswordWarning": "Para cambiar tu contraseña, será redirigido al sitio de tu instancia. \n\n¿Está seguro de que deseas continuar?",
   "@changePasswordWarning": {
     "description": "Warning label for changing password"
   },
@@ -2622,5 +2622,9 @@
   "exportDatabase": "Exportar Base de Datos",
   "@exportDatabase": {
     "description": "Name of the setting for exporting the db"
+  },
+  "showCommunityDisplayNames": "Mostrar nombres para mostrar de la comunidad",
+  "@showCommunityDisplayNames": {
+    "description": "Setting for showing community display names"
   }
 }
