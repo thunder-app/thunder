@@ -25,7 +25,7 @@
   "@accountSwitchParentCommentNotFound": {
     "description": "Yanıtlanacak yorumu çözemediğimiz durumlar için hata mesajı"
   },
-  "accountSwitchPostNotFound": "Seçilen gönderi '{ örnek }' üzerinde bulunamadı. Önceki hesaba geri dönme.",
+  "accountSwitchPostNotFound": "Seçilen gönderi '{ example }' üzerinde bulunamadı. Önceki hesaba geri dönme.",
   "@accountSwitchPostNotFound": {
     "description": "Yanıtlanacak gönderiyi çözemediğimizde oluşan hata mesajı"
   },
@@ -2323,7 +2323,7 @@
   },
   "unableToFindUser": "Kullanıcı bulunamıyor",
   "@unableToFindUser": {},
-  "unableToFindUserName": "'{ kullanıcı adı }' kullanıcısı bulunamıyor",
+  "unableToFindUserName": "'{ username }' kullanıcısı bulunamıyor",
   "@unableToFindUserName": {},
   "unableToLoadImage": "Görüntü yüklenemiyor",
   "@unableToLoadImage": {
