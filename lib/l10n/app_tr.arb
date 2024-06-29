@@ -7,12 +7,36 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Erişilebilirlik profilleri, belirli bir erişilebilirlik gereksinimini karşılamak için aynı anda birkaç ayarın uygulanmasını sağlar.",
   "@accessibilityProfilesDescription": {},
-  "account": "{count, plural, zero {Account} one {Account} other {Accounts} } ",
+  "account": "{count, plural, zero {Hesap} one {Hesap} other {Hesaplar}} ",
   "@account": {
     "description": "Kullanıcı hesabını açıklar"
   },
+  "accountBirthday": "Hesap Doğum Günü {additionalInfo}",
+  "@accountBirthday": {
+    "description": "Bugünün tarihinde oluşturulan hesaplar için kullanıcı tanımlayıcısı"
+  },
+  "accountSettingOverrideWarning": "Hesap ayarlarınız aşağıdaki ayarları geçersiz kılar",
+  "@accountSettingOverrideWarning": {
+    "description": "Hesap ayarlarının geçersiz kılınması uyarısı"
+  },
   "accountSettings": "Hesap Ayarları",
   "@accountSettings": {},
+  "accountSwitchParentCommentNotFound": "Seçilen yorum '{ instance }' üzerinde bulunamadı. Önceki hesaba geri dönme.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Yanıtlanacak yorumu çözemediğimiz durumlar için hata mesajı"
+  },
+  "accountSwitchPostNotFound": "Seçilen gönderi '{ örnek }' üzerinde bulunamadı. Önceki hesaba geri dönme.",
+  "@accountSwitchPostNotFound": {
+    "description": "Yanıtlanacak gönderiyi çözemediğimizde oluşan hata mesajı"
+  },
+  "actionColors": "Eylem Renkleri",
+  "@actionColors": {
+    "description": "Eylem renkleri için ayar başlığı"
+  },
+  "actionColorsRedirect": "Renkleri özelleştirmek mi istiyorsunuz?",
+  "@actionColorsRedirect": {
+    "description": "İpucunu eylem renklerine yönlendir"
+  },
   "actions": "Eylemler",
   "@actions": {},
   "active": "Aktif",
@@ -25,6 +49,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Anonim Örnek Ekle",
   "@addAnonymousInstance": {},
+  "addDiscussionLanguage": "Dil Ekle",
+  "@addDiscussionLanguage": {
+    "description": "Metin alanının dil eklemesi için ipucu"
+  },
   "addKeywordFilter": "Anahtar Kelime Ekle",
   "@addKeywordFilter": {
     "description": "Anahtar kelime eklemek için metin alanı için ipucu"
@@ -32,6 +60,10 @@
   "addToFavorites": "Favorilere ekle",
   "@addToFavorites": {
     "description": "Çekmecedeki bir topluluğu favorilere ekleme eylemi"
+  },
+  "addUserLabel": "Kullanıcı Etiketi Ekle",
+  "@addUserLabel": {
+    "description": "Kullanıcı etiketi ekleme eylemi"
   },
   "addedCommunityToSubscriptions": "Topluluğa abone olundu",
   "@addedCommunityToSubscriptions": {},
@@ -51,6 +83,10 @@
   "@advanced": {
     "description": "Gelişmiş ayarlar için başlık"
   },
+  "ago": "{time} önce",
+  "@ago": {
+    "description": "Geçmişteki bir süreyi temsil eder"
+  },
   "all": "Tümü",
   "@all": {},
   "allPosts": "Tüm Gönderiler",
@@ -61,6 +97,8 @@
   },
   "alreadyPostedTo": "Zaten şuraya gönderildi:",
   "@alreadyPostedTo": {},
+  "always": "Her zaman",
+  "@always": {},
   "andXMore": "ve {count} daha fazlası",
   "@andXMore": {},
   "animations": "Animasyonlar",
@@ -75,10 +113,18 @@
   "@appearance": {
     "description": "Ayarlar -> Görünümdeki Görünümün Başlığı"
   },
+  "applePushNotificationService": "Apple Anlık Bildirim Hizmeti",
+  "@applePushNotificationService": {
+    "description": "Apple Anında Bildirim Hizmeti için bildirim türünü açıklar"
+  },
   "applied": "Uygulandı",
   "@applied": {},
   "apply": "Uygula",
   "@apply": {},
+  "areNotificationsAllowedBySystem": "Bildirimlere sistem tarafından izin verilir: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "İşletim sistemi izinlerinin bildirimlere izin verip vermediğine ilişkin bir durum göstergesi"
+  },
   "back": "Geri",
   "@back": {},
   "backButton": "Geri düğmesi",
@@ -105,6 +151,14 @@
   "@blockCommunity": {},
   "blockInstance": "Örneği Engelle",
   "@blockInstance": {},
+  "blockManagement": "Blok Yönetimi",
+  "@blockManagement": {
+    "description": "Kullanıcı, topluluk ve örnek engelleme ayarlarını ayarlama"
+  },
+  "blockSettingLabel": "Kullanıcı/Topluluk/Örnek Blokları",
+  "@blockSettingLabel": {
+    "description": "Kullanıcı, topluluk ve örnek engelleme ayarlarını ayarlama"
+  },
   "blockUser": "Kullanıcıyı Engelle",
   "@blockUser": {},
   "blockedCommunities": "Engellenen Topluluklar",
@@ -113,6 +167,30 @@
   "@blockedInstances": {},
   "blockedUsers": "Engellenen Kullanıcılar",
   "@blockedUsers": {},
+  "blue": "Mavi",
+  "@blue": {
+    "description": "Mavi renk"
+  },
+  "bold": "Kalın",
+  "@bold": {
+    "description": "Kalın isim kalınlık/ağırlık"
+  },
+  "boldCommunityName": "Cesur Topluluk Adı",
+  "@boldCommunityName": {
+    "description": "Topluluk adını katlama ayarı"
+  },
+  "boldInstanceName": "Kalın Örnek Adı",
+  "@boldInstanceName": {
+    "description": "Örnek adını katlama ayarı"
+  },
+  "boldUserName": "Kalın Kullanıcı Adı",
+  "@boldUserName": {
+    "description": "Kullanıcı adını katlama ayarı"
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Bir bot kullanıcısı için etiket."
+  },
   "browserMode": "Bağlantı işleme",
   "@browserMode": {
     "description": "Bağlantı işleme ayarı için başlık (dahili olarak browserMode olarak adlandırılır)"
@@ -147,6 +225,18 @@
   "@changeAccountSettingsFor": {
     "description": "Hesap ayarlarını değiştirirken profil oluşturucu penceresine gitme"
   },
+  "changeNotificationSettings": "Bildirim ayarlarını değiştir...",
+  "@changeNotificationSettings": {
+    "description": "Bildirim ayarlarına gitmek için bir kısayol"
+  },
+  "changePassword": "Parolayı Değiştir",
+  "@changePassword": {
+    "description": "Parolayı değiştirme eylemi etiketi"
+  },
+  "changePasswordWarning": "Şifrenizi değiştirmek için örnek sitenize yönlendirileceksiniz. \n\nDevam etmek istediğinizden emin misiniz?",
+  "@changePasswordWarning": {
+    "description": "Şifre değiştirmek için uyarı etiketi"
+  },
   "changeSort": "Sıralamayı Değiştir",
   "@changeSort": {},
   "clearCache": "Önbelleği Temizle ({cacheSize})",
@@ -173,6 +263,10 @@
   "@clearedUserPreferences": {},
   "close": "Kapat",
   "@close": {},
+  "collapse": "Daralt",
+  "@collapse": {
+    "description": "Bir şeyi daraltma eylemi"
+  },
   "collapseCommentPreview": "Yorum Önizlemesini Daralt",
   "@collapseCommentPreview": {
     "description": "Ayar -> Görünüm -> Yorumlar bölümündeki daraltma düğmesi için anlamsal etiket"
@@ -195,6 +289,26 @@
   "@collapseSpoiler": {
     "description": "Çöken spoyler etiketi"
   },
+  "color": "Renk",
+  "@color": {
+    "description": "Bir rengi tanımlar"
+  },
+  "colorizeCommunityName": "Topluluk Adını Renklendir",
+  "@colorizeCommunityName": {
+    "description": "Topluluk adını renklendirme ayarı"
+  },
+  "colorizeInstanceName": "Örnek Adını Renklendir",
+  "@colorizeInstanceName": {
+    "description": "Örnek adını renklendirme ayarı"
+  },
+  "colorizeUserName": "Kullanıcı Adını Renklendir",
+  "@colorizeUserName": {
+    "description": "Kullanıcı adını renklendirme ayarı"
+  },
+  "colors": "Renkler",
+  "@colors": {
+    "description": "Renkler için başlık"
+  },
   "combineCommentScores": "Yorum Puanlarını Birleştir",
   "@combineCommentScores": {
     "description": "Yorum puanlarını birleştirmek için geçiş yapın."
@@ -207,6 +321,10 @@
   "@combineNavAndFab": {},
   "combineNavAndFabDescription": "Gezinme düğmeleri arasında Kayan Eylem Düğmesi gösterilecektir.",
   "@combineNavAndFabDescription": {},
+  "comfortable": "Rahat",
+  "@comfortable": {
+    "description": "Rahat bir görsel yoğunluğu tanımlar"
+  },
   "comment": "Yorum",
   "@comment": {},
   "commentBehaviourSettings": "Yorumlar",
@@ -225,6 +343,10 @@
   "@commentReported": {},
   "commentSavedAsDraft": "Yorum taslak olarak kaydedildi",
   "@commentSavedAsDraft": {},
+  "commentShowUserAvatar": "Kullanıcı Avatarını Göster",
+  "@commentShowUserAvatar": {
+    "description": "Ayarlar, kullanıcı avatarını yorumlarda görünen adlarının yanında görüntülemek için geçiş yapar"
+  },
   "commentShowUserInstance": "Kullanıcı Örneğini Göster",
   "@commentShowUserInstance": {
     "description": "Ayarlar, kullanıcı örneğini yorumlarda görünen adlarının yanında görüntülemek için geçiş yapar"
@@ -243,9 +365,33 @@
   "@communities": {},
   "community": "Topluluk",
   "@community": {},
+  "communityActions": "Topluluk Eylemleri",
+  "@communityActions": {
+    "description": "Topluluk eylemleri sayfası başlığı"
+  },
+  "communityEntry": "'{ community }' topluluğu",
+  "@communityEntry": {
+    "description": "Bir topluluğun daha fazla eylem gerçekleştirmesi için listeye giriş"
+  },
   "communityFormat": "Topluluk Biçimi",
   "@communityFormat": {
     "description": "Topluluğun tam adı biçimini ayarlama"
+  },
+  "communityNameColor": "Topluluk Adı Rengi",
+  "@communityNameColor": {
+    "description": "Topluluk adı rengi ayarı"
+  },
+  "communityNameThickness": "Topluluk Adı Kalınlığı",
+  "@communityNameThickness": {
+    "description": "Topluluk adı kalınlığı ayarı"
+  },
+  "communityStyle": "Topluluk Tarzı",
+  "@communityStyle": {
+    "description": "Topluluk stili ayarı için başlık"
+  },
+  "compact": "Kompakt",
+  "@compact": {
+    "description": "Kompakt bir görsel yoğunluğu tanımlar"
   },
   "compactPostCardMetadataItems": "Kompakt Görünüm Meta Verileri",
   "@compactPostCardMetadataItems": {
@@ -283,7 +429,7 @@
   "@confirmMarkAllAsReadBody": {
     "description": "Onay kutusunun gövdesi tümünü okundu olarak işaretler"
   },
-  "confirmMarkAllAsReadTitle": "Tümü Okundu Olarak İşaretlensin",
+  "confirmMarkAllAsReadTitle": "Tümü Okundu Olarak İşaretlensin mi?",
   "@confirmMarkAllAsReadTitle": {
     "description": "Onayla başlığının tümü okundu olarak işaretle iletişim kutusu"
   },
@@ -295,12 +441,32 @@
   "@confirmResetPostPreferences": {
     "description": "Ayar -> Görünüm -> Gönderiler bölümündeki sıfırlama tercihleri iletişim kutusunun açıklaması"
   },
+  "confirmUnsubscription": "Abonelikten çıkmak istediğinizden emin misiniz?",
+  "@confirmUnsubscription": {
+    "description": "Kullanıcıdan abonelikten çıkmak istediğini onaylamasını isteyin"
+  },
+  "connectedToUnifiedPushDistributorApp": "{app} uygulamasına bağlandı",
+  "@connectedToUnifiedPushDistributorApp": {
+    "description": "Kullanıcıya hangi UnifiedPush uygulamasına bağlı olduğumuzu söyleyin"
+  },
+  "contentManagement": "İçerik Yönetimi",
+  "@contentManagement": {
+    "description": "İçerik yönetimi ayarı (diller/engelleme)"
+  },
   "controversial": "Tartışmalı",
   "@controversial": {},
   "copiedToClipboard": "Panoya kopyalandı",
   "@copiedToClipboard": {},
   "copy": "Kopyala",
   "@copy": {},
+  "copyComment": "Yorumu Kopyala",
+  "@copyComment": {
+    "description": "Tüm yorumu kopyalama eylemi"
+  },
+  "copySelected": "Seçilenleri kopyala",
+  "@copySelected": {
+    "description": "Seçilen metni kopyalama eylemi"
+  },
   "copyText": "Metni Kopyala",
   "@copyText": {},
   "couldNotDetermineCommentDelete": "Hata: Yorumu silmek için gönderi belirlenemedi.",
@@ -309,11 +475,45 @@
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Yorum raporunuz şu anda gönderilemedi. Lütfen daha sonra tekrar deneyin",
   "@couldntCreateReport": {},
-  "countSubscribers": "{count} abone",
-  "@countSubscribers": {},
+  "couldntFindPost": "İstenen gönderi yüklenemiyor. Silinmiş veya kaldırılmış olabilir.",
+  "@couldntFindPost": {
+    "description": "Bir gönderiyi yükleyemediğimiz zaman için hata mesajı."
+  },
+  "countComments": "{count} Yorum",
+  "@countComments": {
+    "description": "Yorum sayısı"
+  },
+  "countLocalSubscribers": "{count} Yerel Abone",
+  "@countLocalSubscribers": {
+    "description": "Yerel abone sayısı"
+  },
+  "countPosts": "{count} Gönderi",
+  "@countPosts": {
+    "description": "Gönderi sayısı"
+  },
+  "countSubscribers": "{count} Abone",
+  "@countSubscribers": {
+    "description": "Abone sayısı"
+  },
   "countUsers": "{count} kullanıcı",
   "@countUsers": {
     "description": "Belirli sayıda kullanıcıyı tanımlar"
+  },
+  "countUsersActiveDay": "{count} kullanıcı/gün",
+  "@countUsersActiveDay": {
+    "description": "Son gün içinde aktif olan kullanıcı sayısı"
+  },
+  "countUsersActiveHalfYear": "{count} kullanıcı/6 ay",
+  "@countUsersActiveHalfYear": {
+    "description": "Son altı ayda aktif olan kullanıcı sayısı"
+  },
+  "countUsersActiveMonth": "Ayda {count} kullanıcı",
+  "@countUsersActiveMonth": {
+    "description": "Geçen ay aktif olan kullanıcı sayısı"
+  },
+  "countUsersActiveWeek": "{count} kullanıcı/hafta",
+  "@countUsersActiveWeek": {
+    "description": "Geçen hafta aktif olan kullanıcı sayısı"
   },
   "createAccount": "Hesap Oluştur",
   "@createAccount": {},
@@ -323,6 +523,14 @@
   "@createNewCrossPost": {},
   "createPost": "Gönderi Oluştur",
   "@createPost": {},
+  "created": "{date} tarihinde oluşturuldu",
+  "@created": {
+    "description": "Bir şeyin oluşturulduğu tarih"
+  },
+  "createdToday": "Bugün Oluşturuldu",
+  "@createdToday": {
+    "description": "Bugün doğum günü olan bir hesap için hesap tanımlayıcı"
+  },
   "creator": "Yaratıcı",
   "@creator": {
     "description": "Yaratıcı aramaları filtreler."
@@ -335,6 +543,10 @@
   "@crossPostedTo": {},
   "currentLongPress": "Şu anda uzun basma olarak ayarlanmış",
   "@currentLongPress": {},
+  "currentNotificationsMode": "Mevcut bildirim modu: {mode}",
+  "@currentNotificationsMode": {
+    "description": "Mevcut bildirim modu için bir durum göstergesi"
+  },
   "currentSinglePress": "Şu anda tek basım olarak ayarlanmış",
   "@currentSinglePress": {},
   "customizeSwipeActions": "Kaydırma eylemlerini özelleştirme (değiştirmek için dokunun)",
@@ -347,6 +559,26 @@
   "@dark": {
     "description": "Koyu temayı kullanarak açıklar"
   },
+  "databaseExportWarning": "Veritabanı, Lemmy hesabınızla ilgili hassas bilgiler içerebilir. Dışa aktarırsanız kimseyle paylaşmamalısınız. Devam etmek istiyor musunuz?",
+  "@databaseExportWarning": {
+    "description": "DB dışa aktarılırken kullanıcıya gösterilen mesaj"
+  },
+  "databaseExportedSuccessfully": "Veritabanı başarıyla '{ savedFilePath }' e dışa aktarıldı",
+  "@databaseExportedSuccessfully": {
+    "description": "DB başarıyla dışa aktarıldığında kullanıcıya gösterilen mesaj"
+  },
+  "databaseImportedSuccessfully": "Veritabanı başarıyla içe aktarıldı!",
+  "@databaseImportedSuccessfully": {
+    "description": "DB başarıyla içe aktarıldığında kullanıcıya gösterilen mesaj"
+  },
+  "databaseNotExportedSuccessfully": "Veritabanı başarıyla dışa aktarılmadı veya işlem iptal edildi.",
+  "@databaseNotExportedSuccessfully": {
+    "description": "DB başarısız bir şekilde dışa aktarıldığında kullanıcıya gösterilen mesaj"
+  },
+  "databaseNotImportedSuccessfully": "Veritabanı başarıyla içe aktarılmadı veya işlem iptal edildi.",
+  "@databaseNotImportedSuccessfully": {
+    "description": "DB başarısız bir şekilde içe aktarıldığında kullanıcıya gösterilen mesaj"
+  },
   "dateFormat": "Tarih Formatı",
   "@dateFormat": {
     "description": "Tarih formatı ayarı"
@@ -358,6 +590,14 @@
   "debugDescription": "Aşağıdaki hata ayıklama ayarları yalnızca sorun giderme amacıyla kullanılmalıdır.",
   "@debugDescription": {
     "description": "Hata ayıklama ayarları sayfası açıklaması"
+  },
+  "debugNotificationsDescription": "Bildirimlerle ilgili sorunları gidermek için aşağıdaki seçenekleri kullanın.",
+  "@debugNotificationsDescription": {
+    "description": "Bildirim hata ayıklama bölümü için bir açıklama"
+  },
+  "defaultColor": "Varsayılan",
+  "@defaultColor": {
+    "description": "Varsayılan ayar değeri (ör. renk)"
   },
   "defaultCommentSortType": "Varsayılan Yorum Sıralama Türü",
   "@defaultCommentSortType": {
@@ -397,6 +637,16 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Yerel tercihleri silmek için onay işlemi açıklaması"
   },
+  "deletedByCreator": "yaratıcı tarafından silindi",
+  "@deletedByCreator": {
+    "description": "Yaratıcı tarafından silinen bir yorum için yer tutucu metin. Bu küçük harfi sakladığınızdan emin olun."
+  },
+  "deletedByModerator": "moderatör tarafından silindi",
+  "@deletedByModerator": {
+    "description": "Bir moderatör tarafından silinen bir yorum için yer tutucu metin. Bu küçük harfi sakladığınızdan emin olun."
+  },
+  "deselectUndeterminedWarning": "Belirsiz seçeneğinin işaretini kaldırırsanız çoğu içeriği göremezsiniz.",
+  "@deselectUndeterminedWarning": {},
   "detailedReason": "Sebep: {reason}",
   "@detailedReason": {
     "description": "Moderasyon eyleminin nedeni"
@@ -409,16 +659,56 @@
   "@disable": {
     "description": "Bir şeyi devre dışı bırakma eylemi"
   },
+  "disablePushNotifications": "Anlık Bildirimleri Devre Dışı Bırak",
+  "@disablePushNotifications": {
+    "description": "Anlık bildirimleri devre dışı bırakırken açıklama"
+  },
+  "disabled": "Devre dışı",
+  "@disabled": {
+    "description": "Devre dışı bırakılan bir şeyin durumunu açıklar"
+  },
+  "discussionLanguages": "Tartışma Dilleri",
+  "@discussionLanguages": {
+    "description": "Yalnızca kendi dil(ler) inizdeki gönderileri ve toplulukları yükleyin"
+  },
+  "discussionLanguagesTooltip": "İçerik seçilen dillere filtrelenir.",
+  "@discussionLanguagesTooltip": {},
   "dismissRead": "Okumayı Reddet",
   "@dismissRead": {},
+  "displayName": "Görünen Ad",
+  "@displayName": {
+    "description": "Görünen ad için etiket"
+  },
   "displayUserScore": "Kullanıcı Puanlarını (Karma) görüntüleyin.",
   "@displayUserScore": {
     "description": "Kullanıcı puanlarını veya karmayı görüntüleme seçeneği."
   },
+  "dividerAppearance": "Bölücü Görünümü",
+  "@dividerAppearance": {
+    "description": "Bölücü görünüm kategorisi"
+  },
+  "doNotShowAgain": "Tekrar Gösterme",
+  "@doNotShowAgain": {
+    "description": "Bir şeyi kalıcı olarak gizleme eylemi"
+  },
+  "doNotSupportMultipleUnifiedPushApps": "Birden fazla uyumlu uygulama bulundu; lütfen yalnızca birini yükleyin",
+  "@doNotSupportMultipleUnifiedPushApps": {
+    "description": "Kullanıcıya şu anda birden fazla UnifiedPush uygulamasını desteklemediğimizi söyleyin"
+  },
   "downloadingMedia": "Paylaşmak için medya indiriliyor…",
   "@downloadingMedia": {},
   "downvote": "Olumsuz oy",
-  "@downvote": {},
+  "@downvote": {
+    "description": "Bir gönderiye/yoruma olumsuz oy verme eylemi"
+  },
+  "downvoteColor": "Olumsuz Oy Rengi",
+  "@downvoteColor": {
+    "description": "Olumsuz oy renk ayarının adı"
+  },
+  "downvoted": "Olumsuz oy aldı",
+  "@downvoted": {
+    "description": "Bir gönderiye/yoruma olumsuz oy vermek için kısa açıklama"
+  },
   "downvotesDisabled": "Bu durumda olumsuz oylar kapatılır.",
   "@downvotesDisabled": {},
   "edit": "Düzenle",
@@ -428,6 +718,10 @@
   "editPost": "Gönderiyi Düzenle",
   "@editPost": {
     "description": "Bir gönderiyi düzenlerken başlık."
+  },
+  "email": "E - posta",
+  "@email": {
+    "description": "E - posta girişi için etiket"
   },
   "empty": "Boş",
   "@empty": {},
@@ -441,6 +735,10 @@
   "@enableCommentNavigation": {
     "description": "Yorum navigasyonunu etkinleştirme ayarı"
   },
+  "enableExperimentalFeatures": "Deneysel özellikleri etkinleştir",
+  "@enableExperimentalFeatures": {
+    "description": "Deneysel özellikleri etkinleştirme ayarı"
+  },
   "enableFeedFab": "Akışlarda Kayan Düğmeyi Etkinleştir",
   "@enableFeedFab": {
     "description": "Akış için Kayan Eylem Düğmesini etkinleştirin"
@@ -453,7 +751,7 @@
   "@enableFloatingButtonOnPosts": {
     "description": "Gönderilerde kayan düğmeyi etkinleştirme ayarı"
   },
-  "enableInboxNotifications": "Gelen Kutusu Bildirimlerini Etkinleştir (Deneysel)",
+  "enableInboxNotifications": "Gelen Kutusu Bildirimlerini Etkinleştir",
   "@enableInboxNotifications": {
     "description": "Gelen kutusu bildirimleri için ad ayarlama"
   },
@@ -465,9 +763,21 @@
   "@endSearch": {},
   "errorDownloadingMedia": "Paylaşılacak medya dosyası indirilemedi: {errorMessage}",
   "@errorDownloadingMedia": {},
+  "errorMarkingReplyRead": "Yanıt okundu olarak işaretlenirken bir hata oluştu.",
+  "@errorMarkingReplyRead": {
+    "description": "Okunan bir yanıtı işaretlemek için hata mesajı"
+  },
+  "errorMarkingReplyUnread": "Yanıt okunmadı olarak işaretlenirken bir hata oluştu.",
+  "@errorMarkingReplyUnread": {
+    "description": "Okunmamış bir yanıtı işaretlemek için hata mesajı"
+  },
   "exceptionProcessingUri": "Bağlantı işlenirken bir hata oluştu. Bu, oturumunuzda kullanılamayabilir.",
   "@exceptionProcessingUri": {
     "description": "Bağlantı işleme sırasında belirtilmeyen bir hata."
+  },
+  "expand": "Genişlet",
+  "@expand": {
+    "description": "Bir şeyi genişletme eylemi"
   },
   "expandCommentPreview": "Yorum Önizlemesini Genişlet",
   "@expandCommentPreview": {
@@ -493,9 +803,29 @@
   "@expanded": {
     "description": "Genişletilmiş gönderi gövdesi görünüm türü"
   },
+  "experimentalFeatures": "Deneysel Özellikler",
+  "@experimentalFeatures": {
+    "description": "Deneysel özellikler için ayarın adı"
+  },
+  "experimentalFeaturesDescription": "Bu özellikler hala geliştirme aşamasındadır ve kararsız olabilir. Bunları riski size ait olmak üzere kullanın. Etkili olması için Thunder'ı yeniden başlatmalısın.",
+  "@experimentalFeaturesDescription": {
+    "description": "Deneysel detaylar ayarı için açıklama"
+  },
   "exploreInstance": "Örneği keşfedin",
   "@exploreInstance": {
     "description": "Bir örneği keşfetme düğmesi"
+  },
+  "exportDatabase": "Veritabanını Dışa Aktar",
+  "@exportDatabase": {
+    "description": "DB'yi dışa aktarmak için ayarın adı"
+  },
+  "exportDatabaseSubtitle": "Veritabanı hesaplar, favoriler, anonim abonelikler ve kullanıcı etiketleri hakkında bilgiler içerir.",
+  "@exportDatabaseSubtitle": {
+    "description": "DB'yi dışa aktarma ayarının altyazısı"
+  },
+  "exportSettingsSubtitle": "Ayarlar, Thunder'da yapılandırdığınız tüm tercihleri içerir.",
+  "@exportSettingsSubtitle": {
+    "description": "Ayarları dışa aktarma ayarının altyazısı"
   },
   "extraLarge": "Ekstra Büyük",
   "@extraLarge": {
@@ -503,10 +833,22 @@
   },
   "failedToBlock": "Engellenemedi: {errorMessage}",
   "@failedToBlock": {},
+  "failedToCommunicateWithThunderNotificationServer": "'{ serverAddress }' adresindeki Thunder bildirim sunucusu ile iletişim kurulamadı",
+  "@failedToCommunicateWithThunderNotificationServer": {
+    "description": "Thunder bildirim sunucusuyla iletişim kuramadığımız zaman için hata mesajı"
+  },
   "failedToLoadBlocks": "Bloklar yüklenemedi: {errorMessage}",
   "@failedToLoadBlocks": {},
+  "failedToLoadVideo": "Video yüklenemedi. Bağlantı tarayıcıda açılsın mı?",
+  "@failedToLoadVideo": {
+    "description": "Bir video yükleyemediğimizde görüntülenen hata mesajı"
+  },
   "failedToUnblock": "Engel kaldırılamadı: {errorMessage}",
   "@failedToUnblock": {},
+  "failedToUpdateNotificationSettings": "Bildirim ayarları güncellenemedi",
+  "@failedToUpdateNotificationSettings": {
+    "description": "Bildirim ayarları güncellenemediğinde hata mesajı."
+  },
   "favorites": "Favoriler",
   "@favorites": {
     "description": "Çekmecedeki favori topluluklar"
@@ -520,6 +862,10 @@
   "feedBehaviourSettings": "Akış",
   "@feedBehaviourSettings": {
     "description": "Ayar -> Genel bölümündeki Alt Kategori"
+  },
+  "feedSettings": "Akış Ayarları",
+  "@feedSettings": {
+    "description": "Yem ayarları kategorisi."
   },
   "feedTypeAndSorts": "Varsayılan Akış Türü ve Sıralama",
   "@feedTypeAndSorts": {
@@ -559,6 +905,10 @@
   "@forward": {
     "description": "İleri gitmek için etiket (örneğin, bir tarayıcıda)"
   },
+  "foundUnifiedPushDistribtorApp": "Uyumlu uygulama bulundu; bağlanmak için Thunder'ı yeniden başlatın",
+  "@foundUnifiedPushDistribtorApp": {
+    "description": "Kullanıcıya uyumlu bir UnifiedPush uygulaması bulduğumuzu ancak bağlanmak için yeniden başlatmaları gerektiğini söyleyin"
+  },
   "fullScreenNavigationSwipeDescription": "Soldan sağa hareketler devre dışı bırakıldığında geri dönmek için herhangi bir yere kaydırın",
   "@fullScreenNavigationSwipeDescription": {},
   "fullscreenSwipeGestures": "Tam Ekran Kaydırma Hareketleri",
@@ -577,6 +927,22 @@
   "@gestures": {},
   "gettingStarted": "Başlarken",
   "@gettingStarted": {},
+  "green": "Yeşil",
+  "@green": {
+    "description": "Yeşil renk"
+  },
+  "guestModeFeedSettings": "Misafir Modu Akış Ayarları",
+  "@guestModeFeedSettings": {
+    "description": "Misafir hesapları için akış ayarları"
+  },
+  "guestModeFeedSettingsLabel": "Aşağıdaki ayarlar yalnızca misafir hesaplarına uygulanır. Hesabınızın akış ayarlarını düzenlemek için Hesap Ayarları'na gidin.",
+  "@guestModeFeedSettingsLabel": {
+    "description": "Misafir modu akış ayarları için açıklama"
+  },
+  "havingIssuesWithNotifications": "Bildirimlerle ilgili sorun mu yaşıyorsunuz?",
+  "@havingIssuesWithNotifications": {
+    "description": "Bildirim hata ayıklama bölümüne gitmek için bir kısayol"
+  },
   "hidCommunity": "HID Topluluğu",
   "@hidCommunity": {
     "description": "Bir topluluğu gizlemek için moderatör eylemi için kısa açıklama"
@@ -591,9 +957,17 @@
   },
   "hidePassword": "Parolayı Gizle",
   "@hidePassword": {},
+  "hideThumbnails": "Küçük Resimleri Gizle",
+  "@hideThumbnails": {
+    "description": "Akıştaki küçük resimleri gizleme seçeneği"
+  },
   "hideTopBarOnScroll": "Kaydırmada Üst Çubuğu Gizle",
   "@hideTopBarOnScroll": {
     "description": "Ayarlar kaydırmada üst çubuğu gizlemek için geçiş yapar"
+  },
+  "hostInstance": "Ev Sahibi Örneği",
+  "@hostInstance": {
+    "description": "Bir topluluğa ev sahipliği yapma örneği"
   },
   "hot": "Sıcak",
   "@hot": {},
@@ -611,13 +985,25 @@
   "@imageCachingModeAggressiveShort": {
     "description": "Agresif görüntü önbelleğe alma modu için kısa açıklama"
   },
-  "imageCachingModeRelaxed": "Görüntü önbelleklerinin süresinin dolmasına izin verin (daha az bellek kullanır, ancak görüntülerin daha sık yeniden yüklenmesine neden olur)",
+  "imageCachingModeRelaxed": "Görüntü önbelleklerinin süresinin dolmasına izin verin (daha az bellek kullanır ancak görüntülerin daha sık yeniden yüklenmesine neden olur)",
   "@imageCachingModeRelaxed": {
     "description": "Rahat görüntü önbelleğe alma modu için uzun açıklama"
   },
   "imageCachingModeRelaxedShort": "Rahat",
   "@imageCachingModeRelaxedShort": {
     "description": "Rahat görüntü önbelleğe alma modu için kısa açıklama"
+  },
+  "imageDimensionTimeout": "Görüntü Boyutu Zaman Aşımı",
+  "@imageDimensionTimeout": {
+    "description": "Görüntü boyutlarının getirilmesini ne kadar bekleyeceğinin ayarlanması"
+  },
+  "importDatabase": "Veritabanını İçe Aktar",
+  "@importDatabase": {
+    "description": "DB'yi içe aktarmak için ayarın adı"
+  },
+  "importExportDatabase": "Veritabanını İçe/Dışa Aktar",
+  "@importExportDatabase": {
+    "description": "DB'yi içe veya dışa aktarma ayarının genel adı (arama için)"
   },
   "importExportSettings": "Ayarları İçe/Dışa Aktar",
   "@importExportSettings": {
@@ -629,6 +1015,10 @@
   },
   "inReplyTo": "{community} içindeki {post} yazısına yanıt olarak",
   "@inReplyTo": {},
+  "in_": "içinde",
+  "@in_": {
+    "description": "Belirli bir yorumun/gönderinin belirli bir topluluktan geldiğini belirtmek için kullanılan bağlantı kelimesi"
+  },
   "inbox": "Gelen Kutusu",
   "@inbox": {},
   "includeCommunity": "Topluluğu Dahil Et",
@@ -651,22 +1041,48 @@
   "@instance": {
     "description": "Bir örnek için yönlendirme"
   },
+  "instanceActions": "Örnek Eylemler",
+  "@instanceActions": {
+    "description": "Örneğin eylemler sayfasının başlığı"
+  },
+  "instanceEntry": "'{ username }' örneği",
+  "@instanceEntry": {
+    "description": "Daha fazla eylem gerçekleştirmek için bir örnek için listeye giriş"
+  },
   "instanceHasAlreadyBenAdded": "{instance} zaten eklendi.",
   "@instanceHasAlreadyBenAdded": {},
+  "instanceNameColor": "Örnek Adı Rengi",
+  "@instanceNameColor": {
+    "description": "Örneğin ad rengini ayarlama"
+  },
+  "instanceNameThickness": "Örnek Adı Kalınlığı",
+  "@instanceNameThickness": {
+    "description": "Örneğin ad kalınlığını ayarlama"
+  },
+  "instances": "Örnekler",
+  "@instances": {
+    "description": "Örneklerle ilgili ayarlar için başlık"
+  },
   "internetOrInstanceIssues": "İnternete bağlı olmayabilirsin veya oturumun şu anda kullanılamıyor olabilir.",
   "@internetOrInstanceIssues": {},
-  "keywordFilterDescription": "Başlık veya gövdede herhangi bir anahtar kelime içeren gönderileri filtreler",
+  "keywordFilterDescription": "Başlık, gövde veya URL'deki herhangi bir anahtar kelimeyi içeren gönderileri filtreler",
   "@keywordFilterDescription": {
     "description": "Anahtar kelime filtresi ayarlarının açıklaması"
   },
   "keywordFilters": "Anahtar Kelime Filtreleri",
   "@keywordFilters": {
-    "description": "Ayar -> Genel bölümündeki Alt Kategori"
+    "description": "Ayarlar -> Filtreler'de Alt Kategori"
+  },
+  "label": "Etiket",
+  "@label": {
+    "description": "Bir kullanıcı etiketi için metin alanı etiketi"
   },
   "language": "Dil",
   "@language": {
     "description": "Bir gönderi oluştururken veya düzenlerken etiketleyin."
   },
+  "languageFilters": "Dil filtresi mi arıyorsunuz?",
+  "@languageFilters": {},
   "languageNotAllowed": "Gönderdiğiniz topluluk, seçtiğiniz dilde gönderilere izin vermiyor. Başka bir dil deneyin.",
   "@languageNotAllowed": {
     "description": "Language_not_allowed Lemmy istisnası için hata mesajı"
@@ -725,6 +1141,14 @@
   "@loadMoreSingular": {},
   "local": "Yerel",
   "@local": {},
+  "localNotifications": "Yerel Bildirimler",
+  "@localNotifications": {
+    "description": "Yerel Bildirimler için bildirim türünü açıklar"
+  },
+  "localOnly": "Sadece Yerel",
+  "@localOnly": {
+    "description": "Yerel topluluk görünürlüğü"
+  },
   "localPosts": "Yerel Gönderiler",
   "@localPosts": {},
   "lockPost": "Yazıyı Kilitle",
@@ -757,13 +1181,29 @@
   "@markAllAsRead": {
     "description": "Tümünü okundu olarak işaretle eylemi"
   },
-  "markPostAsReadOnMediaView": "Medyayı Görüntüledikten Sonra Okundu Olarak İşaretle",
+  "markAsRead": "Okundu olarak işaretle",
+  "@markAsRead": {
+    "description": "Bir mesajı okundu olarak işaretlemek için eylem etiketi"
+  },
+  "markPostAsReadOnMediaView": "Medyayı Görüntüledikten Sonra Okundu Olarak İşaret",
   "@markPostAsReadOnMediaView": {
     "description": "Medyayı görüntüledikten sonra gönderileri okundu olarak işaretlemek için geçiş yapın."
   },
   "markPostAsReadOnScroll": "Kaydırmada Okundu Olarak İşaretle",
   "@markPostAsReadOnScroll": {
     "description": "Akışta ilerlerken gönderileri okundu olarak işaretlemek için geçiş yapın."
+  },
+  "markReadColor": "Okundu/Okunmadı Rengi İşaretle",
+  "@markReadColor": {
+    "description": "İşaretin adı okundu/okunmadı renk ayarı"
+  },
+  "matrixUser": "Matris Kullanıcısı",
+  "@matrixUser": {
+    "description": "Matris kullanıcı kimliği etiketi"
+  },
+  "me": "Ben",
+  "@me": {
+    "description": "Geçerli kullanıcı için etiket."
   },
   "medium": "Orta",
   "@medium": {
@@ -787,9 +1227,9 @@
   "@modAddCommunity": {
     "description": "Topluluklara moderatör ekleyen eylemler için modlog filtresi açıklaması"
   },
-  "modBan": "Örnek Moderatörlerini Yasakla/Yasağı Kaldır",
+  "modBan": "Örnek Kullanıcıları Yasakla/Yasağı Kaldır",
   "@modBan": {
-    "description": "Örnek moderatörlerini yasaklayan eylemler için modlog filtresi açıklaması"
+    "description": "Örnek kullanıcıları yasaklayan eylemler için modlog filtresi açıklaması"
   },
   "modBanFromCommunity": "Kullanıcıları Topluluklardan Yasakla/Yasağı Kaldır",
   "@modBanFromCommunity": {
@@ -823,7 +1263,7 @@
   "@moderatedCommunities": {
     "description": "Geçerli kullanıcı tarafından yönetilen toplulukların bir listesini açıklar."
   },
-  "moderator": "Moderatör",
+  "moderator": "{count, plural, zero {Moderatör} one {Moderatör} other {Moderatörler}}",
   "@moderator": {
     "description": "Moderatör için rol adı"
   },
@@ -837,10 +1277,16 @@
   },
   "mostComments": "En Çok Yorumlananlar",
   "@mostComments": {},
+  "mustBeLoggedIn": "Giriş yapmanız gerekiyor",
+  "@mustBeLoggedIn": {},
   "mustBeLoggedInComment": "Yorum yapmak için giriş yapmalısınız",
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "Gönderi oluşturmak için giriş yapmanız gerekir",
   "@mustBeLoggedInPost": {},
+  "names": "İsimler",
+  "@names": {
+    "description": "İsimle ilgili ayarlar başlığı"
+  },
   "navbarDoubleTapGestures": "Navbar Çift Dokunma Hareketleri",
   "@navbarDoubleTapGestures": {
     "description": "Navbar çift dokunma hareketleri için ayar"
@@ -863,6 +1309,8 @@
   "@nestedCommentIndicatorStyle": {
     "description": "İç içe yorum gösterge stili için ayar"
   },
+  "never": "Asla",
+  "@never": {},
   "newComments": "Yeni Yorumlar",
   "@newComments": {},
   "newPost": "Yeni Gönderi",
@@ -871,6 +1319,10 @@
   },
   "new_": "Yeni",
   "@new_": {},
+  "no": "Hayır",
+  "@no": {
+    "description": "Negatif bir durum"
+  },
   "noComments": "Ah. Hiç yorum yok.",
   "@noComments": {},
   "noCommentsFound": "Yorum bulunamadı.",
@@ -879,6 +1331,22 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "Engellenen topluluk yok.",
   "@noCommunityBlocks": {},
+  "noCompatibleAppFound": "Uyumlu uygulama bulunamadı",
+  "@noCompatibleAppFound": {
+    "description": "Kullanıcıya uyumlu bir UnifiedPush uygulaması bulamadığımızı söyleyin"
+  },
+  "noDiscussionLanguages": "Dile göre hiçbir içerik gizlenmez.",
+  "@noDiscussionLanguages": {
+    "description": "Tartışma dili eklenmeyen mesaj"
+  },
+  "noDisplayNameSet": "Görünen ad ayarlanmadı",
+  "@noDisplayNameSet": {
+    "description": "Görünen ad ayarlanmadı mesajı"
+  },
+  "noEmailSet": "E - posta ayarlanmadı",
+  "@noEmailSet": {
+    "description": "E - posta ayarlanmadı mesajı"
+  },
   "noFavoritedCommunities": "Favori topluluk yok",
   "@noFavoritedCommunities": {
     "description": "Çekmecede favori topluluk yok mesajı"
@@ -891,14 +1359,26 @@
   },
   "noKeywordFilters": "Anahtar kelime filtresi eklenmedi",
   "@noKeywordFilters": {
-    "description": "Anahtar kelime eklenmemiş mesajı"
+    "description": "Anahtar kelime filtresi eklenmedi mesajı"
   },
   "noLanguage": "Dil yok",
   "@noLanguage": {
     "description": "Bir gönderi dili seçerken dil yok girdisi"
   },
+  "noMatrixUserSet": "Matris kullanıcı seti yok",
+  "@noMatrixUserSet": {
+    "description": "Matris kullanıcı seti yok mesajı"
+  },
   "noPostsFound": "Gönderi bulunamadı.",
   "@noPostsFound": {},
+  "noProfileBioSet": "Profil biyografisi ayarlanmadı",
+  "@noProfileBioSet": {
+    "description": "Profil biyografisi ayarlanmadı mesajı"
+  },
+  "noReplies": "Yanıt yok",
+  "@noReplies": {
+    "description": "Listede yanıt olmadığında etiketi"
+  },
   "noResultsFound": "Sonuç bulunamadı.",
   "@noResultsFound": {},
   "noSubscriptions": "Abonelik Yok",
@@ -909,6 +1389,14 @@
   "@noUserBlocks": {},
   "noUsersFound": "Kullanıcı bulunamadı.",
   "@noUsersFound": {},
+  "none": "Yok",
+  "@none": {
+    "description": "Anlık bildirimler devre dışı bırakıldığında bildirim türünü açıklar"
+  },
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal isim kalınlık/ağırlık"
+  },
   "notValidLemmyInstance": "{instance} geçerli bir Lemmy örneği gibi görünmüyor",
   "@notValidLemmyInstance": {},
   "notValidUrl": "Geçerli bir URL değil",
@@ -927,9 +1415,13 @@
   "@notificationsNotAllowed": {
     "description": "Uygulama için bildirimlere artık ne zaman izin verildiğine ilişkin açıklama"
   },
-  "notificationsWarningDialog": "Bildirimler, tüm cihazlarda doğru çalışmayabilen deneysel bir özelliktir.\n\n· Kontroller her ~15 dakikada bir gerçekleşecek ve ek pil tüketecektir.\n\n· Başarılı bildirim olasılığını artırmak için pil optimizasyonlarını devre dışı bırakın.\n\nDaha fazla bilgi için aşağıdaki sayfaya bakın.",
+  "notificationsWarningDialog": "Bildirimler, tüm cihazlarda doğru çalışmayabilen **deneysel bir özelliktir **.\n\n - Kontroller her ~15 dakikada bir gerçekleşecek ve ek pil tüketecektir.\n\n - Başarılı bildirim olasılığını artırmak için pil optimizasyonlarını devre dışı bırakın.\n\n Daha fazla bilgi için aşağıdaki sayfaya bakın.",
   "@notificationsWarningDialog": {
     "description": "Bildirimler özelliği için uyarı iletişim kutusunun içeriği"
+  },
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "NSFW etiketi için kısa açıklama"
   },
   "nsfwWarning": "NSFW - Göstermek için dokunun",
   "@nsfwWarning": {
@@ -937,12 +1429,18 @@
   },
   "off": "kapalı",
   "@off": {},
+  "offline": "çevrimdışı",
+  "@offline": {
+    "description": "Kullanılamayan bir hizmeti açıklar"
+  },
   "ok": "Tamam",
   "@ok": {},
   "old": "Eski",
   "@old": {},
   "on": "açık",
   "@on": {},
+  "onWifi": "Wifi üzerinden",
+  "@onWifi": {},
   "onlyModsCanPostInCommunity": "Bu toplulukta yalnızca moderatörler gönderi paylaşabilir",
   "@onlyModsCanPostInCommunity": {},
   "open": "Açık",
@@ -969,6 +1467,14 @@
   "@openSettings": {
     "description": "Kullanıcının sistem ayarlarını açmasını iste"
   },
+  "orange": "Turuncu",
+  "@orange": {
+    "description": "Turuncu renk"
+  },
+  "originalPoster": "Orijinal Poster",
+  "@originalPoster": {
+    "description": "Orijinal poster için etiket."
+  },
   "overview": "Genel Bakış",
   "@overview": {},
   "password": "Parola",
@@ -977,7 +1483,7 @@
   "@pending": {
     "description": "'Beklemede' için abonelik durumunu açıklar"
   },
-  "permissionDenied": "İzin Verilmedi",
+  "permissionDenied": "Thunder'a bildirimleri görüntüleme izni verilmedi. Lütfen sistem ayarlarından etkinleştirin.",
   "@permissionDenied": {
     "description": "Kullanıcı işletim sistemi izinlerini reddettiğinde hata başlığı"
   },
@@ -1007,6 +1513,18 @@
   "@postBodySettingsDescription": {
     "description": "Gönderi gövdesi ayarlarının açıklaması"
   },
+  "postBodyShowCommunityAvatar": "Topluluk Avatarını Göster",
+  "@postBodyShowCommunityAvatar": {
+    "description": "Gönderi gövdeleri için topluluk avatarının gösterilip gösterilmeyeceği"
+  },
+  "postBodyShowCommunityInstance": "Topluluk Örneğini Göster",
+  "@postBodyShowCommunityInstance": {
+    "description": "Gönderi organları için topluluk örneğinin gösterilip gösterilmeyeceği"
+  },
+  "postBodyShowUserInstance": "Kullanıcı Örneğini Göster",
+  "@postBodyShowUserInstance": {
+    "description": "Gönderi gövdeleri için kullanıcı örneğinin gösterilip gösterilmeyeceği"
+  },
   "postBodyViewType": "Gönderi Gövdesi Görünüm Türü",
   "@postBodyViewType": {
     "description": "Gönderi gövdesi görünüm türü ayarı için ad ayarlama"
@@ -1033,6 +1551,10 @@
   },
   "postSavedAsDraft": "Gönderi taslak olarak kaydedildi",
   "@postSavedAsDraft": {},
+  "postShowUserInstance": "Kullanıcı Örneğini Göster",
+  "@postShowUserInstance": {
+    "description": "Gönderi listeleri için kullanıcı örneğinin gösterilip gösterilmeyeceği"
+  },
   "postSwipeActions": "Kaydırma Sonrası Eylemler",
   "@postSwipeActions": {
     "description": "Kaydırma sonrası eylemler için ayar"
@@ -1061,8 +1583,16 @@
   "@preview": {},
   "profileAppliedSuccessfully": "{profile} başarıyla uygulandı!",
   "@profileAppliedSuccessfully": {},
+  "profileBio": "Profil Biyografisi",
+  "@profileBio": {
+    "description": "Profil biyografisi için ayar"
+  },
   "profiles": "Profiller",
   "@profiles": {},
+  "public": "Kamu",
+  "@public": {
+    "description": "Genel topluluk görünürlüğü"
+  },
   "pureBlack": "Saf Siyah",
   "@pureBlack": {
     "description": "Saf siyah temayı kullanarak açıklar"
@@ -1083,6 +1613,26 @@
   "@purgedPost": {
     "description": "Bir gönderiyi temizlemek için moderatör eylemi için kısa açıklama"
   },
+  "purple": "Mor",
+  "@purple": {
+    "description": "Mor rengi"
+  },
+  "pushNotification": "Anlık Bildirimler",
+  "@pushNotification": {
+    "description": "Anlık bildirimler için ayar"
+  },
+  "pushNotificationDescription": "Etkinleştirilirse, Thunder yeni bildirimleri yoklamak için JWT jetonlarınızı sunucuya gönderir. \n\n **NOT :** Bu, uygulamanın bir sonraki başlatılışına kadar geçerli olmayacaktır.",
+  "@pushNotificationDescription": {
+    "description": "Anlık bildirim ayarının açıklaması"
+  },
+  "pushNotificationServer": "Anlık Bildirim Sunucusu",
+  "@pushNotificationServer": {
+    "description": "Anlık bildirim sunucusunu seçme ayarı"
+  },
+  "pushNotificationServerDescription": "Anlık bildirim sunucusunu yapılandırın. Sunucu, cihazınıza anlık bildirimler gönderecek şekilde yapılandırılmalıdır.\n\n **Yalnızca kimlik bilgilerinizle güvendiğiniz bir sunucu girin .**",
+  "@pushNotificationServerDescription": {
+    "description": "Anlık bildirim sunucusu ayarının seçilmesinin açıklaması"
+  },
   "reachedTheBottom": "Hımmm. Dibe ulaşmışsın gibi görünüyor.",
   "@reachedTheBottom": {},
   "readAll": "Tümünü Oku",
@@ -1090,6 +1640,10 @@
   "reason": "Nedeni",
   "@reason": {
     "description": "Denetleme eyleminin nedeni (örneğin, gönderiyi kaldırma)"
+  },
+  "red": "Kırmızı",
+  "@red": {
+    "description": "Kırmızı renk"
   },
   "reduceAnimations": "Animasyonları Azaltın",
   "@reduceAnimations": {
@@ -1117,11 +1671,11 @@
   "@removeInstance": {},
   "removeKeyword": "\"{ keyword }\" kaldırılsın mı?",
   "@removeKeyword": {
-    "description": "Bir anahtar kelimeyi kaldırmanın açıklaması"
+    "description": "Anahtar kelime filtresinin kaldırılmasının açıklaması"
   },
   "removeKeywordFilter": "Anahtar Kelimeyi Kaldır",
   "@removeKeywordFilter": {
-    "description": "Anahtar kelimeyi kaldırmak için dialig başlığı"
+    "description": "Anahtar kelime filtresini kaldırmak için iletişim kutusu başlığı"
   },
   "removePost": "Gönderiyi Kaldır",
   "@removePost": {
@@ -1151,13 +1705,17 @@
   },
   "reply": "{count, plural, zero {Yanıt} one {Yanıt} other {Yanıt}}",
   "@reply": {},
+  "replyColor": "Yanıt Rengi",
+  "@replyColor": {
+    "description": "Yanıt rengi ayarının adı"
+  },
   "replyNotSupported": "Bu görünümden yanıt vermek şu anda desteklenmiyor",
   "@replyNotSupported": {},
   "replyToPost": "Gönderiyi Yanıtla",
   "@replyToPost": {},
   "replyingTo": "{author} adlı kişiye yanıt veriliyor",
   "@replyingTo": {},
-  "report": "Rapor",
+  "report": "{count, plural, zero {Report} one {Report} other {Reports}} ",
   "@report": {},
   "reportComment": "Yorumu Bildir",
   "@reportComment": {},
@@ -1213,6 +1771,10 @@
   },
   "save": "Kaydet",
   "@save": {},
+  "saveColor": "Rengi Kaydet",
+  "@saveColor": {
+    "description": "Renk ayarını kaydetme adı"
+  },
   "saveSettings": "Ayarları Kaydet",
   "@saveSettings": {
     "description": "Uygulama ayarlarını kaydetme eylemi."
@@ -1259,24 +1821,54 @@
   "@searchTerm": {},
   "searchUsersFederatedWith": "{instance} ile federe edilmiş kullanıcıları ara",
   "@searchUsersFederatedWith": {},
+  "selectAccountToCommentAs": "Yorum yapmak için hesap seçin",
+  "@selectAccountToCommentAs": {
+    "description": "Diğer kullanıcı olarak yorum yapmak için profil kalıcı başlığı"
+  },
   "selectAccountToPostAs": "Gönderilecek hesabı şu şekilde seçin:",
   "@selectAccountToPostAs": {
     "description": "Gönderirken hesap seçici için başlık"
+  },
+  "selectAll": "Tümünü seç",
+  "@selectAll": {
+    "description": "Tüm metni seçme eylemi"
   },
   "selectCommunity": "Bir topluluk seçin",
   "@selectCommunity": {},
   "selectFeedType": "Akış Türünü Seçin",
   "@selectFeedType": {},
-  "selectLanguage": "Dil seçin",
+  "selectLanguage": "Dil Seçin",
   "@selectLanguage": {
     "description": "Gönderi oluşturma sayfasında bir dil seçme istemi"
   },
   "selectSearchType": "Arama Türünü Seçin",
   "@selectSearchType": {},
+  "selectText": "Metin Seç",
+  "@selectText": {
+    "description": "Metin seçmek için gönderi ve yorum eylemi"
+  },
+  "sendBackgroundTestLocalNotification": "Arka plan testi yerel bildirimi gönder",
+  "@sendBackgroundTestLocalNotification": {
+    "description": "Test için arka plan bildirimi gönderme seçeneği"
+  },
+  "sendBackgroundTestUnifiedPushNotification": "Arka plan testi UnifiedPush bildirimi gönder",
+  "@sendBackgroundTestUnifiedPushNotification": {
+    "description": "Test için arka plan UnifiedPUsh bildirimi gönderme seçeneği"
+  },
+  "sendTestLocalNotification": "Test yerel bildirimi gönder",
+  "@sendTestLocalNotification": {
+    "description": "Test için bildirim gönderme seçeneği"
+  },
+  "sendTestUnifiedPushNotification": "Test UnifiedPush bildirimi gönder",
+  "@sendTestUnifiedPushNotification": {
+    "description": "Test için UnifiedPush bildirimi gönderme seçeneği"
+  },
   "sensitiveContentWarning": "Hassas içerik içerebilir. Göstermek için dokun.",
   "@sensitiveContentWarning": {
     "description": "Hassas içerik için uyarı (örneğin, modlog'dan)"
   },
+  "sentRequestForTestNotification": "Test bildirimi için istek gönderildi.",
+  "@sentRequestForTestNotification": {},
   "serverErrorComments": "Daha fazla yorum alınırken bir sunucu hatasıyla karşılaşıldı: {message}",
   "@serverErrorComments": {},
   "setAction": "Eylem Ayarla",
@@ -1287,22 +1879,102 @@
   "@setLongPress": {},
   "setShortPress": "Kısa basın eylemi olarak ayarla",
   "@setShortPress": {},
+  "settingOverrideLabel": "Bu ayarlar Thunder'ın varsayılan ayarlarını geçersiz kılar.",
+  "@settingOverrideLabel": {
+    "description": "(Örnek) ayarlarının uygulama ayarlarını geçersiz kıldığını gösteren mesaj"
+  },
   "settingTypeNotSupported": "{settingType} türündeki ayarlar henüz desteklenmiyor.",
   "@settingTypeNotSupported": {},
   "settings": "Ayarlar",
   "@settings": {},
+  "settingsExportedSuccessfully": "Ayarlar '{ savedFilePath }' e başarıyla kaydedildi",
+  "@settingsExportedSuccessfully": {
+    "description": "Ayarlar başarıyla dışa aktarıldığında kullanıcıya gösterilen mesaj"
+  },
   "settingsFeedCards": "Bu ayarlar ana akıştaki kartlar için geçerlidir, gönderiler açılırken eylemler her zaman kullanılabilir.",
   "@settingsFeedCards": {
     "description": "Ana beslemedeki kartların görüntülenmesini kontrol etme ayarları."
   },
+  "settingsImportedSuccessfully": "Ayarlar başarıyla içe aktarıldı!",
+  "@settingsImportedSuccessfully": {
+    "description": "Ayarlar başarıyla içe aktarıldığında kullanıcıya gösterilen mesaj"
+  },
+  "settingsNotExportedSuccessfully": "Ayarlar başarıyla kaydedilmedi veya işlem iptal edildi.",
+  "@settingsNotExportedSuccessfully": {
+    "description": "Ayarlar başarısız bir şekilde dışa aktarıldığında kullanıcıya gösterilen mesaj"
+  },
+  "settingsNotImportedSuccessfully": "Ayarlar başarıyla içe aktarılamadı veya işlem iptal edildi.",
+  "@settingsNotImportedSuccessfully": {
+    "description": "Ayarlar başarısız bir şekilde içe aktarıldığında kullanıcıya gösterilen mesaj"
+  },
   "share": "Paylaş",
   "@share": {},
-  "shareLink": "Bağlantıyı Paylaş",
+  "shareComment": "Yorum Bağlantısını Paylaş",
+  "@shareComment": {
+    "description": "Yorum paylaşmak için menü öğesi"
+  },
+  "shareCommentLocal": "Yorum Bağlantısını Paylaş (Örneğim)",
+  "@shareCommentLocal": {
+    "description": "Yorum yapmak için yerel bir bağlantı paylaşmak için menü öğesi"
+  },
+  "shareCommunity": "Topluluğu Paylaş",
+  "@shareCommunity": {
+    "description": "Bir topluluğu paylaşma başlığı"
+  },
+  "shareCommunityLink": "Topluluk Bağlantısını Paylaş",
+  "@shareCommunityLink": {
+    "description": "Bir topluluğu paylaşmak için menü öğesi"
+  },
+  "shareCommunityLinkLocal": "Topluluk Bağlantısını Paylaş (Örneğim)",
+  "@shareCommunityLinkLocal": {
+    "description": "Yerel topluluk bağlantısı paylaşmak için menü öğesi"
+  },
+  "shareImage": "Görseli Paylaş",
+  "@shareImage": {
+    "description": "Bir görüntüyü paylaşma eylemi"
+  },
+  "shareLemmyLink": "Lemmy Linki Paylaş",
+  "@shareLemmyLink": {
+    "description": "Lemmy bağlantısı paylaşmak için menü öğesi"
+  },
+  "shareLink": "Harici Bağlantıyı Paylaş",
   "@shareLink": {},
   "shareMedia": "Medyayı Paylaş",
   "@shareMedia": {},
-  "sharePost": "Gönderiyi Paylaş",
+  "shareMediaLink": "Medya Bağlantısını Paylaş",
+  "@shareMediaLink": {
+    "description": "Bir gönderiyle ilişkili medyanın bağlantısını paylaşma eylemi"
+  },
+  "shareOriginalLink": "Orijinal Bağlantıyı Paylaş",
+  "@shareOriginalLink": {
+    "description": "Bir gönderiyle ilişkili orijinal bağlantıyı paylaşma eylemi"
+  },
+  "sharePost": "Gönderi Bağlantısını Paylaş",
   "@sharePost": {},
+  "sharePostLocal": "Gönderi Bağlantısını Paylaş (Örneğim)",
+  "@sharePostLocal": {
+    "description": "Örneğimdeki bir gönderinin bağlantısını paylaşma öğesi"
+  },
+  "shareThumbnail": "Küçük Resmi Paylaş",
+  "@shareThumbnail": {
+    "description": "Bir gönderinin küçük resmini paylaşma eylemi"
+  },
+  "shareThumbnailAsImage": "Küçük Resmi Resim Olarak Paylaş",
+  "@shareThumbnailAsImage": {
+    "description": "Bir gönderinin küçük resmini resim olarak paylaşma eylemi"
+  },
+  "shareUser": "Kullanıcıyı Paylaş",
+  "@shareUser": {
+    "description": "Bir kullanıcıyı paylaşma başlığı"
+  },
+  "shareUserLink": "Kullanıcı Bağlantısını Paylaş",
+  "@shareUserLink": {
+    "description": "Bir kullanıcıyı paylaşmak için menü öğesi"
+  },
+  "shareUserLinkLocal": "Kullanıcı Bağlantısını Paylaş (Örneğim)",
+  "@shareUserLinkLocal": {
+    "description": "Yerel kullanıcı bağlantısı paylaşmak için menü öğesi"
+  },
   "showAll": "Tümünü Göster",
   "@showAll": {},
   "showBotAccounts": "Bot Hesaplarını Göster",
@@ -1312,6 +1984,10 @@
   "showCommentActionButtons": "Yorum Eylem Düğmelerini Göster",
   "@showCommentActionButtons": {
     "description": "Yorum eylem düğmelerini göstermek için geçiş yapın."
+  },
+  "showCommunityDisplayNames": "Topluluk Görünen Adlarını Göster",
+  "@showCommunityDisplayNames": {
+    "description": "Topluluk görünen adlarını gösterme ayarı"
   },
   "showCrossPosts": "Çapraz Gönderileri Göster",
   "@showCrossPosts": {
@@ -1341,11 +2017,27 @@
   "@showLess": {},
   "showMore": "Daha fazla göster",
   "@showMore": {},
+  "showNavigationLabels": "Gezinme Etiketlerini Göster",
+  "@showNavigationLabels": {
+    "description": "Gezinme etiketlerini gösterme ayarı"
+  },
+  "showNavigationLabelsDescription": "Alt gezinme düğmelerinin altındaki etiketlerin görüntülenip görüntülenmeyeceği",
+  "@showNavigationLabelsDescription": {
+    "description": "Gezinme etiketlerini gösterme ayarı açıklaması"
+  },
+  "showNsfwContent": "NSFW İçeriğini Göster",
+  "@showNsfwContent": {
+    "description": "NSFW içeriğini göstermek için geçiş yapın."
+  },
   "showPassword": "Parolayı Göster",
   "@showPassword": {},
   "showPostAuthor": "Gönderi Yazarını Göster",
   "@showPostAuthor": {
     "description": "Gönderi yazarını göstermek için aç/kapat."
+  },
+  "showPostAuthorSubtitle": "Gönderi yazarı her zaman topluluk özet akışlarında gösterilir",
+  "@showPostAuthorSubtitle": {
+    "description": "Gönderi Yazarını Göster ayarı için altyazı"
   },
   "showPostCommunityIcons": "Topluluk Simgelerini Göster",
   "@showPostCommunityIcons": {
@@ -1387,6 +2079,18 @@
   "@showThumbnailPreviewOnRight": {
     "description": "Küçük resimleri sağ tarafta göstermek için geçiş yapın."
   },
+  "showUpdateChangelogs": "Güncelleme Değişiklik Günlüklerini Göster",
+  "@showUpdateChangelogs": {
+    "description": "Güncellemelerden sonra değişiklik günlüklerini gösterme ayarı"
+  },
+  "showUpdateChangelogsSubtitle": "Bir güncellemeden sonra değişikliklerin bir listesini görüntüle",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Güncellemelerden sonra değişiklik günlüklerini göstermek için ayar altyazısı"
+  },
+  "showUserAvatar": "Kullanıcı Avatarını Göster",
+  "@showUserAvatar": {
+    "description": "Kullanıcı avatarını göstermek için geçiş yapın."
+  },
   "showUserDisplayNames": "Kullanıcı Görünen Adlarını Göster",
   "@showUserDisplayNames": {
     "description": "Kullanıcı görünen adlarını göstermek için geçiş yapın."
@@ -1417,6 +2121,18 @@
   "@spoiler": {
     "description": "Spoyler için yer tutucu etiket"
   },
+  "standard": "Standart",
+  "@standard": {
+    "description": "Standart bir görsel yoğunluğu tanımlar"
+  },
+  "stats": "İstatistikler",
+  "@stats": {
+    "description": "Topluluk istatistikleri"
+  },
+  "status": "Durum",
+  "@status": {
+    "description": "Eylemin durumu"
+  },
   "submit": "Gönder",
   "@submit": {},
   "subscribe": "Abone ol",
@@ -1445,6 +2161,10 @@
   "@successfullyUnblockedUser": {
     "description": "Bir kullanıcının engelini başarıyla kaldırmak için bildirim"
   },
+  "suchAs": "gibi",
+  "@suchAs": {
+    "description": "Bu bir bağlantı ifadesidir ve 'beğen ',' örneğin ', 'örneğin' vb. gibi herhangi bir şeye çevrilebilir."
+  },
   "suggestedTitle": "Önerilen başlık",
   "@suggestedTitle": {
     "description": "Gönderi için önerilen başlık."
@@ -1463,8 +2183,24 @@
   "@tappableAuthorCommunity": {
     "description": "Yazarları ve toplulukları dokunulabilir hale getirmek için geçiş yapın."
   },
+  "teal": "Teal",
+  "@teal": {
+    "description": "Camgöbeği rengi"
+  },
+  "testBackgroundNotificationDescription": "Thunder kendini kapatacak ve ardından arka planda bir bildirim oluşturmaya çalışacaktır. (Birkaç dakika sürebilir.)",
+  "@testBackgroundNotificationDescription": {
+    "description": "Arka plan testi bildirimini açıklayan bir mesaj"
+  },
+  "testBackgroundUnifiedPushNotificationDescription": "Thunder, bildirim sunucusundan gecikmeli bir bildirim göndermesini ve ardından kendisini kapatmasını isteyecektir. (Birkaç dakika sürebilir.)",
+  "@testBackgroundUnifiedPushNotificationDescription": {
+    "description": "UnifiedPush arka plan testi bildirimini açıklayan bir mesaj"
+  },
   "text": "Metin",
   "@text": {},
+  "textActions": "Metin Eylemleri",
+  "@textActions": {
+    "description": "Metin eylemleri için seçenek"
+  },
   "theme": "Tema",
   "@theme": {
     "description": "Tema için ayar"
@@ -1473,9 +2209,37 @@
   "@themeAccentColor": {
     "description": "Tema vurgu rengi ayarı"
   },
+  "themePrimary": "Tema Birincil",
+  "@themePrimary": {
+    "description": "Birincil tema renginin adı"
+  },
+  "themeSecondary": "Tema İkincil",
+  "@themeSecondary": {
+    "description": "İkincil tema renginin adı"
+  },
+  "themeTertiary": "Tema Üçüncül",
+  "@themeTertiary": {
+    "description": "Birincil tema renginin adı"
+  },
   "theming": "Tema",
   "@theming": {
     "description": "Ayarlar'da Tema Başlığı -> Görünüm -> Tema"
+  },
+  "thickness": "Kalınlık",
+  "@thickness": {
+    "description": "Bir kalınlığı tanımlar (örneğin, bölücü)"
+  },
+  "thisAccount": "Bu Hesap",
+  "@thisAccount": {
+    "description": "Hesap ayarlarında şu anda etkin olan hesaba atıfta bulunma"
+  },
+  "thunderHasBeenUpdated": "Thunder {version} sürümüne güncellendi!",
+  "@thunderHasBeenUpdated": {
+    "description": "Thunder güncellendiğinde değişiklik günlüğüne gitme"
+  },
+  "thunderNotificationServer": "Gök Gürültüsü Bildirim Sunucusu: {server}",
+  "@thunderNotificationServer": {
+    "description": "Kullanıcının seçili bildirim sunucusunun ne olduğunu bilmesi için metin"
   },
   "timeoutComments": "Hata: Yorumlar alınmaya çalışılırken zaman aşımı",
   "@timeoutComments": {},
@@ -1559,7 +2323,7 @@
   },
   "unableToFindUser": "Kullanıcı bulunamıyor",
   "@unableToFindUser": {},
-  "unableToFindUserName": "'{username}' kullanıcısı bulunamıyor",
+  "unableToFindUserName": "'{ kullanıcı adı }' kullanıcısı bulunamıyor",
   "@unableToFindUserName": {},
   "unableToLoadImage": "Görüntü yüklenemiyor",
   "@unableToLoadImage": {
@@ -1579,6 +2343,14 @@
   "@unableToNavigateToInstance": {
     "description": "Bir Lemmy örneğine gidemediğimiz zamanlar için hata mesajı"
   },
+  "unableToResolveReport": "Rapor çözülemiyor",
+  "@unableToResolveReport": {
+    "description": "Bir raporu çözemediğimizde hata mesajı"
+  },
+  "unableToRetrieveChangelog": "{version} sürümü için değişiklik günlüğü alınamıyor.",
+  "@unableToRetrieveChangelog": {
+    "description": "Değişiklik kaydını alamadığımız durumlar için hata mesajı."
+  },
   "unbannedUser": "Yasaklanmamış Kullanıcı",
   "@unbannedUser": {
     "description": "Bir kullanıcının yasağını kaldırmak için moderatör eylemi için kısa açıklama"
@@ -1586,6 +2358,10 @@
   "unbannedUserFromCommunity": "Topluluktan Yasaklanmamış Kullanıcı",
   "@unbannedUserFromCommunity": {
     "description": "Bir kullanıcının bir topluluktaki yasağını kaldırmak için moderatör eylemi için kısa açıklama"
+  },
+  "unblockCommunity": "Topluluğun Engelini Kaldır",
+  "@unblockCommunity": {
+    "description": "Bir topluluğun engelini kaldırma eylemi"
   },
   "unblockInstance": "Oluşumun Engelini Kaldır",
   "@unblockInstance": {
@@ -1605,6 +2381,22 @@
   "@unhidCommunity": {
     "description": "Bir topluluğu göstermek için moderatör eylemi için kısa açıklama"
   },
+  "unifiedPushDistributorApp": "UnifiedPush Distribütör uygulaması: {app} ({count} mevcut)",
+  "@unifiedPushDistributorApp": {
+    "description": "UnifiedPush distribütör uygulamasının mevcut durumunu gösteren bir durum göstergesi"
+  },
+  "unifiedPushNotifications": "UnifiedPush Bildirimleri",
+  "@unifiedPushNotifications": {
+    "description": "UnifiedPush Bildirimleri için bildirim türünü açıklar"
+  },
+  "unifiedPushServer": "UnifiedPush Sunucusu: {server}",
+  "@unifiedPushServer": {
+    "description": "Kullanıcıya hangi UnifiedPush sunucusunun kullanıldığını söyleyen hata ayıklama metni"
+  },
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "UnifiedPush bildirim türü (belki çevrilmemelidir)"
+  },
   "unlockPost": "Gönderinin Kilidini Aç",
   "@unlockPost": {
     "description": "Bir gönderinin kilidini açma eylemi (moderatör eylemi)"
@@ -1621,6 +2413,10 @@
   "@unreachable": {
     "description": "Şu anda ulaşılamayan bir örneği açıklar"
   },
+  "unresolved": "Çözümlenmedi",
+  "@unresolved": {
+    "description": "Çözümlenmemiş durumun açıklaması (örneğin, çözümlenmemiş raporlar)"
+  },
   "unsubscribe": "Abonelikten çık",
   "@unsubscribe": {},
   "unsubscribeFromCommunity": "Topluluk aboneliğinden çık",
@@ -1636,7 +2432,17 @@
   "uploadImage": "Resim yükle",
   "@uploadImage": {},
   "upvote": "Artı oy",
-  "@upvote": {},
+  "@upvote": {
+    "description": "Bir gönderiye/yoruma oy verme eylemi"
+  },
+  "upvoteColor": "Artı Oy Rengi",
+  "@upvoteColor": {
+    "description": "Destek oyu renk ayarının adı"
+  },
+  "upvoted": "Yukarı oy verildi",
+  "@upvoted": {
+    "description": "Desteklenen gönderi/yorum için kısa açıklama"
+  },
   "uriNotSupported": "Bu tür bir bağlantı şu anda desteklenmiyor.",
   "@uriNotSupported": {
     "description": "Şu anda desteklenmeyen bağlantı türü."
@@ -1647,9 +2453,25 @@
   "@useAdvancedShareSheet": {
     "description": "Gelişmiş paylaşım sayfasını kullanmak için geçiş yapın."
   },
+  "useApplePushNotifications": "APN Bildirimlerini Kullan",
+  "@useApplePushNotifications": {
+    "description": "APN'leri kullanmak için geçiş yapın."
+  },
+  "useApplePushNotificationsDescription": "Apple'ın Anlık Bildirim hizmetini kullanır",
+  "@useApplePushNotificationsDescription": {
+    "description": "APN'leri kullanma ayarının altyazısı"
+  },
   "useCompactView": "Küçük gönderiler için etkinleştirin, büyükler için devre dışı bırakın.",
   "@useCompactView": {
     "description": "Küçük gönderiler için kompakt görünümü etkinleştirme veya devre dışı bırakma seçeneği."
+  },
+  "useLocalNotifications": "Yerel Bildirimleri Kullan (Deneysel)",
+  "@useLocalNotifications": {
+    "description": "Yerel bildirimleri kullanmak için geçiş yapın."
+  },
+  "useLocalNotificationsDescription": "Arka planda bildirim olup olmadığını düzenli olarak kontrol eder",
+  "@useLocalNotificationsDescription": {
+    "description": "Yerel bildirimleri kullanma ayarının altyazısı"
   },
   "useMaterialYouTheme": "Material You Temasını Kullanın",
   "@useMaterialYouTheme": {
@@ -1659,15 +2481,51 @@
   "@useMaterialYouThemeDescription": {
     "description": "Material You temasını kullanma ayarının altyazısı"
   },
+  "useProfilePictureForDrawer": "Çekmece için Profil Resmini Kullan",
+  "@useProfilePictureForDrawer": {
+    "description": "Çekmecenin profil resmini kullanmak için ad ayarlama"
+  },
+  "useProfilePictureForDrawerSubtitle": "Oturum açtığınızda, çekmece simgesinin yerine kullanıcının profil resmini gösterir",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Çekmecenin profil resmini kullanmak için altyazıyı ayarlama"
+  },
   "useSuggestedTitle": "Önerilen başlığı kullanın: {title}",
   "@useSuggestedTitle": {},
+  "useUnifiedPushNotifications": "UnifiedPush Bildirimlerini Kullan",
+  "@useUnifiedPushNotifications": {
+    "description": "UnifiedPush Bildirimlerini kullanmak için aç/kapat"
+  },
+  "useUnifiedPushNotificationsDescription": "Uyumlu bir uygulama gerektirir",
+  "@useUnifiedPushNotificationsDescription": {
+    "description": "UnifiedPush Bildirimlerini kullanma ayarının altyazısı"
+  },
   "user": "Kullanıcı",
   "@user": {
     "description": "Kullanıcı için rol adı"
   },
+  "userActions": "Kullanıcı Eylemleri",
+  "@userActions": {
+    "description": "Kullanıcı eylemleri sayfası başlığı"
+  },
+  "userEntry": "Kullanıcı '{ username }'",
+  "@userEntry": {
+    "description": "Bir kullanıcının daha fazla eylem gerçekleştirmesi için listeye giriş"
+  },
   "userFormat": "Kullanıcı Biçimi",
   "@userFormat": {
     "description": "Kullanıcının tam adı formatı için ayar"
+  },
+  "userLabelHint": "Bu benim en sevdiğim kullanıcı",
+  "@userLabelHint": {
+    "description": "Yeni bir kullanıcı etiketi eklemek için ipucu metni"
+  },
+  "userNameColor": "Kullanıcı Adı Rengi",
+  "@userNameColor": {
+    "description": "Kullanıcı adı renginin ayarlanması"
+  },
+  "userNameThickness": "Kullanıcı Adı Kalınlık",
+  "@userNameThickness": {
+    "description": "Kullanıcı adı kalınlığı ayarı"
   },
   "userNotLoggedIn": "Kullanıcı oturum açmadı",
   "@userNotLoggedIn": {},
@@ -1679,16 +2537,80 @@
   "@userSettingDescription": {
     "description": "Ayarların mevcut kullanıcıya global olarak uygulandığını açıklayan açıklama."
   },
+  "userStyle": "Kullanıcı Stili",
+  "@userStyle": {
+    "description": "Kullanıcı stili ayarı için başlık"
+  },
   "username": "Kullanıcı adı",
   "@username": {},
+  "usernameFormattingRedirect": "Kullanıcı adı biçimlendirmesi mi arıyorsunuz?",
+  "@usernameFormattingRedirect": {
+    "description": "Kullanıcıyı yeni biçimlendirme seçeneklerine göndermek için başlık ayarlama"
+  },
   "users": "Kullanıcılar",
   "@users": {},
+  "versionNumber": "Sürüm {version}",
+  "@versionNumber": {
+    "description": "Geçerli sürümü tanımlamak için dize"
+  },
+  "video": "Video",
+  "@video": {
+    "description": "Video için dize "
+  },
+  "videoAutoFullscreen": "Otomatik Tam Ekran",
+  "@videoAutoFullscreen": {
+    "decription": "Video oynatıcıları her zaman yatay olarak başlatma seçeneği"
+  },
+  "videoAutoLoop": "Döngü Videosu",
+  "@videoAutoLoop": {
+    "description": "Bir videoyu her zaman döngüleme seçeneği"
+  },
+  "videoAutoMute": "Videoları Sessize Al",
+  "@videoAutoMute": {
+    "description": "Videoları her zaman sessize alma seçeneği"
+  },
+  "videoAutoPlay": "Video Otomatik Oynatma",
+  "@videoAutoPlay": {
+    "description": "Videoları her zaman otomatik oynatma seçeneği"
+  },
+  "videoDefaultPlaybackSpeed": "Varsayılan Oynatma Hızı",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Varsayılan video oynatma Hızını seçme seçeneği"
+  },
   "viewAll": "Tümünü görüntüle",
   "@viewAll": {
     "description": "Bir şeyin tamamını görüntülemek için bir başlık (örneğin, örnekler)"
   },
   "viewAllComments": "Tüm yorumları görüntüle",
   "@viewAllComments": {},
+  "viewCommentSource": "Yorum Kaynağını Görüntüle",
+  "@viewCommentSource": {
+    "description": "Bir yorumun kaynağını görüntülemek için menü öğesi"
+  },
+  "viewOriginal": "Orijinali görüntüle",
+  "@viewOriginal": {
+    "description": "Orijinal metni görüntüleme eylemi (ham işaretlemenin aksine)"
+  },
+  "viewPostAsDifferentAccount": "Gönderiyi farklı hesap olarak görüntüle",
+  "@viewPostAsDifferentAccount": {
+    "description": "Bir gönderiyi farklı bir hesap olarak görüntüleme eylemi"
+  },
+  "viewPostSource": "Gönderi kaynağını görüntüle",
+  "@viewPostSource": {
+    "description": "Bir gönderinin kaynağını görüntülemek için menü öğesi"
+  },
+  "viewSource": "Kaynağı görüntüle",
+  "@viewSource": {
+    "description": "Kaynağı görüntüleme eylemi (ham markdown)"
+  },
+  "viewingAll": "Tümünü görüntüleme",
+  "@viewingAll": {
+    "description": "Olası tüm arama sonuçlarını görüntülemek için çip"
+  },
+  "visibility": "Görünürlük: {visibility}",
+  "@visibility": {
+    "description": "Topluluk için görünürlük başlığı"
+  },
   "visitCommunity": "Topluluğu ziyaret edin",
   "@visitCommunity": {},
   "visitInstance": "Örneği Ziyaret Et",
@@ -1706,5 +2628,13 @@
     "description": "Gönderi veya yorumun toplam puanı"
   },
   "xUpvotes": "{x} destek oyu",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "xYearsOld": "{count, plural, zero {{x} year old} one {{x} year old} other {{x} years old}}",
+  "@xYearsOld": {
+    "description": "Bir hesabın kaç yaşında olduğunu gösteren bir hesap tanımlayıcısı"
+  },
+  "yes": "Evet",
+  "@yes": {
+    "description": "Pozitif bir durum"
+  }
 }
