@@ -27,7 +27,8 @@ class ThunderState extends Equatable {
     this.scrapeMissingPreviews = false,
     this.browserMode = BrowserMode.customTabs,
     this.openInReaderMode = false,
-    this.useDisplayNames = true,
+    this.useDisplayNamesForUsers = false,
+    this.useDisplayNamesForCommunities = false,
     this.markPostReadOnMediaView = false,
     this.markPostReadOnScroll = false,
     this.disableFeedFab = false,
@@ -196,7 +197,8 @@ class ThunderState extends Equatable {
   final bool scrapeMissingPreviews;
   final BrowserMode browserMode;
   final bool openInReaderMode;
-  final bool useDisplayNames;
+  final bool useDisplayNamesForUsers;
+  final bool useDisplayNamesForCommunities;
   final bool markPostReadOnMediaView;
   final bool markPostReadOnScroll;
   final bool disableFeedFab;
@@ -373,7 +375,8 @@ class ThunderState extends Equatable {
     bool? scrapeMissingPreviews,
     BrowserMode? browserMode,
     bool? openInReaderMode,
-    bool? useDisplayNames,
+    bool? useDisplayNamesForUsers,
+    bool? useDisplayNamesForCommunities,
     bool? markPostReadOnMediaView,
     bool? markPostReadOnScroll,
     bool? showInAppUpdateNotification,
@@ -542,7 +545,8 @@ class ThunderState extends Equatable {
       scrapeMissingPreviews: scrapeMissingPreviews ?? this.scrapeMissingPreviews,
       browserMode: browserMode ?? this.browserMode,
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
-      useDisplayNames: useDisplayNames ?? this.useDisplayNames,
+      useDisplayNamesForUsers: useDisplayNamesForUsers ?? this.useDisplayNamesForUsers,
+      useDisplayNamesForCommunities: useDisplayNamesForCommunities ?? this.useDisplayNamesForCommunities,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       markPostReadOnScroll: markPostReadOnScroll ?? this.markPostReadOnScroll,
       disableFeedFab: disableFeedFab,
@@ -720,7 +724,8 @@ class ThunderState extends Equatable {
         // General Settings
         scrapeMissingPreviews,
         browserMode,
-        useDisplayNames,
+        useDisplayNamesForUsers,
+        useDisplayNamesForCommunities,
         markPostReadOnMediaView,
         markPostReadOnScroll,
         disableFeedFab,

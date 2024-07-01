@@ -83,6 +83,8 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+      final bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+      final bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
 
       final String decodedMessage = utf8.decode(message);
 
@@ -102,9 +104,30 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-          '${commentReplyView.postName} · ${generateCommunityFullName(null, commentReplyView.communityName, fetchInstanceNameFromUrl(commentReplyView.communityActorId), communitySeparator: communitySeparator)}\n$htmlComment',
-          contentTitle: generateUserFullName(null, commentReplyView.creatorName, fetchInstanceNameFromUrl(commentReplyView.creatorActorId), userSeparator: userSeparator),
-          summaryText: generateUserFullName(null, commentReplyView.recipientName, fetchInstanceNameFromUrl(commentReplyView.recipientActorId), userSeparator: userSeparator),
+          '${commentReplyView.postName} · ${generateCommunityFullName(
+            null,
+            commentReplyView.communityName,
+            commentReplyView.communityName, // TODO: Add Community Title to Server
+            fetchInstanceNameFromUrl(commentReplyView.communityActorId),
+            communitySeparator: communitySeparator,
+            useDisplayName: useDisplayNamesForCommunities,
+          )}\n$htmlComment',
+          contentTitle: generateUserFullName(
+            null,
+            commentReplyView.creatorName,
+            commentReplyView.creatorName, // TODO: Add Creator Display Name to Server
+            fetchInstanceNameFromUrl(commentReplyView.creatorActorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
+          summaryText: generateUserFullName(
+            null,
+            commentReplyView.recipientName,
+            commentReplyView.recipientName, // TODO: Add Recipient Display Name to Server
+            fetchInstanceNameFromUrl(commentReplyView.recipientActorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
           htmlFormatBigText: true,
         );
 
@@ -118,7 +141,14 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           id: commentReplyView.commentReplyId,
           account: account,
           bigTextStyleInformation: bigTextStyleInformation,
-          title: generateUserFullName(null, commentReplyView.creatorName, fetchInstanceNameFromUrl(commentReplyView.creatorActorId), userSeparator: userSeparator),
+          title: generateUserFullName(
+            null,
+            commentReplyView.creatorName,
+            commentReplyView.creatorName, // TODO: Add Creator Display Name to Server
+            fetchInstanceNameFromUrl(commentReplyView.creatorActorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
           content: plaintextComment,
           payload: jsonEncode(NotificationPayload(
             type: NotificationType.unifiedPush,
@@ -140,9 +170,30 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-          '${personMentionView.post.name} · ${generateCommunityFullName(null, personMentionView.community.name, fetchInstanceNameFromUrl(personMentionView.community.actorId), communitySeparator: communitySeparator)}\n$htmlComment',
-          contentTitle: generateUserFullName(null, personMentionView.creator.name, fetchInstanceNameFromUrl(personMentionView.creator.actorId), userSeparator: userSeparator),
-          summaryText: generateUserFullName(null, personMentionView.recipient.name, fetchInstanceNameFromUrl(personMentionView.recipient.actorId), userSeparator: userSeparator),
+          '${personMentionView.post.name} · ${generateCommunityFullName(
+            null,
+            personMentionView.community.name,
+            personMentionView.community.title,
+            fetchInstanceNameFromUrl(personMentionView.community.actorId),
+            communitySeparator: communitySeparator,
+            useDisplayName: useDisplayNamesForCommunities,
+          )}\n$htmlComment',
+          contentTitle: generateUserFullName(
+            null,
+            personMentionView.creator.name,
+            personMentionView.creator.displayName,
+            fetchInstanceNameFromUrl(personMentionView.creator.actorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
+          summaryText: generateUserFullName(
+            null,
+            personMentionView.recipient.name,
+            personMentionView.recipient.displayName,
+            fetchInstanceNameFromUrl(personMentionView.recipient.actorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
           htmlFormatBigText: true,
         );
 
@@ -153,7 +204,14 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           id: personMentionView.comment.id,
           account: account,
           bigTextStyleInformation: bigTextStyleInformation,
-          title: generateUserFullName(null, personMentionView.creator.name, fetchInstanceNameFromUrl(personMentionView.creator.actorId), userSeparator: userSeparator),
+          title: generateUserFullName(
+            null,
+            personMentionView.creator.name,
+            personMentionView.creator.displayName,
+            fetchInstanceNameFromUrl(personMentionView.creator.actorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
           content: plaintextComment,
           payload: jsonEncode(NotificationPayload(
             type: NotificationType.unifiedPush,

@@ -71,7 +71,7 @@
   "@cardView": {
     "description": "Label for the card view option in Setting -> Appearance -> Posts"
   },
-  "cardViewSettings": "卡片样式设置",
+  "cardViewSettings": "卡片视图设置",
   "@cardViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
@@ -94,5 +94,475 @@
   "commentSavedAsDraft": "已保存评论为草稿",
   "@commentSavedAsDraft": {},
   "commentSortType": "评论排序方式",
-  "@commentSortType": {}
+  "@commentSortType": {},
+  "admin": "管理员",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "actionColorsRedirect": "在找自定义颜色？",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
+  "addAccountToSeeProfile": "登录以查看您的账户。",
+  "@addAccountToSeeProfile": {},
+  "accessibilityProfilesDescription": "无障碍个人档案允许一次性应用多个设置来容纳特殊的无障碍要求。",
+  "@accessibilityProfilesDescription": {},
+  "actions": "动作",
+  "@actions": {},
+  "add": "新增",
+  "@add": {},
+  "copyComment": "复制评论",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
+  "accountBirthday": "账户生日 {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "actionColors": "动作颜色",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "addToFavorites": "增加到收藏",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addedCommunityToSubscriptions": "订阅至社区",
+  "@addedCommunityToSubscriptions": {},
+  "alreadyPostedTo": "已经发到",
+  "@alreadyPostedTo": {},
+  "andXMore": "外加 {count} 个",
+  "@andXMore": {},
+  "bot": "机器人",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "cardPostCardMetadataItems": "卡片显示元数据",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "cardViewDescription": "启用卡片视图以调整设置",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "changeSort": "更改排序",
+  "@changeSort": {},
+  "collapse": "折叠",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "collapseSpoiler": "折叠剧透",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "colors": "颜色",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "combineCommentScoresLabel": "合并评论分数",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "combineNavAndFab": "合并 FAB 与导航按钮",
+  "@combineNavAndFab": {},
+  "commentSwipeActions": "评论扫除动作",
+  "@commentSwipeActions": {
+    "description": "Setting for comment swipe actions"
+  },
+  "comments": "评论",
+  "@comments": {},
+  "communities": "社区",
+  "@communities": {},
+  "community": "社区",
+  "@community": {},
+  "communityFormat": "社区格式",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "communityNameThickness": "社区名粗细",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
+  "compactViewSettings": "紧凑视图设置",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "createdToday": "今日已经创建",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
+  "always": "总是",
+  "@always": {},
+  "applied": "已应用",
+  "@applied": {},
+  "confirmUnsubscription": "您确认您想要取消订阅吗？",
+  "@confirmUnsubscription": {
+    "description": "Ask the user to confirm that they want to unsubscribe"
+  },
+  "confirmLogOutTitle": "登出？",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "couldntFindPost": "无法加载请求的帖子。它可能已经删除了。",
+  "@couldntFindPost": {
+    "description": "Error message for when we can't load a post."
+  },
+  "defaultCommentSortType": "默认评论排序方式",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "cantBlockAdmin": "你可能不会屏蔽一个实例的管理员。",
+  "@cantBlockAdmin": {},
+  "boldCommunityName": "显示粗体社区名字",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "collapsePost": "折叠帖子",
+  "@collapsePost": {},
+  "clearSearch": "清除搜索",
+  "@clearSearch": {},
+  "copiedToClipboard": "已复制到剪贴板",
+  "@copiedToClipboard": {},
+  "all": "全部",
+  "@all": {},
+  "allPosts": "全部帖子",
+  "@allPosts": {},
+  "blue": "蓝色",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "close": "关闭",
+  "@close": {},
+  "changeNotificationSettings": "更改通知设置…",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
+  "collapseCommentPreview": "折叠评论预览",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "compact": "紧凑",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "compactView": "紧凑视图",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "compactPostCardMetadataItems": "紧凑元数据视图",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
+  },
+  "compactViewDescription": "启用紧凑视图调整设置",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "confirmResetPostPreferences": "这会重置您所有的帖子首选项。您确认您想要进行吗？",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "confirmMarkAllAsReadTitle": "标记所有消息已读？",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "controversial": "争议",
+  "@controversial": {},
+  "createNewCrossPost": "创建新的跨社区帖子",
+  "@createNewCrossPost": {},
+  "countUsers": "{count} 位用户",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "createPost": "创建帖子",
+  "@createPost": {},
+  "createAccount": "创建用户",
+  "@createAccount": {},
+  "currentNotificationsMode": "当前通知模式：{mode}",
+  "@currentNotificationsMode": {
+    "description": "A status indicator for the current notifications mode"
+  },
+  "debug": "调试",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "debugNotificationsDescription": "使用以下选项以除错跟通知有关的问题。",
+  "@debugNotificationsDescription": {
+    "description": "A description for the notification debugging section"
+  },
+  "creator": "创建者",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "deleteAccountDescription": "要永久删除您的账号，您将要重定向至您的实例网站。\n\n您确定您要继续吗？",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
+  "defaultFeedSortType": "默认推送排序方式",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  },
+  "delete": "删除",
+  "@delete": {},
+  "deleteAccount": "删除账号",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "deleteLocalDatabase": "删除本地数据库",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "deleteLocalPreferences": "删除本地首选项",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "deletedByCreator": "被发帖者删除",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "detailedReason": "原因：{reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "couldntCreateReport": "您的评论举报不能在这时候发送。请稍后重试",
+  "@couldntCreateReport": {},
+  "crossPostedTo": "跨社区发帖至",
+  "@crossPostedTo": {},
+  "dark": "暗黑",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "defaultColor": "默认",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
+  },
+  "defaultFeedType": "默认推送方式",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
+  "areNotificationsAllowedBySystem": "系统是否允许通知：{yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "browserMode": "接管链接",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "browsingAnonymously": "您当前正在匿名地浏览 {instance}。",
+  "@browsingAnonymously": {},
+  "collapseInformation": "折叠信息",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "collapsePostPreview": "折叠帖子预览",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "combineNavAndFabDescription": "浮动动作按钮（FAB）将会在导航按钮中间展示。",
+  "@combineNavAndFabDescription": {},
+  "commentBehaviourSettings": "评论",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "copySelected": "复制选择的文本",
+  "@copySelected": {
+    "description": "Action for copying selected text"
+  },
+  "deselectUndeterminedWarning": "如果你取消选择「未确定」，您不会看见大多数内容。",
+  "@deselectUndeterminedWarning": {},
+  "connectedToUnifiedPushDistributorApp": "已连接至 {app}",
+  "@connectedToUnifiedPushDistributorApp": {
+    "description": "Tell the user which UnifiedPush app we're connected to"
+  },
+  "dangerZone": "危险区",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "deletedByModerator": "被管理删除",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
+  "base": "基本大小",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "backButton": "返回按钮",
+  "@backButton": {},
+  "communityStyle": "社区样式",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "communityNameColor": "社区名颜色",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "account": "{count, plural, zero {账户} one {账户} other {账户} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
+  "accountSwitchParentCommentNotFound": "选择的评论并没有在 '{instance}' 上找到。正在切换回前一个账号",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "accountSwitchPostNotFound": "选择的帖子并没有在 '{instance}' 上找到。正在切换回前一个账号。",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "clearPreferences": "清除首选项",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "addDiscussionLanguage": "增加语言",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "bannedUserFromCommunity": "从社区中封禁用户",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "boldInstanceName": "显示粗体实例名字",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "显示粗体用户名字",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "collapseParentCommentBodyOnGesture": "折叠时隐藏父评论",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "commentShowUserInstance": "显示用户实例",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "commentShowUserAvatar": "显示用户头像",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
+  "condensed": "紧缩",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "confirm": "确认",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "confirmLogOutBody": "您确认要登出吗？",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "confirmMarkAllAsReadBody": "你确认要标记所有消息为已读吗？",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "copy": "复制",
+  "@copy": {},
+  "copyText": "复制文本",
+  "@copyText": {},
+  "createComment": "创建评论",
+  "@createComment": {},
+  "colorizeCommunityName": "社区名上色",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "commentPreview": "按照所提供的设置显示评论的预览",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "colorizeInstanceName": "实例名上色",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "colorizeUserName": "用户名上色",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
+  "combineCommentScores": "合并评论分数",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
+  "comfortable": "舒适",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "bold": "粗体",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "color": "颜色",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "couldNotDetermineCommentDelete": "错误：不能确定哪个帖子的评论是要删除的。",
+  "@couldNotDetermineCommentDelete": {},
+  "couldNotDeterminePostComment": "错误：不能确定哪个帖子的评论是要发送的。",
+  "@couldNotDeterminePostComment": {},
+  "countSubscribers": "{count} 位订阅者",
+  "@countSubscribers": {},
+  "currentLongPress": "当前设为长按",
+  "@currentLongPress": {},
+  "debugDescription": "以下调试设置应仅用于除错用途。",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
+  "deleteLocalDatabaseDescription": "这个动作会删除本地数据库，并且登出您的每一个账号\n\n您确信您要继续吗？",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "deleteLocalPreferencesDescription": "这个动作会删除您全部的首选项和设置。\n\n您确信您要继续吗？",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
+  "addedInstanceMod": "增加实例管理",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "addedModToCommunity": "增加社区管理",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "bannedUser": "已封禁用户",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "crossPostedFrom": "自 {postUrl} 跨社区发帖",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
+  },
+  "communityActions": "社区动作",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "社区 '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "confirmResetCommentPreferences": "这会重置您所有评论首选项。您确认您要进行吗？",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "currentSinglePress": "当前设为单击",
+  "@currentSinglePress": {},
+  "customizeSwipeActions": "自定义扫除动作（点击以修改）",
+  "@customizeSwipeActions": {},
+  "applePushNotificationService": "Apple 推送通知服务",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
+  "comment": "评论",
+  "@comment": {},
+  "dateFormat": "日期格式",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
+  "commentFontScale": "评论内容的字体大小",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
+  },
+  "commentSwipeGesturesHint": "想直接使用按钮？在通用设置中的评论板块启用他们。",
+  "@commentSwipeGesturesHint": {},
+  "changeAccountSettingsFor": "更改这个人的账户设置：",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  }
 }

@@ -1,6 +1,5 @@
 // Dart imports
 import 'dart:async';
-import 'dart:convert';
 
 // Flutter imports
 import 'package:flutter/material.dart';
@@ -11,16 +10,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/models/draft.dart';
 
 // Project imports
 import 'package:thunder/comment/cubit/create_comment_cubit.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/shared/comment_content.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -60,17 +58,21 @@ class CreateCommentPage extends StatefulWidget {
 }
 
 class _CreateCommentPageState extends State<CreateCommentPage> {
-  /// Holds the draft id associated with the comment. This id is determined by the input parameters passed in.
-  /// If [commentView] is passed in, the id will be in the form 'drafts_cache-comment-edit-{commentView.comment.id}'
-  /// If [postViewMedia] is passed in, the id will be in the form 'drafts_cache-comment-create-{postViewMedia.postView.post.id}'
-  /// If [parentCommentView] is passed in, the id will be in the form 'drafts_cache-comment-create-{parentCommentView.comment.id}'
-  /// If none of these are passed in, the id will be in the form 'drafts_cache-comment-create-general'
-  String draftId = '';
+  /// Holds the draft type associated with the comment. This type is determined by the input parameters passed in.
+  /// If [commentView], it will be [DraftType.commentEdit].
+  /// If [postViewMedia] or [parentCommentView] is passed in, it will be [DraftType.commentCreate].
+  late DraftType draftType;
 
-  /// Holds the current draft for the comment.
-  DraftComment draftComment = DraftComment();
+  /// The ID of the comment we are editing, to find a corresponding draft, if any
+  int? draftExistingId;
 
-  /// Timer for saving the current draft to local storage
+  /// The ID of the post or comment we're replying to, to find a corresponding draft, if any
+  int? draftReplyId;
+
+  /// Whether to save this comment as a draft
+  bool saveDraft = true;
+
+  /// Timer for saving the current draft
   Timer? _draftTimer;
 
   /// Whether or not to show the preview for the comment from the raw markdown
@@ -93,9 +95,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   /// The keyboard visibility controller used to determine if the keyboard is visible at a given time
   final keyboardVisibilityController = KeyboardVisibilityController();
-
-  /// Used for restoring and saving drafts
-  SharedPreferences? sharedPreferences;
 
   /// Whether to view source for posts or comments
   bool viewSource = false;
@@ -120,7 +119,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     parentCommentId = widget.parentCommentView?.comment.id;
 
     _bodyTextController.addListener(() {
-      draftComment.text = _bodyTextController.text;
       _validateSubmission();
     });
 
@@ -128,8 +126,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     if (widget.commentView != null) {
       _bodyTextController.text = widget.commentView!.comment.content;
       languageId = widget.commentView!.comment.languageId;
-
-      return;
     }
 
     // Finally, if there is no pre-populated fields, then we retrieve the most recent draft
@@ -152,11 +148,13 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
     _draftTimer?.cancel();
 
-    if (draftComment.isNotEmpty && draftComment.saveAsDraft) {
-      sharedPreferences?.setString(draftId, jsonEncode(draftComment.toJson()));
+    Draft draft = _generateDraft();
+
+    if (draft.isCommentNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
+      Draft.upsertDraft(draft);
       showSnackbar(l10n.commentSavedAsDraft);
     } else {
-      sharedPreferences?.remove(draftId);
+      Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
     }
 
     super.dispose();
@@ -164,35 +162,36 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   /// Attempts to restore an existing draft of a comment
   void _restoreExistingDraft() async {
-    sharedPreferences = (await UserPreferences.instance).sharedPreferences;
-
     if (widget.commentView != null) {
-      draftId = '${LocalSettings.draftsCache.name}-comment-edit-${widget.commentView!.comment.id}';
+      draftType = DraftType.commentEdit;
+      draftExistingId = widget.commentView!.comment.id;
     } else if (widget.postViewMedia != null) {
-      draftId = '${LocalSettings.draftsCache.name}-comment-create-${widget.postViewMedia!.postView.post.id}';
+      draftType = DraftType.commentCreate;
+      draftReplyId = widget.postViewMedia!.postView.post.id;
     } else if (widget.parentCommentView != null) {
-      draftId = '${LocalSettings.draftsCache.name}-comment-create-${widget.parentCommentView!.comment.id}';
+      draftType = DraftType.commentCreate;
+      draftReplyId = widget.parentCommentView!.comment.id;
     } else {
-      draftId = '${LocalSettings.draftsCache.name}-comment-create-general';
+      // Should never come here.
+      return;
     }
 
-    String? draftCommentJson = sharedPreferences?.getString(draftId);
+    Draft? draft = await Draft.fetchDraft(draftType, draftExistingId, draftReplyId);
 
-    if (draftCommentJson != null) {
-      draftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
-
-      _bodyTextController.text = draftComment.text ?? '';
+    if (draft != null) {
+      _bodyTextController.text = draft.body ?? '';
     }
 
     _draftTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-      if (draftComment.isNotEmpty && draftComment.saveAsDraft) {
-        sharedPreferences?.setString(draftId, jsonEncode(draftComment.toJson()));
+      Draft draft = _generateDraft();
+      if (draft.isCommentNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
+        Draft.upsertDraft(draft);
       } else {
-        sharedPreferences?.remove(draftId);
+        Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
       }
     });
 
-    if (context.mounted && draftComment.isNotEmpty) {
+    if (context.mounted && draft?.isCommentNotEmpty == true) {
       // We need to wait until the keyboard is visible before showing the snackbar
       Future.delayed(const Duration(milliseconds: 1000), () {
         showSnackbar(
@@ -200,13 +199,33 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
           trailingIcon: Icons.delete_forever_rounded,
           trailingIconColor: Theme.of(context).colorScheme.errorContainer,
           trailingAction: () {
-            sharedPreferences?.remove(draftId);
-            _bodyTextController.clear();
+            Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
+            _bodyTextController.text = widget.commentView?.comment.content ?? '';
           },
           closable: true,
         );
       });
     }
+  }
+
+  Draft _generateDraft() {
+    return Draft(
+      id: '',
+      draftType: draftType,
+      existingId: draftExistingId,
+      replyId: draftReplyId,
+      body: _bodyTextController.text,
+    );
+  }
+
+  /// Checks whether we are potentially saving a draft of an edit and, if so,
+  /// whether the draft contains different contents from the edit
+  bool _draftDiffersFromEdit(Draft draft) {
+    if (widget.commentView == null) {
+      return true;
+    }
+
+    return draft.body != widget.commentView!.comment.content;
   }
 
   @override
@@ -264,7 +283,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                               onPressed: isSubmitButtonDisabled
                                   ? null
                                   : () {
-                                      draftComment.saveAsDraft = false;
+                                      saveDraft = false;
 
                                       context.read<CreateCommentCubit>().createOrEditComment(
                                             postId: postId,
@@ -301,7 +320,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                     ),
                                     child: PostSubview(
-                                      useDisplayNames: true,
                                       postViewMedia: widget.postViewMedia!,
                                       crossPosts: const [],
                                       viewSource: viewSource,
@@ -391,6 +409,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         minLines: 8,
                                         maxLines: null,
                                         textStyle: theme.textTheme.bodyLarge,
+                                        spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                                       ),
                                     ),
                                     crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
@@ -507,6 +526,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   }
 }
 
+@Deprecated('Use Draft model through database instead')
 class DraftComment {
   String? text;
   bool saveAsDraft = true;

@@ -15,23 +15,27 @@ import 'package:thunder/utils/instance.dart';
 class CommunityChip extends StatelessWidget {
   const CommunityChip({
     super.key,
-    this.communityId,
-    this.communityAvatar,
-    this.communityName,
-    this.communityUrl,
+    required this.communityId,
+    required this.communityAvatar,
+    required this.communityName,
+    required this.communityTitle,
+    required this.communityUrl,
   });
 
   /// The ID of the community.
-  final int? communityId;
+  final int communityId;
 
   /// The avatar of the community.
-  final CommunityAvatar? communityAvatar;
+  final CommunityAvatar communityAvatar;
 
   /// The name of the community.
-  final String? communityName;
+  final String communityName;
+
+  /// The title of the community.
+  final String communityTitle;
 
   /// The URL of the community.
-  final String? communityUrl;
+  final String communityUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +47,22 @@ class CommunityChip extends StatelessWidget {
       onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId),
       child: Tooltip(
         excludeFromSemantics: true,
-        message: generateCommunityFullName(context, communityName, fetchInstanceNameFromUrl(communityUrl) ?? '-'),
+        message: generateCommunityFullName(
+          context,
+          communityName,
+          communityTitle,
+          fetchInstanceNameFromUrl(communityUrl) ?? '-',
+        ),
         preferBelow: false,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (showCommunityAvatar && communityAvatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: communityAvatar!),
+            if (showCommunityAvatar) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: communityAvatar),
             CommunityFullNameWidget(
               context,
               communityName,
+              communityTitle,
               fetchInstanceNameFromUrl(communityUrl),
               includeInstance: state.postBodyShowCommunityInstance,
               fontScale: state.metadataFontSizeScale,

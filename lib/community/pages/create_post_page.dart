@@ -1,6 +1,5 @@
 // Dart imports
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 // Flutter imports
@@ -14,19 +13,18 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -86,17 +84,22 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
-  /// Holds the draft id associated with the post. This id is determined by the input parameters passed in.
-  /// If [postView] is passed in, the id will be in the form 'drafts_cache-post-edit-{postView.post.id}'
-  /// If [communityId] is passed in, the id will be in the form 'drafts_cache-post-create-{communityId}'
-  /// If [communityView] is passed in, the id will be in the form 'drafts_cache-post-create-{communityView.community.id}'
-  /// If none of these are passed in, the id will be in the form 'drafts_cache-post-create-general'
-  String draftId = '';
+  /// Holds the draft type associated with the post. This type is determined by the input parameters passed in.
+  /// If [postView] is passed in, this will be a [DraftType.postEdit].
+  /// If [communityId] or [communityView] is passed in, this will be a [DraftType.postCreate].
+  /// Otherwise it will be a [DraftType.postCreateGeneral].
+  late DraftType draftType;
 
-  /// Holds the current draft for the post.
-  DraftPost draftPost = DraftPost();
+  /// The ID of the post we are editing, to find a corresponding draft, if any
+  int? draftExistingId;
 
-  /// Timer for saving the current draft to local storage
+  /// The ID of the community we're replying to, to find a corresponding draft, if any
+  int? draftReplyId;
+
+  /// Whether to save this post as a draft
+  bool saveDraft = true;
+
+  /// Timer for saving the current draft
   Timer? _draftTimer;
 
   /// Whether or not to show the preview for the post from the raw markdown
@@ -139,9 +142,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   /// The keyboard visibility controller used to determine if the keyboard is visible at a given time
   final keyboardVisibilityController = KeyboardVisibilityController();
 
-  /// Used for restoring and saving drafts
-  SharedPreferences? sharedPreferences;
-
   final imageBloc = ImageBloc();
 
   Account? originalUser;
@@ -156,20 +156,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     // Set up any text controller listeners
     _titleTextController.addListener(() {
-      draftPost.title = _titleTextController.text;
       _validateSubmission();
     });
 
     _urlTextController.addListener(() {
       url = _urlTextController.text;
-      draftPost.url = _urlTextController.text;
-
       _validateSubmission();
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
-    });
-
-    _bodyTextController.addListener(() {
-      draftPost.text = _bodyTextController.text;
     });
 
     // Logic for pre-populating the post with the given fields
@@ -195,8 +188,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
       _bodyTextController.text = widget.postView!.post.body ?? '';
       isNSFW = widget.postView!.post.nsfw;
       languageId = widget.postView!.post.languageId;
-
-      return;
     }
 
     // Finally, if there is no pre-populated fields, then we retrieve the most recent draft
@@ -216,11 +207,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     _draftTimer?.cancel();
 
-    if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
-      sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
+    Draft draft = _generateDraft();
+
+    if (draft.isPostNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
+      Draft.upsertDraft(draft);
       showSnackbar(l10n.postSavedAsDraft);
     } else {
-      sharedPreferences?.remove(draftId);
+      Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
     }
 
     super.dispose();
@@ -228,49 +221,71 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   /// Attempts to restore an existing draft of a post
   void _restoreExistingDraft() async {
-    sharedPreferences = (await UserPreferences.instance).sharedPreferences;
-
     if (widget.postView != null) {
-      draftId = '${LocalSettings.draftsCache.name}-post-edit-${widget.postView!.post.id}';
+      draftType = DraftType.postEdit;
+      draftExistingId = widget.postView?.post.id;
     } else if (widget.communityId != null) {
-      draftId = '${LocalSettings.draftsCache.name}-post-create-${widget.communityId}';
+      draftType = DraftType.postCreate;
+      draftReplyId = widget.communityId;
     } else if (widget.communityView != null) {
-      draftId = '${LocalSettings.draftsCache.name}-post-create-${widget.communityView!.community.id}';
+      draftType = DraftType.postCreate;
+      draftReplyId = widget.communityView!.community.id;
     } else {
-      draftId = '${LocalSettings.draftsCache.name}-post-create-general';
+      draftType = DraftType.postCreateGeneral;
     }
 
-    String? draftPostJson = sharedPreferences?.getString(draftId);
+    Draft? draft = await Draft.fetchDraft(draftType, draftExistingId, draftReplyId);
 
-    if (draftPostJson != null) {
-      draftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
-
-      _titleTextController.text = draftPost.title ?? '';
-      _urlTextController.text = draftPost.url ?? '';
-      _bodyTextController.text = draftPost.text ?? '';
+    if (draft != null) {
+      _titleTextController.text = draft.title ?? '';
+      _urlTextController.text = draft.url ?? '';
+      _bodyTextController.text = draft.body ?? '';
     }
 
     _draftTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-      if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
-        sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
+      Draft draft = _generateDraft();
+      if (draft.isPostNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
+        Draft.upsertDraft(draft);
       } else {
-        sharedPreferences?.remove(draftId);
+        Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
       }
     });
 
-    if (context.mounted && draftPost.isNotEmpty) {
+    if (context.mounted && draft?.isPostNotEmpty == true && _draftDiffersFromEdit(draft!)) {
       showSnackbar(
         AppLocalizations.of(context)!.restoredPostFromDraft,
         trailingIcon: Icons.delete_forever_rounded,
         trailingIconColor: Theme.of(context).colorScheme.errorContainer,
         trailingAction: () {
-          sharedPreferences?.remove(draftId);
-          _titleTextController.clear();
-          _urlTextController.clear();
-          _bodyTextController.clear();
+          Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
+          _titleTextController.text = widget.postView?.post.name ?? '';
+          _urlTextController.text = widget.postView?.post.url ?? '';
+          _bodyTextController.text = widget.postView?.post.body ?? '';
         },
       );
     }
+  }
+
+  Draft _generateDraft() {
+    return Draft(
+      id: '',
+      draftType: draftType,
+      existingId: draftExistingId,
+      replyId: draftReplyId,
+      title: _titleTextController.text,
+      url: _urlTextController.text,
+      body: _bodyTextController.text,
+    );
+  }
+
+  /// Checks whether we are potentially saving a draft of an edit and, if so,
+  /// whether the draft contains different contents from the edit
+  bool _draftDiffersFromEdit(Draft draft) {
+    if (widget.postView == null) {
+      return true;
+    }
+
+    return draft.title != widget.postView!.post.name || draft.url != (widget.postView!.post.url ?? '') || draft.body != (widget.postView!.post.body ?? '');
   }
 
   /// Attempts to get the suggested title for a given link
@@ -347,7 +362,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             onPressed: isSubmitButtonDisabled
                                 ? null
                                 : () {
-                                    draftPost.saveAsDraft = false;
+                                    saveDraft = false;
 
                                     context.read<CreatePostCubit>().createOrEditPost(
                                           communityId: communityId!,
@@ -535,6 +550,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 minLines: 8,
                                 maxLines: null,
                                 textStyle: theme.textTheme.bodyLarge,
+                                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                               ),
                               crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                               duration: const Duration(milliseconds: 120),
@@ -731,7 +747,10 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                             CommunityFullNameWidget(
                               context,
                               widget.communityView?.community.name,
+                              widget.communityView?.community.title,
                               fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                              // Override, because we have the display name right above
+                              useDisplayName: false,
                             )
                           ],
                         )
@@ -759,6 +778,7 @@ class _CommunitySelectorState extends State<CommunitySelector> {
   }
 }
 
+@Deprecated('Use Draft model through database instead')
 class DraftPost {
   String? title;
   String? url;

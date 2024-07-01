@@ -10,29 +10,47 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 import 'package:thunder/core/database/tables.dart';
+import 'package:thunder/core/database/type_converters.dart';
+import 'package:thunder/drafts/draft_type.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels])
+@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
+          // --- UPGRADES ---
+
           // If we are migrating from 1 to anything higher
-          if (from == 1 && to > 1) {
+          if (from <= 1 && to > 1) {
             // Create the UserLabels table
             await migrator.createTable(userLabels);
           }
 
+          // If we are migrating from 2 or lower to anything higher
+          if (from <= 2 && to > 2) {
+            // Create the Drafts table
+            await migrator.createTable(drafts);
+          }
+
+          // --- DOWNGRADES ---
+
           // If we are downgrading from 2 or higher to 1
-          if (from >= 2 && to == 1) {
-            // Delete the UserBales table
+          if (from >= 2 && to <= 1) {
+            // Delete the UserLabels table
             await migrator.deleteTable('user_labels');
+          }
+
+          // If we are downgrading from 3 or higher to 2 or lower
+          if (from >= 3 && to <= 2) {
+            // Delete the Drafts table
+            await migrator.deleteTable('drafts');
           }
         },
       );

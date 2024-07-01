@@ -95,6 +95,13 @@ final class ScrollToTopEvent extends FeedEvent {}
 
 final class FeedDismissReadEvent extends FeedEvent {}
 
+final class FeedDismissBlockedEvent extends FeedEvent {
+  final int? communityId;
+  final int? userId;
+
+  const FeedDismissBlockedEvent({this.communityId, this.userId});
+}
+
 final class FeedHidePostsFromViewEvent extends FeedEvent {
   final List<int> postIds;
 

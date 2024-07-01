@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/comment/enums/comment_action.dart';
 
 // Project imports
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -70,7 +71,7 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
                     comment: personMentionView.toCommentView(),
                     isOwnComment: personMentionView.creator.id == context.read<AuthBloc>().state.account?.userId,
                     child: IconButton(
-                      onPressed: () => context.read<InboxBloc>().add(MarkMentionAsReadEvent(personMentionId: personMention.id, read: !personMention.read)),
+                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: personMention.id, value: !personMention.read)),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,
