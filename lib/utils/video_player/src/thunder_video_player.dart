@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/core/enums/video_playback_speed.dart';
@@ -34,11 +35,22 @@ class ThunderVideoPlayer extends StatefulWidget {
 class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   late VideoPlayerController _videoPlayerController;
 
+  /// Used to toggle the video control visibility
+  bool isVideoControlsVisible = true;
+
+  /// Used to debounce the video control visibility
+  Timer? debounceTimer;
+
+  /// Timer for delaying the video control visibility
+  Timer? timer;
+
   /// Used to toggle the fullscreen mode
   bool isFullScreen = false;
 
   @override
   void dispose() async {
+    timer?.cancel();
+    debounceTimer?.cancel();
     _videoPlayerController.dispose();
     super.dispose();
   }
@@ -74,6 +86,18 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     _videoPlayerController.setLooping(state.videoAutoLoop);
 
     _videoPlayerController.addListener(() {
+      if (_videoPlayerController.value.isPlaying && isVideoControlsVisible && timer?.isActive != true) {
+        timer = Timer(const Duration(seconds: 3), () {
+          // Hide video controls
+          setState(() => isVideoControlsVisible = false);
+        });
+      } else if (!_videoPlayerController.value.isPlaying) {
+        timer?.cancel();
+
+        // Show video controls
+        if (!isVideoControlsVisible) setState(() => isVideoControlsVisible = true);
+      }
+
       if (_videoPlayerController.value.hasError) {
         showSnackbar(
           l10n.failedToLoadVideo,
@@ -110,33 +134,49 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
           quarterTurns: !isFullScreen ? 0 : 1,
           child: Stack(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.arrow_back,
-                        semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                        color: Colors.white.withOpacity(0.90),
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 300),
+                opacity: isVideoControlsVisible ? 1.0 : 0.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(
+                          Icons.arrow_back,
+                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                          color: Colors.white.withOpacity(0.90),
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: IconButton(
-                      onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
-                      icon: Icon(
-                        Icons.open_in_browser_rounded,
-                        semanticLabel: l10n.openInBrowser,
-                        color: Colors.white.withOpacity(0.90),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: IconButton(
+                        onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
+                        icon: Icon(
+                          Icons.open_in_browser_rounded,
+                          semanticLabel: l10n.openInBrowser,
+                          color: Colors.white.withOpacity(0.90),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              if (!isVideoControlsVisible)
+                GestureDetector(
+                  onTap: () {
+                    // Debounce the tap action to account for multiple taps
+                    debounceTimer?.cancel();
+                    timer?.cancel();
+
+                    debounceTimer = Timer(const Duration(milliseconds: 300), () {
+                      setState(() => isVideoControlsVisible = true);
+                    });
+                  },
+                ),
               Center(
                 child: AspectRatio(
                   aspectRatio: _videoPlayerController.value.aspectRatio,
@@ -152,26 +192,25 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
 
                         setState(() {});
                       },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOutCubicEmphasized,
-                        color: _videoPlayerController.value.isPlaying ? Colors.transparent : Colors.black.withOpacity(0.2),
-                      ),
                     ),
                   ]),
                 ),
               ),
-              VideoPlayerControls(
-                controller: _videoPlayerController,
-                onToggleFullScreen: () => setState(
-                  () {
-                    isFullScreen = !isFullScreen;
-                    if (isFullScreen) {
-                      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-                    } else {
-                      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-                    }
-                  },
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 300),
+                opacity: isVideoControlsVisible ? 1.0 : 0.0,
+                child: VideoPlayerControls(
+                  controller: _videoPlayerController,
+                  onToggleFullScreen: () => setState(
+                    () {
+                      isFullScreen = !isFullScreen;
+                      if (isFullScreen) {
+                        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+                      } else {
+                        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+                      }
+                    },
+                  ),
                 ),
               ),
             ],
