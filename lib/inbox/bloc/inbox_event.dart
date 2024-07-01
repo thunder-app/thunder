@@ -20,19 +20,20 @@ class GetInboxEvent extends InboxEvent {
   const GetInboxEvent({this.inboxType, this.showAll = false, this.reset = false});
 }
 
-class MarkReplyAsReadEvent extends InboxEvent {
-  final int commentReplyId;
-  final bool read;
-  final bool showAll;
+class InboxItemActionEvent extends InboxEvent {
+  /// The action to perform on the inbox item. This is generally a comment.
+  final CommentAction action;
 
-  const MarkReplyAsReadEvent({required this.commentReplyId, required this.read, required this.showAll});
-}
+  /// The id of the comment reply. Only one of [commentReplyId] or [personMentionId] should be set
+  final int? commentReplyId;
 
-class MarkMentionAsReadEvent extends InboxEvent {
-  final int personMentionId;
-  final bool read;
+  /// The id of the person mention reply. Only one of [commentReplyId] or [personMentionId] should be set
+  final int? personMentionId;
 
-  const MarkMentionAsReadEvent({required this.personMentionId, required this.read});
+  /// The value to pass to the action
+  final dynamic value;
+
+  const InboxItemActionEvent({required this.action, this.commentReplyId, this.personMentionId, this.value});
 }
 
 class MarkAllAsReadEvent extends InboxEvent {}

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
 
 // Project imports
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -24,6 +26,7 @@ extension on CommentReplyView {
       subscribed: subscribed,
       saved: saved,
       creatorBlocked: creatorBlocked,
+      myVote: myVote as int?,
     );
   }
 }
@@ -69,8 +72,28 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                   CommentReference(
                     comment: commentReplyView.toCommentView(),
                     isOwnComment: commentReplyView.creator.id == context.read<AuthBloc>().state.account?.userId,
+                    onVoteAction: (int commentId, int voteType) => context.read<InboxBloc>().add(
+                          InboxItemActionEvent(
+                            action: CommentAction.vote,
+                            commentReplyId: commentReply.id,
+                            value: switch (voteType) {
+                              1 => commentReplyView.myVote == 1 ? 0 : 1,
+                              -1 => commentReplyView.myVote == -1 ? 0 : -1,
+                              _ => 0,
+                            },
+                          ),
+                        ),
+                    onSaveAction: (int commentId, bool save) => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.save, commentReplyId: commentReply.id, value: save)),
+                    onDeleteAction: (int commentId, bool deleted) => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.delete, commentReplyId: commentReply.id, value: deleted)),
+                    onReplyEditAction: (CommentView commentView, bool isEdit) {
+                      return navigateToCreateCommentPage(
+                        context,
+                        commentView: isEdit ? commentView : null,
+                        parentCommentView: isEdit ? null : commentView,
+                      );
+                    },
                     child: IconButton(
-                      onPressed: () => context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: commentReply.id, read: !commentReply.read, showAll: !state.showUnreadOnly)),
+                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, commentReplyId: commentReply.id, value: !commentReply.read)),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,
