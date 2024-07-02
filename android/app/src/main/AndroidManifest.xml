@@ -86,6 +86,7 @@
               <data android:host="feddit.it" />
               <data android:host="feddit.nl" />
               <data android:host="feddit.nu" />
+              <data android:host="feddit.org" />
               <data android:host="feddit.uk" />
               <data android:host="hexbear.net" />
               <data android:host="infosec.pub" />
@@ -98,6 +99,7 @@
               <data android:host="lemmy.ca" />
               <data android:host="lemmy.dbzer0.com" />
               <data android:host="lemmy.eco.br" />
+              <data android:host="lemmy.kya.moe" />
               <data android:host="lemmy.ml" />
               <data android:host="lemmy.nz" />
               <data android:host="lemmy.one" />
