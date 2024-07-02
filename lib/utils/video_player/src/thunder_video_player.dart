@@ -10,6 +10,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/cubits/network_checker_cubit/network_checker_cubit.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class ThunderVideoPlayer extends StatefulWidget {
   const ThunderVideoPlayer({
@@ -34,6 +35,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   @override
   void dispose() async {
     _betterPlayerController.dispose();
+    WakelockPlus.disable();
     super.dispose();
   }
 
@@ -75,20 +77,27 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _betterPlayerController
       ..setupDataSource(_betterPlayerDataSource)
-      ..setVolume(thunderBloc.videoAutoMute ? 0 : 1)
-      ..setSpeed(thunderBloc.videoDefaultPlaybackSpeed.value);
 
-    _betterPlayerController.addEventsListener((event) {
-      if (event.betterPlayerEventType == BetterPlayerEventType.exception) {
-        showSnackbar(
-          l10n.failedToLoadVideo,
-          trailingIcon: Icons.chevron_right_rounded,
-          trailingAction: () {
-            handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true);
-          },
-        );
-      }
-    });
+      ..setVolume(thunderBloc.videoAutoMute ? 0 : 4)
+      ..setSpeed(double.parse(thunderBloc.videoDefaultPlaybackSpeed.label.replaceAll('x', '')))
+      ..addEventsListener((event) {
+        switch (event.betterPlayerEventType) {
+          case BetterPlayerEventType.exception:
+            showSnackbar(
+              l10n.failedToLoadVideo,
+              trailingIcon: Icons.chevron_right_rounded,
+              trailingAction: () {
+                handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true);
+              },
+            );
+            break;
+          case BetterPlayerEventType.pause:
+            WakelockPlus.disable();
+          case BetterPlayerEventType.play:
+            WakelockPlus.enable();
+          default:
+        }
+      });
   }
 
   @override
