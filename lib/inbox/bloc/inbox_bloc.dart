@@ -133,8 +133,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         case InboxType.replies:
           if (state.hasReachedInboxReplyEnd) return;
 
-          print('Fetching inbox ${event.inboxType}... page ${state.inboxReplyPage}');
-
           getRepliesResponse = await lemmy.run(
             GetReplies(
               auth: account!.jwt!,
