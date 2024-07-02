@@ -1,63 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/utils/date_time.dart';
 
-class InboxPrivateMessagesView extends StatelessWidget {
+class InboxPrivateMessagesView extends StatefulWidget {
   final List<PrivateMessageView> privateMessages;
 
   const InboxPrivateMessagesView({super.key, this.privateMessages = const []});
 
   @override
+  State<InboxPrivateMessagesView> createState() => _InboxPrivateMessagesViewState();
+}
+
+class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
+  @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final state = context.read<InboxBloc>().state;
 
-    if (privateMessages.isEmpty) {
-      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No messages'));
-    }
-
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: privateMessages.length,
-      itemBuilder: (context, index) {
-        return Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          privateMessages[index].creator.name,
-                          style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Icon(Icons.arrow_forward_rounded, size: 14),
-                        ),
-                        Text(
-                          privateMessages[index].recipient.name,
-                          style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
-                        ),
-                      ],
-                    ),
-                    Text(formatTimeToString(dateTime: privateMessages[index].privateMessage.published.toIso8601String()))
-                  ],
-                ),
-                const SizedBox(height: 10),
-                CommonMarkdownBody(body: privateMessages[index].privateMessage.content),
-              ],
+    return Builder(builder: (context) {
+      return CustomScrollView(
+        key: PageStorageKey<String>(l10n.message(10)),
+        slivers: [
+          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+          if (state.status == InboxStatus.loading)
+            const SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(child: CircularProgressIndicator()),
             ),
+          if (widget.privateMessages.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(child: Text(l10n.noMessages)),
+            ),
+          SliverList.builder(
+            itemCount: widget.privateMessages.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                widget.privateMessages[index].creator.name,
+                                style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Icon(Icons.arrow_forward_rounded, size: 14),
+                              ),
+                              Text(
+                                widget.privateMessages[index].recipient.name,
+                                style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
+                              ),
+                            ],
+                          ),
+                          Text(formatTimeToString(dateTime: widget.privateMessages[index].privateMessage.published.toIso8601String()))
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      CommonMarkdownBody(body: widget.privateMessages[index].privateMessage.content),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
-        );
-      },
-    );
+          if (state.hasReachedInboxMentionEnd && widget.privateMessages.isNotEmpty)
+            SliverToBoxAdapter(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 40.0),
+                  child: Text(l10n.reachedTheBottom),
+                ),
+              ),
+            ),
+        ],
+      );
+    });
   }
 }
