@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
@@ -11,7 +12,6 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'inbox_event.dart';
 part 'inbox_state.dart';
@@ -35,17 +35,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   }
 
   void _init() {
-    on<GetInboxEvent>(
-      _getInboxEvent,
-      transformer: restartable(),
-    );
+    on<GetInboxEvent>(_getInboxEvent, transformer: restartable());
     on<InboxItemActionEvent>(_inboxItemActionEvent);
-    on<MarkAllAsReadEvent>(
-      _markAllAsRead,
-      // Do not throttle mark as read because it's something
-      // a user might try to do in quick succession to multiple messages
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<MarkAllAsReadEvent>(_markAllAsRead);
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
@@ -208,6 +200,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
 
     int existingIndex = -1;
+
     CommentReplyView? existingCommentReplyView;
     PersonMentionView? existingPersonMentionView;
 
@@ -273,9 +266,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           Account? account = await fetchActiveProfileAccount();
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          if (account?.jwt == null) {
-            return emit(state.copyWith(status: InboxStatus.success));
-          }
+          if (account?.jwt == null) return emit(state.copyWith(status: InboxStatus.success));
 
           if (existingCommentReplyView != null) {
             await lemmy.run(MarkCommentReplyAsRead(
@@ -349,7 +340,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           emit(state.copyWith(status: InboxStatus.refreshing));
 
           await saveComment(commentView.comment.id, event.value).timeout(timeout, onTimeout: () {
-            // Restore the original comment if vote fails
+            // Restore the original comment if saving fails
             if (existingCommentReplyView != null) {
               state.replies[existingIndex] = existingCommentReplyView;
             } else if (existingPersonMentionView != null) {
@@ -378,7 +369,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           emit(state.copyWith(status: InboxStatus.refreshing));
 
           await deleteComment(commentView.comment.id, event.value).timeout(timeout, onTimeout: () {
-            // Restore the original comment if vote fails
+            // Restore the original comment if deleting fails
             if (existingCommentReplyView != null) {
               state.replies[existingIndex] = existingCommentReplyView;
             } else if (existingPersonMentionView != null) {
@@ -393,30 +384,21 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
         }
       default:
-        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'Unsupported action: ${event.action}'));
+        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.unexpectedError));
     }
   }
 
   Future<void> _markAllAsRead(MarkAllAsReadEvent event, emit) async {
     try {
-      emit(state.copyWith(
-        status: InboxStatus.refreshing,
-        errorMessage: '',
-      ));
+      emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
+
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      if (account?.jwt == null) {
-        return emit(state.copyWith(status: InboxStatus.success));
-      }
-      await lemmy.run(MarkAllAsRead(
-        auth: account!.jwt!,
-      ));
+      if (account?.jwt == null) return emit(state.copyWith(status: InboxStatus.success));
+      await lemmy.run(MarkAllAsRead(auth: account!.jwt!));
     } catch (e) {
-      emit(state.copyWith(
-        status: InboxStatus.failure,
-        errorMessage: e.toString(),
-      ));
+      emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
 
