@@ -121,7 +121,7 @@
   "@applied": {},
   "apply": "Uygula",
   "@apply": {},
-  "areNotificationsAllowedBySystem": "Sistem tarafından bildirimlere izin verilir: {evetYaDaHayır}",
+  "areNotificationsAllowedBySystem": "Sistem tarafından bildirimlere izin verilir: {yesOrNo}",
   "@areNotificationsAllowedBySystem": {
     "description": "İşletim sistemi izinlerinin bildirimlere izin verip vermediğini gösteren bir durum göstergesi"
   },
@@ -761,7 +761,7 @@
   },
   "endSearch": "Aramayı Sonlandır",
   "@endSearch": {},
-  "errorDownloadingMedia": "Medya dosyasını paylaşmak için indirilemedi: {hataMesajı}",
+  "errorDownloadingMedia": "Medya dosyasını paylaşmak için indirilemedi: {errorMessage}",
   "@errorDownloadingMedia": {},
   "errorMarkingReplyRead": "Yanıtı okundu olarak işaretleme hatası oluştu.",
   "@errorMarkingReplyRead": {
@@ -831,19 +831,19 @@
   "@extraLarge": {
     "description": "Ekstra büyük yazı tipi ölçeği için açıklama"
   },
-  "failedToBlock": "Engellenemedi: {hataMesajı}",
+  "failedToBlock": "Engellenemedi: {errorMessage}",
   "@failedToBlock": {},
   "failedToCommunicateWithThunderNotificationServer": "'{serverAddress}' adresindeki Thunder bildirim sunucusuyla iletişim kurulamadı.",
   "@failedToCommunicateWithThunderNotificationServer": {
     "description": "Thunder bildirim sunucusu ile iletişim kurma hatası mesajı"
   },
-  "failedToLoadBlocks": "Blok yüklenemedi: {hataMesajı}",
+  "failedToLoadBlocks": "Blok yüklenemedi: {errorMessage}",
   "@failedToLoadBlocks": {},
   "failedToLoadVideo": "Video yüklenemedi. Tarayıcıda bağlantıyı aç?",
   "@failedToLoadVideo": {
     "description": "Bir videoyu yüklemeyi başaramadığımızda görünen hata mesajı"
   },
-  "failedToUnblock": "Açılamadı: {hataMesajı}",
+  "failedToUnblock": "Açılamadı: {errorMessage}",
   "@failedToUnblock": {},
   "failedToUpdateNotificationSettings": "Bildirim ayarları güncellenemedi",
   "@failedToUpdateNotificationSettings": {
@@ -1037,7 +1037,7 @@
   "@information": {
     "description": "Bilgi başlığı - FAB ayarlar sayfasında kullanılır"
   },
-  "instance": "{count, plural, zero {Örnek} one {Örnek} other {Örnekler} } ",
+  "instance": "{count, plural, zero {Instance} one {Instance} other {Instances} } ",
   "@instance": {
     "description": "Bir örneğe doğru ilerliyoruz"
   },
@@ -1669,7 +1669,7 @@
   },
   "removeInstance": "Örneği kaldır",
   "@removeInstance": {},
-  "removeKeyword": "\"{anahtar kelime}\" kaldırılsın mı?",
+  "removeKeyword": "\"{keyword}\" kaldırılsın mı?",
   "@removeKeyword": {
     "description": "Bir anahtar kelime filtresinin kaldırılması açıklaması"
   },
@@ -1807,7 +1807,7 @@
   "@searchCommentsFederatedWith": {},
   "searchCommunitiesFederatedWith": "{Instance} ile federasyon kurmuş toplulukları ara",
   "@searchCommunitiesFederatedWith": {},
-  "searchInstance": "{Örnek} ara",
+  "searchInstance": "{Instance} ara",
   "@searchInstance": {},
   "searchInstancesFederatedWith": "{Instance} ile federasyon kurulan örnekleri arayın.",
   "@searchInstancesFederatedWith": {
@@ -2233,7 +2233,7 @@
   "@thisAccount": {
     "description": "Hesap ayarlarında şu anda aktif olan hesaba atıfta bulunma"
   },
-  "thunderHasBeenUpdated": "Gök gürültüsü {sürüm} sürümüne güncellendi!",
+  "thunderHasBeenUpdated": "Gök gürültüsü {version} sürümüne güncellendi!",
   "@thunderHasBeenUpdated": {
     "description": "Thunder güncellendiğinde değişiklik günlüğü için başlık"
   },
@@ -2333,7 +2333,7 @@
   "@unableToLoadImageFrom": {
     "description": "URL'den bir resim yükleyemediğimizde kullanılacak yer tutucu"
   },
-  "unableToLoadInstance": "{Örnek} yüklenemiyor",
+  "unableToLoadInstance": "{Instance} yüklenemiyor",
   "@unableToLoadInstance": {},
   "unableToLoadPostsFrominstance": "{Instance} 'dan gönderiler yüklenemiyor",
   "@unableToLoadPostsFrominstance": {},
@@ -2427,7 +2427,7 @@
   "@unsubscribePending": {},
   "unsubscribed": "Abonelikten çıktı",
   "@unsubscribed": {},
-  "updateReleased": "Güncelleme yayınlandı: {sürüm}",
+  "updateReleased": "Güncelleme yayınlandı: {version}",
   "@updateReleased": {},
   "uploadImage": "Görsel yükle",
   "@uploadImage": {},
@@ -2489,7 +2489,7 @@
   "@useProfilePictureForDrawerSubtitle": {
     "description": "Profil resmi için çekmece kullanma alt başlığını ayarlama"
   },
-  "useSuggestedTitle": "Önerilen başlığı kullanın: {başlık}",
+  "useSuggestedTitle": "Önerilen başlığı kullanın: {title}",
   "@useSuggestedTitle": {},
   "useUnifiedPushNotifications": "UnifiedPush Bildirimlerini Kullanın",
   "@useUnifiedPushNotifications": {
@@ -2549,7 +2549,7 @@
   },
   "users": "Kullanıcılar",
   "@users": {},
-  "versionNumber": "Sürüm {sürüm}",
+  "versionNumber": "Sürüm {version}",
   "@versionNumber": {
     "description": "Mevcut sürümü tanımlayan dize"
   },
@@ -2607,7 +2607,7 @@
   "@viewingAll": {
     "description": "Tüm olası arama sonuçlarını görüntülemek için çip"
   },
-  "visibility": "Görünürlük: {görünürlük}",
+  "visibility": "Görünürlük: {visibility}",
   "@visibility": {
     "description": "Topluluk için görünürlük başlığı"
   },
