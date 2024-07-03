@@ -44,7 +44,25 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     int limit = 20;
 
     Account? account = await fetchActiveProfileAccount();
-    if (account?.jwt == null) return emit(state.copyWith(status: InboxStatus.empty));
+    if (account?.jwt == null) {
+      return emit(state.copyWith(
+        status: InboxStatus.empty,
+        privateMessages: [],
+        mentions: [],
+        replies: [],
+        showUnreadOnly: !event.showAll,
+        inboxMentionPage: 1,
+        inboxReplyPage: 1,
+        inboxPrivateMessagePage: 1,
+        totalUnreadCount: 0,
+        repliesUnreadCount: 0,
+        mentionsUnreadCount: 0,
+        messagesUnreadCount: 0,
+        hasReachedInboxReplyEnd: true,
+        hasReachedInboxMentionEnd: true,
+        hasReachedInboxPrivateMessageEnd: true,
+      ));
+    }
 
     try {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;

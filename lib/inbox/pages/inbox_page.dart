@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
@@ -29,6 +30,9 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
   /// Whether to show all inbox mentions, replies, and private messages or not
   bool showAll = false;
 
+  /// The current account id. If this changes, and the current view is active, reload the view
+  int? accountId;
+
   InboxType get inboxType => tabController.index == 0
       ? InboxType.replies
       : tabController.index == 1
@@ -39,6 +43,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
     tabController = TabController(vsync: this, length: 3);
+    accountId = context.read<AuthBloc>().state.account?.userId;
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => nestedScrollViewKey.currentState!.innerController.addListener(() {
@@ -68,6 +73,11 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
         listener: (context, state) {
           if (state.status == InboxStatus.initial || state.status == InboxStatus.loading) {
             nestedScrollViewKey.currentState?.innerController.jumpTo(0);
+
+            if (context.read<AuthBloc>().state.account?.userId != accountId) {
+              accountId = context.read<AuthBloc>().state.account?.userId;
+              context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll));
+            }
           }
 
           if (state.errorMessage?.isNotEmpty == true) {
