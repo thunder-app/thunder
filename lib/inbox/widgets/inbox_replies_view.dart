@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/comment/enums/comment_action.dart';
-import 'package:thunder/comment/utils/navigate_comment.dart';
 
 // Project imports
+import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/divider.dart';
@@ -102,20 +103,12 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                       visualDensity: VisualDensity.compact,
                     ),
                   ),
-                  const ThunderDivider(sliver: false, padding: false),
+                  if (index != widget.replies.length - 1) const ThunderDivider(sliver: false, padding: false),
                 ],
               );
             },
           ),
-          if (state.hasReachedInboxReplyEnd && widget.replies.isNotEmpty)
-            SliverToBoxAdapter(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 40.0),
-                  child: Text(l10n.reachedTheBottom),
-                ),
-              ),
-            ),
+          if (state.hasReachedInboxReplyEnd && widget.replies.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
         ],
       );
     });

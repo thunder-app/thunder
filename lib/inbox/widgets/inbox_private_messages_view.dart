@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/utils/date_time.dart';
@@ -79,15 +80,7 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
               );
             },
           ),
-          if (state.hasReachedInboxMentionEnd && widget.privateMessages.isNotEmpty)
-            SliverToBoxAdapter(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 40.0),
-                  child: Text(l10n.reachedTheBottom),
-                ),
-              ),
-            ),
+          if (state.hasReachedInboxMentionEnd && widget.privateMessages.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
         ],
       );
     });
