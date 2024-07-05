@@ -1369,6 +1369,14 @@
   "@noMatrixUserSet": {
     "description": "Message for no matrix user set"
   },
+  "noMentions": "No mentions",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
+  },
+  "noMessages": "No messages",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
   "noPostsFound": "No posts found.",
   "@noPostsFound": {},
   "noProfileBioSet": "No profile bio set",
