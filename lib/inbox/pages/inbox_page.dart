@@ -71,11 +71,13 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
     return Scaffold(
       body: BlocConsumer<InboxBloc, InboxState>(
         listener: (context, state) {
-          if (state.status == InboxStatus.initial || state.status == InboxStatus.loading) {
+          if (state.status == InboxStatus.initial || state.status == InboxStatus.loading || state.status == InboxStatus.empty) {
             nestedScrollViewKey.currentState?.innerController.jumpTo(0);
 
-            if (context.read<AuthBloc>().state.account?.userId != accountId) {
-              accountId = context.read<AuthBloc>().state.account?.userId;
+            int? newAccountId = context.read<AuthBloc>().state.account?.userId;
+
+            if (newAccountId != accountId) {
+              accountId = newAccountId;
               context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll));
             }
           }
