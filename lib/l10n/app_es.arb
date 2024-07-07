@@ -2626,5 +2626,13 @@
   "showCommunityDisplayNames": "Mostrar nombres para mostrar de la comunidad",
   "@showCommunityDisplayNames": {
     "description": "Setting for showing community display names"
+  },
+  "noMessages": "Sin mensajes",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
+  "noMentions": "Sin menciones",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
   }
 }
