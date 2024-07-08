@@ -166,6 +166,7 @@ class _ThunderState extends State<Thunder> {
     showSnackbar(
       AppLocalizations.of(context)!.tapToExit,
       duration: const Duration(milliseconds: 3500),
+      closable: false,
     );
   }
 
