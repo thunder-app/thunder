@@ -2634,5 +2634,9 @@
   "noMentions": "Sin menciones",
   "@noMentions": {
     "description": "Label for when there are no person mentions in the list"
+  },
+  "showUnreadOnly": "Mostrar solo los no leídos",
+  "@showUnreadOnly": {
+    "description": "Show unread replies/mentions/messages only"
   }
 }
