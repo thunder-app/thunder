@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
 import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
+import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
 
 /// A widget that displays the user's inbox replies, mentions, and private messages.
 class InboxPage extends StatefulWidget {
@@ -29,6 +34,9 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
 
   /// Whether to show all inbox mentions, replies, and private messages or not
   bool showAll = false;
+
+  /// The current inbox sort type. This only applies to replies and mentions, since messages does not have a sort type
+  CommentSortType commentSortType = CommentSortType.new_;
 
   /// The current account id. If this changes, and the current view is active, reload the view
   int? accountId;
@@ -62,6 +70,25 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
   void dispose() {
     tabController.dispose();
     super.dispose();
+  }
+
+  /// Displays the sort options bottom sheet for comments, since replies and mentions are technically comments
+  void showSortBottomSheet() {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    showModalBottomSheet<void>(
+      showDragHandle: true,
+      context: context,
+      builder: (builderContext) => CommentSortPicker(
+        title: l10n.sortOptions,
+        onSelect: (selected) async {
+          setState(() => commentSortType = selected.payload);
+          context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll, commentSortType: selected.payload));
+        },
+        previouslySelected: commentSortType,
+        minimumVersion: LemmyClient.instance.version,
+      ),
+    );
   }
 
   @override
@@ -105,37 +132,43 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                     title: Text(l10n.inbox),
                     actions: [
                       IconButton(
-                        icon: Icon(Icons.checklist, semanticLabel: l10n.readAll),
-                        onPressed: () async {
-                          await showThunderDialog<bool>(
-                            context: context,
-                            title: l10n.confirmMarkAllAsReadTitle,
-                            contentText: l10n.confirmMarkAllAsReadBody,
-                            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                            secondaryButtonText: l10n.cancel,
-                            onPrimaryButtonPressed: (dialogContext, _) {
-                              Navigator.of(dialogContext).pop();
-                              context.read<InboxBloc>().add(MarkAllAsReadEvent());
-                            },
-                            primaryButtonText: l10n.markAllAsRead,
-                          );
-                        },
-                      ),
-                      IconButton(
                         icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
                         onPressed: () => context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll)),
                       ),
-                      FilterChip(
-                        shape: const StadiumBorder(),
-                        visualDensity: VisualDensity.compact,
-                        label: Text(l10n.showAll),
-                        selected: showAll,
-                        onSelected: (bool selected) {
-                          setState(() => showAll = !showAll);
-                          context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: selected));
-                        },
+                      IconButton(onPressed: () => showSortBottomSheet(), icon: Icon(Icons.sort, semanticLabel: l10n.sortBy)),
+                      PopupMenuButton(
+                        onOpened: () => HapticFeedback.mediumImpact(),
+                        itemBuilder: (context) => [
+                          ThunderPopupMenuItem(
+                            onTap: () async {
+                              HapticFeedback.mediumImpact();
+                              await showThunderDialog<bool>(
+                                context: context,
+                                title: l10n.confirmMarkAllAsReadTitle,
+                                contentText: l10n.confirmMarkAllAsReadBody,
+                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                secondaryButtonText: l10n.cancel,
+                                onPrimaryButtonPressed: (dialogContext, _) {
+                                  Navigator.of(dialogContext).pop();
+                                  context.read<InboxBloc>().add(MarkAllAsReadEvent());
+                                },
+                                primaryButtonText: l10n.markAllAsRead,
+                              );
+                            },
+                            icon: Icons.checklist,
+                            title: l10n.markAllAsRead,
+                          ),
+                          ThunderPopupMenuItem(
+                            onTap: () async {
+                              HapticFeedback.mediumImpact();
+                              context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: !showAll));
+                              setState(() => showAll = !showAll);
+                            },
+                            icon: showAll ? Icons.mark_as_unread : Icons.all_inbox_rounded,
+                            title: showAll ? l10n.showUnreadOnly : l10n.showAll,
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 16.0),
                     ],
                     bottom: TabBar(
                       controller: tabController,

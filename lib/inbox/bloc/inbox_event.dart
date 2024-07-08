@@ -17,7 +17,10 @@ class GetInboxEvent extends InboxEvent {
   /// If true, it will reset the inbox and re-fetch everything depending on [inboxType]
   final bool reset;
 
-  const GetInboxEvent({this.inboxType, this.showAll = false, this.reset = false});
+  /// The comment sort type to use for replies/mentions
+  final CommentSortType commentSortType;
+
+  const GetInboxEvent({this.inboxType, this.showAll = false, this.reset = false, this.commentSortType = CommentSortType.new_});
 }
 
 class InboxItemActionEvent extends InboxEvent {

@@ -429,7 +429,7 @@
   "@confirmMarkAllAsReadBody": {
     "description": "The body of the confirm mark all as read dialog"
   },
-  "confirmMarkAllAsReadTitle": "Mark All As Read?",
+  "confirmMarkAllAsReadTitle": "Mark all as read?",
   "@confirmMarkAllAsReadTitle": {
     "description": "The title of the confirm mark all as read dialog"
   },
@@ -1177,7 +1177,7 @@
   },
   "manageAccounts": "Manage Accounts",
   "@manageAccounts": {},
-  "markAllAsRead": "Mark All As Read",
+  "markAllAsRead": "Mark all as read",
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
@@ -1983,7 +1983,7 @@
   "@shareUserLinkLocal": {
     "description": "Menu item for sharing a local user link"
   },
-  "showAll": "Show All",
+  "showAll": "Show all",
   "@showAll": {},
   "showBotAccounts": "Show Bot Accounts",
   "@showBotAccounts": {
@@ -2086,6 +2086,10 @@
   "showThumbnailPreviewOnRight": "Show Thumbnails on the Right",
   "@showThumbnailPreviewOnRight": {
     "description": "Toggle to show thumbnails on the right side."
+  },
+  "showUnreadOnly": "Show unread only",
+  "@showUnreadOnly": {
+    "description": "Show unread replies/mentions/messages only"
   },
   "showUpdateChangelogs": "Show Update Changelogs",
   "@showUpdateChangelogs": {

@@ -81,7 +81,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 auth: account!.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
-                sort: CommentSortType.new_,
+                sort: event.commentSortType,
                 page: 1,
               ),
             );
@@ -91,7 +91,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               GetPersonMentions(
                 auth: account!.jwt!,
                 unreadOnly: !event.showAll,
-                sort: CommentSortType.new_,
+                sort: event.commentSortType,
                 limit: limit,
                 page: 1,
               ),
@@ -113,7 +113,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 auth: account!.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
-                sort: CommentSortType.new_,
+                sort: event.commentSortType,
                 page: 1,
               ),
             );
@@ -121,7 +121,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               GetPersonMentions(
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
-                sort: CommentSortType.new_,
+                sort: event.commentSortType,
                 limit: limit,
                 page: 1,
               ),
@@ -176,7 +176,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               auth: account!.jwt!,
               unreadOnly: state.showUnreadOnly,
               limit: limit,
-              sort: CommentSortType.new_,
+              sort: event.commentSortType,
               page: state.inboxReplyPage,
             ),
           );
@@ -188,7 +188,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             GetPersonMentions(
               auth: account!.jwt!,
               unreadOnly: state.showUnreadOnly,
-              sort: CommentSortType.new_,
+              sort: event.commentSortType,
               limit: limit,
               page: state.inboxMentionPage,
             ),
@@ -443,6 +443,23 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       if (account?.jwt == null) return emit(state.copyWith(status: InboxStatus.success));
       await lemmy.run(MarkAllAsRead(auth: account!.jwt!));
+
+      // Update all the replies, mentions, and messages to be read locally
+      List<CommentReplyView> updatedReplies = state.replies.map((commentReplyView) => commentReplyView.copyWith(commentReply: commentReplyView.commentReply.copyWith(read: true))).toList();
+      List<PersonMentionView> updatedMentions = state.mentions.map((personMentionView) => personMentionView.copyWith(personMention: personMentionView.personMention.copyWith(read: true))).toList();
+      List<PrivateMessageView> updatedPrivateMessages =
+          state.privateMessages.map((privateMessageView) => privateMessageView.copyWith(privateMessage: privateMessageView.privateMessage.copyWith(read: true))).toList();
+
+      return emit(state.copyWith(
+        status: InboxStatus.success,
+        replies: updatedReplies,
+        mentions: updatedMentions,
+        privateMessages: updatedPrivateMessages,
+        totalUnreadCount: 0,
+        repliesUnreadCount: 0,
+        mentionsUnreadCount: 0,
+        messagesUnreadCount: 0,
+      ));
     } catch (e) {
       emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
