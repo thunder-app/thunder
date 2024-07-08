@@ -11,7 +11,7 @@
   "@account": {
     "description": "Kullanıcı hesabını tanımlar"
   },
-  "accountBirthday": "Hesap Doğum Günü {ekBilgi}",
+  "accountBirthday": "Hesap Doğum Günü {additionalInfo}",
   "@accountBirthday": {
     "description": "Bugünün tarihinde oluşturulan hesaplar için kullanıcı tanımlayıcısı"
   },
@@ -83,7 +83,7 @@
   "@advanced": {
     "description": "Gelişmiş ayarlar bölümüne doğru"
   },
-  "ago": "{zaman} önce",
+  "ago": "{time} önce",
   "@ago": {
     "description": "Geçmişte bir süreyi temsil eder"
   },
@@ -523,7 +523,7 @@
   "@createNewCrossPost": {},
   "createPost": "Gönderi Oluştur",
   "@createPost": {},
-  "created": "Oluşturulma tarihi {tarih}",
+  "created": "Oluşturulma tarihi {date}",
   "@created": {
     "description": "Bir şeyin oluşturulduğu tarih"
   },
@@ -543,7 +543,7 @@
   "@crossPostedTo": {},
   "currentLongPress": "Uzun basma olarak ayarlandı",
   "@currentLongPress": {},
-  "currentNotificationsMode": "Mevcut bildirim modu: {mod}",
+  "currentNotificationsMode": "Mevcut bildirim modu: {mode}",
   "@currentNotificationsMode": {
     "description": "Mevcut bildirim modu için durum göstergesi"
   },
@@ -647,7 +647,7 @@
   },
   "deselectUndeterminedWarning": "Belirsiz'i seçimi kaldırırsanız, çoğu içeriği göremezsiniz.",
   "@deselectUndeterminedWarning": {},
-  "detailedReason": "Sebep: {sebep}",
+  "detailedReason": "Sebep: {reason}",
   "@detailedReason": {
     "description": "Moderasyon eyleminin sebebi"
   },
@@ -1581,7 +1581,7 @@
   "@posts": {},
   "preview": "Önizleme",
   "@preview": {},
-  "profileAppliedSuccessfully": "{profil} başarıyla uygulandı!",
+  "profileAppliedSuccessfully": "{profile} başarıyla uygulandı!",
   "@profileAppliedSuccessfully": {},
   "profileBio": "Profil Biyografisi",
   "@profileBio": {
@@ -1803,23 +1803,23 @@
   "@searchByUrl": {},
   "searchComments": "Yorumları Ara",
   "@searchComments": {},
-  "searchCommentsFederatedWith": "{Instance} ile federasyon yapılan yorumları ara",
+  "searchCommentsFederatedWith": "{instance} ile federasyon yapılan yorumları ara",
   "@searchCommentsFederatedWith": {},
-  "searchCommunitiesFederatedWith": "{Instance} ile federasyon kurmuş toplulukları ara",
+  "searchCommunitiesFederatedWith": "{instance} ile federasyon kurmuş toplulukları ara",
   "@searchCommunitiesFederatedWith": {},
-  "searchInstance": "{Instance} ara",
+  "searchInstance": "{instance} ara",
   "@searchInstance": {},
-  "searchInstancesFederatedWith": "{Instance} ile federasyon kurulan örnekleri arayın.",
+  "searchInstancesFederatedWith": "{instance} ile federasyon kurulan örnekleri arayın.",
   "@searchInstancesFederatedWith": {
     "description": "Örnekler aramak için yer tutucu metin"
   },
   "searchPostSearchType": "Gönderi Arama Türünü Seçin",
   "@searchPostSearchType": {},
-  "searchPostsFederatedWith": "{Instance} ile federasyon kurulan gönderileri ara",
+  "searchPostsFederatedWith": "{instance} ile federasyon kurulan gönderileri ara",
   "@searchPostsFederatedWith": {},
   "searchTerm": "Arama terimi",
   "@searchTerm": {},
-  "searchUsersFederatedWith": "{Instance} ile federasyon kurmuş kullanıcıları ara",
+  "searchUsersFederatedWith": "{instance} ile federasyon kurmuş kullanıcıları ara",
   "@searchUsersFederatedWith": {},
   "selectAccountToCommentAs": "Yorum yapmak için hesap seçin",
   "@selectAccountToCommentAs": {
@@ -1869,7 +1869,7 @@
   },
   "sentRequestForTestNotification": "Test bildirimi için istek gönderildi.",
   "@sentRequestForTestNotification": {},
-  "serverErrorComments": "Daha fazla yorum getirilirken bir sunucu hatasıyla karşılaşıldı: {mesaj}",
+  "serverErrorComments": "Daha fazla yorum getirilirken bir sunucu hatasıyla karşılaşıldı: {message}",
   "@serverErrorComments": {},
   "setAction": "Eylemi Ayarla",
   "@setAction": {
@@ -2237,7 +2237,7 @@
   "@thunderHasBeenUpdated": {
     "description": "Thunder güncellendiğinde değişiklik günlüğü için başlık"
   },
-  "thunderNotificationServer": "Gök Gürültüsü Bildirim Sunucusu: {sunucu}",
+  "thunderNotificationServer": "Gök Gürültüsü Bildirim Sunucusu: {server}",
   "@thunderNotificationServer": {
     "description": "Kullanıcının şu anda seçili olan bildirim sunucusunun ne olduğunu bilmesi için metin"
   },
@@ -2333,7 +2333,7 @@
   "@unableToLoadImageFrom": {
     "description": "URL'den bir resim yükleyemediğimizde kullanılacak yer tutucu"
   },
-  "unableToLoadInstance": "{Instance} yüklenemiyor",
+  "unableToLoadInstance": "{instance} yüklenemiyor",
   "@unableToLoadInstance": {},
   "unableToLoadPostsFrominstance": "{Instance} 'dan gönderiler yüklenemiyor",
   "@unableToLoadPostsFrominstance": {},
@@ -2389,7 +2389,7 @@
   "@unifiedPushNotifications": {
     "description": "BirleşikPush Bildirimleri için bildirim türünü tanımlar"
   },
-  "unifiedPushServer": "BirleşikPush Sunucusu: {sunucu}",
+  "unifiedPushServer": "BirleşikPush Sunucusu: {server}",
   "@unifiedPushServer": {
     "description": "Kullanıcının hangi UnifiedPush sunucusunun kullanıldığını belirten hata ayıklama metni"
   },
