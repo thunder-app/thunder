@@ -1,1 +1,1 @@
-enum InboxType { replies, mentions, messages }
+enum InboxType { replies, mentions, messages, all }

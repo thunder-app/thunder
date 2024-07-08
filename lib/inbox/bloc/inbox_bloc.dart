@@ -107,6 +107,34 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               ),
             );
             break;
+          case InboxType.all:
+            getRepliesResponse = await lemmy.run(
+              GetReplies(
+                auth: account!.jwt!,
+                unreadOnly: !event.showAll,
+                limit: limit,
+                sort: CommentSortType.new_,
+                page: 1,
+              ),
+            );
+            getPersonMentionsResponse = await lemmy.run(
+              GetPersonMentions(
+                auth: account.jwt!,
+                unreadOnly: !event.showAll,
+                sort: CommentSortType.new_,
+                limit: limit,
+                page: 1,
+              ),
+            );
+            privateMessagesResponse = await lemmy.run(
+              GetPrivateMessages(
+                auth: account.jwt!,
+                unreadOnly: !event.showAll,
+                limit: limit,
+                page: 1,
+              ),
+            );
+            break;
           default:
             break;
         }
