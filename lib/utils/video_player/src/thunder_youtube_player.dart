@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -62,7 +63,6 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
         ..loadVideoById(videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
         ..setPlaybackRate(state.videoDefaultPlaybackSpeed.value);
     }
-
     setState(() => muted = state.videoAutoMute);
   }
 
@@ -70,6 +70,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
   void dispose() {
     if (Platform.isAndroid || Platform.isIOS) {
       _ypfController.dispose();
+      WakelockPlus.disable();
     } else {
       _controller.close();
     }
@@ -87,6 +88,19 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
     }
 
     return false;
+  }
+
+  void listener() {
+    if (mounted) {
+      switch (_ypfController.value.playerState) {
+        case ypf.PlayerState.playing:
+          WakelockPlus.enable();
+
+        case ypf.PlayerState.paused:
+          WakelockPlus.disable();
+        default:
+      }
+    }
   }
 
   @override
@@ -132,7 +146,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                 child: ypf.YoutubePlayerBuilder(
                   player: ypf.YoutubePlayer(
                     aspectRatio: 16 / 10,
-                    controller: _ypfController,
+                    controller: _ypfController..addListener(listener),
                     actionsPadding: const EdgeInsets.only(bottom: 8),
                     topActions: [
                       IconButton(
