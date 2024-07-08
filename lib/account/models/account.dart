@@ -8,6 +8,7 @@ import 'package:thunder/main.dart';
 class Account {
   final String id;
   final String? username;
+  final String? displayName;
   final String? jwt;
   final String? instance;
   final int? userId;
@@ -15,6 +16,7 @@ class Account {
   const Account({
     required this.id,
     this.username,
+    this.displayName,
     this.jwt,
     this.instance,
     this.userId,
@@ -27,6 +29,8 @@ class Account {
         instance: instance,
         userId: userId,
       );
+
+  String get actorId => 'https://$instance/u/$username';
 
   static Future<Account?> insertAccount(Account account) async {
     // If we are given a brand new account to insert with an existing id, something is wrong.

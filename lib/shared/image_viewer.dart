@@ -171,219 +171,216 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
             children: [
               Expanded(
                 child: GestureDetector(
-                    onLongPress: () {
-                      HapticFeedback.lightImpact();
+                  onLongPress: () {
+                    HapticFeedback.lightImpact();
+                    setState(() {
+                      fullscreen = !fullscreen;
+                    });
+                  },
+                  onTap: () {
+                    if (!fullscreen) {
+                      slidePagekey.currentState!.popPage();
+                      Navigator.pop(context);
+                    } else {
                       setState(() {
-                        fullscreen = !fullscreen;
+                        fullscreen = false;
                       });
+                    }
+                  },
+                  // Start doubletap zoom if conditions are met
+                  onVerticalDragStart: maybeSlideZooming
+                      ? (details) {
+                          setState(() {
+                            slideZooming = true;
+                          });
+                        }
+                      : null,
+                  // Zoom image in an out based on movement in vertical axis if conditions are met
+                  onVerticalDragUpdate: maybeSlideZooming || slideZooming
+                      ? (details) {
+                          // Need to catch the drag during "maybe" phase or it wont activate fast enough
+                          if (slideZooming) {
+                            double newScale = max(gestureKey.currentState!.gestureDetails!.totalScale! * (1 + (details.delta.dy / 150)), 1);
+                            gestureKey.currentState?.handleDoubleTap(scale: newScale, doubleTapPosition: gestureKey.currentState!.pointerDownPosition);
+                          }
+                        }
+                      : null,
+                  // End doubltap zoom
+                  onVerticalDragEnd: slideZooming
+                      ? (details) {
+                          setState(() {
+                            slideZooming = false;
+                          });
+                        }
+                      : null,
+                  child: Listener(
+                    // Start watching for double tap zoom
+                    onPointerDown: (details) {
+                      downCoord = details.position;
                     },
-                    onTap: () {
-                      if (!fullscreen) {
-                        slidePagekey.currentState!.popPage();
-                        Navigator.pop(context);
-                      } else {
-                        setState(() {
-                          fullscreen = false;
-                        });
+                    onPointerUp: (details) {
+                      delta = (downCoord - details.position).distance;
+                      if (!slideZooming && delta < 0.5) {
+                        _maybeSlide(context);
                       }
                     },
-                    // Start doubletap zoom if conditions are met
-                    onVerticalDragStart: maybeSlideZooming
-                        ? (details) {
-                            setState(() {
-                              slideZooming = true;
-                            });
-                          }
-                        : null,
-                    // Zoom image in an out based on movement in vertical axis if conditions are met
-                    onVerticalDragUpdate: maybeSlideZooming || slideZooming
-                        ? (details) {
-                            // Need to catch the drag during "maybe" phase or it wont activate fast enough
-                            if (slideZooming) {
-                              double newScale = max(gestureKey.currentState!.gestureDetails!.totalScale! * (1 + (details.delta.dy / 150)), 1);
-                              gestureKey.currentState?.handleDoubleTap(scale: newScale, doubleTapPosition: gestureKey.currentState!.pointerDownPosition);
-                            }
-                          }
-                        : null,
-                    // End doubltap zoom
-                    onVerticalDragEnd: slideZooming
-                        ? (details) {
-                            setState(() {
-                              slideZooming = false;
-                            });
-                          }
-                        : null,
-                    child: areImageDimensionsLoaded // Only display the image if dimensions are loaded
-                        ? Listener(
-                            // Start watching for double tap zoom
-                            onPointerDown: (details) {
-                              downCoord = details.position;
-                            },
-                            onPointerUp: (details) {
-                              delta = (downCoord - details.position).distance;
-                              if (!slideZooming && delta < 0.5) {
-                                _maybeSlide(context);
-                              }
-                            },
-                            child: ExtendedImageSlidePage(
-                              key: slidePagekey,
-                              slideAxis: SlideAxis.both,
-                              slideType: SlideType.onlyImage,
-                              slidePageBackgroundHandler: (offset, pageSize) {
-                                return Colors.transparent;
+                    child: ExtendedImageSlidePage(
+                      key: slidePagekey,
+                      slideAxis: SlideAxis.both,
+                      slideType: SlideType.onlyImage,
+                      slidePageBackgroundHandler: (offset, pageSize) {
+                        return Colors.transparent;
+                      },
+                      onSlidingPage: (state) {
+                        // Fade out image and background when sliding to dismiss
+                        var offset = state.offset;
+                        var pageSize = state.pageSize;
+
+                        var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
+
+                        if (state.isSliding) {
+                          setState(() {
+                            slideTransparency = 0.9 - min(0.9, scale * 0.5);
+                            imageTransparency = 1.0 - min(1.0, scale * 10);
+                          });
+                        }
+                      },
+                      slideEndHandler: (
+                        // Decrease slide to dismiss threshold so it can be done easier
+                        Offset offset, {
+                        ExtendedImageSlidePageState? state,
+                        ScaleEndDetails? details,
+                      }) {
+                        if (state != null) {
+                          var offset = state.offset;
+                          var pageSize = state.pageSize;
+                          return offset.distance.greaterThan(Offset(pageSize.width, pageSize.height).distance / 10);
+                        }
+                        return true;
+                      },
+                      child: widget.url != null
+                          ? ExtendedImage.network(
+                              widget.url!,
+                              color: Colors.white.withOpacity(imageTransparency),
+                              colorBlendMode: BlendMode.dstIn,
+                              enableSlideOutPage: true,
+                              mode: ExtendedImageMode.gesture,
+                              extendedImageGestureKey: gestureKey,
+                              cache: true,
+                              clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
+                              initGestureConfigHandler: (ExtendedImageState state) {
+                                return GestureConfig(
+                                  minScale: 0.8,
+                                  animationMinScale: 0.8,
+                                  maxScale: maxZoomLevel.toDouble(),
+                                  animationMaxScale: maxZoomLevel.toDouble(),
+                                  speed: 1.0,
+                                  inertialSpeed: 250.0,
+                                  initialScale: 1.0,
+                                  inPageView: false,
+                                  initialAlignment: InitialAlignment.center,
+                                  reverseMousePointerScrollDirection: true,
+                                  gestureDetailsIsChanged: (GestureDetails? details) {},
+                                );
                               },
-                              onSlidingPage: (state) {
-                                // Fade out image and background when sliding to dismiss
-                                var offset = state.offset;
-                                var pageSize = state.pageSize;
+                              onDoubleTap: (ExtendedImageGestureState state) {
+                                var pointerDownPosition = state.pointerDownPosition;
+                                double begin = state.gestureDetails!.totalScale!;
+                                double end;
 
-                                var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
+                                animation?.removeListener(animationListener);
+                                animationController.stop();
+                                animationController.reset();
 
-                                if (state.isSliding) {
-                                  setState(() {
-                                    slideTransparency = 0.9 - min(0.9, scale * 0.5);
-                                    imageTransparency = 1.0 - min(1.0, scale * 10);
-                                  });
+                                if (begin == 1) {
+                                  end = 2;
+                                } else if (begin > 1.99 && begin < 2.01) {
+                                  end = 4;
+                                } else {
+                                  end = 1;
                                 }
+                                animationListener = () {
+                                  state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                                };
+                                animation = animationController.drive(Tween<double>(begin: begin, end: end));
+
+                                animation!.addListener(animationListener);
+
+                                animationController.forward();
                               },
-                              slideEndHandler: (
-                                // Decrease slide to dismiss threshold so it can be done easier
-                                Offset offset, {
-                                ExtendedImageSlidePageState? state,
-                                ScaleEndDetails? details,
-                              }) {
-                                if (state != null) {
-                                  var offset = state.offset;
-                                  var pageSize = state.pageSize;
-                                  return offset.distance.greaterThan(Offset(pageSize.width, pageSize.height).distance / 10);
-                                }
-                                return true;
-                              },
-                              child: widget.url != null
-                                  ? ExtendedImage.network(
-                                      widget.url!,
-                                      color: Colors.white.withOpacity(imageTransparency),
-                                      colorBlendMode: BlendMode.dstIn,
-                                      enableSlideOutPage: true,
-                                      mode: ExtendedImageMode.gesture,
-                                      extendedImageGestureKey: gestureKey,
-                                      cache: true,
-                                      clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
-                                      initGestureConfigHandler: (ExtendedImageState state) {
-                                        return GestureConfig(
-                                          minScale: 0.8,
-                                          animationMinScale: 0.8,
-                                          maxScale: maxZoomLevel.toDouble(),
-                                          animationMaxScale: maxZoomLevel.toDouble(),
-                                          speed: 1.0,
-                                          inertialSpeed: 250.0,
-                                          initialScale: 1.0,
-                                          inPageView: false,
-                                          initialAlignment: InitialAlignment.center,
-                                          reverseMousePointerScrollDirection: true,
-                                          gestureDetailsIsChanged: (GestureDetails? details) {},
-                                        );
-                                      },
-                                      onDoubleTap: (ExtendedImageGestureState state) {
-                                        var pointerDownPosition = state.pointerDownPosition;
-                                        double begin = state.gestureDetails!.totalScale!;
-                                        double end;
-
-                                        animation?.removeListener(animationListener);
-                                        animationController.stop();
-                                        animationController.reset();
-
-                                        if (begin == 1) {
-                                          end = 2;
-                                        } else if (begin > 1.99 && begin < 2.01) {
-                                          end = 4;
-                                        } else {
-                                          end = 1;
-                                        }
-                                        animationListener = () {
-                                          state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
-                                        };
-                                        animation = animationController.drive(Tween<double>(begin: begin, end: end));
-
-                                        animation!.addListener(animationListener);
-
-                                        animationController.forward();
-                                      },
-                                      loadStateChanged: (state) {
-                                        if (state.extendedImageLoadState == LoadState.loading) {
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white.withOpacity(0.90),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                    )
-                                  : ExtendedImage.memory(
-                                      widget.bytes!,
-                                      color: Colors.white.withOpacity(imageTransparency),
-                                      colorBlendMode: BlendMode.dstIn,
-                                      enableSlideOutPage: true,
-                                      mode: ExtendedImageMode.gesture,
-                                      extendedImageGestureKey: gestureKey,
-                                      clearMemoryCacheWhenDispose: true,
-                                      initGestureConfigHandler: (ExtendedImageState state) {
-                                        return GestureConfig(
-                                          minScale: 0.8,
-                                          animationMinScale: 0.8,
-                                          maxScale: 4.0,
-                                          animationMaxScale: 4.0,
-                                          speed: 1.0,
-                                          inertialSpeed: 250.0,
-                                          initialScale: 1.0,
-                                          inPageView: false,
-                                          initialAlignment: InitialAlignment.center,
-                                          reverseMousePointerScrollDirection: true,
-                                          gestureDetailsIsChanged: (GestureDetails? details) {},
-                                        );
-                                      },
-                                      onDoubleTap: (ExtendedImageGestureState state) {
-                                        var pointerDownPosition = state.pointerDownPosition;
-                                        double begin = state.gestureDetails!.totalScale!;
-                                        double end;
-
-                                        animation?.removeListener(animationListener);
-                                        animationController.stop();
-                                        animationController.reset();
-
-                                        if (begin == 1) {
-                                          end = 2;
-                                        } else if (begin > 1.99 && begin < 2.01) {
-                                          end = 4;
-                                        } else {
-                                          end = 1;
-                                        }
-                                        animationListener = () {
-                                          state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
-                                        };
-                                        animation = animationController.drive(Tween<double>(begin: begin, end: end));
-
-                                        animation!.addListener(animationListener);
-
-                                        animationController.forward();
-                                      },
-                                      loadStateChanged: (state) {
-                                        if (state.extendedImageLoadState == LoadState.loading) {
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white.withOpacity(0.90),
-                                            ),
-                                          );
-                                        }
-                                      },
+                              loadStateChanged: (state) {
+                                if (state.extendedImageLoadState == LoadState.loading) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white.withOpacity(0.90),
                                     ),
+                                  );
+                                }
+                                return null;
+                              },
+                            )
+                          : ExtendedImage.memory(
+                              widget.bytes!,
+                              color: Colors.white.withOpacity(imageTransparency),
+                              colorBlendMode: BlendMode.dstIn,
+                              enableSlideOutPage: true,
+                              mode: ExtendedImageMode.gesture,
+                              extendedImageGestureKey: gestureKey,
+                              clearMemoryCacheWhenDispose: true,
+                              initGestureConfigHandler: (ExtendedImageState state) {
+                                return GestureConfig(
+                                  minScale: 0.8,
+                                  animationMinScale: 0.8,
+                                  maxScale: 4.0,
+                                  animationMaxScale: 4.0,
+                                  speed: 1.0,
+                                  inertialSpeed: 250.0,
+                                  initialScale: 1.0,
+                                  inPageView: false,
+                                  initialAlignment: InitialAlignment.center,
+                                  reverseMousePointerScrollDirection: true,
+                                  gestureDetailsIsChanged: (GestureDetails? details) {},
+                                );
+                              },
+                              onDoubleTap: (ExtendedImageGestureState state) {
+                                var pointerDownPosition = state.pointerDownPosition;
+                                double begin = state.gestureDetails!.totalScale!;
+                                double end;
+
+                                animation?.removeListener(animationListener);
+                                animationController.stop();
+                                animationController.reset();
+
+                                if (begin == 1) {
+                                  end = 2;
+                                } else if (begin > 1.99 && begin < 2.01) {
+                                  end = 4;
+                                } else {
+                                  end = 1;
+                                }
+                                animationListener = () {
+                                  state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                                };
+                                animation = animationController.drive(Tween<double>(begin: begin, end: end));
+
+                                animation!.addListener(animationListener);
+
+                                animationController.forward();
+                              },
+                              loadStateChanged: (state) {
+                                if (state.extendedImageLoadState == LoadState.loading) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white.withOpacity(0.90),
+                                    ),
+                                  );
+                                }
+                                return null;
+                              },
                             ),
-                          )
-                        : Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white.withOpacity(0.90),
-                            ),
-                          )),
+                    ),
+                  ),
+                ),
               ),
               AnimatedOpacity(
                 opacity: fullscreen ? 0.0 : 1.0,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,45 +16,40 @@ class NotificationsReplyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: InboxBloc.withReplies(replies)),
         BlocProvider.value(value: PostBloc()),
       ],
-      child: Container(
-        color: theme.colorScheme.background,
-        child: SafeArea(
-          top: false,
-          child: CustomScrollView(
-            slivers: <Widget>[
-              SliverAppBar(
-                flexibleSpace: const FlexibleSpaceBar(titlePadding: EdgeInsets.zero),
-                toolbarHeight: 70.0,
-                pinned: true,
-                title: ListTile(
-                  title: Text(l10n.inbox, style: theme.textTheme.titleLarge),
-                  subtitle: Text(l10n.reply(replies.length)),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Material(
-                  child: BlocConsumer<InboxBloc, InboxState>(
-                    listener: (BuildContext context, InboxState state) {
-                      if (state.replies.isEmpty && (ModalRoute.of(context)?.isCurrent ?? false)) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    builder: (context, state) => InboxRepliesView(
-                      replies: state.replies,
-                      showAll: false,
+      child: BlocConsumer<InboxBloc, InboxState>(
+        listener: (BuildContext context, InboxState state) {
+          if (state.replies.isEmpty && (ModalRoute.of(context)?.isCurrent ?? false)) {
+            Navigator.of(context).pop();
+          }
+        },
+        builder: (context, state) => Material(
+          child: NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar(
+                    pinned: true,
+                    centerTitle: false,
+                    toolbarHeight: 70.0,
+                    forceElevated: innerBoxIsScrolled,
+                    title: ListTile(
+                      title: Text(l10n.inbox, style: theme.textTheme.titleLarge),
+                      subtitle: Text(l10n.reply(replies.length)),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ];
+            },
+            body: InboxRepliesView(replies: state.replies),
           ),
         ),
       ),

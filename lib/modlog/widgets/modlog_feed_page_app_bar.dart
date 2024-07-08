@@ -104,6 +104,7 @@ class ModlogFeedAppBarTitle extends StatelessWidget {
             ? CommunityFullNameWidget(
                 context,
                 feedState.fullCommunityView!.communityView.community.name,
+                feedState.fullCommunityView!.communityView.community.title,
                 fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId),
               )
             : Text(lemmyClient.lemmyApiV3.host),

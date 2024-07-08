@@ -1116,8 +1116,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "3196471d8e1b26873aecaf04254043cf9817bbe3"
-      resolved-ref: "3196471d8e1b26873aecaf04254043cf9817bbe3"
+      ref: "514e3718a42d4398619d66b6ac1ccd53bafd9b3f"
+      resolved-ref: "514e3718a42d4398619d66b6ac1ccd53bafd9b3f"
       url: "https://github.com/thunder-app/markdown-editor.git"
     source: git
     version: "0.1.0"
@@ -1444,45 +1444,24 @@ packages:
   push:
     dependency: "direct main"
     description:
-      path: push
-      ref: "722c5e8541e1e5c91c56743b94d07f51f26fd2c5"
-      resolved-ref: "722c5e8541e1e5c91c56743b94d07f51f26fd2c5"
-      url: "https://github.com/hjiangsu/push.git"
-    source: git
-    version: "2.1.0"
-  push_android:
-    dependency: "direct overridden"
-    description:
-      path: push_android
-      ref: "70269bd08a06c4f34f6f192a2d46127ae48479a5"
-      resolved-ref: "70269bd08a06c4f34f6f192a2d46127ae48479a5"
-      url: "https://github.com/hjiangsu/push.git"
-    source: git
-    version: "0.5.0"
+      path: "packages/push/push"
+      relative: true
+    source: path
+    version: "2.3.0"
   push_ios:
     dependency: transitive
     description:
-      name: push_ios
-      sha256: c6a284994ef8a2e09c4e92c89317b14912b56cb74b31fb2efba7b9d2b8f4ff60
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
-  push_macos:
-    dependency: transitive
-    description:
-      name: push_macos
-      sha256: "800997d1d6ca19aa957ab237a25074a732a7e36ef917ef4546fc75ec9aa1b9da"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1"
+      path: "packages/push/push_ios"
+      relative: true
+    source: path
+    version: "0.5.1"
   push_platform_interface:
     dependency: transitive
     description:
-      name: push_platform_interface
-      sha256: "709c98b6e33cb0d76aa1e9017d0b16c17c077d0d0035a7b63d41ba19822a805e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.0"
+      path: "packages/push/push_platform_interface"
+      relative: true
+    source: path
+    version: "0.6.0"
   recase:
     dependency: transitive
     description:

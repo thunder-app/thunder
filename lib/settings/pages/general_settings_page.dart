@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/database/database.dart' hide Account;
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
@@ -27,6 +28,7 @@ import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -139,6 +141,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// The UnifiedPush distributor app that we're connected to, and how many are available.
   String? unifiedPushConnectedDistributorApp;
   int? unifiedPushAvailableDistributorApps;
+
+  /// Enable experimental features in the app.
+  bool enableExperimentalFeatures = false;
 
   Future<void> setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -293,6 +298,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       controller.text = pushNotificationServer;
 
       accounts = accountList;
+
+      enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
     });
   }
 
@@ -344,56 +351,186 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             toolbarHeight: 70.0,
             pinned: true,
           ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.guestModeFeedSettings, style: theme.textTheme.titleMedium),
+                      Text(l10n.guestModeFeedSettingsLabel),
+                    ],
+                  ),
+                ),
+                ListOption(
+                  description: l10n.defaultFeedType,
+                  value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
+                  options: [
+                    ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
+                    ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
+                    ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
+                  ],
+                  icon: Icons.filter_alt_rounded,
+                  onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.defaultFeedListingType,
+                  highlightedSetting: settingToHighlight,
+                ),
+                ListOption(
+                  description: l10n.defaultFeedSortType,
+                  value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
+                  options: [
+                    ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                    ...topSortTypeItems
+                  ],
+                  icon: Icons.sort_rounded,
+                  onChanged: (_) async {},
+                  isBottomModalScrollControlled: true,
+                  customListPicker: SortPicker(
+                    minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
+                    title: l10n.defaultFeedSortType,
+                    onSelect: (value) async {
+                      setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
+                    },
+                    previouslySelected: defaultSortType,
+                  ),
+                  valueDisplay: Row(
+                    children: [
+                      Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).icon, size: 13),
+                      const SizedBox(width: 4),
+                      Text(
+                        allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).label,
+                        style: theme.textTheme.titleSmall,
+                      ),
+                    ],
+                  ),
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.defaultFeedSortType,
+                  highlightedSetting: settingToHighlight,
+                ),
+                ToggleOption(
+                  description: l10n.hideNsfwPostsFromFeed,
+                  value: hideNsfwPosts,
+                  iconEnabled: Icons.no_adult_content,
+                  iconDisabled: Icons.no_adult_content,
+                  onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.hideNsfwPosts,
+                  highlightedSetting: settingToHighlight,
+                ),
+                const ThunderDivider(sliver: false),
+              ],
+            ),
+          ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.feedTypeAndSorts, style: theme.textTheme.titleMedium),
+              child: Text(l10n.feedBehaviourSettings, style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
             child: ListOption(
-              description: l10n.defaultFeedType,
-              value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
-              options: [
-                ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
-                ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
-                ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
-              ],
-              icon: Icons.filter_alt_rounded,
-              onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),
-              highlightKey: settingToHighlight == LocalSettings.defaultFeedListingType ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.defaultFeedSortType,
-              value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
-              options: [
-                ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
-                ...topSortTypeItems
-              ],
-              icon: Icons.sort_rounded,
-              onChanged: (_) async {},
-              isBottomModalScrollControlled: true,
-              customListPicker: SortPicker(
-                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
-                title: l10n.defaultFeedSortType,
-                onSelect: (value) async {
-                  setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
-                },
-                previouslySelected: defaultSortType,
-              ),
+              description: l10n.appLanguage,
+              bottomSheetHeading: Align(alignment: Alignment.centerLeft, child: Text(l10n.translationsMayNotBeComplete)),
+              value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
+              options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode, e.toLanguageTag()), icon: Icons.language_rounded, payload: e)).toList(),
+              icon: Icons.language_rounded,
+              onChanged: (ListPickerItem<Locale> value) async {
+                setPreferences(LocalSettings.appLanguageCode, value.payload);
+              },
               valueDisplay: Row(
                 children: [
-                  Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).icon, size: 13),
-                  const SizedBox(width: 4),
                   Text(
-                    allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).label,
+                    LanguageLocal.getDisplayLanguage(currentLocale.languageCode, currentLocale.toLanguageTag()),
                     style: theme.textTheme.titleSmall,
                   ),
                 ],
               ),
-              highlightKey: settingToHighlight == LocalSettings.defaultFeedSortType ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.appLanguageCode,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.useProfilePictureForDrawer,
+              subtitle: l10n.useProfilePictureForDrawerSubtitle,
+              value: useProfilePictureForDrawer,
+              iconEnabled: Icons.person_rounded,
+              iconDisabled: Icons.person_outline_rounded,
+              onToggle: (value) => setPreferences(LocalSettings.useProfilePictureForDrawer, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.useProfilePictureForDrawer,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.tappableAuthorCommunity,
+              value: tappableAuthorCommunity,
+              iconEnabled: Icons.touch_app_rounded,
+              iconDisabled: Icons.touch_app_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.tappableAuthorCommunity, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.tappableAuthorCommunity,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.markPostAsReadOnMediaView,
+              value: markPostReadOnMediaView,
+              iconEnabled: Icons.visibility,
+              iconDisabled: Icons.remove_red_eye_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnMediaView, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.markPostAsReadOnMediaView,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.markPostAsReadOnScroll,
+              value: markPostReadOnScroll,
+              iconEnabled: Icons.playlist_add_check,
+              iconDisabled: Icons.playlist_add,
+              onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnScroll, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.markPostAsReadOnScroll,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.tabletMode,
+              value: tabletMode,
+              iconEnabled: Icons.tablet_rounded,
+              iconDisabled: Icons.smartphone_rounded,
+              onToggle: (bool value) => setPreferences(LocalSettings.useTabletMode, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.useTabletMode,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.hideTopBarOnScroll,
+              value: hideTopBarOnScroll,
+              iconEnabled: Icons.app_settings_alt_outlined,
+              iconDisabled: Icons.app_settings_alt_rounded,
+              onToggle: (bool value) => setPreferences(LocalSettings.hideTopBarOnScroll, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.hideTopBarOnScroll,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(l10n.commentBehaviourSettings, style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
@@ -421,114 +558,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   ),
                 ],
               ),
-              highlightKey: settingToHighlight == LocalSettings.defaultCommentSortType ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.appLanguage,
-              bottomSheetHeading: Align(alignment: Alignment.centerLeft, child: Text(l10n.translationsMayNotBeComplete)),
-              value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
-              options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode, e.toLanguageTag()), icon: Icons.language_rounded, payload: e)).toList(),
-              icon: Icons.language_rounded,
-              onChanged: (ListPickerItem<Locale> value) async {
-                setPreferences(LocalSettings.appLanguageCode, value.payload);
-              },
-              valueDisplay: Row(
-                children: [
-                  Text(
-                    LanguageLocal.getDisplayLanguage(currentLocale.languageCode, currentLocale.toLanguageTag()),
-                    style: theme.textTheme.titleSmall,
-                  ),
-                ],
-              ),
-              highlightKey: settingToHighlight == LocalSettings.appLanguageCode ? settingToHighlightKey : null,
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.useProfilePictureForDrawer,
-              subtitle: l10n.useProfilePictureForDrawerSubtitle,
-              value: useProfilePictureForDrawer,
-              iconEnabled: Icons.person_rounded,
-              iconDisabled: Icons.person_outline_rounded,
-              onToggle: (value) => setPreferences(LocalSettings.useProfilePictureForDrawer, value),
-              highlightKey: settingToHighlight == LocalSettings.useProfilePictureForDrawer ? settingToHighlightKey : null,
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.feedBehaviourSettings, style: theme.textTheme.titleMedium),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.hideNsfwPostsFromFeed,
-              value: hideNsfwPosts,
-              iconEnabled: Icons.no_adult_content,
-              iconDisabled: Icons.no_adult_content,
-              onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
-              highlightKey: settingToHighlight == LocalSettings.hideNsfwPosts ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.tappableAuthorCommunity,
-              value: tappableAuthorCommunity,
-              iconEnabled: Icons.touch_app_rounded,
-              iconDisabled: Icons.touch_app_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.tappableAuthorCommunity, value),
-              highlightKey: settingToHighlight == LocalSettings.tappableAuthorCommunity ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.markPostAsReadOnMediaView,
-              value: markPostReadOnMediaView,
-              iconEnabled: Icons.visibility,
-              iconDisabled: Icons.remove_red_eye_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnMediaView, value),
-              highlightKey: settingToHighlight == LocalSettings.markPostAsReadOnMediaView ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.markPostAsReadOnScroll,
-              value: markPostReadOnScroll,
-              iconEnabled: Icons.playlist_add_check,
-              iconDisabled: Icons.playlist_add,
-              onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnScroll, value),
-              highlightKey: settingToHighlight == LocalSettings.markPostAsReadOnScroll ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.tabletMode,
-              value: tabletMode,
-              iconEnabled: Icons.tablet_rounded,
-              iconDisabled: Icons.smartphone_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.useTabletMode, value),
-              highlightKey: settingToHighlight == LocalSettings.useTabletMode ? settingToHighlightKey : null,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.hideTopBarOnScroll,
-              value: hideTopBarOnScroll,
-              iconEnabled: Icons.app_settings_alt_outlined,
-              iconDisabled: Icons.app_settings_alt_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.hideTopBarOnScroll, value),
-              highlightKey: settingToHighlight == LocalSettings.hideTopBarOnScroll ? settingToHighlightKey : null,
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.commentBehaviourSettings, style: theme.textTheme.titleMedium),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.defaultCommentSortType,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -538,7 +570,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.mode_comment_outlined,
               iconDisabled: Icons.comment_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.collapseParentCommentBodyOnGesture, value),
-              highlightKey: settingToHighlight == LocalSettings.collapseParentCommentBodyOnGesture ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.collapseParentCommentBodyOnGesture,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -548,7 +582,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.unfold_more_rounded,
               iconDisabled: Icons.unfold_less_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.enableCommentNavigation, value),
-              highlightKey: settingToHighlight == LocalSettings.enableCommentNavigation ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.enableCommentNavigation,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -559,7 +595,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.join_full_rounded,
               iconDisabled: Icons.join_inner_rounded,
               onToggle: enableCommentNavigation != true ? null : (bool value) => setPreferences(LocalSettings.combineNavAndFab, value),
-              highlightKey: settingToHighlight == LocalSettings.combineNavAndFab ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.combineNavAndFab,
+              highlightedSetting: settingToHighlight,
             ),
           ),
 
@@ -589,7 +627,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ],
               icon: Icons.link_rounded,
               onChanged: (value) => setPreferences(LocalSettings.browserMode, value.payload.name),
-              highlightKey: settingToHighlight == LocalSettings.browserMode ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.browserMode,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           if (!kIsWeb && Platform.isIOS)
@@ -600,7 +640,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 iconEnabled: Icons.menu_book_rounded,
                 iconDisabled: Icons.menu_book_rounded,
                 onToggle: (bool value) => setPreferences(LocalSettings.openLinksInReaderMode, value),
-                highlightKey: settingToHighlight == LocalSettings.openLinksInReaderMode ? settingToHighlightKey : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.openLinksInReaderMode,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           // TODO:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
@@ -627,7 +669,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 },
                 subtitle: l10n.allowOpenSupportedLinks,
                 description: l10n.openByDefault,
-                highlightKey: settingToHighlight == LocalSettings.openByDefault ? settingToHighlightKey : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.openByDefault,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           SliverToBoxAdapter(
@@ -638,7 +682,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.image_search_rounded,
               iconDisabled: Icons.link_off_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.scrapeMissingPreviews, value),
-              highlightKey: settingToHighlight == LocalSettings.scrapeMissingPreviews ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.scrapeMissingPreviews,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
@@ -669,7 +715,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   ImageCachingMode.relaxed => Icons.broken_image_outlined,
                 },
                 onChanged: (value) => setPreferences(LocalSettings.imageCachingMode, value.payload.name),
-                highlightKey: settingToHighlight == LocalSettings.imageCachingMode ? settingToHighlightKey : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.imageCachingMode,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           SliverToBoxAdapter(
@@ -680,7 +728,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.short_text_rounded,
               iconDisabled: Icons.short_text_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.showNavigationLabels, value),
-              highlightKey: settingToHighlight == LocalSettings.showNavigationLabels ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.showNavigationLabels,
+              highlightedSetting: settingToHighlight,
             ),
           ),
 
@@ -698,7 +748,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.update_rounded,
               iconDisabled: Icons.update_disabled_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.showInAppUpdateNotification, value),
-              highlightKey: settingToHighlight == LocalSettings.showInAppUpdateNotification ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.showInAppUpdateNotification,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -709,7 +761,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               iconEnabled: Icons.featured_play_list_rounded,
               iconDisabled: Icons.featured_play_list_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.showUpdateChangelogs, value),
-              highlightKey: settingToHighlight == LocalSettings.showUpdateChangelogs ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.showUpdateChangelogs,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) ...[
@@ -784,7 +838,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 value: const ListPickerItem(payload: -1),
                 disabled: accounts.isEmpty,
                 icon: inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded,
-                highlightKey: settingToHighlight == LocalSettings.inboxNotificationType ? settingToHighlightKey : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.inboxNotificationType,
+                highlightedSetting: settingToHighlight,
                 customListPicker: StatefulBuilder(
                   builder: (context, setState) {
                     return BottomSheetListPicker<NotificationType>(
@@ -809,7 +865,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.local,
                                 softWrap: true,
                               ),
-                              if (kDebugMode)
+                              if (enableExperimentalFeatures)
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useUnifiedPushNotifications,
@@ -845,7 +901,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 payload: NotificationType.none,
                                 softWrap: true,
                               ),
-                              if (kDebugMode)
+                              if (enableExperimentalFeatures)
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useApplePushNotifications,
@@ -928,6 +984,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       },
                     );
                   },
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.pushNotificationServer,
+                  highlightedSetting: settingToHighlight,
                 ),
               ),
             SliverToBoxAdapter(
@@ -943,6 +1002,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     context.read<ThunderBloc>(),
                   ]);
                 },
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           ],
@@ -957,12 +1019,23 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: SettingsListTile(
               icon: Icons.settings_rounded,
               description: l10n.saveSettings,
+              subtitle: l10n.exportSettingsSubtitle,
               widget: const SizedBox(
                 height: 42.0,
                 child: Icon(Icons.chevron_right_rounded),
               ),
-              onTap: () async => await UserPreferences.exportToJson(),
-              highlightKey: settingToHighlight == LocalSettings.importExportSettings ? settingToHighlightKey : null,
+              onTap: () async {
+                String? savedFilePath = await UserPreferences.exportToJson();
+
+                if (savedFilePath?.isNotEmpty == true) {
+                  showSnackbar(l10n.settingsExportedSuccessfully(savedFilePath!));
+                } else {
+                  showSnackbar(l10n.settingsNotExportedSuccessfully);
+                }
+              },
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.importExportSettings,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -974,13 +1047,84 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 child: Icon(Icons.chevron_right_rounded),
               ),
               onTap: () async {
-                await UserPreferences.importFromJson();
+                bool? importedSuccessfully = await UserPreferences.importFromJson();
 
-                if (context.mounted) {
-                  _initPreferences();
-                  context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                if (importedSuccessfully == true) {
+                  showSnackbar(l10n.settingsImportedSuccessfully);
+
+                  if (context.mounted) {
+                    _initPreferences();
+                    context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                  } else {
+                    showSnackbar(l10n.settingsNotImportedSuccessfully);
+                  }
                 }
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SettingsListTile(
+              icon: Icons.dashboard_customize_rounded,
+              description: l10n.exportDatabase,
+              subtitle: l10n.exportDatabaseSubtitle,
+              widget: const SizedBox(
+                height: 42.0,
+                child: Icon(Icons.chevron_right_rounded),
+              ),
+              onTap: () async {
+                bool result = false;
+
+                await showThunderDialog<void>(
+                  context: context,
+                  title: l10n.warning,
+                  contentText: l10n.databaseExportWarning,
+                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                  secondaryButtonText: l10n.cancel,
+                  onPrimaryButtonPressed: (dialogContext, _) async {
+                    Navigator.of(dialogContext).pop();
+                    result = true;
+                  },
+                  primaryButtonText: l10n.yes,
+                );
+
+                if (!result) return;
+
+                String? savedFilePath = await exportDatabase();
+
+                if (savedFilePath?.isNotEmpty == true) {
+                  showSnackbar(l10n.databaseExportedSuccessfully(savedFilePath!));
+                } else {
+                  showSnackbar(l10n.databaseNotExportedSuccessfully);
+                }
+              },
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.importExportDatabase,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SettingsListTile(
+              icon: Icons.dashboard_customize_outlined,
+              description: l10n.importDatabase,
+              widget: const SizedBox(
+                height: 42.0,
+                child: Icon(Icons.chevron_right_rounded),
+              ),
+              onTap: () async {
+                bool importedSuccessfully = await importDatabase();
+
+                if (importedSuccessfully == true) {
+                  showSnackbar(l10n.databaseImportedSuccessfully);
+                } else {
+                  showSnackbar(l10n.databaseNotImportedSuccessfully);
+                }
+              },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),

@@ -4,6 +4,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/user_label.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -12,6 +13,7 @@ import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/numbers.dart';
 
 import '../utils/date_time.dart';
@@ -21,17 +23,13 @@ class CommentHeader extends StatelessWidget {
   final bool isOwnComment;
   final bool isHidden;
   final int moddingCommentId;
-  final DateTime now;
-  final List<CommunityModeratorView>? moderators;
 
   const CommentHeader({
     super.key,
     required this.comment,
-    required this.now,
     this.isOwnComment = false,
     required this.isHidden,
     this.moddingCommentId = -1,
-    required this.moderators,
   });
 
   @override
@@ -44,7 +42,7 @@ class CommentHeader extends StatelessWidget {
 
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
-    bool? isCommentNew = now.difference(comment.comment.published).inMinutes < 15;
+    bool? isCommentNew = DateTime.now().toUtc().difference(comment.comment.published).inMinutes < 15;
 
     List<UserType> userGroups = [];
 
@@ -53,102 +51,129 @@ class CommentHeader extends StatelessWidget {
     if (comment.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
     if (comment.post.creatorId == comment.creator.id) userGroups.add(UserType.op);
     if (comment.creator.id == accountState.personView?.person.id) userGroups.add(UserType.self);
+    if (comment.creator.published.month == DateTime.now().month && comment.creator.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(userGroups.isNotEmpty ? 8.0 : 8.0, 10.0, 8.0, 10.0),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Row(
-              children: [
-                UserChip(
-                  personId: comment.creator.id,
-                  personAvatar: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
-                  personName: comment.creator.name,
-                  personDisplayName: comment.creator.displayName ?? comment.creator.name,
-                  personUrl: comment.creator.actorId,
-                  userGroups: userGroups,
-                  includeInstance: state.commentShowUserInstance,
-                  ignorePointerEvents: isHidden && collapseParentCommentOnGesture,
-                  opacity: 1.0,
-                ),
-                const SizedBox(width: 8.0),
-                CommentHeaderScore(comment: comment),
-              ],
-            ),
-          ),
           Row(
             children: [
-              AnimatedOpacity(
-                opacity: (isHidden && (collapseParentCommentOnGesture || comment.counts.childCount > 0)) ? 1 : 0,
-                // Matches the collapse animation
-                duration: const Duration(milliseconds: 130),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer,
-                    borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5, right: 5),
-                    child: ScalableText(
-                      '+${comment.counts.childCount}',
-                      fontScale: state.metadataFontSizeScale,
+              Expanded(
+                child: Row(
+                  children: [
+                    UserChip(
+                      person: comment.creator,
+                      personAvatar: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
+                      userGroups: userGroups,
+                      includeInstance: state.commentShowUserInstance,
+                      ignorePointerEvents: isHidden && collapseParentCommentOnGesture,
+                      opacity: 1.0,
+                    ),
+                    const SizedBox(width: 8.0),
+                    CommentHeaderScore(comment: comment),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  AnimatedOpacity(
+                    opacity: (isHidden && (collapseParentCommentOnGesture || comment.counts.childCount > 0)) ? 1 : 0,
+                    // Matches the collapse animation
+                    duration: const Duration(milliseconds: 130),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer,
+                        borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5, right: 5),
+                        child: ScalableText(
+                          '+${comment.counts.childCount}',
+                          fontScale: state.metadataFontSizeScale,
+                        ),
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8.0),
+                  Icon(
+                    saved == true ? Icons.star_rounded : null,
+                    color: saved == true ? context.read<ThunderBloc>().state.saveColor.color : null,
+                    size: saved == true ? 18.0 : 0,
+                  ),
+                  SizedBox(
+                    width: hasBeenEdited ? 32.0 : 8,
+                    child: Icon(
+                      hasBeenEdited ? Icons.create_rounded : null,
+                      color: theme.colorScheme.onBackground.withOpacity(0.75),
+                      size: 16.0,
+                    ),
+                  ),
+                  Container(
+                    decoration: isCommentNew ? BoxDecoration(color: theme.splashColor, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))) : null,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 5),
+                      child: Row(
+                        children: [
+                          isCommentNew
+                              ? const Row(children: [
+                                  Icon(
+                                    Icons.auto_awesome_rounded,
+                                    size: 16.0,
+                                  ),
+                                  SizedBox(width: 5)
+                                ])
+                              : Container(),
+                          if (comment.comment.id == moddingCommentId) ...[
+                            Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: SizedBox(
+                                    width: state.metadataFontSizeScale.textScaleFactor * 15,
+                                    height: state.metadataFontSizeScale.textScaleFactor * 15,
+                                    child: CircularProgressIndicator(
+                                      color: theme.colorScheme.primary,
+                                    )))
+                          ] else
+                            ScalableText(
+                              formatTimeToString(dateTime: (comment.comment.updated ?? comment.comment.published).toIso8601String()),
+                              fontScale: state.metadataFontSizeScale,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onBackground,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+          FutureBuilder(
+            future: () async {
+              final String username = UserLabel.usernameFromParts(comment.creator.name, comment.creator.actorId);
+              return await UserLabel.fetchUserLabel(username);
+            }(),
+            builder: (context, snapshot) {
+              if (snapshot.data?.label.isNotEmpty != true) return Container();
+
+              return Container(
+                margin: const EdgeInsets.only(top: 6),
+                decoration: BoxDecoration(
+                  color: getBackgroundColor(context),
+                  borderRadius: BorderRadius.circular(5),
                 ),
-              ),
-              const SizedBox(width: 8.0),
-              Icon(
-                saved == true ? Icons.star_rounded : null,
-                color: saved == true ? context.read<ThunderBloc>().state.saveColor.color : null,
-                size: saved == true ? 18.0 : 0,
-              ),
-              SizedBox(
-                width: hasBeenEdited ? 32.0 : 8,
-                child: Icon(
-                  hasBeenEdited ? Icons.create_rounded : null,
-                  color: theme.colorScheme.onBackground.withOpacity(0.75),
-                  size: 16.0,
-                ),
-              ),
-              Container(
-                decoration: isCommentNew ? BoxDecoration(color: theme.splashColor, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))) : null,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5, right: 5),
-                  child: Row(
-                    children: [
-                      isCommentNew
-                          ? const Row(children: [
-                              Icon(
-                                Icons.auto_awesome_rounded,
-                                size: 16.0,
-                              ),
-                              SizedBox(width: 5)
-                            ])
-                          : Container(),
-                      if (comment.comment.id == moddingCommentId) ...[
-                        Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: SizedBox(
-                                width: state.metadataFontSizeScale.textScaleFactor * 15,
-                                height: state.metadataFontSizeScale.textScaleFactor * 15,
-                                child: CircularProgressIndicator(
-                                  color: theme.colorScheme.primary,
-                                )))
-                      ] else
-                        ScalableText(
-                          formatTimeToString(dateTime: (comment.comment.updated ?? comment.comment.published).toIso8601String()),
-                          fontScale: state.metadataFontSizeScale,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onBackground,
-                          ),
-                        ),
-                    ],
+                  child: ScalableText(
+                    snapshot.data!.label,
+                    fontScale: state.metadataFontSizeScale,
                   ),
                 ),
-              ),
-            ],
-          )
+              );
+            },
+          ),
         ],
       ),
     );

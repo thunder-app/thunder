@@ -694,13 +694,500 @@ class LocalSubscriptionsCompanion extends UpdateCompanion<LocalSubscription> {
   }
 }
 
+class $UserLabelsTable extends UserLabels with TableInfo<$UserLabelsTable, UserLabel> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserLabelsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
+      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _usernameMeta = const VerificationMeta('username');
+  @override
+  late final GeneratedColumn<String> username = GeneratedColumn<String>('username', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>('label', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, username, label];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_labels';
+  @override
+  VerificationContext validateIntegrity(Insertable<UserLabel> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('username')) {
+      context.handle(_usernameMeta, username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
+    } else if (isInserting) {
+      context.missing(_usernameMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(_labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UserLabel map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserLabel(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      username: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}username'])!,
+      label: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}label'])!,
+    );
+  }
+
+  @override
+  $UserLabelsTable createAlias(String alias) {
+    return $UserLabelsTable(attachedDatabase, alias);
+  }
+}
+
+class UserLabel extends DataClass implements Insertable<UserLabel> {
+  final int id;
+  final String username;
+  final String label;
+  const UserLabel({required this.id, required this.username, required this.label});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['username'] = Variable<String>(username);
+    map['label'] = Variable<String>(label);
+    return map;
+  }
+
+  UserLabelsCompanion toCompanion(bool nullToAbsent) {
+    return UserLabelsCompanion(
+      id: Value(id),
+      username: Value(username),
+      label: Value(label),
+    );
+  }
+
+  factory UserLabel.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserLabel(
+      id: serializer.fromJson<int>(json['id']),
+      username: serializer.fromJson<String>(json['username']),
+      label: serializer.fromJson<String>(json['label']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'username': serializer.toJson<String>(username),
+      'label': serializer.toJson<String>(label),
+    };
+  }
+
+  UserLabel copyWith({int? id, String? username, String? label}) => UserLabel(
+        id: id ?? this.id,
+        username: username ?? this.username,
+        label: label ?? this.label,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('UserLabel(')
+          ..write('id: $id, ')
+          ..write('username: $username, ')
+          ..write('label: $label')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, username, label);
+  @override
+  bool operator ==(Object other) => identical(this, other) || (other is UserLabel && other.id == this.id && other.username == this.username && other.label == this.label);
+}
+
+class UserLabelsCompanion extends UpdateCompanion<UserLabel> {
+  final Value<int> id;
+  final Value<String> username;
+  final Value<String> label;
+  const UserLabelsCompanion({
+    this.id = const Value.absent(),
+    this.username = const Value.absent(),
+    this.label = const Value.absent(),
+  });
+  UserLabelsCompanion.insert({
+    this.id = const Value.absent(),
+    required String username,
+    required String label,
+  })  : username = Value(username),
+        label = Value(label);
+  static Insertable<UserLabel> custom({
+    Expression<int>? id,
+    Expression<String>? username,
+    Expression<String>? label,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (username != null) 'username': username,
+      if (label != null) 'label': label,
+    });
+  }
+
+  UserLabelsCompanion copyWith({Value<int>? id, Value<String>? username, Value<String>? label}) {
+    return UserLabelsCompanion(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      label: label ?? this.label,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (username.present) {
+      map['username'] = Variable<String>(username.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserLabelsCompanion(')
+          ..write('id: $id, ')
+          ..write('username: $username, ')
+          ..write('label: $label')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DraftsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
+      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _draftTypeMeta = const VerificationMeta('draftType');
+  @override
+  late final GeneratedColumnWithTypeConverter<DraftType, String> draftType =
+      GeneratedColumn<String>('draft_type', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true).withConverter<DraftType>($DraftsTable.$converterdraftType);
+  static const VerificationMeta _existingIdMeta = const VerificationMeta('existingId');
+  @override
+  late final GeneratedColumn<int> existingId = GeneratedColumn<int>('existing_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _replyIdMeta = const VerificationMeta('replyId');
+  @override
+  late final GeneratedColumn<int> replyId = GeneratedColumn<int>('reply_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>('title', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  @override
+  late final GeneratedColumn<String> url = GeneratedColumn<String>('url', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _bodyMeta = const VerificationMeta('body');
+  @override
+  late final GeneratedColumn<String> body = GeneratedColumn<String>('body', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, draftType, existingId, replyId, title, url, body];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'drafts';
+  @override
+  VerificationContext validateIntegrity(Insertable<Draft> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    context.handle(_draftTypeMeta, const VerificationResult.success());
+    if (data.containsKey('existing_id')) {
+      context.handle(_existingIdMeta, existingId.isAcceptableOrUnknown(data['existing_id']!, _existingIdMeta));
+    }
+    if (data.containsKey('reply_id')) {
+      context.handle(_replyIdMeta, replyId.isAcceptableOrUnknown(data['reply_id']!, _replyIdMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(_titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    }
+    if (data.containsKey('url')) {
+      context.handle(_urlMeta, url.isAcceptableOrUnknown(data['url']!, _urlMeta));
+    }
+    if (data.containsKey('body')) {
+      context.handle(_bodyMeta, body.isAcceptableOrUnknown(data['body']!, _bodyMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Draft map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Draft(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      draftType: $DraftsTable.$converterdraftType.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}draft_type'])!),
+      existingId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}existing_id']),
+      replyId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}reply_id']),
+      title: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}title']),
+      url: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}url']),
+      body: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}body']),
+    );
+  }
+
+  @override
+  $DraftsTable createAlias(String alias) {
+    return $DraftsTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<DraftType, String> $converterdraftType = const DraftTypeConverter();
+}
+
+class Draft extends DataClass implements Insertable<Draft> {
+  final int id;
+  final DraftType draftType;
+  final int? existingId;
+  final int? replyId;
+  final String? title;
+  final String? url;
+  final String? body;
+  const Draft({required this.id, required this.draftType, this.existingId, this.replyId, this.title, this.url, this.body});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['draft_type'] = Variable<String>($DraftsTable.$converterdraftType.toSql(draftType));
+    }
+    if (!nullToAbsent || existingId != null) {
+      map['existing_id'] = Variable<int>(existingId);
+    }
+    if (!nullToAbsent || replyId != null) {
+      map['reply_id'] = Variable<int>(replyId);
+    }
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || url != null) {
+      map['url'] = Variable<String>(url);
+    }
+    if (!nullToAbsent || body != null) {
+      map['body'] = Variable<String>(body);
+    }
+    return map;
+  }
+
+  DraftsCompanion toCompanion(bool nullToAbsent) {
+    return DraftsCompanion(
+      id: Value(id),
+      draftType: Value(draftType),
+      existingId: existingId == null && nullToAbsent ? const Value.absent() : Value(existingId),
+      replyId: replyId == null && nullToAbsent ? const Value.absent() : Value(replyId),
+      title: title == null && nullToAbsent ? const Value.absent() : Value(title),
+      url: url == null && nullToAbsent ? const Value.absent() : Value(url),
+      body: body == null && nullToAbsent ? const Value.absent() : Value(body),
+    );
+  }
+
+  factory Draft.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Draft(
+      id: serializer.fromJson<int>(json['id']),
+      draftType: serializer.fromJson<DraftType>(json['draftType']),
+      existingId: serializer.fromJson<int?>(json['existingId']),
+      replyId: serializer.fromJson<int?>(json['replyId']),
+      title: serializer.fromJson<String?>(json['title']),
+      url: serializer.fromJson<String?>(json['url']),
+      body: serializer.fromJson<String?>(json['body']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'draftType': serializer.toJson<DraftType>(draftType),
+      'existingId': serializer.toJson<int?>(existingId),
+      'replyId': serializer.toJson<int?>(replyId),
+      'title': serializer.toJson<String?>(title),
+      'url': serializer.toJson<String?>(url),
+      'body': serializer.toJson<String?>(body),
+    };
+  }
+
+  Draft copyWith(
+          {int? id,
+          DraftType? draftType,
+          Value<int?> existingId = const Value.absent(),
+          Value<int?> replyId = const Value.absent(),
+          Value<String?> title = const Value.absent(),
+          Value<String?> url = const Value.absent(),
+          Value<String?> body = const Value.absent()}) =>
+      Draft(
+        id: id ?? this.id,
+        draftType: draftType ?? this.draftType,
+        existingId: existingId.present ? existingId.value : this.existingId,
+        replyId: replyId.present ? replyId.value : this.replyId,
+        title: title.present ? title.value : this.title,
+        url: url.present ? url.value : this.url,
+        body: body.present ? body.value : this.body,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Draft(')
+          ..write('id: $id, ')
+          ..write('draftType: $draftType, ')
+          ..write('existingId: $existingId, ')
+          ..write('replyId: $replyId, ')
+          ..write('title: $title, ')
+          ..write('url: $url, ')
+          ..write('body: $body')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, draftType, existingId, replyId, title, url, body);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Draft &&
+          other.id == this.id &&
+          other.draftType == this.draftType &&
+          other.existingId == this.existingId &&
+          other.replyId == this.replyId &&
+          other.title == this.title &&
+          other.url == this.url &&
+          other.body == this.body);
+}
+
+class DraftsCompanion extends UpdateCompanion<Draft> {
+  final Value<int> id;
+  final Value<DraftType> draftType;
+  final Value<int?> existingId;
+  final Value<int?> replyId;
+  final Value<String?> title;
+  final Value<String?> url;
+  final Value<String?> body;
+  const DraftsCompanion({
+    this.id = const Value.absent(),
+    this.draftType = const Value.absent(),
+    this.existingId = const Value.absent(),
+    this.replyId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.url = const Value.absent(),
+    this.body = const Value.absent(),
+  });
+  DraftsCompanion.insert({
+    this.id = const Value.absent(),
+    required DraftType draftType,
+    this.existingId = const Value.absent(),
+    this.replyId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.url = const Value.absent(),
+    this.body = const Value.absent(),
+  }) : draftType = Value(draftType);
+  static Insertable<Draft> custom({
+    Expression<int>? id,
+    Expression<String>? draftType,
+    Expression<int>? existingId,
+    Expression<int>? replyId,
+    Expression<String>? title,
+    Expression<String>? url,
+    Expression<String>? body,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (draftType != null) 'draft_type': draftType,
+      if (existingId != null) 'existing_id': existingId,
+      if (replyId != null) 'reply_id': replyId,
+      if (title != null) 'title': title,
+      if (url != null) 'url': url,
+      if (body != null) 'body': body,
+    });
+  }
+
+  DraftsCompanion copyWith({Value<int>? id, Value<DraftType>? draftType, Value<int?>? existingId, Value<int?>? replyId, Value<String?>? title, Value<String?>? url, Value<String?>? body}) {
+    return DraftsCompanion(
+      id: id ?? this.id,
+      draftType: draftType ?? this.draftType,
+      existingId: existingId ?? this.existingId,
+      replyId: replyId ?? this.replyId,
+      title: title ?? this.title,
+      url: url ?? this.url,
+      body: body ?? this.body,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (draftType.present) {
+      map['draft_type'] = Variable<String>($DraftsTable.$converterdraftType.toSql(draftType.value));
+    }
+    if (existingId.present) {
+      map['existing_id'] = Variable<int>(existingId.value);
+    }
+    if (replyId.present) {
+      map['reply_id'] = Variable<int>(replyId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
+    if (body.present) {
+      map['body'] = Variable<String>(body.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DraftsCompanion(')
+          ..write('id: $id, ')
+          ..write('draftType: $draftType, ')
+          ..write('existingId: $existingId, ')
+          ..write('replyId: $replyId, ')
+          ..write('title: $title, ')
+          ..write('url: $url, ')
+          ..write('body: $body')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final $AccountsTable accounts = $AccountsTable(this);
   late final $FavoritesTable favorites = $FavoritesTable(this);
   late final $LocalSubscriptionsTable localSubscriptions = $LocalSubscriptionsTable(this);
+  late final $UserLabelsTable userLabels = $UserLabelsTable(this);
+  late final $DraftsTable drafts = $DraftsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts];
 }

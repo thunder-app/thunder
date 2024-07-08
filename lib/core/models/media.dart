@@ -1,8 +1,10 @@
 import 'package:thunder/core/enums/media_type.dart';
+import 'package:thunder/utils/media/image.dart';
 
 /// The Media class represents information for a given media source.
 class Media {
   Media({
+    this.thumbnailUrl,
     this.mediaUrl,
     this.originalUrl,
     this.width,
@@ -10,10 +12,13 @@ class Media {
     required this.mediaType,
   });
 
-  /// The original URL of the media - this applies if the original URL of the media originates from a external link
+  /// The original external URL of the post
   String? originalUrl;
 
-  /// The URL indicates the source of the media
+  /// The thumbnail URL of the media
+  String? thumbnailUrl;
+
+  /// The actual URL of the media source
   String? mediaUrl;
 
   /// The width of the media source
@@ -25,8 +30,11 @@ class Media {
   /// Indicates the type of media it holds
   MediaType mediaType;
 
+  /// Gets the full-size image URL, if any
+  String? get imageUrl => isImageUrl(mediaUrl ?? '') ? mediaUrl : thumbnailUrl;
+
   @override
   String toString() {
-    return '''Media { mediaUrl: $mediaUrl, originalUrl: $originalUrl, width: $width, height: $height, type: $mediaType }''';
+    return '''Media { thumbnailUrl: $thumbnailUrl, mediaUrl: $mediaUrl, originalUrl: $originalUrl, width: $width, height: $height, type: $mediaType }''';
   }
 }

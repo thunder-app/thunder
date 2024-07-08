@@ -63,6 +63,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />        
+                <data android:scheme="thunder"/>
+            </intent-filter>
+            <intent-filter>
               <action android:name="android.intent.action.VIEW" />
               <category android:name="android.intent.category.DEFAULT" />
               <category android:name="android.intent.category.BROWSABLE" />
@@ -72,6 +78,7 @@
               <data android:host="aussie.zone" />
               <data android:host="awful.systems" />
               <data android:host="beehaw.org" />
+              <data android:host="burggit.moe" />
               <data android:host="discuss.online" />
               <data android:host="discuss.tchncs.de" />
               <data android:host="feddit.de" />

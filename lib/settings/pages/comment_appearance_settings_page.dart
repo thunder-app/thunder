@@ -297,7 +297,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                               physics: const NeverScrollableScrollPhysics(),
                               children: [
                                 CommentCard(
-                                  now: DateTime.now(),
                                   commentViewTree: snapshot.data!,
                                   onSaveAction: (int commentId, bool save) => {},
                                   onVoteAction: (int commentId, int voteType) => {},
@@ -305,7 +304,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                                   onDeleteAction: (int commentId, bool deleted) => {},
                                   onReportAction: (int commentId) => {},
                                   onReplyEditAction: (CommentView commentView, bool isEdit) => {},
-                                  moderators: const [],
                                 ),
                               ],
                             ),
@@ -333,7 +331,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               iconEnabled: Icons.mode_comment_rounded,
               iconDisabled: Icons.mode_comment_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
-              highlightKey: settingToHighlight == LocalSettings.showCommentActionButtons ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.showCommentActionButtons,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -343,7 +343,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               iconEnabled: Icons.onetwothree_rounded,
               iconDisabled: Icons.onetwothree_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
-              highlightKey: settingToHighlight == LocalSettings.combineCommentScores ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.combineCommentScores,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -353,7 +355,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               iconEnabled: Icons.dns_sharp,
               iconDisabled: Icons.dns_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
-              highlightKey: settingToHighlight == LocalSettings.commentShowUserInstance ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.commentShowUserInstance,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -363,7 +367,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               iconEnabled: Icons.account_circle,
               iconDisabled: Icons.account_circle_outlined,
               onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserAvatar, value),
-              highlightKey: settingToHighlight == LocalSettings.commentShowUserAvatar ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.commentShowUserAvatar,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -376,7 +382,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               ],
               icon: Icons.format_list_bulleted_rounded,
               onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
-              highlightKey: settingToHighlight == LocalSettings.nestedCommentIndicatorStyle ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.nestedCommentIndicatorStyle,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -389,7 +397,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               ],
               icon: Icons.color_lens_outlined,
               onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
-              highlightKey: settingToHighlight == LocalSettings.nestedCommentIndicatorColor ? settingToHighlightKey : null,
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.nestedCommentIndicatorColor,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           SliverToBoxAdapter(
@@ -409,6 +419,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                   ],
                 );
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 128.0)),

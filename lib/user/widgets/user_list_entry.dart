@@ -19,7 +19,12 @@ class UserListEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${personView.person.displayName ?? personView.person.name}\n${generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId))}',
+      message: '${personView.person.displayName ?? personView.person.name}\n${generateUserFullName(
+        context,
+        personView.person.name,
+        personView.person.displayName,
+        fetchInstanceNameFromUrl(personView.person.actorId),
+      )}',
       preferBelow: false,
       child: ListTile(
         leading: UserAvatar(person: personView.person, radius: 25),
@@ -32,7 +37,10 @@ class UserListEntry extends StatelessWidget {
             child: UserFullNameWidget(
               context,
               personView.person.name,
+              personView.person.displayName,
               fetchInstanceNameFromUrl(personView.person.actorId),
+              // Override because we're showing display name above
+              useDisplayName: false,
             ),
           ),
         ]),

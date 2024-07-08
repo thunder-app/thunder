@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:thunder/core/database/type_converters.dart';
 
 class Accounts extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -21,4 +22,20 @@ class LocalSubscriptions extends Table {
   TextColumn get title => text()();
   TextColumn get actorId => text()();
   TextColumn get icon => text().nullable()();
+}
+
+class UserLabels extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get username => text()();
+  TextColumn get label => text()();
+}
+
+class Drafts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get draftType => text().map(const DraftTypeConverter())();
+  IntColumn get existingId => integer().nullable()();
+  IntColumn get replyId => integer().nullable()();
+  TextColumn get title => text().nullable()();
+  TextColumn get url => text().nullable()();
+  TextColumn get body => text().nullable()();
 }

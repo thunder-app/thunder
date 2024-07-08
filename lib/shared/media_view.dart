@@ -9,9 +9,10 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
+import 'package:thunder/notification/utils/notification_utils.dart';
 
 import 'package:thunder/shared/link_information.dart';
-import 'package:thunder/utils/links.dart';
+import 'package:thunder/utils/colors.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/core/enums/view_mode.dart';
@@ -21,6 +22,7 @@ import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
+import 'package:thunder/utils/media/video.dart';
 
 class MediaView extends StatefulWidget {
   /// The post containing the media information
@@ -102,7 +104,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     String? plainTextComment;
     if (widget.postViewMedia.postView.post.body?.isNotEmpty == true) {
-      final String htmlComment = markdownToHtml(widget.postViewMedia.postView.post.body!);
+      final String htmlComment = cleanImagesFromHtml(markdownToHtml(widget.postViewMedia.postView.post.body!));
       plainTextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? widget.postViewMedia.postView.post.body!;
     }
 
@@ -161,7 +163,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         },
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           return ImageViewer(
-            url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!,
+            url: widget.postViewMedia.media.first.imageUrl,
             postId: widget.postViewMedia.postView.post.id,
             navigateToPost: widget.navigateToPost,
           );
@@ -185,7 +187,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-          color: theme.colorScheme.primary.withOpacity(0.2),
+          color: getBackgroundColor(context),
         ),
         constraints: BoxConstraints(
             maxHeight: switch (widget.viewMode) {
@@ -230,6 +232,91 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     );
   }
 
+  /// Creates an video preview. This displays a thumbnail of the video, and tapping it will open the video in a fullscreen player
+  Widget buildMediaVideo() {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
+
+    return InkWell(
+      splashColor: theme.colorScheme.primary.withOpacity(0.4),
+      borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+      onTap: () {
+        if (widget.isUserLoggedIn && widget.markPostReadOnMediaView && widget.postViewMedia.postView.read == false) {
+          FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
+          feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postViewMedia.postView.post.id, value: true));
+        }
+
+        showVideoPlayer(context, url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl, postId: widget.postViewMedia.postView.post.id);
+      },
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+          color: getBackgroundColor(context),
+        ),
+        constraints: BoxConstraints(
+            maxHeight: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.showFullHeightImages
+                  ? widget.postViewMedia.media.first.height ?? (widget.allowUnconstrainedImageHeight ? double.infinity : ViewMode.comfortable.height)
+                  : ViewMode.comfortable.height,
+            },
+            minHeight: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? ViewMode.comfortable.height : ViewMode.comfortable.height,
+            },
+            maxWidth: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
+            },
+            minWidth: switch (widget.viewMode) {
+              ViewMode.compact => ViewMode.compact.height,
+              ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
+            }),
+        child: Stack(
+          fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
+          alignment: Alignment.bottomLeft,
+          children: [
+            if (!widget.postViewMedia.postView.post.nsfw && widget.postViewMedia.media.first.thumbnailUrl?.isNotEmpty != true)
+              Icon(
+                Icons.video_camera_back_outlined,
+                color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+              ),
+            if (widget.postViewMedia.media.first.thumbnailUrl != null)
+              ImageFiltered(
+                enabled: blurNSFWPreviews,
+                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                child: previewImage(context),
+              ),
+            if (widget.postViewMedia.postView.post.nsfw)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(widget.viewMode != ViewMode.compact ? Icons.play_arrow_rounded : Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                  if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
+                ],
+              )
+            else if (widget.viewMode == ViewMode.comfortable)
+              SizedBox(
+                height: 70.0,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: LinkInformation(
+                    viewMode: widget.viewMode,
+                    mediaType: widget.postViewMedia.media.first.mediaType,
+                    originURL: widget.postViewMedia.media.first.originalUrl ?? '',
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.hideThumbnails) {
@@ -243,13 +330,22 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     switch (widget.postViewMedia.media.firstOrNull?.mediaType) {
       case MediaType.image:
         return buildMediaImage();
-      case MediaType.link:
       case MediaType.video:
+        if (widget.viewMode == ViewMode.comfortable && widget.postViewMedia.media.first.thumbnailUrl == null) {
+          return LinkInformation(
+            viewMode: widget.viewMode,
+            mediaType: widget.postViewMedia.media.first.mediaType,
+            originURL: widget.postViewMedia.media.first.originalUrl ?? '',
+          );
+        }
+
+        return buildMediaVideo();
+      case MediaType.link:
         return LinkPreviewCard(
           hideNsfw: widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw,
           scrapeMissingPreviews: widget.scrapeMissingPreviews!,
           originURL: widget.postViewMedia.media.first.originalUrl,
-          mediaURL: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.postView.post.thumbnailUrl,
+          mediaURL: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.postView.post.thumbnailUrl,
           mediaHeight: widget.postViewMedia.media.first.height,
           mediaWidth: widget.postViewMedia.media.first.width,
           showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
@@ -287,7 +383,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     return ExtendedImage.network(
       color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
       colorBlendMode: widget.read == true ? BlendMode.modulate : null,
-      widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl!,
+      widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.originalUrl!,
       height: height,
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
@@ -307,29 +403,20 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             return FadeTransition(opacity: _controller, child: state.completedWidget);
           case LoadState.failed:
             _controller.reset();
-
             state.imageProvider.evict();
 
-            if (widget.viewMode == ViewMode.compact) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: theme.colorScheme.secondary.withOpacity(0.2),
-                ),
-                child: InkWell(
-                  child: const Icon(Icons.error_outline_sharp),
-                  onTap: () {
-                    handleLink(context, url: widget.postViewMedia.postView.post.url ?? '');
-                  },
-                ),
-              );
-            }
-
-            return LinkInformation(
-              viewMode: widget.viewMode,
-              mediaType: MediaType.image,
-              originURL: widget.postViewMedia.postView.post.url ?? '',
-            );
+            return widget.postViewMedia.postView.post.nsfw
+                ? Container()
+                : Icon(
+                    switch (widget.postViewMedia.media.first.mediaType) {
+                      MediaType.image => Icons.image_not_supported_outlined,
+                      MediaType.video => Icons.video_camera_back_outlined,
+                      MediaType.link => Icons.language_rounded,
+                      // Should never come here
+                      MediaType.text => Icons.text_fields_rounded,
+                    },
+                    color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                  );
         }
       },
     );

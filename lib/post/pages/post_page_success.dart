@@ -28,7 +28,6 @@ class PostPageSuccess extends StatefulWidget {
 
   final bool viewFullCommentsRefreshing;
 
-  final List<CommunityModeratorView>? moderators;
   final List<PostView>? crossPosts;
   final bool viewSource;
 
@@ -44,7 +43,6 @@ class PostPageSuccess extends StatefulWidget {
     this.newlyCreatedCommentId,
     this.moddingCommentId,
     this.viewFullCommentsRefreshing = false,
-    required this.moderators,
     required this.crossPosts,
     required this.viewSource,
   });
@@ -83,7 +81,6 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             selectedCommentId: widget.selectedCommentId,
             selectedCommentPath: widget.selectedCommentPath,
             newlyCreatedCommentId: widget.newlyCreatedCommentId,
-            now: DateTime.now().toUtc(),
             scrollController: widget.scrollController,
             listController: widget.listController,
             postViewMedia: widget.postView,
@@ -108,7 +105,6 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
                 }
               },
             ),
-            moderators: widget.moderators,
             crossPosts: widget.crossPosts,
             viewSource: widget.viewSource,
           ),

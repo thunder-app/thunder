@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +25,7 @@ class UserPreferences {
   }
 
   // Export SharedPreferences data to selected JSON file
-  static Future<void> exportToJson() async {
+  static Future<String?> exportToJson() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> data = prefs.getKeys().where((key) => !LocalSettings.importExportExcludedSettings.any((excluded) => key.startsWith(excluded.name))).fold({}, (prev, key) {
       prev[key] = prefs.get(key);
@@ -37,7 +38,7 @@ class UserPreferences {
     final file = File(filePath);
     await file.writeAsString(jsonData);
 
-    await FlutterFileDialog.saveFile(
+    return await FlutterFileDialog.saveFile(
       params: SaveFileDialogParams(
         mimeTypesFilter: ['application/json'],
         sourceFilePath: filePath,
@@ -47,7 +48,7 @@ class UserPreferences {
   }
 
   // Import JSON data from selected file to SharedPreferences
-  static Future<void> importFromJson() async {
+  static Future<bool> importFromJson() async {
     final filePath = await FlutterFileDialog.pickFile(
       params: const OpenFileDialogParams(
         fileExtensionsFilter: ['json'],
@@ -72,8 +73,12 @@ class UserPreferences {
           prefs.setString(key, value);
         }
       });
+
+      return true;
     } else {
-      print("Import operation cancelled by user.");
+      debugPrint("Import operation cancelled by user.");
     }
+
+    return false;
   }
 }

@@ -84,6 +84,12 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       transformer: throttleDroppable(Duration.zero),
     );
 
+    /// Handles dismissing posts from blocked users/communities
+    on<FeedDismissBlockedEvent>(
+      _onFeedDismissBlocked,
+      transformer: throttleDroppable(Duration.zero),
+    );
+
     /// Handles hiding posts from the feed
     on<FeedHidePostsFromViewEvent>(
       _onFeedHidePostsFromView,
@@ -115,6 +121,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   /// Handles dismissing read posts from the feed
   Future<void> _onFeedDismissRead(FeedDismissReadEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.success, dismissReadId: state.dismissReadId + 1));
+  }
+
+  /// Handles dismissing read posts from the feed
+  Future<void> _onFeedDismissBlocked(FeedDismissBlockedEvent event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(status: FeedStatus.success, dismissBlockedUserId: event.userId, dismissBlockedCommunityId: event.communityId));
   }
 
   /// Handles scrolling to top of the feed
@@ -185,6 +196,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       case PostAction.read:
         // Optimistically read the post
         int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+        if (existingPostViewMediaIndex == -1) return emit(state.copyWith(status: FeedStatus.failure));
 
         PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
         PostView originalPostView = postViewMedia.postView;

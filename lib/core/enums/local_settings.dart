@@ -94,7 +94,9 @@ enum LocalSettings {
   openByDefault(name: 'setting_links_open_by_default', key: 'openByDefault', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   openLinksInReaderMode(
       name: 'setting_links_open_in_reader_mode', key: 'openLinksInReaderMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
-  useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  useDisplayNamesForCommunities(
+      name: 'setting_use_display_names_for_communities', key: 'showCommunityDisplayNames', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   markPostAsReadOnMediaView(
       name: 'setting_general_mark_post_read_on_media_view', key: 'markPostAsReadOnMediaView', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   markPostAsReadOnScroll(name: 'setting_general_mark_post_read_on_scroll', key: 'markPostAsReadOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
@@ -299,6 +301,9 @@ enum LocalSettings {
   enableCommentNavigation(name: 'setting_enable_comment_navigation', key: 'enableCommentNavigation', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
   combineNavAndFab(name: 'setting_combine_nav_and_fab', key: 'combineNavAndFab', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
 
+  enableExperimentalFeatures(name: 'setting_enable_experimental_features', key: 'enableExperimentalFeatures', category: LocalSettingsCategories.debug),
+  imageDimensionTimeout(name: 'setting_image_dimension_timeout', key: 'imageDimensionTimeout', category: LocalSettingsCategories.debug),
+
   draftsCache(name: 'drafts_cache', key: ''),
 
   anonymousInstances(name: 'setting_anonymous_instances', key: ''),
@@ -308,6 +313,7 @@ enum LocalSettings {
   advancedShareOptions(name: 'advanced_share_options', key: ''),
   // import export settings
   importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
+  importExportDatabase(name: 'import_export_database', key: 'importExportDatabase', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
   // video player
   videoAutoMute(name: 'auto_mute_videos', key: 'videoAutoMute', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
@@ -363,6 +369,7 @@ extension LocalizationExt on AppLocalizations {
       'openByDefault': openByDefault,
       'openLinksInReaderMode': openLinksInReaderMode,
       'showUserDisplayNames': showUserDisplayNames,
+      'showCommunityDisplayNames': showCommunityDisplayNames,
       'markPostAsReadOnMediaView': markPostAsReadOnMediaView,
       'markPostAsReadOnScroll': markPostAsReadOnScroll,
       'showInAppUpdateNotifications': showInAppUpdateNotifications,
@@ -450,6 +457,7 @@ extension LocalizationExt on AppLocalizations {
       'comments': comments,
       'linksBehaviourSettings': linksBehaviourSettings,
       'importExportSettings': importExportSettings,
+      'importExportDatabase': importExportDatabase,
       'advanced': advanced,
       'names': names,
       'notifications': notifications(1),

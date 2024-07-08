@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -44,24 +45,88 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    AuthState authState = context.watch<AuthBloc>().state;
+    FeedState feedState = context.watch<FeedBloc>().state;
+
+    AccountState accountState = context.watch<AccountBloc>().state;
+    ThunderState thunderState = context.read<ThunderBloc>().state;
+
+    AnonymousSubscriptionsBloc subscriptionsBloc = context.watch<AnonymousSubscriptionsBloc>();
+    subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
+
+    bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
+
+    List<Community> subscriptions = [];
+
+    if (isLoggedIn) {
+      Set<int> favoriteCommunityIds = accountState.favorites.map((cv) => cv.community.id).toSet();
+      Set<int> moderatedCommunityIds = accountState.moderates.map((cmv) => cmv.community.id).toSet();
+
+      List<CommunityView> filteredSubscriptions = accountState.subsciptions
+          .where((CommunityView communityView) => !favoriteCommunityIds.contains(communityView.community.id) && !moderatedCommunityIds.contains(communityView.community.id))
+          .toList();
+      subscriptions = filteredSubscriptions.map((CommunityView communityView) => communityView.community).toList();
+    } else {
+      subscriptions = subscriptionsBloc.state.subscriptions;
+    }
+
     return Drawer(
       width: min(MediaQuery.of(context).size.width * 0.85, 400.0),
       child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            UserDrawerItem(navigateToAccount: widget.navigateToAccount),
-            const Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FeedDrawerItems(),
-                    FavoriteCommunities(),
-                    ModeratedCommunities(),
-                    SubscribedCommunities(),
-                  ],
-                ),
+        child: CustomScrollView(
+          slivers: [
+            SliverPinnedHeader(child: UserDrawerItem(navigateToAccount: widget.navigateToAccount)),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  const FeedDrawerItems(),
+                  const FavoriteCommunities(),
+                  const ModeratedCommunities(),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
+                    child: Text(l10n.subscriptions, style: theme.textTheme.titleSmall),
+                  ),
+                  if (subscriptions.isNotEmpty)
+                    ...subscriptions.map(
+                      (community) {
+                        final bool isCommunitySelected = feedState.communityId == community.id;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              alignment: Alignment.centerLeft,
+                              minimumSize: const Size.fromHeight(50),
+                              backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              context.read<FeedBloc>().add(
+                                    FeedFetchedEvent(
+                                      feedType: FeedType.community,
+                                      sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                                      communityId: community.id,
+                                      reset: true,
+                                    ),
+                                  );
+                            },
+                            child: CommunityItem(community: community, showFavoriteAction: isLoggedIn, isFavorite: false),
+                          ),
+                        );
+                      },
+                    ).toList() as List<Widget>,
+                  if (subscriptions.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
+                      child: Text(
+                        l10n.noSubscriptions,
+                        style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],
@@ -87,60 +152,66 @@ class UserDrawerItem extends StatelessWidget {
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
     String anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(13, 16, 16, 0),
-      child: TextButton(
-        style: TextButton.styleFrom(
-          alignment: Alignment.centerLeft,
-          minimumSize: const Size.fromHeight(50),
-        ),
-        onPressed: () => navigateToAccount?.call(),
-        child: Row(
-          children: [
-            UserAvatar(
-              person: isLoggedIn ? accountState.personView?.person : null,
-              radius: 16.0,
-            ),
-            const SizedBox(width: 16.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    if (!isLoggedIn) ...[
-                      Icon(
-                        Icons.person_off_rounded,
-                        color: theme.textTheme.bodyMedium?.color,
-                        size: 15,
-                      ),
-                      const SizedBox(width: 5),
-                    ],
-                    Text(
-                      isLoggedIn ? accountState.personView?.person.name ?? '' : l10n.anonymous,
-                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-                Text(
-                  isLoggedIn ? authState.account?.instance ?? '' : anonymousInstance,
-                  style: theme.textTheme.bodyMedium,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-            const Expanded(child: SizedBox()),
-            IconButton(
-              icon: Icon(
-                Icons.more_vert_outlined,
-                color: theme.textTheme.bodyMedium?.color,
-                semanticLabel: l10n.openAccountSwitcher,
+    return Material(
+      color: theme.colorScheme.surface,
+      elevation: 1.0,
+      surfaceTintColor: theme.colorScheme.surfaceTint,
+      shadowColor: Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(13.0, 16.0, 4.0, 0),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            minimumSize: const Size.fromHeight(50),
+          ),
+          onPressed: () => navigateToAccount?.call(),
+          child: Row(
+            children: [
+              UserAvatar(
+                person: isLoggedIn ? accountState.personView?.person : null,
+                radius: 16.0,
               ),
-              onPressed: () => showProfileModalSheet(context),
-            ),
-          ],
+              const SizedBox(width: 16.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      if (!isLoggedIn) ...[
+                        Icon(
+                          Icons.person_off_rounded,
+                          color: theme.textTheme.bodyMedium?.color,
+                          size: 15,
+                        ),
+                        const SizedBox(width: 5),
+                      ],
+                      Text(
+                        isLoggedIn ? accountState.personView?.person.name ?? '' : l10n.anonymous,
+                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                  Text(
+                    isLoggedIn ? authState.account?.instance ?? '' : anonymousInstance,
+                    style: theme.textTheme.bodyMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+              const Expanded(child: SizedBox()),
+              IconButton(
+                icon: Icon(
+                  Icons.more_vert_outlined,
+                  color: theme.textTheme.bodyMedium?.color,
+                  semanticLabel: l10n.openAccountSwitcher,
+                ),
+                onPressed: () => showProfileModalSheet(context),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -177,7 +248,7 @@ class FeedDrawerItems extends StatelessWidget {
                 isSelected: destination.listingType == feedState.postListingType,
                 onTap: () {
                   Navigator.of(context).pop();
-                  navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType, sortType: thunderState.sortTypeForInstance);
+                  navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType);
                 },
                 label: destination.label,
                 icon: destination.icon,
@@ -228,6 +299,7 @@ class FavoriteCommunities extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    AuthState authState = context.watch<AuthBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
     AccountState accountState = context.watch<AccountBloc>().state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
@@ -264,7 +336,7 @@ class FavoriteCommunities extends StatelessWidget {
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
                           feedType: FeedType.community,
-                          sortType: thunderState.sortTypeForInstance,
+                          sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                           communityId: community.id,
                           reset: true,
                         ),
@@ -280,93 +352,6 @@ class FavoriteCommunities extends StatelessWidget {
   }
 }
 
-class SubscribedCommunities extends StatelessWidget {
-  const SubscribedCommunities({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-
-    FeedState feedState = context.watch<FeedBloc>().state;
-    AccountState accountState = context.watch<AccountBloc>().state;
-    ThunderState thunderState = context.read<ThunderBloc>().state;
-
-    AnonymousSubscriptionsBloc subscriptionsBloc = context.watch<AnonymousSubscriptionsBloc>();
-    subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
-
-    bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
-
-    List<Community> subscriptions = [];
-
-    if (isLoggedIn) {
-      Set<int> favoriteCommunityIds = accountState.favorites.map((cv) => cv.community.id).toSet();
-      Set<int> moderatedCommunityIds = accountState.moderates.map((cmv) => cmv.community.id).toSet();
-
-      List<CommunityView> filteredSubscriptions = accountState.subsciptions
-          .where((CommunityView communityView) => !favoriteCommunityIds.contains(communityView.community.id) && !moderatedCommunityIds.contains(communityView.community.id))
-          .toList();
-      subscriptions = filteredSubscriptions.map((CommunityView communityView) => communityView.community).toList();
-    } else {
-      subscriptions = subscriptionsBloc.state.subscriptions;
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
-          child: Text(l10n.subscriptions, style: theme.textTheme.titleSmall),
-        ),
-        if (subscriptions.isNotEmpty) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: subscriptions.length,
-              itemBuilder: (context, index) {
-                Community community = subscriptions[index];
-
-                final bool isCommunitySelected = feedState.communityId == community.id;
-
-                return TextButton(
-                  style: TextButton.styleFrom(
-                    alignment: Alignment.centerLeft,
-                    minimumSize: const Size.fromHeight(50),
-                    backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    context.read<FeedBloc>().add(
-                          FeedFetchedEvent(
-                            feedType: FeedType.community,
-                            sortType: thunderState.sortTypeForInstance,
-                            communityId: community.id,
-                            reset: true,
-                          ),
-                        );
-                  },
-                  child: CommunityItem(community: community, showFavoriteAction: isLoggedIn, isFavorite: false),
-                );
-              },
-            ),
-          ),
-        ],
-        if (subscriptions.isEmpty) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
-            child: Text(
-              l10n.noSubscriptions,
-              style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
-            ),
-          )
-        ],
-      ],
-    );
-  }
-}
-
 class ModeratedCommunities extends StatelessWidget {
   const ModeratedCommunities({super.key});
 
@@ -375,6 +360,7 @@ class ModeratedCommunities extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    AuthState authState = context.watch<AuthBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
     AccountState accountState = context.watch<AccountBloc>().state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
@@ -411,7 +397,7 @@ class ModeratedCommunities extends StatelessWidget {
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: thunderState.sortTypeForInstance,
+                            sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
                           ),
@@ -519,12 +505,17 @@ class CommunityItem extends StatelessWidget {
 
     return Row(
       children: [
-        CommunityAvatar(community: community, radius: 16),
+        CommunityAvatar(community: community, radius: 16, thumbnailSize: 100, format: 'png'),
         const SizedBox(width: 16.0),
         Expanded(
           child: Tooltip(
             excludeFromSemantics: true,
-            message: '${community.title}\n${generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId))}',
+            message: '${community.title}\n${generateCommunityFullName(
+              context,
+              community.name,
+              community.title,
+              fetchInstanceNameFromUrl(community.actorId),
+            )}',
             preferBelow: false,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,

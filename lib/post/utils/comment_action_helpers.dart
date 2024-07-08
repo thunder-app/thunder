@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/account/models/user_label.dart';
 import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -15,6 +17,7 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/report_comment_dialog.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -47,6 +50,7 @@ enum CommentCardAction {
   userActions,
   visitProfile,
   blockUser,
+  userLabel,
   instanceActions,
   visitInstance,
   blockInstance,
@@ -87,7 +91,12 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.userActions,
     icon: Icons.person_rounded,
     label: l10n.user,
-    getSubtitleLabel: (context, commentView) => generateUserFullName(context, commentView.creator.name, fetchInstanceNameFromUrl(commentView.creator.actorId)),
+    getSubtitleLabel: (context, commentView) => generateUserFullName(
+      context,
+      commentView.creator.name,
+      commentView.creator.displayName,
+      fetchInstanceNameFromUrl(commentView.creator.actorId),
+    ),
     getTrailingIcon: () => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
@@ -100,6 +109,11 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     icon: Icons.block,
     label: AppLocalizations.of(GlobalContext.context)!.blockUser,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.userLabel,
+    icon: Icons.label_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.addUserLabel,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.instanceActions,
@@ -260,6 +274,7 @@ void showCommentActionBottomModalSheet(
       .where((extendedAction) => [
             CommentCardAction.visitProfile,
             CommentCardAction.blockUser,
+            CommentCardAction.userLabel,
           ].contains(extendedAction.commentCardAction))
       .toList();
 
@@ -434,6 +449,13 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                   ),
                 ),
               ),
+              // Post metadata chips
+              Row(
+                children: [
+                  const SizedBox(width: 20),
+                  LanguagePostCardMetaData(languageId: widget.commentView.comment.languageId),
+                ],
+              ),
               if (widget.multiCommentCardActions[page]?.isNotEmpty == true)
                 MultiPickerItem(
                   pickerItems: [
@@ -537,6 +559,60 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
         break;
       case CommentCardAction.blockUser:
         action = () => widget.outerContext.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: widget.commentView.creator.id, value: true));
+        break;
+      case CommentCardAction.userLabel:
+        action = () async {
+          // Load up any existing label
+          final String username = UserLabel.usernameFromParts(widget.commentView.creator.name, widget.commentView.creator.actorId);
+          final UserLabel? existingLabel = await UserLabel.fetchUserLabel(username);
+
+          if (!context.mounted) return;
+
+          final TextEditingController controller = TextEditingController(text: existingLabel?.label);
+
+          await showThunderDialog(
+            // We're checking context.mounted above, so ignore this warning
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: l10n.addUserLabel,
+            contentWidgetBuilder: (_) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.text,
+                    controller: controller,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      border: const OutlineInputBorder(),
+                      labelText: l10n.label,
+                      hintText: l10n.userLabelHint,
+                    ),
+                    autofocus: true,
+                  ),
+                ],
+              );
+            },
+            tertiaryButtonText: existingLabel != null ? l10n.delete : null,
+            onTertiaryButtonPressed: (dialogContext) async {
+              Navigator.of(dialogContext).pop();
+              await UserLabel.deleteUserLabel(username);
+            },
+            secondaryButtonText: l10n.cancel,
+            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+            primaryButtonText: l10n.save,
+            onPrimaryButtonPressed: (dialogContext, _) async {
+              Navigator.of(dialogContext).pop();
+
+              if (controller.text.isNotEmpty) {
+                await UserLabel.upsertUserLabel(UserLabel(id: '', username: username, label: controller.text));
+              } else {
+                await UserLabel.deleteUserLabel(username);
+              }
+            },
+          );
+        };
         break;
       case CommentCardAction.instanceActions:
         action = () => setState(() => page = CommentActionBottomSheetPage.instance);

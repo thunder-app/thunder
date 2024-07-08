@@ -89,7 +89,7 @@ Future<void> navigateToFeedPage(
           FeedFetchedEvent(
             feedType: feedType,
             postListingType: postListingType,
-            sortType: sortType ?? thunderBloc.state.sortTypeForInstance,
+            sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
             communityId: communityId,
             communityName: communityName,
             userId: userId,
@@ -121,7 +121,7 @@ Future<void> navigateToFeedPage(
       child: Material(
         child: FeedPage(
           feedType: feedType,
-          sortType: sortType ?? thunderBloc.state.sortTypeForInstance,
+          sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
           communityName: communityName,
           communityId: communityId,
           userId: userId,
