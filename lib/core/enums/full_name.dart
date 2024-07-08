@@ -109,6 +109,7 @@ Widget generateSampleUserFullNameWidget(
   NameThickness? instanceNameThickness,
   NameColor? instanceNameColor,
   TextStyle? textStyle,
+  bool? useDisplayName,
 }) =>
     UserFullNameWidget(
       null,
@@ -121,6 +122,7 @@ Widget generateSampleUserFullNameWidget(
       instanceNameThickness: instanceNameThickness,
       instanceNameColor: instanceNameColor,
       textStyle: textStyle,
+      useDisplayName: useDisplayName,
     );
 
 String generateSampleCommunityFullName(FullNameSeparator separator, bool useDisplayName) => generateCommunityFullName(
@@ -139,6 +141,7 @@ Widget generateSampleCommunityFullNameWidget(
   NameThickness? instanceNameThickness,
   NameColor? instanceNameColor,
   TextStyle? textStyle,
+  bool? useDisplayName,
 }) =>
     CommunityFullNameWidget(
       null,
@@ -151,6 +154,7 @@ Widget generateSampleCommunityFullNameWidget(
       instanceNameThickness: instanceNameThickness,
       instanceNameColor: instanceNameColor,
       textStyle: textStyle,
+      useDisplayName: useDisplayName,
     );
 
 /// --- USERS ---

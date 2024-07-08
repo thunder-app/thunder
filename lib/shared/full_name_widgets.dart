@@ -44,7 +44,8 @@ class UserFullNameWidget extends StatelessWidget {
     this.autoSize = false,
     this.transformColor,
     this.useDisplayName,
-  })  : assert(outerContext != null || (userSeparator != null && userNameThickness != null && userNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
+  })  : assert(outerContext != null ||
+            (userSeparator != null && userNameThickness != null && userNameColor != null && instanceNameThickness != null && instanceNameColor != null && useDisplayName != null)),
         assert(outerContext != null || textStyle != null);
 
   @override
@@ -137,7 +138,8 @@ class CommunityFullNameWidget extends StatelessWidget {
     this.autoSize = false,
     this.transformColor,
     this.useDisplayName,
-  })  : assert(outerContext != null || (communitySeparator != null && communityNameThickness != null && communityNameColor != null && instanceNameThickness != null && instanceNameColor != null)),
+  })  : assert(outerContext != null ||
+            (communitySeparator != null && communityNameThickness != null && communityNameColor != null && instanceNameThickness != null && instanceNameColor != null && useDisplayName != null)),
         assert(outerContext != null || textStyle != null);
 
   @override
