@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -39,6 +40,7 @@ class PostCardViewCompact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
 
@@ -77,6 +79,16 @@ class PostCardViewCompact extends StatelessWidget {
                 Text.rich(
                   TextSpan(
                     children: [
+                      if (postViewMedia.postView.hidden == true)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.close_rounded,
+                            color:
+                                indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.hideColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.hideColor.color,
+                            size: 16 * textScaleFactor,
+                            semanticLabel: l10n.hidden,
+                          ),
+                        ),
                       if (postViewMedia.postView.post.locked) ...[
                         WidgetSpan(
                           child: Icon(

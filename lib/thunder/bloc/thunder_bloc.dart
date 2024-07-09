@@ -140,6 +140,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
       bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
+      bool showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
 
@@ -206,6 +207,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       ActionColor saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
       ActionColor markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
       ActionColor replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
+      ActionColor hideColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.hideColor.name) ?? ActionColor.red);
 
       // Font Settings
       FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
@@ -315,6 +317,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         imageCachingMode: imageCachingMode,
         showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,
+        showHiddenPosts: showHiddenPosts,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings
@@ -374,6 +377,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         saveColor: saveColor,
         markReadColor: markReadColor,
         replyColor: replyColor,
+        hideColor: hideColor,
 
         // Font Settings
         titleFontSizeScale: titleFontSizeScale,

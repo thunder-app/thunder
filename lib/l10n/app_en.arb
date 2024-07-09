@@ -947,6 +947,18 @@
   "@hidCommunity": {
     "description": "Short decription for moderator action to hide a community"
   },
+  "hidden": "Hidden",
+  "@hidden": {
+    "description": "Describes a post that is hidden"
+  },
+  "hide": "Hide",
+  "@hide": {
+    "description": "The action to hide a post"
+  },
+  "hideColor": "Hide Color",
+  "@hideColor": {
+    "description": "Name of the hide color setting"
+  },
   "hideNsfwPostsFromFeed": "Hide NSFW Posts from Feed",
   "@hideNsfwPostsFromFeed": {
     "description": "Toggle to hide NSFW posts from the feed."
@@ -2017,6 +2029,10 @@
   "@showFullHeightImages": {
     "description": "Toggle to view full height images."
   },
+  "showHiddenPosts": "Show Hidden Posts",
+  "@showHiddenPosts": {
+    "description": "The name of the setting for showing hidden posts"
+  },
   "showInAppUpdateNotifications": "Get Notified of new GitHub Releases",
   "@showInAppUpdateNotifications": {
     "description": "Toggle to get notified of new GitHub releases."
@@ -2392,6 +2408,10 @@
   "unhidCommunity": "Unhid Community",
   "@unhidCommunity": {
     "description": "Short decription for moderator action to unhide a community"
+  },
+  "unhide": "Unhide",
+  "@unhide": {
+    "description": "The action to unhide a post"
   },
   "unifiedPushDistributorApp": "UnifiedPush Distributor app: {app} ({count} available)",
   "@unifiedPushDistributorApp": {
