@@ -28,19 +28,19 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
   List<UserLabel> userLabels = [];
 
   void _updateChangedUserLabel(({UserLabel? userLabel, bool deleted}) result) {
-    if (result.userLabel != null) {
-      UserLabel? existingLabel = userLabels.firstWhereOrNull((userLabel) => userLabel.username == result.userLabel!.username);
-      if (existingLabel == null && !result.deleted) {
-        // It doesn't exist in our list yet, add it!
-        setState(() => userLabels.add(result.userLabel!));
-      } else if (existingLabel != null) {
-        if (result.deleted) {
-          // It exists in our list and was deleted, so remove it.
-          setState(() => userLabels.removeWhere((userLabel) => userLabel.username == result.userLabel!.username));
-        } else {
-          // It exists in our list but was changed, so update it.
-          setState(() => userLabels[userLabels.indexOf(existingLabel)] = result.userLabel!);
-        }
+    if (result.userLabel == null) return;
+
+    UserLabel? existingLabel = userLabels.firstWhereOrNull((userLabel) => userLabel.username == result.userLabel!.username);
+    if (existingLabel == null && !result.deleted) {
+      // It doesn't exist in our list yet, add it!
+      setState(() => userLabels.add(result.userLabel!));
+    } else if (existingLabel != null) {
+      if (result.deleted) {
+        // It exists in our list and was deleted, so remove it.
+        setState(() => userLabels.removeWhere((userLabel) => userLabel.username == result.userLabel!.username));
+      } else {
+        // It exists in our list but was changed, so update it.
+        setState(() => userLabels[userLabels.indexOf(existingLabel)] = result.userLabel!);
       }
     }
   }
