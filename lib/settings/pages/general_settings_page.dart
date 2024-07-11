@@ -368,7 +368,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   description: l10n.defaultFeedType,
                   value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
                   options: [
-                    ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
                     ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
                     ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
                   ],

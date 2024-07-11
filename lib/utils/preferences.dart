@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/draft.dart';
 import 'package:thunder/comment/view/create_comment_page.dart';
@@ -11,6 +12,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/utils/constants.dart';
 
 Future<void> performSharedPreferencesMigration() async {
   final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
@@ -105,5 +107,11 @@ Future<void> performSharedPreferencesMigration() async {
     } catch (e) {
       debugPrint('Cannot migrate draft from SharedPreferences: $draftKey');
     }
+  }
+
+  // Update the default feed type setting
+  ListingType defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+  if (defaultListingType == ListingType.subscribed) {
+    await prefs.setString(LocalSettings.defaultFeedListingType.name, DEFAULT_LISTING_TYPE.name);
   }
 }
