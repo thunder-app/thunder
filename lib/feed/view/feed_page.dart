@@ -55,6 +55,7 @@ class FeedPage extends StatefulWidget {
     this.userId,
     this.username,
     this.scaffoldStateKey,
+    this.showAccountAppBar = false,
   });
 
   /// The type of feed to display.
@@ -83,6 +84,10 @@ class FeedPage extends StatefulWidget {
   ///
   /// This is useful if we want to keep the user on the "same" page
   final bool useGlobalFeedBloc;
+
+  /// Boolean which indicates whether the account app bar should be shown.
+  /// The account app bar contains a leading action that allows account switching, and a trailing action that navigates the user to the settings page
+  final bool showAccountAppBar;
 
   /// The scaffold key which holds the drawer
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
@@ -146,16 +151,20 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           username: widget.username,
           reset: true,
         )),
-      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
+      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey, showAccountAppBar: widget.showAccountAppBar),
     );
   }
 }
 
 class FeedView extends StatefulWidget {
-  const FeedView({super.key, this.scaffoldStateKey});
+  const FeedView({super.key, this.scaffoldStateKey, this.showAccountAppBar = false});
 
   /// The scaffold key which holds the drawer
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
+
+  /// Boolean which indicates whether the account app bar should be shown.
+  /// The account app bar contains a leading action that allows account switching, and a trailing action that navigates the user to the settings page
+  final bool showAccountAppBar;
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -340,6 +349,7 @@ class _FeedViewState extends State<FeedView> {
                       controller: _scrollController,
                       slivers: <Widget>[
                         FeedPageAppBar(
+                          isAccountUser: widget.showAccountAppBar,
                           showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
                           scaffoldStateKey: widget.scaffoldStateKey,
                         ),

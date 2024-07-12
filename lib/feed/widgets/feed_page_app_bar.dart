@@ -9,6 +9,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
@@ -29,10 +30,15 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_settings_bloc.dart';
+import 'package:thunder/user/pages/user_settings_page.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatefulWidget {
-  const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
+  const FeedPageAppBar({super.key, this.isAccountUser = false, this.showAppBarTitle = true, this.scaffoldStateKey});
+
+  /// Whether the user is the current account user. If so, display a different set of actions
+  final bool isAccountUser;
 
   /// Whether to show the app bar title
   final bool showAppBarTitle;
@@ -52,8 +58,8 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
   Widget build(BuildContext context) {
     final feedBloc = context.read<FeedBloc>();
     final thunderBloc = context.read<ThunderBloc>();
-    final AuthState authState = context.read<AuthBloc>().state;
-    final AccountState accountState = context.read<AccountBloc>().state;
+    final authState = context.read<AuthBloc>().state;
+    final accountState = context.read<AccountBloc>().state;
 
     person = accountState.reload ? accountState.personView?.person : person;
 
@@ -65,48 +71,69 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
       title: FeedAppBarTitle(visible: widget.showAppBarTitle),
       leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
-      leading: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
-          ? Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Semantics(
-                label: MaterialLocalizations.of(context).openAppDrawerTooltip,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: UserAvatar(
-                        person: person,
-                      ),
-                    ),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
-                        onTap: () => _openDrawerOrGoBack(context, feedBloc),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : IconButton(
-              icon: widget.scaffoldStateKey == null
-                  ? (!kIsWeb && Platform.isIOS
-                      ? Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                        )
-                      : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
-                  : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
-              onPressed: () => _openDrawerOrGoBack(context, feedBloc),
-            ),
+      leading: getLeadingWidget(),
       actions: (feedBloc.state.status != FeedStatus.initial && feedBloc.state.status != FeedStatus.failureLoadingCommunity && feedBloc.state.status != FeedStatus.failureLoadingUser)
           ? [
               if (feedBloc.state.feedType == FeedType.general) const FeedAppBarGeneralActions(),
               if (feedBloc.state.feedType == FeedType.community) const FeedAppBarCommunityActions(),
-              if (feedBloc.state.feedType == FeedType.user) const FeedAppBarUserActions(),
+              if (feedBloc.state.feedType == FeedType.user) FeedAppBarUserActions(isAccountUser: widget.isAccountUser),
             ]
           : [],
+    );
+  }
+
+  Widget getLeadingWidget() {
+    final thunderBloc = context.read<ThunderBloc>();
+    final authBloc = context.read<AuthBloc>();
+    final feedBloc = context.read<FeedBloc>();
+
+    if (widget.isAccountUser) {
+      return IconButton(
+        onPressed: () => showProfileModalSheet(context),
+        icon: Icon(
+          Icons.people_alt_rounded,
+          semanticLabel: AppLocalizations.of(context)!.profiles,
+        ),
+        tooltip: AppLocalizations.of(context)!.profiles,
+      );
+    }
+
+    if (widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authBloc.state.isLoggedIn) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: Semantics(
+          label: MaterialLocalizations.of(context).openAppDrawerTooltip,
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: UserAvatar(
+                  person: person,
+                ),
+              ),
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => _openDrawerOrGoBack(context, feedBloc),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return IconButton(
+      icon: widget.scaffoldStateKey == null
+          ? (!kIsWeb && Platform.isIOS
+              ? Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                )
+              : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
+          : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
+      onPressed: () => _openDrawerOrGoBack(context, feedBloc),
     );
   }
 
@@ -282,7 +309,10 @@ class FeedAppBarCommunityActions extends StatelessWidget {
 
 /// The actions of the app bar for the user feed.
 class FeedAppBarUserActions extends StatelessWidget {
-  const FeedAppBarUserActions({super.key});
+  const FeedAppBarUserActions({super.key, this.isAccountUser = false});
+
+  /// Whether the user is the current account user. If so, display a different set of actions
+  final bool isAccountUser;
 
   @override
   Widget build(BuildContext context) {
@@ -291,6 +321,38 @@ class FeedAppBarUserActions extends StatelessWidget {
 
     return Row(
       children: [
+        if (isAccountUser)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0, 4.0),
+            child: IconButton(
+              onPressed: () {
+                final AccountBloc accountBloc = context.read<AccountBloc>();
+                final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
+
+                Navigator.of(context).push(
+                  SwipeablePageRoute(
+                    transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                    canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                    canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(value: accountBloc),
+                        BlocProvider.value(value: thunderBloc),
+                        BlocProvider.value(value: userSettingsBloc),
+                      ],
+                      child: const UserSettingsPage(),
+                    ),
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.settings_rounded,
+                semanticLabel: l10n.accountSettings,
+              ),
+              tooltip: l10n.accountSettings,
+            ),
+          ),
         IconButton(
           icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
           onPressed: () {
