@@ -158,8 +158,8 @@ void main() {
       final tables = db.allTables.toList();
       final tableNames = tables.map((e) => e.actualTableName).toList();
 
-      expect(tables.length, 5);
-      expect(tableNames, containsAll(['accounts', 'local_subscriptions', 'favorites', 'user_labels', 'drafts']));
+      expect(tables.length, 6);
+      expect(tableNames, containsAll(['accounts', 'local_subscriptions', 'favorites', 'user_labels', 'drafts', 'anonymous_instances']));
 
       // Expect correct number of accounts, and correct information
       final accounts = await db.accounts.all().get();
