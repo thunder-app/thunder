@@ -105,7 +105,16 @@ Future<Map<String, dynamic>> fetchFeedItems({
 }
 
 /// Logic to create a post
-Future<PostView> createPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited, int? languageId}) async {
+Future<PostView> createPost({
+  required int communityId,
+  required String name,
+  String? body,
+  String? url,
+  String? customThumbnail,
+  bool? nsfw,
+  int? postIdBeingEdited,
+  int? languageId,
+}) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -118,6 +127,7 @@ Future<PostView> createPost({required int communityId, required String name, Str
       name: name,
       body: body,
       url: url?.isEmpty == true ? null : url,
+      customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
       nsfw: nsfw,
       postId: postIdBeingEdited,
       languageId: languageId,
@@ -129,6 +139,7 @@ Future<PostView> createPost({required int communityId, required String name, Str
       name: name,
       body: body,
       url: url?.isEmpty == true ? null : url,
+      customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
       nsfw: nsfw,
       languageId: languageId,
     ));
