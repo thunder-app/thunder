@@ -162,8 +162,8 @@ class FeedAppBarCommunityActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final feedBloc = context.read<FeedBloc>();
     final thunderBloc = context.read<ThunderBloc>();
+    final feedBloc = context.read<FeedBloc>();
     final authBloc = context.read<AuthBloc>();
 
     return Row(
@@ -214,7 +214,6 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                   bool isUserLoggedIn = authBloc.state.isLoggedIn;
 
                   if (rememberFeedSortType && isUserLoggedIn) {
-                    // Get the current user, and update/create a new CustomSortType in the db
                     int? userId = authBloc.state.account?.userId;
                     assert(userId != null);
 
@@ -223,8 +222,6 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                       accountId: userId!,
                       communityId: feedBloc.state.fullCommunityView?.communityView.community.id,
                     );
-
-                    debugPrint('Adding/updating custom sort type: ${customSortType.accountId} ${customSortType.communityId} ${customSortType.sortType}');
 
                     await CustomSortType.upsertCustomSortType(customSortType);
                   }
@@ -360,6 +357,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
     final thunderBloc = context.read<ThunderBloc>();
     final feedBloc = context.read<FeedBloc>();
     final authBloc = context.read<AuthBloc>();
@@ -390,7 +388,6 @@ class FeedAppBarGeneralActions extends StatelessWidget {
                   bool isUserLoggedIn = authBloc.state.isLoggedIn;
 
                   if (rememberFeedSortType && isUserLoggedIn) {
-                    // Get the current user, and update/create a new CustomSortType in the db
                     int? userId = authBloc.state.account?.userId;
                     assert(userId != null);
 
@@ -399,8 +396,6 @@ class FeedAppBarGeneralActions extends StatelessWidget {
                       accountId: userId!,
                       feedType: feedBloc.state.postListingType,
                     );
-
-                    debugPrint('Adding/updating custom sort type: $customSortType');
 
                     await CustomSortType.upsertCustomSortType(customSortType);
                   }

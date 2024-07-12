@@ -539,7 +539,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ToggleOption(
               description: l10n.rememberFeedSortType,
               value: rememberFeedSortType,
-              subtitle: "Saves the current feed/community sort type",
+              subtitle: l10n.rememberFeedSortTypeDescription,
               iconEnabled: Icons.dynamic_feed_rounded,
               iconDisabled: Icons.dynamic_feed_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.rememberFeedSortType, value),

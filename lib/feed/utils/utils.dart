@@ -63,10 +63,14 @@ IconData? getSortIcon(FeedState state) {
   return sortTypeItem?.icon;
 }
 
-/// Gets the default sort type based on a few factors.
-/// If rememberFeedSortType is enabled, it will attempt to get the last known sort type
-/// Otherwise, it will fallback to the user's default sort type if present.
-/// If the user is not logged in, it will fallback to the app's default sort type
+/// Gets the default sort type based on precedence.
+///
+/// If the user is not logged in, it will fetch the app's default feed sort type.
+/// If the user is logged in and [rememberFeedSortType] is false, it will fetch the user account'sdefault sort type.
+/// If the user is logged in and [rememberFeedSortType] is true, it will fetch the custom sort type if available. If not, it will fetch the user account's default sort type.
+/// If all else fails (should never happen), it will return [SortType.hot]
+///
+/// Note that this does not take a [context] because it is called outside of a widget.
 Future<SortType> getSortType(SortType? sortType, int? communityId, ListingType? postListingType) async {
   try {
     Account? account = await fetchActiveProfileAccount();
@@ -78,8 +82,7 @@ Future<SortType> getSortType(SortType? sortType, int? communityId, ListingType? 
     SortType? finalSortType = sortType;
 
     if (finalSortType == null) {
-      // Check to see if we have a remembered sort type. If so, then use that first
-      // This will only apply to logged in users
+      // Check to see if we have a remembered sort type. If so, then use that first.This will only apply to logged in users.
       if (rememberFeedSortType && account != null) {
         CustomSortType? customSortType = await CustomSortType.fetchCustomSortType(
           account.userId!,
