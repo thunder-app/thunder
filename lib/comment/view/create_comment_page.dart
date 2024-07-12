@@ -108,8 +108,11 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   /// The ID of the post we're responding to
   int? postId;
 
-  // The ID of the comment we're responding to
+  /// The ID of the comment we're responding to
   int? parentCommentId;
+
+  /// Contains the text that is currently being selected in the post/comment that we are replying to
+  String? replyViewSelection;
 
   @override
   void initState() {
@@ -256,7 +259,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
             switch (state.status) {
               case CreateCommentStatus.imageUploadSuccess:
-                _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+                String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
+                _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
                 break;
               case CreateCommentStatus.imageUploadFailure:
                 showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
@@ -328,6 +332,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       showExpandableButton: false,
                                       selectable: true,
                                       showReplyEditorButtons: true,
+                                      onSelectionChanged: (selection) => replyViewSelection = selection,
                                     ),
                                   ),
                                 ),
@@ -354,6 +359,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       disableActions: true,
                                       selectable: true,
                                       showReplyEditorButtons: true,
+                                      onSelectionChanged: (selection) => replyViewSelection = selection,
                                     ),
                                   ),
                                 ),
@@ -466,9 +472,10 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   customImageButtonAction: () async {
                                     if (state.status == CreateCommentStatus.imageUploadInProgress) return;
 
-                                    String imagePath = await selectImageToUpload();
-                                    if (context.mounted) context.read<CreateCommentCubit>().uploadImage(imagePath);
+                                    List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
+                                    if (context.mounted) context.read<CreateCommentCubit>().uploadImages(imagesPath);
                                   },
+                                  getAlternativeSelection: () => replyViewSelection,
                                 ),
                               ),
                             ),

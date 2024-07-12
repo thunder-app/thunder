@@ -174,7 +174,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          if (context.mounted) context.read<CreatePostCubit>().uploadImage(widget.image!.path, isPostImage: true);
+          if (context.mounted) context.read<CreatePostCubit>().uploadImages([widget.image!.path], isPostImage: true);
         });
       }
 
@@ -331,10 +331,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
           switch (state.status) {
             case CreatePostStatus.imageUploadSuccess:
-              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+              String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
+              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
               break;
             case CreatePostStatus.postImageUploadSuccess:
-              _urlTextController.text = state.imageUrl ?? '';
+              _urlTextController.text = state.imageUrls?.first ?? '';
               break;
             case CreatePostStatus.imageUploadFailure:
             case CreatePostStatus.postImageUploadFailure:
@@ -460,8 +461,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   onPressed: () async {
                                     if (state.status == CreatePostStatus.postImageUploadInProgress) return;
 
-                                    String imagePath = await selectImageToUpload();
-                                    if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: true);
+                                    List<String> imagesPath = await selectImagesToUpload();
+                                    if (context.mounted) context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
                                   },
                                   icon: state.status == CreatePostStatus.postImageUploadInProgress
                                       ? const SizedBox(
@@ -604,8 +605,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               customImageButtonAction: () async {
                                 if (state.status == CreatePostStatus.imageUploadInProgress) return;
 
-                                String imagePath = await selectImageToUpload();
-                                if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: false);
+                                List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
+                                if (context.mounted) context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
                               },
                             ),
                           ),

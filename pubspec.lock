@@ -1116,8 +1116,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "3196471d8e1b26873aecaf04254043cf9817bbe3"
-      resolved-ref: "3196471d8e1b26873aecaf04254043cf9817bbe3"
+      ref: "514e3718a42d4398619d66b6ac1ccd53bafd9b3f"
+      resolved-ref: "514e3718a42d4398619d66b6ac1ccd53bafd9b3f"
       url: "https://github.com/thunder-app/markdown-editor.git"
     source: git
     version: "0.1.0"

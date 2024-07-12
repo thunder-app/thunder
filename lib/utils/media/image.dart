@@ -111,11 +111,16 @@ void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = fa
   }
 }
 
-Future<String> selectImageToUpload() async {
+Future<List<String>> selectImagesToUpload({bool allowMultiple = false}) async {
   final ImagePicker picker = ImagePicker();
 
+  if (allowMultiple) {
+    List<XFile>? files = await picker.pickMultiImage();
+    return files.map((file) => file.path).toList();
+  }
+
   XFile? file = await picker.pickImage(source: ImageSource.gallery);
-  return file!.path;
+  return [file!.path];
 }
 
 void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost}) {

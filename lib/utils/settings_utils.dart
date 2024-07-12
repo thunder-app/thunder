@@ -20,6 +20,7 @@ void navigateToSetting(BuildContext context, LocalSettings setting) {
         LocalSettingsCategories.filters: SETTINGS_FILTERS_PAGE,
         LocalSettingsCategories.accessibility: SETTINGS_ACCESSIBILITY_PAGE,
         LocalSettingsCategories.account: SETTINGS_ACCOUNT_PAGE,
+        LocalSettingsCategories.userLabels: SETTINGS_USER_LABELS_PAGE,
         LocalSettingsCategories.theming: SETTINGS_APPEARANCE_THEMES_PAGE,
         LocalSettingsCategories.debug: SETTINGS_DEBUG_PAGE,
         LocalSettingsCategories.about: SETTINGS_ABOUT_PAGE,

@@ -16,7 +16,7 @@ class CreateCommentState extends Equatable {
   const CreateCommentState({
     this.status = CreateCommentStatus.initial,
     this.commentView,
-    this.imageUrl,
+    this.imageUrls,
     this.message,
   });
 
@@ -26,8 +26,8 @@ class CreateCommentState extends Equatable {
   /// The result of the created or edited comment
   final CommentView? commentView;
 
-  /// The url of the uploaded image
-  final String? imageUrl;
+  /// The urls of the uploaded images
+  final List<String>? imageUrls;
 
   /// The info or error message to be displayed as a snackbar
   final String? message;
@@ -35,17 +35,17 @@ class CreateCommentState extends Equatable {
   CreateCommentState copyWith({
     required CreateCommentStatus status,
     CommentView? commentView,
-    String? imageUrl,
+    List<String>? imageUrls,
     String? message,
   }) {
     return CreateCommentState(
       status: status,
       commentView: commentView ?? this.commentView,
-      imageUrl: imageUrl ?? this.imageUrl,
+      imageUrls: imageUrls ?? this.imageUrls,
       message: message ?? this.message,
     );
   }
 
   @override
-  List<dynamic> get props => [status, commentView, imageUrl, message];
+  List<dynamic> get props => [status, commentView, imageUrls, message];
 }

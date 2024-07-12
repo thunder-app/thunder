@@ -429,7 +429,7 @@
   "@confirmMarkAllAsReadBody": {
     "description": "The body of the confirm mark all as read dialog"
   },
-  "confirmMarkAllAsReadTitle": "Mark All As Read?",
+  "confirmMarkAllAsReadTitle": "Mark all as read?",
   "@confirmMarkAllAsReadTitle": {
     "description": "The title of the confirm mark all as read dialog"
   },
@@ -644,6 +644,10 @@
   "deleteLocalPreferencesDescription": "This will clear all your user preferences and settings in Thunder.\n\nDo you want to continue?",
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
+  },
+  "deleteUserLabelConfirmation": "Are you sure you want to delete the label?",
+  "@deleteUserLabelConfirmation": {
+    "description": "Confirmation message for deleting a label"
   },
   "deletedByCreator": "deleted by creator",
   "@deletedByCreator": {
@@ -1197,7 +1201,7 @@
   "@manageMedia": {
     "description": "Setting name and page title for media management"
   },
-  "markAllAsRead": "Mark All As Read",
+  "markAllAsRead": "Mark all as read",
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
@@ -1393,6 +1397,14 @@
   "@noMatrixUserSet": {
     "description": "Message for no matrix user set"
   },
+  "noMentions": "No mentions",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
+  },
+  "noMessages": "No messages",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
   "noPostsFound": "No posts found.",
   "@noPostsFound": {},
   "noProfileBioSet": "No profile bio set",
@@ -1415,6 +1427,10 @@
   },
   "noUserBlocks": "No blocked users.",
   "@noUserBlocks": {},
+  "noUserLabels": "You have not created any user labels yet",
+  "@noUserLabels": {
+    "description": "Placeholder message for empty list of labels"
+  },
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
   "none": "None",
@@ -2003,7 +2019,7 @@
   "@shareUserLinkLocal": {
     "description": "Menu item for sharing a local user link"
   },
-  "showAll": "Show All",
+  "showAll": "Show all",
   "@showAll": {},
   "showBotAccounts": "Show Bot Accounts",
   "@showBotAccounts": {
@@ -2106,6 +2122,10 @@
   "showThumbnailPreviewOnRight": "Show Thumbnails on the Right",
   "@showThumbnailPreviewOnRight": {
     "description": "Toggle to show thumbnails on the right side."
+  },
+  "showUnreadOnly": "Show unread only",
+  "@showUnreadOnly": {
+    "description": "Show unread replies/mentions/messages only"
   },
   "showUpdateChangelogs": "Show Update Changelogs",
   "@showUpdateChangelogs": {
@@ -2550,6 +2570,14 @@
   "userLabelHint": "This is my favorite user",
   "@userLabelHint": {
     "description": "Hint text for adding a new user label"
+  },
+  "userLabels": "User Labels",
+  "@userLabels": {
+    "description": "Heading for user labels settings"
+  },
+  "userLabelsSettingsPageDescription": "You can add, modify, or remove labels associated with users.",
+  "@userLabelsSettingsPageDescription": {
+    "description": "Description text for user labels settings page"
   },
   "userNameColor": "User Name Color",
   "@userNameColor": {
