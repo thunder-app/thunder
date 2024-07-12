@@ -140,6 +140,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
       bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
+      bool rememberFeedSortType = prefs.getBool(LocalSettings.rememberFeedSortType.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
 
@@ -315,6 +316,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         imageCachingMode: imageCachingMode,
         showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,
+        rememberFeedSortType: rememberFeedSortType,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings

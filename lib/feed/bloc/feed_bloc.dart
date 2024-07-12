@@ -11,6 +11,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/post.dart';
+import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -432,10 +433,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Changes the current sort type of the feed, and refreshes the feed
   Future<void> _onFeedChangeSortType(FeedChangeSortTypeEvent event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(status: FeedStatus.switchingSortType, sortType: event.sortType));
+
     add(FeedFetchedEvent(
       feedType: state.feedType,
       postListingType: state.postListingType,
-      sortType: event.sortType,
       communityId: state.communityId,
       communityName: state.communityName,
       userId: state.userId,
@@ -454,6 +456,10 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     // Handle the initial fetch or reload of a feed
     if (event.reset) {
+      SortType? sortType;
+      if (state.status == FeedStatus.switchingSortType) sortType = state.sortType;
+      sortType ??= await getSortType(null, event.communityId, event.postListingType);
+
       if (state.status != FeedStatus.initial) add(ResetFeedEvent());
 
       GetCommunityResponse? fullCommunityView;
@@ -502,7 +508,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       Map<String, dynamic> feedItemResult = await fetchFeedItems(
         page: 1,
         postListingType: event.postListingType,
-        sortType: event.sortType,
+        sortType: sortType,
         communityId: event.communityId,
         communityName: event.communityName,
         userId: event.userId ?? fullPersonView?.personView.person.id,
@@ -525,7 +531,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         hasReachedCommentsEnd: hasReachedCommentsEnd,
         feedType: event.feedType,
         postListingType: event.postListingType,
-        sortType: event.sortType,
+        sortType: sortType,
         fullCommunityView: fullCommunityView,
         fullPersonView: fullPersonView,
         communityId: event.communityId,

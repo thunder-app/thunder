@@ -39,3 +39,11 @@ class Drafts extends Table {
   TextColumn get url => text().nullable()();
   TextColumn get body => text().nullable()();
 }
+
+class CustomSortType extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get sortType => text().map(const SortTypeConverter())();
+  IntColumn get accountId => integer()();
+  IntColumn get communityId => integer().nullable()();
+  TextColumn get feedType => text().map(const ListingTypeConverter()).nullable()();
+}

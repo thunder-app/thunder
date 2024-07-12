@@ -9,6 +9,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/custom_sort_type.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
@@ -163,6 +164,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
 
     final feedBloc = context.read<FeedBloc>();
     final thunderBloc = context.read<ThunderBloc>();
+    final authBloc = context.read<AuthBloc>();
 
     return Row(
       children: [
@@ -206,7 +208,29 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async {
+                  // Update the sort type in the db if rememberFeedSortType is enabled
+                  bool rememberFeedSortType = thunderBloc.state.rememberFeedSortType;
+                  bool isUserLoggedIn = authBloc.state.isLoggedIn;
+
+                  if (rememberFeedSortType && isUserLoggedIn) {
+                    // Get the current user, and update/create a new CustomSortType in the db
+                    int? userId = authBloc.state.account?.userId;
+                    assert(userId != null);
+
+                    CustomSortType customSortType = CustomSortType(
+                      sortType: selected.payload,
+                      accountId: userId!,
+                      communityId: feedBloc.state.fullCommunityView?.communityView.community.id,
+                    );
+
+                    debugPrint('Adding/updating custom sort type: ${customSortType.accountId} ${customSortType.communityId} ${customSortType.sortType}');
+
+                    await CustomSortType.upsertCustomSortType(customSortType);
+                  }
+
+                  feedBloc.add(FeedChangeSortTypeEvent(selected.payload));
+                },
                 previouslySelected: feedBloc.state.sortType,
                 minimumVersion: LemmyClient.instance.version,
               ),
@@ -336,7 +360,9 @@ class FeedAppBarGeneralActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final thunderBloc = context.read<ThunderBloc>();
     final feedBloc = context.read<FeedBloc>();
+    final authBloc = context.read<AuthBloc>();
 
     return Row(
       children: [
@@ -358,7 +384,29 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async {
+                  // Update the sort type in the db if rememberFeedSortType is enabled
+                  bool rememberFeedSortType = thunderBloc.state.rememberFeedSortType;
+                  bool isUserLoggedIn = authBloc.state.isLoggedIn;
+
+                  if (rememberFeedSortType && isUserLoggedIn) {
+                    // Get the current user, and update/create a new CustomSortType in the db
+                    int? userId = authBloc.state.account?.userId;
+                    assert(userId != null);
+
+                    CustomSortType customSortType = CustomSortType(
+                      sortType: selected.payload,
+                      accountId: userId!,
+                      feedType: feedBloc.state.postListingType,
+                    );
+
+                    debugPrint('Adding/updating custom sort type: $customSortType');
+
+                    await CustomSortType.upsertCustomSortType(customSortType);
+                  }
+
+                  feedBloc.add(FeedChangeSortTypeEvent(selected.payload));
+                },
                 previouslySelected: feedBloc.state.sortType,
                 minimumVersion: LemmyClient.instance.version,
               ),

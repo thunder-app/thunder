@@ -89,6 +89,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, the top bar will be hidden on scroll
   bool hideTopBarOnScroll = false;
 
+  /// When enabled, the sort type for a given feed/community will be remembered
+  bool rememberFeedSortType = false;
+
   /// When enabled, an app update notification will be shown when an update is available
   bool showInAppUpdateNotification = false;
 
@@ -194,6 +197,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.hideTopBarOnScroll.name, value);
         setState(() => hideTopBarOnScroll = value);
         break;
+      case LocalSettings.rememberFeedSortType:
+        await prefs.setBool(LocalSettings.rememberFeedSortType.name, value);
+        setState(() => rememberFeedSortType = value);
+        break;
+
       case LocalSettings.collapseParentCommentBodyOnGesture:
         await prefs.setBool(LocalSettings.collapseParentCommentBodyOnGesture.name, value);
         setState(() => collapseParentCommentOnGesture = value);
@@ -278,6 +286,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
       hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
+      rememberFeedSortType = prefs.getBool(LocalSettings.rememberFeedSortType.name) ?? false;
 
       collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
@@ -523,6 +532,19 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               onToggle: (bool value) => setPreferences(LocalSettings.hideTopBarOnScroll, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.hideTopBarOnScroll,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.rememberFeedSortType,
+              value: rememberFeedSortType,
+              subtitle: "Saves the current feed/community sort type",
+              iconEnabled: Icons.dynamic_feed_rounded,
+              iconDisabled: Icons.dynamic_feed_rounded,
+              onToggle: (bool value) => setPreferences(LocalSettings.rememberFeedSortType, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.rememberFeedSortType,
               highlightedSetting: settingToHighlight,
             ),
           ),

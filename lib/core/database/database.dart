@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -15,12 +16,12 @@ import 'package:thunder/drafts/draft_type.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts])
+@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts, CustomSortType])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -39,6 +40,12 @@ class AppDatabase extends _$AppDatabase {
             await migrator.createTable(drafts);
           }
 
+          // If we are migrating from 3 or lower to anything higher
+          if (from <= 3 && to > 3) {
+            // Create the CustomSortType table
+            await migrator.createTable(customSortType);
+          }
+
           // --- DOWNGRADES ---
 
           // If we are downgrading from 2 or higher to 1
@@ -51,6 +58,12 @@ class AppDatabase extends _$AppDatabase {
           if (from >= 3 && to <= 2) {
             // Delete the Drafts table
             await migrator.deleteTable('drafts');
+          }
+
+          // If we are downgrading from 4 or higher to 3 or lower
+          if (from >= 4 && to <= 3) {
+            // Delete the CustomSortType table
+            await migrator.deleteTable('custom_sort_type');
           }
         },
       );

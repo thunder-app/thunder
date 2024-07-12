@@ -49,6 +49,7 @@ class ThunderState extends Equatable {
     this.imageCachingMode = ImageCachingMode.relaxed,
     this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
+    this.rememberFeedSortType = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -219,6 +220,7 @@ class ThunderState extends Equatable {
   final ImageCachingMode imageCachingMode;
   final bool showNavigationLabels;
   final bool hideTopBarOnScroll;
+  final bool rememberFeedSortType;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -396,6 +398,7 @@ class ThunderState extends Equatable {
     ImageCachingMode? imageCachingMode,
     bool? showNavigationLabels,
     bool? hideTopBarOnScroll,
+    bool? rememberFeedSortType,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -568,6 +571,7 @@ class ThunderState extends Equatable {
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
       showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
+      rememberFeedSortType: rememberFeedSortType ?? this.rememberFeedSortType,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -744,6 +748,8 @@ class ThunderState extends Equatable {
         communityFullNameInstanceNameColor,
         imageCachingMode,
         showNavigationLabels,
+        hideTopBarOnScroll,
+        rememberFeedSortType,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings

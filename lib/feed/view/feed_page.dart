@@ -49,7 +49,6 @@ class FeedPage extends StatefulWidget {
     this.useGlobalFeedBloc = false,
     required this.feedType,
     this.postListingType,
-    required this.sortType,
     this.communityId,
     this.communityName,
     this.userId,
@@ -62,9 +61,6 @@ class FeedPage extends StatefulWidget {
 
   /// The type of general feed to display: all, local, subscribed.
   final ListingType? postListingType;
-
-  /// The sorting to be applied to the feed.
-  final SortType? sortType;
 
   /// The id of the community to display posts for.
   final int? communityId;
@@ -106,7 +102,6 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
         bloc.add(FeedFetchedEvent(
           feedType: widget.feedType,
           postListingType: widget.postListingType,
-          sortType: widget.sortType,
           communityId: widget.communityId,
           communityName: widget.communityName,
           userId: widget.userId,
@@ -139,7 +134,6 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
         ..add(FeedFetchedEvent(
           feedType: widget.feedType,
           postListingType: widget.postListingType,
-          sortType: widget.sortType,
           communityId: widget.communityId,
           communityName: widget.communityName,
           userId: widget.userId,
@@ -587,7 +581,6 @@ class _FeedViewState extends State<FeedView> {
     if (!canPop && (desiredListingType != currentListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
-          sortType: authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
           reset: true,
           postListingType: desiredListingType,
           feedType: FeedType.general,

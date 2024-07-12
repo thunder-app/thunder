@@ -3,18 +3,26 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/models/custom_sort_type.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/swipe.dart';
 
 String getAppBarTitle(FeedState state) {
@@ -55,6 +63,46 @@ IconData? getSortIcon(FeedState state) {
   return sortTypeItem?.icon;
 }
 
+/// Gets the default sort type based on a few factors.
+/// If rememberFeedSortType is enabled, it will attempt to get the last known sort type
+/// Otherwise, it will fallback to the user's default sort type if present.
+/// If the user is not logged in, it will fallback to the app's default sort type
+Future<SortType> getSortType(SortType? sortType, int? communityId, ListingType? postListingType) async {
+  try {
+    Account? account = await fetchActiveProfileAccount();
+
+    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    bool rememberFeedSortType = prefs.getBool(LocalSettings.rememberFeedSortType.name) ?? false;
+
+    SortType defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
+    SortType? finalSortType = sortType;
+
+    if (finalSortType == null) {
+      // Check to see if we have a remembered sort type. If so, then use that first
+      // This will only apply to logged in users
+      if (rememberFeedSortType && account != null) {
+        CustomSortType? customSortType = await CustomSortType.fetchCustomSortType(
+          account.userId!,
+          communityId,
+          postListingType,
+        );
+
+        if (customSortType != null) finalSortType = customSortType.sortType;
+      }
+
+      // If there is no remembered sort type, then attempt to get the user's default sort type
+      finalSortType ??= GlobalContext.context.read<AuthBloc>().state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType;
+
+      // Finally, use the app's default sort type
+      finalSortType ??= defaultSortType;
+    }
+
+    return finalSortType;
+  } catch (e) {
+    return SortType.hot;
+  }
+}
+
 /// Navigates to a [FeedPage] with the given parameters
 ///
 /// [feedType] must be provided.
@@ -89,7 +137,6 @@ Future<void> navigateToFeedPage(
           FeedFetchedEvent(
             feedType: feedType,
             postListingType: postListingType,
-            sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
             communityId: communityId,
             communityName: communityName,
             userId: userId,
@@ -121,7 +168,6 @@ Future<void> navigateToFeedPage(
       child: Material(
         child: FeedPage(
           feedType: feedType,
-          sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
           communityName: communityName,
           communityId: communityId,
           userId: userId,
@@ -137,17 +183,5 @@ Future<void> navigateToFeedPage(
 
 Future<void> triggerRefresh(BuildContext context) async {
   FeedState state = context.read<FeedBloc>().state;
-
-  context.read<FeedBloc>().add(
-        FeedFetchedEvent(
-          feedType: state.feedType,
-          postListingType: state.postListingType,
-          sortType: state.sortType,
-          communityId: state.communityId,
-          communityName: state.communityName,
-          userId: state.userId,
-          username: state.username,
-          reset: true,
-        ),
-      );
+  context.read<FeedBloc>().add(FeedChangeSortTypeEvent(state.sortType!));
 }
