@@ -7,11 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/models/anonymous_instance.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -35,6 +33,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   late TextEditingController _passwordTextEditingController;
   late TextEditingController _totpTextEditingController;
   late TextEditingController _instanceTextEditingController;
+  final FocusNode _usernameFieldFocusNode = FocusNode();
 
   bool showPassword = false;
   bool fieldsFilledIn = false;
@@ -297,7 +296,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         errorMaxLines: 2,
                       ),
                       enableSuggestions: false,
-                      onSubmitted: (controller.text.isNotEmpty && widget.anonymous) ? (_) => _addAnonymousInstance() : null,
+                      onSubmitted: !widget.anonymous
+                          ? (_) => _usernameFieldFocusNode.requestFocus()
+                          : controller.text.isNotEmpty
+                              ? (_) => _addAnonymousInstance()
+                              : null,
                     ),
                     suggestionsCallback: (String pattern) {
                       if (pattern.isNotEmpty != true) {
@@ -328,6 +331,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             keyboardType: TextInputType.url,
                             autocorrect: false,
                             controller: _usernameTextEditingController,
+                            focusNode: _usernameFieldFocusNode,
                             autofillHints: const [AutofillHints.username],
                             decoration: InputDecoration(
                               isDense: true,
@@ -437,16 +441,15 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   void _addAnonymousInstance() async {
     if (await isLemmyInstance(_instanceTextEditingController.text)) {
-      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ?? ['lemmy.ml'];
-      if (anonymousInstances.contains(_instanceTextEditingController.text)) {
+      final List<AnonymousInstance> anonymousInstances = await AnonymousInstance.fetchAllInstances();
+      if (anonymousInstances.any((anonymousInstance) => anonymousInstance.instance == _instanceTextEditingController.text)) {
         setState(() {
           instanceValidated = false;
           instanceError = AppLocalizations.of(context)!.instanceHasAlreadyBenAdded(currentInstance ?? '');
         });
       } else {
         context.read<AuthBloc>().add(const LogOutOfAllAccounts());
-        context.read<ThunderBloc>().add(OnAddAnonymousInstance(_instanceTextEditingController.text));
+        await AnonymousInstance.insertInstance(AnonymousInstance(id: '', instance: _instanceTextEditingController.text, index: -1));
         context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
         widget.popRegister();
       }

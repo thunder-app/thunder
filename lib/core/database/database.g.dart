@@ -28,8 +28,11 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumn<int> userId = GeneratedColumn<int>('user_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _listIndexMeta = const VerificationMeta('listIndex');
   @override
-  List<GeneratedColumn> get $columns => [id, username, jwt, instance, anonymous, userId];
+  late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(-1));
+  @override
+  List<GeneratedColumn> get $columns => [id, username, jwt, instance, anonymous, userId, listIndex];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -57,6 +60,9 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
     if (data.containsKey('user_id')) {
       context.handle(_userIdMeta, userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
     }
+    if (data.containsKey('list_index')) {
+      context.handle(_listIndexMeta, listIndex.isAcceptableOrUnknown(data['list_index']!, _listIndexMeta));
+    }
     return context;
   }
 
@@ -72,6 +78,7 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
       instance: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}instance']),
       anonymous: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}anonymous'])!,
       userId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}user_id']),
+      listIndex: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}list_index'])!,
     );
   }
 
@@ -88,7 +95,8 @@ class Account extends DataClass implements Insertable<Account> {
   final String? instance;
   final bool anonymous;
   final int? userId;
-  const Account({required this.id, this.username, this.jwt, this.instance, required this.anonymous, this.userId});
+  final int listIndex;
+  const Account({required this.id, this.username, this.jwt, this.instance, required this.anonymous, this.userId, required this.listIndex});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -106,6 +114,7 @@ class Account extends DataClass implements Insertable<Account> {
     if (!nullToAbsent || userId != null) {
       map['user_id'] = Variable<int>(userId);
     }
+    map['list_index'] = Variable<int>(listIndex);
     return map;
   }
 
@@ -117,6 +126,7 @@ class Account extends DataClass implements Insertable<Account> {
       instance: instance == null && nullToAbsent ? const Value.absent() : Value(instance),
       anonymous: Value(anonymous),
       userId: userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      listIndex: Value(listIndex),
     );
   }
 
@@ -129,6 +139,7 @@ class Account extends DataClass implements Insertable<Account> {
       instance: serializer.fromJson<String?>(json['instance']),
       anonymous: serializer.fromJson<bool>(json['anonymous']),
       userId: serializer.fromJson<int?>(json['userId']),
+      listIndex: serializer.fromJson<int>(json['listIndex']),
     );
   }
   @override
@@ -141,6 +152,7 @@ class Account extends DataClass implements Insertable<Account> {
       'instance': serializer.toJson<String?>(instance),
       'anonymous': serializer.toJson<bool>(anonymous),
       'userId': serializer.toJson<int?>(userId),
+      'listIndex': serializer.toJson<int>(listIndex),
     };
   }
 
@@ -150,7 +162,8 @@ class Account extends DataClass implements Insertable<Account> {
           Value<String?> jwt = const Value.absent(),
           Value<String?> instance = const Value.absent(),
           bool? anonymous,
-          Value<int?> userId = const Value.absent()}) =>
+          Value<int?> userId = const Value.absent(),
+          int? listIndex}) =>
       Account(
         id: id ?? this.id,
         username: username.present ? username.value : this.username,
@@ -158,6 +171,7 @@ class Account extends DataClass implements Insertable<Account> {
         instance: instance.present ? instance.value : this.instance,
         anonymous: anonymous ?? this.anonymous,
         userId: userId.present ? userId.value : this.userId,
+        listIndex: listIndex ?? this.listIndex,
       );
   @override
   String toString() {
@@ -167,13 +181,14 @@ class Account extends DataClass implements Insertable<Account> {
           ..write('jwt: $jwt, ')
           ..write('instance: $instance, ')
           ..write('anonymous: $anonymous, ')
-          ..write('userId: $userId')
+          ..write('userId: $userId, ')
+          ..write('listIndex: $listIndex')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, username, jwt, instance, anonymous, userId);
+  int get hashCode => Object.hash(id, username, jwt, instance, anonymous, userId, listIndex);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -183,7 +198,8 @@ class Account extends DataClass implements Insertable<Account> {
           other.jwt == this.jwt &&
           other.instance == this.instance &&
           other.anonymous == this.anonymous &&
-          other.userId == this.userId);
+          other.userId == this.userId &&
+          other.listIndex == this.listIndex);
 }
 
 class AccountsCompanion extends UpdateCompanion<Account> {
@@ -193,6 +209,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
   final Value<String?> instance;
   final Value<bool> anonymous;
   final Value<int?> userId;
+  final Value<int> listIndex;
   const AccountsCompanion({
     this.id = const Value.absent(),
     this.username = const Value.absent(),
@@ -200,6 +217,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     this.instance = const Value.absent(),
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
+    this.listIndex = const Value.absent(),
   });
   AccountsCompanion.insert({
     this.id = const Value.absent(),
@@ -208,6 +226,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     this.instance = const Value.absent(),
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
+    this.listIndex = const Value.absent(),
   });
   static Insertable<Account> custom({
     Expression<int>? id,
@@ -216,6 +235,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     Expression<String>? instance,
     Expression<bool>? anonymous,
     Expression<int>? userId,
+    Expression<int>? listIndex,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -224,10 +244,11 @@ class AccountsCompanion extends UpdateCompanion<Account> {
       if (instance != null) 'instance': instance,
       if (anonymous != null) 'anonymous': anonymous,
       if (userId != null) 'user_id': userId,
+      if (listIndex != null) 'list_index': listIndex,
     });
   }
 
-  AccountsCompanion copyWith({Value<int>? id, Value<String?>? username, Value<String?>? jwt, Value<String?>? instance, Value<bool>? anonymous, Value<int?>? userId}) {
+  AccountsCompanion copyWith({Value<int>? id, Value<String?>? username, Value<String?>? jwt, Value<String?>? instance, Value<bool>? anonymous, Value<int?>? userId, Value<int>? listIndex}) {
     return AccountsCompanion(
       id: id ?? this.id,
       username: username ?? this.username,
@@ -235,6 +256,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
       instance: instance ?? this.instance,
       anonymous: anonymous ?? this.anonymous,
       userId: userId ?? this.userId,
+      listIndex: listIndex ?? this.listIndex,
     );
   }
 
@@ -259,6 +281,9 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     if (userId.present) {
       map['user_id'] = Variable<int>(userId.value);
     }
+    if (listIndex.present) {
+      map['list_index'] = Variable<int>(listIndex.value);
+    }
     return map;
   }
 
@@ -270,7 +295,8 @@ class AccountsCompanion extends UpdateCompanion<Account> {
           ..write('jwt: $jwt, ')
           ..write('instance: $instance, ')
           ..write('anonymous: $anonymous, ')
-          ..write('userId: $userId')
+          ..write('userId: $userId, ')
+          ..write('listIndex: $listIndex')
           ..write(')'))
         .toString();
   }
@@ -1179,6 +1205,188 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
   }
 }
 
+class $AnonymousInstancesTable extends AnonymousInstances with TableInfo<$AnonymousInstancesTable, AnonymousInstance> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AnonymousInstancesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
+      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _instanceMeta = const VerificationMeta('instance');
+  @override
+  late final GeneratedColumn<String> instance = GeneratedColumn<String>('instance', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _listIndexMeta = const VerificationMeta('listIndex');
+  @override
+  late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, instance, listIndex];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'anonymous_instances';
+  @override
+  VerificationContext validateIntegrity(Insertable<AnonymousInstance> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('instance')) {
+      context.handle(_instanceMeta, this.instance.isAcceptableOrUnknown(data['instance']!, _instanceMeta));
+    } else if (isInserting) {
+      context.missing(_instanceMeta);
+    }
+    if (data.containsKey('list_index')) {
+      context.handle(_listIndexMeta, listIndex.isAcceptableOrUnknown(data['list_index']!, _listIndexMeta));
+    } else if (isInserting) {
+      context.missing(_listIndexMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AnonymousInstance map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AnonymousInstance(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      instance: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}instance'])!,
+      listIndex: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}list_index'])!,
+    );
+  }
+
+  @override
+  $AnonymousInstancesTable createAlias(String alias) {
+    return $AnonymousInstancesTable(attachedDatabase, alias);
+  }
+}
+
+class AnonymousInstance extends DataClass implements Insertable<AnonymousInstance> {
+  final int id;
+  final String instance;
+  final int listIndex;
+  const AnonymousInstance({required this.id, required this.instance, required this.listIndex});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['instance'] = Variable<String>(instance);
+    map['list_index'] = Variable<int>(listIndex);
+    return map;
+  }
+
+  AnonymousInstancesCompanion toCompanion(bool nullToAbsent) {
+    return AnonymousInstancesCompanion(
+      id: Value(id),
+      instance: Value(instance),
+      listIndex: Value(listIndex),
+    );
+  }
+
+  factory AnonymousInstance.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AnonymousInstance(
+      id: serializer.fromJson<int>(json['id']),
+      instance: serializer.fromJson<String>(json['instance']),
+      listIndex: serializer.fromJson<int>(json['listIndex']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'instance': serializer.toJson<String>(instance),
+      'listIndex': serializer.toJson<int>(listIndex),
+    };
+  }
+
+  AnonymousInstance copyWith({int? id, String? instance, int? listIndex}) => AnonymousInstance(
+        id: id ?? this.id,
+        instance: instance ?? this.instance,
+        listIndex: listIndex ?? this.listIndex,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('AnonymousInstance(')
+          ..write('id: $id, ')
+          ..write('instance: $instance, ')
+          ..write('listIndex: $listIndex')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, instance, listIndex);
+  @override
+  bool operator ==(Object other) => identical(this, other) || (other is AnonymousInstance && other.id == this.id && other.instance == this.instance && other.listIndex == this.listIndex);
+}
+
+class AnonymousInstancesCompanion extends UpdateCompanion<AnonymousInstance> {
+  final Value<int> id;
+  final Value<String> instance;
+  final Value<int> listIndex;
+  const AnonymousInstancesCompanion({
+    this.id = const Value.absent(),
+    this.instance = const Value.absent(),
+    this.listIndex = const Value.absent(),
+  });
+  AnonymousInstancesCompanion.insert({
+    this.id = const Value.absent(),
+    required String instance,
+    required int listIndex,
+  })  : instance = Value(instance),
+        listIndex = Value(listIndex);
+  static Insertable<AnonymousInstance> custom({
+    Expression<int>? id,
+    Expression<String>? instance,
+    Expression<int>? listIndex,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (instance != null) 'instance': instance,
+      if (listIndex != null) 'list_index': listIndex,
+    });
+  }
+
+  AnonymousInstancesCompanion copyWith({Value<int>? id, Value<String>? instance, Value<int>? listIndex}) {
+    return AnonymousInstancesCompanion(
+      id: id ?? this.id,
+      instance: instance ?? this.instance,
+      listIndex: listIndex ?? this.listIndex,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (instance.present) {
+      map['instance'] = Variable<String>(instance.value);
+    }
+    if (listIndex.present) {
+      map['list_index'] = Variable<int>(listIndex.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AnonymousInstancesCompanion(')
+          ..write('id: $id, ')
+          ..write('instance: $instance, ')
+          ..write('listIndex: $listIndex')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final $AccountsTable accounts = $AccountsTable(this);
@@ -1186,8 +1394,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LocalSubscriptionsTable localSubscriptions = $LocalSubscriptionsTable(this);
   late final $UserLabelsTable userLabels = $UserLabelsTable(this);
   late final $DraftsTable drafts = $DraftsTable(this);
+  late final $AnonymousInstancesTable anonymousInstances = $AnonymousInstancesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts, anonymousInstances];
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/models/anonymous_instance.dart';
 import 'package:thunder/account/models/draft.dart';
 import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
@@ -105,5 +106,19 @@ Future<void> performSharedPreferencesMigration() async {
     } catch (e) {
       debugPrint('Cannot migrate draft from SharedPreferences: $draftKey');
     }
+  }
+
+  // Migrate anonymous instances to database
+  final List<String>? anonymousInstances = prefs.getStringList('setting_anonymous_instances');
+  try {
+    for (String instance in anonymousInstances ?? []) {
+      AnonymousInstance anonymousInstance = AnonymousInstance(id: '', instance: instance, index: -1);
+      AnonymousInstance.insertInstance(anonymousInstance);
+    }
+
+    // If we've gotten this far without exception, it's safe to delete the shared pref eky
+    prefs.remove('setting_anonymous_instances');
+  } catch (e) {
+    debugPrint('Cannot migrate anonymous instances from SharedPreferences: $e');
   }
 }

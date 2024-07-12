@@ -165,7 +165,6 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Accessibility Related Settings --------------------------
     this.reduceAnimations = false,
-    this.anonymousInstances = const ['lemmy.ml'],
     this.currentAnonymousInstance = 'lemmy.ml',
 
     /// --------------------------------- UI Events ---------------------------------
@@ -336,8 +335,7 @@ class ThunderState extends Equatable {
   /// -------------------------- Accessibility Related Settings --------------------------
   final bool reduceAnimations;
 
-  final List<String> anonymousInstances;
-  final String currentAnonymousInstance;
+  final String? currentAnonymousInstance;
 
   /// ------------------ Video Player ------------------------
   final bool videoAutoFullscreen;
@@ -507,7 +505,6 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Accessibility Related Settings --------------------------
     bool? reduceAnimations,
-    List<String>? anonymousInstances,
     String? currentAnonymousInstance,
 
     /// ------------------ Video Player ------------------------
@@ -689,8 +686,7 @@ class ThunderState extends Equatable {
       videoAutoMute: videoAutoMute ?? this.videoAutoMute,
       videoAutoPlay: videoAutoPlay ?? this.videoAutoPlay,
       videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed ?? this.videoDefaultPlaybackSpeed,
-      anonymousInstances: anonymousInstances ?? this.anonymousInstances,
-      currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
+      currentAnonymousInstance: currentAnonymousInstance,
 
       /// ------------------ Video Player ------------------------
 
@@ -866,7 +862,6 @@ class ThunderState extends Equatable {
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations,
 
-        anonymousInstances,
         currentAnonymousInstance,
 
         /// --------------------------------- UI Events ---------------------------------

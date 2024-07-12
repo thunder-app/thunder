@@ -150,7 +150,7 @@ class UserDrawerItem extends StatelessWidget {
     AccountState accountState = context.watch<AccountBloc>().state;
 
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
-    String anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
+    String? anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
     return Material(
       color: theme.colorScheme.surface,
@@ -194,7 +194,7 @@ class UserDrawerItem extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    isLoggedIn ? authState.account?.instance ?? '' : anonymousInstance,
+                    isLoggedIn ? authState.account?.instance ?? '' : anonymousInstance ?? '',
                     style: theme.textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

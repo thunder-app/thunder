@@ -7,7 +7,6 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/enums/action_color.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 
@@ -60,17 +59,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       _onFabSummonToggle,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<OnAddAnonymousInstance>(
-      _onAddAnonymousInstance,
-      transformer: throttleDroppable(throttleDuration),
-    );
-    on<OnRemoveAnonymousInstance>(
-      _onRemoveAnonymousInstance,
-      transformer: throttleDroppable(throttleDuration),
-    );
     on<OnSetCurrentAnonymousInstance>(
       _onSetCurrentAnonymousInstance,
-      transformer: throttleDroppable(throttleDuration),
     );
   }
 
@@ -269,9 +259,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
       VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
 
-      List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ??
-          // If the user already has some accouts (i.e., an upgrade), we don't want to just throw an anonymous instance at them
-          ((await Account.accounts()).isNotEmpty ? [] : ['lemmy.ml']);
       String currentAnonymousInstance = prefs.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
 
       return emit(state.copyWith(
@@ -437,7 +424,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         videoAutoPlay: videoAutoPlay,
         videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed,
 
-        anonymousInstances: anonymousInstances,
         currentAnonymousInstance: currentAnonymousInstance,
       ));
     } catch (e) {
@@ -453,29 +439,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     emit(state.copyWith(isFabSummoned: !state.isFabSummoned));
   }
 
-  void _onAddAnonymousInstance(OnAddAnonymousInstance event, Emitter<ThunderState> emit) async {
-    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-
-    prefs.setStringList(LocalSettings.anonymousInstances.name, [...state.anonymousInstances, event.instance]);
-
-    emit(state.copyWith(anonymousInstances: [...state.anonymousInstances, event.instance]));
-  }
-
-  void _onRemoveAnonymousInstance(OnRemoveAnonymousInstance event, Emitter<ThunderState> emit) async {
-    final List<String> instances = state.anonymousInstances;
-    instances.remove(event.instance);
-
-    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    prefs.setStringList(LocalSettings.anonymousInstances.name, instances);
-
-    emit(state.copyWith(anonymousInstances: instances));
-  }
-
   void _onSetCurrentAnonymousInstance(OnSetCurrentAnonymousInstance event, Emitter<ThunderState> emit) async {
-    LemmyClient.instance.changeBaseUrl(event.instance);
-
     final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    prefs.setString(LocalSettings.currentAnonymousInstance.name, event.instance);
+
+    if (event.instance != null) {
+      LemmyClient.instance.changeBaseUrl(event.instance!);
+      prefs.setString(LocalSettings.currentAnonymousInstance.name, event.instance!);
+    } else {
+      prefs.remove(LocalSettings.currentAnonymousInstance.name);
+    }
 
     emit(state.copyWith(currentAnonymousInstance: event.instance));
   }

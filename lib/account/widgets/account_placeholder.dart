@@ -10,7 +10,7 @@ class AccountPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    String anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
+    String? anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance ?? '';
 
     return Center(
       child: Padding(

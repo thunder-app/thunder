@@ -8,6 +8,13 @@ class Accounts extends Table {
   TextColumn get instance => text().nullable()();
   BoolColumn get anonymous => boolean().withDefault(const Constant(false))();
   IntColumn get userId => integer().nullable()();
+  IntColumn get listIndex => integer().withDefault(const Constant(-1))(); // Don't use "index" since that's SQLite keyword
+}
+
+class AnonymousInstances extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get instance => text()();
+  IntColumn get listIndex => integer()();
 }
 
 class Favorites extends Table {
