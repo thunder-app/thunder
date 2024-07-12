@@ -25,6 +25,7 @@ final class FeedState extends Equatable {
     this.dismissBlockedUserId,
     this.dismissBlockedCommunityId,
     this.insertedPostIds = const [],
+    this.saved = false,
   });
 
   /// The status of the feed
@@ -90,6 +91,9 @@ final class FeedState extends Equatable {
   /// The inserted post ids. This is used to prevent duplicate posts
   final List<int> insertedPostIds;
 
+  /// Toggle whether to fetch saved posts or not
+  final bool saved;
+
   FeedState copyWith({
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
@@ -112,6 +116,7 @@ final class FeedState extends Equatable {
     int? dismissBlockedUserId,
     int? dismissBlockedCommunityId,
     List<int>? insertedPostIds,
+    bool? saved,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -135,12 +140,13 @@ final class FeedState extends Equatable {
       dismissBlockedUserId: dismissBlockedUserId,
       dismissBlockedCommunityId: dismissBlockedCommunityId,
       insertedPostIds: insertedPostIds ?? this.insertedPostIds,
+      saved: saved ?? this.saved,
     );
   }
 
   @override
   String toString() {
-    return '''FeedState { status: $status, postViewMedias: ${postViewMedias.length}, commentViews: ${commentViews.length}, hasReachedPostsEnd: $hasReachedPostsEnd, hasReachedCommentsEnd: $hasReachedCommentsEnd }''';
+    return '''FeedState { status: $status, postViewMedias: ${postViewMedias.length}, commentViews: ${commentViews.length}, hasReachedPostsEnd: $hasReachedPostsEnd, hasReachedCommentsEnd: $hasReachedCommentsEnd, saved: $saved }''';
   }
 
   @override
@@ -165,6 +171,7 @@ final class FeedState extends Equatable {
         dismissReadId,
         dismissBlockedUserId,
         dismissBlockedCommunityId,
-        insertedPostIds
+        insertedPostIds,
+        saved,
       ];
 }

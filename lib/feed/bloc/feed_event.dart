@@ -35,6 +35,9 @@ final class FeedFetchedEvent extends FeedEvent {
   /// Boolean which indicates whether or not to reset the feed
   final bool reset;
 
+  /// Boolean which indicates whether or not to toggle fetching for saved items
+  final bool saved;
+
   const FeedFetchedEvent({
     this.feedType,
     this.feedTypeSubview = FeedTypeSubview.post,
@@ -45,6 +48,7 @@ final class FeedFetchedEvent extends FeedEvent {
     this.userId,
     this.username,
     this.reset = false,
+    this.saved = false,
   });
 }
 

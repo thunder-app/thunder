@@ -32,9 +32,10 @@ import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/colors.dart';
-import 'package:thunder/utils/global_context.dart';
 
 enum FeedType { community, user, general }
+
+enum UserFeedType { posts, comments }
 
 /// Creates a [FeedPage] which holds a list of posts for a given user, community, or custom feed.
 ///
@@ -182,14 +183,11 @@ class _FeedViewState extends State<FeedView> {
   /// Boolean which indicates whether the user sidebar should be shown
   bool showUserSidebar = false;
 
-  /// Indicates which "tab" is selected. This is used for user profiles, where we can switch between posts and comments
-  List<bool> selectedUserOption = [true, false];
+  /// Boolean which indicates whether the user's saved posts/comments should be shown instead of the user's posts/comments
+  bool showUserSaved = false;
 
-  /// List of tabs for user profiles
-  List<Widget> userOptionTypes = <Widget>[
-    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
-    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
-  ];
+  /// Indicates which "tab" is selected. This is used for user profiles, where we can switch between posts and comments
+  UserFeedType selectedUserFeedType = UserFeedType.posts;
 
   /// List of post ids to queue for removal. The ids in this list allow us to remove posts in a staggered method
   List<int> queuedForRemoval = [];
@@ -210,7 +208,10 @@ class _FeedViewState extends State<FeedView> {
 
       // Fetches new posts when the user has scrolled past 70% list
       if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
-        context.read<FeedBloc>().add(FeedFetchedEvent(feedTypeSubview: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment));
+        context.read<FeedBloc>().add(FeedFetchedEvent(
+              feedTypeSubview: selectedUserFeedType == UserFeedType.posts ? FeedTypeSubview.post : FeedTypeSubview.comment,
+              saved: showUserSaved,
+            ));
       }
     });
 
@@ -272,7 +273,8 @@ class _FeedViewState extends State<FeedView> {
 
   @override
   Widget build(BuildContext context) {
-    ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+    final l10n = AppLocalizations.of(context)!;
+    final thunderBloc = context.watch<ThunderBloc>();
 
     bool tabletMode = thunderBloc.state.tabletMode;
     bool markPostReadOnScroll = thunderBloc.state.markPostReadOnScroll;
@@ -316,7 +318,8 @@ class _FeedViewState extends State<FeedView> {
             listener: (context, state) {
               // Continue to fetch more items as long as the device view is not scrollable.
               // This is to avoid cases where more items cannot be fetched because the conditions are not met
-              if (state.status == FeedStatus.success && ((selectedUserOption[0] && state.hasReachedPostsEnd == false) || (selectedUserOption[1] && state.hasReachedCommentsEnd == false))) {
+              if (state.status == FeedStatus.success &&
+                  ((selectedUserFeedType == UserFeedType.posts && state.hasReachedPostsEnd == false) || (selectedUserFeedType == UserFeedType.comments && state.hasReachedCommentsEnd == false))) {
                 bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
                 if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
               }
@@ -401,29 +404,50 @@ class _FeedViewState extends State<FeedView> {
                                         setState(() => showUserSidebar = toggled);
                                       },
                                     ),
-                                    AnimatedSize(
-                                      duration: const Duration(milliseconds: 100),
-                                      curve: Curves.easeInOut,
-                                      child: Container(
-                                        height: showUserSidebar ? 0 : null,
-                                        margin: showUserSidebar ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 8.0),
-                                        child: ToggleButtons(
-                                          constraints: showUserSidebar
-                                              ? const BoxConstraints(minHeight: 0.0, maxHeight: 0.0, minWidth: 0.0, maxWidth: 0.0)
-                                              : BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length)) - 12.0),
-                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          direction: Axis.horizontal,
-                                          onPressed: (int index) {
-                                            setState(() {
-                                              // The button that is tapped is set to true, and the others to false.
-                                              for (int i = 0; i < selectedUserOption.length; i++) {
-                                                selectedUserOption[i] = i == index;
-                                              }
-                                            });
-                                          },
-                                          borderRadius: showUserSidebar ? null : const BorderRadius.all(Radius.circular(8)),
-                                          isSelected: selectedUserOption,
-                                          children: userOptionTypes,
+                                    Visibility(
+                                      visible: !showUserSidebar,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: SegmentedButton(
+                                                style: const ButtonStyle(visualDensity: VisualDensity.compact),
+                                                showSelectedIcon: false,
+                                                segments: UserFeedType.values
+                                                    .map(
+                                                      (userFeedType) => ButtonSegment(
+                                                        value: userFeedType,
+                                                        label: Text(
+                                                          switch (userFeedType) {
+                                                            UserFeedType.posts => l10n.posts,
+                                                            UserFeedType.comments => l10n.comments,
+                                                          },
+                                                        ),
+                                                      ),
+                                                    )
+                                                    .toList(),
+                                                selected: {selectedUserFeedType},
+                                                onSelectionChanged: (userFeedType) {
+                                                  setState(() => selectedUserFeedType = userFeedType.first);
+                                                },
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(showUserSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
+                                              onPressed: () {
+                                                HapticFeedback.mediumImpact();
+                                                context.read<FeedBloc>().add(FeedFetchedEvent(
+                                                      feedType: state.feedType,
+                                                      userId: state.userId,
+                                                      feedTypeSubview: selectedUserFeedType == UserFeedType.posts ? FeedTypeSubview.post : FeedTypeSubview.comment,
+                                                      saved: !showUserSaved,
+                                                      reset: true,
+                                                    ));
+                                                setState(() => showUserSaved = !showUserSaved);
+                                              },
+                                            )
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -433,7 +457,7 @@ class _FeedViewState extends State<FeedView> {
                             ),
                           SliverStack(
                             children: [
-                              selectedUserOption[1]
+                              selectedUserFeedType == UserFeedType.comments
                                   // Widget representing the list of user comments on the feed
                                   ? FeedCommentList(
                                       commentViews: commentViews,
@@ -506,7 +530,7 @@ class _FeedViewState extends State<FeedView> {
                           // Widget representing the bottom of the feed (reached end or loading more posts indicators)
                           if (state.status != FeedStatus.failureLoadingCommunity && state.status != FeedStatus.failureLoadingUser)
                             SliverToBoxAdapter(
-                              child: ((selectedUserOption[0] && state.hasReachedPostsEnd) || (selectedUserOption[1] && state.hasReachedCommentsEnd))
+                              child: ((selectedUserFeedType == UserFeedType.posts && state.hasReachedPostsEnd) || (selectedUserFeedType == UserFeedType.comments && state.hasReachedCommentsEnd))
                                   ? const FeedReachedEnd()
                                   : Container(
                                       height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust

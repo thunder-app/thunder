@@ -508,6 +508,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         userId: event.userId ?? fullPersonView?.personView.person.id,
         username: event.username,
         feedTypeSubview: event.feedTypeSubview,
+        saved: event.saved,
       );
 
       // Extract information from the response
@@ -533,6 +534,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         userId: event.userId ?? fullPersonView?.personView.person.id,
         username: event.username,
         currentPage: currentPage,
+        saved: event.saved,
       ));
     }
 
@@ -554,6 +556,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       userId: state.userId,
       username: state.username,
       feedTypeSubview: event.feedTypeSubview,
+      saved: state.saved,
     );
 
     // Extract information from the response

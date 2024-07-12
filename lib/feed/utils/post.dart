@@ -22,6 +22,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   int? userId,
   String? username,
   FeedTypeSubview feedTypeSubview = FeedTypeSubview.post,
+  bool saved = false,
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -81,6 +82,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
         username: username,
         page: currentPage,
         sort: sortType,
+        savedOnly: saved,
       ));
 
       // Remove deleted posts and comments
