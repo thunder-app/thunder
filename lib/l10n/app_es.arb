@@ -2638,5 +2638,21 @@
   "showUnreadOnly": "Mostrar solo los no leídos",
   "@showUnreadOnly": {
     "description": "Show unread replies/mentions/messages only"
+  },
+  "noUserLabels": "Aún no has creado ninguna etiqueta de usuario",
+  "@noUserLabels": {
+    "description": "Placeholder message for empty list of labels"
+  },
+  "userLabelsSettingsPageDescription": "Puedes añadir, modificar o eliminar etiquetas asociadas a los usuarios.",
+  "@userLabelsSettingsPageDescription": {
+    "description": "Description text for user labels settings page"
+  },
+  "deleteUserLabelConfirmation": "¿Seguro que quieres borrar la etiqueta?",
+  "@deleteUserLabelConfirmation": {
+    "description": "Confirmation message for deleting a label"
+  },
+  "userLabels": "Etiquetas de usuario",
+  "@userLabels": {
+    "description": "Heading for user labels settings"
   }
 }
