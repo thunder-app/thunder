@@ -504,7 +504,6 @@ class _ThunderState extends State<Thunder> {
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
                                 postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
-                                sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
                                 reset: true,
                               ),
                             );
@@ -637,7 +636,6 @@ class _ThunderState extends State<Thunder> {
                                 useGlobalFeedBloc: true,
                                 feedType: FeedType.general,
                                 postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
-                                sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
                                 scaffoldStateKey: scaffoldStateKey,
                               ),
                               const SearchPage(),

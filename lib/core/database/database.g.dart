@@ -1179,6 +1179,249 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
   }
 }
 
+class $CustomSortTypeTable extends CustomSortType with TableInfo<$CustomSortTypeTable, CustomSortTypeData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CustomSortTypeTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
+      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _sortTypeMeta = const VerificationMeta('sortType');
+  @override
+  late final GeneratedColumnWithTypeConverter<SortType, String> sortType =
+      GeneratedColumn<String>('sort_type', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true).withConverter<SortType>($CustomSortTypeTable.$convertersortType);
+  static const VerificationMeta _accountIdMeta = const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<int> accountId = GeneratedColumn<int>('account_id', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _communityIdMeta = const VerificationMeta('communityId');
+  @override
+  late final GeneratedColumn<int> communityId = GeneratedColumn<int>('community_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _feedTypeMeta = const VerificationMeta('feedType');
+  @override
+  late final GeneratedColumnWithTypeConverter<ListingType?, String> feedType =
+      GeneratedColumn<String>('feed_type', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false).withConverter<ListingType?>($CustomSortTypeTable.$converterfeedTypen);
+  @override
+  List<GeneratedColumn> get $columns => [id, sortType, accountId, communityId, feedType];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'custom_sort_type';
+  @override
+  VerificationContext validateIntegrity(Insertable<CustomSortTypeData> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    context.handle(_sortTypeMeta, const VerificationResult.success());
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta, accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('community_id')) {
+      context.handle(_communityIdMeta, communityId.isAcceptableOrUnknown(data['community_id']!, _communityIdMeta));
+    }
+    context.handle(_feedTypeMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CustomSortTypeData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CustomSortTypeData(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      sortType: $CustomSortTypeTable.$convertersortType.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}sort_type'])!),
+      accountId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}account_id'])!,
+      communityId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}community_id']),
+      feedType: $CustomSortTypeTable.$converterfeedTypen.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}feed_type'])),
+    );
+  }
+
+  @override
+  $CustomSortTypeTable createAlias(String alias) {
+    return $CustomSortTypeTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<SortType, String> $convertersortType = const SortTypeConverter();
+  static TypeConverter<ListingType, String> $converterfeedType = const ListingTypeConverter();
+  static TypeConverter<ListingType?, String?> $converterfeedTypen = NullAwareTypeConverter.wrap($converterfeedType);
+}
+
+class CustomSortTypeData extends DataClass implements Insertable<CustomSortTypeData> {
+  final int id;
+  final SortType sortType;
+  final int accountId;
+  final int? communityId;
+  final ListingType? feedType;
+  const CustomSortTypeData({required this.id, required this.sortType, required this.accountId, this.communityId, this.feedType});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['sort_type'] = Variable<String>($CustomSortTypeTable.$convertersortType.toSql(sortType));
+    }
+    map['account_id'] = Variable<int>(accountId);
+    if (!nullToAbsent || communityId != null) {
+      map['community_id'] = Variable<int>(communityId);
+    }
+    if (!nullToAbsent || feedType != null) {
+      map['feed_type'] = Variable<String>($CustomSortTypeTable.$converterfeedTypen.toSql(feedType));
+    }
+    return map;
+  }
+
+  CustomSortTypeCompanion toCompanion(bool nullToAbsent) {
+    return CustomSortTypeCompanion(
+      id: Value(id),
+      sortType: Value(sortType),
+      accountId: Value(accountId),
+      communityId: communityId == null && nullToAbsent ? const Value.absent() : Value(communityId),
+      feedType: feedType == null && nullToAbsent ? const Value.absent() : Value(feedType),
+    );
+  }
+
+  factory CustomSortTypeData.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CustomSortTypeData(
+      id: serializer.fromJson<int>(json['id']),
+      sortType: serializer.fromJson<SortType>(json['sortType']),
+      accountId: serializer.fromJson<int>(json['accountId']),
+      communityId: serializer.fromJson<int?>(json['communityId']),
+      feedType: serializer.fromJson<ListingType?>(json['feedType']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sortType': serializer.toJson<SortType>(sortType),
+      'accountId': serializer.toJson<int>(accountId),
+      'communityId': serializer.toJson<int?>(communityId),
+      'feedType': serializer.toJson<ListingType?>(feedType),
+    };
+  }
+
+  CustomSortTypeData copyWith({int? id, SortType? sortType, int? accountId, Value<int?> communityId = const Value.absent(), Value<ListingType?> feedType = const Value.absent()}) => CustomSortTypeData(
+        id: id ?? this.id,
+        sortType: sortType ?? this.sortType,
+        accountId: accountId ?? this.accountId,
+        communityId: communityId.present ? communityId.value : this.communityId,
+        feedType: feedType.present ? feedType.value : this.feedType,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('CustomSortTypeData(')
+          ..write('id: $id, ')
+          ..write('sortType: $sortType, ')
+          ..write('accountId: $accountId, ')
+          ..write('communityId: $communityId, ')
+          ..write('feedType: $feedType')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sortType, accountId, communityId, feedType);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CustomSortTypeData &&
+          other.id == this.id &&
+          other.sortType == this.sortType &&
+          other.accountId == this.accountId &&
+          other.communityId == this.communityId &&
+          other.feedType == this.feedType);
+}
+
+class CustomSortTypeCompanion extends UpdateCompanion<CustomSortTypeData> {
+  final Value<int> id;
+  final Value<SortType> sortType;
+  final Value<int> accountId;
+  final Value<int?> communityId;
+  final Value<ListingType?> feedType;
+  const CustomSortTypeCompanion({
+    this.id = const Value.absent(),
+    this.sortType = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.communityId = const Value.absent(),
+    this.feedType = const Value.absent(),
+  });
+  CustomSortTypeCompanion.insert({
+    this.id = const Value.absent(),
+    required SortType sortType,
+    required int accountId,
+    this.communityId = const Value.absent(),
+    this.feedType = const Value.absent(),
+  })  : sortType = Value(sortType),
+        accountId = Value(accountId);
+  static Insertable<CustomSortTypeData> custom({
+    Expression<int>? id,
+    Expression<String>? sortType,
+    Expression<int>? accountId,
+    Expression<int>? communityId,
+    Expression<String>? feedType,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sortType != null) 'sort_type': sortType,
+      if (accountId != null) 'account_id': accountId,
+      if (communityId != null) 'community_id': communityId,
+      if (feedType != null) 'feed_type': feedType,
+    });
+  }
+
+  CustomSortTypeCompanion copyWith({Value<int>? id, Value<SortType>? sortType, Value<int>? accountId, Value<int?>? communityId, Value<ListingType?>? feedType}) {
+    return CustomSortTypeCompanion(
+      id: id ?? this.id,
+      sortType: sortType ?? this.sortType,
+      accountId: accountId ?? this.accountId,
+      communityId: communityId ?? this.communityId,
+      feedType: feedType ?? this.feedType,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sortType.present) {
+      map['sort_type'] = Variable<String>($CustomSortTypeTable.$convertersortType.toSql(sortType.value));
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<int>(accountId.value);
+    }
+    if (communityId.present) {
+      map['community_id'] = Variable<int>(communityId.value);
+    }
+    if (feedType.present) {
+      map['feed_type'] = Variable<String>($CustomSortTypeTable.$converterfeedTypen.toSql(feedType.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CustomSortTypeCompanion(')
+          ..write('id: $id, ')
+          ..write('sortType: $sortType, ')
+          ..write('accountId: $accountId, ')
+          ..write('communityId: $communityId, ')
+          ..write('feedType: $feedType')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final $AccountsTable accounts = $AccountsTable(this);
@@ -1186,8 +1429,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LocalSubscriptionsTable localSubscriptions = $LocalSubscriptionsTable(this);
   late final $UserLabelsTable userLabels = $UserLabelsTable(this);
   late final $DraftsTable drafts = $DraftsTable(this);
+  late final $CustomSortTypeTable customSortType = $CustomSortTypeTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts, customSortType];
 }

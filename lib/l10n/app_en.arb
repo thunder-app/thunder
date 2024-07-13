@@ -1671,6 +1671,14 @@
   "@refresh": {},
   "refreshContent": "Refresh Content",
   "@refreshContent": {},
+  "rememberFeedSortType": "Remember Feed Sort Type",
+  "@rememberFeedSortType": {
+    "description": "Setting for remembering feed sort type per community/feed"
+  },
+  "rememberFeedSortTypeDescription": "Saves the current feed/community sort type",
+  "@rememberFeedSortTypeDescription": {
+    "description": "Description of remembering feed sort type per community/feed"
+  },
   "removalReason": "Removal Reason",
   "@removalReason": {
     "description": "Title for the dialog for removing a post"

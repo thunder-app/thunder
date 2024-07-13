@@ -69,9 +69,10 @@ enum LocalSettings {
 
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
-
   defaultFeedListingType(name: 'setting_general_default_listing_type', key: 'defaultFeedType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
   defaultFeedSortType(name: 'setting_general_default_sort_type', key: 'defaultFeedSortType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
+  rememberFeedSortType(
+      name: 'setting_general_remember_feed_sort_type', key: 'rememberFeedSortType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
 
   // NSFW Settings
   hideNsfwPosts(name: 'setting_general_hide_nsfw_posts', key: 'hideNsfwPostsFromFeed', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
@@ -81,7 +82,6 @@ enum LocalSettings {
   useTabletMode(name: 'setting_post_tablet_mode', key: 'tabletMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
 
   // General Settings
-
   scrapeMissingPreviews(
       name: 'setting_general_scrape_missing_previews', key: 'scrapeMissingLinkPreviews', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   // Deprecated, use browserMode
@@ -314,9 +314,11 @@ enum LocalSettings {
 
   // This setting exists purely to save/load the user's selected advanced share options
   advancedShareOptions(name: 'advanced_share_options', key: ''),
+
   // import export settings
   importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
   importExportDatabase(name: 'import_export_database', key: 'importExportDatabase', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
+
   // video player
   videoAutoMute(name: 'auto_mute_videos', key: 'videoAutoMute', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
@@ -406,6 +408,7 @@ extension LocalizationExt on AppLocalizations {
       'postBodyShowCommunityAvatar': postBodyShowCommunityAvatar,
       'keywordFilters': keywordFilters,
       'hideTopBarOnScroll': hideTopBarOnScroll,
+      'rememberFeedSortType': rememberFeedSortType,
       'compactPostCardMetadataItems': compactPostCardMetadataItems,
       'cardPostCardMetadataItems': cardPostCardMetadataItems,
       'userFormat': userFormat,

@@ -107,7 +107,6 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                               context.read<FeedBloc>().add(
                                     FeedFetchedEvent(
                                       feedType: FeedType.community,
-                                      sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                                       communityId: community.id,
                                       reset: true,
                                     ),
@@ -336,7 +335,6 @@ class FavoriteCommunities extends StatelessWidget {
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
                           feedType: FeedType.community,
-                          sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                           communityId: community.id,
                           reset: true,
                         ),
@@ -397,7 +395,6 @@ class ModeratedCommunities extends StatelessWidget {
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
                           ),
