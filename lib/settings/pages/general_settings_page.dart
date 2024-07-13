@@ -537,8 +537,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ToggleOption(
               description: l10n.showHiddenPosts,
               value: showHiddenPosts,
-              iconEnabled: Icons.remove_red_eye_rounded,
-              iconDisabled: Icons.close_rounded,
+              iconEnabled: Icons.visibility_rounded,
+              iconDisabled: Icons.visibility_off_rounded,
               onToggle: (bool value) => setPreferences(LocalSettings.showHiddenPosts, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showHiddenPosts,

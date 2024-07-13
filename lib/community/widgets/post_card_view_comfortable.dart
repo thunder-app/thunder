@@ -117,7 +117,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     if (postViewMedia.postView.hidden == true)
                       WidgetSpan(
                         child: Icon(
-                          Icons.close_rounded,
+                          Icons.visibility_off_rounded,
                           color: indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.hideColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.hideColor.color,
                           size: 16 * textScaleFactor,
                           semanticLabel: l10n.hidden,
@@ -207,16 +207,18 @@ class PostCardViewComfortable extends StatelessWidget {
                 child: Text.rich(
                   TextSpan(
                     children: [
-                      if (postViewMedia.postView.hidden == true)
+                      if (postViewMedia.postView.hidden == true) ...[
                         WidgetSpan(
                           child: Icon(
-                            Icons.close_rounded,
+                            Icons.visibility_off_rounded,
                             color:
                                 indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.hideColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.hideColor.color,
                             size: 16 * textScaleFactor,
                             semanticLabel: l10n.hidden,
                           ),
                         ),
+                        const WidgetSpan(child: SizedBox(width: 2)),
+                      ],
                       if (postViewMedia.postView.post.locked) ...[
                         WidgetSpan(
                             child: Icon(

@@ -38,10 +38,10 @@ enum SwipeAction {
                 : Icons.mark_email_read_outlined;
       case SwipeAction.hide:
         return hidden == null
-            ? Icons.close_rounded
+            ? Icons.visibility_off_rounded
             : hidden
-                ? Icons.refresh_rounded
-                : Icons.close_rounded;
+                ? Icons.visibility_rounded
+                : Icons.visibility_off_rounded;
       default:
         return Icons.not_interested_rounded;
     }

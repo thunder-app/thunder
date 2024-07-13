@@ -248,9 +248,9 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.hide,
     label: l10n.hide,
     getOverrideLabel: (context, postView) => postView.hidden == true ? l10n.unhide : l10n.hide,
-    icon: Icons.close_rounded,
+    icon: Icons.visibility_off_rounded,
     getColor: (context) => context.read<ThunderBloc>().state.hideColor.color,
-    getOverrideIcon: (postView) => postView.hidden == true ? Icons.refresh_rounded : Icons.close_rounded,
+    getOverrideIcon: (postView) => postView.hidden == true ? Icons.visibility_rounded : Icons.visibility_off_rounded,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
