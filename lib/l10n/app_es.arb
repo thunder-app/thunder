@@ -575,11 +575,11 @@
   "@noUserBlocks": {},
   "noUsersFound": "No se encontraron usuarios.",
   "@noUsersFound": {},
-  "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
+  "notValidLemmyInstance": "{instance} no parece ser una instancia válida de Lemmy",
   "@notValidLemmyInstance": {},
-  "notValidUrl": "Not a valid URL",
+  "notValidUrl": "URL no válida",
   "@notValidUrl": {},
-  "nothingToShare": "Nothing to share",
+  "nothingToShare": "Nada que compartir",
   "@nothingToShare": {},
   "notifications": "{count, plural, zero {Notificación} one {Notificación} other {Notificaciones}}",
   "@notifications": {
@@ -589,7 +589,7 @@
   "@notificationsBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
   },
-  "off": "off",
+  "off": "apagar",
   "@off": {},
   "ok": "OK",
   "@ok": {},
@@ -601,7 +601,7 @@
   "@onlyModsCanPostInCommunity": {},
   "open": "Abrir",
   "@open": {},
-  "openAccountSwitcher": "Open account switcher",
+  "openAccountSwitcher": "Cambiar de cuenta",
   "@openAccountSwitcher": {},
   "openByDefault": "Abrir por defecto",
   "@openByDefault": {
@@ -609,7 +609,7 @@
   },
   "openInBrowser": "Abrir en el navegador",
   "@openInBrowser": {},
-  "openInstance": "Open Instance",
+  "openInstance": "Instancia abierta",
   "@openInstance": {},
   "openSettings": "Abrir la configuración",
   "@openSettings": {
@@ -657,7 +657,7 @@
   "@postPreview": {
     "description": "Description for the post preview in Setting -> Appearance -> Posts"
   },
-  "postSavedAsDraft": "Post saved as draft",
+  "postSavedAsDraft": "Mensaje guardado como borrador",
   "@postSavedAsDraft": {},
   "postSwipeGesturesHint": "¿Quieres utilizar los botones? Cambia los botones que aparecen en los temas en los ajustes generales.",
   "@postSwipeGesturesHint": {},
@@ -675,17 +675,17 @@
   },
   "posts": "Posts",
   "@posts": {},
-  "preview": "Preview",
+  "preview": "Vista previa",
   "@preview": {},
-  "profileAppliedSuccessfully": "{profile} applied successfully!",
+  "profileAppliedSuccessfully": "¡{profile} aplicado con éxito!",
   "@profileAppliedSuccessfully": {},
   "profiles": "Perfiles",
   "@profiles": {},
-  "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
+  "reachedTheBottom": "Hmmm. Parece que has tocado fondo.",
   "@reachedTheBottom": {},
-  "readAll": "Read All",
+  "readAll": "Leer todo",
   "@readAll": {},
-  "reducesAnimations": "Reduces the animations used within Thunder",
+  "reducesAnimations": "Reduce las animaciones utilizadas en Thunder",
   "@reducesAnimations": {},
   "refresh": "Refrescar",
   "@refresh": {},
@@ -693,13 +693,13 @@
   "@refreshContent": {},
   "remove": "Eliminar",
   "@remove": {},
-  "removeAccount": "Remove Account",
+  "removeAccount": "Eliminar cuenta",
   "@removeAccount": {},
   "removeFromFavorites": "Eliminar de favoritos",
   "@removeFromFavorites": {
     "description": "Action to remove a community in drawer from favorites"
   },
-  "removeInstance": "Remove instance",
+  "removeInstance": "Eliminar instancia",
   "@removeInstance": {},
   "removeKeyword": "¿Quitar \"{keyword}\"?",
   "@removeKeyword": {
@@ -721,7 +721,7 @@
   "@replyingTo": {},
   "report": "{count, plural, zero {Reportes} one {Reporte} other {Reportes} } ",
   "@report": {},
-  "reportComment": "Report Comment",
+  "reportComment": "Reportar comentario",
   "@reportComment": {},
   "reset": "Restablecer",
   "@reset": {
@@ -741,11 +741,11 @@
   "@resetPreferencesAndData": {
     "description": "Debug setting header for resetting all user preferences and data."
   },
-  "restore": "Restore",
+  "restore": "Restaurar",
   "@restore": {},
-  "restoredCommentFromDraft": "Restored comment from draft",
+  "restoredCommentFromDraft": "Comentario restaurado del borrador",
   "@restoredCommentFromDraft": {},
-  "restoredPostFromDraft": "Restored post from draft",
+  "restoredPostFromDraft": "Tema restaurado desde borrador",
   "@restoredPostFromDraft": {},
   "retry": "Reintentar",
   "@retry": {},
@@ -777,9 +777,9 @@
   "@searchComments": {},
   "searchCommentsFederatedWith": "Buscar los comentarios federados con {instance}",
   "@searchCommentsFederatedWith": {},
-  "searchCommunitiesFederatedWith": "Search for communities federated with {instance}",
+  "searchCommunitiesFederatedWith": "Buscar comunidades federadas con {instance}",
   "@searchCommunitiesFederatedWith": {},
-  "searchInstance": "Search {instance}",
+  "searchInstance": "Buscar {instance}",
   "@searchInstance": {},
   "searchPostSearchType": "Seleccionar el tipo de la búsqueda",
   "@searchPostSearchType": {},
@@ -799,17 +799,17 @@
   },
   "selectSearchType": "Seleccione el tipo de la búsqueda",
   "@selectSearchType": {},
-  "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
+  "serverErrorComments": "Se ha producido un error en el servidor al obtener más comentarios: {message}",
   "@serverErrorComments": {},
   "setAction": "Establecer acción",
   "@setAction": {
     "description": "Label for the action to set (short-press, long-press)"
   },
-  "setLongPress": "Set as long-press action",
+  "setLongPress": "Establecer como acción de pulsación larga",
   "@setLongPress": {},
-  "setShortPress": "Set as short-press action",
+  "setShortPress": "Establecer como acción de pulsación corta",
   "@setShortPress": {},
-  "settingTypeNotSupported": "Settings of type {settingType} are not yet supported.",
+  "settingTypeNotSupported": "Las configuraciones de tipo {settingType} aún no son compatibles.",
   "@settingTypeNotSupported": {},
   "settings": "Ajustes",
   "@settings": {},
@@ -817,7 +817,7 @@
   "@settingsFeedCards": {
     "description": "Settings for controlling the display of cards in the main feed."
   },
-  "share": "Share",
+  "share": "Compartir",
   "@share": {},
   "shareLink": "Compartir enlace externo",
   "@shareLink": {},
@@ -835,7 +835,7 @@
   "@showLess": {},
   "showMore": "Mostrar más",
   "@showMore": {},
-  "showPassword": "Show Password",
+  "showPassword": "Mostrar la contraseña",
   "@showPassword": {},
   "showReadPosts": "Mostrar las publicaciones leídas",
   "@showReadPosts": {
@@ -851,11 +851,11 @@
   "@sidebarBottomNavDoubleTapDescription": {},
   "sidebarBottomNavSwipeDescription": "Deslizar la barra inferior para abrir la barra lateral",
   "@sidebarBottomNavSwipeDescription": {},
-  "somethingWentWrong": "Oops, something went wrong!",
+  "somethingWentWrong": "¡Vaya, algo salió mal!",
   "@somethingWentWrong": {},
   "sortBy": "Ordenar por",
   "@sortBy": {},
-  "sortByTop": "Sort by Top",
+  "sortByTop": "Ordenar por Top",
   "@sortByTop": {},
   "sortOptions": "Opciones para ordenar",
   "@sortOptions": {},
@@ -895,35 +895,35 @@
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
   },
-  "timeoutComments": "Error: Timeout when attempting to fetch comments",
+  "timeoutComments": "Error: se agotó el tiempo de espera al intentar obtener comentarios",
   "@timeoutComments": {},
-  "timeoutErrorMessage": "There was a timeout waiting for a response.",
+  "timeoutErrorMessage": "Se ha agotado el tiempo de espera.",
   "@timeoutErrorMessage": {},
-  "timeoutSaveComment": "Error: Timeout when attempting to save a comment",
+  "timeoutSaveComment": "Error: se agotó el tiempo de espera al intentar guardar un comentario",
   "@timeoutSaveComment": {},
-  "timeoutSavingPost": "Error: Timeout when attempting to save post.",
+  "timeoutSavingPost": "Error: tiempo de espera agotado al intentar guardar la publicación.",
   "@timeoutSavingPost": {},
-  "timeoutUpvoteComment": "Error: Timeout when attempting to vote on comment",
+  "timeoutUpvoteComment": "Error: se agotó el tiempo de espera al intentar votar un comentario",
   "@timeoutUpvoteComment": {},
-  "timeoutVotingPost": "Error: Timeout when attempting to vote post.",
+  "timeoutVotingPost": "Error: tiempo de espera agotado al intentar votar la publicación.",
   "@timeoutVotingPost": {},
-  "toggelRead": "Toggle Read",
+  "toggelRead": "Activar o desactivar lectura",
   "@toggelRead": {},
   "top": "Top",
   "@top": {},
-  "topAll": "Top of all time",
+  "topAll": "El mejor de todos los tiempos",
   "@topAll": {},
-  "topDay": "Top Today",
+  "topDay": "Lo mejor de hoy",
   "@topDay": {},
-  "topHour": "Top in Past Hour",
+  "topHour": "Lo mejor de la última hora",
   "@topHour": {},
-  "topMonth": "Top Month",
+  "topMonth": "Lo mejor del mes",
   "@topMonth": {},
   "topNineMonths": "Lo mejor en los últimos 9 meses",
   "@topNineMonths": {
     "description": "Sort mode for top in past 9 months"
   },
-  "topSixHour": "Top in Past 6 Hours",
+  "topSixHour": "Lo mejor de las últimas 6 horas",
   "@topSixHour": {},
   "topSixMonths": "Lo mejor en los últimos 6 meses",
   "@topSixMonths": {
@@ -933,19 +933,19 @@
   "@topThreeMonths": {
     "description": "Sort mode for top in past 3 months"
   },
-  "topTwelveHour": "Top in Past 12 Hours",
+  "topTwelveHour": "Lo mejor de las últimas 12 horas",
   "@topTwelveHour": {},
-  "topWeek": "Top Week",
+  "topWeek": "Lo mejor de la semana",
   "@topWeek": {},
-  "topYear": "Top Year",
+  "topYear": "Lo mejor del año",
   "@topYear": {},
-  "totp": "TOTP (optional)",
+  "totp": "TOTP (opcional)",
   "@totp": {},
   "translationsMayNotBeComplete": "Por favor, tenga en cuenta que las traducciones pueden no estar completas",
   "@translationsMayNotBeComplete": {
     "description": "Warning that translations may not be complete when selecting a language in the settings"
   },
-  "trendingCommunities": "Trending Communities",
+  "trendingCommunities": "Comunidades en tendencia",
   "@trendingCommunities": {},
   "trySearchingFor": "Intentando buscar por...",
   "@trySearchingFor": {
@@ -973,11 +973,11 @@
   "@unableToLoadImageFrom": {
     "description": "Placeholder for when we are unable to load an image from a URL"
   },
-  "unableToLoadInstance": "Unable to load {instance}",
+  "unableToLoadInstance": "No se ha podido cargar {instance}",
   "@unableToLoadInstance": {},
-  "unableToLoadPostsFrominstance": "Unable to load posts from {instance}",
+  "unableToLoadPostsFrominstance": "No se pueden cargar entradas de {instance}",
   "@unableToLoadPostsFrominstance": {},
-  "unableToLoadReplies": "Unable to load more replies.",
+  "unableToLoadReplies": "No se pueden cargar más respuestas.",
   "@unableToLoadReplies": {},
   "unblockInstance": "Desbloquear la instancia",
   "@unblockInstance": {
@@ -999,7 +999,7 @@
   "@updateReleased": {},
   "uploadImage": "Subir imagen",
   "@uploadImage": {},
-  "upvote": "Upvote",
+  "upvote": "Voto positivo",
   "@upvote": {},
   "uriNotSupported": "Este tipo de enlace no es compatible por el momento.",
   "@uriNotSupported": {
@@ -1033,19 +1033,19 @@
   "@users": {},
   "viewAllComments": "Ver todos los comentarios",
   "@viewAllComments": {},
-  "visitCommunity": "Visit Community",
+  "visitCommunity": "Visitar la comunidad",
   "@visitCommunity": {},
   "visitInstance": "Instancia de la visita",
   "@visitInstance": {},
-  "visitUserProfile": "Visit User Profile",
+  "visitUserProfile": "Visitar perfil de usuario",
   "@visitUserProfile": {},
-  "xDownvotes": "{x} downvotes",
+  "xDownvotes": "{x} votos negativos",
   "@xDownvotes": {},
   "xScore": "{x} puntuación",
   "@xScore": {
     "description": "The total score of post or comment"
   },
-  "xUpvotes": "{x} upvotes",
+  "xUpvotes": "{x} votos positivos",
   "@xUpvotes": {},
   "confirm": "Confirmar",
   "@confirm": {
@@ -1481,7 +1481,7 @@
   "@addedModToCommunity": {
     "description": "Short decription for moderator action to add a mod to a community"
   },
-  "admin": "Adm.",
+  "admin": "Admón.",
   "@admin": {
     "description": "Role name for admin"
   },
@@ -1561,7 +1561,7 @@
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
   },
-  "moderator": "{count, plural, zero {Moderator} one {Moderator} other {Moderators}}",
+  "moderator": "{count, plural, zero {Moderadores} one {Moderador} other {Moderadores}}",
   "@moderator": {
     "description": "Role name for moderator"
   },
