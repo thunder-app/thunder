@@ -9,6 +9,7 @@ enum LocalSettingsCategories {
   floatingActionButton('floatingActionButton'),
   accessibility('Accessibility'),
   account('Account'),
+  userLabels('User Labels'),
   about('About'),
   debug('Debug'),
   theming('Theming'),
@@ -255,6 +256,8 @@ enum LocalSettings {
       subCategory: LocalSettingsSubCategories.names,
       searchable: false),
 
+  userLabels(name: 'setting_user_labels', key: 'userLabels', category: LocalSettingsCategories.userLabels),
+
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings
   sidebarBottomNavBarSwipeGesture(
@@ -479,6 +482,7 @@ extension LocalizationExt on AppLocalizations {
       'videoAutoLoop': videoAutoLoop,
       'videoAutoPlay': videoAutoPlay,
       'videoDefaultPlaybackSpeed': videoDefaultPlaybackSpeed,
+      'userLabels': userLabels,
     };
 
     if (localizationMap.containsKey(key)) {

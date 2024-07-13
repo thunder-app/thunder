@@ -259,7 +259,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
             switch (state.status) {
               case CreateCommentStatus.imageUploadSuccess:
-                _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+                String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
+                _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
                 break;
               case CreateCommentStatus.imageUploadFailure:
                 showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
@@ -471,8 +472,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   customImageButtonAction: () async {
                                     if (state.status == CreateCommentStatus.imageUploadInProgress) return;
 
-                                    String imagePath = await selectImageToUpload();
-                                    if (context.mounted) context.read<CreateCommentCubit>().uploadImage(imagePath);
+                                    List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
+                                    if (context.mounted) context.read<CreateCommentCubit>().uploadImages(imagesPath);
                                   },
                                   getAlternativeSelection: () => replyViewSelection,
                                 ),

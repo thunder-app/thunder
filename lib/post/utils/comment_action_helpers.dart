@@ -16,8 +16,8 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/utils/user_label_utils.dart';
 import 'package:thunder/post/widgets/report_comment_dialog.dart';
-import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -562,56 +562,7 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
         break;
       case CommentCardAction.userLabel:
         action = () async {
-          // Load up any existing label
-          final String username = UserLabel.usernameFromParts(widget.commentView.creator.name, widget.commentView.creator.actorId);
-          final UserLabel? existingLabel = await UserLabel.fetchUserLabel(username);
-
-          if (!context.mounted) return;
-
-          final TextEditingController controller = TextEditingController(text: existingLabel?.label);
-
-          await showThunderDialog(
-            // We're checking context.mounted above, so ignore this warning
-            // ignore: use_build_context_synchronously
-            context: context,
-            title: l10n.addUserLabel,
-            contentWidgetBuilder: (_) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    textInputAction: TextInputAction.done,
-                    keyboardType: TextInputType.text,
-                    controller: controller,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      border: const OutlineInputBorder(),
-                      labelText: l10n.label,
-                      hintText: l10n.userLabelHint,
-                    ),
-                    autofocus: true,
-                  ),
-                ],
-              );
-            },
-            tertiaryButtonText: existingLabel != null ? l10n.delete : null,
-            onTertiaryButtonPressed: (dialogContext) async {
-              Navigator.of(dialogContext).pop();
-              await UserLabel.deleteUserLabel(username);
-            },
-            secondaryButtonText: l10n.cancel,
-            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-            primaryButtonText: l10n.save,
-            onPrimaryButtonPressed: (dialogContext, _) async {
-              Navigator.of(dialogContext).pop();
-
-              if (controller.text.isNotEmpty) {
-                await UserLabel.upsertUserLabel(UserLabel(id: '', username: username, label: controller.text));
-              } else {
-                await UserLabel.deleteUserLabel(username);
-              }
-            },
-          );
+          await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.commentView.creator.name, widget.commentView.creator.actorId));
         };
         break;
       case CommentCardAction.instanceActions:

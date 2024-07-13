@@ -44,6 +44,7 @@ class _SettingsPageState extends State<SettingsPage> {
       SettingTopic(title: l10n.floatingActionButton, icon: Icons.settings_applications_rounded, path: SETTINGS_FAB_PAGE),
       SettingTopic(title: l10n.accessibility, icon: Icons.accessibility, path: SETTINGS_ACCESSIBILITY_PAGE),
       SettingTopic(title: l10n.account(0), icon: Icons.person_rounded, path: SETTINGS_ACCOUNT_PAGE),
+      SettingTopic(title: l10n.userLabels, icon: Icons.label_rounded, path: SETTINGS_USER_LABELS_PAGE),
       SettingTopic(title: l10n.about, icon: Icons.info_rounded, path: SETTINGS_ABOUT_PAGE),
       SettingTopic(title: l10n.debug, icon: Icons.developer_mode_rounded, path: SETTINGS_DEBUG_PAGE),
     ];
@@ -89,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         localSettings.length,
                         (index) => ListTile(
                               subtitle: Text(
-                                  "${l10n.getLocalSettingLocalization(localSettings[index].category!.toString())} > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}"),
+                                  "${l10n.getLocalSettingLocalization(localSettings[index].category!.toString())}${localSettings[index].subCategory == null ? '' : ' > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}'}"),
                               onTap: () {
                                 navigateToSetting(context, localSettings[index]);
                                 controller.closeView(null);

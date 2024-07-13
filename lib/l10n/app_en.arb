@@ -637,6 +637,10 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
+  "deleteUserLabelConfirmation": "Are you sure you want to delete the label?",
+  "@deleteUserLabelConfirmation": {
+    "description": "Confirmation message for deleting a label"
+  },
   "deletedByCreator": "deleted by creator",
   "@deletedByCreator": {
     "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
@@ -1407,6 +1411,10 @@
   },
   "noUserBlocks": "No blocked users.",
   "@noUserBlocks": {},
+  "noUserLabels": "You have not created any user labels yet",
+  "@noUserLabels": {
+    "description": "Placeholder message for empty list of labels"
+  },
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
   "none": "None",
@@ -2550,6 +2558,14 @@
   "userLabelHint": "This is my favorite user",
   "@userLabelHint": {
     "description": "Hint text for adding a new user label"
+  },
+  "userLabels": "User Labels",
+  "@userLabels": {
+    "description": "Heading for user labels settings"
+  },
+  "userLabelsSettingsPageDescription": "You can add, modify, or remove labels associated with users.",
+  "@userLabelsSettingsPageDescription": {
+    "description": "Description text for user labels settings page"
   },
   "userNameColor": "User Name Color",
   "@userNameColor": {
