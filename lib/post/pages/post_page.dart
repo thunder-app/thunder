@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,7 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
 import 'package:thunder/post/widgets/post_view.dart';
+import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/text/selectable_text_modal.dart';
@@ -48,6 +51,15 @@ class _PostPageState extends State<PostPage> {
   /// Creates a [ListController] that can be used to control the list of items in the page.
   final ListController listController = ListController();
 
+  /// The key for the list of comments
+  final GlobalKey customScrollViewKey = GlobalKey();
+
+  /// The key for the last comment
+  final GlobalKey lastCommentKey = GlobalKey();
+
+  /// The key for the "reached bottom" indicator
+  final GlobalKey reachedBottomWidgetKey = GlobalKey();
+
   /// Whether the post source should be displayed.
   bool viewSource = false;
 
@@ -60,6 +72,9 @@ class _PostPageState extends State<PostPage> {
   /// Whether the user changed during the course of viewing the post
   bool userChanged = false;
 
+  /// The height of the bottom spacer
+  double? bottomSpacerHeight;
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +85,27 @@ class _PostPageState extends State<PostPage> {
         context.read<PostBloc>().add(const GetPostCommentsEvent());
       }
     });
+
+    // The following logic helps us to set the size of the bottom spacer so that the user can scroll the last comment to the top of the viewport but no further.
+    // This must be run some time after the layout has been rendered so we can measure everything.
+    // It also must be run after there is something to scroll, and the easiest way to do this is to do it in a scroll listener.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.addListener(() {
+        if (bottomSpacerHeight == null && lastCommentKey.currentContext != null) {
+          final double? lastCommentHeight = (lastCommentKey.currentContext!.findRenderObject() as RenderBox?)?.size.height;
+          final double? customScrollViewHeight = (customScrollViewKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+          final double? reachedBottomWidgetHeight = (reachedBottomWidgetKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+
+          if (lastCommentHeight != null && customScrollViewHeight != null && reachedBottomWidgetHeight != null) {
+            // We will make the bottom spacer the size of the scroll view height, minus the size of the two other widgets.
+            // We also subtract the height of the toolbar to account for the app bar (the scroll view height includes the area behind the app bar).
+            // This will allow the last comment to be scrolled to the top, with the "reached bottom" indicator and the spacer taking up the rest of the space.
+            bottomSpacerHeight = max(160, customScrollViewHeight - lastCommentHeight - reachedBottomWidgetHeight - kToolbarHeight);
+            setState(() {});
+          }
+        }
+      });
+    });
   }
 
   @override
@@ -77,7 +113,7 @@ class _PostPageState extends State<PostPage> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final thunderState = context.read<ThunderBloc>().state;
-    bool hideTopBarOnScroll = thunderState.hideTopBarOnScroll;
+
     originalUser ??= context.read<AuthBloc>().state.account;
 
     return PopScope(
@@ -87,8 +123,28 @@ class _PostPageState extends State<PostPage> {
         }
       },
       child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned.fill(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: CommentNavigatorFab(
+                    initialIndex: 0,
+                    maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
+                    scrollController: scrollController,
+                    listController: listController,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
         body: SafeArea(
-          top: hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+          top: thunderState.hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
           bottom: false,
           child: BlocConsumer<PostBloc, PostState>(
             listener: (context, state) {
@@ -108,6 +164,7 @@ class _PostPageState extends State<PostPage> {
               List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
 
               return CustomScrollView(
+                key: customScrollViewKey,
                 controller: scrollController,
                 slivers: [
                   PostPageAppBar(
@@ -157,6 +214,7 @@ class _PostPageState extends State<PostPage> {
                         bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
 
                         return CommentCard(
+                          key: index == flattenedComments.length - 1 ? lastCommentKey : null,
                           commentView: commentView,
                           replyCount: commentNode.replies.length,
                           level: commentNode.depth,
@@ -182,6 +240,7 @@ class _PostPageState extends State<PostPage> {
                   SliverToBoxAdapter(
                     child: state.hasReachedCommentEnd == true
                         ? Container(
+                            key: reachedBottomWidgetKey,
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: ScalableText(
@@ -201,7 +260,7 @@ class _PostPageState extends State<PostPage> {
                             ),
                           ),
                   ),
-                  const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                  SliverToBoxAdapter(child: SizedBox(height: bottomSpacerHeight)),
                 ],
               );
             },
