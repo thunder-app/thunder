@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -51,14 +50,11 @@ class _PostPageState extends State<PostPage> {
   /// Creates a [ListController] that can be used to control the list of items in the page.
   final ListController listController = ListController();
 
-  /// The key for the list of comments
-  final GlobalKey customScrollViewKey = GlobalKey();
+  /// The key for the app bar
+  final GlobalKey appBarKey = GlobalKey();
 
-  /// The key for the last comment
-  final GlobalKey lastCommentKey = GlobalKey();
-
-  /// The key for the "reached bottom" indicator
-  final GlobalKey reachedBottomWidgetKey = GlobalKey();
+  /// The key for the "reached end" indicator
+  final GlobalKey reachedEndKey = GlobalKey();
 
   /// Whether the post source should be displayed.
   bool viewSource = false;
@@ -91,16 +87,20 @@ class _PostPageState extends State<PostPage> {
     // It also must be run after there is something to scroll, and the easiest way to do this is to do it in a scroll listener.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.addListener(() {
-        if (bottomSpacerHeight == null && lastCommentKey.currentContext != null) {
-          final double? lastCommentHeight = (lastCommentKey.currentContext!.findRenderObject() as RenderBox?)?.size.height;
-          final double? customScrollViewHeight = (customScrollViewKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
-          final double? reachedBottomWidgetHeight = (reachedBottomWidgetKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+        if (bottomSpacerHeight == null) {
+          final deviceHeight = MediaQuery.sizeOf(context).height;
 
-          if (lastCommentHeight != null && customScrollViewHeight != null && reachedBottomWidgetHeight != null) {
-            // We will make the bottom spacer the size of the scroll view height, minus the size of the two other widgets.
-            // We also subtract the height of the toolbar to account for the app bar (the scroll view height includes the area behind the app bar).
+          // Get the height of the "reached end" indicator widget
+          final reachedEndHeight = (reachedEndKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+
+          // Get the height of the app bar
+          final renderObject = appBarKey.currentContext?.findRenderObject() as RenderSliverFloatingPersistentHeader?;
+          final appBarHeight = renderObject?.geometry!.maxPaintExtent;
+
+          if (appBarHeight != null && reachedEndHeight != null) {
+            // We will make the bottom spacer the size of the device height, minus the size of the app bar and the size of the "reached bottom" indicator.
             // This will allow the last comment to be scrolled to the top, with the "reached bottom" indicator and the spacer taking up the rest of the space.
-            bottomSpacerHeight = max(160, customScrollViewHeight - lastCommentHeight - reachedBottomWidgetHeight - kToolbarHeight);
+            bottomSpacerHeight = deviceHeight - appBarHeight - reachedEndHeight;
             setState(() {});
           }
         }
@@ -164,10 +164,10 @@ class _PostPageState extends State<PostPage> {
               List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
 
               return CustomScrollView(
-                key: customScrollViewKey,
                 controller: scrollController,
                 slivers: [
                   PostPageAppBar(
+                    key: appBarKey,
                     viewSource: viewSource,
                     onViewSource: (value) => setState(() => viewSource = value),
                     onReset: () async => await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized),
@@ -214,7 +214,6 @@ class _PostPageState extends State<PostPage> {
                         bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
 
                         return CommentCard(
-                          key: index == flattenedComments.length - 1 ? lastCommentKey : null,
                           commentView: commentView,
                           replyCount: commentNode.replies.length,
                           level: commentNode.depth,
@@ -240,7 +239,7 @@ class _PostPageState extends State<PostPage> {
                   SliverToBoxAdapter(
                     child: state.hasReachedCommentEnd == true
                         ? Container(
-                            key: reachedBottomWidgetKey,
+                            key: reachedEndKey,
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: ScalableText(
