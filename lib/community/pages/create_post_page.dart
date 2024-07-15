@@ -360,21 +360,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       : Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: IconButton(
-                            onPressed: isSubmitButtonDisabled
-                                ? null
-                                : () {
-                                    saveDraft = false;
-
-                                    context.read<CreatePostCubit>().createOrEditPost(
-                                          communityId: communityId!,
-                                          name: _titleTextController.text,
-                                          body: _bodyTextController.text,
-                                          nsfw: isNSFW,
-                                          url: url,
-                                          postIdBeingEdited: widget.postView?.post.id,
-                                          languageId: languageId,
-                                        );
-                                  },
+                            onPressed: isSubmitButtonDisabled ? null : () => _onCreatePost(context),
                             icon: Icon(
                               widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
                               semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
@@ -623,12 +609,38 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
                               },
                               icon: Icon(
-                                showPreview ? Icons.visibility_outlined : Icons.visibility,
+                                showPreview ? Icons.visibility_off_rounded : Icons.visibility,
                                 color: theme.colorScheme.onSecondary,
                                 semanticLabel: l10n.postTogglePreview,
                               ),
-                              visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
-                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
+                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
+                            ),
+                          ),
+                          Transform.translate(
+                            offset: const Offset(-8, 0),
+                            child: AnimatedOpacity(
+                              opacity: isSubmitButtonDisabled ? 0 : 1,
+                              duration: const Duration(milliseconds: 250),
+                              child: AnimatedSize(
+                                duration: const Duration(milliseconds: 250),
+                                child: SizedBox(
+                                  width: isSubmitButtonDisabled ? 0 : null,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 0, right: 0),
+                                    child: IconButton(
+                                      onPressed: isSubmitButtonDisabled ? null : () => _onCreatePost(context),
+                                      icon: Icon(
+                                        widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                        semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: theme.colorScheme.secondary,
+                                        disabledBackgroundColor: getBackgroundColor(context),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -685,6 +697,22 @@ class _CreatePostPageState extends State<CreatePostPage> {
           urlError = parsedUrl == null ? AppLocalizations.of(context)!.notValidUrl : null;
         });
       }
+    }
+  }
+
+  void _onCreatePost(BuildContext context) {
+    {
+      saveDraft = false;
+
+      context.read<CreatePostCubit>().createOrEditPost(
+            communityId: communityId!,
+            name: _titleTextController.text,
+            body: _bodyTextController.text,
+            nsfw: isNSFW,
+            url: url,
+            postIdBeingEdited: widget.postView?.post.id,
+            languageId: languageId,
+          );
     }
   }
 }
