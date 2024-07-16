@@ -2654,5 +2654,21 @@
   "userLabels": "Etiquetas de usuario",
   "@userLabels": {
     "description": "Heading for user labels settings"
+  },
+  "accept": "Aceptar",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "decline": "Rechazar",
+  "@decline": {
+    "description": "The ability to decline an option"
+  },
+  "contentWarning": "Aviso de contenido",
+  "@contentWarning": {
+    "description": "Heading for content warning dialog"
+  },
+  "loginAttemptCanceled": "Intento de inicio de sesión cancelado.",
+  "@loginAttemptCanceled": {
+    "description": "Message shown to user when they cancel a login attempt"
   }
 }
