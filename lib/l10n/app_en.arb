@@ -2315,6 +2315,10 @@
   "@thisAccount": {
     "description": "Referring to the currently active account in account settings"
   },
+  "thumbnailUrl": "Thumbnail URL",
+  "@thumbnailUrl": {
+    "description": "Post field for adding a custom thumbnail to the post"
+  },
   "thunderHasBeenUpdated": "Thunder updated to {version}!",
   "@thunderHasBeenUpdated": {
     "description": "Heading for changelog when Thunder has been updated"

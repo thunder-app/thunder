@@ -94,6 +94,7 @@ enum LemmyFeature {
   blockInstance(0, 19, 0, preRelease: ["rc", "1"]),
   multiRead(0, 19, 0, preRelease: ["rc", "1"]),
   hidePosts(0, 19, 4),
+  customThumbnail(0, 19, 4),
   listMedia(0, 19, 4, preRelease: ["beta", "4"]);
 
   final int major;

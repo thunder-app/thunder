@@ -20,7 +20,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -39,18 +39,30 @@ class AppDatabase extends _$AppDatabase {
             await migrator.createTable(drafts);
           }
 
+          // If we are migrating from 3 or lower to anything higher
+          if (from <= 3 && to > 3) {
+            // Create the custom_thumbnail on the drafts table
+            await customStatement('ALTER TABLE drafts ADD COLUMN custom_thumbnail TEXT');
+          }
+
           // --- DOWNGRADES ---
 
-          // If we are downgrading from 2 or higher to 1
-          if (from >= 2 && to <= 1) {
-            // Delete the UserLabels table
-            await migrator.deleteTable('user_labels');
+          // If we are downgrading from 4 or higher to 3 or lower
+          if (from >= 4 && to <= 3) {
+            // Drop the custom_thumbnail column from Accounts
+            await customStatement('ALTER TABLE drafts DROP COLUMN custom_thumbnail');
           }
 
           // If we are downgrading from 3 or higher to 2 or lower
           if (from >= 3 && to <= 2) {
             // Delete the Drafts table
             await migrator.deleteTable('drafts');
+          }
+
+          // If we are downgrading from 2 or higher to 1
+          if (from >= 2 && to <= 1) {
+            // Delete the UserLabels table
+            await migrator.deleteTable('user_labels');
           }
         },
       );
