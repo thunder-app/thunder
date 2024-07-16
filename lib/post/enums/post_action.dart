@@ -8,6 +8,7 @@ enum PostAction {
   report(permissionType: PermissionType.user),
   read(permissionType: PermissionType.user),
   multiRead(permissionType: PermissionType.user),
+  hide(permissionType: PermissionType.user),
 
   /// Moderator level post actions
   lock(permissionType: PermissionType.moderator),

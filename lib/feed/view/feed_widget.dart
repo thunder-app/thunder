@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -10,7 +11,6 @@ import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -140,6 +140,10 @@ class _FeedPostListState extends State<FeedPostList> {
                     },
                     onReadAction: (bool read) {
                       context.read<FeedBloc>().add(FeedItemActionedEvent(postId: widget.postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                    },
+                    onHideAction: (bool hide) {
+                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: widget.postViewMedias[index].postView.post.id, postAction: PostAction.hide, value: hide));
+                      context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: widget.postViewMedias[index].postView.post.id));
                     },
                     onDownAction: () {
                       if (lastTappedIndex != index) lastTappedIndex = index;

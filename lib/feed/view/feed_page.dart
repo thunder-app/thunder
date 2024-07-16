@@ -55,6 +55,7 @@ class FeedPage extends StatefulWidget {
     this.userId,
     this.username,
     this.scaffoldStateKey,
+    this.showHidden = false,
   });
 
   /// The type of feed to display.
@@ -87,6 +88,9 @@ class FeedPage extends StatefulWidget {
   /// The scaffold key which holds the drawer
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
 
+  /// Whether to show hidden posts in the feed
+  final bool showHidden;
+
   @override
   State<FeedPage> createState() => _FeedPageState();
 }
@@ -112,6 +116,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           userId: widget.userId,
           username: widget.username,
           reset: true,
+          showHidden: widget.showHidden,
         ));
       }
     } catch (e) {
@@ -145,6 +150,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           userId: widget.userId,
           username: widget.username,
           reset: true,
+          showHidden: widget.showHidden,
         )),
       child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
     );
@@ -261,6 +267,27 @@ class _FeedViewState extends State<FeedView> {
     }
   }
 
+  Future<void> dismissHiddenPost(int postId) async {
+    ThunderState state = context.read<ThunderBloc>().state;
+
+    FeedBloc feedBloc = context.read<FeedBloc>();
+    List<PostViewMedia> postViewMedias = feedBloc.state.postViewMedias;
+
+    if (postViewMedias.isNotEmpty) {
+      for (PostViewMedia postViewMedia in postViewMedias) {
+        if (postViewMedia.postView.post.id == postId) {
+          setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
+          await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
+        }
+      }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      feedBloc.add(FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
+      setState(() => queuedForRemoval.clear());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
@@ -302,6 +329,7 @@ class _FeedViewState extends State<FeedView> {
               if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
               if (previous.dismissReadId != current.dismissReadId) dismissRead();
               if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
+              if (current.dismissHiddenPostId != null && !thunderBloc.state.showHiddenPosts) dismissHiddenPost(current.dismissHiddenPostId!);
               return true;
             },
             listener: (context, state) {
@@ -592,6 +620,7 @@ class _FeedViewState extends State<FeedView> {
           postListingType: desiredListingType,
           feedType: FeedType.general,
           communityId: null,
+          showHidden: thunderBloc.state.showHiddenPosts,
         ),
       );
 

@@ -45,7 +45,7 @@ class CreatePostPage extends StatefulWidget {
   final int? communityId;
   final CommunityView? communityView;
 
-  /// Whether or not to pre-populate the post with the [title], [text], [image] and/or [url]
+  /// Whether or not to pre-populate the post with the [title], [text], [image], [url], and/or [customThumbnail]
   final bool? prePopulated;
 
   /// Used to pre-populate the post title
@@ -59,6 +59,9 @@ class CreatePostPage extends StatefulWidget {
 
   /// Used to pre-populate the shared link for the post
   final String? url;
+
+  /// Used to pre-populate the custom thumbnail for the post
+  final String? customThumbnail;
 
   /// [postView] is passed in when editing an existing post
   final PostView? postView;
@@ -74,6 +77,7 @@ class CreatePostPage extends StatefulWidget {
     this.title,
     this.text,
     this.url,
+    this.customThumbnail,
     this.prePopulated = false,
     this.postView,
     this.onPostSuccess,
@@ -117,8 +121,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
   /// The shared link for the post. This is used to determine any cross posts
   String url = "";
 
+  /// The custom thumbnail for this post.
+  String? customThumbnail;
+
   /// The error message for the shared link if available
   String? urlError;
+
+  /// The error message for the custom thumbnail if available
+  String? customThumbnailError;
 
   /// The id of the community that the post will be created in
   int? communityId;
@@ -135,6 +145,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
+  final TextEditingController _customThumbnailTextController = TextEditingController();
 
   /// The focus node for the body. This is used to keep track of the position of the cursor when toggling preview
   final FocusNode _bodyFocusNode = FocusNode();
@@ -165,11 +176,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
     });
 
+    _customThumbnailTextController.addListener(() {
+      customThumbnail = _customThumbnailTextController.text;
+      _validateSubmission();
+      debounce(const Duration(milliseconds: 1000), _updatePreview, [customThumbnail]);
+    });
+
     // Logic for pre-populating the post with the given fields
     if (widget.prePopulated == true) {
       _titleTextController.text = widget.title ?? '';
       _bodyTextController.text = widget.text ?? '';
       _urlTextController.text = widget.url ?? '';
+      _customThumbnailTextController.text = widget.customThumbnail ?? '';
       _getDataFromLink(updateTitleField: _titleTextController.text.isEmpty);
 
       if (widget.image != null) {
@@ -185,6 +203,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     if (widget.postView != null) {
       _titleTextController.text = widget.postView!.post.name;
       _urlTextController.text = widget.postView!.post.url ?? '';
+      _customThumbnailTextController.text = widget.postView!.post.thumbnailUrl ?? '';
       _bodyTextController.text = widget.postView!.post.body ?? '';
       isNSFW = widget.postView!.post.nsfw;
       languageId = widget.postView!.post.languageId;
@@ -201,6 +220,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _bodyTextController.dispose();
     _titleTextController.dispose();
     _urlTextController.dispose();
+    _customThumbnailTextController.dispose();
     _bodyFocusNode.dispose();
 
     FocusManager.instance.primaryFocus?.unfocus();
@@ -239,6 +259,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     if (draft != null) {
       _titleTextController.text = draft.title ?? '';
       _urlTextController.text = draft.url ?? '';
+      _customThumbnailTextController.text = draft.customThumbnail ?? '';
       _bodyTextController.text = draft.body ?? '';
     }
 
@@ -260,6 +281,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
           _titleTextController.text = widget.postView?.post.name ?? '';
           _urlTextController.text = widget.postView?.post.url ?? '';
+          _customThumbnailTextController.text = widget.postView?.post.thumbnailUrl ?? '';
           _bodyTextController.text = widget.postView?.post.body ?? '';
         },
       );
@@ -274,6 +296,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       replyId: draftReplyId,
       title: _titleTextController.text,
       url: _urlTextController.text,
+      customThumbnail: _customThumbnailTextController.text,
       body: _bodyTextController.text,
     );
   }
@@ -285,7 +308,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
       return true;
     }
 
-    return draft.title != widget.postView!.post.name || draft.url != (widget.postView!.post.url ?? '') || draft.body != (widget.postView!.post.body ?? '');
+    return draft.title != widget.postView!.post.name ||
+        draft.url != (widget.postView!.post.url ?? '') ||
+        draft.customThumbnail != (widget.postView!.post.thumbnailUrl ?? '') ||
+        draft.body != (widget.postView!.post.body ?? '');
   }
 
   /// Attempts to get the suggested title for a given link
@@ -456,6 +482,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 ),
                               ),
                             ),
+                            if (LemmyClient.instance.supportsFeature(LemmyFeature.customThumbnail) && !isImageUrl(_urlTextController.text)) ...[
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: _customThumbnailTextController,
+                                decoration: InputDecoration(
+                                  hintText: l10n.thumbnailUrl,
+                                  errorText: customThumbnailError,
+                                ),
+                              ),
+                            ],
                             const SizedBox(height: 10),
                             Visibility(
                               visible: url.isNotEmpty,
@@ -463,7 +499,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 hideNsfw: false,
                                 scrapeMissingPreviews: false,
                                 originURL: url,
-                                mediaURL: isImageUrl(url) ? url : null,
+                                mediaURL: isImageUrl(url)
+                                    ? url
+                                    : customThumbnail?.isNotEmpty == true && isImageUrl(customThumbnail!)
+                                        ? customThumbnail
+                                        : null,
                                 mediaHeight: null,
                                 mediaWidth: null,
                                 showFullHeightImages: false,
@@ -637,8 +677,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   void _updatePreview(String text) async {
+    SearchResponse? searchResponse;
     if (url == text) {
-      SearchResponse? searchResponse;
       try {
         // Fetch cross-posts
         final Account? account = await fetchActiveProfileAccount();
@@ -650,50 +690,54 @@ class _CreatePostPageState extends State<CreatePostPage> {
           limit: 20,
           auth: account?.jwt,
         ));
-      } finally {
-        setState(() {
-          crossPosts = searchResponse?.posts ?? [];
-        });
+      } catch (e) {
+        // Ignore
       }
     }
+
+    setState(() {
+      crossPosts = searchResponse?.posts ?? [];
+    });
   }
 
   void _validateSubmission() {
     final Uri? parsedUrl = Uri.tryParse(_urlTextController.text);
+    final Uri? parsedCustomThumbnail = Uri.tryParse(_customThumbnailTextController.text);
 
     if (isSubmitButtonDisabled) {
       // It's disabled, check if we can enable it.
-      if (_titleTextController.text.isNotEmpty && parsedUrl != null && communityId != null) {
+      if (_titleTextController.text.isNotEmpty && parsedUrl != null && parsedCustomThumbnail != null && communityId != null) {
         setState(() {
           isSubmitButtonDisabled = false;
           urlError = null;
+          customThumbnailError = null;
         });
       }
     } else {
       // It's enabled, check if we need to disable it.
-      if (_titleTextController.text.isEmpty || parsedUrl == null || communityId == null) {
+      if (_titleTextController.text.isEmpty || parsedUrl == null || parsedCustomThumbnail == null || communityId == null) {
         setState(() {
           isSubmitButtonDisabled = true;
           urlError = parsedUrl == null ? AppLocalizations.of(context)!.notValidUrl : null;
+          customThumbnailError = parsedCustomThumbnail == null ? AppLocalizations.of(context)!.notValidUrl : null;
         });
       }
     }
   }
 
   void _onCreatePost(BuildContext context) {
-    {
-      saveDraft = false;
+    saveDraft = false;
 
-      context.read<CreatePostCubit>().createOrEditPost(
-            communityId: communityId!,
-            name: _titleTextController.text,
-            body: _bodyTextController.text,
-            nsfw: isNSFW,
-            url: url,
-            postIdBeingEdited: widget.postView?.post.id,
-            languageId: languageId,
-          );
-    }
+    context.read<CreatePostCubit>().createOrEditPost(
+          communityId: communityId!,
+          name: _titleTextController.text,
+          body: _bodyTextController.text,
+          nsfw: isNSFW,
+          url: url,
+          customThumbnail: customThumbnail,
+          postIdBeingEdited: widget.postView?.post.id,
+          languageId: languageId,
+        );
   }
 }
 
