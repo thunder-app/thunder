@@ -520,6 +520,7 @@ class _ThunderState extends State<Thunder> {
                               child: Container(),
                             ),
                           );
+                        case AuthStatus.contentWarning:
                         case AuthStatus.success:
                           Version? version = thunderBlocState.version;
                           bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;

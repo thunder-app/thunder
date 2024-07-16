@@ -177,6 +177,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    // TODO: If this site has a content warning, we don't need to blur previews.
+    // (This can be implemented once the web UI does the same.)
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
 
     return InkWell(
@@ -237,6 +239,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    // TODO: If this site has a content warning, we don't need to blur previews.
+    // (This can be implemented once the web UI does the same.)
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
 
     return InkWell(

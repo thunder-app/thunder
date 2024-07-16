@@ -3,6 +3,10 @@
   "@about": {
     "description": "About settings category."
   },
+  "accept": "Accept",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
   "accessibility": "Accessibility",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
@@ -453,6 +457,10 @@
   "@contentManagement": {
     "description": "Setting for content management (languages/blocking)"
   },
+  "contentWarning": "Content Warning",
+  "@contentWarning": {
+    "description": "Heading for content warning dialog"
+  },
   "controversial": "Controversial",
   "@controversial": {},
   "copiedToClipboard": "Copied to clipboard",
@@ -594,6 +602,10 @@
   "debugNotificationsDescription": "Use the following options to troubleshoot issues related to notifications.",
   "@debugNotificationsDescription": {
     "description": "A description for the notification debugging section"
+  },
+  "decline": "Decline",
+  "@decline": {
+    "description": "The ability to decline an option"
   },
   "defaultColor": "Default",
   "@defaultColor": {
@@ -1167,8 +1179,14 @@
   "@logOut": {},
   "login": "Log in",
   "@login": {},
-  "loginFailed": "Could not log in. Please try again:({errorMessage})",
-  "@loginFailed": {},
+  "loginAttemptCanceled": "Login attempt canceled.",
+  "@loginAttemptCanceled": {
+    "description": "Message shown to user when they cancel a login attempt"
+  },
+  "loginFailed": "Could not log in. Please try again. (Error: {errorMessage})",
+  "@loginFailed": {
+    "description": "Message shown to user when their login attempt failed"
+  },
   "loginSucceeded": "Logged in.",
   "@loginSucceeded": {},
   "loginToPerformAction": "You need to be logged in to carry out this task.",
