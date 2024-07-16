@@ -93,7 +93,8 @@ enum LemmyFeature {
   commentSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
   blockInstance(0, 19, 0, preRelease: ["rc", "1"]),
   multiRead(0, 19, 0, preRelease: ["rc", "1"]),
-  hidePosts(0, 19, 4);
+  hidePosts(0, 19, 4),
+  customThumbnail(0, 19, 4);
 
   final int major;
   final int minor;

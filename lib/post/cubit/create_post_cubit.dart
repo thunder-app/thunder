@@ -49,7 +49,16 @@ class CreatePostCubit extends Cubit<CreatePostState> {
 
   /// Creates or edits a post. When successful, it emits the newly created/updated post in the form of a [PostViewMedia]
   /// and returns the newly created post id.
-  Future<int?> createOrEditPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited, int? languageId}) async {
+  Future<int?> createOrEditPost({
+    required int communityId,
+    required String name,
+    String? body,
+    String? url,
+    String? customThumbnail,
+    bool? nsfw,
+    int? postIdBeingEdited,
+    int? languageId,
+  }) async {
     emit(state.copyWith(status: CreatePostStatus.submitting));
 
     try {
@@ -58,6 +67,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
         name: name,
         body: body,
         url: url,
+        customThumbnail: customThumbnail,
         nsfw: nsfw,
         postIdBeingEdited: postIdBeingEdited,
         languageId: languageId,

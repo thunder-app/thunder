@@ -37,5 +37,6 @@ class Drafts extends Table {
   IntColumn get replyId => integer().nullable()();
   TextColumn get title => text().nullable()();
   TextColumn get url => text().nullable()();
+  TextColumn get customThumbnail => text().nullable()();
   TextColumn get body => text().nullable()();
 }
