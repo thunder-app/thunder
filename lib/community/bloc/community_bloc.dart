@@ -70,6 +70,14 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         try {
           CommunityView communityView = await followCommunity(event.communityId, event.value);
 
+          if (GlobalContext.context.mounted) {
+            if (event.value) {
+              showSnackbar(AppLocalizations.of(GlobalContext.context)!.subscriptionRequestSent);
+            } else {
+              showSnackbar(AppLocalizations.of(GlobalContext.context)!.unsubscriptionRequestSent);
+            }
+          }
+
           emit(state.copyWith(status: CommunityStatus.success, communityView: communityView));
           emit(state.copyWith(status: CommunityStatus.fetching));
 
@@ -87,6 +95,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             }
           });
         } catch (e) {
+          showSnackbar(AppLocalizations.of(GlobalContext.context)!.failedToPerformAction);
           return emit(state.copyWith(status: CommunityStatus.failure));
         }
         break;
