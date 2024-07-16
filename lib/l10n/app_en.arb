@@ -1577,7 +1577,7 @@
   },
   "postSwipeGesturesHint": "Looking to use buttons instead? Change what buttons appear on post cards in general settings.",
   "@postSwipeGesturesHint": {},
-  "postTitle": "Title",
+  "postTitle": "Title (required)",
   "@postTitle": {},
   "postTitleFontScale": "Post Title Font Scale",
   "@postTitleFontScale": {
@@ -1849,7 +1849,7 @@
   "@selectAll": {
     "description": "Action for selecting all text"
   },
-  "selectCommunity": "Select a community",
+  "selectCommunity": "Select a community (required)",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
   "@selectFeedType": {},

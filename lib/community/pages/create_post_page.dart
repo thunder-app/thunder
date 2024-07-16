@@ -351,23 +351,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
                 toolbarHeight: 70.0,
                 centerTitle: false,
-                actions: [
-                  state.status == CreatePostStatus.submitting
-                      ? const Padding(
-                          padding: EdgeInsets.only(right: 20.0),
-                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: IconButton(
-                            onPressed: isSubmitButtonDisabled ? null : () => _onCreatePost(context),
-                            icon: Icon(
-                              widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
-                              semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
-                            ),
-                          ),
-                        ),
-                ],
               ),
               body: SafeArea(
                 child: Column(
@@ -428,10 +411,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               onSelected: (String suggestion) {
                                 _titleTextController.text = suggestion;
                               },
-                              builder: (context, controller, focusNode) => TextField(
+                              builder: (context, controller, focusNode) => TextFormField(
                                 controller: controller,
                                 focusNode: focusNode,
-                                decoration: InputDecoration(hintText: l10n.postTitle),
+                                decoration: InputDecoration(
+                                  hintText: l10n.postTitle,
+                                  hintStyle: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.error),
+                                  isDense: true,
+                                  border: const OutlineInputBorder(),
+                                ),
                               ),
                               hideOnEmpty: true,
                               hideOnLoading: true,
@@ -443,6 +431,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               decoration: InputDecoration(
                                 hintText: l10n.postURL,
                                 errorText: urlError,
+                                isDense: true,
+                                border: const OutlineInputBorder(),
                                 suffixIcon: IconButton(
                                   onPressed: () async {
                                     if (state.status == CreatePostStatus.postImageUploadInProgress) return;
