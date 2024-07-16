@@ -501,7 +501,7 @@
   "@logOut": {},
   "login": "Iniciar sesión",
   "@login": {},
-  "loginFailed": "No se ha podido iniciar sesión. Inténteao de nuevo:({errorMessage})",
+  "loginFailed": "No se ha podido iniciar sesión. Inténtelo de nuevo. (Error: {errorMessage})",
   "@loginFailed": {},
   "loginSucceeded": "Conectado.",
   "@loginSucceeded": {},
@@ -579,7 +579,7 @@
   "@notValidLemmyInstance": {},
   "notValidUrl": "URL no válida",
   "@notValidUrl": {},
-  "nothingToShare": "Nada que compartir",
+  "nothingToShare": "Nada para compartir",
   "@nothingToShare": {},
   "notifications": "{count, plural, zero {Notificación} one {Notificación} other {Notificaciones}}",
   "@notifications": {
@@ -589,7 +589,7 @@
   "@notificationsBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
   },
-  "off": "apagar",
+  "off": "apagado",
   "@off": {},
   "ok": "OK",
   "@ok": {},
@@ -601,7 +601,7 @@
   "@onlyModsCanPostInCommunity": {},
   "open": "Abrir",
   "@open": {},
-  "openAccountSwitcher": "Cambiar de cuenta",
+  "openAccountSwitcher": "Abrir el conmutador de cuentas",
   "@openAccountSwitcher": {},
   "openByDefault": "Abrir por defecto",
   "@openByDefault": {
@@ -609,7 +609,7 @@
   },
   "openInBrowser": "Abrir en el navegador",
   "@openInBrowser": {},
-  "openInstance": "Instancia abierta",
+  "openInstance": "Abrir una instancia",
   "@openInstance": {},
   "openSettings": "Abrir la configuración",
   "@openSettings": {
@@ -657,7 +657,7 @@
   "@postPreview": {
     "description": "Description for the post preview in Setting -> Appearance -> Posts"
   },
-  "postSavedAsDraft": "Mensaje guardado como borrador",
+  "postSavedAsDraft": "Publicación guardada como borrador",
   "@postSavedAsDraft": {},
   "postSwipeGesturesHint": "¿Quieres utilizar los botones? Cambia los botones que aparecen en los temas en los ajustes generales.",
   "@postSwipeGesturesHint": {},
@@ -675,17 +675,17 @@
   },
   "posts": "Posts",
   "@posts": {},
-  "preview": "Vista previa",
+  "preview": "Previsualizar",
   "@preview": {},
-  "profileAppliedSuccessfully": "¡{profile} aplicado con éxito!",
+  "profileAppliedSuccessfully": "¡{profile} aplicado correctamente!",
   "@profileAppliedSuccessfully": {},
   "profiles": "Perfiles",
   "@profiles": {},
-  "reachedTheBottom": "Hmmm. Parece que has tocado fondo.",
+  "reachedTheBottom": "Mmm. Parece que has llegado al final.",
   "@reachedTheBottom": {},
   "readAll": "Leer todo",
   "@readAll": {},
-  "reducesAnimations": "Reduce las animaciones utilizadas en Thunder",
+  "reducesAnimations": "Reducir las animaciones utilizadas en Thunder",
   "@reducesAnimations": {},
   "refresh": "Refrescar",
   "@refresh": {},
@@ -745,7 +745,7 @@
   "@restore": {},
   "restoredCommentFromDraft": "Comentario restaurado del borrador",
   "@restoredCommentFromDraft": {},
-  "restoredPostFromDraft": "Tema restaurado desde borrador",
+  "restoredPostFromDraft": "Post restaurado desde el borrador",
   "@restoredPostFromDraft": {},
   "retry": "Reintentar",
   "@retry": {},
@@ -777,7 +777,7 @@
   "@searchComments": {},
   "searchCommentsFederatedWith": "Buscar los comentarios federados con {instance}",
   "@searchCommentsFederatedWith": {},
-  "searchCommunitiesFederatedWith": "Buscar comunidades federadas con {instance}",
+  "searchCommunitiesFederatedWith": "Buscar comunidades asociadas con {instance}",
   "@searchCommunitiesFederatedWith": {},
   "searchInstance": "Buscar {instance}",
   "@searchInstance": {},
@@ -805,11 +805,11 @@
   "@setAction": {
     "description": "Label for the action to set (short-press, long-press)"
   },
-  "setLongPress": "Establecer como acción de pulsación larga",
+  "setLongPress": "Fijar como acción de pulsación larga",
   "@setLongPress": {},
-  "setShortPress": "Establecer como acción de pulsación corta",
+  "setShortPress": "Fijar como acción de pulsación corta",
   "@setShortPress": {},
-  "settingTypeNotSupported": "Las configuraciones de tipo {settingType} aún no son compatibles.",
+  "settingTypeNotSupported": "Las configuraciones {settingType} aún no son compatibles.",
   "@settingTypeNotSupported": {},
   "settings": "Ajustes",
   "@settings": {},
@@ -835,7 +835,7 @@
   "@showLess": {},
   "showMore": "Mostrar más",
   "@showMore": {},
-  "showPassword": "Mostrar la contraseña",
+  "showPassword": "Mostrar contraseña",
   "@showPassword": {},
   "showReadPosts": "Mostrar las publicaciones leídas",
   "@showReadPosts": {
@@ -855,7 +855,7 @@
   "@somethingWentWrong": {},
   "sortBy": "Ordenar por",
   "@sortBy": {},
-  "sortByTop": "Ordenar por Top",
+  "sortByTop": "Ordenar por mejor",
   "@sortByTop": {},
   "sortOptions": "Opciones para ordenar",
   "@sortOptions": {},
@@ -895,23 +895,23 @@
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
   },
-  "timeoutComments": "Error: se agotó el tiempo de espera al intentar obtener comentarios",
+  "timeoutComments": "Error: se agotó el tiempo de espera al cargar comentarios",
   "@timeoutComments": {},
-  "timeoutErrorMessage": "Se ha agotado el tiempo de espera.",
+  "timeoutErrorMessage": "Se agotó el tiempo esperando una respuesta.",
   "@timeoutErrorMessage": {},
-  "timeoutSaveComment": "Error: se agotó el tiempo de espera al intentar guardar un comentario",
+  "timeoutSaveComment": "Error: se agotó el tiempo de espera al guardar el comentario",
   "@timeoutSaveComment": {},
-  "timeoutSavingPost": "Error: tiempo de espera agotado al intentar guardar la publicación.",
+  "timeoutSavingPost": "Error: se agotó el tiempo de espera al guardar el post.",
   "@timeoutSavingPost": {},
-  "timeoutUpvoteComment": "Error: se agotó el tiempo de espera al intentar votar un comentario",
+  "timeoutUpvoteComment": "Error: se agotó el tiempo de espera al votar el comentario",
   "@timeoutUpvoteComment": {},
-  "timeoutVotingPost": "Error: tiempo de espera agotado al intentar votar la publicación.",
+  "timeoutVotingPost": "Error: se agotó el tiempo de espera al votar el post.",
   "@timeoutVotingPost": {},
-  "toggelRead": "Activar o desactivar lectura",
+  "toggelRead": "Alternar lectura",
   "@toggelRead": {},
   "top": "Top",
   "@top": {},
-  "topAll": "El mejor de todos los tiempos",
+  "topAll": "Lo mejor de todos los tiempos",
   "@topAll": {},
   "topDay": "Lo mejor de hoy",
   "@topDay": {},
@@ -945,7 +945,7 @@
   "@translationsMayNotBeComplete": {
     "description": "Warning that translations may not be complete when selecting a language in the settings"
   },
-  "trendingCommunities": "Comunidades en tendencia",
+  "trendingCommunities": "Comunidades de moda",
   "@trendingCommunities": {},
   "trySearchingFor": "Intentando buscar por...",
   "@trySearchingFor": {
@@ -973,11 +973,11 @@
   "@unableToLoadImageFrom": {
     "description": "Placeholder for when we are unable to load an image from a URL"
   },
-  "unableToLoadInstance": "No se ha podido cargar {instance}",
+  "unableToLoadInstance": "No se puede cargar {instance}",
   "@unableToLoadInstance": {},
-  "unableToLoadPostsFrominstance": "No se pueden cargar entradas de {instance}",
+  "unableToLoadPostsFrominstance": "No se pueden cargar los posts de {instance}",
   "@unableToLoadPostsFrominstance": {},
-  "unableToLoadReplies": "No se pueden cargar más respuestas.",
+  "unableToLoadReplies": "No es posible cargar más respuestas.",
   "@unableToLoadReplies": {},
   "unblockInstance": "Desbloquear la instancia",
   "@unblockInstance": {
@@ -991,7 +991,7 @@
   "@unsubscribeFromCommunity": {
     "description": "Action for unsubscribing from a community"
   },
-  "unsubscribePending": "Eliminar suscripción (suscripción pendiente)",
+  "unsubscribePending": "Cancelar suscripción (suscripción pendiente)",
   "@unsubscribePending": {},
   "unsubscribed": "Suscripción eliminada",
   "@unsubscribed": {},
@@ -1037,7 +1037,7 @@
   "@visitCommunity": {},
   "visitInstance": "Instancia de la visita",
   "@visitInstance": {},
-  "visitUserProfile": "Visitar perfil de usuario",
+  "visitUserProfile": "Visitar el perfil del usuario",
   "@visitUserProfile": {},
   "xDownvotes": "{x} votos negativos",
   "@xDownvotes": {},
@@ -2375,7 +2375,7 @@
   "@accountBirthday": {
     "description": "User descriptor for accounts created on today's date"
   },
-  "xYearsOld": "{count, plural, zero {{x} año} one {{x} años} other {{x} años}}",
+  "xYearsOld": "{count, plural, zero {{x} años} one {{x} año} other {{x} años}}",
   "@xYearsOld": {
     "description": "An account descriptor representing how old an account is"
   },
