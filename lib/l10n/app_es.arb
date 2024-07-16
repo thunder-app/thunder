@@ -2670,5 +2670,29 @@
   "loginAttemptCanceled": "Intento de inicio de sesión cancelado.",
   "@loginAttemptCanceled": {
     "description": "Message shown to user when they cancel a login attempt"
+  },
+  "hide": "Ocultar",
+  "@hide": {
+    "description": "The action to hide a post"
+  },
+  "hideColor": "Ocultar el color",
+  "@hideColor": {
+    "description": "Name of the hide color setting"
+  },
+  "unhide": "Mostrar",
+  "@unhide": {
+    "description": "The action to unhide a post"
+  },
+  "hidden": "Oculto",
+  "@hidden": {
+    "description": "Describes a post that is hidden"
+  },
+  "showHiddenPosts": "Mostrar los mensajes ocultos",
+  "@showHiddenPosts": {
+    "description": "The name of the setting for showing hidden posts"
+  },
+  "thumbnailUrl": "URL de la miniatura",
+  "@thumbnailUrl": {
+    "description": "Post field for adding a custom thumbnail to the post"
   }
 }
