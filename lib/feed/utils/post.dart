@@ -22,6 +22,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   int? userId,
   String? username,
   FeedTypeSubview feedTypeSubview = FeedTypeSubview.post,
+  bool showHidden = false,
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -47,6 +48,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
         type: postListingType,
         communityId: communityId,
         communityName: communityName,
+        showHidden: showHidden,
       ));
 
       // Remove deleted posts

@@ -506,6 +506,7 @@ class _ThunderState extends State<Thunder> {
                                 postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
                                 sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
                                 reset: true,
+                                showHidden: thunderBlocState.showHiddenPosts,
                               ),
                             );
                       }
@@ -640,6 +641,7 @@ class _ThunderState extends State<Thunder> {
                                 postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
                                 sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
                                 scaffoldStateKey: scaffoldStateKey,
+                                showHidden: thunderBlocState.showHiddenPosts,
                               ),
                               const SearchPage(),
                               const AccountPage(),
