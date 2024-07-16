@@ -489,6 +489,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 decoration: InputDecoration(
                                   hintText: l10n.thumbnailUrl,
                                   errorText: customThumbnailError,
+                                  isDense: true,
+                                  border: const OutlineInputBorder(),
                                 ),
                               ),
                             ],
