@@ -11,6 +11,7 @@ import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/widgets.dart';
@@ -26,6 +27,7 @@ class PostCard extends StatefulWidget {
   final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
   final Function(bool) onReadAction;
+  final Function(bool) onHideAction;
   final Function(double) onUpAction;
   final Function() onDownAction;
 
@@ -40,6 +42,7 @@ class PostCard extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onReadAction,
+    required this.onHideAction,
     required this.onUpAction,
     required this.onDownAction,
     required this.listingType,
@@ -90,6 +93,7 @@ class _PostCardState extends State<PostCard> {
     int? myVote = widget.postViewMedia.postView.myVote;
     bool saved = widget.postViewMedia.postView.saved;
     bool read = widget.postViewMedia.postView.read;
+    bool? hidden = widget.postViewMedia.postView.hidden;
 
     return Listener(
       behavior: HitTestBehavior.opaque,
@@ -106,9 +110,11 @@ class _PostCardState extends State<PostCard> {
             onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
             onVoteAction: (int postId, int vote) => widget.onVoteAction(vote),
             onToggleReadAction: (int postId, bool read) => widget.onReadAction(read),
+            onHideAction: (int postId, bool hide) => widget.onHideAction(hide),
             voteType: myVote ?? 0,
             saved: saved,
             read: read,
+            hidden: hidden,
             postViewMedia: widget.postViewMedia,
           );
         }
@@ -152,6 +158,12 @@ class _PostCardState extends State<PostCard> {
 
               if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
                 updatedSwipeAction = state.leftPrimaryPostGesture;
+
+                // Change the hide action to none of not supported by instance
+                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+                  updatedSwipeAction = SwipeAction.none;
+                }
+
                 if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
               } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
                 if (state.leftSecondaryPostGesture != SwipeAction.none) {
@@ -159,15 +171,32 @@ class _PostCardState extends State<PostCard> {
                 } else {
                   updatedSwipeAction = state.leftPrimaryPostGesture;
                 }
+
+                // Change the hide action to none of not supported by instance
+                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+                  updatedSwipeAction = SwipeAction.none;
+                }
+
                 if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
               } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
                 updatedSwipeAction = state.rightPrimaryPostGesture;
+
+                // Change the hide action to none of not supported by instance
+                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+                  updatedSwipeAction = SwipeAction.none;
+                }
+
                 if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
               } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
                 if (state.rightSecondaryPostGesture != SwipeAction.none) {
                   updatedSwipeAction = state.rightSecondaryPostGesture;
                 } else {
                   updatedSwipeAction = state.rightPrimaryPostGesture;
+                }
+
+                // Change the hide action to none of not supported by instance
+                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+                  updatedSwipeAction = SwipeAction.none;
                 }
 
                 if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
@@ -189,7 +218,7 @@ class _PostCardState extends State<PostCard> {
                     duration: const Duration(milliseconds: 200),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
-                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read)),
+                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read, hidden: hidden)),
                     ),
                   )
                 : AnimatedContainer(
@@ -200,7 +229,7 @@ class _PostCardState extends State<PostCard> {
                     duration: const Duration(milliseconds: 200),
                     child: SizedBox(
                       width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
-                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read)),
+                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read, hidden: hidden)),
                     ),
                   ),
             child: InkWell(
@@ -241,6 +270,7 @@ class _PostCardState extends State<PostCard> {
                 widget.postViewMedia,
                 onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
                 onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
+                onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
               ),
               onTap: () async {
                 PostView postView = widget.postViewMedia.postView;
