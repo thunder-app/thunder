@@ -32,6 +32,7 @@ class PostCardList extends StatefulWidget {
   final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onToggleReadAction;
+  final Function(int, bool) onHideAction;
 
   const PostCardList({
     super.key,
@@ -47,6 +48,7 @@ class PostCardList extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onToggleReadAction,
+    required this.onHideAction,
     this.sortType,
     this.blockedCommunity,
     this.tagline = '',
@@ -168,6 +170,7 @@ class _PostCardListState extends State<PostCardList> {
                 onVoteAction: (int voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                 onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                 onReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
+                onHideAction: (bool hide) => widget.onHideAction(postViewMedia.postView.post.id, hide),
                 onUpAction: (double verticalDragDistance) {},
                 onDownAction: () {},
                 listingType: widget.listingType,

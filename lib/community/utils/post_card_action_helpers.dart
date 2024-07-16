@@ -58,6 +58,7 @@ enum PostCardAction {
   downvote,
   save,
   toggleRead,
+  hide,
   share,
   delete,
   moderatorActions,
@@ -244,6 +245,15 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
+    postCardAction: PostCardAction.hide,
+    label: l10n.hide,
+    getOverrideLabel: (context, postView) => postView.hidden == true ? l10n.unhide : l10n.hide,
+    icon: Icons.visibility_off_rounded,
+    getColor: (context) => context.read<ThunderBloc>().state.hideColor.color,
+    getOverrideIcon: (postView) => postView.hidden == true ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedPostCardActions(
     postCardAction: PostCardAction.share,
     icon: Icons.share_rounded,
     label: l10n.share,
@@ -299,6 +309,7 @@ void showPostActionBottomModalSheet(
   PostActionBottomSheetPage page = PostActionBottomSheetPage.general,
   void Function(int userId)? onBlockedUser,
   void Function(int userId)? onBlockedCommunity,
+  void Function(int postId)? onPostHidden,
 }) {
   final bool isOwnPost = postViewMedia.postView.creator.id == context.read<AuthBloc>().state.account?.userId;
   final bool isModerator =
@@ -326,10 +337,16 @@ void showPostActionBottomModalSheet(
             PostCardAction.downvote,
             PostCardAction.save,
             PostCardAction.toggleRead,
+            PostCardAction.hide,
             PostCardAction.share,
             if (isOwnPost) PostCardAction.delete,
           ].contains(extendedAction.postCardAction))
       .toList();
+
+  // Remove hide if unsupported
+  if (defaultMultiPostCardActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.hide) && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+    defaultMultiPostCardActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.hide);
+  }
 
   // Generate the list of moderator actions
   final List<ExtendedPostCardActions> moderatorPostCardActions = postCardActionItems
@@ -403,7 +420,7 @@ void showPostActionBottomModalSheet(
           ].contains(extendedAction.postCardAction))
       .toList();
 
-// Remove block if unsupported
+  // Remove block if unsupported
   if (instanceActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
     instanceActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockInstance);
   }
@@ -435,6 +452,7 @@ void showPostActionBottomModalSheet(
       outerContext: context,
       onBlockedUser: onBlockedUser,
       onBlockedCommunity: onBlockedCommunity,
+      onPostHidden: onPostHidden,
     ),
   );
 }
@@ -464,6 +482,9 @@ class PostCardActionPicker extends StatefulWidget {
   /// Callback used to notify that we blocked a community
   final Function(int userId)? onBlockedCommunity;
 
+  /// Callback used to notify that we hid a post
+  final Function(int postId)? onPostHidden;
+
   const PostCardActionPicker({
     super.key,
     required this.postViewMedia,
@@ -474,6 +495,7 @@ class PostCardActionPicker extends StatefulWidget {
     required this.outerContext,
     required this.onBlockedUser,
     required this.onBlockedCommunity,
+    required this.onPostHidden,
   });
 
   @override
@@ -559,7 +581,7 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                     ...widget.multiPostCardActions[page ?? widget.page]!.where((a) => a.shouldShow?.call(context, widget.postViewMedia.postView) ?? true).map(
                       (a) {
                         return PickerItemData(
-                          label: a.label,
+                          label: a.getOverrideLabel?.call(context, widget.postViewMedia.postView) ?? a.label,
                           icon: a.getOverrideIcon?.call(widget.postViewMedia.postView) ?? a.icon,
                           backgroundColor: a.getColor?.call(context),
                           foregroundColor: a.getForegroundColor?.call(context, widget.postViewMedia.postView),
@@ -695,6 +717,12 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
       case PostCardAction.toggleRead:
         action = () =>
             widget.outerContext.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postViewMedia.postView.post.id, value: !widget.postViewMedia.postView.read));
+        break;
+      case PostCardAction.hide:
+        action = () => widget.outerContext
+            .read<FeedBloc>()
+            .add(FeedItemActionedEvent(postAction: PostAction.hide, postId: widget.postViewMedia.postView.post.id, value: !(widget.postViewMedia.postView.hidden ?? false)));
+        widget.onPostHidden?.call(widget.postViewMedia.postView.post.id);
         break;
       case PostCardAction.share:
         pop = false;

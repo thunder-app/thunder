@@ -95,6 +95,7 @@ Future<void> navigateToFeedPage(
             userId: userId,
             username: username,
             reset: true,
+            showHidden: thunderBloc.state.showHiddenPosts,
           ),
         );
   }
@@ -127,6 +128,7 @@ Future<void> navigateToFeedPage(
           userId: userId,
           username: username,
           postListingType: postListingType,
+          showHidden: thunderBloc.state.showHiddenPosts,
         ),
       ),
     ),
@@ -148,6 +150,7 @@ Future<void> triggerRefresh(BuildContext context) async {
           userId: state.userId,
           username: state.username,
           reset: true,
+          showHidden: state.showHidden,
         ),
       );
 }

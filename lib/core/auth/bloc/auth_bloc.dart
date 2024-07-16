@@ -1,16 +1,17 @@
 import 'package:bloc/bloc.dart';
-import 'package:uuid/uuid.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/global_context.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -143,6 +144,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: loginResponse.jwt));
 
+        if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
+          return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
+        }
+
         // Create a new account in the database
         Account? account = Account(
           id: '',
@@ -176,6 +181,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       }
+    });
+
+    on<CancelLoginAttempt>((event, emit) async {
+      return emit(state.copyWith(status: AuthStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled));
     });
 
     /// When we log out of all accounts, clear the instance information
