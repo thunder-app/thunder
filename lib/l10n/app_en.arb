@@ -1577,7 +1577,7 @@
   },
   "postSwipeGesturesHint": "Looking to use buttons instead? Change what buttons appear on post cards in general settings.",
   "@postSwipeGesturesHint": {},
-  "postTitle": "Title (required)",
+  "postTitle": "Title",
   "@postTitle": {},
   "postTitleFontScale": "Post Title Font Scale",
   "@postTitleFontScale": {
@@ -1735,6 +1735,10 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "requiredField": "*required",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
+  },
   "reset": "Reset",
   "@reset": {
     "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"

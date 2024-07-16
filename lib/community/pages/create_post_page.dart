@@ -411,12 +411,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               onSelected: (String suggestion) {
                                 _titleTextController.text = suggestion;
                               },
-                              builder: (context, controller, focusNode) => TextFormField(
+                              builder: (context, controller, focusNode) => TextField(
                                 controller: controller,
                                 focusNode: focusNode,
                                 decoration: InputDecoration(
                                   hintText: l10n.postTitle,
-                                  hintStyle: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.error),
+                                  helperText: l10n.requiredField,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
                                 ),
@@ -587,7 +587,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
                             child: IconButton(
                               onPressed: () {
                                 if (!showPreview) {
@@ -606,29 +606,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
                             ),
                           ),
-                          Transform.translate(
-                            offset: const Offset(-8, 0),
-                            child: AnimatedOpacity(
-                              opacity: isSubmitButtonDisabled ? 0 : 1,
-                              duration: const Duration(milliseconds: 250),
-                              child: AnimatedSize(
-                                duration: const Duration(milliseconds: 250),
-                                child: SizedBox(
-                                  width: isSubmitButtonDisabled ? 0 : null,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 0, right: 0),
-                                    child: IconButton(
-                                      onPressed: isSubmitButtonDisabled ? null : () => _onCreatePost(context),
-                                      icon: Icon(
-                                        widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
-                                        semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: theme.colorScheme.secondary,
-                                        disabledBackgroundColor: getBackgroundColor(context),
-                                      ),
-                                    ),
-                                  ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
+                            child: SizedBox(
+                              width: 50,
+                              child: IconButton(
+                                onPressed: isSubmitButtonDisabled ? null : () => _onCreatePost(context),
+                                icon: Icon(
+                                  widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                  semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.secondary,
+                                  disabledBackgroundColor: getBackgroundColor(context),
                                 ),
                               ),
                             ),
