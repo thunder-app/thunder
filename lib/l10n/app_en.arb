@@ -2493,10 +2493,6 @@
   "@unsubscribePending": {},
   "unsubscribed": "Unsubscribed",
   "@unsubscribed": {},
-  "unsubscriptionRequestSent": "Unsubscription request sent",
-  "@unsubscriptionRequestSent": {
-    "description": "Message for when an unsubscription request has been sent"
-  },
   "updateReleased": "Update released: {version}",
   "@updateReleased": {},
   "uploadImage": "Upload image",
