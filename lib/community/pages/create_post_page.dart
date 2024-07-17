@@ -445,13 +445,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   helperText: l10n.requiredField,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
+                                  contentPadding: const EdgeInsets.all(10),
                                 ),
                               ),
                               hideOnEmpty: true,
                               hideOnLoading: true,
                               hideOnError: true,
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             TextFormField(
                               controller: _urlTextController,
                               decoration: InputDecoration(
@@ -459,6 +460,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 errorText: urlError,
                                 isDense: true,
                                 border: const OutlineInputBorder(),
+                                contentPadding: const EdgeInsets.all(10),
                                 suffixIcon: IconButton(
                                   onPressed: () async {
                                     if (state.status == CreatePostStatus.postImageUploadInProgress) return;
@@ -491,10 +493,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   errorText: customThumbnailError,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
+                                  contentPadding: const EdgeInsets.all(10),
                                 ),
                               ),
                             ],
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 5),
                             Visibility(
                               visible: url.isNotEmpty,
                               child: LinkPreviewCard(
@@ -651,7 +654,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
                             child: SizedBox(
-                              width: 50,
+                              width: 60,
                               child: IconButton(
                                 onPressed: isSubmitButtonDisabled ? null : () => _onCreatePost(context),
                                 icon: Icon(
