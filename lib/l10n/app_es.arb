@@ -2694,5 +2694,13 @@
   "thumbnailUrl": "URL de la miniatura",
   "@thumbnailUrl": {
     "description": "Post field for adding a custom thumbnail to the post"
+  },
+  "failedToPerformAction": "No se pudo realizar la acción",
+  "@failedToPerformAction": {
+    "description": "Error message when we fail to perform an action"
+  },
+  "subscriptionRequestSent": "Solicitud de suscripción enviada",
+  "@subscriptionRequestSent": {
+    "description": "Message for subscription request sent"
   }
 }
