@@ -859,6 +859,10 @@
   "@failedToLoadVideo": {
     "description": "Error message that displays when we fail to load a video"
   },
+  "failedToPerformAction": "Failed to perform action",
+  "@failedToPerformAction": {
+    "description": "Error message when we fail to perform an action"
+  },
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
   "failedToUpdateNotificationSettings": "Failed to update notification settings",
@@ -2197,6 +2201,10 @@
   },
   "subscribed": "Subscribed",
   "@subscribed": {},
+  "subscriptionRequestSent": "Subscription request sent",
+  "@subscriptionRequestSent": {
+    "description": "Message for subscription request sent"
+  },
   "subscriptions": "Subscriptions",
   "@subscriptions": {},
   "successfullyBlocked": "Blocked.",
