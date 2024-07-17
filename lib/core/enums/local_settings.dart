@@ -133,6 +133,7 @@ enum LocalSettings {
   dimReadPosts(name: 'setting_dim_read_posts', key: 'dimReadPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   keywordFilters(name: 'setting_general_keyword_filters', key: 'keywordFilters', category: LocalSettingsCategories.filters, subCategory: LocalSettingsSubCategories.filters),
   hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', key: 'hideTopBarOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
+  showHiddenPosts(name: 'setting_general_show_hidden_posts', key: 'showHiddenPosts', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   compactPostCardMetadataItems(
       name: 'setting_compact_post_card_metadata_items', key: 'compactPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   cardPostCardMetadataItems(name: 'setting_card_post_card_metadata_items', key: 'cardPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
@@ -201,6 +202,7 @@ enum LocalSettings {
   downvoteColor(name: 'settings_theme_downvote_color', key: 'downvoteColor', searchable: false),
   saveColor(name: 'settings_theme_save_color', key: 'saveColor', searchable: false),
   markReadColor(name: 'settings_theme_mark_read_color', key: 'markReadColor', searchable: false),
+  hideColor(name: 'settings_theme_hide_color', key: 'hideColor', searchable: false),
   replyColor(name: 'settings_theme_reply_color', key: 'replyColor', searchable: false),
 
   // Font Settings
@@ -401,6 +403,7 @@ extension LocalizationExt on AppLocalizations {
       'postBodyShowCommunityAvatar': postBodyShowCommunityAvatar,
       'keywordFilters': keywordFilters,
       'hideTopBarOnScroll': hideTopBarOnScroll,
+      'showHiddenPosts': showHiddenPosts,
       'compactPostCardMetadataItems': compactPostCardMetadataItems,
       'cardPostCardMetadataItems': cardPostCardMetadataItems,
       'userFormat': userFormat,

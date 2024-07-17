@@ -8,12 +8,6 @@ class Accounts extends Table {
   TextColumn get instance => text().nullable()();
   BoolColumn get anonymous => boolean().withDefault(const Constant(false))();
   IntColumn get userId => integer().nullable()();
-  IntColumn get listIndex => integer().withDefault(const Constant(-1))(); // Don't use "index" since that's SQLite keyword
-}
-
-class AnonymousInstances extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get instance => text()();
   IntColumn get listIndex => integer()();
 }
 
@@ -44,5 +38,6 @@ class Drafts extends Table {
   IntColumn get replyId => integer().nullable()();
   TextColumn get title => text().nullable()();
   TextColumn get url => text().nullable()();
+  TextColumn get customThumbnail => text().nullable()();
   TextColumn get body => text().nullable()();
 }

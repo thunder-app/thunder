@@ -9,7 +9,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/models/account.dart';
-import 'package:thunder/account/models/anonymous_instance.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
@@ -309,7 +308,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                               ),
                               subtitle: Wrap(
                                 children: [
-                                  Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
+                                  Text(accounts![index].account.instance.replaceAll('https://', '') ?? 'N/A'),
                                   AnimatedSize(
                                     duration: const Duration(milliseconds: 250),
                                     child: accounts![index].version == null
@@ -461,7 +460,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     });
 
                     for (AnonymousInstanceExtended anonymousInstanceExtended in anonymousInstances!) {
-                      AnonymousInstance.updateInstance(anonymousInstanceExtended.instance.copyWith(index: anonymousInstances!.indexOf(anonymousInstanceExtended)));
+                      Account.updateAccount(anonymousInstanceExtended.anonymousInstance.copyWith(index: anonymousInstances!.indexOf(anonymousInstanceExtended)));
                     }
                   },
                   proxyDecorator: (child, index, animation) => Padding(
@@ -481,15 +480,15 @@ class _ProfileSelectState extends State<ProfileSelect> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Material(
                           elevation: anonymousInstanceBeingReorderedIndex == index ? 3 : 0,
-                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].instance.instance ? selectedColor : null,
+                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : null,
                           borderRadius: BorderRadius.circular(50),
                           child: InkWell(
-                            onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].instance.instance)
+                            onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
                                 ? null
                                 : () async {
                                     context.read<AuthBloc>().add(const LogOutOfAllAccounts());
-                                    context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![index].instance.instance));
-                                    context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![index].instance.instance));
+                                    context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![index].anonymousInstance.instance));
+                                    context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![index].anonymousInstance.instance));
                                     context.pop();
                                   },
                             borderRadius: BorderRadius.circular(50),
@@ -523,7 +522,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                         height: 12,
                                         child: Material(
                                           borderRadius: BorderRadius.circular(10),
-                                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].instance.instance ? selectedColor : null,
+                                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : null,
                                         ),
                                       ),
                                     ),
@@ -558,7 +557,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 ),
                                 subtitle: Wrap(
                                   children: [
-                                    Text(anonymousInstances![index].instance.instance),
+                                    Text(anonymousInstances![index].anonymousInstance.instance),
                                     AnimatedSize(
                                       duration: const Duration(milliseconds: 250),
                                       child: anonymousInstances![index].version == null
@@ -613,19 +612,17 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                     ? areAnonymousInstancesBeingReordered
                                         ? const Icon(Icons.drag_handle)
                                         : ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
-                                            ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].instance.instance)
+                                            ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
                                                 ? IconButton(
                                                     icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.removeInstance),
                                                     onPressed: () async {
-                                                      await AnonymousInstance.removeByInstanceName(anonymousInstances![index].instance.instance);
+                                                      await Account.deleteAnonymousInstance(anonymousInstances![index].anonymousInstance.instance);
 
                                                       if (anonymousInstances!.length > 1) {
-                                                        context
-                                                            .read<ThunderBloc>()
-                                                            .add(OnSetCurrentAnonymousInstance(anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![index]).instance.instance));
-                                                        context
-                                                            .read<AuthBloc>()
-                                                            .add(InstanceChanged(instance: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![index]).instance.instance));
+                                                        context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(
+                                                            anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![index]).anonymousInstance.instance));
+                                                        context.read<AuthBloc>().add(
+                                                            InstanceChanged(instance: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![index]).anonymousInstance.instance));
                                                       } else {
                                                         context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.last.account.id));
                                                       }
@@ -639,7 +636,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                                       semanticLabel: AppLocalizations.of(context)!.removeInstance,
                                                     ),
                                                     onPressed: () async {
-                                                      await AnonymousInstance.removeByInstanceName(anonymousInstances![index].instance.instance);
+                                                      await Account.deleteAnonymousInstance(anonymousInstances![index].anonymousInstance.instance);
                                                       setState(() {
                                                         anonymousInstances = null;
                                                       });
@@ -689,14 +686,14 @@ class _ProfileSelectState extends State<ProfileSelect> {
 
       await Future.delayed(const Duration(milliseconds: 1000), () async {
         if ((anonymousInstances?.length ?? 0) > 0) {
-          thunderBloc.add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance.instance));
-          authBloc.add(InstanceChanged(instance: anonymousInstances!.last.instance.instance));
+          thunderBloc.add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.anonymousInstance.instance));
+          authBloc.add(InstanceChanged(instance: anonymousInstances!.last.anonymousInstance.instance));
         } else if (accountsNotCurrent.isNotEmpty) {
           authBloc.add(SwitchAccount(accountId: accountsNotCurrent.last.id));
         } else {
           // No accounts and no anonymous instances left. Create a new one.
           authBloc.add(const LogOutOfAllAccounts());
-          await AnonymousInstance.insertInstance(const AnonymousInstance(id: '', instance: 'lemmy.ml', index: -1));
+          await Account.insertAnonymousInstance(const Account(id: '', instance: 'lemmy.ml', index: -1, anonymous: true));
           thunderBloc.add(const OnSetCurrentAnonymousInstance(null));
           thunderBloc.add(const OnSetCurrentAnonymousInstance('lemmy.ml'));
         }
@@ -752,8 +749,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
   }
 
   Future<void> fetchAnonymousInstances() async {
-    final List<AnonymousInstanceExtended> anonymousInstances = (await AnonymousInstance.fetchAllInstances()).map((instance) => AnonymousInstanceExtended(instance: instance)).toList()
-      ..sort((a, b) => a.instance.index.compareTo(b.instance.index));
+    final List<AnonymousInstanceExtended> anonymousInstances = (await Account.anonymousInstances()).map((anonymousInstance) => AnonymousInstanceExtended(anonymousInstance: anonymousInstance)).toList()
+      ..sort((a, b) => a.anonymousInstance.index.compareTo(b.anonymousInstance.index));
 
     fetchAnonymousInstanceInfo(anonymousInstances);
     pingAnonymousInstances(anonymousInstances);
@@ -762,27 +759,27 @@ class _ProfileSelectState extends State<ProfileSelect> {
   }
 
   Future<void> fetchAnonymousInstanceInfo(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
-    anonymousInstancesExtended.forEach((anonymousInstance) async {
-      final GetInstanceInfoResponse instanceInfoResponse = await getInstanceInfo(anonymousInstance.instance.instance).timeout(
+    anonymousInstancesExtended.forEach((anonymousInstanceExtended) async {
+      final GetInstanceInfoResponse instanceInfoResponse = await getInstanceInfo(anonymousInstanceExtended.anonymousInstance.instance).timeout(
         const Duration(seconds: 5),
         onTimeout: () => const GetInstanceInfoResponse(success: false),
       );
       setState(() {
-        anonymousInstance.instanceIcon = instanceInfoResponse.icon;
-        anonymousInstance.version = instanceInfoResponse.version;
-        anonymousInstance.alive = instanceInfoResponse.success;
+        anonymousInstanceExtended.instanceIcon = instanceInfoResponse.icon;
+        anonymousInstanceExtended.version = instanceInfoResponse.version;
+        anonymousInstanceExtended.alive = instanceInfoResponse.success;
       });
     });
   }
 
   Future<void> pingAnonymousInstances(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
-    anonymousInstancesExtended.forEach((anonymousInstance) async {
+    anonymousInstancesExtended.forEach((anonymousInstanceExtended) async {
       PingData pingData = await Ping(
-        anonymousInstance.instance.instance,
+        anonymousInstanceExtended.anonymousInstance.instance,
         count: 1,
         timeout: 5,
       ).stream.first;
-      setState(() => anonymousInstance.latency = pingData.response?.time);
+      setState(() => anonymousInstanceExtended.latency = pingData.response?.time);
     });
   }
 }
@@ -801,11 +798,11 @@ class AccountExtended {
 
 /// Wrapper class around Account with support for instance icon
 class AnonymousInstanceExtended {
-  AnonymousInstance instance;
+  Account anonymousInstance;
   String? instanceIcon;
   String? version;
   Duration? latency;
   bool? alive;
 
-  AnonymousInstanceExtended({required this.instance, this.instanceIcon});
+  AnonymousInstanceExtended({required this.anonymousInstance, this.instanceIcon});
 }

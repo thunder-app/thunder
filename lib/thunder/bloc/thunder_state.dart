@@ -49,6 +49,7 @@ class ThunderState extends Equatable {
     this.imageCachingMode = ImageCachingMode.relaxed,
     this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
+    this.showHiddenPosts = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -128,6 +129,7 @@ class ThunderState extends Equatable {
     this.saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple),
     this.markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal),
     this.replyColor = const ActionColor.fromString(colorRaw: ActionColor.green),
+    this.hideColor = const ActionColor.fromString(colorRaw: ActionColor.red),
 
     // Font Scale
     this.titleFontSizeScale = FontScale.base,
@@ -218,6 +220,7 @@ class ThunderState extends Equatable {
   final ImageCachingMode imageCachingMode;
   final bool showNavigationLabels;
   final bool hideTopBarOnScroll;
+  final bool showHiddenPosts;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -279,6 +282,7 @@ class ThunderState extends Equatable {
   final ActionColor saveColor;
   final ActionColor markReadColor;
   final ActionColor replyColor;
+  final ActionColor hideColor;
 
   // Font Scale
   final FontScale titleFontSizeScale;
@@ -394,6 +398,7 @@ class ThunderState extends Equatable {
     ImageCachingMode? imageCachingMode,
     bool? showNavigationLabels,
     bool? hideTopBarOnScroll,
+    bool? showHiddenPosts,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -455,6 +460,7 @@ class ThunderState extends Equatable {
     ActionColor? saveColor,
     ActionColor? markReadColor,
     ActionColor? replyColor,
+    ActionColor? hideColor,
 
     // Font Scale
     FontScale? titleFontSizeScale,
@@ -565,6 +571,7 @@ class ThunderState extends Equatable {
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
       showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
+      showHiddenPosts: showHiddenPosts ?? this.showHiddenPosts,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -626,6 +633,7 @@ class ThunderState extends Equatable {
       saveColor: saveColor ?? this.saveColor,
       markReadColor: markReadColor ?? this.markReadColor,
       replyColor: replyColor ?? this.replyColor,
+      hideColor: hideColor ?? this.hideColor,
 
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
@@ -803,6 +811,7 @@ class ThunderState extends Equatable {
         saveColor,
         markReadColor,
         replyColor,
+        hideColor,
 
         // Font Scale
         titleFontSizeScale,

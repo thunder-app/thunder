@@ -59,6 +59,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   ActionColor saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple);
   ActionColor markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal);
   ActionColor replyColor = const ActionColor.fromString(colorRaw: ActionColor.green);
+  ActionColor hideColor = const ActionColor.fromString(colorRaw: ActionColor.red);
 
   // Font Settings
   FontScale titleFontSizeScale = FontScale.base;
@@ -145,6 +146,10 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       case LocalSettings.replyColor:
         await prefs.setString(LocalSettings.replyColor.name, value);
         setState(() => replyColor = ActionColor.fromString(colorRaw: value));
+        break;
+      case LocalSettings.hideColor:
+        await prefs.setString(LocalSettings.hideColor.name, value);
+        setState(() => hideColor = ActionColor.fromString(colorRaw: value));
         break;
 
       // Font Settings
@@ -241,6 +246,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
       markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
       replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
+      hideColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.hideColor.name) ?? ActionColor.red);
 
       // Font Settings
       titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
@@ -432,6 +438,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     saveColor: saveColor,
                     markReadColor: markReadColor,
                     replyColor: replyColor,
+                    hideColor: hideColor,
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),

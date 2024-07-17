@@ -110,6 +110,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                       sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                                       communityId: community.id,
                                       reset: true,
+                                      showHidden: thunderState.showHiddenPosts,
                                     ),
                                   );
                             },
@@ -339,6 +340,7 @@ class FavoriteCommunities extends StatelessWidget {
                           sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                           communityId: community.id,
                           reset: true,
+                          showHidden: thunderState.showHiddenPosts,
                         ),
                       );
                 },
@@ -400,6 +402,7 @@ class ModeratedCommunities extends StatelessWidget {
                             sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
+                            showHidden: thunderState.showHiddenPosts,
                           ),
                         );
                   },

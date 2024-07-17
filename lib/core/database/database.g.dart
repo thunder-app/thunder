@@ -30,7 +30,7 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   late final GeneratedColumn<int> userId = GeneratedColumn<int>('user_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _listIndexMeta = const VerificationMeta('listIndex');
   @override
-  late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(-1));
+  late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, username, jwt, instance, anonymous, userId, listIndex];
   @override
@@ -62,6 +62,8 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
     }
     if (data.containsKey('list_index')) {
       context.handle(_listIndexMeta, listIndex.isAcceptableOrUnknown(data['list_index']!, _listIndexMeta));
+    } else if (isInserting) {
+      context.missing(_listIndexMeta);
     }
     return context;
   }
@@ -226,8 +228,8 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     this.instance = const Value.absent(),
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
-    this.listIndex = const Value.absent(),
-  });
+    required int listIndex,
+  }) : listIndex = Value(listIndex);
   static Insertable<Account> custom({
     Expression<int>? id,
     Expression<String>? username,
@@ -927,11 +929,14 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
   static const VerificationMeta _urlMeta = const VerificationMeta('url');
   @override
   late final GeneratedColumn<String> url = GeneratedColumn<String>('url', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _customThumbnailMeta = const VerificationMeta('customThumbnail');
+  @override
+  late final GeneratedColumn<String> customThumbnail = GeneratedColumn<String>('custom_thumbnail', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _bodyMeta = const VerificationMeta('body');
   @override
   late final GeneratedColumn<String> body = GeneratedColumn<String>('body', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [id, draftType, existingId, replyId, title, url, body];
+  List<GeneratedColumn> get $columns => [id, draftType, existingId, replyId, title, url, customThumbnail, body];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -957,6 +962,9 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
     if (data.containsKey('url')) {
       context.handle(_urlMeta, url.isAcceptableOrUnknown(data['url']!, _urlMeta));
     }
+    if (data.containsKey('custom_thumbnail')) {
+      context.handle(_customThumbnailMeta, customThumbnail.isAcceptableOrUnknown(data['custom_thumbnail']!, _customThumbnailMeta));
+    }
     if (data.containsKey('body')) {
       context.handle(_bodyMeta, body.isAcceptableOrUnknown(data['body']!, _bodyMeta));
     }
@@ -975,6 +983,7 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
       replyId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}reply_id']),
       title: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}title']),
       url: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}url']),
+      customThumbnail: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}custom_thumbnail']),
       body: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}body']),
     );
   }
@@ -994,8 +1003,9 @@ class Draft extends DataClass implements Insertable<Draft> {
   final int? replyId;
   final String? title;
   final String? url;
+  final String? customThumbnail;
   final String? body;
-  const Draft({required this.id, required this.draftType, this.existingId, this.replyId, this.title, this.url, this.body});
+  const Draft({required this.id, required this.draftType, this.existingId, this.replyId, this.title, this.url, this.customThumbnail, this.body});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1015,6 +1025,9 @@ class Draft extends DataClass implements Insertable<Draft> {
     if (!nullToAbsent || url != null) {
       map['url'] = Variable<String>(url);
     }
+    if (!nullToAbsent || customThumbnail != null) {
+      map['custom_thumbnail'] = Variable<String>(customThumbnail);
+    }
     if (!nullToAbsent || body != null) {
       map['body'] = Variable<String>(body);
     }
@@ -1029,6 +1042,7 @@ class Draft extends DataClass implements Insertable<Draft> {
       replyId: replyId == null && nullToAbsent ? const Value.absent() : Value(replyId),
       title: title == null && nullToAbsent ? const Value.absent() : Value(title),
       url: url == null && nullToAbsent ? const Value.absent() : Value(url),
+      customThumbnail: customThumbnail == null && nullToAbsent ? const Value.absent() : Value(customThumbnail),
       body: body == null && nullToAbsent ? const Value.absent() : Value(body),
     );
   }
@@ -1042,6 +1056,7 @@ class Draft extends DataClass implements Insertable<Draft> {
       replyId: serializer.fromJson<int?>(json['replyId']),
       title: serializer.fromJson<String?>(json['title']),
       url: serializer.fromJson<String?>(json['url']),
+      customThumbnail: serializer.fromJson<String?>(json['customThumbnail']),
       body: serializer.fromJson<String?>(json['body']),
     );
   }
@@ -1055,6 +1070,7 @@ class Draft extends DataClass implements Insertable<Draft> {
       'replyId': serializer.toJson<int?>(replyId),
       'title': serializer.toJson<String?>(title),
       'url': serializer.toJson<String?>(url),
+      'customThumbnail': serializer.toJson<String?>(customThumbnail),
       'body': serializer.toJson<String?>(body),
     };
   }
@@ -1066,6 +1082,7 @@ class Draft extends DataClass implements Insertable<Draft> {
           Value<int?> replyId = const Value.absent(),
           Value<String?> title = const Value.absent(),
           Value<String?> url = const Value.absent(),
+          Value<String?> customThumbnail = const Value.absent(),
           Value<String?> body = const Value.absent()}) =>
       Draft(
         id: id ?? this.id,
@@ -1074,6 +1091,7 @@ class Draft extends DataClass implements Insertable<Draft> {
         replyId: replyId.present ? replyId.value : this.replyId,
         title: title.present ? title.value : this.title,
         url: url.present ? url.value : this.url,
+        customThumbnail: customThumbnail.present ? customThumbnail.value : this.customThumbnail,
         body: body.present ? body.value : this.body,
       );
   @override
@@ -1085,13 +1103,14 @@ class Draft extends DataClass implements Insertable<Draft> {
           ..write('replyId: $replyId, ')
           ..write('title: $title, ')
           ..write('url: $url, ')
+          ..write('customThumbnail: $customThumbnail, ')
           ..write('body: $body')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, draftType, existingId, replyId, title, url, body);
+  int get hashCode => Object.hash(id, draftType, existingId, replyId, title, url, customThumbnail, body);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1102,6 +1121,7 @@ class Draft extends DataClass implements Insertable<Draft> {
           other.replyId == this.replyId &&
           other.title == this.title &&
           other.url == this.url &&
+          other.customThumbnail == this.customThumbnail &&
           other.body == this.body);
 }
 
@@ -1112,6 +1132,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
   final Value<int?> replyId;
   final Value<String?> title;
   final Value<String?> url;
+  final Value<String?> customThumbnail;
   final Value<String?> body;
   const DraftsCompanion({
     this.id = const Value.absent(),
@@ -1120,6 +1141,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     this.replyId = const Value.absent(),
     this.title = const Value.absent(),
     this.url = const Value.absent(),
+    this.customThumbnail = const Value.absent(),
     this.body = const Value.absent(),
   });
   DraftsCompanion.insert({
@@ -1129,6 +1151,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     this.replyId = const Value.absent(),
     this.title = const Value.absent(),
     this.url = const Value.absent(),
+    this.customThumbnail = const Value.absent(),
     this.body = const Value.absent(),
   }) : draftType = Value(draftType);
   static Insertable<Draft> custom({
@@ -1138,6 +1161,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     Expression<int>? replyId,
     Expression<String>? title,
     Expression<String>? url,
+    Expression<String>? customThumbnail,
     Expression<String>? body,
   }) {
     return RawValuesInsertable({
@@ -1147,11 +1171,13 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
       if (replyId != null) 'reply_id': replyId,
       if (title != null) 'title': title,
       if (url != null) 'url': url,
+      if (customThumbnail != null) 'custom_thumbnail': customThumbnail,
       if (body != null) 'body': body,
     });
   }
 
-  DraftsCompanion copyWith({Value<int>? id, Value<DraftType>? draftType, Value<int?>? existingId, Value<int?>? replyId, Value<String?>? title, Value<String?>? url, Value<String?>? body}) {
+  DraftsCompanion copyWith(
+      {Value<int>? id, Value<DraftType>? draftType, Value<int?>? existingId, Value<int?>? replyId, Value<String?>? title, Value<String?>? url, Value<String?>? customThumbnail, Value<String?>? body}) {
     return DraftsCompanion(
       id: id ?? this.id,
       draftType: draftType ?? this.draftType,
@@ -1159,6 +1185,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
       replyId: replyId ?? this.replyId,
       title: title ?? this.title,
       url: url ?? this.url,
+      customThumbnail: customThumbnail ?? this.customThumbnail,
       body: body ?? this.body,
     );
   }
@@ -1184,6 +1211,9 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     if (url.present) {
       map['url'] = Variable<String>(url.value);
     }
+    if (customThumbnail.present) {
+      map['custom_thumbnail'] = Variable<String>(customThumbnail.value);
+    }
     if (body.present) {
       map['body'] = Variable<String>(body.value);
     }
@@ -1199,189 +1229,8 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
           ..write('replyId: $replyId, ')
           ..write('title: $title, ')
           ..write('url: $url, ')
+          ..write('customThumbnail: $customThumbnail, ')
           ..write('body: $body')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $AnonymousInstancesTable extends AnonymousInstances with TableInfo<$AnonymousInstancesTable, AnonymousInstance> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $AnonymousInstancesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
-      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _instanceMeta = const VerificationMeta('instance');
-  @override
-  late final GeneratedColumn<String> instance = GeneratedColumn<String>('instance', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _listIndexMeta = const VerificationMeta('listIndex');
-  @override
-  late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, instance, listIndex];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'anonymous_instances';
-  @override
-  VerificationContext validateIntegrity(Insertable<AnonymousInstance> instance, {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('instance')) {
-      context.handle(_instanceMeta, this.instance.isAcceptableOrUnknown(data['instance']!, _instanceMeta));
-    } else if (isInserting) {
-      context.missing(_instanceMeta);
-    }
-    if (data.containsKey('list_index')) {
-      context.handle(_listIndexMeta, listIndex.isAcceptableOrUnknown(data['list_index']!, _listIndexMeta));
-    } else if (isInserting) {
-      context.missing(_listIndexMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  AnonymousInstance map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AnonymousInstance(
-      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      instance: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}instance'])!,
-      listIndex: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}list_index'])!,
-    );
-  }
-
-  @override
-  $AnonymousInstancesTable createAlias(String alias) {
-    return $AnonymousInstancesTable(attachedDatabase, alias);
-  }
-}
-
-class AnonymousInstance extends DataClass implements Insertable<AnonymousInstance> {
-  final int id;
-  final String instance;
-  final int listIndex;
-  const AnonymousInstance({required this.id, required this.instance, required this.listIndex});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['instance'] = Variable<String>(instance);
-    map['list_index'] = Variable<int>(listIndex);
-    return map;
-  }
-
-  AnonymousInstancesCompanion toCompanion(bool nullToAbsent) {
-    return AnonymousInstancesCompanion(
-      id: Value(id),
-      instance: Value(instance),
-      listIndex: Value(listIndex),
-    );
-  }
-
-  factory AnonymousInstance.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return AnonymousInstance(
-      id: serializer.fromJson<int>(json['id']),
-      instance: serializer.fromJson<String>(json['instance']),
-      listIndex: serializer.fromJson<int>(json['listIndex']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'instance': serializer.toJson<String>(instance),
-      'listIndex': serializer.toJson<int>(listIndex),
-    };
-  }
-
-  AnonymousInstance copyWith({int? id, String? instance, int? listIndex}) => AnonymousInstance(
-        id: id ?? this.id,
-        instance: instance ?? this.instance,
-        listIndex: listIndex ?? this.listIndex,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('AnonymousInstance(')
-          ..write('id: $id, ')
-          ..write('instance: $instance, ')
-          ..write('listIndex: $listIndex')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, instance, listIndex);
-  @override
-  bool operator ==(Object other) => identical(this, other) || (other is AnonymousInstance && other.id == this.id && other.instance == this.instance && other.listIndex == this.listIndex);
-}
-
-class AnonymousInstancesCompanion extends UpdateCompanion<AnonymousInstance> {
-  final Value<int> id;
-  final Value<String> instance;
-  final Value<int> listIndex;
-  const AnonymousInstancesCompanion({
-    this.id = const Value.absent(),
-    this.instance = const Value.absent(),
-    this.listIndex = const Value.absent(),
-  });
-  AnonymousInstancesCompanion.insert({
-    this.id = const Value.absent(),
-    required String instance,
-    required int listIndex,
-  })  : instance = Value(instance),
-        listIndex = Value(listIndex);
-  static Insertable<AnonymousInstance> custom({
-    Expression<int>? id,
-    Expression<String>? instance,
-    Expression<int>? listIndex,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (instance != null) 'instance': instance,
-      if (listIndex != null) 'list_index': listIndex,
-    });
-  }
-
-  AnonymousInstancesCompanion copyWith({Value<int>? id, Value<String>? instance, Value<int>? listIndex}) {
-    return AnonymousInstancesCompanion(
-      id: id ?? this.id,
-      instance: instance ?? this.instance,
-      listIndex: listIndex ?? this.listIndex,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (instance.present) {
-      map['instance'] = Variable<String>(instance.value);
-    }
-    if (listIndex.present) {
-      map['list_index'] = Variable<int>(listIndex.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('AnonymousInstancesCompanion(')
-          ..write('id: $id, ')
-          ..write('instance: $instance, ')
-          ..write('listIndex: $listIndex')
           ..write(')'))
         .toString();
   }
@@ -1394,9 +1243,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LocalSubscriptionsTable localSubscriptions = $LocalSubscriptionsTable(this);
   late final $UserLabelsTable userLabels = $UserLabelsTable(this);
   late final $DraftsTable drafts = $DraftsTable(this);
-  late final $AnonymousInstancesTable anonymousInstances = $AnonymousInstancesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts, anonymousInstances];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts];
 }

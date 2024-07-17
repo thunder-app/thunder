@@ -15,12 +15,12 @@ import 'package:thunder/drafts/draft_type.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts, AnonymousInstances])
+@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -41,20 +41,29 @@ class AppDatabase extends _$AppDatabase {
 
           // If we are migrating from 3 or lower to anything higher
           if (from <= 3 && to > 3) {
-            // Add the listIndex field to the Accounts table and use id as the default value
+            // Create the custom_thumbnail column on the drafts table
+            await customStatement('ALTER TABLE drafts ADD COLUMN custom_thumbnail TEXT');
+          }
+
+          // If we are migrating from 4 or lower to anything higher
+          if (from <= 4 && to > 4) {
+            // Add the list_index column to the Accounts table and use id as the default value
             await customStatement('ALTER TABLE accounts ADD COLUMN list_index INTEGER DEFAULT -1;');
             await customStatement('UPDATE accounts SET list_index = id');
-
-            // Add the AnonymousAccounts table
-            await migrator.createTable(anonymousInstances);
           }
 
           // --- DOWNGRADES ---
 
-          // If we are downgrading from 2 or higher to 1
-          if (from >= 2 && to <= 1) {
-            // Delete the UserLabels table
-            await migrator.deleteTable('user_labels');
+          // If we are downgrading from 5 or higher to 4 or lower
+          if (from >= 5 && to <= 4) {
+            // Drop the list_index column from Accounts
+            await customStatement('ALTER TABLE accounts DROP COLUMN list_index');
+          }
+
+          // If we are downgrading from 4 or higher to 3 or lower
+          if (from >= 4 && to <= 3) {
+            // Drop the custom_thumbnail column from drafts
+            await customStatement('ALTER TABLE drafts DROP COLUMN custom_thumbnail');
           }
 
           // If we are downgrading from 3 or higher to 2 or lower
@@ -63,13 +72,10 @@ class AppDatabase extends _$AppDatabase {
             await migrator.deleteTable('drafts');
           }
 
-          // If we are downgrading from 4 or higher to 3 or lower
-          if (from >= 4 && to <= 3) {
-            // Drop the list_index column from Accounts
-            await customStatement('ALTER TABLE accounts DROP COLUMN list_index');
-
-            // Drop the AnonymousInstances table
-            await migrator.deleteTable('anonymous_instances');
+          // If we are downgrading from 2 or higher to 1
+          if (from >= 2 && to <= 1) {
+            // Delete the UserLabels table
+            await migrator.deleteTable('user_labels');
           }
         },
       );
