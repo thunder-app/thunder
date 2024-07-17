@@ -47,8 +47,9 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool d
         int accountId = await database.into(database.accounts).insert(AccountsCompanion.insert(
               username: Value(record['username']),
               jwt: Value(record['jwt']),
-              instance: Value(record['instance']),
+              instance: record['instance'],
               userId: Value(record['userId']),
+              listIndex: -1,
             ));
 
         String? activeProfileId = prefs?.getString('active_profile_id');
