@@ -221,9 +221,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     accounts!.insert(newIndex, item);
                   });
 
-                  for (AccountExtended accountExtended in accounts!) {
-                    Account.updateAccount(accountExtended.account.copyWith(index: accounts!.indexOf(accountExtended)));
-                  }
+                  _updateAccountIndices();
                 },
                 proxyDecorator: (child, index, animation) => Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -459,9 +457,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                       anonymousInstances!.insert(newIndex, item);
                     });
 
-                    for (AnonymousInstanceExtended anonymousInstanceExtended in anonymousInstances!) {
-                      Account.updateAccount(anonymousInstanceExtended.anonymousInstance.copyWith(index: anonymousInstances!.indexOf(anonymousInstanceExtended)));
-                    }
+                    _updateAccountIndices();
                   },
                   proxyDecorator: (child, index, animation) => Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -781,6 +777,19 @@ class _ProfileSelectState extends State<ProfileSelect> {
       ).stream.first;
       setState(() => anonymousInstanceExtended.latency = pingData.response?.time);
     });
+  }
+
+  /// Recalculates the indices of all accounts and anonymous instances in the database, given the current order in the UI.
+  /// We need to calculate both accounts and anonymous instances, using an offset for the latter,
+  /// because they are separate lists in the UI but they are in the same database table.
+  void _updateAccountIndices() {
+    for (AccountExtended accountExtended in accounts!) {
+      Account.updateAccount(accountExtended.account.copyWith(index: accounts!.indexOf(accountExtended)));
+    }
+
+    for (AnonymousInstanceExtended anonymousInstanceExtended in anonymousInstances!) {
+      Account.updateAccount(anonymousInstanceExtended.anonymousInstance.copyWith(index: (accounts?.length ?? 0) + anonymousInstances!.indexOf(anonymousInstanceExtended)));
+    }
   }
 }
 
