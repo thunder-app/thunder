@@ -28,8 +28,11 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumn<int> userId = GeneratedColumn<int>('user_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _listIndexMeta = const VerificationMeta('listIndex');
   @override
-  List<GeneratedColumn> get $columns => [id, username, jwt, instance, anonymous, userId];
+  late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, username, jwt, instance, anonymous, userId, listIndex];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -57,6 +60,11 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
     if (data.containsKey('user_id')) {
       context.handle(_userIdMeta, userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
     }
+    if (data.containsKey('list_index')) {
+      context.handle(_listIndexMeta, listIndex.isAcceptableOrUnknown(data['list_index']!, _listIndexMeta));
+    } else if (isInserting) {
+      context.missing(_listIndexMeta);
+    }
     return context;
   }
 
@@ -72,6 +80,7 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
       instance: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}instance']),
       anonymous: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}anonymous'])!,
       userId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}user_id']),
+      listIndex: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}list_index'])!,
     );
   }
 
@@ -88,7 +97,8 @@ class Account extends DataClass implements Insertable<Account> {
   final String? instance;
   final bool anonymous;
   final int? userId;
-  const Account({required this.id, this.username, this.jwt, this.instance, required this.anonymous, this.userId});
+  final int listIndex;
+  const Account({required this.id, this.username, this.jwt, this.instance, required this.anonymous, this.userId, required this.listIndex});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -106,6 +116,7 @@ class Account extends DataClass implements Insertable<Account> {
     if (!nullToAbsent || userId != null) {
       map['user_id'] = Variable<int>(userId);
     }
+    map['list_index'] = Variable<int>(listIndex);
     return map;
   }
 
@@ -117,6 +128,7 @@ class Account extends DataClass implements Insertable<Account> {
       instance: instance == null && nullToAbsent ? const Value.absent() : Value(instance),
       anonymous: Value(anonymous),
       userId: userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      listIndex: Value(listIndex),
     );
   }
 
@@ -129,6 +141,7 @@ class Account extends DataClass implements Insertable<Account> {
       instance: serializer.fromJson<String?>(json['instance']),
       anonymous: serializer.fromJson<bool>(json['anonymous']),
       userId: serializer.fromJson<int?>(json['userId']),
+      listIndex: serializer.fromJson<int>(json['listIndex']),
     );
   }
   @override
@@ -141,6 +154,7 @@ class Account extends DataClass implements Insertable<Account> {
       'instance': serializer.toJson<String?>(instance),
       'anonymous': serializer.toJson<bool>(anonymous),
       'userId': serializer.toJson<int?>(userId),
+      'listIndex': serializer.toJson<int>(listIndex),
     };
   }
 
@@ -150,7 +164,8 @@ class Account extends DataClass implements Insertable<Account> {
           Value<String?> jwt = const Value.absent(),
           Value<String?> instance = const Value.absent(),
           bool? anonymous,
-          Value<int?> userId = const Value.absent()}) =>
+          Value<int?> userId = const Value.absent(),
+          int? listIndex}) =>
       Account(
         id: id ?? this.id,
         username: username.present ? username.value : this.username,
@@ -158,6 +173,7 @@ class Account extends DataClass implements Insertable<Account> {
         instance: instance.present ? instance.value : this.instance,
         anonymous: anonymous ?? this.anonymous,
         userId: userId.present ? userId.value : this.userId,
+        listIndex: listIndex ?? this.listIndex,
       );
   @override
   String toString() {
@@ -167,13 +183,14 @@ class Account extends DataClass implements Insertable<Account> {
           ..write('jwt: $jwt, ')
           ..write('instance: $instance, ')
           ..write('anonymous: $anonymous, ')
-          ..write('userId: $userId')
+          ..write('userId: $userId, ')
+          ..write('listIndex: $listIndex')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, username, jwt, instance, anonymous, userId);
+  int get hashCode => Object.hash(id, username, jwt, instance, anonymous, userId, listIndex);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -183,7 +200,8 @@ class Account extends DataClass implements Insertable<Account> {
           other.jwt == this.jwt &&
           other.instance == this.instance &&
           other.anonymous == this.anonymous &&
-          other.userId == this.userId);
+          other.userId == this.userId &&
+          other.listIndex == this.listIndex);
 }
 
 class AccountsCompanion extends UpdateCompanion<Account> {
@@ -193,6 +211,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
   final Value<String?> instance;
   final Value<bool> anonymous;
   final Value<int?> userId;
+  final Value<int> listIndex;
   const AccountsCompanion({
     this.id = const Value.absent(),
     this.username = const Value.absent(),
@@ -200,6 +219,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     this.instance = const Value.absent(),
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
+    this.listIndex = const Value.absent(),
   });
   AccountsCompanion.insert({
     this.id = const Value.absent(),
@@ -208,7 +228,8 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     this.instance = const Value.absent(),
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
-  });
+    required int listIndex,
+  }) : listIndex = Value(listIndex);
   static Insertable<Account> custom({
     Expression<int>? id,
     Expression<String>? username,
@@ -216,6 +237,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     Expression<String>? instance,
     Expression<bool>? anonymous,
     Expression<int>? userId,
+    Expression<int>? listIndex,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -224,10 +246,11 @@ class AccountsCompanion extends UpdateCompanion<Account> {
       if (instance != null) 'instance': instance,
       if (anonymous != null) 'anonymous': anonymous,
       if (userId != null) 'user_id': userId,
+      if (listIndex != null) 'list_index': listIndex,
     });
   }
 
-  AccountsCompanion copyWith({Value<int>? id, Value<String?>? username, Value<String?>? jwt, Value<String?>? instance, Value<bool>? anonymous, Value<int?>? userId}) {
+  AccountsCompanion copyWith({Value<int>? id, Value<String?>? username, Value<String?>? jwt, Value<String?>? instance, Value<bool>? anonymous, Value<int?>? userId, Value<int>? listIndex}) {
     return AccountsCompanion(
       id: id ?? this.id,
       username: username ?? this.username,
@@ -235,6 +258,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
       instance: instance ?? this.instance,
       anonymous: anonymous ?? this.anonymous,
       userId: userId ?? this.userId,
+      listIndex: listIndex ?? this.listIndex,
     );
   }
 
@@ -259,6 +283,9 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     if (userId.present) {
       map['user_id'] = Variable<int>(userId.value);
     }
+    if (listIndex.present) {
+      map['list_index'] = Variable<int>(listIndex.value);
+    }
     return map;
   }
 
@@ -270,7 +297,8 @@ class AccountsCompanion extends UpdateCompanion<Account> {
           ..write('jwt: $jwt, ')
           ..write('instance: $instance, ')
           ..write('anonymous: $anonymous, ')
-          ..write('userId: $userId')
+          ..write('userId: $userId, ')
+          ..write('listIndex: $listIndex')
           ..write(')'))
         .toString();
   }
