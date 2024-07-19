@@ -17,6 +17,7 @@ import 'package:thunder/settings/pages/general_settings_page.dart';
 import 'package:thunder/settings/pages/gesture_settings_page.dart';
 import 'package:thunder/settings/pages/post_appearance_settings_page.dart';
 import 'package:thunder/settings/pages/theme_settings_page.dart';
+import 'package:thunder/settings/pages/user_labels_settings_page.dart';
 import 'package:thunder/settings/pages/video_player_settings.dart';
 import 'package:thunder/settings/settings.dart';
 import 'package:thunder/thunder/thunder.dart';
@@ -152,6 +153,16 @@ final GoRouter router = GoRouter(
                 BlocProvider.value(value: userSettingsBloc),
               ],
               child: UserSettingsPage(settingToHighlight: (state.extra! as List).elementAtOrNull(1) as LocalSettings?),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'user_labels',
+          path: 'user_labels',
+          builder: (context, state) {
+            return BlocProvider.value(
+              value: (state.extra! as List)[0] as ThunderBloc,
+              child: UserLabelSettingsPage(settingToHighlight: (state.extra! as List).elementAtOrNull(1) as LocalSettings?),
             );
           },
         ),

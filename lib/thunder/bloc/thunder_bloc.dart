@@ -60,17 +60,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       _onFabSummonToggle,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<OnAddAnonymousInstance>(
-      _onAddAnonymousInstance,
-      transformer: throttleDroppable(throttleDuration),
-    );
-    on<OnRemoveAnonymousInstance>(
-      _onRemoveAnonymousInstance,
-      transformer: throttleDroppable(throttleDuration),
-    );
     on<OnSetCurrentAnonymousInstance>(
       _onSetCurrentAnonymousInstance,
-      transformer: throttleDroppable(throttleDuration),
     );
   }
 
@@ -119,7 +110,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // General Settings
       bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
       bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
-      bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
+      bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+      bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
@@ -139,6 +131,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
       bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
+      bool showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
 
@@ -205,6 +198,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       ActionColor saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
       ActionColor markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
       ActionColor replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
+      ActionColor hideColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.hideColor.name) ?? ActionColor.red);
 
       // Font Settings
       FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
@@ -268,9 +262,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
       VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
 
-      List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ??
-          // If the user already has some accouts (i.e., an upgrade), we don't want to just throw an anonymous instance at them
-          ((await Account.accounts()).isNotEmpty ? [] : ['lemmy.ml']);
       String currentAnonymousInstance = prefs.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
 
       return emit(state.copyWith(
@@ -293,7 +284,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         scrapeMissingPreviews: scrapeMissingPreviews,
         browserMode: browserMode,
         openInReaderMode: openInReaderMode,
-        useDisplayNames: useDisplayNames,
+        useDisplayNamesForUsers: useDisplayNamesForUsers,
+        useDisplayNamesForCommunities: useDisplayNamesForCommunities,
         markPostReadOnMediaView: markPostReadOnMediaView,
         markPostReadOnScroll: markPostReadOnScroll,
         showInAppUpdateNotification: showInAppUpdateNotification,
@@ -313,6 +305,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         imageCachingMode: imageCachingMode,
         showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,
+        showHiddenPosts: showHiddenPosts,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings
@@ -372,6 +365,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         saveColor: saveColor,
         markReadColor: markReadColor,
         replyColor: replyColor,
+        hideColor: hideColor,
 
         // Font Settings
         titleFontSizeScale: titleFontSizeScale,
@@ -435,7 +429,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         videoAutoPlay: videoAutoPlay,
         videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed,
 
-        anonymousInstances: anonymousInstances,
         currentAnonymousInstance: currentAnonymousInstance,
       ));
     } catch (e) {
@@ -451,29 +444,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     emit(state.copyWith(isFabSummoned: !state.isFabSummoned));
   }
 
-  void _onAddAnonymousInstance(OnAddAnonymousInstance event, Emitter<ThunderState> emit) async {
-    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-
-    prefs.setStringList(LocalSettings.anonymousInstances.name, [...state.anonymousInstances, event.instance]);
-
-    emit(state.copyWith(anonymousInstances: [...state.anonymousInstances, event.instance]));
-  }
-
-  void _onRemoveAnonymousInstance(OnRemoveAnonymousInstance event, Emitter<ThunderState> emit) async {
-    final List<String> instances = state.anonymousInstances;
-    instances.remove(event.instance);
-
-    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    prefs.setStringList(LocalSettings.anonymousInstances.name, instances);
-
-    emit(state.copyWith(anonymousInstances: instances));
-  }
-
   void _onSetCurrentAnonymousInstance(OnSetCurrentAnonymousInstance event, Emitter<ThunderState> emit) async {
-    LemmyClient.instance.changeBaseUrl(event.instance);
-
     final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    prefs.setString(LocalSettings.currentAnonymousInstance.name, event.instance);
+
+    if (event.instance != null) {
+      LemmyClient.instance.changeBaseUrl(event.instance!);
+      prefs.setString(LocalSettings.currentAnonymousInstance.name, event.instance!);
+    } else {
+      prefs.remove(LocalSettings.currentAnonymousInstance.name);
+    }
 
     emit(state.copyWith(currentAnonymousInstance: event.instance));
   }

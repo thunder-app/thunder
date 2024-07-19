@@ -84,6 +84,18 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       transformer: throttleDroppable(Duration.zero),
     );
 
+    /// Handles dismissing posts from blocked users/communities
+    on<FeedDismissBlockedEvent>(
+      _onFeedDismissBlocked,
+      transformer: throttleDroppable(Duration.zero),
+    );
+
+    /// Handles dismissing posts that have been hidden by the user
+    on<FeedDismissHiddenPostEvent>(
+      _onFeedDismissHiddenPost,
+      transformer: throttleDroppable(Duration.zero),
+    );
+
     /// Handles hiding posts from the feed
     on<FeedHidePostsFromViewEvent>(
       _onFeedHidePostsFromView,
@@ -115,6 +127,16 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   /// Handles dismissing read posts from the feed
   Future<void> _onFeedDismissRead(FeedDismissReadEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.success, dismissReadId: state.dismissReadId + 1));
+  }
+
+  /// Handles dismissing read posts from the feed
+  Future<void> _onFeedDismissBlocked(FeedDismissBlockedEvent event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(status: FeedStatus.success, dismissBlockedUserId: event.userId, dismissBlockedCommunityId: event.communityId));
+  }
+
+  /// Handles dismissing read posts from the feed
+  Future<void> _onFeedDismissHiddenPost(FeedDismissHiddenPostEvent event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(status: FeedStatus.success, dismissHiddenPostId: event.postId));
   }
 
   /// Handles scrolling to top of the feed
@@ -256,6 +278,33 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
             }
             return emit(state.copyWith(status: FeedStatus.failure));
           }
+        }
+      case PostAction.hide:
+        // Optimistically hide the post
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+        if (existingPostViewMediaIndex == -1) return emit(state.copyWith(status: FeedStatus.failure));
+
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+        PostView originalPostView = postViewMedia.postView;
+
+        try {
+          PostView updatedPostView = optimisticallyHidePost(postViewMedia, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+
+          // Emit the state to update UI immediately
+          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.fetching));
+
+          bool success = await markPostAsHidden(originalPostView.post.id, event.value);
+          if (success) return emit(state.copyWith(status: FeedStatus.success));
+
+          // Restore the original post contents if not successful
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        } catch (e) {
+          // Restore the original post contents
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.delete:
         // Optimistically delete the post
@@ -459,6 +508,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       userId: state.userId,
       username: state.username,
       reset: true,
+      showHidden: state.showHidden,
     ));
   }
 
@@ -526,6 +576,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         userId: event.userId ?? fullPersonView?.personView.person.id,
         username: event.username,
         feedTypeSubview: event.feedTypeSubview,
+        showHidden: event.showHidden,
       );
 
       // Extract information from the response
@@ -551,6 +602,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         userId: event.userId ?? fullPersonView?.personView.person.id,
         username: event.username,
         currentPage: currentPage,
+        showHidden: event.showHidden,
       ));
     }
 
@@ -572,6 +624,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       userId: state.userId,
       username: state.username,
       feedTypeSubview: event.feedTypeSubview,
+      showHidden: event.showHidden,
     );
 
     // Extract information from the response

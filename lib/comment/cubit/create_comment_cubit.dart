@@ -17,18 +17,27 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
     emit(state.copyWith(status: CreateCommentStatus.initial, message: null));
   }
 
-  Future<void> uploadImage(String imageFile) async {
+  Future<void> uploadImages(List<String> imageFiles) async {
     Account? account = await fetchActiveProfileAccount();
     if (account == null) return;
 
     PictrsApi pictrs = PictrsApi(account.instance!);
+    List<String> urls = [];
+
     emit(state.copyWith(status: CreateCommentStatus.imageUploadInProgress));
 
     try {
-      PictrsUpload result = await pictrs.upload(filePath: imageFile, auth: account.jwt);
-      String url = "https://${account.instance!}/pictrs/image/${result.files[0].file}";
+      for (String imageFile in imageFiles) {
+        PictrsUpload result = await pictrs.upload(filePath: imageFile, auth: account.jwt);
+        String url = "https://${account.instance!}/pictrs/image/${result.files[0].file}";
 
-      emit(state.copyWith(status: CreateCommentStatus.imageUploadSuccess, imageUrl: url));
+        urls.add(url);
+
+        // Add a delay between each upload to avoid possible rate limiting
+        await Future.wait(urls.map((url) => Future.delayed(const Duration(milliseconds: 500))));
+      }
+
+      emit(state.copyWith(status: CreateCommentStatus.imageUploadSuccess, imageUrls: urls));
     } catch (e) {
       emit(state.copyWith(status: CreateCommentStatus.imageUploadFailure, message: e.toString()));
     }

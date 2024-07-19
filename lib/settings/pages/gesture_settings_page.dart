@@ -53,6 +53,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
     ListPickerItem(icon: SwipeAction.downvote.getIcon(), label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
     ListPickerItem(icon: SwipeAction.save.getIcon(), label: SwipeAction.save.label, payload: SwipeAction.save),
     ListPickerItem(icon: SwipeAction.toggleRead.getIcon(), label: SwipeAction.toggleRead.label, payload: SwipeAction.toggleRead),
+    ListPickerItem(icon: SwipeAction.hide.getIcon(), label: SwipeAction.hide.label, payload: SwipeAction.hide),
     ListPickerItem(icon: SwipeAction.none.getIcon(), label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
 

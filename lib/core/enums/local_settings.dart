@@ -9,6 +9,7 @@ enum LocalSettingsCategories {
   floatingActionButton('floatingActionButton'),
   accessibility('Accessibility'),
   account('Account'),
+  userLabels('User Labels'),
   about('About'),
   debug('Debug'),
   theming('Theming'),
@@ -94,7 +95,9 @@ enum LocalSettings {
   openByDefault(name: 'setting_links_open_by_default', key: 'openByDefault', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   openLinksInReaderMode(
       name: 'setting_links_open_in_reader_mode', key: 'openLinksInReaderMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
-  useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+  useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  useDisplayNamesForCommunities(
+      name: 'setting_use_display_names_for_communities', key: 'showCommunityDisplayNames', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   markPostAsReadOnMediaView(
       name: 'setting_general_mark_post_read_on_media_view', key: 'markPostAsReadOnMediaView', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   markPostAsReadOnScroll(name: 'setting_general_mark_post_read_on_scroll', key: 'markPostAsReadOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
@@ -130,6 +133,7 @@ enum LocalSettings {
   dimReadPosts(name: 'setting_dim_read_posts', key: 'dimReadPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   keywordFilters(name: 'setting_general_keyword_filters', key: 'keywordFilters', category: LocalSettingsCategories.filters, subCategory: LocalSettingsSubCategories.filters),
   hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', key: 'hideTopBarOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
+  showHiddenPosts(name: 'setting_general_show_hidden_posts', key: 'showHiddenPosts', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   compactPostCardMetadataItems(
       name: 'setting_compact_post_card_metadata_items', key: 'compactPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   cardPostCardMetadataItems(name: 'setting_card_post_card_metadata_items', key: 'cardPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
@@ -198,6 +202,7 @@ enum LocalSettings {
   downvoteColor(name: 'settings_theme_downvote_color', key: 'downvoteColor', searchable: false),
   saveColor(name: 'settings_theme_save_color', key: 'saveColor', searchable: false),
   markReadColor(name: 'settings_theme_mark_read_color', key: 'markReadColor', searchable: false),
+  hideColor(name: 'settings_theme_hide_color', key: 'hideColor', searchable: false),
   replyColor(name: 'settings_theme_reply_color', key: 'replyColor', searchable: false),
 
   // Font Settings
@@ -251,6 +256,8 @@ enum LocalSettings {
       subCategory: LocalSettingsSubCategories.names,
       searchable: false),
 
+  userLabels(name: 'setting_user_labels', key: 'userLabels', category: LocalSettingsCategories.userLabels),
+
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings
   sidebarBottomNavBarSwipeGesture(
@@ -300,10 +307,8 @@ enum LocalSettings {
   combineNavAndFab(name: 'setting_combine_nav_and_fab', key: 'combineNavAndFab', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
 
   enableExperimentalFeatures(name: 'setting_enable_experimental_features', key: 'enableExperimentalFeatures', category: LocalSettingsCategories.debug),
+  imageDimensionTimeout(name: 'setting_image_dimension_timeout', key: 'imageDimensionTimeout', category: LocalSettingsCategories.debug),
 
-  draftsCache(name: 'drafts_cache', key: ''),
-
-  anonymousInstances(name: 'setting_anonymous_instances', key: ''),
   currentAnonymousInstance(name: 'setting_current_anonymous_instance', key: ''),
 
   // This setting exists purely to save/load the user's selected advanced share options
@@ -345,8 +350,6 @@ enum LocalSettings {
 
   /// Defines the settings that are excluded from import/export
   static List<LocalSettings> importExportExcludedSettings = [
-    LocalSettings.draftsCache,
-    LocalSettings.anonymousInstances,
     LocalSettings.currentAnonymousInstance,
     LocalSettings.advancedShareOptions,
   ];
@@ -366,6 +369,7 @@ extension LocalizationExt on AppLocalizations {
       'openByDefault': openByDefault,
       'openLinksInReaderMode': openLinksInReaderMode,
       'showUserDisplayNames': showUserDisplayNames,
+      'showCommunityDisplayNames': showCommunityDisplayNames,
       'markPostAsReadOnMediaView': markPostAsReadOnMediaView,
       'markPostAsReadOnScroll': markPostAsReadOnScroll,
       'showInAppUpdateNotifications': showInAppUpdateNotifications,
@@ -399,6 +403,7 @@ extension LocalizationExt on AppLocalizations {
       'postBodyShowCommunityAvatar': postBodyShowCommunityAvatar,
       'keywordFilters': keywordFilters,
       'hideTopBarOnScroll': hideTopBarOnScroll,
+      'showHiddenPosts': showHiddenPosts,
       'compactPostCardMetadataItems': compactPostCardMetadataItems,
       'cardPostCardMetadataItems': cardPostCardMetadataItems,
       'userFormat': userFormat,
@@ -472,6 +477,7 @@ extension LocalizationExt on AppLocalizations {
       'videoAutoLoop': videoAutoLoop,
       'videoAutoPlay': videoAutoPlay,
       'videoDefaultPlaybackSpeed': videoDefaultPlaybackSpeed,
+      'userLabels': userLabels,
     };
 
     if (localizationMap.containsKey(key)) {

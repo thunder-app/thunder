@@ -124,6 +124,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                       child: CommunityFullNameWidget(
                         context,
                         community?.name,
+                        community?.title,
                         fetchInstanceNameFromUrl(community?.actorId),
                         fontScale: state.metadataFontSizeScale,
                         transformColor: (color) => color?.withOpacity(0.75),
@@ -279,6 +280,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                           child: CommunityFullNameWidget(
                             context,
                             widget.community?.name,
+                            widget.community?.title,
                             fetchInstanceNameFromUrl(widget.community?.actorId),
                             fontScale: state.metadataFontSizeScale,
                             transformColor: textStyleCommunityAndAuthor,
@@ -339,6 +341,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
                     UserFullNameWidget(
                       context,
                       user?.name,
+                      user?.displayName,
                       fetchInstanceNameFromUrl(user?.actorId),
                       transformColor: (color) => color?.withOpacity(0.75),
                     ),
@@ -395,6 +398,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                     CommunityFullNameWidget(
                       context,
                       community?.name,
+                      community?.title,
                       fetchInstanceNameFromUrl(community?.actorId),
                       fontScale: state.metadataFontSizeScale,
                       transformColor: (color) => color?.withOpacity(0.75),

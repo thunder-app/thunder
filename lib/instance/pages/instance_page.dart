@@ -77,7 +77,7 @@ class _InstancePageState extends State<InstancePage> {
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final String? accountInstance = context.read<AuthBloc>().state.account?.instance;
-    final String currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
+    final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     return BlocListener<InstanceBloc, InstanceState>(
       listener: (context, state) {

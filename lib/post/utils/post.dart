@@ -88,6 +88,24 @@ Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
   return failed;
 }
 
+/// Logic to mark post as hidden
+Future<bool> markPostAsHidden(int postId, bool hide) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  SuccessResponse markPostAsHiddenResponse;
+
+  markPostAsHiddenResponse = await lemmy.run(HidePost(
+    auth: account!.jwt!,
+    postIds: [postId],
+    hide: hide,
+  ));
+
+  return markPostAsHiddenResponse.success;
+}
+
 /// Logic to delete post
 Future<bool> deletePost(int postId, bool delete) async {
   Account? account = await fetchActiveProfileAccount();
@@ -151,6 +169,11 @@ PostView optimisticallySavePost(PostViewMedia postViewMedia, bool saved) {
 // Optimistically marks a post as read/unread. This changes the value of the post locally, without sending the network request
 PostView optimisticallyReadPost(PostViewMedia postViewMedia, bool read) {
   return postViewMedia.postView.copyWith(read: read);
+}
+
+// Optimistically marks a post as hidden/unhidden. This changes the value of the post locally, without sending the network request
+PostView optimisticallyHidePost(PostViewMedia postViewMedia, bool hidden) {
+  return postViewMedia.postView.copyWith(hidden: hidden);
 }
 
 // Optimistically deletes a post. This changes the value of the post locally, without sending the network request
@@ -361,7 +384,10 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
 
     try {
-      result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(const Duration(seconds: 2));
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      int imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+
+      result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
     } catch (e) {
       debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
     }

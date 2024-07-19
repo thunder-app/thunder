@@ -53,6 +53,8 @@ Future<void> pollRepliesAndShowNotifications() async {
   final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
   final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
   final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+  final bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+  final bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
 
   // Ensure that the db is initialized before attempting to access below.
   await initializeDatabase();
@@ -102,9 +104,30 @@ Future<void> pollRepliesAndShowNotifications() async {
       final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
       final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-        '${commentReplyView.post.name} · ${generateCommunityFullName(null, commentReplyView.community.name, fetchInstanceNameFromUrl(commentReplyView.community.actorId), communitySeparator: communitySeparator)}\n$htmlComment',
-        contentTitle: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
-        summaryText: generateUserFullName(null, commentReplyView.recipient.name, fetchInstanceNameFromUrl(commentReplyView.recipient.actorId), userSeparator: userSeparator),
+        '${commentReplyView.post.name} · ${generateCommunityFullName(
+          null,
+          commentReplyView.community.name,
+          commentReplyView.community.title,
+          fetchInstanceNameFromUrl(commentReplyView.community.actorId),
+          communitySeparator: communitySeparator,
+          useDisplayName: useDisplayNamesForCommunities,
+        )}\n$htmlComment',
+        contentTitle: generateUserFullName(
+          null,
+          commentReplyView.creator.name,
+          commentReplyView.creator.displayName,
+          fetchInstanceNameFromUrl(commentReplyView.creator.actorId),
+          userSeparator: userSeparator,
+          useDisplayName: useDisplayNamesForUsers,
+        ),
+        summaryText: generateUserFullName(
+          null,
+          commentReplyView.recipient.name,
+          commentReplyView.recipient.displayName,
+          fetchInstanceNameFromUrl(commentReplyView.recipient.actorId),
+          userSeparator: userSeparator,
+          useDisplayName: useDisplayNamesForUsers,
+        ),
         htmlFormatBigText: true,
       );
 
@@ -112,7 +135,14 @@ Future<void> pollRepliesAndShowNotifications() async {
         id: commentReplyView.commentReply.id,
         account: account,
         bigTextStyleInformation: bigTextStyleInformation,
-        title: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
+        title: generateUserFullName(
+          null,
+          commentReplyView.creator.name,
+          commentReplyView.creator.displayName,
+          fetchInstanceNameFromUrl(commentReplyView.creator.actorId),
+          userSeparator: userSeparator,
+          useDisplayName: useDisplayNamesForUsers,
+        ),
         content: plaintextComment,
         payload: jsonEncode(NotificationPayload(
           type: NotificationType.local,

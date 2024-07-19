@@ -7,12 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instances.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
@@ -35,6 +36,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   late TextEditingController _passwordTextEditingController;
   late TextEditingController _totpTextEditingController;
   late TextEditingController _instanceTextEditingController;
+  final FocusNode _usernameFieldFocusNode = FocusNode();
 
   bool showPassword = false;
   bool fieldsFilledIn = false;
@@ -130,11 +132,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+
     return MultiBlocListener(
       listeners: [
         BlocListener<AuthBloc, AuthState>(
-          listener: (listenerContext, state) {
+          listener: (listenerContext, state) async {
             if (state.status == AuthStatus.loading) {
               setState(() {
                 isLoading = true;
@@ -149,6 +153,31 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               context.pop();
 
               showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
+            } else if (state.status == AuthStatus.contentWarning) {
+              bool acceptedContentWarning = false;
+
+              await showThunderDialog<void>(
+                context: context,
+                title: l10n.contentWarning,
+                contentText: state.contentWarning,
+                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                secondaryButtonText: l10n.decline,
+                onPrimaryButtonPressed: (dialogContext, _) async {
+                  Navigator.of(dialogContext).pop();
+                  acceptedContentWarning = true;
+                },
+                primaryButtonText: l10n.accept,
+              );
+
+              if (context.mounted) {
+                if (acceptedContentWarning) {
+                  // Do another login attempt, this time without the content warning
+                  _handleLogin(showContentWarning: false);
+                } else {
+                  // Cancel the login
+                  context.read<AuthBloc>().add(const CancelLoginAttempt());
+                }
+              }
             }
           },
         ),
@@ -297,7 +326,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         errorMaxLines: 2,
                       ),
                       enableSuggestions: false,
-                      onSubmitted: (controller.text.isNotEmpty && widget.anonymous) ? (_) => _addAnonymousInstance() : null,
+                      onSubmitted: !widget.anonymous
+                          ? (_) => _usernameFieldFocusNode.requestFocus()
+                          : controller.text.isNotEmpty
+                              ? (_) => _addAnonymousInstance(context)
+                              : null,
                     ),
                     suggestionsCallback: (String pattern) {
                       if (pattern.isNotEmpty != true) {
@@ -328,6 +361,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             keyboardType: TextInputType.url,
                             autocorrect: false,
                             controller: _usernameTextEditingController,
+                            focusNode: _usernameFieldFocusNode,
                             autofillHints: const [AutofillHints.username],
                             decoration: InputDecoration(
                               isDense: true,
@@ -342,7 +376,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                 (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
                                     ? (_) => _handleLogin()
                                     : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
-                                        ? (_) => _addAnonymousInstance()
+                                        ? (_) => _addAnonymousInstance(context)
                                         : null,
                             autocorrect: false,
                             controller: _passwordTextEditingController,
@@ -401,7 +435,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
                         ? _handleLogin
                         : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
-                            ? () => _addAnonymousInstance()
+                            ? () => _addAnonymousInstance(context)
                             : null,
                     child: Text(widget.anonymous ? AppLocalizations.of(context)!.add : AppLocalizations.of(context)!.login,
                         style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
@@ -422,7 +456,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     );
   }
 
-  void _handleLogin() {
+  void _handleLogin({bool showContentWarning = true}) {
     TextInput.finishAutofillContext();
     // Perform login authentication
     context.read<AuthBloc>().add(
@@ -431,24 +465,50 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             password: _passwordTextEditingController.text,
             instance: _instanceTextEditingController.text.trim(),
             totp: _totpTextEditingController.text,
+            showContentWarning: showContentWarning,
           ),
         );
   }
 
-  void _addAnonymousInstance() async {
+  void _addAnonymousInstance(BuildContext context) async {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     if (await isLemmyInstance(_instanceTextEditingController.text)) {
-      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ?? ['lemmy.ml'];
-      if (anonymousInstances.contains(_instanceTextEditingController.text)) {
+      final List<Account> anonymousInstances = await Account.anonymousInstances();
+      if (anonymousInstances.any((anonymousInstance) => anonymousInstance.instance == _instanceTextEditingController.text)) {
         setState(() {
           instanceValidated = false;
           instanceError = AppLocalizations.of(context)!.instanceHasAlreadyBenAdded(currentInstance ?? '');
         });
       } else {
-        context.read<AuthBloc>().add(const LogOutOfAllAccounts());
-        context.read<ThunderBloc>().add(OnAddAnonymousInstance(_instanceTextEditingController.text));
-        context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
-        widget.popRegister();
+        // Check for content warning on anyonmous instance
+        GetSiteResponse getSiteResponse = await (LemmyClient()..changeBaseUrl(_instanceTextEditingController.text)).lemmyApiV3.run(const GetSite());
+
+        bool acceptedContentWarning = true;
+
+        if (getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
+          acceptedContentWarning = false;
+
+          await showThunderDialog<void>(
+            context: context,
+            title: l10n.contentWarning,
+            contentText: getSiteResponse.siteView.site.contentWarning,
+            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+            secondaryButtonText: l10n.decline,
+            onPrimaryButtonPressed: (dialogContext, _) async {
+              Navigator.of(dialogContext).pop();
+              acceptedContentWarning = true;
+            },
+            primaryButtonText: l10n.accept,
+          );
+        }
+
+        if (acceptedContentWarning) {
+          context.read<AuthBloc>().add(const LogOutOfAllAccounts());
+          await Account.insertAnonymousInstance(Account(id: '', instance: _instanceTextEditingController.text, index: -1, anonymous: true));
+          context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
+          widget.popRegister();
+        }
       }
     }
   }

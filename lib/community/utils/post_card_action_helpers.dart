@@ -59,6 +59,7 @@ enum PostCardAction {
   downvote,
   save,
   toggleRead,
+  hide,
   share,
   delete,
   reportPost,
@@ -103,7 +104,12 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.userActions,
     icon: Icons.person_rounded,
     label: l10n.user,
-    getSubtitleLabel: (context, postViewMedia) => generateUserFullName(context, postViewMedia.postView.creator.name, fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId)),
+    getSubtitleLabel: (context, postViewMedia) => generateUserFullName(
+      context,
+      postViewMedia.postView.creator.name,
+      postViewMedia.postView.creator.displayName,
+      fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId),
+    ),
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
@@ -121,7 +127,12 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.communityActions,
     icon: Icons.people_rounded,
     label: l10n.community,
-    getSubtitleLabel: (context, postViewMedia) => generateCommunityFullName(context, postViewMedia.postView.community.name, fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)),
+    getSubtitleLabel: (context, postViewMedia) => generateCommunityFullName(
+      context,
+      postViewMedia.postView.community.name,
+      postViewMedia.postView.community.title,
+      fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId),
+    ),
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
@@ -242,6 +253,15 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
+    postCardAction: PostCardAction.hide,
+    label: l10n.hide,
+    getOverrideLabel: (context, postView) => postView.hidden == true ? l10n.unhide : l10n.hide,
+    icon: Icons.visibility_off_rounded,
+    getColor: (context) => context.read<ThunderBloc>().state.hideColor.color,
+    getOverrideIcon: (postView) => postView.hidden == true ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedPostCardActions(
     postCardAction: PostCardAction.share,
     icon: Icons.share_rounded,
     label: l10n.share,
@@ -295,11 +315,14 @@ void showPostActionBottomModalSheet(
   BuildContext context,
   PostViewMedia postViewMedia, {
   PostActionBottomSheetPage page = PostActionBottomSheetPage.general,
+  void Function(int userId)? onBlockedUser,
+  void Function(int userId)? onBlockedCommunity,
+  void Function(int postId)? onPostHidden,
 }) {
   final bool isOwnPost = postViewMedia.postView.creator.id == context.read<AuthBloc>().state.account?.userId;
-
   final bool isModerator =
       context.read<AccountBloc>().state.moderates.any((CommunityModeratorView communityModeratorView) => communityModeratorView.community.id == postViewMedia.postView.community.id);
+  final int? currentUserId = context.read<AuthBloc>().state.account?.userId;
 
   // Generate the list of default actions for the general page
   final List<ExtendedPostCardActions> defaultPostCardActions = postCardActionItems
@@ -323,10 +346,16 @@ void showPostActionBottomModalSheet(
             PostCardAction.downvote,
             PostCardAction.save,
             PostCardAction.toggleRead,
+            PostCardAction.hide,
             PostCardAction.share,
             if (isOwnPost) PostCardAction.delete,
           ].contains(extendedAction.postCardAction))
       .toList();
+
+  // Remove hide if unsupported
+  if (defaultMultiPostCardActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.hide) && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+    defaultMultiPostCardActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.hide);
+  }
 
   // Generate the list of moderator actions
   final List<ExtendedPostCardActions> moderatorPostCardActions = postCardActionItems
@@ -374,7 +403,7 @@ void showPostActionBottomModalSheet(
   final List<ExtendedPostCardActions> userActions = postCardActionItems
       .where((extendedAction) => [
             PostCardAction.visitProfile,
-            PostCardAction.blockUser,
+            if (postViewMedia.postView.creator.id != currentUserId) PostCardAction.blockUser,
           ].contains(extendedAction.postCardAction))
       .toList();
 
@@ -400,7 +429,7 @@ void showPostActionBottomModalSheet(
           ].contains(extendedAction.postCardAction))
       .toList();
 
-// Remove block if unsupported
+  // Remove block if unsupported
   if (instanceActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
     instanceActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockInstance);
   }
@@ -430,6 +459,9 @@ void showPostActionBottomModalSheet(
         PostActionBottomSheetPage.instance: l10n.instanceActions,
       },
       outerContext: context,
+      onBlockedUser: onBlockedUser,
+      onBlockedCommunity: onBlockedCommunity,
+      onPostHidden: onPostHidden,
     ),
   );
 }
@@ -453,6 +485,15 @@ class PostCardActionPicker extends StatefulWidget {
   /// The context from whoever invoked this sheet (useful for blocs that would otherwise be missing)
   final BuildContext outerContext;
 
+  /// Callback used to notify that we blocked a user
+  final void Function(int userId)? onBlockedUser;
+
+  /// Callback used to notify that we blocked a community
+  final Function(int userId)? onBlockedCommunity;
+
+  /// Callback used to notify that we hid a post
+  final Function(int postId)? onPostHidden;
+
   const PostCardActionPicker({
     super.key,
     required this.postViewMedia,
@@ -461,6 +502,9 @@ class PostCardActionPicker extends StatefulWidget {
     required this.multiPostCardActions,
     required this.titles,
     required this.outerContext,
+    required this.onBlockedUser,
+    required this.onBlockedCommunity,
+    required this.onPostHidden,
   });
 
   @override
@@ -546,7 +590,7 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                     ...widget.multiPostCardActions[page ?? widget.page]!.where((a) => a.shouldShow?.call(context, widget.postViewMedia.postView) ?? true).map(
                       (a) {
                         return PickerItemData(
-                          label: a.label,
+                          label: a.getOverrideLabel?.call(context, widget.postViewMedia.postView) ?? a.label,
                           icon: a.getOverrideIcon?.call(widget.postViewMedia.postView) ?? a.icon,
                           backgroundColor: a.getColor?.call(context),
                           foregroundColor: a.getForegroundColor?.call(context, widget.postViewMedia.postView),
@@ -660,8 +704,10 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
         pop = false;
         break;
       case PostCardAction.blockCommunity:
-        action =
-            () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: widget.postViewMedia.postView.community.id, value: true));
+        action = () {
+          widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: widget.postViewMedia.postView.community.id, value: true));
+          widget.onBlockedCommunity?.call(widget.postViewMedia.postView.community.id);
+        };
         break;
       case PostCardAction.upvote:
         action = () => widget.outerContext
@@ -681,20 +727,35 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
         action = () =>
             widget.outerContext.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postViewMedia.postView.post.id, value: !widget.postViewMedia.postView.read));
         break;
+      case PostCardAction.hide:
+        action = () => widget.outerContext
+            .read<FeedBloc>()
+            .add(FeedItemActionedEvent(postAction: PostAction.hide, postId: widget.postViewMedia.postView.post.id, value: !(widget.postViewMedia.postView.hidden ?? false)));
+        widget.onPostHidden?.call(widget.postViewMedia.postView.post.id);
+        break;
       case PostCardAction.share:
         pop = false;
         action = () => setState(() => page = PostActionBottomSheetPage.share);
         break;
       case PostCardAction.blockUser:
-        action = () => widget.outerContext.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: widget.postViewMedia.postView.creator.id, value: true));
+        action = () {
+          widget.outerContext.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: widget.postViewMedia.postView.creator.id, value: true));
+          widget.onBlockedCommunity?.call(widget.postViewMedia.postView.creator.id);
+        };
         break;
       case PostCardAction.subscribeToCommunity:
-        action =
-            () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: widget.postViewMedia.postView.community.id, value: true));
+        action = () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(
+              communityAction: CommunityAction.follow,
+              communityId: widget.postViewMedia.postView.community.id,
+              value: true,
+            ));
         break;
       case PostCardAction.unsubscribeFromCommunity:
-        action =
-            () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: widget.postViewMedia.postView.community.id, value: false));
+        action = () => widget.outerContext.read<CommunityBloc>().add(CommunityActionEvent(
+              communityAction: CommunityAction.follow,
+              communityId: widget.postViewMedia.postView.community.id,
+              value: false,
+            ));
         break;
       case PostCardAction.delete:
         action = () => widget.outerContext
