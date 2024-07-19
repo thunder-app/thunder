@@ -138,7 +138,7 @@ Interested in translating Thunder? We use [Weblate](https://hosted.weblate.org/e
 
 ## Building From Source
 
-### Installing Thunder
+### Installing and Running Thunder
 
 Thunder is developed with Flutter, and is built to support both iOS and Android. There may be unofficial support on other platforms but is not guaranteed at this time (Linux, Windows, MacOS)
 
@@ -146,8 +146,9 @@ To build the app from source, a few steps are required.
 
 1. First, set up and install Flutter. For more information, visit https://docs.flutter.dev/get-started/install.
 2. Clone this repository and fetch the dependencies using `flutter pub get`
-3. Run `flutter gen-l10n` to generate the localization files.
-4. Optional: Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions. This step is only required if you want to build a release version of the app.
+3. Optional: Run `flutter gen-l10n` to generate the localization files.
+4. Launch Thunder using using `flutter run`
+5. Optional: Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions. This step is only required if you want to build a release version of the app.
 
 ### Building with Docker
 
@@ -163,14 +164,6 @@ You can also run your local development environment for Android via the Docker c
 
 ```
 ./scripts/docker-dev-android.sh
-```
-
-### Environment File
-
-This is an example of the `.env` that can be used for Thunder.
-
-```bash
-# Empty Environment File
 ```
 
 ## Conventions
