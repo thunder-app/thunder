@@ -445,7 +445,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   helperText: l10n.requiredField,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
-                                  contentPadding: const EdgeInsets.all(10),
+                                  contentPadding: const EdgeInsets.all(13),
                                 ),
                               ),
                               hideOnEmpty: true,
@@ -460,7 +460,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 errorText: urlError,
                                 isDense: true,
                                 border: const OutlineInputBorder(),
-                                contentPadding: const EdgeInsets.all(10),
+                                contentPadding: const EdgeInsets.all(13),
                                 suffixIcon: IconButton(
                                   onPressed: () async {
                                     if (state.status == CreatePostStatus.postImageUploadInProgress) return;
@@ -493,11 +493,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   errorText: customThumbnailError,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
-                                  contentPadding: const EdgeInsets.all(10),
+                                  contentPadding: const EdgeInsets.all(13),
                                 ),
                               ),
                             ],
-                            const SizedBox(height: 5),
+                            SizedBox(height: url.isNotEmpty ? 10 : 5),
                             Visibility(
                               visible: url.isNotEmpty,
                               child: LinkPreviewCard(
