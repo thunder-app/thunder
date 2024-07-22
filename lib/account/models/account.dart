@@ -31,6 +31,7 @@ class Account {
         username: username,
         jwt: jwt,
         instance: instance,
+        anonymous: anonymous,
         userId: userId,
         index: index ?? this.index,
       );
@@ -53,6 +54,7 @@ class Account {
               username: Value(account.username),
               jwt: Value(account.jwt),
               instance: Value(account.instance),
+              anonymous: Value(account.anonymous),
               userId: Value(account.userId),
               listIndex: newIndex,
             ),
@@ -81,8 +83,8 @@ class Account {
               username: Value(anonymousInstance.username),
               jwt: Value(anonymousInstance.jwt),
               instance: Value(anonymousInstance.instance),
-              userId: Value(anonymousInstance.userId),
               anonymous: Value(anonymousInstance.anonymous),
+              userId: Value(anonymousInstance.userId),
               listIndex: newIndex,
             ),
           );
@@ -103,6 +105,7 @@ class Account {
                 username: account.username,
                 jwt: account.jwt,
                 instance: account.instance ?? '',
+                anonymous: account.anonymous,
                 userId: account.userId,
                 index: account.listIndex,
               ))
@@ -122,6 +125,7 @@ class Account {
                 username: account.username,
                 jwt: account.jwt,
                 instance: account.instance ?? '',
+                anonymous: account.anonymous,
                 userId: account.userId,
                 index: account.listIndex,
               ))
@@ -143,6 +147,7 @@ class Account {
           username: account.username,
           jwt: account.jwt,
           instance: account.instance ?? '',
+          anonymous: account.anonymous,
           userId: account.userId,
           index: account.listIndex,
         );
@@ -160,6 +165,7 @@ class Account {
             username: Value(account.username),
             jwt: Value(account.jwt),
             instance: Value(account.instance),
+            anonymous: Value(account.anonymous),
             userId: Value(account.userId),
             listIndex: Value(account.index),
           ));

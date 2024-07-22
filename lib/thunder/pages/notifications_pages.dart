@@ -21,7 +21,7 @@ class NotificationsReplyPage extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: InboxBloc.withReplies(replies)),
+        BlocProvider.value(value: InboxBloc.initWith(replies: replies, showUnreadOnly: true)),
         BlocProvider.value(value: PostBloc()),
       ],
       child: BlocConsumer<InboxBloc, InboxState>(

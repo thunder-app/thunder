@@ -109,6 +109,10 @@
   "@animations": {},
   "anonymous": "Anonymous",
   "@anonymous": {},
+  "anonymousInstances": "Anonymous Instances",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
   "appLanguage": "App Language",
   "@appLanguage": {
     "description": "Language selection in settings."
@@ -1361,6 +1365,14 @@
   "@no": {
     "description": "A negative status"
   },
+  "noAccountsAdded": "No accounts have been added",
+  "@noAccountsAdded": {
+    "description": "Placeholder text when no accounts have been added"
+  },
+  "noAnonymousInstances": "No anonymous instances have been added",
+  "@noAnonymousInstances": {
+    "description": "Placeholder text when no anonymous instances have been added"
+  },
   "noComments": "Oh. There are no comments.",
   "@noComments": {},
   "noCommentsFound": "No comments found.",
@@ -1752,6 +1764,10 @@
   "removedPost": "Removed Post",
   "@removedPost": {
     "description": "Short decription for moderator action to remove a post"
+  },
+  "reorder": "Reorder",
+  "@reorder": {
+    "description": "Tooltip text for the list editor button"
   },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},

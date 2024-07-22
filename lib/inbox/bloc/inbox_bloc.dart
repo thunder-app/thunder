@@ -25,7 +25,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class InboxBloc extends Bloc<InboxEvent, InboxState> {
   /// Constructor allowing an initial set of replies to be set in the state.
-  InboxBloc.withReplies(List<CommentReplyView> replies) : super(InboxState(replies: replies)) {
+  InboxBloc.initWith({required List<CommentReplyView> replies, required bool showUnreadOnly}) : super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
     _init();
   }
 
