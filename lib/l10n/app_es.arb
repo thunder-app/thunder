@@ -2702,5 +2702,21 @@
   "subscriptionRequestSent": "Solicitud de suscripción enviada",
   "@subscriptionRequestSent": {
     "description": "Message for subscription request sent"
+  },
+  "anonymousInstances": "Instancias anónimas",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "noAnonymousInstances": "No se han añadido instancias anónimas",
+  "@noAnonymousInstances": {
+    "description": "Placeholder text when no anonymous instances have been added"
+  },
+  "reorder": "Reordenar",
+  "@reorder": {
+    "description": "Tooltip text for the list editor button"
+  },
+  "noAccountsAdded": "No se han añadido cuentas",
+  "@noAccountsAdded": {
+    "description": "Placeholder text when no accounts have been added"
   }
 }
