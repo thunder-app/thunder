@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:  
+        with:
           submodules: 'recursive'
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.x'
+          flutter-version: '3.22.x'
           channel: "stable"
           cache: true
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
@@ -29,7 +29,7 @@ jobs:
 
       - name: Dependencies
         run: flutter pub get
-      
+
       - name: Install arb_utils to check sorting of translations
         run: dart pub global activate arb_utils 0.6.0 # temporarily force version 0.6.0 to fix build errors
 
