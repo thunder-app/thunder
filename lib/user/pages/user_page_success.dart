@@ -28,8 +28,12 @@ import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/global_context.dart';
 
 List<Widget> userOptionTypes = <Widget>[
-  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
-  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
+  Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
+  Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
 ];
 
 class UserPageSuccess extends StatefulWidget {
@@ -74,7 +78,8 @@ class UserPageSuccess extends StatefulWidget {
   State<UserPageSuccess> createState() => _UserPageSuccessState();
 }
 
-class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderStateMixin {
+class _UserPageSuccessState extends State<UserPageSuccess>
+    with TickerProviderStateMixin {
   bool _displaySidebar = false;
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool hasScrolledToBottom = true;
@@ -100,7 +105,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent * 0.7) {
       context.read<UserBloc>().add(const GetUserEvent());
     }
   }
@@ -134,11 +140,16 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     }
                   },
                   child: widget.fullPersonView != null
-                      ? UserHeader(showUserSidebar: _displaySidebar, getPersonDetailsResponse: widget.fullPersonView!, onToggle: (value) => setState(() => _displaySidebar = value))
+                      ? UserHeader(
+                          showUserSidebar: _displaySidebar,
+                          getPersonDetailsResponse: widget.fullPersonView!,
+                          onToggle: (value) =>
+                              setState(() => _displaySidebar = value))
                       : const SizedBox(),
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -146,11 +157,13 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                         switchOutCurve: Curves.easeInOut,
                         switchInCurve: Curves.easeInOut,
                         duration: const Duration(milliseconds: 250),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
                           return SizeTransition(
                             axis: Axis.horizontal,
                             sizeFactor: animation,
-                            child: FadeTransition(opacity: animation, child: child),
+                            child: FadeTransition(
+                                opacity: animation, child: child),
                           );
                         },
                         child: !savedToggle!.value
@@ -160,14 +173,23 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 onPressed: (int index) {
                                   setState(() {
                                     // The button that is tapped is set to true, and the others to false.
-                                    for (int i = 0; i < _selectedUserOption!.length; i++) {
+                                    for (int i = 0;
+                                        i < _selectedUserOption!.length;
+                                        i++) {
                                       _selectedUserOption![i] = i == index;
                                     }
                                     selectedUserOption = index;
                                   });
                                 },
-                                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0.1))) - 12.0),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
+                                constraints: BoxConstraints.expand(
+                                    width: (MediaQuery.of(context).size.width /
+                                            (userOptionTypes.length +
+                                                (widget.isAccountUser
+                                                    ? 0.8
+                                                    : 0.1))) -
+                                        12.0),
                                 isSelected: _selectedUserOption!,
                                 children: userOptionTypes,
                               )
@@ -176,7 +198,9 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       if (widget.isAccountUser)
                         Expanded(
                           child: Padding(
-                            padding: savedToggle!.value ? const EdgeInsets.only(right: 8.0) : const EdgeInsets.only(left: 8.0),
+                            padding: savedToggle!.value
+                                ? const EdgeInsets.only(right: 8.0)
+                                : const EdgeInsets.only(left: 8.0),
                             child: TextButton(
                               onPressed: () {
                                 setState(() {
@@ -186,7 +210,9 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                   savedToggle!.value = !savedToggle!.value;
                                 });
                                 if (savedToggle!.value) {
-                                  context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
+                                  context.read<UserBloc>().add(
+                                      GetUserSavedEvent(
+                                          userId: widget.userId, reset: false));
                                 }
                               },
                               style: TextButton.styleFrom(
@@ -195,20 +221,25 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               ),
                               child: !savedToggle!.value
                                   ? Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         const SizedBox(width: 8.0),
-                                        Text(AppLocalizations.of(context)!.saved),
+                                        Text(AppLocalizations.of(context)!
+                                            .saved),
                                         const Icon(Icons.chevron_right),
                                       ],
                                     )
                                   : Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         const Icon(Icons.chevron_left),
                                         Text(
-                                          AppLocalizations.of(context)!.overview,
-                                          semanticsLabel: '${AppLocalizations.of(context)!.overview}, ${AppLocalizations.of(context)!.back}',
+                                          AppLocalizations.of(context)!
+                                              .overview,
+                                          semanticsLabel:
+                                              '${AppLocalizations.of(context)!.overview}, ${AppLocalizations.of(context)!.back}',
                                         ),
                                         const SizedBox(width: 8.0),
                                       ],
@@ -220,11 +251,13 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                         switchOutCurve: Curves.easeInOut,
                         switchInCurve: Curves.easeInOut,
                         duration: const Duration(milliseconds: 250),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
                           return SizeTransition(
                             axis: Axis.horizontal,
                             sizeFactor: animation,
-                            child: FadeTransition(opacity: animation, child: child),
+                            child: FadeTransition(
+                                opacity: animation, child: child),
                           );
                         },
                         child: savedToggle!.value
@@ -234,18 +267,30 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 onPressed: (int index) {
                                   setState(() {
                                     // The button that is tapped is set to true, and the others to false.
-                                    for (int i = 0; i < _selectedUserOption!.length; i++) {
+                                    for (int i = 0;
+                                        i < _selectedUserOption!.length;
+                                        i++) {
                                       _selectedUserOption![i] = i == index;
                                     }
 
                                     selectedUserOption = index;
                                   });
                                   if (index == 2) {
-                                    context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
+                                    context.read<UserBloc>().add(
+                                        GetUserSavedEvent(
+                                            userId: widget.userId,
+                                            reset: false));
                                   }
                                 },
-                                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0))) - 12.0),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
+                                constraints: BoxConstraints.expand(
+                                    width: (MediaQuery.of(context).size.width /
+                                            (userOptionTypes.length +
+                                                (widget.isAccountUser
+                                                    ? 0.8
+                                                    : 0))) -
+                                        12.0),
                                 isSelected: _selectedUserOption!,
                                 children: userOptionTypes,
                               )
@@ -260,11 +305,22 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       postViews: widget.postViews,
                       personId: widget.userId,
                       hasReachedEnd: widget.hasReachedPostEnd,
-                      onScrollEndReached: () => context.read<UserBloc>().add(const GetUserEvent()),
-                      onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
-                      onVoteAction: (int postId, int voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
-                      onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
-                      onHideAction: (int postId, bool hide) => context.read<UserBloc>().add(MarkUserPostAsHiddenEvent(postId: postId, hide: hide)),
+                      onScrollEndReached: () =>
+                          context.read<UserBloc>().add(const GetUserEvent()),
+                      onSaveAction: (int postId, bool save) => context
+                          .read<UserBloc>()
+                          .add(SavePostEvent(postId: postId, save: save)),
+                      onVoteAction: (int postId, int voteType) => context
+                          .read<UserBloc>()
+                          .add(VotePostEvent(postId: postId, score: voteType)),
+                      onToggleReadAction: (int postId, bool read) => context
+                          .read<UserBloc>()
+                          .add(MarkUserPostAsReadEvent(
+                              postId: postId, read: read)),
+                      onHideAction: (int postId, bool hide) => context
+                          .read<UserBloc>()
+                          .add(MarkUserPostAsHiddenEvent(
+                              postId: postId, hide: hide)),
                       indicateRead: !widget.isAccountUser,
                       feedType: FeedType.user,
                     ),
@@ -286,13 +342,22 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             ),
                           ),
                           CommentReference(
-                            comment: widget.commentViewTrees![index].commentView!,
-                            onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-                            onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-                            onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                            comment:
+                                widget.commentViewTrees![index].commentView!,
+                            onVoteAction: (int commentId, int voteType) =>
+                                context.read<UserBloc>().add(VoteCommentEvent(
+                                    commentId: commentId, score: voteType)),
+                            onSaveAction: (int commentId, bool save) => context
+                                .read<UserBloc>()
+                                .add(SaveCommentEvent(
+                                    commentId: commentId, save: save)),
+                            onDeleteAction: (int commentId, bool deleted) =>
+                                context.read<UserBloc>().add(DeleteCommentEvent(
+                                    deleted: deleted, commentId: commentId)),
                             onReportAction: (int commentId) {
                               if (widget.isAccountUser) {
-                                showSnackbar(AppLocalizations.of(context)!.cannotReportOwnComment);
+                                showSnackbar(AppLocalizations.of(context)!
+                                    .cannotReportOwnComment);
                               } else {
                                 showReportCommentActionBottomSheet(
                                   context,
@@ -300,7 +365,9 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 );
                               }
                             },
-                            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+                            onReplyEditAction:
+                                (CommentView commentView, bool isEdit) async =>
+                                    navigateToCreateCommentPage(
                               context,
                               commentView: isEdit ? commentView : null,
                               parentCommentView: isEdit ? null : commentView,
@@ -323,11 +390,23 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       postViews: widget.savedPostViews,
                       personId: widget.userId,
                       hasReachedEnd: widget.hasReachedSavedPostEnd,
-                      onScrollEndReached: () => context.read<UserBloc>().add(const GetUserSavedEvent()),
-                      onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
-                      onVoteAction: (int postId, int voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
-                      onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
-                      onHideAction: (int postId, bool hide) => context.read<UserBloc>().add(MarkUserPostAsHiddenEvent(postId: postId, hide: hide)),
+                      onScrollEndReached: () => context
+                          .read<UserBloc>()
+                          .add(const GetUserSavedEvent()),
+                      onSaveAction: (int postId, bool save) => context
+                          .read<UserBloc>()
+                          .add(SavePostEvent(postId: postId, save: save)),
+                      onVoteAction: (int postId, int voteType) => context
+                          .read<UserBloc>()
+                          .add(VotePostEvent(postId: postId, score: voteType)),
+                      onToggleReadAction: (int postId, bool read) => context
+                          .read<UserBloc>()
+                          .add(MarkUserPostAsReadEvent(
+                              postId: postId, read: read)),
+                      onHideAction: (int postId, bool hide) => context
+                          .read<UserBloc>()
+                          .add(MarkUserPostAsHiddenEvent(
+                              postId: postId, hide: hide)),
                       indicateRead: !widget.isAccountUser,
                       feedType: FeedType.user,
                     ),
@@ -350,12 +429,20 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           ),
                           CommentReference(
                             comment: widget.savedComments![index].commentView!,
-                            onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-                            onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-                            onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                            onVoteAction: (int commentId, int voteType) =>
+                                context.read<UserBloc>().add(VoteCommentEvent(
+                                    commentId: commentId, score: voteType)),
+                            onSaveAction: (int commentId, bool save) => context
+                                .read<UserBloc>()
+                                .add(SaveCommentEvent(
+                                    commentId: commentId, save: save)),
+                            onDeleteAction: (int commentId, bool deleted) =>
+                                context.read<UserBloc>().add(DeleteCommentEvent(
+                                    deleted: deleted, commentId: commentId)),
                             onReportAction: (int commentId) {
                               if (widget.isAccountUser) {
-                                showSnackbar(AppLocalizations.of(context)!.cannotReportOwnComment);
+                                showSnackbar(AppLocalizations.of(context)!
+                                    .cannotReportOwnComment);
                               } else {
                                 showReportCommentActionBottomSheet(
                                   context,
@@ -363,7 +450,9 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 );
                               }
                             },
-                            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+                            onReplyEditAction:
+                                (CommentView commentView, bool isEdit) async =>
+                                    navigateToCreateCommentPage(
                               context,
                               commentView: isEdit ? commentView : null,
                               parentCommentView: isEdit ? null : commentView,
@@ -374,7 +463,10 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 }
                               },
                             ),
-                            isOwnComment: widget.isAccountUser && widget.savedComments![index].commentView!.creator.id == currentUserId,
+                            isOwnComment: widget.isAccountUser &&
+                                widget.savedComments![index].commentView!
+                                        .creator.id ==
+                                    currentUserId,
                           ),
                         ],
                       ),
@@ -403,7 +495,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             },
                             child: UserHeader(
                               getPersonDetailsResponse: widget.fullPersonView!,
-                              onToggle: (value) => setState(() => _displaySidebar = value),
+                              onToggle: (value) =>
+                                  setState(() => _displaySidebar = value),
                               showUserSidebar: _displaySidebar,
                             ))
                         : null,
@@ -431,15 +524,20 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           switchOutCurve: Curves.easeOut,
                           transitionBuilder: (child, animation) {
                             return SlideTransition(
-                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                              position: Tween<Offset>(
+                                      begin: const Offset(1.2, 0),
+                                      end: const Offset(0, 0))
+                                  .animate(animation),
                               child: child,
                             );
                           },
                           duration: const Duration(milliseconds: 300),
                           child: _displaySidebar
                               ? UserSidebar(
-                                  getPersonDetailsResponse: widget.fullPersonView,
-                                  onDismiss: () => setState(() => _displaySidebar = false),
+                                  getPersonDetailsResponse:
+                                      widget.fullPersonView,
+                                  onDismiss: () =>
+                                      setState(() => _displaySidebar = false),
                                 )
                               : null,
                         ),
@@ -455,8 +553,10 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
     );
   }
 
-  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
-    final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
+  FutureOr<bool> _handleBack(
+      bool stopDefaultButtonEvent, RouteInfo info) async {
+    final bool topOfNavigationStack =
+        ModalRoute.of(context)?.isCurrent ?? false;
 
     if (topOfNavigationStack) {
       if (_displaySidebar) {

@@ -65,7 +65,9 @@ class ListOption<T> extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SmoothHighlight(
-      key: highlightedSetting == setting && setting != null ? highlightKey : null,
+      key: highlightedSetting == setting && setting != null
+          ? highlightKey
+          : null,
       useInitialHighLight: highlightedSetting == setting && setting != null,
       enabled: highlightedSetting == setting && setting != null,
       color: theme.colorScheme.primaryContainer,
@@ -93,7 +95,9 @@ class ListOption<T> extends StatelessWidget {
                         ),
                   );
                 },
-          onLongPress: disabled ? null : () => shareSetting(context, setting, description),
+          onLongPress: disabled
+              ? null
+              : () => shareSetting(context, setting, description),
           child: Padding(
             padding: const EdgeInsets.only(left: 4.0),
             child: Row(
@@ -104,13 +108,18 @@ class ListOption<T> extends StatelessWidget {
                     Icon(icon),
                     const SizedBox(width: 8.0),
                     ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 140),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(description, style: theme.textTheme.bodyMedium),
                           if (subtitleWidget != null) subtitleWidget!,
-                          if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+                          if (subtitle != null)
+                            Text(subtitle!,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.textTheme.bodySmall?.color
+                                        ?.withOpacity(0.8))),
                         ],
                       ),
                     ),
@@ -121,17 +130,25 @@ class ListOption<T> extends StatelessWidget {
                     valueDisplay ??
                         Text(
                           value.capitalizeLabel
-                              ? value.label.capitalize.replaceAll('_', '').replaceAll(' ', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
+                              ? value.label.capitalize
+                                  .replaceAll('_', '')
+                                  .replaceAll(' ', '')
+                                  .replaceAllMapped(RegExp(r'([A-Z])'),
+                                      (match) {
                                   return ' ${match.group(0)}';
                                 })
                               : value.label,
                           style: theme.textTheme.titleSmall?.copyWith(
-                            color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
+                            color: disabled
+                                ? theme.colorScheme.onSurface.withOpacity(0.5)
+                                : theme.colorScheme.onSurface,
                           ),
                         ),
                     Icon(
                       Icons.chevron_right_rounded,
-                      color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : null,
+                      color: disabled
+                          ? theme.colorScheme.onSurface.withOpacity(0.5)
+                          : null,
                     ),
                     const SizedBox(
                       height: 42.0,

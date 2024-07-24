@@ -26,7 +26,12 @@ class LoginAttempt extends AuthEvent {
   final String totp;
   final bool showContentWarning;
 
-  const LoginAttempt({required this.username, required this.password, required this.instance, this.totp = "", this.showContentWarning = true});
+  const LoginAttempt(
+      {required this.username,
+      required this.password,
+      required this.instance,
+      this.totp = "",
+      this.showContentWarning = true});
 }
 
 /// Cancels a login attempt by emitting the `failure` state.

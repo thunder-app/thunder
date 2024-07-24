@@ -5,7 +5,11 @@ class SearchActionChip extends StatelessWidget {
   final void Function()? onPressed;
   final Color? backgroundColor;
 
-  const SearchActionChip({super.key, required this.children, this.onPressed, this.backgroundColor});
+  const SearchActionChip(
+      {super.key,
+      required this.children,
+      this.onPressed,
+      this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {

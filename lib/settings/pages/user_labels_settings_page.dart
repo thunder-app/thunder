@@ -21,7 +21,8 @@ class UserLabelSettingsPage extends StatefulWidget {
   State<UserLabelSettingsPage> createState() => _UserLabelSettingsPageState();
 }
 
-class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with SingleTickerProviderStateMixin {
+class _UserLabelSettingsPageState extends State<UserLabelSettingsPage>
+    with SingleTickerProviderStateMixin {
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
@@ -30,17 +31,20 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
   void _updateChangedUserLabel(({UserLabel? userLabel, bool deleted}) result) {
     if (result.userLabel == null) return;
 
-    UserLabel? existingLabel = userLabels.firstWhereOrNull((userLabel) => userLabel.username == result.userLabel!.username);
+    UserLabel? existingLabel = userLabels.firstWhereOrNull(
+        (userLabel) => userLabel.username == result.userLabel!.username);
     if (existingLabel == null && !result.deleted) {
       // It doesn't exist in our list yet, add it!
       setState(() => userLabels.add(result.userLabel!));
     } else if (existingLabel != null) {
       if (result.deleted) {
         // It exists in our list and was deleted, so remove it.
-        setState(() => userLabels.removeWhere((userLabel) => userLabel.username == result.userLabel!.username));
+        setState(() => userLabels.removeWhere(
+            (userLabel) => userLabel.username == result.userLabel!.username));
       } else {
         // It exists in our list but was changed, so update it.
-        setState(() => userLabels[userLabels.indexOf(existingLabel)] = result.userLabel!);
+        setState(() =>
+            userLabels[userLabels.indexOf(existingLabel)] = result.userLabel!);
       }
     }
   }
@@ -90,7 +94,11 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
             title: l10n.username,
             onUserSelected: (personView) async {
               // Then show the label editor
-              ({UserLabel? userLabel, bool deleted}) result = await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(personView.person.name, personView.person.actorId));
+              ({UserLabel? userLabel, bool deleted}) result =
+                  await showUserLabelEditorDialog(
+                      context,
+                      UserLabel.usernameFromParts(
+                          personView.person.name, personView.person.actorId));
               _updateChangedUserLabel(result);
             },
           );
@@ -118,12 +126,16 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
           ),
           SliverToBoxAdapter(
             child: SmoothHighlight(
-              key: settingToHighlight == LocalSettings.userLabels ? settingToHighlightKey : null,
-              useInitialHighLight: settingToHighlight == LocalSettings.userLabels,
+              key: settingToHighlight == LocalSettings.userLabels
+                  ? settingToHighlightKey
+                  : null,
+              useInitialHighLight:
+                  settingToHighlight == LocalSettings.userLabels,
               enabled: settingToHighlight == LocalSettings.userLabels,
               color: theme.colorScheme.primaryContainer,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -142,7 +154,8 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                       child: Text(
                         l10n.noUserLabels,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                          color: theme.textTheme.bodyMedium?.color
+                              ?.withOpacity(0.8),
                         ),
                       ),
                     )
@@ -153,12 +166,17 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                       itemCount: userLabels.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
+                          contentPadding: const EdgeInsetsDirectional.only(
+                              start: 16.0, end: 12.0),
                           title: UserFullNameWidget(
                             context,
-                            UserLabel.partsFromUsername(userLabels[index].username).username,
+                            UserLabel.partsFromUsername(
+                                    userLabels[index].username)
+                                .username,
                             null,
-                            UserLabel.partsFromUsername(userLabels[index].username).instance,
+                            UserLabel.partsFromUsername(
+                                    userLabels[index].username)
+                                .instance,
                             textStyle: theme.textTheme.bodyLarge,
                           ),
                           subtitle: Text(userLabels[index].label),
@@ -171,9 +189,11 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                                 context: context,
                                 title: l10n.confirm,
                                 contentText: l10n.deleteUserLabelConfirmation,
-                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                onSecondaryButtonPressed: (dialogContext) =>
+                                    Navigator.of(dialogContext).pop(),
                                 secondaryButtonText: l10n.cancel,
-                                onPrimaryButtonPressed: (dialogContext, _) async {
+                                onPrimaryButtonPressed:
+                                    (dialogContext, _) async {
                                   Navigator.of(dialogContext).pop();
                                   result = true;
                                 },
@@ -181,13 +201,19 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                               );
 
                               if (result) {
-                                UserLabel.deleteUserLabel(userLabels[index].username);
-                                _updateChangedUserLabel((userLabel: userLabels[index], deleted: true));
+                                UserLabel.deleteUserLabel(
+                                    userLabels[index].username);
+                                _updateChangedUserLabel((
+                                  userLabel: userLabels[index],
+                                  deleted: true
+                                ));
                               }
                             },
                           ),
                           onTap: () async {
-                            ({bool deleted, UserLabel? userLabel}) result = await showUserLabelEditorDialog(context, userLabels[index].username);
+                            ({bool deleted, UserLabel? userLabel}) result =
+                                await showUserLabelEditorDialog(
+                                    context, userLabels[index].username);
                             _updateChangedUserLabel(result);
                           },
                         );

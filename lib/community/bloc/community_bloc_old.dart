@@ -26,7 +26,8 @@ const throttleDuration = Duration(milliseconds: 300);
 const timeout = Duration(seconds: 5);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) =>
+      droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
@@ -41,11 +42,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     );
     on<VotePostEvent>(
       _votePostEvent,
-      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
+      transformer:
+          throttleDroppable(Duration.zero), // Don't give a throttle on vote
     );
     on<SavePostEvent>(
       _savePostEvent,
-      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
+      transformer:
+          throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
     on<ForceRefreshEvent>(
       _forceRefreshEvent,
@@ -69,40 +72,69 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     );
     on<DismissReadEvent>(
       _dismissReadEvent,
-      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on dismiss read
+      transformer: throttleDroppable(
+          Duration.zero), // Don't give a throttle on dismiss read
     );
   }
 
-  Future<void> _updatePostEvent(UpdatePostEvent event, Emitter<CommunityState> emit) async {
-    emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
+  Future<void> _updatePostEvent(
+      UpdatePostEvent event, Emitter<CommunityState> emit) async {
+    emit(state.copyWith(
+        status: CommunityStatus.refreshing,
+        communityId: state.communityId,
+        listingType: state.listingType));
 
-    List<PostViewMedia> updatedPostViews = state.postViews!.map((communityPostView) {
-      if (communityPostView.postView.post.id == event.postViewMedia.postView.post.id) {
+    List<PostViewMedia> updatedPostViews =
+        state.postViews!.map((communityPostView) {
+      if (communityPostView.postView.post.id ==
+          event.postViewMedia.postView.post.id) {
         return event.postViewMedia;
       } else {
         return communityPostView;
       }
     }).toList();
 
-    emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType, postViews: updatedPostViews));
+    emit(state.copyWith(
+        status: CommunityStatus.success,
+        communityId: state.communityId,
+        listingType: state.listingType,
+        postViews: updatedPostViews));
   }
 
-  Future<void> _forceRefreshEvent(ForceRefreshEvent event, Emitter<CommunityState> emit) async {
-    emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
-    emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
+  Future<void> _forceRefreshEvent(
+      ForceRefreshEvent event, Emitter<CommunityState> emit) async {
+    emit(state.copyWith(
+        status: CommunityStatus.refreshing,
+        communityId: state.communityId,
+        listingType: state.listingType));
+    emit(state.copyWith(
+        status: CommunityStatus.success,
+        communityId: state.communityId,
+        listingType: state.listingType));
   }
 
-  Future<void> _markPostAsReadEvent(MarkPostAsReadEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _markPostAsReadEvent(
+      MarkPostAsReadEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
+      emit(state.copyWith(
+          status: CommunityStatus.refreshing,
+          communityId: state.communityId,
+          listingType: state.listingType));
 
       bool success = await markPostAsRead(event.postId, event.read);
 
       // Find the specific post to update
-      int existingPostViewIndex = state.postViews!.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
-      if (success) state.postViews![existingPostViewIndex].postView = state.postViews![existingPostViewIndex].postView.copyWith(read: event.read);
+      int existingPostViewIndex = state.postViews!.indexWhere(
+          (postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      if (success)
+        state.postViews![existingPostViewIndex].postView = state
+            .postViews![existingPostViewIndex].postView
+            .copyWith(read: event.read);
 
-      return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
+      return emit(state.copyWith(
+          status: CommunityStatus.success,
+          communityId: state.communityId,
+          listingType: state.listingType));
     } catch (e) {
       return emit(state.copyWith(
         status: CommunityStatus.failure,
@@ -114,24 +146,38 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
   }
 
-  Future<void> _votePostEvent(VotePostEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _votePostEvent(
+      VotePostEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
+      emit(state.copyWith(
+          status: CommunityStatus.refreshing,
+          communityId: state.communityId,
+          listingType: state.listingType));
 
       // Optimistically update the post
-      int existingPostViewIndex = state.postViews!.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      int existingPostViewIndex = state.postViews!.indexWhere(
+          (postViewMedia) => postViewMedia.postView.post.id == event.postId);
       PostViewMedia postViewMedia = state.postViews![existingPostViewIndex];
 
-      PostView originalPostView = state.postViews![existingPostViewIndex].postView;
+      PostView originalPostView =
+          state.postViews![existingPostViewIndex].postView;
 
-      PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
+      PostView updatedPostView =
+          optimisticallyVotePost(postViewMedia, event.score);
       state.postViews![existingPostViewIndex].postView = updatedPostView;
 
       // Immediately set the status, and continue
-      emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
-      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
+      emit(state.copyWith(
+          status: CommunityStatus.success,
+          communityId: state.communityId,
+          listingType: state.listingType));
+      emit(state.copyWith(
+          status: CommunityStatus.refreshing,
+          communityId: state.communityId,
+          listingType: state.listingType));
 
-      PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
+      PostView postView = await votePost(event.postId, event.score)
+          .timeout(timeout, onTimeout: () {
         state.postViews![existingPostViewIndex].postView = originalPostView;
         throw Exception('Error: Timeout when attempting to vote post');
       });
@@ -139,7 +185,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       // Find the specific post to update
       state.postViews![existingPostViewIndex].postView = postView;
 
-      return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
+      return emit(state.copyWith(
+          status: CommunityStatus.success,
+          communityId: state.communityId,
+          listingType: state.listingType));
     } catch (e) {
       return emit(state.copyWith(
         status: CommunityStatus.failure,
@@ -151,17 +200,27 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
   }
 
-  Future<void> _savePostEvent(SavePostEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _savePostEvent(
+      SavePostEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+      emit(state.copyWith(
+          status: CommunityStatus.refreshing,
+          communityId: state.communityId,
+          listingType: state.listingType,
+          communityName: state.communityName));
 
       PostView postView = await savePost(event.postId, event.save);
 
       // Find the specific post to update
-      int existingPostViewIndex = state.postViews!.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      int existingPostViewIndex = state.postViews!.indexWhere(
+          (postViewMedia) => postViewMedia.postView.post.id == event.postId);
       state.postViews![existingPostViewIndex].postView = postView;
 
-      return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+      return emit(state.copyWith(
+          status: CommunityStatus.success,
+          communityId: state.communityId,
+          listingType: state.listingType,
+          communityName: state.communityName));
     } catch (e) {
       return emit(state.copyWith(
         status: CommunityStatus.failure,
@@ -173,18 +232,24 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
   }
 
-  Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _getCommunityPostsEvent(
+      GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
     int limit = 10;
 
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    SharedPreferences prefs =
+        (await UserPreferences.instance).sharedPreferences;
 
     ListingType defaultListingType;
     SortType defaultSortType;
     bool tabletMode;
 
     try {
-      defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
-      defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
+      defaultListingType = ListingType.values.byName(
+          prefs.getString(LocalSettings.defaultFeedListingType.name) ??
+              DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(
+          prefs.getString(LocalSettings.defaultFeedSortType.name) ??
+              DEFAULT_SORT_TYPE.name);
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
     } catch (e) {
       defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
@@ -202,8 +267,12 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
         int? communityId = event.communityId;
         String? communityName = event.communityName;
-        ListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
-        SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+        ListingType? listingType =
+            (communityId != null || communityName != null)
+                ? null
+                : (event.listingType ?? defaultListingType);
+        SortType sortType =
+            event.sortType ?? (state.sortType ?? defaultSortType);
 
         // Fetch community's information
         SubscribedType? subscribedType;
@@ -231,14 +300,16 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             limit: limit,
             sort: sortType,
             type: listingType,
-            communityId: communityId ?? getCommunityResponse?.communityView.community.id,
+            communityId:
+                communityId ?? getCommunityResponse?.communityView.community.id,
             communityName: event.communityName,
           ));
 
           currentPage++;
 
           // Parse the posts and add in media information which is used elsewhere in the app
-          List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
+          List<PostViewMedia> formattedPosts =
+              await parsePostViews(getPostsResponse.posts);
           posts.addAll(formattedPosts);
 
           for (PostViewMedia post in formattedPosts) {
@@ -246,7 +317,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           }
 
           // Fetch any taglines from the instance
-          GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
+          GetSiteResponse getSiteResponse =
+              await lemmy.run(GetSite(auth: account?.jwt));
 
           emit(
             state.copyWith(
@@ -257,28 +329,47 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               listingType: listingType,
               communityId: communityId,
               communityName: event.communityName,
-              hasReachedEnd: getPostsResponse.posts.isEmpty || getPostsResponse.posts.length < limit,
+              hasReachedEnd: getPostsResponse.posts.isEmpty ||
+                  getPostsResponse.posts.length < limit,
               subscribedType: subscribedType,
               sortType: sortType,
               communityInfo: getCommunityResponse?.communityView,
-              tagline: getSiteResponse.taglines.isEmpty ? '' : getSiteResponse.taglines[Random().nextInt(getSiteResponse.taglines.length)].content,
+              tagline: getSiteResponse.taglines.isEmpty
+                  ? ''
+                  : getSiteResponse
+                      .taglines[
+                          Random().nextInt(getSiteResponse.taglines.length)]
+                      .content,
             ),
           );
-        } while (tabletMode && posts.length < limit && currentPage <= 2); // Fetch two batches
+        } while (tabletMode &&
+            posts.length < limit &&
+            currentPage <= 2); // Fetch two batches
 
         return;
       } else {
         if (state.hasReachedEnd) {
           // Stop extra requests if we've reached the end
-          emit(state.copyWith(status: CommunityStatus.success, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+          emit(state.copyWith(
+              status: CommunityStatus.success,
+              listingType: state.listingType,
+              communityId: state.communityId,
+              communityName: state.communityName));
           return;
         }
 
-        emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+        emit(state.copyWith(
+            status: CommunityStatus.refreshing,
+            listingType: state.listingType,
+            communityId: state.communityId,
+            communityName: state.communityName));
 
         int? communityId = event.communityId ?? state.communityId;
-        ListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
-        SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+        ListingType? listingType = (communityId != null)
+            ? null
+            : (event.listingType ?? state.listingType);
+        SortType sortType =
+            event.sortType ?? (state.sortType ?? defaultSortType);
 
         // Fetch more posts from the community
         List<PostViewMedia> posts = List.from(state.postViews ?? []);
@@ -298,7 +389,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           currentPage++;
 
           // Parse the posts, and append them to the existing list
-          List<PostViewMedia> postMedias = await parsePostViews(getPostsResponse.posts);
+          List<PostViewMedia> postMedias =
+              await parsePostViews(getPostsResponse.posts);
 
           Set<int> postIds = Set.from(state.postIds ?? {});
 
@@ -320,23 +412,37 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               communityId: communityId,
               communityName: state.communityName,
               listingType: listingType,
-              hasReachedEnd: postMedias.isEmpty || state.postIds!.length == postIds.length,
+              hasReachedEnd:
+                  postMedias.isEmpty || state.postIds!.length == postIds.length,
               subscribedType: state.subscribedType,
               sortType: sortType,
             ),
           );
-        } while (tabletMode && posts.length < limit && currentPage <= state.page + 2); // Fetch two batches
+        } while (tabletMode &&
+            posts.length < limit &&
+            currentPage <= state.page + 2); // Fetch two batches
 
         return;
       }
     } catch (e) {
-      emit(state.copyWith(status: CommunityStatus.failureLoadingPosts, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+      emit(state.copyWith(
+          status: CommunityStatus.failureLoadingPosts,
+          errorMessage: e.toString(),
+          listingType: state.listingType,
+          communityId: state.communityId,
+          communityName: state.communityName));
     }
   }
 
-  Future<void> _changeCommunitySubsciptionStatusEvent(ChangeCommunitySubsciptionStatusEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _changeCommunitySubsciptionStatusEvent(
+      ChangeCommunitySubsciptionStatusEvent event,
+      Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+      emit(state.copyWith(
+          status: CommunityStatus.refreshing,
+          communityId: state.communityId,
+          listingType: state.listingType,
+          communityName: state.communityName));
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -385,9 +491,14 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
   }
 
-  Future<void> _createPostEvent(CreatePostEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _createPostEvent(
+      CreatePostEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+      emit(state.copyWith(
+          status: CommunityStatus.refreshing,
+          communityId: state.communityId,
+          listingType: state.listingType,
+          communityName: state.communityName));
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -414,7 +525,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      PostResponse postResponse = await lemmy.run(CreatePost(auth: account!.jwt!, communityId: state.communityId!, name: event.name, body: event.body, url: event.url, nsfw: event.nsfw));
+      PostResponse postResponse = await lemmy.run(CreatePost(
+          auth: account!.jwt!,
+          communityId: state.communityId!,
+          name: event.name,
+          body: event.body,
+          url: event.url,
+          nsfw: event.nsfw));
 
       // Parse the posts, and append them to the existing list
       List<PostViewMedia> posts = await parsePostViews([postResponse.postView]);
@@ -432,7 +549,9 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,
-          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString(),
+          errorMessage: e is LemmyApiException
+              ? getErrorMessage(GlobalContext.context, e.message)
+              : e.toString(),
           communityId: state.communityId,
           listingType: state.listingType,
         ),
@@ -440,9 +559,14 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
   }
 
-  Future<void> _blockCommunityEvent(BlockCommunityEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _blockCommunityEvent(
+      BlockCommunityEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+      emit(state.copyWith(
+          status: CommunityStatus.refreshing,
+          communityId: state.communityId,
+          listingType: state.listingType,
+          communityName: state.communityName));
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -458,7 +582,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      BlockCommunityResponse blockCommunityResponse = await lemmy.run(BlockCommunity(
+      BlockCommunityResponse blockCommunityResponse =
+          await lemmy.run(BlockCommunity(
         auth: account!.jwt!,
         communityId: event.communityId,
         block: event.block,
@@ -483,13 +608,15 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
   }
 
-  Future<void> _dismissReadEvent(DismissReadEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _dismissReadEvent(
+      DismissReadEvent event, Emitter<CommunityState> emit) async {
     // Take existing post list, and remove read entries, then emit, I think
 
     try {
       return;
     } catch (e) {
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(
+          status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }
 }

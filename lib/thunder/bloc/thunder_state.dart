@@ -38,14 +38,18 @@ class ThunderState extends Equatable {
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
     this.userFullNameUserNameThickness = NameThickness.normal,
-    this.userFullNameUserNameColor = const NameColor.fromString(color: NameColor.defaultColor),
+    this.userFullNameUserNameColor =
+        const NameColor.fromString(color: NameColor.defaultColor),
     this.userFullNameInstanceNameThickness = NameThickness.light,
-    this.userFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor),
+    this.userFullNameInstanceNameColor =
+        const NameColor.fromString(color: NameColor.defaultColor),
     this.communitySeparator = FullNameSeparator.dot,
     this.communityFullNameCommunityNameThickness = NameThickness.normal,
-    this.communityFullNameCommunityNameColor = const NameColor.fromString(color: NameColor.defaultColor),
+    this.communityFullNameCommunityNameColor =
+        const NameColor.fromString(color: NameColor.defaultColor),
     this.communityFullNameInstanceNameThickness = NameThickness.light,
-    this.communityFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor),
+    this.communityFullNameInstanceNameColor =
+        const NameColor.fromString(color: NameColor.defaultColor),
     this.imageCachingMode = ImageCachingMode.relaxed,
     this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
@@ -124,10 +128,13 @@ class ThunderState extends Equatable {
     this.useMaterialYouTheme = false,
 
     // Color Settings
-    this.upvoteColor = const ActionColor.fromString(colorRaw: ActionColor.orange),
-    this.downvoteColor = const ActionColor.fromString(colorRaw: ActionColor.blue),
+    this.upvoteColor =
+        const ActionColor.fromString(colorRaw: ActionColor.orange),
+    this.downvoteColor =
+        const ActionColor.fromString(colorRaw: ActionColor.blue),
     this.saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple),
-    this.markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal),
+    this.markReadColor =
+        const ActionColor.fromString(colorRaw: ActionColor.teal),
     this.replyColor = const ActionColor.fromString(colorRaw: ActionColor.green),
     this.hideColor = const ActionColor.fromString(colorRaw: ActionColor.red),
 
@@ -184,7 +191,10 @@ class ThunderState extends Equatable {
   // Default Listing/Sort Settings
   final ListingType defaultListingType;
   final SortType defaultSortType;
-  SortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType) ? defaultSortType : DEFAULT_SORT_TYPE;
+  SortType get sortTypeForInstance =>
+      LemmyClient.instance.supportsSortType(defaultSortType)
+          ? defaultSortType
+          : DEFAULT_SORT_TYPE;
   final bool useProfilePictureForDrawer;
 
   // NSFW Settings
@@ -535,7 +545,8 @@ class ThunderState extends Equatable {
       /// Default Listing/Sort Settings
       defaultListingType: defaultListingType ?? this.defaultListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
-      useProfilePictureForDrawer: useProfilePictureForDrawer ?? this.useProfilePictureForDrawer,
+      useProfilePictureForDrawer:
+          useProfilePictureForDrawer ?? this.useProfilePictureForDrawer,
 
       // NSFW Settings
       hideNsfwPosts: hideNsfwPosts ?? this.hideNsfwPosts,
@@ -545,29 +556,46 @@ class ThunderState extends Equatable {
       tabletMode: tabletMode ?? this.tabletMode,
 
       // General Settings
-      scrapeMissingPreviews: scrapeMissingPreviews ?? this.scrapeMissingPreviews,
+      scrapeMissingPreviews:
+          scrapeMissingPreviews ?? this.scrapeMissingPreviews,
       browserMode: browserMode ?? this.browserMode,
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
-      useDisplayNamesForUsers: useDisplayNamesForUsers ?? this.useDisplayNamesForUsers,
-      useDisplayNamesForCommunities: useDisplayNamesForCommunities ?? this.useDisplayNamesForCommunities,
-      markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+      useDisplayNamesForUsers:
+          useDisplayNamesForUsers ?? this.useDisplayNamesForUsers,
+      useDisplayNamesForCommunities:
+          useDisplayNamesForCommunities ?? this.useDisplayNamesForCommunities,
+      markPostReadOnMediaView:
+          markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       markPostReadOnScroll: markPostReadOnScroll ?? this.markPostReadOnScroll,
       disableFeedFab: disableFeedFab,
-      showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
+      showInAppUpdateNotification:
+          showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       showUpdateChangelogs: showUpdateChangelogs ?? this.showUpdateChangelogs,
-      inboxNotificationType: inboxNotificationType ?? this.inboxNotificationType,
+      inboxNotificationType:
+          inboxNotificationType ?? this.inboxNotificationType,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
-      userFullNameUserNameThickness: userFullNameUserNameThickness ?? this.userFullNameUserNameThickness,
-      userFullNameUserNameColor: userFullNameUserNameColor ?? this.userFullNameUserNameColor,
-      userFullNameInstanceNameThickness: userFullNameInstanceNameThickness ?? this.userFullNameInstanceNameThickness,
-      userFullNameInstanceNameColor: userFullNameInstanceNameColor ?? this.userFullNameInstanceNameColor,
+      userFullNameUserNameThickness:
+          userFullNameUserNameThickness ?? this.userFullNameUserNameThickness,
+      userFullNameUserNameColor:
+          userFullNameUserNameColor ?? this.userFullNameUserNameColor,
+      userFullNameInstanceNameThickness: userFullNameInstanceNameThickness ??
+          this.userFullNameInstanceNameThickness,
+      userFullNameInstanceNameColor:
+          userFullNameInstanceNameColor ?? this.userFullNameInstanceNameColor,
       communitySeparator: communitySeparator ?? this.communitySeparator,
-      communityFullNameCommunityNameThickness: communityFullNameCommunityNameThickness ?? this.communityFullNameCommunityNameThickness,
-      communityFullNameCommunityNameColor: communityFullNameCommunityNameColor ?? this.communityFullNameCommunityNameColor,
-      communityFullNameInstanceNameThickness: communityFullNameInstanceNameThickness ?? this.communityFullNameInstanceNameThickness,
-      communityFullNameInstanceNameColor: communityFullNameInstanceNameColor ?? this.communityFullNameInstanceNameColor,
+      communityFullNameCommunityNameThickness:
+          communityFullNameCommunityNameThickness ??
+              this.communityFullNameCommunityNameThickness,
+      communityFullNameCommunityNameColor:
+          communityFullNameCommunityNameColor ??
+              this.communityFullNameCommunityNameColor,
+      communityFullNameInstanceNameThickness:
+          communityFullNameInstanceNameThickness ??
+              this.communityFullNameInstanceNameThickness,
+      communityFullNameInstanceNameColor: communityFullNameInstanceNameColor ??
+          this.communityFullNameInstanceNameColor,
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
       showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
@@ -578,9 +606,12 @@ class ThunderState extends Equatable {
       useCompactView: useCompactView ?? this.useCompactView,
       showTitleFirst: showTitleFirst ?? this.showTitleFirst,
       hideThumbnails: hideThumbnails ?? this.hideThumbnails,
-      showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
-      showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
-      tappableAuthorCommunity: tappableAuthorCommunity ?? this.tappableAuthorCommunity,
+      showThumbnailPreviewOnRight:
+          showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
+      showTextPostIndicator:
+          showTextPostIndicator ?? this.showTextPostIndicator,
+      tappableAuthorCommunity:
+          tappableAuthorCommunity ?? this.tappableAuthorCommunity,
 
       // General Settings
       showVoteActions: showVoteActions ?? this.showVoteActions,
@@ -594,17 +625,23 @@ class ThunderState extends Equatable {
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
       showFullPostDate: showFullPostDate ?? this.showFullPostDate,
       dateFormat: dateFormat ?? this.dateFormat,
-      feedCardDividerThickness: feedCardDividerThickness ?? this.feedCardDividerThickness,
+      feedCardDividerThickness:
+          feedCardDividerThickness ?? this.feedCardDividerThickness,
       feedCardDividerColor: feedCardDividerColor ?? this.feedCardDividerColor,
-      compactPostCardMetadataItems: compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
-      cardPostCardMetadataItems: cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
+      compactPostCardMetadataItems:
+          compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
+      cardPostCardMetadataItems:
+          cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
 
       // Post body settings
       showCrossPosts: showCrossPosts ?? this.showCrossPosts,
       postBodyViewType: postBodyViewType ?? this.postBodyViewType,
-      postBodyShowUserInstance: postBodyShowUserInstance ?? this.postBodyShowUserInstance,
-      postBodyShowCommunityInstance: postBodyShowCommunityInstance ?? this.postBodyShowCommunityInstance,
-      postBodyShowCommunityAvatar: postBodyShowCommunityAvatar ?? this.postBodyShowCommunityAvatar,
+      postBodyShowUserInstance:
+          postBodyShowUserInstance ?? this.postBodyShowUserInstance,
+      postBodyShowCommunityInstance:
+          postBodyShowCommunityInstance ?? this.postBodyShowCommunityInstance,
+      postBodyShowCommunityAvatar:
+          postBodyShowCommunityAvatar ?? this.postBodyShowCommunityAvatar,
 
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
@@ -612,14 +649,21 @@ class ThunderState extends Equatable {
       disablePostFabs: disablePostFabs,
 
       // Comment Related Settings
-      defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
-      collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
-      showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
-      commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
-      commentShowUserAvatar: commentShowUserAvatar ?? this.commentShowUserAvatar,
+      defaultCommentSortType:
+          defaultCommentSortType ?? this.defaultCommentSortType,
+      collapseParentCommentOnGesture:
+          collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
+      showCommentButtonActions:
+          showCommentButtonActions ?? this.showCommentButtonActions,
+      commentShowUserInstance:
+          commentShowUserInstance ?? this.commentShowUserInstance,
+      commentShowUserAvatar:
+          commentShowUserAvatar ?? this.commentShowUserAvatar,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
-      nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
-      nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
+      nestedCommentIndicatorStyle:
+          nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
+      nestedCommentIndicatorColor:
+          nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
       /// -------------------------- Theme Related Settings --------------------------
       // Theme Settings
@@ -639,28 +683,42 @@ class ThunderState extends Equatable {
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
       contentFontSizeScale: contentFontSizeScale ?? this.contentFontSizeScale,
       commentFontSizeScale: commentFontSizeScale ?? this.commentFontSizeScale,
-      metadataFontSizeScale: metadataFontSizeScale ?? this.metadataFontSizeScale,
+      metadataFontSizeScale:
+          metadataFontSizeScale ?? this.metadataFontSizeScale,
 
       /// -------------------------- Gesture Related Settings --------------------------
       // Sidebar Gesture Settings
-      bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
-      bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
+      bottomNavBarSwipeGestures:
+          bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
+      bottomNavBarDoubleTapGestures:
+          bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
 
       // Post Gestures
       enablePostGestures: enablePostGestures ?? this.enablePostGestures,
-      leftPrimaryPostGesture: leftPrimaryPostGesture ?? this.leftPrimaryPostGesture,
-      leftSecondaryPostGesture: leftSecondaryPostGesture ?? this.leftSecondaryPostGesture,
-      rightPrimaryPostGesture: rightPrimaryPostGesture ?? this.rightPrimaryPostGesture,
-      rightSecondaryPostGesture: rightSecondaryPostGesture ?? this.rightSecondaryPostGesture,
+      leftPrimaryPostGesture:
+          leftPrimaryPostGesture ?? this.leftPrimaryPostGesture,
+      leftSecondaryPostGesture:
+          leftSecondaryPostGesture ?? this.leftSecondaryPostGesture,
+      rightPrimaryPostGesture:
+          rightPrimaryPostGesture ?? this.rightPrimaryPostGesture,
+      rightSecondaryPostGesture:
+          rightSecondaryPostGesture ?? this.rightSecondaryPostGesture,
 
-      enableFullScreenSwipeNavigationGesture: enableFullScreenSwipeNavigationGesture ?? this.enableFullScreenSwipeNavigationGesture,
+      enableFullScreenSwipeNavigationGesture:
+          enableFullScreenSwipeNavigationGesture ??
+              this.enableFullScreenSwipeNavigationGesture,
 
       // Comment Gestures
-      enableCommentGestures: enableCommentGestures ?? this.enableCommentGestures,
-      leftPrimaryCommentGesture: leftPrimaryCommentGesture ?? this.leftPrimaryCommentGesture,
-      leftSecondaryCommentGesture: leftSecondaryCommentGesture ?? this.leftSecondaryCommentGesture,
-      rightPrimaryCommentGesture: rightPrimaryCommentGesture ?? this.rightPrimaryCommentGesture,
-      rightSecondaryCommentGesture: rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
+      enableCommentGestures:
+          enableCommentGestures ?? this.enableCommentGestures,
+      leftPrimaryCommentGesture:
+          leftPrimaryCommentGesture ?? this.leftPrimaryCommentGesture,
+      leftSecondaryCommentGesture:
+          leftSecondaryCommentGesture ?? this.leftSecondaryCommentGesture,
+      rightPrimaryCommentGesture:
+          rightPrimaryCommentGesture ?? this.rightPrimaryCommentGesture,
+      rightSecondaryCommentGesture:
+          rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
 
       /// -------------------------- FAB Related Settings --------------------------
       enableFeedsFab: enableFeedsFab ?? this.enableFeedsFab,
@@ -672,17 +730,25 @@ class ThunderState extends Equatable {
       enableDismissRead: enableDismissRead ?? this.enableDismissRead,
       enableChangeSort: enableChangeSort ?? this.enableChangeSort,
       enableNewPost: enableNewPost ?? this.enableNewPost,
-      postFabEnableBackToTop: postFabEnableBackToTop ?? this.postFabEnableBackToTop,
-      postFabEnableChangeSort: postFabEnableChangeSort ?? this.postFabEnableChangeSort,
-      postFabEnableReplyToPost: postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
+      postFabEnableBackToTop:
+          postFabEnableBackToTop ?? this.postFabEnableBackToTop,
+      postFabEnableChangeSort:
+          postFabEnableChangeSort ?? this.postFabEnableChangeSort,
+      postFabEnableReplyToPost:
+          postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
       postFabEnableRefresh: postFabEnableRefresh ?? this.postFabEnableRefresh,
       postFabEnableSearch: postFabEnableSearch ?? this.postFabEnableSearch,
-      feedFabSinglePressAction: feedFabSinglePressAction ?? this.feedFabSinglePressAction,
-      feedFabLongPressAction: feedFabLongPressAction ?? this.feedFabLongPressAction,
-      postFabSinglePressAction: postFabSinglePressAction ?? this.postFabSinglePressAction,
-      postFabLongPressAction: postFabLongPressAction ?? this.postFabLongPressAction,
+      feedFabSinglePressAction:
+          feedFabSinglePressAction ?? this.feedFabSinglePressAction,
+      feedFabLongPressAction:
+          feedFabLongPressAction ?? this.feedFabLongPressAction,
+      postFabSinglePressAction:
+          postFabSinglePressAction ?? this.postFabSinglePressAction,
+      postFabLongPressAction:
+          postFabLongPressAction ?? this.postFabLongPressAction,
 
-      enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
+      enableCommentNavigation:
+          enableCommentNavigation ?? this.enableCommentNavigation,
       combineNavAndFab: combineNavAndFab ?? this.combineNavAndFab,
 
       /// -------------------------- Accessibility Related Settings --------------------------
@@ -693,7 +759,8 @@ class ThunderState extends Equatable {
       videoAutoLoop: videoAutoLoop ?? this.videoAutoLoop,
       videoAutoMute: videoAutoMute ?? this.videoAutoMute,
       videoAutoPlay: videoAutoPlay ?? this.videoAutoPlay,
-      videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed ?? this.videoDefaultPlaybackSpeed,
+      videoDefaultPlaybackSpeed:
+          videoDefaultPlaybackSpeed ?? this.videoDefaultPlaybackSpeed,
       currentAnonymousInstance: currentAnonymousInstance,
 
       /// ------------------ Video Player ------------------------

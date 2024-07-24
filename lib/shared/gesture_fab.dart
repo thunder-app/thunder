@@ -41,7 +41,8 @@ class GestureFab extends StatefulWidget {
   State<GestureFab> createState() => _GestureFabState();
 }
 
-class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateMixin {
+class _GestureFabState extends State<GestureFab>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _expandAnimation;
   late final Function(String val)? toggle;
@@ -75,7 +76,8 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ThunderBloc, ThunderState>(
-      listenWhen: (previous, current) => previous.isFabOpen != current.isFabOpen,
+      listenWhen: (previous, current) =>
+          previous.isFabOpen != current.isFabOpen,
       listener: (context, state) {
         if (state.isFabOpen) {
           _controller.forward();
@@ -90,7 +92,9 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
       builder: (context, state) {
         return SizedBox.expand(
           child: Stack(
-            alignment: widget.centered ? Alignment.bottomCenter : Alignment.bottomRight,
+            alignment: widget.centered
+                ? Alignment.bottomCenter
+                : Alignment.bottomRight,
             clipBehavior: Clip.none,
             children: [
               _buildTapToCloseFab(),
@@ -142,7 +146,9 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   List<Widget> _buildExpandingActionButtons() {
     final children = <Widget>[];
     final count = widget.children.length;
-    for (var i = 0, distance = widget.distance; i < count; i++, distance += widget.distance) {
+    for (var i = 0, distance = widget.distance;
+        i < count;
+        i++, distance += widget.distance) {
       children.add(
         _ExpandingActionButton(
           maxDistance: distance,
@@ -181,7 +187,10 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
               }
               if (details.delta.dy > 5) {
                 // Only allow hiding fab when on the main feed, and not when opening a community on a new page
-                if (Navigator.of(context).canPop() == false) context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
+                if (Navigator.of(context).canPop() == false)
+                  context
+                      .read<ThunderBloc>()
+                      .add(const OnFabSummonToggle(false));
               }
             },
             onHorizontalDragStart: null,
@@ -278,11 +287,15 @@ class ActionButton extends StatelessWidget {
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(first == true ? 20 : 0),
                               topRight: Radius.circular(first == true ? 20 : 0),
-                              bottomLeft: Radius.circular(last == true ? 20 : 0),
-                              bottomRight: Radius.circular(last == true ? 20 : 0),
+                              bottomLeft:
+                                  Radius.circular(last == true ? 20 : 0),
+                              bottomRight:
+                                  Radius.circular(last == true ? 20 : 0),
                             ),
                             onTap: () {
-                              context.read<ThunderBloc>().add(const OnFabToggle(true));
+                              context
+                                  .read<ThunderBloc>()
+                                  .add(const OnFabToggle(true));
                               onPressed?.call();
                             },
                           ),
@@ -307,7 +320,8 @@ class ActionButton extends StatelessWidget {
                           ),
                           Flexible(
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 10, right: 5),
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 5),
                               child: title != null
                                   ? Text(
                                       title!,

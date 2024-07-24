@@ -39,12 +39,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   /// Handles clearing any messages from the state
-  Future<void> _onUserClearMessage(UserClearMessageEvent event, Emitter<UserState> emit) async {
+  Future<void> _onUserClearMessage(
+      UserClearMessageEvent event, Emitter<UserState> emit) async {
     emit(state.copyWith(status: UserStatus.success, message: null));
   }
 
   /// Handles user related actions
-  Future<void> _onUserAction(UserActionEvent event, Emitter<UserState> emit) async {
+  Future<void> _onUserAction(
+      UserActionEvent event, Emitter<UserState> emit) async {
     emit(state.copyWith(status: UserStatus.fetching));
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
@@ -52,12 +54,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     switch (event.userAction) {
       case UserAction.block:
         try {
-          BlockPersonResponse blockPersonResponse = await blockUser(event.userId, event.value);
+          BlockPersonResponse blockPersonResponse =
+              await blockUser(event.userId, event.value);
           emit(state.copyWith(
             status: UserStatus.success,
             personView: blockPersonResponse.personView,
-            message:
-                blockPersonResponse.blocked ? l10n.successfullyBlockedUser(blockPersonResponse.personView.person.name) : l10n.successfullyUnblockedUser(blockPersonResponse.personView.person.name),
+            message: blockPersonResponse.blocked
+                ? l10n.successfullyBlockedUser(
+                    blockPersonResponse.personView.person.name)
+                : l10n.successfullyUnblockedUser(
+                    blockPersonResponse.personView.person.name),
           ));
         } catch (e) {
           return emit(state.copyWith(status: UserStatus.failure));

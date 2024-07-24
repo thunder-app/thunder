@@ -29,7 +29,8 @@ class NotificationPayload {
       : type = NotificationType.values.byName(json['type'] as String),
         id = json['id'] as int?,
         accountId = json['accountId'] as String,
-        inboxType = NotificationInboxType.values.byName(json['inboxType'] as String),
+        inboxType =
+            NotificationInboxType.values.byName(json['inboxType'] as String),
         group = json['group'] as bool;
 
   Map<String, dynamic> toJson() => {

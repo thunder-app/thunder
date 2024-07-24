@@ -8,12 +8,15 @@ Future<T?> showThunderDialog<T>({
   String? contentText,
   // This allows the caller to provide a custom build function for the content widget.
   // We also give them a callback to set the enabled state of the primary button.
-  Widget Function(void Function(bool) setPrimaryButtonEnabled)? contentWidgetBuilder,
+  Widget Function(void Function(bool) setPrimaryButtonEnabled)?
+      contentWidgetBuilder,
   String? primaryButtonText,
   String? secondaryButtonText,
   // This is the function that we call when the primary button is pressed.
   // We also give the caller a callback to set the enabled state of the primary button.
-  void Function(BuildContext dialogContext, void Function(bool) setPrimaryButtonEnabled)? onPrimaryButtonPressed,
+  void Function(BuildContext dialogContext,
+          void Function(bool) setPrimaryButtonEnabled)?
+      onPrimaryButtonPressed,
   void Function(BuildContext dialogContext)? onSecondaryButtonPressed,
   // This is a builder which lets the caller wrap the AlertDialog (which we generate here)
   // with any other widget of their choosing (e.g., Bloc-related things).
@@ -23,7 +26,8 @@ Future<T?> showThunderDialog<T>({
   void Function(BuildContext dialogContext)? onTertiaryButtonPressed,
 }) {
   // Assert that we have text or widget, but not both
-  assert((contentText != null || contentWidgetBuilder != null) && !(contentText != null && contentWidgetBuilder != null));
+  assert((contentText != null || contentWidgetBuilder != null) &&
+      !(contentText != null && contentWidgetBuilder != null));
 
   // This is a function that generates our AlertDialog.
   // We can call it directory or pass it as an argument to the caller's custom builder.
@@ -47,25 +51,31 @@ Future<T?> showThunderDialog<T>({
             children: [
               if (tertiaryButtonText != null) ...[
                 TextButton(
-                  onPressed: onTertiaryButtonPressed == null ? null : () => onTertiaryButtonPressed(context),
+                  onPressed: onTertiaryButtonPressed == null
+                      ? null
+                      : () => onTertiaryButtonPressed(context),
                   child: Text(tertiaryButtonText),
                 ),
               ],
               const Spacer(),
               if (secondaryButtonText != null) ...[
                 TextButton(
-                  onPressed: onSecondaryButtonPressed == null ? null : () => onSecondaryButtonPressed(context),
+                  onPressed: onSecondaryButtonPressed == null
+                      ? null
+                      : () => onSecondaryButtonPressed(context),
                   child: Text(secondaryButtonText),
                 ),
                 const SizedBox(width: 5),
               ],
               if (primaryButtonText != null)
                 FilledButton(
-                  onPressed: !primaryButtonEnabled || onPrimaryButtonPressed == null
+                  onPressed: !primaryButtonEnabled ||
+                          onPrimaryButtonPressed == null
                       ? null
                       : () => onPrimaryButtonPressed(
                             context,
-                            (enabled) => setState(() => primaryButtonEnabled = enabled),
+                            (enabled) =>
+                                setState(() => primaryButtonEnabled = enabled),
                           ),
                   child: Text(primaryButtonText),
                 ),
@@ -79,7 +89,9 @@ Future<T?> showThunderDialog<T>({
   return showDialog(
     context: context,
     builder: (BuildContext context) {
-      return customBuilder != null ? customBuilder(generateAlertDialogForThunderDialog()) : generateAlertDialogForThunderDialog();
+      return customBuilder != null
+          ? customBuilder(generateAlertDialogForThunderDialog())
+          : generateAlertDialogForThunderDialog();
     },
   );
 }

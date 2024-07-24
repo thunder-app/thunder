@@ -76,11 +76,16 @@ class ExtendedCommentCardActions {
   final IconData Function()? getTrailingIcon;
   final String label;
   final Color Function(BuildContext context)? getColor;
-  final Color? Function(BuildContext context, CommentView commentView)? getForegroundColor;
+  final Color? Function(BuildContext context, CommentView commentView)?
+      getForegroundColor;
   final IconData? Function(CommentView commentView)? getOverrideIcon;
-  final String Function(BuildContext context, CommentView commentView, bool viewSource)? getOverrideLabel;
-  final String Function(BuildContext context, CommentView commentView)? getSubtitleLabel;
-  final bool Function(BuildContext context, CommentView commentView)? shouldShow;
+  final String Function(
+          BuildContext context, CommentView commentView, bool viewSource)?
+      getOverrideLabel;
+  final String Function(BuildContext context, CommentView commentView)?
+      getSubtitleLabel;
+  final bool Function(BuildContext context, CommentView commentView)?
+      shouldShow;
   final bool Function(bool isUserLoggedIn)? shouldEnable;
 }
 
@@ -119,7 +124,8 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.instanceActions,
     icon: Icons.language_rounded,
     label: l10n.instance(1),
-    getSubtitleLabel: (context, postView) => fetchInstanceNameFromUrl(postView.creator.actorId) ?? '',
+    getSubtitleLabel: (context, postView) =>
+        fetchInstanceNameFromUrl(postView.creator.actorId) ?? '',
     getTrailingIcon: () => Icons.chevron_right_rounded,
   ),
   ExtendedCommentCardActions(
@@ -153,7 +159,8 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.viewSource,
     icon: Icons.edit_document,
     label: l10n.viewCommentSource,
-    getOverrideLabel: (context, commentView, viewSource) => viewSource ? l10n.viewOriginal : l10n.viewCommentSource,
+    getOverrideLabel: (context, commentView, viewSource) =>
+        viewSource ? l10n.viewOriginal : l10n.viewCommentSource,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.report,
@@ -171,7 +178,8 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.shareLinkLocal,
     icon: Icons.share_rounded,
     label: l10n.shareCommentLocal,
-    getSubtitleLabel: (context, commentView) => LemmyClient.instance.generateCommentUrl(commentView.comment.id),
+    getSubtitleLabel: (context, commentView) =>
+        LemmyClient.instance.generateCommentUrl(commentView.comment.id),
   ),
 ];
 
@@ -181,16 +189,22 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     label: AppLocalizations.of(GlobalContext.context)!.upvote,
     icon: Icons.arrow_upward_rounded,
     getColor: (context) => context.read<ThunderBloc>().state.upvoteColor.color,
-    getForegroundColor: (context, commentView) => commentView.myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : null,
+    getForegroundColor: (context, commentView) => commentView.myVote == 1
+        ? context.read<ThunderBloc>().state.upvoteColor.color
+        : null,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.downvote,
     label: AppLocalizations.of(GlobalContext.context)!.downvote,
     icon: Icons.arrow_downward_rounded,
-    getColor: (context) => context.read<ThunderBloc>().state.downvoteColor.color,
-    getForegroundColor: (context, commentView) => commentView.myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : null,
-    shouldShow: (context, commentView) => context.read<AuthBloc>().state.downvotesEnabled,
+    getColor: (context) =>
+        context.read<ThunderBloc>().state.downvoteColor.color,
+    getForegroundColor: (context, commentView) => commentView.myVote == -1
+        ? context.read<ThunderBloc>().state.downvoteColor.color
+        : null,
+    shouldShow: (context, commentView) =>
+        context.read<AuthBloc>().state.downvotesEnabled,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedCommentCardActions(
@@ -198,8 +212,11 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     label: AppLocalizations.of(GlobalContext.context)!.save,
     icon: Icons.star_border_rounded,
     getColor: (context) => context.read<ThunderBloc>().state.saveColor.color,
-    getForegroundColor: (context, commentView) => commentView.saved ? context.read<ThunderBloc>().state.saveColor.color : null,
-    getOverrideIcon: (commentView) => commentView.saved ? Icons.star_rounded : null,
+    getForegroundColor: (context, commentView) => commentView.saved
+        ? context.read<ThunderBloc>().state.saveColor.color
+        : null,
+    getOverrideIcon: (commentView) =>
+        commentView.saved ? Icons.star_rounded : null,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedCommentCardActions(
@@ -212,7 +229,9 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     commentCardAction: CommentCardAction.edit,
     label: AppLocalizations.of(GlobalContext.context)!.edit,
     icon: Icons.edit,
-    shouldShow: (context, commentView) => commentView.creator.id == context.read<AuthBloc>().state.account?.userId,
+    shouldShow: (context, commentView) =>
+        commentView.creator.id ==
+        context.read<AuthBloc>().state.account?.userId,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedCommentCardActions(
@@ -241,67 +260,81 @@ void showCommentActionBottomModalSheet(
   Function onViewSourceToggled,
   bool viewSource,
 ) {
-  final bool isOwnComment = commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
+  final bool isOwnComment =
+      commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
   bool isDeleted = commentView.comment.deleted;
 
   // Generate the list of default actions for the general page
-  final List<ExtendedCommentCardActions> defaultCommentCardActions = commentCardDefaultActionItems
-      .where((extendedAction) => [
-            CommentCardAction.userActions,
-            CommentCardAction.instanceActions,
-            CommentCardAction.textActions,
-            CommentCardAction.report,
-            CommentCardAction.delete,
-          ].contains(extendedAction.commentCardAction))
-      .toList();
+  final List<ExtendedCommentCardActions> defaultCommentCardActions =
+      commentCardDefaultActionItems
+          .where((extendedAction) => [
+                CommentCardAction.userActions,
+                CommentCardAction.instanceActions,
+                CommentCardAction.textActions,
+                CommentCardAction.report,
+                CommentCardAction.delete,
+              ].contains(extendedAction.commentCardAction))
+          .toList();
 
   // Add the ability to delete one's own comment
   if (isOwnComment) {
     defaultCommentCardActions.add(ExtendedCommentCardActions(
       commentCardAction: CommentCardAction.delete,
       icon: isDeleted ? Icons.restore_from_trash_rounded : Icons.delete_rounded,
-      label: isDeleted ? AppLocalizations.of(GlobalContext.context)!.restore : AppLocalizations.of(GlobalContext.context)!.delete,
+      label: isDeleted
+          ? AppLocalizations.of(GlobalContext.context)!.restore
+          : AppLocalizations.of(GlobalContext.context)!.delete,
     ));
   }
 
   // Hide the ability to block instance if not supported -- todo change this to instance list
-  if (defaultCommentCardActions.any((c) => c.commentCardAction == CommentCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
-    defaultCommentCardActions.removeWhere((c) => c.commentCardAction == CommentCardAction.blockInstance);
+  if (defaultCommentCardActions
+          .any((c) => c.commentCardAction == CommentCardAction.blockInstance) &&
+      !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
+    defaultCommentCardActions.removeWhere(
+        (c) => c.commentCardAction == CommentCardAction.blockInstance);
   }
 
   // Generate list of user actions
-  final List<ExtendedCommentCardActions> userActions = commentCardDefaultActionItems
-      .where((extendedAction) => [
-            CommentCardAction.visitProfile,
-            CommentCardAction.blockUser,
-            CommentCardAction.userLabel,
-          ].contains(extendedAction.commentCardAction))
-      .toList();
+  final List<ExtendedCommentCardActions> userActions =
+      commentCardDefaultActionItems
+          .where((extendedAction) => [
+                CommentCardAction.visitProfile,
+                CommentCardAction.blockUser,
+                CommentCardAction.userLabel,
+              ].contains(extendedAction.commentCardAction))
+          .toList();
 
   // Generate list of instance actions
-  final List<ExtendedCommentCardActions> instanceActions = commentCardDefaultActionItems
-      .where((extendedAction) => [
-            CommentCardAction.visitInstance,
-            CommentCardAction.blockInstance,
-          ].contains(extendedAction.commentCardAction))
-      .toList();
+  final List<ExtendedCommentCardActions> instanceActions =
+      commentCardDefaultActionItems
+          .where((extendedAction) => [
+                CommentCardAction.visitInstance,
+                CommentCardAction.blockInstance,
+              ].contains(extendedAction.commentCardAction))
+          .toList();
 
   // Generate the list of share actions
-  final List<ExtendedCommentCardActions> shareActions = commentCardDefaultActionItems
-      .where((extendedAction) => [
-            CommentCardAction.shareLink,
-            if (commentView.comment.apId != LemmyClient.instance.generateCommentUrl(commentView.comment.id)) CommentCardAction.shareLinkLocal,
-          ].contains(extendedAction.commentCardAction))
-      .toList();
+  final List<ExtendedCommentCardActions> shareActions =
+      commentCardDefaultActionItems
+          .where((extendedAction) => [
+                CommentCardAction.shareLink,
+                if (commentView.comment.apId !=
+                    LemmyClient.instance
+                        .generateCommentUrl(commentView.comment.id))
+                  CommentCardAction.shareLinkLocal,
+              ].contains(extendedAction.commentCardAction))
+          .toList();
 
   // Generate list of text actions
-  final List<ExtendedCommentCardActions> textActions = commentCardDefaultActionItems
-      .where((extendedAction) => [
-            CommentCardAction.selectText,
-            CommentCardAction.copyText,
-            CommentCardAction.viewSource,
-          ].contains(extendedAction.commentCardAction))
-      .toList();
+  final List<ExtendedCommentCardActions> textActions =
+      commentCardDefaultActionItems
+          .where((extendedAction) => [
+                CommentCardAction.selectText,
+                CommentCardAction.copyText,
+                CommentCardAction.viewSource,
+              ].contains(extendedAction.commentCardAction))
+          .toList();
 
   showModalBottomSheet<void>(
     showDragHandle: true,
@@ -317,7 +350,9 @@ void showCommentActionBottomModalSheet(
         CommentActionBottomSheetPage.share: l10n.share,
         CommentActionBottomSheetPage.text: l10n.textActions,
       },
-      multiCommentCardActions: {CommentActionBottomSheetPage.general: commentCardDefaultMultiActionItems},
+      multiCommentCardActions: {
+        CommentActionBottomSheetPage.general: commentCardDefaultMultiActionItems
+      },
       commentCardActions: {
         CommentActionBottomSheetPage.general: defaultCommentCardActions,
         CommentActionBottomSheetPage.user: userActions,
@@ -344,10 +379,12 @@ class CommentActionPicker extends StatefulWidget {
   final Map<CommentActionBottomSheetPage, String> titles;
 
   /// This is the list of quick actions that are shown horizontally across the top of the sheet
-  final Map<CommentActionBottomSheetPage, List<ExtendedCommentCardActions>> multiCommentCardActions;
+  final Map<CommentActionBottomSheetPage, List<ExtendedCommentCardActions>>
+      multiCommentCardActions;
 
   /// This is the set of full actions to display vertically in a list
-  final Map<CommentActionBottomSheetPage, List<ExtendedCommentCardActions>> commentCardActions;
+  final Map<CommentActionBottomSheetPage, List<ExtendedCommentCardActions>>
+      commentCardActions;
 
   /// The context from whoever invoked this sheet (useful for blocs that would otherwise be missing)
   final BuildContext outerContext;
@@ -415,7 +452,8 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Semantics(
-                label: '${widget.titles[page] ?? l10n.actions}, ${page == CommentActionBottomSheetPage.general ? '' : l10n.backButton}',
+                label:
+                    '${widget.titles[page] ?? l10n.actions}, ${page == CommentActionBottomSheetPage.general ? '' : l10n.backButton}',
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Material(
@@ -423,14 +461,19 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(50),
-                      onTap: page == CommentActionBottomSheetPage.general ? null : () => setState(() => page = CommentActionBottomSheetPage.general),
+                      onTap: page == CommentActionBottomSheetPage.general
+                          ? null
+                          : () => setState(() =>
+                              page = CommentActionBottomSheetPage.general),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12.0, 10, 16.0, 10.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(12.0, 10, 16.0, 10.0),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Row(
                             children: [
-                              if (page != CommentActionBottomSheetPage.general) ...[
+                              if (page !=
+                                  CommentActionBottomSheetPage.general) ...[
                                 const Icon(Icons.chevron_left, size: 30),
                                 const SizedBox(width: 12),
                               ],
@@ -453,20 +496,30 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
               Row(
                 children: [
                   const SizedBox(width: 20),
-                  LanguagePostCardMetaData(languageId: widget.commentView.comment.languageId),
+                  LanguagePostCardMetaData(
+                      languageId: widget.commentView.comment.languageId),
                 ],
               ),
               if (widget.multiCommentCardActions[page]?.isNotEmpty == true)
                 MultiPickerItem(
                   pickerItems: [
-                    ...widget.multiCommentCardActions[page]!.where((a) => a.shouldShow?.call(context, widget.commentView) ?? true).map(
+                    ...widget.multiCommentCardActions[page]!
+                        .where((a) =>
+                            a.shouldShow?.call(context, widget.commentView) ??
+                            true)
+                        .map(
                       (a) {
                         return PickerItemData(
                           label: a.label,
-                          icon: a.getOverrideIcon?.call(widget.commentView) ?? a.icon,
+                          icon: a.getOverrideIcon?.call(widget.commentView) ??
+                              a.icon,
                           backgroundColor: a.getColor?.call(context),
-                          foregroundColor: a.getForegroundColor?.call(context, widget.commentView),
-                          onSelected: (a.shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(a.commentCardAction) : null,
+                          foregroundColor: a.getForegroundColor
+                              ?.call(context, widget.commentView),
+                          onSelected:
+                              (a.shouldEnable?.call(isUserLoggedIn) ?? true)
+                                  ? () => onSelected(a.commentCardAction)
+                                  : null,
                         );
                       },
                     ),
@@ -479,12 +532,29 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
                   itemCount: widget.commentCardActions[page]!.length,
                   itemBuilder: (BuildContext itemBuilderContext, int index) {
                     return PickerItem(
-                      label: widget.commentCardActions[page]![index].getOverrideLabel?.call(context, widget.commentView, widget.viewSource) ?? widget.commentCardActions[page]![index].label,
-                      subtitle: widget.commentCardActions[page]![index].getSubtitleLabel?.call(context, widget.commentView),
-                      icon: widget.commentCardActions[page]![index].getOverrideIcon?.call(widget.commentView) ?? widget.commentCardActions[page]![index].icon,
-                      trailingIcon: widget.commentCardActions[page]![index].getTrailingIcon?.call(),
-                      onSelected:
-                          (widget.commentCardActions[page]![index].shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(widget.commentCardActions[page]![index].commentCardAction) : null,
+                      label: widget
+                              .commentCardActions[page]![index].getOverrideLabel
+                              ?.call(context, widget.commentView,
+                                  widget.viewSource) ??
+                          widget.commentCardActions[page]![index].label,
+                      subtitle: widget
+                          .commentCardActions[page]![index].getSubtitleLabel
+                          ?.call(context, widget.commentView),
+                      icon: widget
+                              .commentCardActions[page]![index].getOverrideIcon
+                              ?.call(widget.commentView) ??
+                          widget.commentCardActions[page]![index].icon,
+                      trailingIcon: widget
+                          .commentCardActions[page]![index].getTrailingIcon
+                          ?.call(),
+                      onSelected: (widget
+                                  .commentCardActions[page]![index].shouldEnable
+                                  ?.call(isUserLoggedIn) ??
+                              true)
+                          ? () => onSelected(widget
+                              .commentCardActions[page]![index]
+                              .commentCardAction)
+                          : null,
                     );
                   },
                 ),
@@ -502,25 +572,31 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
 
     switch (commentCardAction) {
       case CommentCardAction.save:
-        action = () => widget.onSaveAction(widget.commentView.comment.id, !(widget.commentView.saved));
+        action = () => widget.onSaveAction(
+            widget.commentView.comment.id, !(widget.commentView.saved));
         break;
       case CommentCardAction.share:
         pop = false;
-        action = () => setState(() => page = CommentActionBottomSheetPage.share);
+        action =
+            () => setState(() => page = CommentActionBottomSheetPage.share);
         break;
       case CommentCardAction.shareLink:
         action = () => Share.share(widget.commentView.comment.apId);
         break;
       case CommentCardAction.shareLinkLocal:
-        action = () => Share.share(LemmyClient.instance.generateCommentUrl(widget.commentView.comment.id));
+        action = () => Share.share(LemmyClient.instance
+            .generateCommentUrl(widget.commentView.comment.id));
         break;
       case CommentCardAction.delete:
-        action = () => widget.onDeleteAction(widget.commentView.comment.id, !(widget.commentView.comment.deleted));
+        action = () => widget.onDeleteAction(widget.commentView.comment.id,
+            !(widget.commentView.comment.deleted));
       case CommentCardAction.upvote:
-        action = () => widget.onVoteAction(widget.commentView.comment.id, widget.commentView.myVote == 1 ? 0 : 1);
+        action = () => widget.onVoteAction(widget.commentView.comment.id,
+            widget.commentView.myVote == 1 ? 0 : 1);
         break;
       case CommentCardAction.downvote:
-        action = () => widget.onVoteAction(widget.commentView.comment.id, widget.commentView.myVote == -1 ? 0 : -1);
+        action = () => widget.onVoteAction(widget.commentView.comment.id,
+            widget.commentView.myVote == -1 ? 0 : -1);
         break;
       case CommentCardAction.reply:
         action = () => widget.onReplyEditAction(widget.commentView, false);
@@ -539,8 +615,11 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
             );
         break;
       case CommentCardAction.copyText:
-        action = () => Clipboard.setData(ClipboardData(text: cleanCommentContent(widget.commentView.comment))).then((_) {
-              showSnackbar(AppLocalizations.of(widget.outerContext)!.copiedToClipboard);
+        action = () => Clipboard.setData(ClipboardData(
+                    text: cleanCommentContent(widget.commentView.comment)))
+                .then((_) {
+              showSnackbar(
+                  AppLocalizations.of(widget.outerContext)!.copiedToClipboard);
             });
         break;
       case CommentCardAction.viewSource:
@@ -555,28 +634,42 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
         pop = false;
         break;
       case CommentCardAction.visitProfile:
-        action = () => navigateToFeedPage(widget.outerContext, feedType: FeedType.user, userId: widget.commentView.creator.id);
+        action = () => navigateToFeedPage(widget.outerContext,
+            feedType: FeedType.user, userId: widget.commentView.creator.id);
         break;
       case CommentCardAction.blockUser:
-        action = () => widget.outerContext.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: widget.commentView.creator.id, value: true));
+        action = () => widget.outerContext.read<UserBloc>().add(UserActionEvent(
+            userAction: UserAction.block,
+            userId: widget.commentView.creator.id,
+            value: true));
         break;
       case CommentCardAction.userLabel:
         action = () async {
-          await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.commentView.creator.name, widget.commentView.creator.actorId));
+          await showUserLabelEditorDialog(
+              context,
+              UserLabel.usernameFromParts(widget.commentView.creator.name,
+                  widget.commentView.creator.actorId));
         };
         break;
       case CommentCardAction.instanceActions:
-        action = () => setState(() => page = CommentActionBottomSheetPage.instance);
+        action =
+            () => setState(() => page = CommentActionBottomSheetPage.instance);
         pop = false;
 
       case CommentCardAction.visitInstance:
-        action = () => navigateToInstancePage(widget.outerContext, instanceHost: fetchInstanceNameFromUrl(widget.commentView.creator.actorId)!, instanceId: widget.commentView.community.instanceId);
+        action = () => navigateToInstancePage(widget.outerContext,
+            instanceHost:
+                fetchInstanceNameFromUrl(widget.commentView.creator.actorId)!,
+            instanceId: widget.commentView.community.instanceId);
         break;
       case CommentCardAction.blockInstance:
-        action = () => widget.outerContext.read<InstanceBloc>().add(InstanceActionEvent(
+        action = () => widget.outerContext
+            .read<InstanceBloc>()
+            .add(InstanceActionEvent(
               instanceAction: InstanceAction.block,
               instanceId: widget.commentView.creator.instanceId,
-              domain: fetchInstanceNameFromUrl(widget.commentView.creator.actorId),
+              domain:
+                  fetchInstanceNameFromUrl(widget.commentView.creator.actorId),
               value: true,
             ));
         break;

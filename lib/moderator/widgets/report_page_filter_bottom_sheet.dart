@@ -12,16 +12,20 @@ enum ReportResolveStatus { unresolved, all }
 /// A [BottomSheet] that allows the user to filter reports by status and community
 /// When the submit button is pressed, the [onSubmit] function is called with the selected [ReportResolveStatus] and [CommunityView] if any.
 class ReportFilterBottomSheet extends StatefulWidget {
-  const ReportFilterBottomSheet({super.key, required this.status, required this.onSubmit});
+  const ReportFilterBottomSheet(
+      {super.key, required this.status, required this.onSubmit});
 
   /// The status to filter by
   final ReportResolveStatus status;
 
   /// The function to call when the submit button is pressed
-  final void Function(ReportResolveStatus reportResolveStatus, CommunityView? communityView) onSubmit;
+  final void Function(
+          ReportResolveStatus reportResolveStatus, CommunityView? communityView)
+      onSubmit;
 
   @override
-  State<ReportFilterBottomSheet> createState() => _ReportFilterBottomSheetState();
+  State<ReportFilterBottomSheet> createState() =>
+      _ReportFilterBottomSheetState();
 }
 
 class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
@@ -52,11 +56,13 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
           children: [
             Text(l10n.filters, style: theme.textTheme.titleLarge),
             const SizedBox(height: 16.0),
-            Text(l10n.status, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(l10n.status,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             SegmentedButton<ReportResolveStatus>(
               showSelectedIcon: false,
-              style: SegmentedButton.styleFrom(visualDensity: VisualDensity.compact, minimumSize: Size.zero),
+              style: SegmentedButton.styleFrom(
+                  visualDensity: VisualDensity.compact, minimumSize: Size.zero),
               segments: <ButtonSegment<ReportResolveStatus>>[
                 ButtonSegment<ReportResolveStatus>(
                   value: ReportResolveStatus.unresolved,
@@ -76,7 +82,8 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
               },
             ),
             const SizedBox(height: 16.0),
-            Text(l10n.community, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(l10n.community,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             CommunitySelector(
               communityId: communityView?.community.id,

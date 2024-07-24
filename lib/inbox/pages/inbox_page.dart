@@ -25,7 +25,8 @@ class InboxPage extends StatefulWidget {
   State<InboxPage> createState() => _InboxPageState();
 }
 
-class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMixin {
+class _InboxPageState extends State<InboxPage>
+    with SingleTickerProviderStateMixin {
   /// The controller for the tab bar used for switching between inbox types.
   late TabController tabController;
 
@@ -55,15 +56,20 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => nestedScrollViewKey.currentState!.innerController.addListener(() {
-        ScrollController controller = nestedScrollViewKey.currentState!.innerController;
+        ScrollController controller =
+            nestedScrollViewKey.currentState!.innerController;
 
-        if (controller.position.pixels >= controller.position.maxScrollExtent * 0.7 && context.read<InboxBloc>().state.status == InboxStatus.success) {
+        if (controller.position.pixels >=
+                controller.position.maxScrollExtent * 0.7 &&
+            context.read<InboxBloc>().state.status == InboxStatus.success) {
           context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType));
         }
       }),
     );
 
-    context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true));
+    context
+        .read<InboxBloc>()
+        .add(GetInboxEvent(inboxType: inboxType, reset: true));
   }
 
   @override
@@ -83,7 +89,11 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
         title: l10n.sortOptions,
         onSelect: (selected) async {
           setState(() => commentSortType = selected.payload);
-          context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll, commentSortType: selected.payload));
+          context.read<InboxBloc>().add(GetInboxEvent(
+              inboxType: inboxType,
+              reset: true,
+              showAll: showAll,
+              commentSortType: selected.payload));
         },
         previouslySelected: commentSortType,
         minimumVersion: LemmyClient.instance.version,
@@ -98,14 +108,17 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
     return Scaffold(
       body: BlocConsumer<InboxBloc, InboxState>(
         listener: (context, state) {
-          if (state.status == InboxStatus.initial || state.status == InboxStatus.loading || state.status == InboxStatus.empty) {
+          if (state.status == InboxStatus.initial ||
+              state.status == InboxStatus.loading ||
+              state.status == InboxStatus.empty) {
             nestedScrollViewKey.currentState?.innerController.jumpTo(0);
 
             int? newAccountId = context.read<AuthBloc>().state.account?.userId;
 
             if (newAccountId != accountId) {
               accountId = newAccountId;
-              context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll));
+              context.read<InboxBloc>().add(GetInboxEvent(
+                  inboxType: inboxType, reset: true, showAll: showAll));
             }
           }
 
@@ -113,17 +126,20 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
             showSnackbar(
               state.errorMessage!,
               trailingIcon: Icons.refresh_rounded,
-              trailingAction: () => context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll)),
+              trailingAction: () => context.read<InboxBloc>().add(GetInboxEvent(
+                  inboxType: inboxType, reset: true, showAll: showAll)),
             );
           }
         },
         builder: (context, state) {
           return NestedScrollView(
             key: nestedScrollViewKey,
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return [
                 SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  handle:
+                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverAppBar(
                     pinned: true,
                     centerTitle: false,
@@ -132,10 +148,17 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                     title: Text(l10n.inbox),
                     actions: [
                       IconButton(
-                        icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
-                        onPressed: () => context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll)),
+                        icon: Icon(Icons.refresh_rounded,
+                            semanticLabel: l10n.refresh),
+                        onPressed: () => context.read<InboxBloc>().add(
+                            GetInboxEvent(
+                                inboxType: inboxType,
+                                reset: true,
+                                showAll: showAll)),
                       ),
-                      IconButton(onPressed: () => showSortBottomSheet(), icon: Icon(Icons.sort, semanticLabel: l10n.sortBy)),
+                      IconButton(
+                          onPressed: () => showSortBottomSheet(),
+                          icon: Icon(Icons.sort, semanticLabel: l10n.sortBy)),
                       PopupMenuButton(
                         onOpened: () => HapticFeedback.mediumImpact(),
                         itemBuilder: (context) => [
@@ -146,11 +169,14 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                                 context: context,
                                 title: l10n.confirmMarkAllAsReadTitle,
                                 contentText: l10n.confirmMarkAllAsReadBody,
-                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                onSecondaryButtonPressed: (dialogContext) =>
+                                    Navigator.of(dialogContext).pop(),
                                 secondaryButtonText: l10n.cancel,
                                 onPrimaryButtonPressed: (dialogContext, _) {
                                   Navigator.of(dialogContext).pop();
-                                  context.read<InboxBloc>().add(MarkAllAsReadEvent());
+                                  context
+                                      .read<InboxBloc>()
+                                      .add(MarkAllAsReadEvent());
                                 },
                                 primaryButtonText: l10n.markAllAsRead,
                               );
@@ -161,10 +187,15 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                           ThunderPopupMenuItem(
                             onTap: () async {
                               HapticFeedback.mediumImpact();
-                              context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: !showAll));
+                              context.read<InboxBloc>().add(GetInboxEvent(
+                                  inboxType: inboxType,
+                                  reset: true,
+                                  showAll: !showAll));
                               setState(() => showAll = !showAll);
                             },
-                            icon: showAll ? Icons.mark_as_unread : Icons.all_inbox_rounded,
+                            icon: showAll
+                                ? Icons.mark_as_unread
+                                : Icons.all_inbox_rounded,
                             title: showAll ? l10n.showUnreadOnly : l10n.showAll,
                           ),
                         ],
@@ -173,7 +204,10 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                     bottom: TabBar(
                       controller: tabController,
                       onTap: (index) {
-                        context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll));
+                        context.read<InboxBloc>().add(GetInboxEvent(
+                            inboxType: inboxType,
+                            reset: true,
+                            showAll: showAll));
                       },
                       tabs: [
                         Tab(
@@ -181,7 +215,11 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                             spacing: 4.0,
                             children: [
                               Text(l10n.reply(10)),
-                              if (state.repliesUnreadCount > 0) Badge(label: Text(state.repliesUnreadCount > 99 ? '99+' : state.repliesUnreadCount.toString())),
+                              if (state.repliesUnreadCount > 0)
+                                Badge(
+                                    label: Text(state.repliesUnreadCount > 99
+                                        ? '99+'
+                                        : state.repliesUnreadCount.toString())),
                             ],
                           ),
                         ),
@@ -190,7 +228,12 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                             spacing: 4.0,
                             children: [
                               Text(l10n.mention(10)),
-                              if (state.mentionsUnreadCount > 0) Badge(label: Text(state.mentionsUnreadCount > 99 ? '99+' : state.mentionsUnreadCount.toString())),
+                              if (state.mentionsUnreadCount > 0)
+                                Badge(
+                                    label: Text(state.mentionsUnreadCount > 99
+                                        ? '99+'
+                                        : state.mentionsUnreadCount
+                                            .toString())),
                             ],
                           ),
                         ),
@@ -199,7 +242,12 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                             spacing: 4.0,
                             children: [
                               Text(l10n.message(10)),
-                              if (state.messagesUnreadCount > 0) Badge(label: Text(state.messagesUnreadCount > 99 ? '99+' : state.messagesUnreadCount.toString())),
+                              if (state.messagesUnreadCount > 0)
+                                Badge(
+                                    label: Text(state.messagesUnreadCount > 99
+                                        ? '99+'
+                                        : state.messagesUnreadCount
+                                            .toString())),
                             ],
                           ),
                         ),
@@ -215,7 +263,8 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
               children: [
                 InboxRepliesView(replies: state.replies),
                 InboxMentionsView(mentions: state.mentions),
-                InboxPrivateMessagesView(privateMessages: state.privateMessages),
+                InboxPrivateMessagesView(
+                    privateMessages: state.privateMessages),
               ],
             ),
           );

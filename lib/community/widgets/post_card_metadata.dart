@@ -79,11 +79,16 @@ class PostCardMetadata extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AuthBloc>().state;
-    final showScores = state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+    final showScores =
+        state.getSiteResponse?.myUser?.localUserView.localUser.showScores ??
+            true;
 
-    List<PostCardMetadataItem> postCardMetadataItems = switch (postCardViewType) {
-      ViewMode.compact => context.read<ThunderBloc>().state.compactPostCardMetadataItems,
-      ViewMode.comfortable => context.read<ThunderBloc>().state.cardPostCardMetadataItems,
+    List<PostCardMetadataItem> postCardMetadataItems =
+        switch (postCardViewType) {
+      ViewMode.compact =>
+        context.read<ThunderBloc>().state.compactPostCardMetadataItems,
+      ViewMode.comfortable =>
+        context.read<ThunderBloc>().state.cardPostCardMetadataItems,
     };
 
     return Wrap(
@@ -93,13 +98,36 @@ class PostCardMetadata extends StatelessWidget {
       children: postCardMetadataItems.map(
         (PostCardMetadataItem postCardMetadataItem) {
           return switch (postCardMetadataItem) {
-            PostCardMetadataItem.score => showScores ? ScorePostCardMetaData(score: score, voteType: voteType, hasBeenRead: hasBeenRead ?? false) : Container(),
-            PostCardMetadataItem.upvote => showScores ? UpvotePostCardMetaData(upvotes: upvoteCount, isUpvoted: voteType == 1, hasBeenRead: hasBeenRead ?? false) : Container(),
-            PostCardMetadataItem.downvote => showScores ? DownvotePostCardMetaData(downvotes: downvoteCount, isDownvoted: voteType == -1, hasBeenRead: hasBeenRead ?? false) : Container(),
-            PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(commentCount: commentCount, unreadCommentCount: unreadCommentCount ?? 0, hasBeenRead: hasBeenRead ?? false),
-            PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: dateTime!, hasBeenRead: hasBeenRead ?? false, hasBeenEdited: hasBeenEdited ?? false),
-            PostCardMetadataItem.url => UrlPostCardMetaData(url: url, hasBeenRead: hasBeenRead ?? false),
-            PostCardMetadataItem.language => LanguagePostCardMetaData(languageId: languageId, hasBeenRead: hasBeenRead ?? false),
+            PostCardMetadataItem.score => showScores
+                ? ScorePostCardMetaData(
+                    score: score,
+                    voteType: voteType,
+                    hasBeenRead: hasBeenRead ?? false)
+                : Container(),
+            PostCardMetadataItem.upvote => showScores
+                ? UpvotePostCardMetaData(
+                    upvotes: upvoteCount,
+                    isUpvoted: voteType == 1,
+                    hasBeenRead: hasBeenRead ?? false)
+                : Container(),
+            PostCardMetadataItem.downvote => showScores
+                ? DownvotePostCardMetaData(
+                    downvotes: downvoteCount,
+                    isDownvoted: voteType == -1,
+                    hasBeenRead: hasBeenRead ?? false)
+                : Container(),
+            PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(
+                commentCount: commentCount,
+                unreadCommentCount: unreadCommentCount ?? 0,
+                hasBeenRead: hasBeenRead ?? false),
+            PostCardMetadataItem.dateTime => DateTimePostCardMetaData(
+                dateTime: dateTime!,
+                hasBeenRead: hasBeenRead ?? false,
+                hasBeenEdited: hasBeenEdited ?? false),
+            PostCardMetadataItem.url =>
+              UrlPostCardMetaData(url: url, hasBeenRead: hasBeenRead ?? false),
+            PostCardMetadataItem.language => LanguagePostCardMetaData(
+                languageId: languageId, hasBeenRead: hasBeenRead ?? false),
           };
         },
       ).toList(),
@@ -149,10 +177,14 @@ class ScorePostCardMetaData extends StatelessWidget {
           height: 17,
           child: Stack(
             children: [
-              Align(alignment: Alignment.topLeft, child: Icon(Icons.arrow_upward, size: 13.5, color: voteType == -1 ? readColor : color)),
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Icon(Icons.arrow_upward,
+                      size: 13.5, color: voteType == -1 ? readColor : color)),
               Align(
                 alignment: Alignment.bottomRight,
-                child: Icon(Icons.arrow_downward, size: 13.5, color: voteType == 1 ? readColor : color),
+                child: Icon(Icons.arrow_downward,
+                    size: 13.5, color: voteType == 1 ? readColor : color),
               ),
             ],
           ),
@@ -271,16 +303,27 @@ class CommentCountPostCardMetaData extends StatelessWidget {
     final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (hasBeenRead) {
-      true => (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? theme.primaryColor : readColor,
-      _ => (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? theme.primaryColor : theme.textTheme.bodyMedium?.color,
+      true => (unreadCommentCount > 0 && unreadCommentCount != commentCount)
+          ? theme.primaryColor
+          : readColor,
+      _ => (unreadCommentCount > 0 && unreadCommentCount != commentCount)
+          ? theme.primaryColor
+          : theme.textTheme.bodyMedium?.color,
     };
 
     return IconText(
       fontScale: state.metadataFontSizeScale,
-      text: (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? '+${formatNumberToK(unreadCommentCount)}' : formatNumberToK(commentCount ?? 0),
+      text: (unreadCommentCount > 0 && unreadCommentCount != commentCount)
+          ? '+${formatNumberToK(unreadCommentCount)}'
+          : formatNumberToK(commentCount ?? 0),
       textColor: color,
       padding: 5.0,
-      icon: Icon(unreadCommentCount > 0 && unreadCommentCount != commentCount ? Icons.mark_unread_chat_alt_rounded : Icons.chat, size: 17.0, color: color),
+      icon: Icon(
+          unreadCommentCount > 0 && unreadCommentCount != commentCount
+              ? Icons.mark_unread_chat_alt_rounded
+              : Icons.chat,
+          size: 17.0,
+          color: color),
     );
   }
 }
@@ -311,15 +354,20 @@ class DateTimePostCardMetaData extends StatelessWidget {
 
     final color = switch (hasBeenRead) {
       true => readColor,
-      _ => state.showFullPostDate ? theme.textTheme.bodyMedium?.color?.withOpacity(0.75) : theme.textTheme.bodyMedium?.color,
+      _ => state.showFullPostDate
+          ? theme.textTheme.bodyMedium?.color?.withOpacity(0.75)
+          : theme.textTheme.bodyMedium?.color,
     };
 
     return IconText(
       fontScale: state.metadataFontSizeScale,
-      text: state.showFullPostDate ? state.dateFormat?.format(DateTime.parse(dateTime)) : formatTimeToString(dateTime: dateTime),
+      text: state.showFullPostDate
+          ? state.dateFormat?.format(DateTime.parse(dateTime))
+          : formatTimeToString(dateTime: dateTime),
       textColor: color,
       padding: 2.0,
-      icon: Icon(hasBeenEdited ? Icons.edit : Icons.history_rounded, size: 17.0, color: color),
+      icon: Icon(hasBeenEdited ? Icons.edit : Icons.history_rounded,
+          size: 17.0, color: color),
     );
   }
 }
@@ -386,17 +434,21 @@ class LanguagePostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
-    final Color? readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+    final Color? readColor =
+        theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
 
     final color = switch (hasBeenRead) {
       true => readColor,
       _ => theme.textTheme.bodyMedium?.color,
     };
 
-    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
-    Language? language = languages.firstWhereOrNull((Language language) => language.id == languageId);
+    List<Language> languages =
+        context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
+    Language? language = languages
+        .firstWhereOrNull((Language language) => language.id == languageId);
 
-    if ((language?.name.isNotEmpty != true || language?.id == 0) && languageId != -1) {
+    if ((language?.name.isNotEmpty != true || language?.id == 0) &&
+        languageId != -1) {
       return Container();
     }
 
@@ -480,7 +532,9 @@ class PostCommunityAndAuthor extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
-      final bool showUsername = (state.showPostAuthor || feedType == FeedType.community) && feedType != FeedType.user;
+      final bool showUsername =
+          (state.showPostAuthor || feedType == FeedType.community) &&
+              feedType != FeedType.user;
       final bool showCommunityName = feedType != FeedType.community;
 
       return Row(
@@ -489,9 +543,12 @@ class PostCommunityAndAuthor extends StatelessWidget {
             GestureDetector(
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: CommunityAvatar(community: postView.community, radius: 14),
+                child:
+                    CommunityAvatar(community: postView.community, radius: 14),
               ),
-              onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
+              onTap: () => navigateToFeedPage(context,
+                  communityId: postView.community.id,
+                  feedType: FeedType.community),
             ),
           Expanded(
             child: Padding(
@@ -507,7 +564,11 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       children: [
                         InkWell(
                           borderRadius: BorderRadius.circular(6),
-                          onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id),
+                          onTap: (compactMode && !state.tappableAuthorCommunity)
+                              ? null
+                              : () => navigateToFeedPage(context,
+                                  feedType: FeedType.user,
+                                  userId: postView.creator.id),
                           child: UserFullNameWidget(
                             context,
                             postView.creator.name,
@@ -523,14 +584,19 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             ' to ',
                             fontScale: state.metadataFontSizeScale,
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                              color: theme.textTheme.bodyMedium?.color
+                                  ?.withOpacity(0.4),
                             ),
                           ),
                       ],
                     ),
                   InkWell(
                     borderRadius: BorderRadius.circular(6),
-                    onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.community, communityId: postView.community.id),
+                    onTap: (compactMode && !state.tappableAuthorCommunity)
+                        ? null
+                        : () => navigateToFeedPage(context,
+                            feedType: FeedType.community,
+                            communityId: postView.community.id),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -539,7 +605,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             context,
                             postView.community.name,
                             postView.community.title,
-                            fetchInstanceNameFromUrl(postView.community.actorId),
+                            fetchInstanceNameFromUrl(
+                                postView.community.actorId),
                             fontScale: state.metadataFontSizeScale,
                             transformColor: communityColorTransformation,
                           ),
@@ -552,7 +619,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             child: Icon(
                               Icons.playlist_add_check_rounded,
                               size: 16.0,
-                              color: communityColorTransformation?.call(theme.textTheme.bodyMedium?.color),
+                              color: communityColorTransformation
+                                  ?.call(theme.textTheme.bodyMedium?.color),
                             ),
                           ),
                       ],

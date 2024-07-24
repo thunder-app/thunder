@@ -47,8 +47,12 @@ class _UserHeaderState extends State<UserHeader> {
         },
         child: Stack(
           children: [
-            if (widget.getPersonDetailsResponse.personView.person.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.background)),
-            if (widget.getPersonDetailsResponse.personView.person.banner != null)
+            if (widget.getPersonDetailsResponse.personView.person.banner ==
+                null)
+              Positioned.fill(
+                  child: Container(color: theme.colorScheme.background)),
+            if (widget.getPersonDetailsResponse.personView.person.banner !=
+                null)
               Positioned.fill(
                 child: Row(
                   children: [
@@ -58,7 +62,11 @@ class _UserHeaderState extends State<UserHeader> {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(widget.getPersonDetailsResponse.personView.person.banner!),
+                            image: CachedNetworkImageProvider(widget
+                                .getPersonDetailsResponse
+                                .personView
+                                .person
+                                .banner!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -67,7 +75,8 @@ class _UserHeaderState extends State<UserHeader> {
                   ],
                 ),
               ),
-            if (widget.getPersonDetailsResponse.personView.person.banner != null)
+            if (widget.getPersonDetailsResponse.personView.person.banner !=
+                null)
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -88,7 +97,8 @@ class _UserHeaderState extends State<UserHeader> {
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
+                  padding: const EdgeInsets.only(
+                      top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -96,7 +106,8 @@ class _UserHeaderState extends State<UserHeader> {
                       Row(
                         children: [
                           UserAvatar(
-                            person: widget.getPersonDetailsResponse.personView.person,
+                            person: widget
+                                .getPersonDetailsResponse.personView.person,
                             radius: 45.0,
                           ),
                           const SizedBox(width: 20.0),
@@ -106,15 +117,25 @@ class _UserHeaderState extends State<UserHeader> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 AutoSizeText(
-                                  widget.getPersonDetailsResponse.personView.person.displayName ?? widget.getPersonDetailsResponse.personView.person.name,
-                                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                                  widget.getPersonDetailsResponse.personView
+                                          .person.displayName ??
+                                      widget.getPersonDetailsResponse.personView
+                                          .person.name,
+                                  style: theme.textTheme.headlineSmall
+                                      ?.copyWith(fontWeight: FontWeight.w600),
                                   maxLines: 1,
                                 ),
                                 UserFullNameWidget(
                                   context,
-                                  widget.getPersonDetailsResponse.personView.person.name,
-                                  widget.getPersonDetailsResponse.personView.person.displayName,
-                                  fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId),
+                                  widget.getPersonDetailsResponse.personView
+                                      .person.name,
+                                  widget.getPersonDetailsResponse.personView
+                                      .person.displayName,
+                                  fetchInstanceNameFromUrl(widget
+                                      .getPersonDetailsResponse
+                                      .personView
+                                      .person
+                                      .actorId),
                                   autoSize: true,
                                   // Override because we're showing display name above
                                   useDisplayName: false,
@@ -124,14 +145,23 @@ class _UserHeaderState extends State<UserHeader> {
                                   children: [
                                     IconText(
                                       icon: const Icon(Icons.wysiwyg_rounded),
-                                      text: formatNumberToK(widget.getPersonDetailsResponse.personView.counts.postCount),
+                                      text: formatNumberToK(widget
+                                          .getPersonDetailsResponse
+                                          .personView
+                                          .counts
+                                          .postCount),
                                     ),
                                     const SizedBox(width: 8.0),
                                     IconText(
                                       icon: const Icon(Icons.chat_rounded),
-                                      text: formatNumberToK(widget.getPersonDetailsResponse.personView.counts.commentCount),
+                                      text: formatNumberToK(widget
+                                          .getPersonDetailsResponse
+                                          .personView
+                                          .counts
+                                          .commentCount),
                                     ),
-                                    if (feedBloc.state.feedType == FeedType.user) ...[
+                                    if (feedBloc.state.feedType ==
+                                        FeedType.user) ...[
                                       const SizedBox(width: 8.0),
                                       IconText(
                                         icon: Icon(getSortIcon(feedBloc.state)),
@@ -148,7 +178,14 @@ class _UserHeaderState extends State<UserHeader> {
                             child: Icon(
                               Icons.info_outline_rounded,
                               size: 25,
-                              shadows: <Shadow>[Shadow(color: theme.colorScheme.background, blurRadius: 10.0), Shadow(color: theme.colorScheme.background, blurRadius: 20.0)],
+                              shadows: <Shadow>[
+                                Shadow(
+                                    color: theme.colorScheme.background,
+                                    blurRadius: 10.0),
+                                Shadow(
+                                    color: theme.colorScheme.background,
+                                    blurRadius: 20.0)
+                              ],
                             ),
                           ),
                         ],

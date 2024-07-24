@@ -34,7 +34,8 @@ class ErrorMessage extends StatelessWidget {
             const SizedBox(height: 8.0),
             Text(
               message ?? AppLocalizations.of(context)!.missingErrorMessage,
-              style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
+              style: theme.textTheme.labelLarge
+                  ?.copyWith(color: theme.dividerColor),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32.0),
@@ -42,8 +43,11 @@ class ErrorMessage extends StatelessWidget {
               Column(
                 children: [
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-                    onPressed: actions![0].loading == true ? null : () => actions![0].action.call(),
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50)),
+                    onPressed: actions![0].loading == true
+                        ? null
+                        : () => actions![0].action.call(),
                     child: actions![0].loading == true
                         ? const SizedBox(
                             width: 20,
@@ -57,11 +61,15 @@ class ErrorMessage extends StatelessWidget {
                     Row(
                       children: [
                         for (var action in actions!.skip(1)) ...[
-                          if (actions!.indexOf(action) > 1) const SizedBox(width: 10),
+                          if (actions!.indexOf(action) > 1)
+                            const SizedBox(width: 10),
                           Expanded(
                             child: TextButton(
-                              style: TextButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-                              onPressed: action.loading == true ? null : () => action.action.call(),
+                              style: TextButton.styleFrom(
+                                  minimumSize: const Size.fromHeight(50)),
+                              onPressed: action.loading == true
+                                  ? null
+                                  : () => action.action.call(),
                               child: action.loading == true
                                   ? const SizedBox(
                                       width: 20,

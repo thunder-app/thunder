@@ -27,7 +27,9 @@ Future<bool> sendAuthTokenToNotificationServer({
 }) async {
   try {
     final prefs = (await UserPreferences.instance).sharedPreferences;
-    String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+    String pushNotificationServer =
+        prefs.getString(LocalSettings.pushNotificationServer.name) ??
+            THUNDER_SERVER_URL;
 
     // Send POST request to notification server
     http.Response response = await http.post(
@@ -56,10 +58,13 @@ Future<bool> sendAuthTokenToNotificationServer({
 Future<bool> deleteAccountFromNotificationServer() async {
   try {
     final prefs = (await UserPreferences.instance).sharedPreferences;
-    String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+    String pushNotificationServer =
+        prefs.getString(LocalSettings.pushNotificationServer.name) ??
+            THUNDER_SERVER_URL;
 
     List<Account> accounts = await Account.accounts();
-    List<String> jwts = accounts.map((Account account) => account.jwt!).toList();
+    List<String> jwts =
+        accounts.map((Account account) => account.jwt!).toList();
 
     // Send POST request to notification server
     http.Response response = await http.delete(
@@ -79,7 +84,9 @@ Future<bool> deleteAccountFromNotificationServer() async {
 Future<bool> requestTestNotification() async {
   try {
     final prefs = (await UserPreferences.instance).sharedPreferences;
-    String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+    String pushNotificationServer =
+        prefs.getString(LocalSettings.pushNotificationServer.name) ??
+            THUNDER_SERVER_URL;
 
     final Account? account = await fetchActiveProfileAccount();
 

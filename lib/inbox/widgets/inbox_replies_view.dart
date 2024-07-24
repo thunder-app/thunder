@@ -51,7 +51,8 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
       return CustomScrollView(
         key: PageStorageKey<String>(l10n.reply(10)),
         slivers: [
-          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+          SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
           if (state.status == InboxStatus.loading)
             const SliverFillRemaining(
               hasScrollBody: false,
@@ -72,20 +73,32 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                 children: [
                   CommentReference(
                     comment: commentReplyView.toCommentView(),
-                    isOwnComment: commentReplyView.creator.id == context.read<AuthBloc>().state.account?.userId,
-                    onVoteAction: (int commentId, int voteType) => context.read<InboxBloc>().add(
-                          InboxItemActionEvent(
-                            action: CommentAction.vote,
+                    isOwnComment: commentReplyView.creator.id ==
+                        context.read<AuthBloc>().state.account?.userId,
+                    onVoteAction: (int commentId, int voteType) =>
+                        context.read<InboxBloc>().add(
+                              InboxItemActionEvent(
+                                action: CommentAction.vote,
+                                commentReplyId: commentReply.id,
+                                value: switch (voteType) {
+                                  1 => commentReplyView.myVote == 1 ? 0 : 1,
+                                  -1 => commentReplyView.myVote == -1 ? 0 : -1,
+                                  _ => 0,
+                                },
+                              ),
+                            ),
+                    onSaveAction: (int commentId, bool save) => context
+                        .read<InboxBloc>()
+                        .add(InboxItemActionEvent(
+                            action: CommentAction.save,
                             commentReplyId: commentReply.id,
-                            value: switch (voteType) {
-                              1 => commentReplyView.myVote == 1 ? 0 : 1,
-                              -1 => commentReplyView.myVote == -1 ? 0 : -1,
-                              _ => 0,
-                            },
-                          ),
-                        ),
-                    onSaveAction: (int commentId, bool save) => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.save, commentReplyId: commentReply.id, value: save)),
-                    onDeleteAction: (int commentId, bool deleted) => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.delete, commentReplyId: commentReply.id, value: deleted)),
+                            value: save)),
+                    onDeleteAction: (int commentId, bool deleted) => context
+                        .read<InboxBloc>()
+                        .add(InboxItemActionEvent(
+                            action: CommentAction.delete,
+                            commentReplyId: commentReply.id,
+                            value: deleted)),
                     onReplyEditAction: (CommentView commentView, bool isEdit) {
                       return navigateToCreateCommentPage(
                         context,
@@ -94,7 +107,11 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                       );
                     },
                     child: IconButton(
-                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, commentReplyId: commentReply.id, value: !commentReply.read)),
+                      onPressed: () => context.read<InboxBloc>().add(
+                          InboxItemActionEvent(
+                              action: CommentAction.read,
+                              commentReplyId: commentReply.id,
+                              value: !commentReply.read)),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,
@@ -103,12 +120,14 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                       visualDensity: VisualDensity.compact,
                     ),
                   ),
-                  if (index != widget.replies.length - 1) const ThunderDivider(sliver: false, padding: false),
+                  if (index != widget.replies.length - 1)
+                    const ThunderDivider(sliver: false, padding: false),
                 ],
               );
             },
           ),
-          if (state.hasReachedInboxReplyEnd && widget.replies.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
+          if (state.hasReachedInboxReplyEnd && widget.replies.isNotEmpty)
+            const SliverToBoxAdapter(child: FeedReachedEnd()),
         ],
       );
     });

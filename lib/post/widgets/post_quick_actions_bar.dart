@@ -64,21 +64,28 @@ class PostQuickActionsBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<AuthBloc, AuthState>(
-      buildWhen: (previous, current) => previous.isLoggedIn != current.isLoggedIn,
+      buildWhen: (previous, current) =>
+          previous.isLoggedIn != current.isLoggedIn,
       builder: (context, state) {
         bool isUserLoggedIn = state.isLoggedIn;
         bool downvotesEnabled = state.downvotesEnabled;
-        bool showScores = state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+        bool showScores =
+            state.getSiteResponse?.myUser?.localUserView.localUser.showScores ??
+                true;
 
         return Row(
           mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
               child: TextButton(
-                onPressed: isUserLoggedIn ? () => onVote?.call(vote == 1 ? 0 : 1) : null,
+                onPressed: isUserLoggedIn
+                    ? () => onVote?.call(vote == 1 ? 0 : 1)
+                    : null,
                 style: TextButton.styleFrom(
                   fixedSize: const Size.fromHeight(40),
-                  foregroundColor: vote == 1 ? theme.textTheme.bodyMedium?.color : context.read<ThunderBloc>().state.upvoteColor.color,
+                  foregroundColor: vote == 1
+                      ? theme.textTheme.bodyMedium?.color
+                      : context.read<ThunderBloc>().state.upvoteColor.color,
                   padding: EdgeInsets.zero,
                 ),
                 child: Wrap(
@@ -88,13 +95,29 @@ class PostQuickActionsBar extends StatelessWidget {
                     Icon(
                       Icons.arrow_upward_rounded,
                       semanticLabel: vote == 1 ? l10n.upvoted : l10n.upvote,
-                      color: isUserLoggedIn ? (vote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                      color: isUserLoggedIn
+                          ? (vote == 1
+                              ? context
+                                  .read<ThunderBloc>()
+                                  .state
+                                  .upvoteColor
+                                  .color
+                              : theme.textTheme.bodyMedium?.color)
+                          : null,
                     ),
                     if (showScores)
                       Text(
                         formatNumberToK(upvotes ?? 0),
                         style: TextStyle(
-                          color: isUserLoggedIn ? (vote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                          color: isUserLoggedIn
+                              ? (vote == 1
+                                  ? context
+                                      .read<ThunderBloc>()
+                                      .state
+                                      .upvoteColor
+                                      .color
+                                  : theme.textTheme.bodyMedium?.color)
+                              : null,
                         ),
                       ),
                   ],
@@ -104,10 +127,14 @@ class PostQuickActionsBar extends StatelessWidget {
             if (downvotesEnabled)
               Expanded(
                 child: TextButton(
-                  onPressed: isUserLoggedIn ? () => onVote?.call(vote == -1 ? 0 : -1) : null,
+                  onPressed: isUserLoggedIn
+                      ? () => onVote?.call(vote == -1 ? 0 : -1)
+                      : null,
                   style: TextButton.styleFrom(
                     fixedSize: const Size.fromHeight(40),
-                    foregroundColor: vote == -1 ? theme.textTheme.bodyMedium?.color : context.read<ThunderBloc>().state.downvoteColor.color,
+                    foregroundColor: vote == -1
+                        ? theme.textTheme.bodyMedium?.color
+                        : context.read<ThunderBloc>().state.downvoteColor.color,
                     padding: EdgeInsets.zero,
                   ),
                   child: Wrap(
@@ -116,14 +143,31 @@ class PostQuickActionsBar extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.arrow_downward_rounded,
-                        semanticLabel: vote == -1 ? l10n.downvoted : l10n.downvote,
-                        color: isUserLoggedIn ? (vote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                        semanticLabel:
+                            vote == -1 ? l10n.downvoted : l10n.downvote,
+                        color: isUserLoggedIn
+                            ? (vote == -1
+                                ? context
+                                    .read<ThunderBloc>()
+                                    .state
+                                    .downvoteColor
+                                    .color
+                                : theme.textTheme.bodyMedium?.color)
+                            : null,
                       ),
                       if (showScores)
                         Text(
                           formatNumberToK(downvotes ?? 0),
                           style: TextStyle(
-                            color: isUserLoggedIn ? (vote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                            color: isUserLoggedIn
+                                ? (vote == -1
+                                    ? context
+                                        .read<ThunderBloc>()
+                                        .state
+                                        .downvoteColor
+                                        .color
+                                    : theme.textTheme.bodyMedium?.color)
+                                : null,
                           ),
                         ),
                     ],
@@ -133,11 +177,18 @@ class PostQuickActionsBar extends StatelessWidget {
             Expanded(
               child: IconButton(
                 onPressed: isUserLoggedIn ? () => onSave?.call(!saved) : null,
-                style: IconButton.styleFrom(foregroundColor: saved ? null : context.read<ThunderBloc>().state.saveColor.color),
+                style: IconButton.styleFrom(
+                    foregroundColor: saved
+                        ? null
+                        : context.read<ThunderBloc>().state.saveColor.color),
                 icon: Icon(
                   saved ? Icons.star_rounded : Icons.star_border_rounded,
                   semanticLabel: saved ? l10n.saved : l10n.save,
-                  color: isUserLoggedIn ? (saved ? context.read<ThunderBloc>().state.saveColor.color : theme.textTheme.bodyMedium?.color) : null,
+                  color: isUserLoggedIn
+                      ? (saved
+                          ? context.read<ThunderBloc>().state.saveColor.color
+                          : theme.textTheme.bodyMedium?.color)
+                      : null,
                 ),
               ),
             ),
@@ -145,7 +196,9 @@ class PostQuickActionsBar extends StatelessWidget {
               Expanded(
                 child: IconButton(
                   onPressed: () => showSnackbar(l10n.postLocked),
-                  icon: Icon(Icons.lock, semanticLabel: l10n.postLocked, color: theme.colorScheme.error),
+                  icon: Icon(Icons.lock,
+                      semanticLabel: l10n.postLocked,
+                      color: theme.colorScheme.error),
                 ),
               ),
             if (!locked && isOwnPost)

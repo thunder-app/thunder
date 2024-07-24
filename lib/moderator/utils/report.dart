@@ -28,7 +28,8 @@ Future<Map<String, dynamic>> fetchReports({
 
   // Guarantee that we fetch at least x post and comment reports (unless we reach the end of the feed)
   do {
-    ListPostReportsResponse listPostReportsResponse = await lemmy.run(ListPostReports(
+    ListPostReportsResponse listPostReportsResponse =
+        await lemmy.run(ListPostReports(
       auth: account?.jwt,
       page: currentPage,
       limit: limit,
@@ -37,7 +38,8 @@ Future<Map<String, dynamic>> fetchReports({
       postId: postId,
     ));
 
-    ListCommentReportsResponse listCommentReportsResponse = await lemmy.run(ListCommentReports(
+    ListCommentReportsResponse listCommentReportsResponse =
+        await lemmy.run(ListCommentReports(
       auth: account?.jwt,
       page: currentPage,
       limit: limit,
@@ -49,10 +51,14 @@ Future<Map<String, dynamic>> fetchReports({
     postReportViews.addAll(listPostReportsResponse.postReports);
     commentReportViews.addAll(listCommentReportsResponse.commentReports);
 
-    if (listPostReportsResponse.postReports.isEmpty) hasReachedPostReportsEnd = true;
-    if (listCommentReportsResponse.commentReports.isEmpty) hasReachedCommentReportsEnd = true;
+    if (listPostReportsResponse.postReports.isEmpty)
+      hasReachedPostReportsEnd = true;
+    if (listCommentReportsResponse.commentReports.isEmpty)
+      hasReachedCommentReportsEnd = true;
     currentPage++;
-  } while (reportFeedType == ReportFeedType.post ? (!hasReachedPostReportsEnd && postReportViews.length < limit) : (!hasReachedCommentReportsEnd && commentReportViews.length < limit));
+  } while (reportFeedType == ReportFeedType.post
+      ? (!hasReachedPostReportsEnd && postReportViews.length < limit)
+      : (!hasReachedCommentReportsEnd && commentReportViews.length < limit));
 
   return {
     'postReportViews': postReportViews,
@@ -64,7 +70,8 @@ Future<Map<String, dynamic>> fetchReports({
 }
 
 // Optimistically resolves a post report. This changes the value of the post report locally, without sending the network request
-PostReport optimisticallyResolvePostReport(PostReport postReport, bool resolved) {
+PostReport optimisticallyResolvePostReport(
+    PostReport postReport, bool resolved) {
   return postReport.copyWith(resolved: resolved);
 }
 
@@ -83,7 +90,8 @@ Future<bool> resolvePostReport(int postReportId, bool resolved) async {
 }
 
 // Optimistically resolves a comment report. This changes the value of the comment report locally, without sending the network request
-CommentReport optimisticallyResolveCommentReport(CommentReport commentReport, bool resolved) {
+CommentReport optimisticallyResolveCommentReport(
+    CommentReport commentReport, bool resolved) {
   return commentReport.copyWith(resolved: resolved);
 }
 
@@ -92,11 +100,13 @@ Future<bool> resolveCommentReport(int commentReportId, bool resolved) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  CommentReportResponse commentReportResponse = await lemmy.run(ResolveCommentReport(
+  CommentReportResponse commentReportResponse =
+      await lemmy.run(ResolveCommentReport(
     reportId: commentReportId,
     resolved: resolved,
     auth: account!.jwt!,
   ));
 
-  return commentReportResponse.commentReportView.commentReport.resolved == resolved;
+  return commentReportResponse.commentReportView.commentReport.resolved ==
+      resolved;
 }

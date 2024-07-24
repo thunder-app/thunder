@@ -16,12 +16,16 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/constants.dart';
 
 Future<void> performSharedPreferencesMigration() async {
-  final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+  final SharedPreferences prefs =
+      (await UserPreferences.instance).sharedPreferences;
 
   // Migrate the openInExternalBrowser setting, if found.
-  bool? legacyOpenInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name);
+  bool? legacyOpenInExternalBrowser =
+      prefs.getBool(LocalSettings.openLinksInExternalBrowser.name);
   if (legacyOpenInExternalBrowser != null) {
-    final BrowserMode browserMode = legacyOpenInExternalBrowser ? BrowserMode.external : BrowserMode.customTabs;
+    final BrowserMode browserMode = legacyOpenInExternalBrowser
+        ? BrowserMode.external
+        : BrowserMode.customTabs;
     await prefs.remove(LocalSettings.openLinksInExternalBrowser.name);
     await prefs.setString(LocalSettings.browserMode.name, browserMode.name);
   }
@@ -29,27 +33,36 @@ Future<void> performSharedPreferencesMigration() async {
   // Check to see if browserMode was set incorrectly
   String? browserMode = prefs.getString(LocalSettings.browserMode.name);
   if (browserMode != null && browserMode.contains("BrowserMode")) {
-    await prefs.setString(LocalSettings.browserMode.name, browserMode.replaceAll('BrowserMode.', ''));
+    await prefs.setString(LocalSettings.browserMode.name,
+        browserMode.replaceAll('BrowserMode.', ''));
   }
 
   // Migrate the commentUseColorizedUsername setting, if found.
-  bool? legacyCommentUseColorizedUsername = prefs.getBool(LocalSettings.commentUseColorizedUsername.name);
+  bool? legacyCommentUseColorizedUsername =
+      prefs.getBool(LocalSettings.commentUseColorizedUsername.name);
   if (legacyCommentUseColorizedUsername != null) {
     await prefs.remove(LocalSettings.commentUseColorizedUsername.name);
     if (legacyCommentUseColorizedUsername == true) {
-      await prefs.setString(LocalSettings.userFullNameUserNameColor.name, NameColor.themePrimary);
+      await prefs.setString(
+          LocalSettings.userFullNameUserNameColor.name, NameColor.themePrimary);
     }
   }
 
   // Migrate the enableInboxNotifications setting, if found.
-  bool? legacyEnableInboxNotifications = prefs.getBool('setting_enable_inbox_notifications');
+  bool? legacyEnableInboxNotifications =
+      prefs.getBool('setting_enable_inbox_notifications');
   if (legacyEnableInboxNotifications != null) {
     await prefs.remove('setting_enable_inbox_notifications');
-    await prefs.setString(LocalSettings.inboxNotificationType.name, legacyEnableInboxNotifications ? NotificationType.local.name : NotificationType.none.name);
+    await prefs.setString(
+        LocalSettings.inboxNotificationType.name,
+        legacyEnableInboxNotifications
+            ? NotificationType.local.name
+            : NotificationType.none.name);
   }
 
   // Migrate drafts to database
-  Iterable<String> draftsKeys = prefs.getKeys().where((pref) => pref.startsWith('drafts_cache'));
+  Iterable<String> draftsKeys =
+      prefs.getKeys().where((pref) => pref.startsWith('drafts_cache'));
   for (String draftKey in draftsKeys) {
     try {
       late DraftType draftType;
@@ -79,15 +92,18 @@ Future<void> performSharedPreferencesMigration() async {
         draftType = DraftType.commentCreate;
         replyId = int.parse(draftKey.split('-').last);
         // ignore: deprecated_member_use_from_same_package
-        draftComment = DraftComment.fromJson(jsonDecode(prefs.getString(draftKey)!));
+        draftComment =
+            DraftComment.fromJson(jsonDecode(prefs.getString(draftKey)!));
       } else if (draftKey.contains('comment-edit')) {
         draftType = DraftType.commentEdit;
         existingId = int.parse(draftKey.split('-').last);
         // ignore: deprecated_member_use_from_same_package
-        draftComment = DraftComment.fromJson(jsonDecode(prefs.getString(draftKey)!));
+        draftComment =
+            DraftComment.fromJson(jsonDecode(prefs.getString(draftKey)!));
       } else {
         // We can't parse the draft type from the shared preferences.
-        debugPrint('Cannot parse draft type from SharedPreferences key: $draftKey');
+        debugPrint(
+            'Cannot parse draft type from SharedPreferences key: $draftKey');
         continue;
       }
 
@@ -111,16 +127,21 @@ Future<void> performSharedPreferencesMigration() async {
   }
 
   // Update the default feed type setting
-  ListingType defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+  ListingType defaultListingType = ListingType.values.byName(
+      prefs.getString(LocalSettings.defaultFeedListingType.name) ??
+          DEFAULT_LISTING_TYPE.name);
   if (defaultListingType == ListingType.subscribed) {
-    await prefs.setString(LocalSettings.defaultFeedListingType.name, DEFAULT_LISTING_TYPE.name);
+    await prefs.setString(
+        LocalSettings.defaultFeedListingType.name, DEFAULT_LISTING_TYPE.name);
   }
 
   // Migrate anonymous instances to database
-  final List<String>? anonymousInstances = prefs.getStringList('setting_anonymous_instances');
+  final List<String>? anonymousInstances =
+      prefs.getStringList('setting_anonymous_instances');
   try {
     for (String instance in anonymousInstances ?? []) {
-      Account anonymousInstance = Account(id: '', instance: instance, index: -1, anonymous: true);
+      Account anonymousInstance =
+          Account(id: '', instance: instance, index: -1, anonymous: true);
       Account.insertAnonymousInstance(anonymousInstance);
     }
 

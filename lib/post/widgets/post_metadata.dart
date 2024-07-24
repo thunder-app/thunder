@@ -47,9 +47,17 @@ class PostMetadata extends StatelessWidget {
           children: postCardMetadataItems.map(
             (PostCardMetadataItem postCardMetadataItem) {
               return switch (postCardMetadataItem) {
-                PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(commentCount: commentCount, unreadCommentCount: unreadCommentCount ?? 0, hasBeenRead: false),
-                PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: dateTime!, hasBeenRead: false, hasBeenEdited: hasBeenEdited ?? false),
-                PostCardMetadataItem.url => UrlPostCardMetaData(url: url, hasBeenRead: false),
+                PostCardMetadataItem.commentCount =>
+                  CommentCountPostCardMetaData(
+                      commentCount: commentCount,
+                      unreadCommentCount: unreadCommentCount ?? 0,
+                      hasBeenRead: false),
+                PostCardMetadataItem.dateTime => DateTimePostCardMetaData(
+                    dateTime: dateTime!,
+                    hasBeenRead: false,
+                    hasBeenEdited: hasBeenEdited ?? false),
+                PostCardMetadataItem.url =>
+                  UrlPostCardMetaData(url: url, hasBeenRead: false),
                 _ => Container(),
               };
             },

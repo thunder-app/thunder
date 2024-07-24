@@ -38,10 +38,12 @@ class PostAppearanceSettingsPage extends StatefulWidget {
   const PostAppearanceSettingsPage({super.key, this.settingToHighlight});
 
   @override
-  State<PostAppearanceSettingsPage> createState() => _PostAppearanceSettingsPageState();
+  State<PostAppearanceSettingsPage> createState() =>
+      _PostAppearanceSettingsPageState();
 }
 
-class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage> with SingleTickerProviderStateMixin {
+class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
+    with SingleTickerProviderStateMixin {
   /// Blurs any posts that are marked as NSFW
   bool hideNsfwPreviews = true;
 
@@ -94,13 +96,16 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   DateFormat? selectedDateFormat;
 
   /// The thickness of the divider between the post cards
-  FeedCardDividerThickness feedCardDividerThickness = FeedCardDividerThickness.compact;
+  FeedCardDividerThickness feedCardDividerThickness =
+      FeedCardDividerThickness.compact;
 
   /// The color of the divider between the post cards
   Color feedCardDividerColor = Colors.transparent;
 
   /// List of available date formats to select from
-  List<DateFormat> dateFormats = [DateFormat.yMMMMd(Intl.systemLocale).add_jm()];
+  List<DateFormat> dateFormats = [
+    DateFormat.yMMMMd(Intl.systemLocale).add_jm()
+  ];
 
   /// When enabled, cross posts will be shown on the post page
   bool showCrossPosts = true;
@@ -137,39 +142,76 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
     setState(() {
       // General Settings
-      useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
-      hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
-      hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
-      showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
-      postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
+      useCompactView =
+          prefs.getBool(LocalSettings.useCompactView.name) ?? false;
+      hideNsfwPreviews =
+          prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
+      hideThumbnails =
+          prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
+      showPostAuthor =
+          prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
+      postShowUserInstance =
+          prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
-      showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
-      selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : dateFormats.first;
-      feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
-      feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.value);
+      showFullPostDate =
+          prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
+      selectedDateFormat =
+          prefs.getString(LocalSettings.dateFormat.name) != null
+              ? DateFormat(prefs.getString(LocalSettings.dateFormat.name))
+              : dateFormats.first;
+      feedCardDividerThickness = FeedCardDividerThickness.values.byName(
+          prefs.getString(LocalSettings.feedCardDividerThickness.name) ??
+              FeedCardDividerThickness.compact.name);
+      feedCardDividerColor = Color(
+          prefs.getInt(LocalSettings.feedCardDividerColor.name) ??
+              Colors.transparent.value);
 
       // Compact View Settings
-      compactPostCardMetadataItems =
-          prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
-      cardPostCardMetadataItems = prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
-      showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
-      showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
+      compactPostCardMetadataItems = prefs
+              .getStringList(LocalSettings.compactPostCardMetadataItems.name)
+              ?.map((e) => PostCardMetadataItem.values.byName(e))
+              .toList() ??
+          DEFAULT_COMPACT_POST_CARD_METADATA;
+      cardPostCardMetadataItems = prefs
+              .getStringList(LocalSettings.cardPostCardMetadataItems.name)
+              ?.map((e) => PostCardMetadataItem.values.byName(e))
+              .toList() ??
+          DEFAULT_CARD_POST_CARD_METADATA;
+      showThumbnailPreviewOnRight =
+          prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ??
+              false;
+      showTextPostIndicator =
+          prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
 
       // Card View Settings
-      showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
-      showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
-      showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
-      showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
-      showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
-      showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
-      showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
+      showTitleFirst =
+          prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
+      showFullHeightImages =
+          prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+      showEdgeToEdgeImages =
+          prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
+      showTextContent =
+          prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
+      showVoteActions =
+          prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
+      showSaveAction =
+          prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
+      showCommunityIcons =
+          prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
 
       // Post body settings
       showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
-      postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
-      postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
-      postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
-      postBodyShowCommunityAvatar = prefs.getBool(LocalSettings.postBodyShowCommunityAvatar.name) ?? false;
+      postBodyViewType = PostBodyViewType.values.byName(
+          prefs.getString(LocalSettings.postBodyViewType.name) ??
+              PostBodyViewType.expanded.name);
+      postBodyShowUserInstance =
+          prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
+      postBodyShowCommunityInstance =
+          prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ??
+              false;
+      postBodyShowCommunityAvatar =
+          prefs.getBool(LocalSettings.postBodyShowCommunityAvatar.name) ??
+              false;
     });
   }
 
@@ -207,23 +249,28 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         setState(() => showFullPostDate = value);
         break;
       case LocalSettings.dateFormat:
-        await prefs.setString(LocalSettings.dateFormat.name, (value as DateFormat).pattern ?? dateFormats.first.pattern!);
+        await prefs.setString(LocalSettings.dateFormat.name,
+            (value as DateFormat).pattern ?? dateFormats.first.pattern!);
         setState(() => selectedDateFormat = value);
         break;
       case LocalSettings.feedCardDividerThickness:
-        await prefs.setString(LocalSettings.feedCardDividerThickness.name, (value as FeedCardDividerThickness).name);
+        await prefs.setString(LocalSettings.feedCardDividerThickness.name,
+            (value as FeedCardDividerThickness).name);
         setState(() => feedCardDividerThickness = value);
         break;
       case LocalSettings.feedCardDividerColor:
-        await prefs.setInt(LocalSettings.feedCardDividerColor.name, value.value);
+        await prefs.setInt(
+            LocalSettings.feedCardDividerColor.name, value.value);
         setState(() => feedCardDividerColor = value);
         break;
 
       case LocalSettings.compactPostCardMetadataItems:
-        await prefs.setStringList(LocalSettings.compactPostCardMetadataItems.name, value);
+        await prefs.setStringList(
+            LocalSettings.compactPostCardMetadataItems.name, value);
         break;
       case LocalSettings.showThumbnailPreviewOnRight:
-        await prefs.setBool(LocalSettings.showThumbnailPreviewOnRight.name, value);
+        await prefs.setBool(
+            LocalSettings.showThumbnailPreviewOnRight.name, value);
         setState(() => showThumbnailPreviewOnRight = value);
         break;
       case LocalSettings.showTextPostIndicator:
@@ -231,7 +278,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         setState(() => showTextPostIndicator = value);
         break;
       case LocalSettings.cardPostCardMetadataItems:
-        await prefs.setStringList(LocalSettings.cardPostCardMetadataItems.name, value);
+        await prefs.setStringList(
+            LocalSettings.cardPostCardMetadataItems.name, value);
         break;
       case LocalSettings.showPostTitleFirst:
         await prefs.setBool(LocalSettings.showPostTitleFirst.name, value);
@@ -246,7 +294,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         setState(() => showEdgeToEdgeImages = value);
         break;
       case LocalSettings.showPostTextContentPreview:
-        await prefs.setBool(LocalSettings.showPostTextContentPreview.name, value);
+        await prefs.setBool(
+            LocalSettings.showPostTextContentPreview.name, value);
         setState(() => showTextContent = value);
         break;
       case LocalSettings.showPostVoteActions:
@@ -267,7 +316,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         setState(() => showCrossPosts = value);
         break;
       case LocalSettings.postBodyViewType:
-        await prefs.setString(LocalSettings.postBodyViewType.name, (value as PostBodyViewType).name);
+        await prefs.setString(LocalSettings.postBodyViewType.name,
+            (value as PostBodyViewType).name);
         setState(() => postBodyViewType = value);
         break;
       case LocalSettings.postBodyShowUserInstance:
@@ -275,11 +325,13 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         setState(() => postBodyShowUserInstance = value);
         break;
       case LocalSettings.postBodyShowCommunityInstance:
-        await prefs.setBool(LocalSettings.postBodyShowCommunityInstance.name, value);
+        await prefs.setBool(
+            LocalSettings.postBodyShowCommunityInstance.name, value);
         setState(() => postBodyShowCommunityInstance = value);
         break;
       case LocalSettings.postBodyShowCommunityAvatar:
-        await prefs.setBool(LocalSettings.postBodyShowCommunityAvatar.name, value);
+        await prefs.setBool(
+            LocalSettings.postBodyShowCommunityAvatar.name, value);
         setState(() => postBodyShowCommunityAvatar = value);
         break;
     }
@@ -334,7 +386,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       personName: 'Lightning',
       personInstance: 'lemmy.world',
       communityName: 'Thunder',
-      postBody: 'Thunder is an open source, cross platform app for interacting, and exploring Lemmy communities.',
+      postBody:
+          'Thunder is an open source, cross platform app for interacting, and exploring Lemmy communities.',
       read: dimReadPosts,
       scoreCount: 50,
       commentCount: 4,
@@ -346,7 +399,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       personDisplayName: 'User',
       personInstance: 'lemmy.world',
       communityName: 'Thunder',
-      postUrl: 'https://lemmy.ml/pictrs/image/4ff0a2f3-970c-4493-b143-a6d46d378c95.jpeg',
+      postUrl:
+          'https://lemmy.ml/pictrs/image/4ff0a2f3-970c-4493-b143-a6d46d378c95.jpeg',
       nsfw: true,
       read: false,
       scoreCount: 102,
@@ -365,7 +419,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 543,
     );
 
-    return [postViewMediaText, postViewMediaLink, postViewMediaImage].whereNotNull().toList();
+    return [postViewMediaText, postViewMediaLink, postViewMediaImage]
+        .whereNotNull()
+        .toList();
   }
 
   @override
@@ -438,7 +494,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     context: context,
                     title: l10n.resetPreferences,
                     contentText: l10n.confirmResetPostPreferences,
-                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                    onSecondaryButtonPressed: (dialogContext) =>
+                        Navigator.of(dialogContext).pop(),
                     secondaryButtonText: l10n.cancel,
                     onPrimaryButtonPressed: (dialogContext, _) {
                       resetPostPreferences();
@@ -470,8 +527,12 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                         ),
                         IconButton(
                           icon: Icon(
-                            expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                            semanticLabel: expandableController.expanded ? l10n.collapsePostPreview : l10n.expandPostPreview,
+                            expandableController.expanded
+                                ? Icons.expand_less_rounded
+                                : Icons.expand_more_rounded,
+                            semanticLabel: expandableController.expanded
+                                ? l10n.collapsePostPreview
+                                : l10n.expandPostPreview,
                           ),
                           onPressed: () {
                             expandableController.toggle();
@@ -486,7 +547,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     child: Text(
                       l10n.postPreview,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                       ),
                     ),
                   ),
@@ -519,7 +581,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                         child: PostCardViewComfortable(
                                           postViewMedia: snapshot.data![index]!,
                                           hideThumbnails: hideThumbnails,
-                                          showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
+                                          showThumbnailPreviewOnRight:
+                                              showThumbnailPreviewOnRight,
                                           showPostAuthor: showPostAuthor,
                                           hideNsfwPreviews: hideNsfwPreviews,
                                           feedType: FeedType.general,
@@ -527,12 +590,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                           isUserLoggedIn: true,
                                           listingType: ListingType.all,
                                           indicateRead: dimReadPosts,
-                                          edgeToEdgeImages: showEdgeToEdgeImages,
+                                          edgeToEdgeImages:
+                                              showEdgeToEdgeImages,
                                           showTitleFirst: showTitleFirst,
-                                          showFullHeightImages: showFullHeightImages,
+                                          showFullHeightImages:
+                                              showFullHeightImages,
                                           showVoteActions: showVoteActions,
                                           showSaveAction: showSaveAction,
-                                          showCommunityIcons: showCommunityIcons,
+                                          showCommunityIcons:
+                                              showCommunityIcons,
                                           showTextContent: showTextContent,
                                           onVoteAction: (voteType) {},
                                           onSaveAction: (saved) {},
@@ -554,20 +620,32 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child:
+                  Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.postViewType,
-              value: ListPickerItem(label: useCompactView ? l10n.compactView : l10n.cardView, icon: Icons.crop_16_9_rounded, payload: useCompactView),
+              value: ListPickerItem(
+                  label: useCompactView ? l10n.compactView : l10n.cardView,
+                  icon: Icons.crop_16_9_rounded,
+                  payload: useCompactView),
               options: [
-                ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.compactView, payload: true),
-                ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.cardView, payload: false),
+                ListPickerItem(
+                    icon: Icons.crop_16_9_rounded,
+                    label: l10n.compactView,
+                    payload: true),
+                ListPickerItem(
+                    icon: Icons.crop_din_rounded,
+                    label: l10n.cardView,
+                    payload: false),
               ],
               icon: Icons.view_list_rounded,
-              onChanged: (value) async => setPreferences(LocalSettings.useCompactView, value.payload),
+              onChanged: (value) async =>
+                  setPreferences(LocalSettings.useCompactView, value.payload),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.useCompactView,
               highlightedSetting: settingToHighlight,
@@ -579,7 +657,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: hideNsfwPreviews,
               iconEnabled: Icons.no_adult_content,
               iconDisabled: Icons.no_adult_content,
-              onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPreviews, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.hideNsfwPreviews, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.hideNsfwPreviews,
               highlightedSetting: settingToHighlight,
@@ -591,7 +670,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: hideThumbnails,
               iconEnabled: Icons.hide_image_outlined,
               iconDisabled: Icons.image_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.hideThumbnails, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.hideThumbnails,
               highlightedSetting: settingToHighlight,
@@ -604,7 +684,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showPostAuthor,
               iconEnabled: Icons.person_rounded,
               iconDisabled: Icons.person_off_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.showPostAuthor, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showPostAuthor,
               highlightedSetting: settingToHighlight,
@@ -616,7 +697,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: postShowUserInstance,
               iconEnabled: Icons.dns_sharp,
               iconDisabled: Icons.dns_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.postShowUserInstance, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.postShowUserInstance, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.postShowUserInstance,
               highlightedSetting: settingToHighlight,
@@ -629,7 +711,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: dimReadPosts,
               iconEnabled: Icons.chrome_reader_mode,
               iconDisabled: Icons.chrome_reader_mode_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.dimReadPosts, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.dimReadPosts,
               highlightedSetting: settingToHighlight,
@@ -642,7 +725,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showFullPostDate,
               iconEnabled: Icons.date_range_rounded,
               iconDisabled: Icons.date_range_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.showFullPostDate, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.showFullPostDate, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showFullPostDate,
               highlightedSetting: settingToHighlight,
@@ -653,7 +737,11 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               description: l10n.dateFormat,
               disabled: !showFullPostDate,
               value: ListPickerItem(
-                label: (selectedDateFormat == null || selectedDateFormat!.pattern == dateFormats.first.pattern) ? l10n.system : selectedDateFormat!.pattern!,
+                label: (selectedDateFormat == null ||
+                        selectedDateFormat!.pattern ==
+                            dateFormats.first.pattern)
+                    ? l10n.system
+                    : selectedDateFormat!.pattern!,
                 icon: Icons.access_time_filled_rounded,
                 payload: selectedDateFormat,
                 capitalizeLabel: false,
@@ -664,12 +752,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                       icon: Icons.access_time_filled_rounded,
                       label: dateFormat.format(DateTime.now()),
                       payload: dateFormat,
-                      subtitle: dateFormat.pattern == dateFormats.first.pattern ? l10n.system : dateFormat.pattern,
+                      subtitle: dateFormat.pattern == dateFormats.first.pattern
+                          ? l10n.system
+                          : dateFormat.pattern,
                     ),
                   )
                   .toList(),
               icon: Icons.access_time_filled_rounded,
-              onChanged: (value) async => setPreferences(LocalSettings.dateFormat, value.payload),
+              onChanged: (value) async =>
+                  setPreferences(LocalSettings.dateFormat, value.payload),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.dateFormat,
               highlightedSetting: settingToHighlight,
@@ -700,7 +791,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                       ListPickerItem<int>(
                         customWidget: ListTile(
                           title: Text(l10n.thickness),
-                          contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                          contentPadding:
+                              const EdgeInsets.only(left: 24.0, right: 20.0),
                           trailing: DropdownButton<FeedCardDividerThickness>(
                             value: feedCardDividerThickness,
                             underline: const SizedBox(),
@@ -719,7 +811,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                               )
                             ],
                             onChanged: (FeedCardDividerThickness? value) {
-                              setPreferences(LocalSettings.feedCardDividerThickness, value);
+                              setPreferences(
+                                  LocalSettings.feedCardDividerThickness,
+                                  value);
                               setState(() {}); // Trigger rebuild
                             },
                           ),
@@ -729,20 +823,25 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                       ListPickerItem<int>(
                         customWidget: ListTile(
                           title: Text(l10n.color),
-                          contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                          contentPadding:
+                              const EdgeInsets.only(left: 24.0, right: 20.0),
                           trailing: DropdownButton<Color>(
                             menuMaxHeight: 500.0,
                             value: feedCardDividerColor,
                             underline: const SizedBox(),
                             items: CustomThemeType.values
-                                .map((CustomThemeType customThemeType) => DropdownMenuItem<Color>(
+                                .map((CustomThemeType customThemeType) =>
+                                    DropdownMenuItem<Color>(
                                       alignment: Alignment.center,
-                                      value: Color(customThemeType.primaryColor.value),
+                                      value: Color(
+                                          customThemeType.primaryColor.value),
                                       child: CircleAvatar(
                                         radius: 16.0,
                                         backgroundColor: Color.alphaBlend(
-                                          theme.colorScheme.primaryContainer.withOpacity(0.6),
-                                          Color(customThemeType.primaryColor.value),
+                                          theme.colorScheme.primaryContainer
+                                              .withOpacity(0.6),
+                                          Color(customThemeType
+                                              .primaryColor.value),
                                         ),
                                       ),
                                     ))
@@ -752,11 +851,13 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                 const DropdownMenuItem<Color>(
                                   alignment: Alignment.center,
                                   value: Colors.transparent,
-                                  child: CircleAvatar(radius: 16.0, child: Text('D')),
+                                  child: CircleAvatar(
+                                      radius: 16.0, child: Text('D')),
                                 ),
                               ),
                             onChanged: (Color? value) {
-                              setPreferences(LocalSettings.feedCardDividerColor, value);
+                              setPreferences(
+                                  LocalSettings.feedCardDividerColor, value);
                               setState(() {}); // Trigger rebuild
                             },
                           ),
@@ -772,15 +873,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           const SliverToBoxAdapter(child: SizedBox(height: 32.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.compactViewSettings, style: theme.textTheme.titleMedium),
+                  Text(l10n.compactViewSettings,
+                      style: theme.textTheme.titleMedium),
                   Text(
                     l10n.compactViewDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                     ),
                   ),
                 ],
@@ -789,19 +893,26 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           SliverToBoxAdapter(
             child: SmoothHighlight(
-              key: settingToHighlight == LocalSettings.compactPostCardMetadataItems ? settingToHighlightKey : null,
-              useInitialHighLight: settingToHighlight == LocalSettings.compactPostCardMetadataItems,
-              enabled: settingToHighlight == LocalSettings.compactPostCardMetadataItems,
+              key: settingToHighlight ==
+                      LocalSettings.compactPostCardMetadataItems
+                  ? settingToHighlightKey
+                  : null,
+              useInitialHighLight: settingToHighlight ==
+                  LocalSettings.compactPostCardMetadataItems,
+              enabled: settingToHighlight ==
+                  LocalSettings.compactPostCardMetadataItems,
               color: theme.colorScheme.primaryContainer,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: buildCompactViewMetadataPreview(isDisabled: useCompactView == false),
+                child: buildCompactViewMetadataPreview(
+                    isDisabled: useCompactView == false),
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Container(
-              margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+              margin:
+                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
               child: Text(
                 l10n.postMetadataInstructions,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -812,18 +923,29 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           SliverToBoxAdapter(
             child: Container(
-              decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
+              decoration: BoxDecoration(
+                  border: Border.all(color: theme.dividerColor),
+                  borderRadius: BorderRadius.circular(8.0)),
               margin: const EdgeInsets.symmetric(horizontal: 16.0),
               padding: const EdgeInsets.all(8.0),
               child: PostCardMetadataDraggableTarget(
                 isDisabled: useCompactView == false,
-                containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !compactPostCardMetadataItems.contains(element)).toList(),
+                containedPostCardMetadataItems: PostCardMetadataItem.values
+                    .where((element) =>
+                        !compactPostCardMetadataItems.contains(element))
+                    .toList(),
                 onAcceptedData: (data) {
-                  List<PostCardMetadataItem> newCompactPostCardMetadataItems = List.from(compactPostCardMetadataItems)..remove(data);
+                  List<PostCardMetadataItem> newCompactPostCardMetadataItems =
+                      List.from(compactPostCardMetadataItems)..remove(data);
 
                   setState(() {
-                    compactPostCardMetadataItems = newCompactPostCardMetadataItems;
-                    setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
+                    compactPostCardMetadataItems =
+                        newCompactPostCardMetadataItems;
+                    setPreferences(
+                        LocalSettings.compactPostCardMetadataItems,
+                        compactPostCardMetadataItems
+                            .map((e) => e.name)
+                            .toList());
                   });
                 },
               ),
@@ -836,7 +958,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showThumbnailPreviewOnRight,
               iconEnabled: Icons.switch_left_rounded,
               iconDisabled: Icons.switch_right_rounded,
-              onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showThumbnailPreviewOnRight, value),
+              onToggle: useCompactView == false
+                  ? null
+                  : (bool value) => setPreferences(
+                      LocalSettings.showThumbnailPreviewOnRight, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showThumbnailPreviewOnRight,
               highlightedSetting: settingToHighlight,
@@ -848,7 +973,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showTextPostIndicator,
               iconEnabled: Icons.article,
               iconDisabled: Icons.article_outlined,
-              onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showTextPostIndicator, value),
+              onToggle: useCompactView == false
+                  ? null
+                  : (bool value) => setPreferences(
+                      LocalSettings.showTextPostIndicator, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showTextPostIndicator,
               highlightedSetting: settingToHighlight,
@@ -857,15 +985,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           const SliverToBoxAdapter(child: SizedBox(height: 32.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.cardViewSettings, style: theme.textTheme.titleMedium),
+                  Text(l10n.cardViewSettings,
+                      style: theme.textTheme.titleMedium),
                   Text(
                     l10n.cardViewDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -874,20 +1005,26 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           SliverToBoxAdapter(
             child: SmoothHighlight(
-              key: settingToHighlight == LocalSettings.cardPostCardMetadataItems ? settingToHighlightKey : null,
-              useInitialHighLight: settingToHighlight == LocalSettings.cardPostCardMetadataItems,
-              enabled: settingToHighlight == LocalSettings.cardPostCardMetadataItems,
+              key: settingToHighlight == LocalSettings.cardPostCardMetadataItems
+                  ? settingToHighlightKey
+                  : null,
+              useInitialHighLight:
+                  settingToHighlight == LocalSettings.cardPostCardMetadataItems,
+              enabled:
+                  settingToHighlight == LocalSettings.cardPostCardMetadataItems,
               color: theme.colorScheme.primaryContainer,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: buildCardViewMetadataPreview(isDisabled: useCompactView == true),
+                child: buildCardViewMetadataPreview(
+                    isDisabled: useCompactView == true),
               ),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Container(
-              margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+              margin:
+                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
               child: Text(
                 l10n.postMetadataInstructions,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -898,18 +1035,25 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           SliverToBoxAdapter(
             child: Container(
-              decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
+              decoration: BoxDecoration(
+                  border: Border.all(color: theme.dividerColor),
+                  borderRadius: BorderRadius.circular(8.0)),
               margin: const EdgeInsets.symmetric(horizontal: 16.0),
               padding: const EdgeInsets.all(8.0),
               child: PostCardMetadataDraggableTarget(
                 isDisabled: useCompactView == true,
-                containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !cardPostCardMetadataItems.contains(element)).toList(),
+                containedPostCardMetadataItems: PostCardMetadataItem.values
+                    .where((element) =>
+                        !cardPostCardMetadataItems.contains(element))
+                    .toList(),
                 onAcceptedData: (data) {
-                  List<PostCardMetadataItem> newCardPostCardMetadataItems = List.from(cardPostCardMetadataItems)..remove(data);
+                  List<PostCardMetadataItem> newCardPostCardMetadataItems =
+                      List.from(cardPostCardMetadataItems)..remove(data);
 
                   setState(() {
                     cardPostCardMetadataItems = newCardPostCardMetadataItems;
-                    setPreferences(LocalSettings.cardPostCardMetadataItems, cardPostCardMetadataItems.map((e) => e.name).toList());
+                    setPreferences(LocalSettings.cardPostCardMetadataItems,
+                        cardPostCardMetadataItems.map((e) => e.name).toList());
                   });
                 },
               ),
@@ -922,7 +1066,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showTitleFirst,
               iconEnabled: Icons.vertical_align_top_rounded,
               iconDisabled: Icons.vertical_align_bottom_rounded,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTitleFirst, value),
+              onToggle: useCompactView
+                  ? null
+                  : (bool value) =>
+                      setPreferences(LocalSettings.showPostTitleFirst, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showPostTitleFirst,
               highlightedSetting: settingToHighlight,
@@ -934,7 +1081,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showFullHeightImages,
               iconEnabled: Icons.image_rounded,
               iconDisabled: Icons.image_outlined,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostFullHeightImages, value),
+              onToggle: useCompactView
+                  ? null
+                  : (bool value) => setPreferences(
+                      LocalSettings.showPostFullHeightImages, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showPostFullHeightImages,
               highlightedSetting: settingToHighlight,
@@ -946,7 +1096,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showEdgeToEdgeImages,
               iconEnabled: Icons.fit_screen_rounded,
               iconDisabled: Icons.fit_screen_outlined,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostEdgeToEdgeImages, value),
+              onToggle: useCompactView
+                  ? null
+                  : (bool value) => setPreferences(
+                      LocalSettings.showPostEdgeToEdgeImages, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showPostEdgeToEdgeImages,
               highlightedSetting: settingToHighlight,
@@ -958,7 +1111,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showTextContent,
               iconEnabled: Icons.notes_rounded,
               iconDisabled: Icons.notes_rounded,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTextContentPreview, value),
+              onToggle: useCompactView
+                  ? null
+                  : (bool value) => setPreferences(
+                      LocalSettings.showPostTextContentPreview, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showPostTextContentPreview,
               highlightedSetting: settingToHighlight,
@@ -970,7 +1126,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showVoteActions,
               iconEnabled: Icons.import_export_rounded,
               iconDisabled: Icons.import_export_rounded,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostVoteActions, value),
+              onToggle: useCompactView
+                  ? null
+                  : (bool value) =>
+                      setPreferences(LocalSettings.showPostVoteActions, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showPostVoteActions,
               highlightedSetting: settingToHighlight,
@@ -982,7 +1141,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showSaveAction,
               iconEnabled: Icons.star_rounded,
               iconDisabled: Icons.star_border_rounded,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostSaveAction, value),
+              onToggle: useCompactView
+                  ? null
+                  : (bool value) =>
+                      setPreferences(LocalSettings.showPostSaveAction, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showPostSaveAction,
               highlightedSetting: settingToHighlight,
@@ -994,7 +1156,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showCommunityIcons,
               iconEnabled: Icons.groups,
               iconDisabled: Icons.groups,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostCommunityIcons, value),
+              onToggle: useCompactView
+                  ? null
+                  : (bool value) => setPreferences(
+                      LocalSettings.showPostCommunityIcons, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showPostCommunityIcons,
               highlightedSetting: settingToHighlight,
@@ -1003,15 +1168,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           const SliverToBoxAdapter(child: SizedBox(height: 32.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.postBodySettings, style: theme.textTheme.titleMedium),
+                  Text(l10n.postBodySettings,
+                      style: theme.textTheme.titleMedium),
                   Text(
                     l10n.postBodySettingsDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -1024,7 +1192,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: showCrossPosts,
               iconEnabled: Icons.repeat_on_rounded,
               iconDisabled: Icons.repeat_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.showCrossPosts, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.showCrossPosts, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showCrossPosts,
               highlightedSetting: settingToHighlight,
@@ -1042,11 +1211,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   payload: postBodyViewType,
                   capitalizeLabel: false),
               options: [
-                ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
-                ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
+                ListPickerItem(
+                    icon: Icons.crop_16_9_rounded,
+                    label: l10n.condensed,
+                    payload: PostBodyViewType.condensed),
+                ListPickerItem(
+                    icon: Icons.crop_din_rounded,
+                    label: l10n.expanded,
+                    payload: PostBodyViewType.expanded),
               ],
               icon: Icons.view_list_rounded,
-              onChanged: (value) async => setPreferences(LocalSettings.postBodyViewType, value.payload),
+              onChanged: (value) async =>
+                  setPreferences(LocalSettings.postBodyViewType, value.payload),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.postBodyViewType,
               highlightedSetting: settingToHighlight,
@@ -1058,7 +1234,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: postBodyShowUserInstance,
               iconEnabled: Icons.dns_sharp,
               iconDisabled: Icons.dns_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowUserInstance, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.postBodyShowUserInstance, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.postBodyShowUserInstance,
               highlightedSetting: settingToHighlight,
@@ -1070,7 +1247,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: postBodyShowCommunityInstance,
               iconEnabled: Icons.dns_sharp,
               iconDisabled: Icons.dns_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityInstance, value),
+              onToggle: (bool value) => setPreferences(
+                  LocalSettings.postBodyShowCommunityInstance, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.postBodyShowCommunityInstance,
               highlightedSetting: settingToHighlight,
@@ -1082,7 +1260,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               value: postBodyShowCommunityAvatar,
               iconEnabled: Icons.image,
               iconDisabled: Icons.image_not_supported,
-              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityAvatar, value),
+              onToggle: (bool value) => setPreferences(
+                  LocalSettings.postBodyShowCommunityAvatar, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.postBodyShowCommunityAvatar,
               highlightedSetting: settingToHighlight,
@@ -1118,7 +1297,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             margin: const EdgeInsets.symmetric(vertical: 8.0),
             decoration: BoxDecoration(
               color: theme.dividerColor,
-              borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+              borderRadius:
+                  BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
             ),
           ),
         if (!showTitleFirst) ...[
@@ -1182,11 +1362,17 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     showEmptyTargetMessage: false,
                     containedPostCardMetadataItems: cardPostCardMetadataItems,
                     onAcceptedData: (data) {
-                      List<PostCardMetadataItem> newCardPostCardMetadataItems = List.from(cardPostCardMetadataItems)..add(data);
+                      List<PostCardMetadataItem> newCardPostCardMetadataItems =
+                          List.from(cardPostCardMetadataItems)..add(data);
 
                       setState(() {
-                        cardPostCardMetadataItems = newCardPostCardMetadataItems;
-                        setPreferences(LocalSettings.cardPostCardMetadataItems, cardPostCardMetadataItems.map((e) => e.name).toList());
+                        cardPostCardMetadataItems =
+                            newCardPostCardMetadataItems;
+                        setPreferences(
+                            LocalSettings.cardPostCardMetadataItems,
+                            cardPostCardMetadataItems
+                                .map((e) => e.name)
+                                .toList());
                       });
                     },
                   ),
@@ -1234,13 +1420,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     margin: const EdgeInsets.only(right: 8.0),
                     decoration: BoxDecoration(
                       color: theme.dividerColor,
-                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                      borderRadius: BorderRadius.circular(
+                          (showEdgeToEdgeImages ? 0 : 12)),
                     ),
                   )
                 : const SizedBox(width: 0),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(right: showThumbnailPreviewOnRight ? 8.0 : 0),
+              padding:
+                  EdgeInsets.only(right: showThumbnailPreviewOnRight ? 8.0 : 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1249,7 +1437,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     height: 25,
                     decoration: BoxDecoration(
                       color: theme.dividerColor,
-                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                      borderRadius: BorderRadius.circular(
+                          (showEdgeToEdgeImages ? 0 : 12)),
                     ),
                   ), // Title
                   const SizedBox(height: 6.0),
@@ -1258,7 +1447,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     height: 15,
                     decoration: BoxDecoration(
                       color: theme.dividerColor,
-                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                      borderRadius: BorderRadius.circular(
+                          (showEdgeToEdgeImages ? 0 : 12)),
                     ),
                   ),
                   const SizedBox(height: 6.0),
@@ -1266,13 +1456,21 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     isDisabled: useCompactView == false,
                     containerHeight: 25.0,
                     showEmptyTargetMessage: false,
-                    containedPostCardMetadataItems: compactPostCardMetadataItems,
+                    containedPostCardMetadataItems:
+                        compactPostCardMetadataItems,
                     onAcceptedData: (data) {
-                      List<PostCardMetadataItem> newCompactPostCardMetadataItems = List.from(compactPostCardMetadataItems)..add(data);
+                      List<PostCardMetadataItem>
+                          newCompactPostCardMetadataItems =
+                          List.from(compactPostCardMetadataItems)..add(data);
 
                       setState(() {
-                        compactPostCardMetadataItems = newCompactPostCardMetadataItems;
-                        setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
+                        compactPostCardMetadataItems =
+                            newCompactPostCardMetadataItems;
+                        setPreferences(
+                            LocalSettings.compactPostCardMetadataItems,
+                            compactPostCardMetadataItems
+                                .map((e) => e.name)
+                                .toList());
                       });
                     },
                   ),
@@ -1288,7 +1486,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     margin: const EdgeInsets.only(right: 8.0),
                     decoration: BoxDecoration(
                       color: theme.dividerColor,
-                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
+                      borderRadius: BorderRadius.circular(
+                          (showEdgeToEdgeImages ? 0 : 12)),
                     ),
                   )
                 : const SizedBox(width: 0),
@@ -1336,33 +1535,38 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: DragTarget<PostCardMetadataItem>(
-          builder: (context, candidateData, rejectedData) => containedPostCardMetadataItems.isEmpty
-              ? SizedBox(
-                  height: containerHeight,
-                  child: Center(
-                    child: Text(
-                      showEmptyTargetMessage ? l10n.noItems : '',
-                      style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
+          builder: (context, candidateData, rejectedData) =>
+              containedPostCardMetadataItems.isEmpty
+                  ? SizedBox(
+                      height: containerHeight,
+                      child: Center(
+                        child: Text(
+                          showEmptyTargetMessage ? l10n.noItems : '',
+                          style: TextStyle(
+                              color: theme.textTheme.bodyMedium?.color
+                                  ?.withOpacity(0.8)),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      constraints: BoxConstraints(minHeight: containerHeight),
+                      child: Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: containedPostCardMetadataItems
+                            .map(
+                              (item) => Draggable<PostCardMetadataItem>(
+                                key: ValueKey(item),
+                                data: item,
+                                feedback: buildDraggableItem(context,
+                                    item: item, isFeedback: true),
+                                child: buildDraggableItem(context,
+                                    item: item, isDisabled: isDisabled),
+                              ),
+                            )
+                            .toList(),
+                      ),
                     ),
-                  ),
-                )
-              : Container(
-                  constraints: BoxConstraints(minHeight: containerHeight),
-                  child: Wrap(
-                    spacing: 8.0,
-                    runSpacing: 8.0,
-                    children: containedPostCardMetadataItems
-                        .map(
-                          (item) => Draggable<PostCardMetadataItem>(
-                            key: ValueKey(item),
-                            data: item,
-                            feedback: buildDraggableItem(context, item: item, isFeedback: true),
-                            child: buildDraggableItem(context, item: item, isDisabled: isDisabled),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
           onLeave: (data) => HapticFeedback.mediumImpact(),
           onWillAcceptWithDetails: (data) {
             if (!containedPostCardMetadataItems.contains(data)) {
@@ -1370,7 +1574,8 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
             }
             return false;
           },
-          onAcceptWithDetails: (DragTargetDetails<PostCardMetadataItem> details) {
+          onAcceptWithDetails:
+              (DragTargetDetails<PostCardMetadataItem> details) {
             onAcceptedData(details.data);
           },
         ),
@@ -1378,7 +1583,10 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
     );
   }
 
-  Widget buildDraggableItem(context, {required PostCardMetadataItem item, bool isFeedback = false, bool isDisabled = false}) {
+  Widget buildDraggableItem(context,
+      {required PostCardMetadataItem item,
+      bool isFeedback = false,
+      bool isDisabled = false}) {
     final theme = Theme.of(context);
 
     return TooltipVisibility(
@@ -1389,17 +1597,26 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           decoration: BoxDecoration(
             color: isDisabled ? theme.cardColor : theme.dividerColor,
-            border: isDisabled ? Border.all(color: theme.dividerColor.withOpacity(0.4)) : null,
+            border: isDisabled
+                ? Border.all(color: theme.dividerColor.withOpacity(0.4))
+                : null,
             borderRadius: BorderRadius.circular(8),
           ),
           child: switch (item) {
-            PostCardMetadataItem.score => const ScorePostCardMetaData(score: 1222),
-            PostCardMetadataItem.commentCount => const CommentCountPostCardMetaData(commentCount: 4124),
-            PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: DateTime.now().toIso8601String()),
-            PostCardMetadataItem.url => const UrlPostCardMetaData(url: 'https://github.com/thunder-app/thunder'),
-            PostCardMetadataItem.upvote => const UpvotePostCardMetaData(upvotes: 2412),
-            PostCardMetadataItem.downvote => const DownvotePostCardMetaData(downvotes: 532),
-            PostCardMetadataItem.language => const LanguagePostCardMetaData(languageId: -1),
+            PostCardMetadataItem.score =>
+              const ScorePostCardMetaData(score: 1222),
+            PostCardMetadataItem.commentCount =>
+              const CommentCountPostCardMetaData(commentCount: 4124),
+            PostCardMetadataItem.dateTime => DateTimePostCardMetaData(
+                dateTime: DateTime.now().toIso8601String()),
+            PostCardMetadataItem.url => const UrlPostCardMetaData(
+                url: 'https://github.com/thunder-app/thunder'),
+            PostCardMetadataItem.upvote =>
+              const UpvotePostCardMetaData(upvotes: 2412),
+            PostCardMetadataItem.downvote =>
+              const DownvotePostCardMetaData(downvotes: 532),
+            PostCardMetadataItem.language =>
+              const LanguagePostCardMetaData(languageId: -1),
           },
         ),
       ),

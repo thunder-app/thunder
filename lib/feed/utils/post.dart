@@ -28,7 +28,8 @@ Future<Map<String, dynamic>> fetchFeedItems({
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-  List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
+  List<String> keywordFilters =
+      prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
   bool hasReachedPostsEnd = false;
   bool hasReachedCommentsEnd = false;
@@ -52,7 +53,10 @@ Future<Map<String, dynamic>> fetchFeedItems({
       ));
 
       // Remove deleted posts
-      getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
+      getPostsResponse = getPostsResponse.copyWith(
+          posts: getPostsResponse.posts
+              .where((PostView postView) => postView.post.deleted == false)
+              .toList());
 
       // Remove posts that contain any of the keywords in the title, body, or url
       getPostsResponse = getPostsResponse.copyWith(
@@ -61,12 +65,16 @@ Future<Map<String, dynamic>> fetchFeedItems({
           final body = postView.post.body?.toLowerCase() ?? '';
           final url = postView.post.url?.toLowerCase() ?? '';
 
-          return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()) || url.contains(keyword.toLowerCase()));
+          return !keywordFilters.any((keyword) =>
+              title.contains(keyword.toLowerCase()) ||
+              body.contains(keyword.toLowerCase()) ||
+              url.contains(keyword.toLowerCase()));
         }).toList(),
       );
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
+      List<PostViewMedia> formattedPosts =
+          await parsePostViews(getPostsResponse.posts);
       postViewMedias.addAll(formattedPosts);
 
       if (getPostsResponse.posts.isEmpty) hasReachedPostsEnd = true;
@@ -77,7 +85,8 @@ Future<Map<String, dynamic>> fetchFeedItems({
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
   if (userId != null || username != null) {
     do {
-      GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
+      GetPersonDetailsResponse getPersonDetailsResponse =
+          await lemmy.run(GetPersonDetails(
         auth: account?.jwt,
         personId: userId,
         username: username,
@@ -87,23 +96,38 @@ Future<Map<String, dynamic>> fetchFeedItems({
 
       // Remove deleted posts and comments
       getPersonDetailsResponse = getPersonDetailsResponse.copyWith(
-        posts: getPersonDetailsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList(),
-        comments: getPersonDetailsResponse.comments.where((CommentView commentView) => commentView.comment.deleted == false).toList(),
+        posts: getPersonDetailsResponse.posts
+            .where((PostView postView) => postView.post.deleted == false)
+            .toList(),
+        comments: getPersonDetailsResponse.comments
+            .where((CommentView commentView) =>
+                commentView.comment.deleted == false)
+            .toList(),
       );
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<PostViewMedia> formattedPosts = await parsePostViews(getPersonDetailsResponse.posts);
+      List<PostViewMedia> formattedPosts =
+          await parsePostViews(getPersonDetailsResponse.posts);
       postViewMedias.addAll(formattedPosts);
 
       commentViews.addAll(getPersonDetailsResponse.comments);
 
       if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
-      if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;
+      if (getPersonDetailsResponse.comments.isEmpty)
+        hasReachedCommentsEnd = true;
       currentPage++;
-    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && postViewMedias.length < limit) : (!hasReachedCommentsEnd && commentViews.length < limit));
+    } while (feedTypeSubview == FeedTypeSubview.post
+        ? (!hasReachedPostsEnd && postViewMedias.length < limit)
+        : (!hasReachedCommentsEnd && commentViews.length < limit));
   }
 
-  return {'postViewMedias': postViewMedias, 'commentViews': commentViews, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'currentPage': currentPage};
+  return {
+    'postViewMedias': postViewMedias,
+    'commentViews': commentViews,
+    'hasReachedPostsEnd': hasReachedPostsEnd,
+    'hasReachedCommentsEnd': hasReachedCommentsEnd,
+    'currentPage': currentPage
+  };
 }
 
 /// Logic to create a post
@@ -129,7 +153,8 @@ Future<PostView> createPost({
       name: name,
       body: body,
       url: url?.isEmpty == true ? null : url,
-      customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
+      customThumbnail:
+          customThumbnail?.isEmpty == true ? null : customThumbnail,
       nsfw: nsfw,
       postId: postIdBeingEdited,
       languageId: languageId,
@@ -141,7 +166,8 @@ Future<PostView> createPost({
       name: name,
       body: body,
       url: url?.isEmpty == true ? null : url,
-      customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
+      customThumbnail:
+          customThumbnail?.isEmpty == true ? null : customThumbnail,
       nsfw: nsfw,
       languageId: languageId,
     ));

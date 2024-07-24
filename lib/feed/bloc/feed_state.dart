@@ -1,6 +1,13 @@
 part of 'feed_bloc.dart';
 
-enum FeedStatus { initial, fetching, success, failure, failureLoadingCommunity, failureLoadingUser }
+enum FeedStatus {
+  initial,
+  fetching,
+  success,
+  failure,
+  failureLoadingCommunity,
+  failureLoadingUser
+}
 
 final class FeedState extends Equatable {
   const FeedState({
@@ -128,7 +135,8 @@ final class FeedState extends Equatable {
       postViewMedias: postViewMedias ?? this.postViewMedias,
       commentViews: commentViews ?? this.commentViews,
       hasReachedPostsEnd: hasReachedPostsEnd ?? this.hasReachedPostsEnd,
-      hasReachedCommentsEnd: hasReachedCommentsEnd ?? this.hasReachedCommentsEnd,
+      hasReachedCommentsEnd:
+          hasReachedCommentsEnd ?? this.hasReachedCommentsEnd,
       feedType: feedType ?? this.feedType,
       postListingType: postListingType ?? this.postListingType,
       sortType: sortType ?? this.sortType,

@@ -48,7 +48,9 @@ class SettingsListTile extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SmoothHighlight(
-      key: highlightedSetting == setting && setting != null ? highlightKey : null,
+      key: highlightedSetting == setting && setting != null
+          ? highlightKey
+          : null,
       useInitialHighLight: highlightedSetting == setting && setting != null,
       enabled: highlightedSetting == setting && setting != null,
       color: theme.colorScheme.primaryContainer,
@@ -59,7 +61,10 @@ class SettingsListTile extends StatelessWidget {
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(50)),
             onTap: onTap,
-            onLongPress: onLongPress ?? (onTap == null ? null : () => shareSetting(context, setting, description)),
+            onLongPress: onLongPress ??
+                (onTap == null
+                    ? null
+                    : () => shareSetting(context, setting, description)),
             child: Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Row(
@@ -72,7 +77,9 @@ class SettingsListTile extends StatelessWidget {
                       Column(
                         children: [
                           ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+                            constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width - 140),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -85,7 +92,9 @@ class SettingsListTile extends StatelessWidget {
                                     style: onTap != null || onLongPress != null
                                         ? theme.textTheme.bodyMedium
                                         : theme.textTheme.bodyMedium?.copyWith(
-                                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                                            color: theme
+                                                .textTheme.bodyMedium?.color
+                                                ?.withOpacity(0.5),
                                           ),
                                   ),
                                 ),
@@ -93,7 +102,9 @@ class SettingsListTile extends StatelessWidget {
                                   Text(
                                     subtitle!,
                                     maxLines: subtitleMaxLines,
-                                    style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8)),
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                        color: theme.textTheme.bodySmall?.color
+                                            ?.withOpacity(0.8)),
                                   ),
                               ],
                             ),

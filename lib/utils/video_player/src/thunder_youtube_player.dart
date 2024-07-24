@@ -23,7 +23,8 @@ class ThunderYoutubePlayer extends StatefulWidget {
   State<ThunderYoutubePlayer> createState() => _ThunderYoutubePlayerState();
 }
 
-class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with SingleTickerProviderStateMixin {
+class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer>
+    with SingleTickerProviderStateMixin {
   late YoutubePlayerController _controller;
   late ypf.YoutubePlayerController _ypfController;
 
@@ -59,7 +60,8 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
         ),
       );
       _controller
-        ..loadVideoById(videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
+        ..loadVideoById(
+            videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
         ..setPlaybackRate(state.videoDefaultPlaybackSpeed.value);
     }
 
@@ -82,7 +84,8 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
 
     if (state.videoAutoPlay == VideoAutoPlay.always) {
       return true;
-    } else if (state.videoAutoPlay == VideoAutoPlay.onWifi && networkCubit.internetConnectionType == InternetConnectionType.wifi) {
+    } else if (state.videoAutoPlay == VideoAutoPlay.onWifi &&
+        networkCubit.internetConnectionType == InternetConnectionType.wifi) {
       return true;
     }
 
@@ -110,7 +113,8 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                       onPressed: () => Navigator.pop(context),
                       icon: Icon(
                         Icons.arrow_back,
-                        semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                        semanticLabel:
+                            MaterialLocalizations.of(context).backButtonTooltip,
                         color: Colors.white.withOpacity(0.90),
                       ),
                     ),
@@ -118,7 +122,8 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: IconButton(
-                      onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
+                      onPressed: () => handleLink(context,
+                          url: widget.videoUrl, forceOpenInBrowser: true),
                       icon: Icon(
                         Icons.open_in_browser_rounded,
                         semanticLabel: l10n.openInBrowser,
@@ -137,7 +142,9 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                     topActions: [
                       IconButton(
                         onPressed: () {
-                          muted ? _ypfController.unMute() : _ypfController.mute();
+                          muted
+                              ? _ypfController.unMute()
+                              : _ypfController.mute();
                           setState(() => muted = !muted);
                         },
                         icon: Icon(
@@ -149,7 +156,8 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                   ),
                   builder: (context, player) => player,
                   onExitFullScreen: () {
-                    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+                    SystemChrome.setEnabledSystemUIMode(
+                        SystemUiMode.edgeToEdge);
                   },
                 ),
               ),

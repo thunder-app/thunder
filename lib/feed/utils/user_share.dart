@@ -13,7 +13,8 @@ enum UserShareOptions {
 }
 
 /// Shows a mottom modal sheet which allows sharing the given [personView].
-Future<void> showUserShareSheet(BuildContext context, PersonView personView) async {
+Future<void> showUserShareSheet(
+    BuildContext context, PersonView personView) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
   String user = await getLemmyUser(personView.person.actorId) ?? '';
@@ -34,7 +35,8 @@ Future<void> showUserShareSheet(BuildContext context, PersonView personView) asy
             subtitle: personView.person.actorId,
             icon: Icons.link_rounded,
           ),
-          if (!personView.person.actorId.contains(LemmyClient.instance.lemmyApiV3.host))
+          if (!personView.person.actorId
+              .contains(LemmyClient.instance.lemmyApiV3.host))
             ListPickerItem(
               label: l10n.shareUserLinkLocal,
               payload: UserShareOptions.localLink,

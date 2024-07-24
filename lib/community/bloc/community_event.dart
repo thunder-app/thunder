@@ -18,7 +18,8 @@ final class CommunityActionEvent extends CommunityEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  const CommunityActionEvent({required this.communityId, required this.communityAction, this.value});
+  const CommunityActionEvent(
+      {required this.communityId, required this.communityAction, this.value});
 }
 
 final class CommunityClearMessageEvent extends CommunityEvent {}

@@ -4,11 +4,16 @@ import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 
 /// Checks whether there are any results for the current given [searchType] in the [searchState] or the given [searchResponse].
-bool searchIsEmpty(MetaSearchType searchType, {SearchState? searchState, SearchResponse? searchResponse}) {
-  final List<CommunityView>? communities = searchState?.communities ?? searchResponse?.communities;
+bool searchIsEmpty(MetaSearchType searchType,
+    {SearchState? searchState, SearchResponse? searchResponse}) {
+  final List<CommunityView>? communities =
+      searchState?.communities ?? searchResponse?.communities;
   final List<PersonView>? users = searchState?.users ?? searchResponse?.users;
-  final List<CommentView>? comments = searchState?.comments ?? searchResponse?.comments;
-  final List<PostView>? posts = searchState?.posts?.map((pvm) => pvm.postView).toList() ?? searchResponse?.posts;
+  final List<CommentView>? comments =
+      searchState?.comments ?? searchResponse?.comments;
+  final List<PostView>? posts =
+      searchState?.posts?.map((pvm) => pvm.postView).toList() ??
+          searchResponse?.posts;
   final List<GetInstanceInfoResponse>? instances = searchState?.instances;
 
   return switch (searchType) {

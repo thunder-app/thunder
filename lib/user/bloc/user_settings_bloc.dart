@@ -18,7 +18,8 @@ const throttleDuration = Duration(seconds: 1);
 const timeout = Duration(seconds: 5);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) =>
+      droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
@@ -53,7 +54,8 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     );
   }
 
-  Future<void> _resetUserSettingsEvent(ResetUserSettingsEvent event, emit) async {
+  Future<void> _resetUserSettingsEvent(
+      ResetUserSettingsEvent event, emit) async {
     return emit(state.copyWith(status: UserSettingsStatus.initial));
   }
 
@@ -66,7 +68,8 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     }
 
     try {
-      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account.jwt));
+      GetSiteResponse getSiteResponse =
+          await lemmy.run(GetSite(auth: account.jwt));
       return emit(
         state.copyWith(
           status: UserSettingsStatus.success,
@@ -76,12 +79,15 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     } catch (e) {
       return emit(state.copyWith(
         status: UserSettingsStatus.failure,
-        errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString(),
+        errorMessage: e is LemmyApiException
+            ? getErrorMessage(GlobalContext.context, e.message)
+            : e.toString(),
       ));
     }
   }
 
-  Future<void> _updateUserSettingsEvent(UpdateUserSettingsEvent event, emit) async {
+  Future<void> _updateUserSettingsEvent(
+      UpdateUserSettingsEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
 
@@ -90,36 +96,60 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     }
 
     GetSiteResponse? originalGetSiteResponse = state.getSiteResponse;
-    if (originalGetSiteResponse == null) emit(state.copyWith(status: UserSettingsStatus.failure));
+    if (originalGetSiteResponse == null)
+      emit(state.copyWith(status: UserSettingsStatus.failure));
 
     try {
       // Optimistically update settings
-      LocalUser localUser = state.getSiteResponse!.myUser!.localUserView.localUser.copyWith(
-        email: event.email ?? state.getSiteResponse!.myUser!.localUserView.localUser.email,
-        showReadPosts: event.showReadPosts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showReadPosts,
-        showScores: event.showScores ?? state.getSiteResponse!.myUser!.localUserView.localUser.showScores,
-        showBotAccounts: event.showBotAccounts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showBotAccounts,
-        showNsfw: event.showNsfw ?? state.getSiteResponse!.myUser!.localUserView.localUser.showNsfw,
-        defaultListingType: event.defaultListingType ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultListingType,
-        defaultSortType: event.defaultSortType ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType,
+      LocalUser localUser =
+          state.getSiteResponse!.myUser!.localUserView.localUser.copyWith(
+        email: event.email ??
+            state.getSiteResponse!.myUser!.localUserView.localUser.email,
+        showReadPosts: event.showReadPosts ??
+            state
+                .getSiteResponse!.myUser!.localUserView.localUser.showReadPosts,
+        showScores: event.showScores ??
+            state.getSiteResponse!.myUser!.localUserView.localUser.showScores,
+        showBotAccounts: event.showBotAccounts ??
+            state.getSiteResponse!.myUser!.localUserView.localUser
+                .showBotAccounts,
+        showNsfw: event.showNsfw ??
+            state.getSiteResponse!.myUser!.localUserView.localUser.showNsfw,
+        defaultListingType: event.defaultListingType ??
+            state.getSiteResponse!.myUser!.localUserView.localUser
+                .defaultListingType,
+        defaultSortType: event.defaultSortType ??
+            state.getSiteResponse!.myUser!.localUserView.localUser
+                .defaultSortType,
       );
 
       GetSiteResponse updatedGetSiteResponse = state.getSiteResponse!.copyWith(
         myUser: state.getSiteResponse!.myUser!.copyWith(
           localUserView: state.getSiteResponse!.myUser!.localUserView.copyWith(
-            person: state.getSiteResponse!.myUser!.localUserView.person.copyWith(
-              botAccount: event.botAccount ?? state.getSiteResponse!.myUser!.localUserView.person.botAccount,
-              bio: event.bio ?? state.getSiteResponse!.myUser!.localUserView.person.bio,
-              displayName: event.displayName ?? state.getSiteResponse!.myUser!.localUserView.person.displayName,
-              matrixUserId: event.matrixUserId ?? state.getSiteResponse!.myUser!.localUserView.person.matrixUserId,
+            person:
+                state.getSiteResponse!.myUser!.localUserView.person.copyWith(
+              botAccount: event.botAccount ??
+                  state
+                      .getSiteResponse!.myUser!.localUserView.person.botAccount,
+              bio: event.bio ??
+                  state.getSiteResponse!.myUser!.localUserView.person.bio,
+              displayName: event.displayName ??
+                  state.getSiteResponse!.myUser!.localUserView.person
+                      .displayName,
+              matrixUserId: event.matrixUserId ??
+                  state.getSiteResponse!.myUser!.localUserView.person
+                      .matrixUserId,
             ),
             localUser: localUser,
           ),
-          discussionLanguages: event.discussionLanguages ?? state.getSiteResponse!.discussionLanguages,
+          discussionLanguages: event.discussionLanguages ??
+              state.getSiteResponse!.discussionLanguages,
         ),
       );
 
-      emit(state.copyWith(status: UserSettingsStatus.success, getSiteResponse: updatedGetSiteResponse));
+      emit(state.copyWith(
+          status: UserSettingsStatus.success,
+          getSiteResponse: updatedGetSiteResponse));
       emit(state.copyWith(status: UserSettingsStatus.updating));
 
       await lemmy.run(SaveUserSettings(
@@ -143,7 +173,9 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       return emit(state.copyWith(
         status: UserSettingsStatus.failure,
         getSiteResponse: originalGetSiteResponse,
-        errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString(),
+        errorMessage: e is LemmyApiException
+            ? getErrorMessage(GlobalContext.context, e.message)
+            : e.toString(),
       ));
     }
   }
@@ -161,12 +193,24 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         GetSite(auth: account.jwt),
       );
 
-      final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
-      final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
-      final instanceBlocks = getSiteResponse.myUser!.instanceBlocks?.map((instanceBlockView) => instanceBlockView.instance).toList()?..sort((a, b) => a.domain.compareTo(b.domain));
+      final personBlocks = getSiteResponse.myUser!.personBlocks
+          .map((personBlockView) => personBlockView.target)
+          .toList()
+        ..sort((a, b) => a.name.compareTo(b.name));
+      final communityBlocks = getSiteResponse.myUser!.communityBlocks
+          .map((communityBlockView) => communityBlockView.community)
+          .toList()
+        ..sort((a, b) => a.name.compareTo(b.name));
+      final instanceBlocks = getSiteResponse.myUser!.instanceBlocks
+          ?.map((instanceBlockView) => instanceBlockView.instance)
+          .toList()
+        ?..sort((a, b) => a.domain.compareTo(b.domain));
 
       return emit(state.copyWith(
-        status: (state.instanceBeingBlocked != 0 && (instanceBlocks?.any((Instance instance) => instance.id == state.instanceBeingBlocked) ?? false))
+        status: (state.instanceBeingBlocked != 0 &&
+                (instanceBlocks?.any((Instance instance) =>
+                        instance.id == state.instanceBeingBlocked) ??
+                    false))
             ? UserSettingsStatus.revert
             : UserSettingsStatus.success,
         personBlocks: personBlocks,
@@ -174,12 +218,20 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         instanceBlocks: instanceBlocks,
       ));
     } catch (e) {
-      return emit(state.copyWith(status: UserSettingsStatus.failure, errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+      return emit(state.copyWith(
+          status: UserSettingsStatus.failure,
+          errorMessage: e is LemmyApiException
+              ? getErrorMessage(GlobalContext.context, e.message)
+              : e.toString()));
     }
   }
 
   Future<void> _unblockInstanceEvent(UnblockInstanceEvent event, emit) async {
-    emit(state.copyWith(status: UserSettingsStatus.blocking, instanceBeingBlocked: event.instanceId, personBeingBlocked: 0, communityBeingBlocked: 0));
+    emit(state.copyWith(
+        status: UserSettingsStatus.blocking,
+        instanceBeingBlocked: event.instanceId,
+        personBeingBlocked: 0,
+        communityBeingBlocked: 0));
 
     try {
       await blockInstance(event.instanceId, !event.unblock);
@@ -194,8 +246,12 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       return add(const GetUserBlocksEvent());
     } catch (e) {
       return emit(state.copyWith(
-          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
-          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+          status: event.unblock
+              ? UserSettingsStatus.failure
+              : UserSettingsStatus.failedRevert,
+          errorMessage: e is LemmyApiException
+              ? getErrorMessage(GlobalContext.context, e.message)
+              : e.toString()));
     }
   }
 
@@ -203,10 +259,15 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
 
-    emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0, instanceBeingBlocked: 0));
+    emit(state.copyWith(
+        status: UserSettingsStatus.blocking,
+        communityBeingBlocked: event.communityId,
+        personBeingBlocked: 0,
+        instanceBeingBlocked: 0));
 
     try {
-      final BlockCommunityResponse blockCommunityResponse = await lemmy.run(BlockCommunity(
+      final BlockCommunityResponse blockCommunityResponse =
+          await lemmy.run(BlockCommunity(
         auth: account!.jwt!,
         communityId: event.communityId,
         block: !event.unblock,
@@ -214,21 +275,32 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       List<Community> updatedCommunityBlocks;
       if (event.unblock) {
-        updatedCommunityBlocks = state.communityBlocks.where((community) => community.id != event.communityId).toList()..sort((a, b) => a.name.compareTo(b.name));
+        updatedCommunityBlocks = state.communityBlocks
+            .where((community) => community.id != event.communityId)
+            .toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
       } else {
-        updatedCommunityBlocks = (state.communityBlocks + [blockCommunityResponse.communityView.community])..sort((a, b) => a.name.compareTo(b.name));
+        updatedCommunityBlocks = (state.communityBlocks +
+            [blockCommunityResponse.communityView.community])
+          ..sort((a, b) => a.name.compareTo(b.name));
       }
 
       return emit(state.copyWith(
-        status: event.unblock ? UserSettingsStatus.successBlock : UserSettingsStatus.revert,
+        status: event.unblock
+            ? UserSettingsStatus.successBlock
+            : UserSettingsStatus.revert,
         communityBlocks: updatedCommunityBlocks,
         communityBeingBlocked: event.communityId,
         personBeingBlocked: 0,
       ));
     } catch (e) {
       return emit(state.copyWith(
-          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
-          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+          status: event.unblock
+              ? UserSettingsStatus.failure
+              : UserSettingsStatus.failedRevert,
+          errorMessage: e is LemmyApiException
+              ? getErrorMessage(GlobalContext.context, e.message)
+              : e.toString()));
     }
   }
 
@@ -236,7 +308,11 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
 
-    emit(state.copyWith(status: UserSettingsStatus.blocking, personBeingBlocked: event.personId, communityBeingBlocked: 0, instanceBeingBlocked: 0));
+    emit(state.copyWith(
+        status: UserSettingsStatus.blocking,
+        personBeingBlocked: event.personId,
+        communityBeingBlocked: 0,
+        instanceBeingBlocked: 0));
 
     try {
       final blockPerson = await lemmy.run(BlockPerson(
@@ -247,21 +323,32 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       List<Person> updatedPersonBlocks;
       if (event.unblock) {
-        updatedPersonBlocks = state.personBlocks.where((person) => person.id != event.personId).toList()..sort((a, b) => a.name.compareTo(b.name));
+        updatedPersonBlocks = state.personBlocks
+            .where((person) => person.id != event.personId)
+            .toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
       } else {
-        updatedPersonBlocks = (state.personBlocks + [blockPerson.personView.person])..sort((a, b) => a.name.compareTo(b.name));
+        updatedPersonBlocks = (state.personBlocks +
+            [blockPerson.personView.person])
+          ..sort((a, b) => a.name.compareTo(b.name));
       }
 
       return emit(state.copyWith(
-        status: event.unblock ? UserSettingsStatus.successBlock : UserSettingsStatus.revert,
+        status: event.unblock
+            ? UserSettingsStatus.successBlock
+            : UserSettingsStatus.revert,
         personBlocks: updatedPersonBlocks,
         personBeingBlocked: event.personId,
         communityBeingBlocked: 0,
       ));
     } catch (e) {
       return emit(state.copyWith(
-          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
-          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+          status: event.unblock
+              ? UserSettingsStatus.failure
+              : UserSettingsStatus.failedRevert,
+          errorMessage: e is LemmyApiException
+              ? getErrorMessage(GlobalContext.context, e.message)
+              : e.toString()));
     }
   }
 }

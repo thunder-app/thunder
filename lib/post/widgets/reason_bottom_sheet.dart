@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReasonBottomSheet extends StatefulWidget {
-  const ReasonBottomSheet({super.key, this.title, this.textHint, this.submitLabel, this.errorMessage, required this.onSubmit});
+  const ReasonBottomSheet(
+      {super.key,
+      this.title,
+      this.textHint,
+      this.submitLabel,
+      this.errorMessage,
+      required this.onSubmit});
 
   /// A custom title of the bottom sheet. Defaults to "Reason"
   final String? title;
@@ -45,7 +51,10 @@ class _ReasonBottomSheetState extends State<ReasonBottomSheet> {
     final l10n = AppLocalizations.of(context)!;
 
     return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
+      padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 26.0,
+          right: 16.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -72,7 +81,8 @@ class _ReasonBottomSheetState extends State<ReasonBottomSheet> {
           if (widget.errorMessage != null)
             Text(
               widget.errorMessage!,
-              style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error),
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: theme.colorScheme.error),
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -83,7 +93,9 @@ class _ReasonBottomSheetState extends State<ReasonBottomSheet> {
               ),
               const SizedBox(width: 8),
               FilledButton(
-                onPressed: widget.errorMessage != null ? null : () => widget.onSubmit(messageController.text),
+                onPressed: widget.errorMessage != null
+                    ? null
+                    : () => widget.onSubmit(messageController.text),
                 child: Text(widget.submitLabel ?? l10n.submit),
               )
             ],

@@ -6,7 +6,9 @@ enum CommentAction {
   save(permissionType: PermissionType.user),
   delete(permissionType: PermissionType.user),
   report(permissionType: PermissionType.user),
-  read(permissionType: PermissionType.user), // This is used for inbox items (replies/mentions)
+  read(
+      permissionType: PermissionType
+          .user), // This is used for inbox items (replies/mentions)
 
   /// Moderator level post actions
   remove(permissionType: PermissionType.moderator),

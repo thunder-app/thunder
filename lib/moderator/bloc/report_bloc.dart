@@ -58,12 +58,18 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   }
 
   /// Handles clearing any messages from the state
-  Future<void> _onReportFeedClearMessage(ReportFeedClearMessageEvent event, Emitter<ReportState> emit) async {
-    emit(state.copyWith(status: state.status == ReportStatus.failure ? state.status : ReportStatus.success, message: null));
+  Future<void> _onReportFeedClearMessage(
+      ReportFeedClearMessageEvent event, Emitter<ReportState> emit) async {
+    emit(state.copyWith(
+        status: state.status == ReportStatus.failure
+            ? state.status
+            : ReportStatus.success,
+        message: null));
   }
 
   /// Resets the ReportState to its initial state
-  Future<void> _onResetReportFeed(ResetReportEvent event, Emitter<ReportState> emit) async {
+  Future<void> _onResetReportFeed(
+      ResetReportEvent event, Emitter<ReportState> emit) async {
     emit(
       const ReportState(
         status: ReportStatus.initial,
@@ -81,7 +87,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   }
 
   /// Changes the current filter type of the report feed
-  Future<void> _onReportFeedChangeFilterType(ReportFeedChangeFilterTypeEvent event, Emitter<ReportState> emit) async {
+  Future<void> _onReportFeedChangeFilterType(
+      ReportFeedChangeFilterTypeEvent event, Emitter<ReportState> emit) async {
     add(ReportFeedFetchedEvent(
       reportFeedType: state.reportFeedType,
       showResolved: event.showResolved,
@@ -91,7 +98,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   }
 
   /// Fetches the list of report events
-  Future<void> _onReportFeedFetched(ReportFeedFetchedEvent event, Emitter<ReportState> emit) async {
+  Future<void> _onReportFeedFetched(
+      ReportFeedFetchedEvent event, Emitter<ReportState> emit) async {
     // Handle the initial fetch or reload of a feed
     if (event.reset) {
       if (state.status != ReportStatus.initial) add(ResetReportEvent());
@@ -106,10 +114,14 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       );
 
       // Extract information from the response
-      List<PostReportView> postReportViews = fetchReportsResult['postReportViews'];
-      List<CommentReportView> commentReportViews = fetchReportsResult['commentReportViews'];
-      bool hasReachedPostReportsEnd = fetchReportsResult['hasReachedPostReportsEnd'];
-      bool hasReachedCommentReportsEnd = fetchReportsResult['hasReachedCommentReportsEnd'];
+      List<PostReportView> postReportViews =
+          fetchReportsResult['postReportViews'];
+      List<CommentReportView> commentReportViews =
+          fetchReportsResult['commentReportViews'];
+      bool hasReachedPostReportsEnd =
+          fetchReportsResult['hasReachedPostReportsEnd'];
+      bool hasReachedCommentReportsEnd =
+          fetchReportsResult['hasReachedCommentReportsEnd'];
       int currentPage = fetchReportsResult['currentPage'];
 
       return emit(
@@ -129,14 +141,17 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
     // If the feed is already being fetched but it is not a reset, then just wait
     if (state.status == ReportStatus.fetching) return;
-    if (state.hasReachedPostReportsEnd && event.reportFeedType == ReportFeedType.post) return;
-    if (state.hasReachedCommentReportsEnd && event.reportFeedType == ReportFeedType.comment) return;
+    if (state.hasReachedPostReportsEnd &&
+        event.reportFeedType == ReportFeedType.post) return;
+    if (state.hasReachedCommentReportsEnd &&
+        event.reportFeedType == ReportFeedType.comment) return;
 
     // Handle fetching the next page of the feed
     emit(state.copyWith(status: ReportStatus.fetching));
 
     List<PostReportView> postReportViews = List.from(state.postReports);
-    List<CommentReportView> commentReportViews = List.from(state.commentReports);
+    List<CommentReportView> commentReportViews =
+        List.from(state.commentReports);
 
     Map<String, dynamic> fetchReportsResult = await fetchReports(
       page: state.currentPage,
@@ -148,10 +163,14 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     );
 
     // Extract information from the response
-    List<PostReportView> newPostReportViews = fetchReportsResult['postReportViews'];
-    List<CommentReportView> newCommentReportViews = fetchReportsResult['commentReportViews'];
-    bool hasReachedPostReportsEnd = fetchReportsResult['hasReachedPostReportsEnd'];
-    bool hasReachedCommentReportsEnd = fetchReportsResult['hasReachedCommentReportsEnd'];
+    List<PostReportView> newPostReportViews =
+        fetchReportsResult['postReportViews'];
+    List<CommentReportView> newCommentReportViews =
+        fetchReportsResult['commentReportViews'];
+    bool hasReachedPostReportsEnd =
+        fetchReportsResult['hasReachedPostReportsEnd'];
+    bool hasReachedCommentReportsEnd =
+        fetchReportsResult['hasReachedCommentReportsEnd'];
     int currentPage = fetchReportsResult['currentPage'];
 
     postReportViews.addAll(newPostReportViews);
@@ -171,60 +190,88 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   }
 
   /// Handles related actions on a given item within the feed
-  Future<void> _onReportFeedItemActioned(ReportFeedItemActionedEvent event, Emitter<ReportState> emit) async {
+  Future<void> _onReportFeedItemActioned(
+      ReportFeedItemActionedEvent event, Emitter<ReportState> emit) async {
     assert(!(event.postReportView == null && event.commentReportView == null));
     emit(state.copyWith(status: ReportStatus.fetching));
 
     switch (event.reportAction) {
       case ReportAction.resolvePost:
         // Optimistically update the report
-        int existingPostReportViewIndex = state.postReports.indexWhere((PostReportView postReportView) => postReportView.postReport.id == event.postReportView!.postReport.id);
+        int existingPostReportViewIndex = state.postReports.indexWhere(
+            (PostReportView postReportView) =>
+                postReportView.postReport.id ==
+                event.postReportView!.postReport.id);
 
-        PostReportView postReportView = state.postReports[existingPostReportViewIndex];
+        PostReportView postReportView =
+            state.postReports[existingPostReportViewIndex];
         PostReport originalPostReport = postReportView.postReport;
 
         try {
-          PostReport updatedPostReport = optimisticallyResolvePostReport(postReportView.postReport, event.value);
-          state.postReports[existingPostReportViewIndex] = postReportView.copyWith(postReport: updatedPostReport);
+          PostReport updatedPostReport = optimisticallyResolvePostReport(
+              postReportView.postReport, event.value);
+          state.postReports[existingPostReportViewIndex] =
+              postReportView.copyWith(postReport: updatedPostReport);
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: ReportStatus.success));
           emit(state.copyWith(status: ReportStatus.fetching));
 
-          bool success = await resolvePostReport(originalPostReport.id, event.value);
-          if (success) return emit(state.copyWith(status: ReportStatus.success));
+          bool success =
+              await resolvePostReport(originalPostReport.id, event.value);
+          if (success)
+            return emit(state.copyWith(status: ReportStatus.success));
 
           state.postReports[existingPostReportViewIndex] = postReportView;
-          return emit(state.copyWith(status: ReportStatus.failure, message: AppLocalizations.of(GlobalContext.context)!.unableToResolveReport));
+          return emit(state.copyWith(
+              status: ReportStatus.failure,
+              message: AppLocalizations.of(GlobalContext.context)!
+                  .unableToResolveReport));
         } catch (e) {
           // Restore the original post report contents
           state.postReports[existingPostReportViewIndex] = postReportView;
-          emit(state.copyWith(status: ReportStatus.failure, message: e.toString()));
+          emit(state.copyWith(
+              status: ReportStatus.failure, message: e.toString()));
         }
       case ReportAction.resolveComment:
         // Optimistically update the report
-        int existingCommentReportViewIndex = state.commentReports.indexWhere((CommentReportView commentReportView) => commentReportView.commentReport.id == event.commentReportView!.commentReport.id);
+        int existingCommentReportViewIndex = state.commentReports.indexWhere(
+            (CommentReportView commentReportView) =>
+                commentReportView.commentReport.id ==
+                event.commentReportView!.commentReport.id);
 
-        CommentReportView commentReportView = state.commentReports[existingCommentReportViewIndex];
+        CommentReportView commentReportView =
+            state.commentReports[existingCommentReportViewIndex];
         CommentReport originalCommentReport = commentReportView.commentReport;
 
         try {
-          CommentReport updatedCommentReport = optimisticallyResolveCommentReport(commentReportView.commentReport, event.value);
-          state.commentReports[existingCommentReportViewIndex] = commentReportView.copyWith(commentReport: updatedCommentReport);
+          CommentReport updatedCommentReport =
+              optimisticallyResolveCommentReport(
+                  commentReportView.commentReport, event.value);
+          state.commentReports[existingCommentReportViewIndex] =
+              commentReportView.copyWith(commentReport: updatedCommentReport);
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: ReportStatus.success));
           emit(state.copyWith(status: ReportStatus.fetching));
 
-          bool success = await resolveCommentReport(originalCommentReport.id, event.value);
-          if (success) return emit(state.copyWith(status: ReportStatus.success));
+          bool success =
+              await resolveCommentReport(originalCommentReport.id, event.value);
+          if (success)
+            return emit(state.copyWith(status: ReportStatus.success));
 
-          state.commentReports[existingCommentReportViewIndex] = commentReportView;
-          return emit(state.copyWith(status: ReportStatus.failure, message: AppLocalizations.of(GlobalContext.context)!.unableToResolveReport));
+          state.commentReports[existingCommentReportViewIndex] =
+              commentReportView;
+          return emit(state.copyWith(
+              status: ReportStatus.failure,
+              message: AppLocalizations.of(GlobalContext.context)!
+                  .unableToResolveReport));
         } catch (e) {
           // Restore the original comment report contents
-          state.commentReports[existingCommentReportViewIndex] = commentReportView;
-          emit(state.copyWith(status: ReportStatus.failure, message: e.toString()));
+          state.commentReports[existingCommentReportViewIndex] =
+              commentReportView;
+          emit(state.copyWith(
+              status: ReportStatus.failure, message: e.toString()));
         }
     }
   }

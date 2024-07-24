@@ -27,10 +27,17 @@ String getAppBarTitle(FeedState state) {
   }
 
   if (state.userId != null || state.username != null) {
-    return state.fullPersonView?.personView.person.displayName ?? state.fullPersonView?.personView.person.name ?? '';
+    return state.fullPersonView?.personView.person.displayName ??
+        state.fullPersonView?.personView.person.name ??
+        '';
   }
 
-  return (state.postListingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.postListingType).label) : '';
+  return (state.postListingType != null)
+      ? (destinations
+          .firstWhere(
+              (destination) => destination.listingType == state.postListingType)
+          .label)
+      : '';
 }
 
 String getSortName(FeedState state) {
@@ -38,8 +45,10 @@ String getSortName(FeedState state) {
     return '';
   }
 
-  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
-  final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
+  final sortTypeItemIndex = allSortTypeItems
+      .indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
+  final sortTypeItem =
+      sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
 
   return sortTypeItem?.label ?? '';
 }
@@ -49,8 +58,10 @@ IconData? getSortIcon(FeedState state) {
     return null;
   }
 
-  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
-  final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
+  final sortTypeItemIndex = allSortTypeItems
+      .indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
+  final sortTypeItem =
+      sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
 
   return sortTypeItem?.icon;
 }
@@ -79,7 +90,8 @@ Future<void> navigateToFeedPage(
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
   CommunityBloc communityBloc = context.read<CommunityBloc>();
   InstanceBloc instanceBloc = context.read<InstanceBloc>();
-  AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  AnonymousSubscriptionsBloc anonymousSubscriptionsBloc =
+      context.read<AnonymousSubscriptionsBloc>();
 
   ThunderState thunderState = thunderBloc.state;
   final bool reduceAnimations = thunderState.reduceAnimations;
@@ -89,7 +101,10 @@ Future<void> navigateToFeedPage(
           FeedFetchedEvent(
             feedType: feedType,
             postListingType: postListingType,
-            sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
+            sortType: sortType ??
+                authBloc.state.getSiteResponse?.myUser?.localUserView.localUser
+                    .defaultSortType ??
+                thunderBloc.state.sortTypeForInstance,
             communityId: communityId,
             communityName: communityName,
             userId: userId,
@@ -106,10 +121,17 @@ Future<void> navigateToFeedPage(
         : reduceAnimations
             ? const Duration(milliseconds: 100)
             : null,
-    reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+    reverseTransitionDuration: reduceAnimations
+        ? const Duration(milliseconds: 100)
+        : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
-    canSwipe: Platform.isIOS || thunderState.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
+    canSwipe:
+        Platform.isIOS || thunderState.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(
+            isUserLoggedIn: authBloc.state.isLoggedIn,
+            state: thunderBloc.state,
+            isFeedPage: true) ||
+        !thunderState.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
       providers: [
         BlocProvider.value(value: accountBloc),
@@ -122,7 +144,10 @@ Future<void> navigateToFeedPage(
       child: Material(
         child: FeedPage(
           feedType: feedType,
-          sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
+          sortType: sortType ??
+              authBloc.state.getSiteResponse?.myUser?.localUserView.localUser
+                  .defaultSortType ??
+              thunderBloc.state.sortTypeForInstance,
           communityName: communityName,
           communityId: communityId,
           userId: userId,

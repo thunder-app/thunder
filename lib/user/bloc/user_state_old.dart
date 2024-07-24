@@ -1,6 +1,14 @@
 part of 'user_bloc_old.dart';
 
-enum UserStatus { initial, loading, refreshing, success, empty, failure, failedToBlock }
+enum UserStatus {
+  initial,
+  loading,
+  refreshing,
+  success,
+  empty,
+  failure,
+  failedToBlock
+}
 
 class UserState extends Equatable {
   const UserState({
@@ -84,9 +92,11 @@ class UserState extends Equatable {
       page: page ?? this.page,
       savedContentPage: savedContentPage ?? this.savedContentPage,
       hasReachedPostEnd: hasReachedPostEnd ?? this.hasReachedPostEnd,
-      hasReachedSavedPostEnd: hasReachedSavedPostEnd ?? this.hasReachedSavedPostEnd,
+      hasReachedSavedPostEnd:
+          hasReachedSavedPostEnd ?? this.hasReachedSavedPostEnd,
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
-      hasReachedSavedCommentEnd: hasReachedSavedCommentEnd ?? this.hasReachedSavedCommentEnd,
+      hasReachedSavedCommentEnd:
+          hasReachedSavedCommentEnd ?? this.hasReachedSavedCommentEnd,
       errorMessage: errorMessage ?? this.errorMessage,
       personBlocks: personBlocks ?? this.personBlocks,
       blockedPerson: blockedPerson,

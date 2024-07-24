@@ -51,7 +51,8 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
               children: [
                 if (widget.title.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
+                    padding: const EdgeInsets.only(
+                        bottom: 16.0, left: 26.0, right: 16.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -62,7 +63,8 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                   ),
                 if ((heading ?? widget.heading) != null)
                   Padding(
-                    padding: const EdgeInsets.only(left: 24, right: 24, bottom: 10),
+                    padding:
+                        const EdgeInsets.only(left: 24, right: 24, bottom: 10),
                     child: (heading ?? widget.heading)!,
                   ),
                 ListView(
@@ -75,7 +77,9 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                       }
 
                       return PickerItem(
-                        label: item.capitalizeLabel ? item.label.capitalize : item.label,
+                        label: item.capitalizeLabel
+                            ? item.label.capitalize
+                            : item.label,
                         labelWidget: item.labelWidget,
                         subtitle: item.subtitle,
                         subtitleWidget: item.subtitleWidget,
@@ -94,9 +98,12 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                             });
                           }
                           await widget.onSelect?.call(item);
-                          setState(() => heading = widget.onUpdateHeading?.call());
+                          setState(
+                              () => heading = widget.onUpdateHeading?.call());
                         },
-                        isSelected: currentlySelected != null ? currentlySelected == item.payload : widget.previouslySelected == item.payload,
+                        isSelected: currentlySelected != null
+                            ? currentlySelected == item.payload
+                            : widget.previouslySelected == item.payload,
                         leading: Stack(
                           children: [
                             Container(

@@ -34,7 +34,8 @@ Color? fetchUserGroupColor(BuildContext context, List<UserType> userGroups) {
 
   if (color != null) {
     // Blend with theme
-    color = Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.35), color);
+    color = Color.alphaBlend(
+        theme.colorScheme.primaryContainer.withOpacity(0.35), color);
 
     // Lighten for light mode
     if (!darkTheme) {
@@ -57,14 +58,17 @@ String fetchUserGroupDescriptor(List<UserType> userGroups, Person? person) {
   if (userGroups.contains(UserType.op)) descriptors.add(l10n.originalPoster);
   if (userGroups.contains(UserType.self)) descriptors.add(l10n.me);
   if (userGroups.contains(UserType.admin)) descriptors.add(l10n.admin);
-  if (userGroups.contains(UserType.moderator)) descriptors.add(l10n.moderator(1));
+  if (userGroups.contains(UserType.moderator))
+    descriptors.add(l10n.moderator(1));
   if (userGroups.contains(UserType.bot)) descriptors.add(l10n.bot);
   if (descriptors.isNotEmpty) descriptor = ' (${descriptors.join(', ')})';
 
   if (userGroups.contains(UserType.birthday) && person != null) {
     int yearsOld = DateTime.now().year - person.published.year;
     descriptor += '\n${l10n.accountBirthday(
-      yearsOld == 0 ? '(${l10n.createdToday})' : '(${l10n.xYearsOld(yearsOld, yearsOld)})',
+      yearsOld == 0
+          ? '(${l10n.createdToday})'
+          : '(${l10n.xYearsOld(yearsOld, yearsOld)})',
     )}';
   }
 

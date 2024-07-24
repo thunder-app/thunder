@@ -65,19 +65,31 @@ class UserChip extends StatelessWidget {
         )}${fetchUserGroupDescriptor(userGroups, person)}',
         preferBelow: false,
         child: Material(
-          color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onBackground : Colors.transparent,
-          borderRadius: userGroups.isNotEmpty ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
+          color: userGroups.isNotEmpty
+              ? fetchUserGroupColor(context, userGroups) ??
+                  theme.colorScheme.onBackground
+              : Colors.transparent,
+          borderRadius: userGroups.isNotEmpty
+              ? const BorderRadius.all(Radius.elliptical(5, 5))
+              : null,
           child: InkWell(
             borderRadius: BorderRadius.circular(5),
             onTap: () {
-              navigateToFeedPage(context, feedType: FeedType.user, userId: person.id);
+              navigateToFeedPage(context,
+                  feedType: FeedType.user, userId: person.id);
             },
             child: Padding(
-              padding: userGroups.isNotEmpty ? const EdgeInsets.symmetric(horizontal: 5.0) : EdgeInsets.zero,
+              padding: userGroups.isNotEmpty
+                  ? const EdgeInsets.symmetric(horizontal: 5.0)
+                  : EdgeInsets.zero,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (showUserAvatar && personAvatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
+                  if (showUserAvatar && personAvatar != null)
+                    Padding(
+                        padding:
+                            const EdgeInsets.only(top: 3, bottom: 3, right: 3),
+                        child: personAvatar!),
                   UserFullNameWidget(
                     context,
                     person.name,
@@ -85,7 +97,9 @@ class UserChip extends StatelessWidget {
                     fetchInstanceNameFromUrl(person.actorId),
                     includeInstance: includeInstance,
                     fontScale: state.metadataFontSizeScale,
-                    transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withOpacity(opacity),
+                    transformColor: (c) => userGroups.isNotEmpty
+                        ? theme.textTheme.bodyMedium?.color
+                        : c?.withOpacity(opacity),
                   ),
                   if (userGroups.isNotEmpty) const SizedBox(width: 2.0),
                   if (userGroups.contains(UserType.op))
@@ -93,7 +107,8 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1),
                       child: Icon(
                         Thunder.microphone_variant,
-                        size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size:
+                            15.0 * state.metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onBackground,
                       ),
                     ),
@@ -102,7 +117,8 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1),
                       child: Icon(
                         Icons.person,
-                        size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size:
+                            15.0 * state.metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onBackground,
                       ),
                     ),
@@ -111,7 +127,8 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1),
                       child: Icon(
                         Thunder.shield_crown,
-                        size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size:
+                            14.0 * state.metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onBackground,
                       ),
                     ),
@@ -120,7 +137,8 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1),
                       child: Icon(
                         Thunder.shield,
-                        size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size:
+                            14.0 * state.metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onBackground,
                       ),
                     ),
@@ -129,7 +147,8 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1, right: 2),
                       child: Icon(
                         Thunder.robot,
-                        size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size:
+                            13.0 * state.metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onBackground,
                       ),
                     ),
@@ -138,7 +157,8 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1, right: 2),
                       child: Icon(
                         Icons.cake_rounded,
-                        size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size:
+                            13.0 * state.metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onBackground,
                       ),
                     ),

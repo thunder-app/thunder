@@ -26,12 +26,17 @@ class PreviewImage extends StatefulWidget {
   State<PreviewImage> createState() => _PreviewImageState();
 }
 
-class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderStateMixin {
+class _PreviewImageState extends State<PreviewImage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 130), lowerBound: 0.0, upperBound: 1.0);
+    _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 130),
+        lowerBound: 0.0,
+        upperBound: 1.0);
     super.initState();
   }
 
@@ -47,8 +52,14 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
     final ThunderState state = context.read<ThunderBloc>().state;
     final useDarkTheme = state.themeType == 'dark';
 
-    double? height = widget.viewMode == ViewMode.compact ? ViewMode.compact.height : (widget.showFullHeightImages ? widget.height : ViewMode.comfortable.height);
-    double width = widget.viewMode == ViewMode.compact ? ViewMode.compact.height : MediaQuery.of(context).size.width - 24;
+    double? height = widget.viewMode == ViewMode.compact
+        ? ViewMode.compact.height
+        : (widget.showFullHeightImages
+            ? widget.height
+            : ViewMode.comfortable.height);
+    double width = widget.viewMode == ViewMode.compact
+        ? ViewMode.compact.height
+        : MediaQuery.of(context).size.width - 24;
 
     return ExtendedImage.network(
       widget.mediaUrl,
@@ -56,10 +67,14 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
-      clearMemoryCacheWhenDispose: state.imageCachingMode == ImageCachingMode.relaxed,
+      clearMemoryCacheWhenDispose:
+          state.imageCachingMode == ImageCachingMode.relaxed,
       cacheWidth: widget.viewMode == ViewMode.compact
-          ? (ViewMode.compact.height * View.of(context).devicePixelRatio.ceil()).toInt()
-          : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+          ? (ViewMode.compact.height * View.of(context).devicePixelRatio.ceil())
+              .toInt()
+          : ((MediaQuery.of(context).size.width - 24) *
+                  View.of(context).devicePixelRatio.ceil())
+              .toInt(),
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
@@ -87,14 +102,16 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
                 child: InkWell(
                   child: Container(
                     clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(12)),
                     child: Stack(
                       alignment: Alignment.bottomRight,
                       fit: StackFit.passthrough,
                       children: [
                         Container(
                           color: Colors.grey.shade900,
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 12.0),
                           child: Row(
                             children: [
                               const Padding(

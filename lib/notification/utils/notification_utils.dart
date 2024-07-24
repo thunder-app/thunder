@@ -6,7 +6,8 @@
 // <img src="URL" alt="a" />
 //
 // See: https://regex101.com/r/rSMP3Z/1
-RegExp imgTag = RegExp(r'<img\s+([^>]*\s)?alt="([^"]*)"(?:\s[^>]*)?\/>|<img\s+([^>]*?)\/>');
+RegExp imgTag =
+    RegExp(r'<img\s+([^>]*\s)?alt="([^"]*)"(?:\s[^>]*)?\/>|<img\s+([^>]*?)\/>');
 
 /// Removes `img` tags from HTML content and replaces them with an italicize version of their alt text, or just the word "image".
 String cleanImagesFromHtml(String htmlContent) {

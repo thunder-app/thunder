@@ -14,13 +14,15 @@ import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
-  const CustomBottomNavigationBar({super.key, required this.selectedPageIndex, required this.onPageChange});
+  const CustomBottomNavigationBar(
+      {super.key, required this.selectedPageIndex, required this.onPageChange});
 
   final int selectedPageIndex;
   final Function(int) onPageChange;
 
   @override
-  State<CustomBottomNavigationBar> createState() => _CustomBottomNavigationBarState();
+  State<CustomBottomNavigationBar> createState() =>
+      _CustomBottomNavigationBarState();
 }
 
 class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
@@ -42,8 +44,11 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   void _handleDragEnd(DragEndDetails details, BuildContext context) async {
     if (widget.selectedPageIndex != 0) return;
 
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
+    SharedPreferences prefs =
+        (await UserPreferences.instance).sharedPreferences;
+    bool bottomNavBarSwipeGestures =
+        prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ??
+            true;
     if (bottomNavBarSwipeGestures == false) return;
 
     double delta = _dragEndX - _dragStartX;
@@ -62,11 +67,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   void _handleDoubleTap(BuildContext context) async {
     if (widget.selectedPageIndex != 0) return;
 
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarDoubleTapGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ?? false;
+    SharedPreferences prefs =
+        (await UserPreferences.instance).sharedPreferences;
+    bool bottomNavBarDoubleTapGestures =
+        prefs.getBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ??
+            false;
     if (bottomNavBarDoubleTapGestures == false) return;
 
-    bool isDrawerOpen = context.mounted ? Scaffold.of(context).isDrawerOpen : false;
+    bool isDrawerOpen =
+        context.mounted ? Scaffold.of(context).isDrawerOpen : false;
 
     if (isDrawerOpen) {
       if (context.mounted) Scaffold.of(context).closeDrawer();
@@ -91,12 +100,17 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       child: GestureDetector(
         onHorizontalDragStart: _handleDragStart,
         onHorizontalDragUpdate: _handleDragUpdate,
-        onHorizontalDragEnd: (DragEndDetails dragEndDetails) => _handleDragEnd(dragEndDetails, context),
-        onDoubleTap: state.bottomNavBarDoubleTapGestures == true ? () => _handleDoubleTap(context) : null,
+        onHorizontalDragEnd: (DragEndDetails dragEndDetails) =>
+            _handleDragEnd(dragEndDetails, context),
+        onDoubleTap: state.bottomNavBarDoubleTapGestures == true
+            ? () => _handleDoubleTap(context)
+            : null,
         child: NavigationBar(
           selectedIndex: widget.selectedPageIndex,
           backgroundColor: theme.colorScheme.surface,
-          labelBehavior: state.showNavigationLabels ? NavigationDestinationLabelBehavior.alwaysShow : NavigationDestinationLabelBehavior.alwaysHide,
+          labelBehavior: state.showNavigationLabels
+              ? NavigationDestinationLabelBehavior.alwaysShow
+              : NavigationDestinationLabelBehavior.alwaysHide,
           elevation: 1,
           destinations: [
             NavigationDestination(
@@ -118,18 +132,23 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 icon: const Icon(Icons.person_outline_rounded),
                 selectedIcon: const Icon(Icons.person_rounded),
                 label: l10n.account(1),
-                tooltip: '', // Disable tooltip so that gesture detector triggers properly
+                tooltip:
+                    '', // Disable tooltip so that gesture detector triggers properly
               ),
             ),
             NavigationDestination(
               icon: Badge(
                 isLabelVisible: inboxState.totalUnreadCount != 0,
-                label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
+                label: Text(inboxState.totalUnreadCount > 99
+                    ? '99+'
+                    : inboxState.totalUnreadCount.toString()),
                 child: const Icon(Icons.inbox_outlined),
               ),
               selectedIcon: Badge(
                 isLabelVisible: inboxState.totalUnreadCount != 0,
-                label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
+                label: Text(inboxState.totalUnreadCount > 99
+                    ? '99+'
+                    : inboxState.totalUnreadCount.toString()),
                 child: const Icon(Icons.inbox_rounded),
               ),
               label: l10n.inbox,

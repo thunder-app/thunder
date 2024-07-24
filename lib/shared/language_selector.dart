@@ -42,8 +42,10 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     _languageId = widget.languageId;
 
     // Determine the language from the languageId
-    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
-    _language = languages.firstWhereOrNull((Language language) => language.id == _languageId);
+    List<Language> languages =
+        context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
+    _language = languages
+        .firstWhereOrNull((Language language) => language.id == _languageId);
   }
 
   @override
@@ -74,18 +76,23 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         },
         borderRadius: const BorderRadius.all(Radius.circular(50)),
         child: Padding(
-          padding: const EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 12),
+          padding:
+              const EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 12),
           child: Text.rich(
             softWrap: true,
             TextSpan(
               children: <InlineSpan>[
-                TextSpan(text: _language != null ? '${l10n.language}: ${_language?.name}' : l10n.selectLanguage),
+                TextSpan(
+                    text: _language != null
+                        ? '${l10n.language}: ${_language?.name}'
+                        : l10n.selectLanguage),
                 const WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: Icon(Icons.chevron_right_rounded),
                 ),
               ],
-              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.titleSmall
+                  ?.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
         ),

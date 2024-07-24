@@ -34,7 +34,8 @@ class ChangeCommunitySubsciptionStatusEvent extends SearchEvent {
   final bool follow;
   final String query;
 
-  const ChangeCommunitySubsciptionStatusEvent({required this.communityId, required this.follow, required this.query});
+  const ChangeCommunitySubsciptionStatusEvent(
+      {required this.communityId, required this.follow, required this.query});
 }
 
 class ResetSearch extends SearchEvent {}

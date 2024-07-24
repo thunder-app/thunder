@@ -47,7 +47,8 @@ class InstancePage extends StatefulWidget {
 }
 
 class _InstancePageState extends State<InstancePage> {
-  final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
+  final ScrollController _scrollController =
+      ScrollController(initialScrollOffset: 0);
   bool _isLoading = false;
 
   bool? isBlocked;
@@ -76,8 +77,10 @@ class _InstancePageState extends State<InstancePage> {
     final bool tabletMode = context.read<ThunderBloc>().state.tabletMode;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    final String? accountInstance = context.read<AuthBloc>().state.account?.instance;
-    final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
+    final String? accountInstance =
+        context.read<AuthBloc>().state.account?.instance;
+    final String? currentAnonymousInstance =
+        context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     return BlocListener<InstanceBloc, InstanceState>(
       listener: (context, state) {
@@ -96,12 +99,18 @@ class _InstancePageState extends State<InstancePage> {
         providers: [
           BlocProvider.value(
             value: InstancePageCubit(
-              instance: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!,
-              resolutionInstance: (isUserLoggedIn ? accountInstance : currentAnonymousInstance)!,
+              instance: fetchInstanceNameFromUrl(
+                  widget.getSiteResponse.siteView.site.actorId)!,
+              resolutionInstance: (isUserLoggedIn
+                  ? accountInstance
+                  : currentAnonymousInstance)!,
             ),
           ),
           BlocProvider.value(
-            value: FeedBloc(lemmyClient: LemmyClient()..changeBaseUrl(fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!)),
+            value: FeedBloc(
+                lemmyClient: LemmyClient()
+                  ..changeBaseUrl(fetchInstanceNameFromUrl(
+                      widget.getSiteResponse.siteView.site.actorId)!)),
           ),
         ],
         child: BlocConsumer<InstancePageCubit, InstancePageState>(
@@ -123,37 +132,55 @@ class _InstancePageState extends State<InstancePage> {
                         toolbarHeight: 70.0,
                         title: ListTile(
                           title: Text(
-                            fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
+                            fetchInstanceNameFromUrl(widget
+                                    .getSiteResponse.siteView.site.actorId) ??
+                                '',
                             overflow: TextOverflow.fade,
                             maxLines: 1,
                             softWrap: false,
                             style: theme.textTheme.titleLarge,
                           ),
-                          subtitle: Text("v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.siteView.counts.users))}"),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                          subtitle: Text(
+                              "v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.siteView.counts.users))}"),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 0),
                         ),
                         actions: [
-                          if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance) && widget.instanceId != null)
+                          if (LemmyClient.instance.supportsFeature(
+                                  LemmyFeature.blockInstance) &&
+                              widget.instanceId != null)
                             IconButton(
-                              tooltip: isBlocked! ? l10n.unblockInstance : l10n.blockInstance,
+                              tooltip: isBlocked!
+                                  ? l10n.unblockInstance
+                                  : l10n.blockInstance,
                               onPressed: () {
                                 currentlyTogglingBlock = true;
-                                context.read<InstanceBloc>().add(InstanceActionEvent(
+                                context
+                                    .read<InstanceBloc>()
+                                    .add(InstanceActionEvent(
                                       instanceAction: InstanceAction.block,
                                       instanceId: widget.instanceId!,
-                                      domain: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId),
+                                      domain: fetchInstanceNameFromUrl(widget
+                                          .getSiteResponse
+                                          .siteView
+                                          .site
+                                          .actorId),
                                       value: !isBlocked!,
                                     ));
                               },
                               icon: Icon(
                                 isBlocked! ? Icons.undo_rounded : Icons.block,
-                                semanticLabel: isBlocked! ? l10n.unblockInstance : l10n.blockInstance,
+                                semanticLabel: isBlocked!
+                                    ? l10n.unblockInstance
+                                    : l10n.blockInstance,
                               ),
                             ),
                           if (viewType == SearchType.all)
                             IconButton(
                               tooltip: l10n.openInBrowser,
-                              onPressed: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
+                              onPressed: () => handleLink(context,
+                                  url: widget
+                                      .getSiteResponse.siteView.site.actorId),
                               icon: Icon(
                                 Icons.open_in_browser_rounded,
                                 semanticLabel: l10n.openInBrowser,
@@ -161,7 +188,8 @@ class _InstancePageState extends State<InstancePage> {
                             ),
                           if (viewType != SearchType.all)
                             IconButton(
-                              icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
+                              icon:
+                                  Icon(Icons.sort, semanticLabel: l10n.sortBy),
                               onPressed: () {
                                 HapticFeedback.mediumImpact();
 
@@ -176,7 +204,8 @@ class _InstancePageState extends State<InstancePage> {
                                       _doLoad(context);
                                     },
                                     previouslySelected: sortType,
-                                    minimumVersion: LemmyClient.instance.version,
+                                    minimumVersion:
+                                        LemmyClient.instance.version,
                                   ),
                                 );
                               },
@@ -198,7 +227,9 @@ class _InstancePageState extends State<InstancePage> {
                               ),
                               if (viewType != SearchType.all)
                                 ThunderPopupMenuItem(
-                                  onTap: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
+                                  onTap: () => handleLink(context,
+                                      url: widget.getSiteResponse.siteView.site
+                                          .actorId),
                                   icon: Icons.open_in_browser_rounded,
                                   title: l10n.openInBrowser,
                                 ),
@@ -212,26 +243,40 @@ class _InstancePageState extends State<InstancePage> {
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 15, right: 15),
+                              padding:
+                                  const EdgeInsets.only(left: 15, right: 15),
                               child: Row(
                                 children: [
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.all ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor: viewType == SearchType.all
+                                        ? theme.colorScheme.primaryContainer
+                                            .withOpacity(0.25)
+                                        : null,
                                     children: [
                                       Text(l10n.about),
                                     ],
-                                    onPressed: () => setState(() => viewType = SearchType.all),
+                                    onPressed: () => setState(
+                                        () => viewType = SearchType.all),
                                   ),
                                   const SizedBox(width: 10),
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.communities ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor:
+                                        viewType == SearchType.communities
+                                            ? theme.colorScheme.primaryContainer
+                                                .withOpacity(0.25)
+                                            : null,
                                     children: [
                                       Text(l10n.communities),
                                     ],
                                     onPressed: () async {
                                       viewType = SearchType.communities;
-                                      await context.read<InstancePageCubit>().loadCommunities(page: 1, sortType: sortType);
-                                      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
+                                      await context
+                                          .read<InstancePageCubit>()
+                                          .loadCommunities(
+                                              page: 1, sortType: sortType);
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) =>
+                                              _scrollController.jumpTo(0));
                                     },
                                   ),
                                   // This condition can be removed if/when the Search endpoint respects the Local filter for users
@@ -239,39 +284,66 @@ class _InstancePageState extends State<InstancePage> {
                                   if (false) ...[
                                     const SizedBox(width: 10),
                                     SearchActionChip(
-                                      backgroundColor: viewType == SearchType.users ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                      backgroundColor: viewType ==
+                                              SearchType.users
+                                          ? theme.colorScheme.primaryContainer
+                                              .withOpacity(0.25)
+                                          : null,
                                       children: [
                                         Text(l10n.users),
                                       ],
                                       onPressed: () async {
                                         viewType = SearchType.users;
-                                        await context.read<InstancePageCubit>().loadUsers(page: 1, sortType: sortType);
-                                        WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
+                                        await context
+                                            .read<InstancePageCubit>()
+                                            .loadUsers(
+                                                page: 1, sortType: sortType);
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) =>
+                                                _scrollController.jumpTo(0));
                                       },
                                     ),
                                   ],
                                   const SizedBox(width: 10),
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.posts ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor:
+                                        viewType == SearchType.posts
+                                            ? theme.colorScheme.primaryContainer
+                                                .withOpacity(0.25)
+                                            : null,
                                     children: [
                                       Text(l10n.posts),
                                     ],
                                     onPressed: () async {
                                       viewType = SearchType.posts;
-                                      await context.read<InstancePageCubit>().loadPosts(page: 1, sortType: sortType);
-                                      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
+                                      await context
+                                          .read<InstancePageCubit>()
+                                          .loadPosts(
+                                              page: 1, sortType: sortType);
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) =>
+                                              _scrollController.jumpTo(0));
                                     },
                                   ),
                                   const SizedBox(width: 10),
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.comments ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor:
+                                        viewType == SearchType.comments
+                                            ? theme.colorScheme.primaryContainer
+                                                .withOpacity(0.25)
+                                            : null,
                                     children: [
                                       Text(l10n.comments),
                                     ],
                                     onPressed: () async {
                                       viewType = SearchType.comments;
-                                      await context.read<InstancePageCubit>().loadComments(page: 1, sortType: sortType);
-                                      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
+                                      await context
+                                          .read<InstancePageCubit>()
+                                          .loadComments(
+                                              page: 1, sortType: sortType);
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) =>
+                                              _scrollController.jumpTo(0));
                                     },
                                   ),
                                 ],
@@ -299,13 +371,15 @@ class _InstancePageState extends State<InstancePage> {
                             ],
                           ),
                         ),
-                      if (state.status == InstancePageStatus.success || state.status == InstancePageStatus.done) ...[
+                      if (state.status == InstancePageStatus.success ||
+                          state.status == InstancePageStatus.done) ...[
                         if (viewType == SearchType.all)
                           SliverToBoxAdapter(
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Material(
-                                child: InstanceView(site: widget.getSiteResponse.siteView.site),
+                                child: InstanceView(
+                                    site: widget.getSiteResponse.siteView.site),
                               ),
                             ),
                           ),
@@ -314,13 +388,15 @@ class _InstancePageState extends State<InstancePage> {
                             delegate: SliverChildBuilderDelegate(
                               childCount: state.communities?.length,
                               (context, index) {
-                                CommunityView? communityView = state.communities?[index];
+                                CommunityView? communityView =
+                                    state.communities?[index];
                                 return Material(
                                   child: communityView != null
                                       ? CommunityListEntry(
                                           communityView: communityView,
                                           isUserLoggedIn: false,
-                                          resolutionInstance: state.resolutionInstance,
+                                          resolutionInstance:
+                                              state.resolutionInstance,
                                         )
                                       : Container(),
                                 );
@@ -337,7 +413,8 @@ class _InstancePageState extends State<InstancePage> {
                                   child: user != null
                                       ? UserListEntry(
                                           personView: user,
-                                          resolutionInstance: state.resolutionInstance,
+                                          resolutionInstance:
+                                              state.resolutionInstance,
                                         )
                                       : Container(),
                                 );
@@ -357,13 +434,17 @@ class _InstancePageState extends State<InstancePage> {
                               (context, index) {
                                 var commentView = state.comments?[index];
                                 return Material(
-                                  child: commentView != null ? CommentListEntry(commentView: commentView) : Container(),
+                                  child: commentView != null
+                                      ? CommentListEntry(
+                                          commentView: commentView)
+                                      : Container(),
                                 );
                               },
                             ),
                           ),
                       ],
-                      if (state.status == InstancePageStatus.success && viewType != SearchType.all) ...[
+                      if (state.status == InstancePageStatus.success &&
+                          viewType != SearchType.all) ...[
                         const SliverToBoxAdapter(
                           child: SizedBox(height: 10),
                         ),
@@ -389,11 +470,13 @@ class _InstancePageState extends State<InstancePage> {
   }
 
   Future<void> _doLoad(BuildContext context, {int? page}) async {
-    final InstancePageCubit instancePageCubit = context.read<InstancePageCubit>();
+    final InstancePageCubit instancePageCubit =
+        context.read<InstancePageCubit>();
 
     switch (viewType) {
       case SearchType.communities:
-        await instancePageCubit.loadCommunities(page: page ?? 1, sortType: sortType);
+        await instancePageCubit.loadCommunities(
+            page: page ?? 1, sortType: sortType);
         break;
       case SearchType.users:
         await instancePageCubit.loadUsers(page: page ?? 1, sortType: sortType);
@@ -402,7 +485,8 @@ class _InstancePageState extends State<InstancePage> {
         await instancePageCubit.loadPosts(page: page ?? 1, sortType: sortType);
         break;
       case SearchType.comments:
-        await instancePageCubit.loadComments(page: page ?? 1, sortType: sortType);
+        await instancePageCubit.loadComments(
+            page: page ?? 1, sortType: sortType);
         break;
       default:
         break;
@@ -410,10 +494,14 @@ class _InstancePageState extends State<InstancePage> {
   }
 
   Future<void> _onScroll() async {
-    if (!_isLoading && _scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+    if (!_isLoading &&
+        _scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent * 0.8) {
       _isLoading = true;
-      InstancePageState? instancePageState = buildContext?.read<InstancePageCubit>().state;
-      if (instancePageState != null && instancePageState.status != InstancePageStatus.done) {
+      InstancePageState? instancePageState =
+          buildContext?.read<InstancePageCubit>().state;
+      if (instancePageState != null &&
+          instancePageState.status != InstancePageStatus.done) {
         await _doLoad(buildContext!, page: (instancePageState.page ?? 0) + 1);
       }
       _isLoading = false;

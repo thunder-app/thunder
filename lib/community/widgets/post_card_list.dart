@@ -69,9 +69,11 @@ class _PostCardListState extends State<PostCardList> {
 
     // Check to see if the initial load did not load enough items to allow for scrolling to occur and fetches more items
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+      bool isScrollable = _scrollController.position.maxScrollExtent >
+          _scrollController.position.viewportDimension;
 
-      if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+      if (context.read<CommunityBloc>().state.hasReachedEnd == false &&
+          isScrollable == false) {
         widget.onScrollEndReached();
       }
     });
@@ -86,7 +88,8 @@ class _PostCardListState extends State<PostCardList> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent * 0.7) {
       widget.onScrollEndReached();
     }
   }
@@ -106,19 +109,26 @@ class _PostCardListState extends State<PostCardList> {
     );
 
     return BlocListener<ThunderBloc, ThunderState>(
-      listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
+      listenWhen: (previous, current) =>
+          (previous.status == ThunderStatus.refreshing &&
+              current.status == ThunderStatus.success),
       listener: (context, state) {},
       child: RefreshIndicator(
         onRefresh: () async {
           HapticFeedback.mediumImpact();
           if (widget.personId != null) {
-            context.read<UserBloc>().add(GetUserEvent(userId: widget.personId, reset: true));
+            context
+                .read<UserBloc>()
+                .add(GetUserEvent(userId: widget.personId, reset: true));
           } else {
             context.read<CommunityBloc>().add(GetCommunityPostsEvent(
                   reset: true,
-                  listingType: widget.communityId != null ? null : widget.listingType,
-                  communityId: widget.listingType != null ? null : widget.communityId,
-                  communityName: widget.listingType != null ? null : widget.communityName,
+                  listingType:
+                      widget.communityId != null ? null : widget.listingType,
+                  communityId:
+                      widget.listingType != null ? null : widget.communityId,
+                  communityName:
+                      widget.listingType != null ? null : widget.communityName,
                 ));
           }
         },
@@ -129,11 +139,21 @@ class _PostCardListState extends State<PostCardList> {
           cacheExtent: 1000,
           controller: _scrollController,
           itemCount: widget.postViews?.length != null
-              ? ((widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? widget.postViews!.length + 2 : widget.postViews!.length + 1)
+              ? ((widget.communityId != null ||
+                      widget.communityName != null ||
+                      widget.tagline.isNotEmpty)
+                  ? widget.postViews!.length + 2
+                  : widget.postViews!.length + 1)
               : 1,
           itemBuilder: (context, index) {
-            if (index == ((widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
-              if (widget.hasReachedEnd == true || widget.postViews?.isEmpty == true) {
+            if (index ==
+                ((widget.communityId != null ||
+                        widget.communityName != null ||
+                        widget.tagline.isNotEmpty)
+                    ? widget.postViews!.length + 1
+                    : widget.postViews!.length)) {
+              if (widget.hasReachedEnd == true ||
+                  widget.postViews?.isEmpty == true) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -163,14 +183,23 @@ class _PostCardListState extends State<PostCardList> {
                 );
               }
             } else {
-              PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? index - 1 : index];
+              PostViewMedia postViewMedia = widget.postViews![
+                  (widget.communityId != null ||
+                          widget.communityName != null ||
+                          widget.tagline.isNotEmpty)
+                      ? index - 1
+                      : index];
               return PostCard(
                 postViewMedia: postViewMedia,
                 feedType: widget.feedType,
-                onVoteAction: (int voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
-                onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
-                onReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
-                onHideAction: (bool hide) => widget.onHideAction(postViewMedia.postView.post.id, hide),
+                onVoteAction: (int voteType) => widget.onVoteAction(
+                    postViewMedia.postView.post.id, voteType),
+                onSaveAction: (bool saved) =>
+                    widget.onSaveAction(postViewMedia.postView.post.id, saved),
+                onReadAction: (bool read) => widget.onToggleReadAction(
+                    postViewMedia.postView.post.id, read),
+                onHideAction: (bool hide) =>
+                    widget.onHideAction(postViewMedia.postView.post.id, hide),
                 onUpAction: (double verticalDragDistance) {},
                 onDownAction: () {},
                 listingType: widget.listingType,

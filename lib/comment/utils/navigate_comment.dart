@@ -21,7 +21,8 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 
-Future<void> navigateToComment(BuildContext context, CommentView commentView) async {
+Future<void> navigateToComment(
+    BuildContext context, CommentView commentView) async {
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
@@ -35,10 +36,16 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
         : reduceAnimations
             ? const Duration(milliseconds: 100)
             : null,
-    reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+    reverseTransitionDuration: reduceAnimations
+        ? const Duration(milliseconds: 100)
+        : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
     canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(
+            isUserLoggedIn: authBloc.state.isLoggedIn,
+            state: thunderBloc.state,
+            isPostPage: true) ||
+        !state.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
       providers: [
         BlocProvider.value(value: accountBloc),
@@ -65,8 +72,11 @@ Future<void> navigateToCreateCommentPage(
   CommentView? parentCommentView,
   Function(CommentView commentView, bool userChanged)? onCommentSuccess,
 }) async {
-  assert(!(postViewMedia == null && parentCommentView == null && commentView == null));
-  assert(!(postViewMedia != null && (parentCommentView != null || commentView != null)));
+  assert(!(postViewMedia == null &&
+      parentCommentView == null &&
+      commentView == null));
+  assert(!(postViewMedia != null &&
+      (parentCommentView != null || commentView != null)));
 
   final l10n = AppLocalizations.of(context)!;
 
@@ -77,7 +87,8 @@ Future<void> navigateToCreateCommentPage(
     final bool reduceAnimations = thunderBloc.state.reduceAnimations;
 
     Navigator.of(context).push(SwipeablePageRoute(
-      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+      transitionDuration:
+          reduceAnimations ? const Duration(milliseconds: 100) : null,
       canOnlySwipeFromEdge: true,
       backGestureDetectionWidth: 45,
       builder: (navigatorContext) {

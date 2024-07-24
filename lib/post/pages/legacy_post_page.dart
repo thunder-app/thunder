@@ -85,7 +85,8 @@ class _PostPageState extends State<PostPage> {
     super.dispose();
   }
 
-  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+  FutureOr<bool> _handleBack(
+      bool stopDefaultButtonEvent, RouteInfo info) async {
     if (context.read<ThunderBloc>().state.isFabOpen) {
       context.read<ThunderBloc>().add(const OnFabToggle(false));
     }
@@ -130,7 +131,10 @@ class _PostPageState extends State<PostPage> {
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              final sortTypeItem = CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              final sortTypeItem = CommentSortPicker.getCommentSortTypeItems(
+                      minimumVersion: LemmyClient.maxVersion)
+                  .firstWhere((sortTypeItem) =>
+                      sortTypeItem.payload == currentState.sortType);
               sortTypeIcon = sortTypeItem.icon;
               sortTypeLabel = sortTypeItem.label;
             });
@@ -181,15 +185,20 @@ class _PostPageState extends State<PostPage> {
               ),
               actions: [
                 IconButton(
-                    icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
+                    icon: Icon(Icons.refresh_rounded,
+                        semanticLabel: l10n.refresh),
                     onPressed: () {
                       if (context.read<ThunderBloc>().state.isFabOpen) {
-                        context.read<ThunderBloc>().add(const OnFabToggle(false));
+                        context
+                            .read<ThunderBloc>()
+                            .add(const OnFabToggle(false));
                       }
                       HapticFeedback.mediumImpact();
-                      return context
-                          .read<PostBloc>()
-                          .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+                      return context.read<PostBloc>().add(GetPostEvent(
+                          postView: widget.postView,
+                          postId: widget.postId,
+                          selectedCommentId: state.selectedCommentId,
+                          selectedCommentPath: state.selectedCommentPath));
                     }),
                 IconButton(
                   icon: Icon(
@@ -209,10 +218,15 @@ class _PostPageState extends State<PostPage> {
                     ThunderPopupMenuItem(
                       onTap: () => createCrossPost(
                         context,
-                        title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
-                        url: widget.postView?.postView.post.url ?? state.postView?.postView.post.url,
-                        text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body,
-                        postUrl: widget.postView?.postView.post.apId ?? state.postView?.postView.post.apId,
+                        title: widget.postView?.postView.post.name ??
+                            state.postView?.postView.post.name ??
+                            '',
+                        url: widget.postView?.postView.post.url ??
+                            state.postView?.postView.post.url,
+                        text: widget.postView?.postView.post.body ??
+                            state.postView?.postView.post.body,
+                        postUrl: widget.postView?.postView.post.apId ??
+                            state.postView?.postView.post.apId,
                       ),
                       icon: Icons.repeat_rounded,
                       title: l10n.createNewCrossPost,
@@ -220,13 +234,18 @@ class _PostPageState extends State<PostPage> {
                     ThunderPopupMenuItem(
                       onTap: () => setState(() => viewSource = !viewSource),
                       icon: Icons.edit_document,
-                      title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
+                      title:
+                          viewSource ? l10n.viewOriginal : l10n.viewPostSource,
                     ),
                     ThunderPopupMenuItem(
                       onTap: () => showSelectableTextModal(
                         context,
-                        title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
-                        text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body ?? '',
+                        title: widget.postView?.postView.post.name ??
+                            state.postView?.postView.post.name ??
+                            '',
+                        text: widget.postView?.postView.post.body ??
+                            state.postView?.postView.post.body ??
+                            '',
                       ),
                       icon: Icons.select_all_rounded,
                       title: l10n.selectText,
@@ -237,7 +256,8 @@ class _PostPageState extends State<PostPage> {
               centerTitle: false,
               toolbarHeight: 70.0,
             ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
             floatingActionButton: Stack(
               alignment: Alignment.center,
               children: [
@@ -269,57 +289,96 @@ class _PostPageState extends State<PostPage> {
                               centered: combineNavAndFab,
                               distance: combineNavAndFab ? 45 : 60,
                               icon: Icon(
-                                state.status == PostStatus.searchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: postLocked),
-                                semanticLabel: state.status == PostStatus.searchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: postLocked),
+                                state.status == PostStatus.searchInProgress
+                                    ? Icons.youtube_searched_for_rounded
+                                    : singlePressAction.getIcon(
+                                        postLocked: postLocked),
+                                semanticLabel:
+                                    state.status == PostStatus.searchInProgress
+                                        ? l10n.search
+                                        : singlePressAction.getTitle(context,
+                                            postLocked: postLocked),
                                 size: 35,
                               ),
-                              onPressed: state.status == PostStatus.searchInProgress
+                              onPressed: state.status ==
+                                      PostStatus.searchInProgress
                                   ? () {
-                                      context.read<PostBloc>().add(const ContinueCommentSearchEvent());
+                                      context.read<PostBloc>().add(
+                                          const ContinueCommentSearchEvent());
                                     }
                                   : () => singlePressAction.execute(
                                       context: context,
                                       postView: state.postView,
                                       postId: state.postId,
-                                      selectedCommentId: state.selectedCommentId,
-                                      selectedCommentPath: state.selectedCommentPath,
-                                      override: singlePressAction == PostFabAction.backToTop
+                                      selectedCommentId:
+                                          state.selectedCommentId,
+                                      selectedCommentPath:
+                                          state.selectedCommentPath,
+                                      override: singlePressAction ==
+                                              PostFabAction.backToTop
                                           ? () => {
                                                 _listController.animateToItem(
                                                   index: 0,
-                                                  scrollController: _scrollController,
+                                                  scrollController:
+                                                      _scrollController,
                                                   alignment: 0,
-                                                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
-                                                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                                  duration:
+                                                      (estimatedDistance) =>
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  250),
+                                                  curve: (estimatedDistance) =>
+                                                      Curves
+                                                          .easeInOutCubicEmphasized,
                                                 ),
                                               }
-                                          : singlePressAction == PostFabAction.changeSort
-                                              ? () => showSortBottomSheet(context, state)
-                                              : singlePressAction == PostFabAction.replyToPost
-                                                  ? () => replyToPost(context, widget.postView, postLocked: postLocked)
-                                                  : singlePressAction == PostFabAction.search
-                                                      ? () => startCommentSearch(context)
+                                          : singlePressAction ==
+                                                  PostFabAction.changeSort
+                                              ? () => showSortBottomSheet(
+                                                  context, state)
+                                              : singlePressAction ==
+                                                      PostFabAction.replyToPost
+                                                  ? () => replyToPost(
+                                                      context, widget.postView,
+                                                      postLocked: postLocked)
+                                                  : singlePressAction ==
+                                                          PostFabAction.search
+                                                      ? () =>
+                                                          startCommentSearch(
+                                                              context)
                                                       : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
                                   postView: state.postView,
                                   postId: state.postId,
                                   selectedCommentId: state.selectedCommentId,
-                                  selectedCommentPath: state.selectedCommentPath,
-                                  override: longPressAction == PostFabAction.backToTop
+                                  selectedCommentPath:
+                                      state.selectedCommentPath,
+                                  override: longPressAction ==
+                                          PostFabAction.backToTop
                                       ? () => {
                                             _listController.animateToItem(
                                               index: 0,
-                                              scrollController: _scrollController,
+                                              scrollController:
+                                                  _scrollController,
                                               alignment: 0,
-                                              duration: (estimatedDistance) => const Duration(milliseconds: 250),
-                                              curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                              duration: (estimatedDistance) =>
+                                                  const Duration(
+                                                      milliseconds: 250),
+                                              curve: (estimatedDistance) =>
+                                                  Curves
+                                                      .easeInOutCubicEmphasized,
                                             ),
                                           }
-                                      : longPressAction == PostFabAction.changeSort
-                                          ? () => showSortBottomSheet(context, state)
-                                          : longPressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context, widget.postView, postLocked: postLocked)
+                                      : longPressAction ==
+                                              PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(
+                                              context, state)
+                                          : longPressAction ==
+                                                  PostFabAction.replyToPost
+                                              ? () => replyToPost(
+                                                  context, widget.postView,
+                                                  postLocked: postLocked)
                                               : null),
                               children: [
                                 if (enableRefresh)
@@ -331,11 +390,14 @@ class _PostPageState extends State<PostPage> {
                                         context: context,
                                         postView: state.postView,
                                         postId: state.postId,
-                                        selectedCommentId: state.selectedCommentId,
-                                        selectedCommentPath: state.selectedCommentPath,
+                                        selectedCommentId:
+                                            state.selectedCommentId,
+                                        selectedCommentPath:
+                                            state.selectedCommentPath,
                                       );
                                     },
-                                    title: PostFabAction.refresh.getTitle(context),
+                                    title:
+                                        PostFabAction.refresh.getTitle(context),
                                     icon: Icon(
                                       PostFabAction.refresh.getIcon(),
                                     ),
@@ -346,12 +408,17 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.replyToPost.execute(
-                                        override: () => replyToPost(context, widget.postView, postLocked: postLocked),
+                                        override: () => replyToPost(
+                                            context, widget.postView,
+                                            postLocked: postLocked),
                                       );
                                     },
-                                    title: PostFabAction.replyToPost.getTitle(context),
+                                    title: PostFabAction.replyToPost
+                                        .getTitle(context),
                                     icon: Icon(
-                                      postLocked ? Icons.lock : PostFabAction.replyToPost.getIcon(),
+                                      postLocked
+                                          ? Icons.lock
+                                          : PostFabAction.replyToPost.getIcon(),
                                     ),
                                   ),
                                 if (enableChangeSort)
@@ -360,10 +427,12 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.changeSort.execute(
-                                        override: () => showSortBottomSheet(context, state),
+                                        override: () =>
+                                            showSortBottomSheet(context, state),
                                       );
                                     },
-                                    title: PostFabAction.changeSort.getTitle(context),
+                                    title: PostFabAction.changeSort
+                                        .getTitle(context),
                                     icon: Icon(
                                       PostFabAction.changeSort.getIcon(),
                                     ),
@@ -376,14 +445,22 @@ class _PostPageState extends State<PostPage> {
                                           override: () => {
                                                 _listController.animateToItem(
                                                   index: 0,
-                                                  scrollController: _scrollController,
+                                                  scrollController:
+                                                      _scrollController,
                                                   alignment: 0,
-                                                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
-                                                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                                  duration:
+                                                      (estimatedDistance) =>
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  250),
+                                                  curve: (estimatedDistance) =>
+                                                      Curves
+                                                          .easeInOutCubicEmphasized,
                                                 ),
                                               });
                                     },
-                                    title: PostFabAction.backToTop.getTitle(context),
+                                    title: PostFabAction.backToTop
+                                        .getTitle(context),
                                     icon: Icon(
                                       PostFabAction.backToTop.getIcon(),
                                     ),
@@ -391,10 +468,18 @@ class _PostPageState extends State<PostPage> {
                                 if (enableSearch)
                                   ActionButton(
                                     centered: combineNavAndFab,
-                                    onPressed: () => startCommentSearch(context),
-                                    title: state.status == PostStatus.searchInProgress ? l10n.endSearch : PostFabAction.search.getTitle(context),
+                                    onPressed: () =>
+                                        startCommentSearch(context),
+                                    title: state.status ==
+                                            PostStatus.searchInProgress
+                                        ? l10n.endSearch
+                                        : PostFabAction.search
+                                            .getTitle(context),
                                     icon: Icon(
-                                      state.status == PostStatus.searchInProgress ? Icons.search_off_rounded : PostFabAction.search.getIcon(),
+                                      state.status ==
+                                              PostStatus.searchInProgress
+                                          ? Icons.search_off_rounded
+                                          : PostFabAction.search.getIcon(),
                                     ),
                                   ),
                               ],
@@ -410,36 +495,48 @@ class _PostPageState extends State<PostPage> {
                 SafeArea(
                   child: BlocConsumer<PostBloc, PostState>(
                     listenWhen: (previous, current) {
-                      if ((previous.status != PostStatus.failure && current.status == PostStatus.failure) || (previous.errorMessage != current.errorMessage)) {
+                      if ((previous.status != PostStatus.failure &&
+                              current.status == PostStatus.failure) ||
+                          (previous.errorMessage != current.errorMessage)) {
                         setState(() => resetFailureMessage = true);
                       }
                       return true;
                     },
                     listener: (context, state) {
-                      if (state.status == PostStatus.success && widget.postView != null && state.postView != null) {
+                      if (state.status == PostStatus.success &&
+                          widget.postView != null &&
+                          state.postView != null) {
                         widget.onPostUpdated(state.postView!);
                       }
                     },
                     builder: (context, state) {
-                      if (state.status == PostStatus.failure && resetFailureMessage == true) {
+                      if (state.status == PostStatus.failure &&
+                          resetFailureMessage == true) {
                         showSnackbar(
                           state.errorMessage ?? l10n.missingErrorMessage,
-                          backgroundColor: Theme.of(context).colorScheme.onErrorContainer,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.onErrorContainer,
                           leadingIcon: Icons.warning_rounded,
-                          leadingIconColor: Theme.of(context).colorScheme.errorContainer,
+                          leadingIconColor:
+                              Theme.of(context).colorScheme.errorContainer,
                         );
-                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                        WidgetsBinding.instance
+                            .addPostFrameCallback((timeStamp) {
                           setState(() => resetFailureMessage = false);
                         });
                       }
                       switch (state.status) {
                         case PostStatus.initial:
-                          context
-                              .read<PostBloc>()
-                              .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
-                          return const Center(child: CircularProgressIndicator());
+                          context.read<PostBloc>().add(GetPostEvent(
+                              postView: widget.postView,
+                              postId: widget.postId,
+                              selectedCommentPath: widget.selectedCommentPath,
+                              selectedCommentId: widget.selectedCommentId));
+                          return const Center(
+                              child: CircularProgressIndicator());
                         case PostStatus.loading:
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         case PostStatus.refreshing:
                         case PostStatus.success:
                         case PostStatus.failure:
@@ -448,21 +545,29 @@ class _PostPageState extends State<PostPage> {
                             return RefreshIndicator(
                               onRefresh: () async {
                                 HapticFeedback.mediumImpact();
-                                return context
-                                    .read<PostBloc>()
-                                    .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+                                return context.read<PostBloc>().add(
+                                    GetPostEvent(
+                                        postView: widget.postView,
+                                        postId: widget.postId,
+                                        selectedCommentId:
+                                            state.selectedCommentId,
+                                        selectedCommentPath:
+                                            state.selectedCommentPath));
                               },
                               child: PostPageSuccess(
                                 postView: state.postView!,
                                 comments: state.comments,
                                 selectedCommentId: state.selectedCommentId,
                                 selectedCommentPath: state.selectedCommentPath,
-                                newlyCreatedCommentId: state.newlyCreatedCommentId,
+                                newlyCreatedCommentId:
+                                    state.newlyCreatedCommentId,
                                 moddingCommentId: state.moddingCommentId,
-                                viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
+                                viewFullCommentsRefreshing:
+                                    state.viewAllCommentsRefresh,
                                 scrollController: _scrollController,
                                 listController: _listController,
-                                hasReachedCommentEnd: state.hasReachedCommentEnd,
+                                hasReachedCommentEnd:
+                                    state.hasReachedCommentEnd,
                                 crossPosts: state.crossPosts,
                                 viewSource: viewSource,
                               ),
@@ -473,7 +578,11 @@ class _PostPageState extends State<PostPage> {
                             actions: [
                               (
                                 text: l10n.refreshContent,
-                                action: () => context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null)),
+                                action: () => context.read<PostBloc>().add(
+                                    GetPostEvent(
+                                        postView: widget.postView,
+                                        postId: widget.postId,
+                                        selectedCommentId: null)),
                                 loading: false,
                               ),
                             ],
@@ -484,7 +593,10 @@ class _PostPageState extends State<PostPage> {
                             actions: [
                               (
                                 text: l10n.refreshContent,
-                                action: () => context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId)),
+                                action: () => context.read<PostBloc>().add(
+                                    GetPostEvent(
+                                        postView: widget.postView,
+                                        postId: widget.postId)),
                                 loading: false,
                               ),
                             ],
@@ -498,10 +610,13 @@ class _PostPageState extends State<PostPage> {
                   child: isFabOpen
                       ? Listener(
                           onPointerUp: (details) {
-                            context.read<ThunderBloc>().add(const OnFabToggle(false));
+                            context
+                                .read<ThunderBloc>()
+                                .add(const OnFabToggle(false));
                           },
                           child: Container(
-                            color: theme.colorScheme.background.withOpacity(0.95),
+                            color:
+                                theme.colorScheme.background.withOpacity(0.95),
                           ),
                         )
                       : null,
@@ -513,7 +628,9 @@ class _PostPageState extends State<PostPage> {
                     child: GestureDetector(
                       onVerticalDragUpdate: (details) {
                         if (details.delta.dy < -5) {
-                          context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                          context
+                              .read<ThunderBloc>()
+                              .add(const OnFabSummonToggle(true));
                         }
                       },
                     ),
@@ -556,7 +673,8 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void replyToPost(BuildContext context, PostViewMedia? postViewMedia, {bool postLocked = false}) async {
+  void replyToPost(BuildContext context, PostViewMedia? postViewMedia,
+      {bool postLocked = false}) async {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     final state = context.read<AuthBloc>().state;
 
@@ -573,7 +691,8 @@ class _PostPageState extends State<PostPage> {
         postViewMedia: postViewMedia,
         onCommentSuccess: (commentView, userChanged) {
           if (!userChanged) {
-            context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+            context.read<PostBloc>().add(
+                UpdateCommentEvent(commentView: commentView, isEdit: false));
           }
         },
       );
@@ -600,7 +719,9 @@ class _PostPageState extends State<PostPage> {
             /// Recursive function which checks if any child of the given [commentViewTrees] contains the query
             void findMatches(List<CommentViewTree> commentViewTrees) {
               for (CommentViewTree commentViewTree in commentViewTrees) {
-                if (commentViewTree.commentView?.comment.content.contains(RegExp(value!, caseSensitive: false)) == true) {
+                if (commentViewTree.commentView?.comment.content
+                        .contains(RegExp(value!, caseSensitive: false)) ==
+                    true) {
                   commentMatches.add(commentViewTree.commentView!.comment);
                 }
                 findMatches(commentViewTree.replies);
@@ -613,7 +734,9 @@ class _PostPageState extends State<PostPage> {
             if (commentMatches.isEmpty) {
               showSnackbar(l10n.noResultsFound);
             } else {
-              context.read<PostBloc>().add(StartCommentSearchEvent(commentMatches: commentMatches));
+              context
+                  .read<PostBloc>()
+                  .add(StartCommentSearchEvent(commentMatches: commentMatches));
             }
 
             return Future.value(null);

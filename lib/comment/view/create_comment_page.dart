@@ -118,7 +118,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   void initState() {
     super.initState();
 
-    postId = widget.postViewMedia?.postView.post.id ?? widget.parentCommentView?.post.id;
+    postId = widget.postViewMedia?.postView.post.id ??
+        widget.parentCommentView?.post.id;
     parentCommentId = widget.parentCommentView?.comment.id;
 
     _bodyTextController.addListener(() {
@@ -179,7 +180,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
       return;
     }
 
-    Draft? draft = await Draft.fetchDraft(draftType, draftExistingId, draftReplyId);
+    Draft? draft =
+        await Draft.fetchDraft(draftType, draftExistingId, draftReplyId);
 
     if (draft != null) {
       _bodyTextController.text = draft.body ?? '';
@@ -187,7 +189,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
     _draftTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
       Draft draft = _generateDraft();
-      if (draft.isCommentNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
+      if (draft.isCommentNotEmpty &&
+          saveDraft &&
+          _draftDiffersFromEdit(draft)) {
         Draft.upsertDraft(draft);
       } else {
         Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
@@ -203,7 +207,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
           trailingIconColor: Theme.of(context).colorScheme.errorContainer,
           trailingAction: () {
             Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-            _bodyTextController.text = widget.commentView?.comment.content ?? '';
+            _bodyTextController.text =
+                widget.commentView?.comment.content ?? '';
           },
           closable: true,
         );
@@ -247,23 +252,31 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
         create: (context) => CreateCommentCubit(),
         child: BlocConsumer<CreateCommentCubit, CreateCommentState>(
           listener: (context, state) {
-            if (state.status == CreateCommentStatus.success && state.commentView != null) {
+            if (state.status == CreateCommentStatus.success &&
+                state.commentView != null) {
               widget.onCommentSuccess?.call(state.commentView!, userChanged);
               Navigator.of(context).pop();
             }
 
-            if (state.status == CreateCommentStatus.error && state.message != null) {
+            if (state.status == CreateCommentStatus.error &&
+                state.message != null) {
               showSnackbar(state.message!);
               context.read<CreateCommentCubit>().clearMessage();
             }
 
             switch (state.status) {
               case CreateCommentStatus.imageUploadSuccess:
-                String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
-                _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
+                String markdownImages =
+                    state.imageUrls?.map((url) => '![]($url)').join('\n\n') ??
+                        '';
+                _bodyTextController.text = _bodyTextController.text
+                    .replaceRange(_bodyTextController.selection.end,
+                        _bodyTextController.selection.end, markdownImages);
                 break;
               case CreateCommentStatus.imageUploadFailure:
-                showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+                showSnackbar(l10n.postUploadImageError,
+                    leadingIcon: Icons.warning_rounded,
+                    leadingIconColor: theme.colorScheme.errorContainer);
               default:
                 break;
             }
@@ -272,14 +285,19 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
             return KeyboardDismissOnTap(
               child: Scaffold(
                 appBar: AppBar(
-                  title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
+                  title: Text(widget.commentView != null
+                      ? l10n.editComment
+                      : l10n.createComment),
                   toolbarHeight: 70.0,
                   centerTitle: false,
                   actions: [
                     state.status == CreateCommentStatus.submitting
                         ? const Padding(
                             padding: EdgeInsets.only(right: 20.0),
-                            child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                            child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator()),
                           )
                         : Padding(
                             padding: const EdgeInsets.only(right: 8.0),
@@ -289,17 +307,24 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   : () {
                                       saveDraft = false;
 
-                                      context.read<CreateCommentCubit>().createOrEditComment(
+                                      context
+                                          .read<CreateCommentCubit>()
+                                          .createOrEditComment(
                                             postId: postId,
                                             parentCommentId: parentCommentId,
                                             content: _bodyTextController.text,
-                                            commentIdBeingEdited: widget.commentView?.comment.id,
+                                            commentIdBeingEdited:
+                                                widget.commentView?.comment.id,
                                             languageId: languageId,
                                           );
                                     },
                               icon: Icon(
-                                widget.commentView != null ? Icons.edit_rounded : Icons.send_rounded,
-                                semanticLabel: widget.commentView != null ? l10n.editComment : l10n.createComment,
+                                widget.commentView != null
+                                    ? Icons.edit_rounded
+                                    : Icons.send_rounded,
+                                semanticLabel: widget.commentView != null
+                                    ? l10n.editComment
+                                    : l10n.createComment,
                               ),
                             ),
                           ),
@@ -316,33 +341,40 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                             children: <Widget>[
                               if (widget.postViewMedia != null)
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 8.0, bottom: 16.0),
                                   child: Container(
-                                    padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
+                                    padding: const EdgeInsets.only(
+                                        top: 6.0, bottom: 12.0),
                                     decoration: BoxDecoration(
                                       color: getBackgroundColor(context),
-                                      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8.0)),
                                     ),
                                     child: PostSubview(
                                       postViewMedia: widget.postViewMedia!,
                                       crossPosts: const [],
                                       viewSource: viewSource,
-                                      onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                                      onViewSourceToggled: () => setState(
+                                          () => viewSource = !viewSource),
                                       showQuickPostActionBar: false,
                                       showExpandableButton: false,
                                       selectable: true,
                                       showReplyEditorButtons: true,
-                                      onSelectionChanged: (selection) => replyViewSelection = selection,
+                                      onSelectionChanged: (selection) =>
+                                          replyViewSelection = selection,
                                     ),
                                   ),
                                 ),
                               if (widget.parentCommentView != null) ...[
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 8.0, bottom: 16.0),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: getBackgroundColor(context),
-                                      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8.0)),
                                     ),
                                     child: CommentContent(
                                       comment: widget.parentCommentView!,
@@ -355,11 +387,13 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       isOwnComment: false,
                                       isHidden: false,
                                       viewSource: viewSource,
-                                      onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                                      onViewSourceToggled: () => setState(
+                                          () => viewSource = !viewSource),
                                       disableActions: true,
                                       selectable: true,
                                       showReplyEditorButtons: true,
-                                      onSelectionChanged: (selection) => replyViewSelection = selection,
+                                      onSelectionChanged: (selection) =>
+                                          replyViewSelection = selection,
                                     ),
                                   ),
                                 ),
@@ -370,25 +404,34 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(left: 16.0),
                                     child: UserSelector(
-                                      profileModalHeading: l10n.selectAccountToCommentAs,
-                                      postActorId: widget.postViewMedia?.postView.post.apId,
-                                      onPostChanged: (postViewMedia) => postId = postViewMedia.postView.post.id,
-                                      parentCommentActorId: widget.parentCommentView?.comment.apId,
-                                      onParentCommentChanged: (parentCommentView) {
+                                      profileModalHeading:
+                                          l10n.selectAccountToCommentAs,
+                                      postActorId: widget
+                                          .postViewMedia?.postView.post.apId,
+                                      onPostChanged: (postViewMedia) => postId =
+                                          postViewMedia.postView.post.id,
+                                      parentCommentActorId: widget
+                                          .parentCommentView?.comment.apId,
+                                      onParentCommentChanged:
+                                          (parentCommentView) {
                                         postId = parentCommentView.post.id;
-                                        parentCommentId = parentCommentView.comment.id;
+                                        parentCommentId =
+                                            parentCommentView.comment.id;
                                       },
                                       onUserChanged: () => userChanged = true,
-                                      enableAccountSwitching: widget.commentView == null,
+                                      enableAccountSwitching:
+                                          widget.commentView == null,
                                     ),
                                   ),
                                   const SizedBox(height: 10),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0),
                                     child: LanguageSelector(
                                       languageId: languageId,
                                       onLanguageSelected: (Language? language) {
-                                        setState(() => languageId = language?.id);
+                                        setState(
+                                            () => languageId = language?.id);
                                       },
                                     ),
                                   ),
@@ -401,13 +444,17 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         padding: const EdgeInsets.all(8.0),
                                         decoration: BoxDecoration(
                                           color: getBackgroundColor(context),
-                                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(8.0)),
                                         ),
-                                        child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
+                                        child: CommonMarkdownBody(
+                                            body: _bodyTextController.text,
+                                            isComment: true),
                                       ),
                                     ),
                                     secondChild: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
                                       child: MarkdownTextInputField(
                                         controller: _bodyTextController,
                                         focusNode: _bodyFocusNode,
@@ -415,10 +462,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         minLines: 8,
                                         maxLines: null,
                                         textStyle: theme.textTheme.bodyLarge,
-                                        spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                                        spellCheckConfiguration:
+                                            const SpellCheckConfiguration
+                                                .disabled(),
                                       ),
                                     ),
-                                    crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                    crossFadeState: showPreview
+                                        ? CrossFadeState.showFirst
+                                        : CrossFadeState.showSecond,
                                     duration: const Duration(milliseconds: 120),
                                     excludeBottomFocus: false,
                                   )
@@ -456,48 +507,80 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   ],
                                   customTapActions: {
                                     MarkdownType.username: () {
-                                      showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
-                                        _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                            '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                      showUserInputDialog(context,
+                                          title: l10n.username,
+                                          onUserSelected: (person) {
+                                        _bodyTextController.text =
+                                            _bodyTextController.text.replaceRange(
+                                                _bodyTextController
+                                                    .selection.end,
+                                                _bodyTextController
+                                                    .selection.end,
+                                                '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
                                       });
                                     },
                                     MarkdownType.community: () {
-                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                        _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                            '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
+                                      showCommunityInputDialog(context,
+                                          title: l10n.community,
+                                          onCommunitySelected: (community) {
+                                        _bodyTextController.text =
+                                            _bodyTextController.text.replaceRange(
+                                                _bodyTextController
+                                                    .selection.end,
+                                                _bodyTextController
+                                                    .selection.end,
+                                                '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
                                       });
                                     },
                                   },
-                                  imageIsLoading: state.status == CreateCommentStatus.imageUploadInProgress,
+                                  imageIsLoading: state.status ==
+                                      CreateCommentStatus.imageUploadInProgress,
                                   customImageButtonAction: () async {
-                                    if (state.status == CreateCommentStatus.imageUploadInProgress) return;
+                                    if (state.status ==
+                                        CreateCommentStatus
+                                            .imageUploadInProgress) return;
 
-                                    List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
-                                    if (context.mounted) context.read<CreateCommentCubit>().uploadImages(imagesPath);
+                                    List<String> imagesPath =
+                                        await selectImagesToUpload(
+                                            allowMultiple: true);
+                                    if (context.mounted)
+                                      context
+                                          .read<CreateCommentCubit>()
+                                          .uploadImages(imagesPath);
                                   },
-                                  getAlternativeSelection: () => replyViewSelection,
+                                  getAlternativeSelection: () =>
+                                      replyViewSelection,
                                 ),
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
+                              padding: const EdgeInsets.only(
+                                  bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
                               child: IconButton(
                                 onPressed: () {
                                   if (!showPreview) {
-                                    setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
-                                    FocusManager.instance.primaryFocus?.unfocus();
+                                    setState(() => wasKeyboardVisible =
+                                        keyboardVisibilityController.isVisible);
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                   }
 
                                   setState(() => showPreview = !showPreview);
-                                  if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
+                                  if (!showPreview && wasKeyboardVisible)
+                                    _bodyFocusNode.requestFocus();
                                 },
                                 icon: Icon(
-                                  showPreview ? Icons.visibility_outlined : Icons.visibility,
+                                  showPreview
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility,
                                   color: theme.colorScheme.onSecondary,
                                   semanticLabel: l10n.postTogglePreview,
                                 ),
-                                visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
-                                style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
+                                visualDensity: const VisualDensity(
+                                    horizontal: 1.0, vertical: 1.0),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        theme.colorScheme.secondary),
                               ),
                             ),
                           ],
@@ -542,7 +625,8 @@ class DraftComment {
 
   Map<String, dynamic> toJson() => {'text': text};
 
-  static fromJson(Map<String, dynamic> json) => DraftComment(text: json['text']);
+  static fromJson(Map<String, dynamic> json) =>
+      DraftComment(text: json['text']);
 
   bool get isNotEmpty => text?.isNotEmpty == true;
 }

@@ -109,28 +109,32 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
           ModlogActionTypeFilterCategory.post => ModlogSubFilterPicker(
               title: AppLocalizations.of(GlobalContext.context)!.posts,
               items: postModlogActionTypeItems,
-              onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
+              onNavigateBack: () =>
+                  setState(() => category = ModlogActionTypeFilterCategory.all),
               onSelect: (item) => widget.onSelect?.call(item),
               previouslySelectedItem: widget.previouslySelected,
             ),
           ModlogActionTypeFilterCategory.comment => ModlogSubFilterPicker(
               title: AppLocalizations.of(GlobalContext.context)!.comments,
               items: commentModlogActionTypeItems,
-              onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
+              onNavigateBack: () =>
+                  setState(() => category = ModlogActionTypeFilterCategory.all),
               onSelect: (item) => widget.onSelect?.call(item),
               previouslySelectedItem: widget.previouslySelected,
             ),
           ModlogActionTypeFilterCategory.community => ModlogSubFilterPicker(
               title: AppLocalizations.of(GlobalContext.context)!.community,
               items: communityModlogActionTypeItems,
-              onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
+              onNavigateBack: () =>
+                  setState(() => category = ModlogActionTypeFilterCategory.all),
               onSelect: (item) => widget.onSelect?.call(item),
               previouslySelectedItem: widget.previouslySelected,
             ),
           ModlogActionTypeFilterCategory.instance => ModlogSubFilterPicker(
               title: AppLocalizations.of(GlobalContext.context)!.instance(1),
               items: instanceModlogActionTypeItems,
-              onNavigateBack: () => setState(() => category = ModlogActionTypeFilterCategory.all),
+              onNavigateBack: () =>
+                  setState(() => category = ModlogActionTypeFilterCategory.all),
               onSelect: (item) => widget.onSelect?.call(item),
               previouslySelectedItem: widget.previouslySelected,
             ),
@@ -180,7 +184,9 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
                 HapticFeedback.mediumImpact();
                 setState(() => category = ModlogActionTypeFilterCategory.post);
               },
-              isSelected: postModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
+              isSelected: postModlogActionTypeItems
+                  .map((item) => item.payload)
+                  .contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
             ),
             PickerItem(
@@ -188,9 +194,12 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               icon: Icons.comment_rounded,
               onSelected: () {
                 HapticFeedback.mediumImpact();
-                setState(() => category = ModlogActionTypeFilterCategory.comment);
+                setState(
+                    () => category = ModlogActionTypeFilterCategory.comment);
               },
-              isSelected: commentModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
+              isSelected: commentModlogActionTypeItems
+                  .map((item) => item.payload)
+                  .contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
             ),
             PickerItem(
@@ -198,9 +207,12 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               icon: Icons.people_rounded,
               onSelected: () {
                 HapticFeedback.mediumImpact();
-                setState(() => category = ModlogActionTypeFilterCategory.community);
+                setState(
+                    () => category = ModlogActionTypeFilterCategory.community);
               },
-              isSelected: communityModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
+              isSelected: communityModlogActionTypeItems
+                  .map((item) => item.payload)
+                  .contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
             ),
             PickerItem(
@@ -208,9 +220,12 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               icon: Icons.language_rounded,
               onSelected: () {
                 HapticFeedback.mediumImpact();
-                setState(() => category = ModlogActionTypeFilterCategory.instance);
+                setState(
+                    () => category = ModlogActionTypeFilterCategory.instance);
               },
-              isSelected: instanceModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
+              isSelected: instanceModlogActionTypeItems
+                  .map((item) => item.payload)
+                  .contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
             )
           ],

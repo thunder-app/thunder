@@ -29,10 +29,13 @@ class CommentAppearanceSettingsPage extends StatefulWidget {
   const CommentAppearanceSettingsPage({super.key, this.settingToHighlight});
 
   @override
-  State<CommentAppearanceSettingsPage> createState() => _CommentAppearanceSettingsPageState();
+  State<CommentAppearanceSettingsPage> createState() =>
+      _CommentAppearanceSettingsPageState();
 }
 
-class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSettingsPage> with SingleTickerProviderStateMixin {
+class _CommentAppearanceSettingsPageState
+    extends State<CommentAppearanceSettingsPage>
+    with SingleTickerProviderStateMixin {
   /// When toggled on, comments will show a row of actions to perform
   bool showCommentButtonActions = false;
 
@@ -46,10 +49,12 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   bool combineCommentScores = false;
 
   /// Indicates the style of the nested comment indicator
-  NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
+  NestedCommentIndicatorStyle nestedIndicatorStyle =
+      DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
 
   /// Indicates the color of the nested comment indicator
-  NestedCommentIndicatorColor nestedIndicatorColor = DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
+  NestedCommentIndicatorColor nestedIndicatorColor =
+      DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
 
   /// Controller to manage expandable state for comment preview
   ExpandableController expandableController = ExpandableController();
@@ -65,12 +70,20 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     setState(() {
-      showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
-      commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
-      commentShowUserAvatar = prefs.getBool(LocalSettings.commentShowUserAvatar.name) ?? false;
-      combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
-      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
-      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
+      showCommentButtonActions =
+          prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      commentShowUserInstance =
+          prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
+      commentShowUserAvatar =
+          prefs.getBool(LocalSettings.commentShowUserAvatar.name) ?? false;
+      combineCommentScores =
+          prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
+      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(
+          prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ??
+              DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(
+          prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ??
+              DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
     });
 
     getExampleComment();
@@ -96,12 +109,16 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
         setState(() => combineCommentScores = value);
         break;
       case LocalSettings.nestedCommentIndicatorStyle:
-        await prefs.setString(LocalSettings.nestedCommentIndicatorStyle.name, value);
-        setState(() => nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name));
+        await prefs.setString(
+            LocalSettings.nestedCommentIndicatorStyle.name, value);
+        setState(() => nestedIndicatorStyle = NestedCommentIndicatorStyle.values
+            .byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name));
         break;
       case LocalSettings.nestedCommentIndicatorColor:
-        await prefs.setString(LocalSettings.nestedCommentIndicatorColor.name, value);
-        setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
+        await prefs.setString(
+            LocalSettings.nestedCommentIndicatorColor.name, value);
+        setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values
+            .byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
         break;
     }
 
@@ -139,7 +156,8 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentUpvotes: 1100,
       commentDownvotes: 0,
       commentScore: 1100,
-      commentContent: 'Thunder is an **open source**, cross platform app for exploring Lemmy communities!',
+      commentContent:
+          'Thunder is an **open source**, cross platform app for exploring Lemmy communities!',
     );
 
     CommentView replyCommentViewFirst = createExampleComment(
@@ -160,12 +178,14 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentCreatorId: 2,
       path: '0.1.2',
       personName: 'Lightning',
-      commentContent: 'Check out [GitHub](https://github.com/thunder-app/thunder) for more details.',
+      commentContent:
+          'Check out [GitHub](https://github.com/thunder-app/thunder) for more details.',
       commentChildCount: 20,
       isBotAccount: true,
     );
 
-    List<CommentViewTree> commentViewTrees = buildCommentViewTree([commentView, replyCommentViewFirst, replyCommentViewSecond]);
+    List<CommentViewTree> commentViewTrees = buildCommentViewTree(
+        [commentView, replyCommentViewFirst, replyCommentViewSecond]);
 
     if (context.mounted) {
       setState(() {
@@ -227,7 +247,8 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                     context: context,
                     title: l10n.resetPreferences,
                     contentText: l10n.confirmResetCommentPreferences,
-                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                    onSecondaryButtonPressed: (dialogContext) =>
+                        Navigator.of(dialogContext).pop(),
                     secondaryButtonText: l10n.cancel,
                     onPrimaryButtonPressed: (dialogContext, _) {
                       resetCommentPreferences();
@@ -260,8 +281,12 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                         ),
                         IconButton(
                           icon: Icon(
-                            expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                            semanticLabel: expandableController.expanded ? l10n.collapseCommentPreview : l10n.expandCommentPreview,
+                            expandableController.expanded
+                                ? Icons.expand_less_rounded
+                                : Icons.expand_more_rounded,
+                            semanticLabel: expandableController.expanded
+                                ? l10n.collapseCommentPreview
+                                : l10n.expandCommentPreview,
                           ),
                           onPressed: () {
                             expandableController.toggle();
@@ -276,7 +301,8 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                     child: Text(
                       l10n.commentPreview,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                       ),
                     ),
                   ),
@@ -298,12 +324,18 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                               children: [
                                 CommentCard(
                                   commentViewTree: snapshot.data!,
-                                  onSaveAction: (int commentId, bool save) => {},
-                                  onVoteAction: (int commentId, int voteType) => {},
-                                  onCollapseCommentChange: (int commentId, bool collapsed) => {},
-                                  onDeleteAction: (int commentId, bool deleted) => {},
+                                  onSaveAction: (int commentId, bool save) =>
+                                      {},
+                                  onVoteAction: (int commentId, int voteType) =>
+                                      {},
+                                  onCollapseCommentChange:
+                                      (int commentId, bool collapsed) => {},
+                                  onDeleteAction:
+                                      (int commentId, bool deleted) => {},
                                   onReportAction: (int commentId) => {},
-                                  onReplyEditAction: (CommentView commentView, bool isEdit) => {},
+                                  onReplyEditAction:
+                                      (CommentView commentView, bool isEdit) =>
+                                          {},
                                 ),
                               ],
                             ),
@@ -319,8 +351,10 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.generalSettings, style: theme.textTheme.titleMedium),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(l10n.generalSettings,
+                  style: theme.textTheme.titleMedium),
             ),
           ),
           // Comment Settings
@@ -330,7 +364,8 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               value: showCommentButtonActions,
               iconEnabled: Icons.mode_comment_rounded,
               iconDisabled: Icons.mode_comment_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.showCommentActionButtons, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showCommentActionButtons,
               highlightedSetting: settingToHighlight,
@@ -342,7 +377,8 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               value: combineCommentScores,
               iconEnabled: Icons.onetwothree_rounded,
               iconDisabled: Icons.onetwothree_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.combineCommentScores, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.combineCommentScores,
               highlightedSetting: settingToHighlight,
@@ -354,7 +390,8 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               value: commentShowUserInstance,
               iconEnabled: Icons.dns_sharp,
               iconDisabled: Icons.dns_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.commentShowUserInstance, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.commentShowUserInstance,
               highlightedSetting: settingToHighlight,
@@ -366,7 +403,8 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               value: commentShowUserAvatar,
               iconEnabled: Icons.account_circle,
               iconDisabled: Icons.account_circle_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserAvatar, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.commentShowUserAvatar, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.commentShowUserAvatar,
               highlightedSetting: settingToHighlight,
@@ -375,13 +413,24 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.nestedCommentIndicatorStyle,
-              value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
+              value: ListPickerItem(
+                  label: nestedIndicatorStyle.value,
+                  icon: Icons.local_fire_department_rounded,
+                  payload: nestedIndicatorStyle),
               options: [
-                ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
-                ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
+                ListPickerItem(
+                    icon: Icons.view_list_rounded,
+                    label: NestedCommentIndicatorStyle.thick.value,
+                    payload: NestedCommentIndicatorStyle.thick),
+                ListPickerItem(
+                    icon: Icons.format_list_bulleted_rounded,
+                    label: NestedCommentIndicatorStyle.thin.value,
+                    payload: NestedCommentIndicatorStyle.thin),
               ],
               icon: Icons.format_list_bulleted_rounded,
-              onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
+              onChanged: (value) async => setPreferences(
+                  LocalSettings.nestedCommentIndicatorStyle,
+                  value.payload.name),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.nestedCommentIndicatorStyle,
               highlightedSetting: settingToHighlight,
@@ -390,13 +439,24 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.nestedCommentIndicatorColor,
-              value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
+              value: ListPickerItem(
+                  label: nestedIndicatorColor.value,
+                  icon: Icons.local_fire_department_rounded,
+                  payload: nestedIndicatorColor),
               options: [
-                ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
-                ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
+                ListPickerItem(
+                    icon: Icons.invert_colors_on_rounded,
+                    label: NestedCommentIndicatorColor.colorful.value,
+                    payload: NestedCommentIndicatorColor.colorful),
+                ListPickerItem(
+                    icon: Icons.invert_colors_off_rounded,
+                    label: NestedCommentIndicatorColor.monochrome.value,
+                    payload: NestedCommentIndicatorColor.monochrome),
               ],
               icon: Icons.color_lens_outlined,
-              onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+              onChanged: (value) async => setPreferences(
+                  LocalSettings.nestedCommentIndicatorColor,
+                  value.payload.name),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.nestedCommentIndicatorColor,
               highlightedSetting: settingToHighlight,

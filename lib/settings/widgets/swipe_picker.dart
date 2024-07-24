@@ -73,7 +73,8 @@ class SwipePicker<T> extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Icon(
                               items[0].value.getIcon(),
-                              semanticLabel: 'Short swipe right, ${items[0].value.label}',
+                              semanticLabel:
+                                  'Short swipe right, ${items[0].value.label}',
                             ),
                           ),
                           const Align(
@@ -115,7 +116,8 @@ class SwipePicker<T> extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Icon(
                               items[1].value.getIcon(),
-                              semanticLabel: 'Long swipe right, ${items[1].value.label}',
+                              semanticLabel:
+                                  'Long swipe right, ${items[1].value.label}',
                             ),
                           ),
                           const Align(
@@ -164,7 +166,8 @@ class SwipePicker<T> extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Icon(
                               items[1].value.getIcon(),
-                              semanticLabel: 'Long swipe left, ${items[1].value.label}',
+                              semanticLabel:
+                                  'Long swipe left, ${items[1].value.label}',
                             ),
                           ),
                           const Align(
@@ -214,7 +217,8 @@ class SwipePicker<T> extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Icon(
                               items[0].value.getIcon(),
-                              semanticLabel: 'Short swipe left, ${items[0].value.label}',
+                              semanticLabel:
+                                  'Short swipe left, ${items[0].value.label}',
                             ),
                           ),
                           const Align(

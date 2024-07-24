@@ -75,9 +75,11 @@ Future<LinkInfo> getLinkInfo(String url) async {
 void _openLink(BuildContext context, {required String url}) async {
   ThunderState state = context.read<ThunderBloc>().state;
 
-  if (state.browserMode == BrowserMode.external || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
+  if (state.browserMode == BrowserMode.external ||
+      (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
     hideLoadingPage(context, delay: true);
-    url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
+    url_launcher.launchUrl(Uri.parse(url),
+        mode: url_launcher.LaunchMode.externalApplication);
   } else if (state.browserMode == BrowserMode.customTabs) {
     hideLoadingPage(context, delay: true);
     launchUrl(
@@ -98,7 +100,9 @@ void _openLink(BuildContext context, {required String url}) async {
       ),
       safariVCOptions: SafariViewControllerOptions(
         preferredBarTintColor: Theme.of(context).canvasColor,
-        preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+        preferredControlTintColor:
+            Theme.of(context).textTheme.titleLarge?.color ??
+                Theme.of(context).primaryColor,
         barCollapsingEnabled: true,
         entersReaderIfAvailable: state.openInReaderMode,
       ),
@@ -110,7 +114,8 @@ void _openLink(BuildContext context, {required String url}) async {
       // Although a non-https scheme is an indication that this link is intended for another app,
       // we actually have to change it back to https in order for the intent to be properly passed to another app.
       hideLoadingPage(context, delay: true);
-      url_launcher.launchUrl(uri, mode: url_launcher.LaunchMode.externalApplication);
+      url_launcher.launchUrl(uri,
+          mode: url_launcher.LaunchMode.externalApplication);
     } else {
       final bool reduceAnimations = state.reduceAnimations;
 
@@ -120,7 +125,9 @@ void _openLink(BuildContext context, {required String url}) async {
             : reduceAnimations
                 ? const Duration(milliseconds: 100)
                 : null,
-        reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+        reverseTransitionDuration: reduceAnimations
+            ? const Duration(milliseconds: 100)
+            : const Duration(milliseconds: 500),
         backGestureDetectionWidth: 45,
         canOnlySwipeFromEdge: true,
         builder: (context) => WebView(url: url),
@@ -134,16 +141,21 @@ void _openLink(BuildContext context, {required String url}) async {
 /// A universal way of handling links in Thunder.
 /// Attempts to perform in-app navigtion to communities, users, posts, and comments
 /// Before falling back to opening in the browser (either Custom Tabs or system browser, as specified by the user).
-void handleLink(BuildContext context, {required String url, bool forceOpenInBrowser = false}) async {
+void handleLink(BuildContext context,
+    {required String url, bool forceOpenInBrowser = false}) async {
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
   Account? account = await fetchActiveProfileAccount();
 
   // Try navigating to community
   String? communityName = await getLemmyCommunity(url);
-  if (communityName != null && (!context.mounted || await _testValidCommunity(context, url, communityName, communityName.split('@')[1]))) {
+  if (communityName != null &&
+      (!context.mounted ||
+          await _testValidCommunity(
+              context, url, communityName, communityName.split('@')[1]))) {
     try {
       if (context.mounted) {
-        await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
+        await navigateToFeedPage(context,
+            feedType: FeedType.community, communityName: communityName);
         return;
       }
     } catch (e) {
@@ -153,10 +165,14 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
 
   // Try navigating to user
   String? username = await getLemmyUser(url);
-  if (username != null && (!context.mounted || await _testValidUser(context, url, username, username.split('@')[1]))) {
+  if (username != null &&
+      (!context.mounted ||
+          await _testValidUser(
+              context, url, username, username.split('@')[1]))) {
     try {
       if (context.mounted) {
-        await navigateToFeedPage(context, feedType: FeedType.user, username: username);
+        await navigateToFeedPage(context,
+            feedType: FeedType.user, username: username);
         return;
       }
     } catch (e) {
@@ -177,7 +193,8 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       ));
 
       if (context.mounted) {
-        navigateToPost(context, postViewMedia: (await parsePostViews([post.postView])).first);
+        navigateToPost(context,
+            postViewMedia: (await parsePostViews([post.postView])).first);
         return;
       }
     } catch (e) {
@@ -208,14 +225,18 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
 
   // Try navigate to modlog
   Uri? uri = Uri.tryParse(url);
-  if (context.mounted && uri != null && instances.contains(uri.host) && url.contains('/modlog')) {
+  if (context.mounted &&
+      uri != null &&
+      instances.contains(uri.host) &&
+      url.contains('/modlog')) {
     try {
       final LemmyClient lemmyClient = LemmyClient()..changeBaseUrl(uri.host);
       FeedBloc feedBloc = FeedBloc(lemmyClient: lemmyClient);
       await navigateToModlogPage(
         context,
         feedBloc: feedBloc,
-        modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
+        modlogActionType: ModlogActionType.fromJson(
+            uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
         communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
         userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
         moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),
@@ -256,7 +277,8 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
 /// If the passed in [instance] is a known Lemmy instance, then it passes.
 /// If we can retrieve the passed in object, then it passes.
 /// Otherwise it fails.
-Future<bool> _testValidCommunity(BuildContext context, String link, String communityName, String instance) async {
+Future<bool> _testValidCommunity(BuildContext context, String link,
+    String communityName, String instance) async {
   Uri? uri = Uri.tryParse(link);
   if (uri == null || !uri.hasScheme) {
     return true;
@@ -271,7 +293,8 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
     showLoadingPage(context);
 
     Account? account = await fetchActiveProfileAccount();
-    await LemmyClient.instance.lemmyApiV3.run(GetCommunity(name: communityName, auth: account?.jwt));
+    await LemmyClient.instance.lemmyApiV3
+        .run(GetCommunity(name: communityName, auth: account?.jwt));
     return true;
   } catch (e) {
     // Ignore and return false below.
@@ -285,7 +308,8 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
 /// If the passed in [instance] is a known Lemmy instance, then it passes.
 /// If we can retrieve the passed in object, then it passes.
 /// Otherwise it fails.
-Future<bool> _testValidUser(BuildContext context, String link, String userName, String instance) async {
+Future<bool> _testValidUser(
+    BuildContext context, String link, String userName, String instance) async {
   Uri? uri = Uri.tryParse(link);
   if (uri == null || !uri.hasScheme) {
     return true;
@@ -300,7 +324,8 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
     showLoadingPage(context);
 
     Account? account = await fetchActiveProfileAccount();
-    await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(username: userName, auth: account?.jwt));
+    await LemmyClient.instance.lemmyApiV3
+        .run(GetPersonDetails(username: userName, auth: account?.jwt));
     return true;
   } catch (e) {
     // Ignore and return false below.
@@ -309,7 +334,8 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
   return false;
 }
 
-void handleLinkLongPress(BuildContext context, ThunderState state, String text, String? url) {
+void handleLinkLongPress(
+    BuildContext context, ThunderState state, String text, String? url) {
   final theme = Theme.of(context);
   final l10n = AppLocalizations.of(context)!;
 
@@ -362,9 +388,12 @@ void handleLinkLongPress(BuildContext context, ThunderState state, String text, 
             ],
           ),
           items: [
-            ListPickerItem(label: l10n.open, payload: 'open', icon: Icons.language),
-            ListPickerItem(label: l10n.copy, payload: 'copy', icon: Icons.copy_rounded),
-            ListPickerItem(label: l10n.share, payload: 'share', icon: Icons.share_rounded),
+            ListPickerItem(
+                label: l10n.open, payload: 'open', icon: Icons.language),
+            ListPickerItem(
+                label: l10n.copy, payload: 'copy', icon: Icons.copy_rounded),
+            ListPickerItem(
+                label: l10n.share, payload: 'share', icon: Icons.share_rounded),
           ],
           onSelect: (value) async {
             switch (value.payload) {
@@ -385,7 +414,8 @@ void handleLinkLongPress(BuildContext context, ThunderState state, String text, 
   );
 }
 
-Future<void> handleLinkTap(BuildContext context, ThunderState state, String text, String? url) async {
+Future<void> handleLinkTap(
+    BuildContext context, ThunderState state, String text, String? url) async {
   Uri? parsedUri = Uri.tryParse(text);
 
   String parsedUrl = text;

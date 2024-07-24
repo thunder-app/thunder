@@ -28,7 +28,8 @@ class AboutSettingsPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Center(
-                child: Text(l10n.versionNumber(getCurrentVersion(removeInternalBuildNumber: true))),
+                child: Text(l10n.versionNumber(
+                    getCurrentVersion(removeInternalBuildNumber: true))),
               ),
             ),
             ListView(
@@ -38,40 +39,48 @@ class AboutSettingsPage extends StatelessWidget {
                 ListTile(
                   title: Text(
                     'GitHub',
-                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   subtitle: const Text('github.com/thunder-app/thunder'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    handleLink(context, url: 'https://github.com/thunder-app/thunder');
+                    handleLink(context,
+                        url: 'https://github.com/thunder-app/thunder');
                   },
                 ),
                 ListTile(
                   title: Text(
                     'Lemmy Community',
-                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   subtitle: const Text('lemmy.world/c/thunder_app'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    navigateToFeedPage(context, feedType: FeedType.community, communityName: 'thunder_app@lemmy.world');
+                    navigateToFeedPage(context,
+                        feedType: FeedType.community,
+                        communityName: 'thunder_app@lemmy.world');
                   },
                 ),
                 ListTile(
                   title: Text(
                     'Matrix Space',
-                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   subtitle: const Text('matrix.to/#/#thunderapp:matrix.org'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    handleLink(context, url: 'https://matrix.to/#/#thunderapp:matrix.org');
+                    handleLink(context,
+                        url: 'https://matrix.to/#/#thunderapp:matrix.org');
                   },
                 ),
                 ListTile(
                   title: Text(
                     'Licenses',
-                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => showLicensePage(context: context),

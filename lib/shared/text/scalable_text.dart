@@ -11,7 +11,14 @@ class ScalableText extends StatelessWidget {
   final TextOverflow? overflow;
   final int? maxLines;
 
-  const ScalableText(this.text, {super.key, this.style, this.textAlign, this.fontScale, this.semanticsLabel, this.overflow, this.maxLines});
+  const ScalableText(this.text,
+      {super.key,
+      this.style,
+      this.textAlign,
+      this.fontScale,
+      this.semanticsLabel,
+      this.overflow,
+      this.maxLines});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +32,9 @@ class ScalableText extends StatelessWidget {
       overflow: overflow,
       maxLines: maxLines,
       style: textStyle.copyWith(
-        fontSize: MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? theme.textTheme.bodyMedium!.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
+        fontSize: MediaQuery.textScalerOf(context).scale(
+            (textStyle.fontSize ?? theme.textTheme.bodyMedium!.fontSize!) *
+                (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
       ),
       textScaler: TextScaler.noScaling,
     );

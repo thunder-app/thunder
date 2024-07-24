@@ -43,9 +43,12 @@ class ImageViewer extends StatefulWidget {
   State<ImageViewer> createState() => _ImageViewerState();
 }
 
-class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
-  GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
-  final GlobalKey<ExtendedImageGestureState> gestureKey = GlobalKey<ExtendedImageGestureState>();
+class _ImageViewerState extends State<ImageViewer>
+    with TickerProviderStateMixin {
+  GlobalKey<ExtendedImageSlidePageState> slidePagekey =
+      GlobalKey<ExtendedImageSlidePageState>();
+  final GlobalKey<ExtendedImageGestureState> gestureKey =
+      GlobalKey<ExtendedImageGestureState>();
   bool downloaded = false;
   double slideTransparency = 0.92;
   double imageTransparency = 1.0;
@@ -81,22 +84,28 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     bool androidVersionBelow33 = false;
 
     if (!kIsWeb && Platform.isAndroid) {
-      androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
+      androidVersionBelow33 =
+          (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
     // Check first if we have permissions
-    bool hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
-    bool hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
+    bool hasStoragePermission = await Permission.storage.isGranted ||
+        await Permission.storage.isLimited;
+    bool hasPhotosPermission =
+        await Permission.photos.isGranted || await Permission.photos.isLimited;
 
     if (androidVersionBelow33 && !hasStoragePermission) {
       await Permission.storage.request();
-      hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
+      hasStoragePermission = await Permission.storage.isGranted ||
+          await Permission.storage.isLimited;
     } else if (!androidVersionBelow33 && !hasPhotosPermission) {
       await Permission.photos.request();
-      hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
+      hasPhotosPermission = await Permission.photos.isGranted ||
+          await Permission.photos.isLimited;
     }
 
-    if (!kIsWeb && Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
+    if (!kIsWeb && Platform.isAndroid && androidVersionBelow33)
+      return hasStoragePermission;
     return hasPhotosPermission;
   }
 
@@ -117,7 +126,9 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   Future<void> getImageSize() async {
     try {
-      Size decodedImage = await retrieveImageDimensions(imageUrl: widget.url, imageBytes: widget.bytes).timeout(const Duration(seconds: 2));
+      Size decodedImage = await retrieveImageDimensions(
+              imageUrl: widget.url, imageBytes: widget.bytes)
+          .timeout(const Duration(seconds: 2));
 
       setState(() {
         imageWidth = decodedImage.width;
@@ -147,7 +158,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
-    AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140), vsync: this);
+    AnimationController animationController = AnimationController(
+        duration: const Duration(milliseconds: 140), vsync: this);
     Function() animationListener = () {};
     Animation? animation;
     return Stack(
@@ -160,7 +172,11 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
           appBar: AppBar(
             iconTheme: IconThemeData(
               color: fullscreen ? Colors.transparent : Colors.white,
-              shadows: fullscreen ? null : <Shadow>[const Shadow(color: Colors.black, blurRadius: 50.0)],
+              shadows: fullscreen
+                  ? null
+                  : <Shadow>[
+                      const Shadow(color: Colors.black, blurRadius: 50.0)
+                    ],
             ),
             backgroundColor: Colors.transparent,
             toolbarHeight: 70.0,
@@ -200,8 +216,15 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                       ? (details) {
                           // Need to catch the drag during "maybe" phase or it wont activate fast enough
                           if (slideZooming) {
-                            double newScale = max(gestureKey.currentState!.gestureDetails!.totalScale! * (1 + (details.delta.dy / 150)), 1);
-                            gestureKey.currentState?.handleDoubleTap(scale: newScale, doubleTapPosition: gestureKey.currentState!.pointerDownPosition);
+                            double newScale = max(
+                                gestureKey.currentState!.gestureDetails!
+                                        .totalScale! *
+                                    (1 + (details.delta.dy / 150)),
+                                1);
+                            gestureKey.currentState?.handleDoubleTap(
+                                scale: newScale,
+                                doubleTapPosition: gestureKey
+                                    .currentState!.pointerDownPosition);
                           }
                         }
                       : null,
@@ -236,7 +259,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         var offset = state.offset;
                         var pageSize = state.pageSize;
 
-                        var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
+                        var scale = offset.distance /
+                            Offset(pageSize.width, pageSize.height).distance;
 
                         if (state.isSliding) {
                           setState(() {
@@ -254,21 +278,27 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         if (state != null) {
                           var offset = state.offset;
                           var pageSize = state.pageSize;
-                          return offset.distance.greaterThan(Offset(pageSize.width, pageSize.height).distance / 10);
+                          return offset.distance.greaterThan(
+                              Offset(pageSize.width, pageSize.height).distance /
+                                  10);
                         }
                         return true;
                       },
                       child: widget.url != null
                           ? ExtendedImage.network(
                               widget.url!,
-                              color: Colors.white.withOpacity(imageTransparency),
+                              color:
+                                  Colors.white.withOpacity(imageTransparency),
                               colorBlendMode: BlendMode.dstIn,
                               enableSlideOutPage: true,
                               mode: ExtendedImageMode.gesture,
                               extendedImageGestureKey: gestureKey,
                               cache: true,
-                              clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
-                              initGestureConfigHandler: (ExtendedImageState state) {
+                              clearMemoryCacheWhenDispose:
+                                  thunderState.imageCachingMode ==
+                                      ImageCachingMode.relaxed,
+                              initGestureConfigHandler:
+                                  (ExtendedImageState state) {
                                 return GestureConfig(
                                   minScale: 0.8,
                                   animationMinScale: 0.8,
@@ -280,12 +310,15 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   inPageView: false,
                                   initialAlignment: InitialAlignment.center,
                                   reverseMousePointerScrollDirection: true,
-                                  gestureDetailsIsChanged: (GestureDetails? details) {},
+                                  gestureDetailsIsChanged:
+                                      (GestureDetails? details) {},
                                 );
                               },
                               onDoubleTap: (ExtendedImageGestureState state) {
-                                var pointerDownPosition = state.pointerDownPosition;
-                                double begin = state.gestureDetails!.totalScale!;
+                                var pointerDownPosition =
+                                    state.pointerDownPosition;
+                                double begin =
+                                    state.gestureDetails!.totalScale!;
                                 double end;
 
                                 animation?.removeListener(animationListener);
@@ -300,16 +333,20 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   end = 1;
                                 }
                                 animationListener = () {
-                                  state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                                  state.handleDoubleTap(
+                                      scale: animation!.value,
+                                      doubleTapPosition: pointerDownPosition);
                                 };
-                                animation = animationController.drive(Tween<double>(begin: begin, end: end));
+                                animation = animationController.drive(
+                                    Tween<double>(begin: begin, end: end));
 
                                 animation!.addListener(animationListener);
 
                                 animationController.forward();
                               },
                               loadStateChanged: (state) {
-                                if (state.extendedImageLoadState == LoadState.loading) {
+                                if (state.extendedImageLoadState ==
+                                    LoadState.loading) {
                                   return Center(
                                     child: CircularProgressIndicator(
                                       color: Colors.white.withOpacity(0.90),
@@ -321,13 +358,15 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             )
                           : ExtendedImage.memory(
                               widget.bytes!,
-                              color: Colors.white.withOpacity(imageTransparency),
+                              color:
+                                  Colors.white.withOpacity(imageTransparency),
                               colorBlendMode: BlendMode.dstIn,
                               enableSlideOutPage: true,
                               mode: ExtendedImageMode.gesture,
                               extendedImageGestureKey: gestureKey,
                               clearMemoryCacheWhenDispose: true,
-                              initGestureConfigHandler: (ExtendedImageState state) {
+                              initGestureConfigHandler:
+                                  (ExtendedImageState state) {
                                 return GestureConfig(
                                   minScale: 0.8,
                                   animationMinScale: 0.8,
@@ -339,12 +378,15 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   inPageView: false,
                                   initialAlignment: InitialAlignment.center,
                                   reverseMousePointerScrollDirection: true,
-                                  gestureDetailsIsChanged: (GestureDetails? details) {},
+                                  gestureDetailsIsChanged:
+                                      (GestureDetails? details) {},
                                 );
                               },
                               onDoubleTap: (ExtendedImageGestureState state) {
-                                var pointerDownPosition = state.pointerDownPosition;
-                                double begin = state.gestureDetails!.totalScale!;
+                                var pointerDownPosition =
+                                    state.pointerDownPosition;
+                                double begin =
+                                    state.gestureDetails!.totalScale!;
                                 double end;
 
                                 animation?.removeListener(animationListener);
@@ -359,16 +401,20 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   end = 1;
                                 }
                                 animationListener = () {
-                                  state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                                  state.handleDoubleTap(
+                                      scale: animation!.value,
+                                      doubleTapPosition: pointerDownPosition);
                                 };
-                                animation = animationController.drive(Tween<double>(begin: begin, end: end));
+                                animation = animationController.drive(
+                                    Tween<double>(begin: begin, end: end));
 
                                 animation!.addListener(animationListener);
 
                                 animationController.forward();
                               },
                               loadStateChanged: (state) {
-                                if (state.extendedImageLoadState == LoadState.loading) {
+                                if (state.extendedImageLoadState ==
+                                    LoadState.loading) {
                                   return Center(
                                     child: CircularProgressIndicator(
                                       color: Colors.white.withOpacity(0.90),
@@ -387,7 +433,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                 duration: const Duration(milliseconds: 200),
                 child: Container(
                   decoration: const BoxDecoration(color: Colors.transparent),
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -400,23 +447,29 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 : () async {
                                     try {
                                       // Try to get the cached image first
-                                      var media = await DefaultCacheManager().getFileFromCache(widget.url!);
+                                      var media = await DefaultCacheManager()
+                                          .getFileFromCache(widget.url!);
                                       File? mediaFile = media?.file;
 
                                       if (media == null) {
-                                        setState(() => isDownloadingMedia = true);
+                                        setState(
+                                            () => isDownloadingMedia = true);
 
                                         // Download
-                                        mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
+                                        mediaFile = await DefaultCacheManager()
+                                            .getSingleFile(widget.url!);
                                       }
 
                                       // Share
-                                      await Share.shareXFiles([XFile(mediaFile!.path)]);
+                                      await Share.shareXFiles(
+                                          [XFile(mediaFile!.path)]);
                                     } catch (e) {
                                       // Tell the user that the download failed
-                                      showSnackbar(AppLocalizations.of(context)!.errorDownloadingMedia(e));
+                                      showSnackbar(AppLocalizations.of(context)!
+                                          .errorDownloadingMedia(e));
                                     } finally {
-                                      setState(() => isDownloadingMedia = false);
+                                      setState(
+                                          () => isDownloadingMedia = false);
                                     }
                                   },
                             icon: isDownloadingMedia
@@ -431,7 +484,10 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                     Icons.share_rounded,
                                     semanticLabel: "Share",
                                     color: Colors.white.withOpacity(0.90),
-                                    shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                    shadows: const <Shadow>[
+                                      Shadow(
+                                          color: Colors.black, blurRadius: 50.0)
+                                    ],
                                   ),
                           ),
                         ),
@@ -439,43 +495,52 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: IconButton(
-                            onPressed: (fullscreen || widget.url == null || kIsWeb)
-                                ? null
-                                : () async {
-                                    File file = await DefaultCacheManager().getSingleFile(widget.url!);
-                                    bool hasPermission = await _requestPermission();
+                            onPressed:
+                                (fullscreen || widget.url == null || kIsWeb)
+                                    ? null
+                                    : () async {
+                                        File file = await DefaultCacheManager()
+                                            .getSingleFile(widget.url!);
+                                        bool hasPermission =
+                                            await _requestPermission();
 
-                                    if (!hasPermission) {
-                                      if (context.mounted) showPermissionDeniedDialog(context);
-                                      return;
-                                    }
+                                        if (!hasPermission) {
+                                          if (context.mounted)
+                                            showPermissionDeniedDialog(context);
+                                          return;
+                                        }
 
-                                    setState(() => isSavingMedia = true);
+                                        setState(() => isSavingMedia = true);
 
-                                    try {
-                                      // Save image on Linux platform
-                                      if (Platform.isLinux) {
-                                        final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
+                                        try {
+                                          // Save image on Linux platform
+                                          if (Platform.isLinux) {
+                                            final filePath =
+                                                '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
 
-                                        File(filePath)
-                                          ..createSync(recursive: true)
-                                          ..writeAsBytesSync(file.readAsBytesSync());
+                                            File(filePath)
+                                              ..createSync(recursive: true)
+                                              ..writeAsBytesSync(
+                                                  file.readAsBytesSync());
 
-                                        return setState(() => downloaded = true);
-                                      }
+                                            return setState(
+                                                () => downloaded = true);
+                                          }
 
-                                      // Save image on all other supported platforms (Android, iOS, macOS, Windows)
-                                      try {
-                                        await Gal.putImage(file.path, album: "Thunder");
-                                        setState(() => downloaded = true);
-                                      } on GalException catch (e) {
-                                        if (context.mounted) showSnackbar(e.type.message);
-                                        setState(() => downloaded = false);
-                                      }
-                                    } finally {
-                                      setState(() => isSavingMedia = false);
-                                    }
-                                  },
+                                          // Save image on all other supported platforms (Android, iOS, macOS, Windows)
+                                          try {
+                                            await Gal.putImage(file.path,
+                                                album: "Thunder");
+                                            setState(() => downloaded = true);
+                                          } on GalException catch (e) {
+                                            if (context.mounted)
+                                              showSnackbar(e.type.message);
+                                            setState(() => downloaded = false);
+                                          }
+                                        } finally {
+                                          setState(() => isSavingMedia = false);
+                                        }
+                                      },
                             icon: isSavingMedia
                                 ? SizedBox(
                                     height: 20,
@@ -489,13 +554,21 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         Icons.check_circle,
                                         semanticLabel: 'Downloaded',
                                         color: Colors.white,
-                                        shadows: <Shadow>[Shadow(color: Colors.black45, blurRadius: 50.0)],
+                                        shadows: <Shadow>[
+                                          Shadow(
+                                              color: Colors.black45,
+                                              blurRadius: 50.0)
+                                        ],
                                       )
                                     : Icon(
                                         Icons.download,
                                         semanticLabel: "Download",
                                         color: Colors.white.withOpacity(0.90),
-                                        shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                        shadows: const <Shadow>[
+                                          Shadow(
+                                              color: Colors.black,
+                                              blurRadius: 50.0)
+                                        ],
                                       ),
                           ),
                         ),
@@ -511,7 +584,9 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                               Icons.chat_rounded,
                               semanticLabel: "Comments",
                               color: Colors.white.withOpacity(0.90),
-                              shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                              shadows: const <Shadow>[
+                                Shadow(color: Colors.black, blurRadius: 50.0)
+                              ],
                             ),
                           ),
                         ),

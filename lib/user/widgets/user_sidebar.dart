@@ -23,7 +23,8 @@ class UserSidebar extends StatefulWidget {
   final GetPersonDetailsResponse? getPersonDetailsResponse;
   final Function onDismiss;
 
-  const UserSidebar({super.key, this.getPersonDetailsResponse, required this.onDismiss});
+  const UserSidebar(
+      {super.key, this.getPersonDetailsResponse, required this.onDismiss});
 
   @override
   State<UserSidebar> createState() => _UserSidebarState();
@@ -60,7 +61,8 @@ class _UserSidebarState extends State<UserSidebar> {
           alignment: Alignment.centerRight,
           child: Dismissible(
             key: Key(personView.person.id.toString()),
-            onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
+            onUpdate: (DismissUpdateDetails details) =>
+                details.reached ? widget.onDismiss() : null,
             direction: DismissDirection.startToEnd,
             child: FractionallySizedBox(
               widthFactor: kSidebarWidthFactor,
@@ -72,16 +74,24 @@ class _UserSidebarState extends State<UserSidebar> {
                   children: [
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 150),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
                         return SizeTransition(
                           sizeFactor: animation,
-                          child: FadeTransition(opacity: animation, child: child),
+                          child:
+                              FadeTransition(opacity: animation, child: child),
                         );
                       },
-                      child: personView.person.id != currentUserId ? BlockUserButton(personView: personView, isUserLoggedIn: authState.isLoggedIn) : null,
+                      child: personView.person.id != currentUserId
+                          ? BlockUserButton(
+                              personView: personView,
+                              isUserLoggedIn: authState.isLoggedIn)
+                          : null,
                     ),
-                    if (personView.person.id != currentUserId) const SizedBox(height: 10.0),
-                    if (personView.person.id != currentUserId) const Divider(height: 1, thickness: 2),
+                    if (personView.person.id != currentUserId)
+                      const SizedBox(height: 10.0),
+                    if (personView.person.id != currentUserId)
+                      const Divider(height: 1, thickness: 2),
                     Container(
                       alignment: Alignment.topCenter,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -92,22 +102,28 @@ class _UserSidebarState extends State<UserSidebar> {
                         children: [
                           Material(
                             child: CommonMarkdownBody(
-                              body: personView.person.bio ?? 'Nothing here. This user has not written a bio.',
-                              imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                              body: personView.person.bio ??
+                                  'Nothing here. This user has not written a bio.',
+                              imageMaxWidth: (kSidebarWidthFactor - 0.1) *
+                                  MediaQuery.of(context).size.width,
                             ),
                           ),
                           const SidebarSectionHeader(value: "Stats"),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: UserStatsList(personView: personView),
                           ),
                           const SidebarSectionHeader(value: "Activity"),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: UserActivityList(personView: personView),
                           ),
                           const SidebarSectionHeader(value: "Moderates"),
-                          UserModeratorList(getPersonDetailsResponse: widget.getPersonDetailsResponse!),
+                          UserModeratorList(
+                              getPersonDetailsResponse:
+                                  widget.getPersonDetailsResponse!),
                           const SizedBox(height: 256)
                         ],
                       ),
@@ -136,16 +152,19 @@ class UserStatsList extends StatelessWidget {
         // TODO Make this use device date format
         SidebarStat(
           icon: Icons.cake_rounded,
-          value: 'Joined ${DateFormat.yMMMMd().format(personView.person.published)} · ${formatTimeToString(dateTime: personView.person.published.toIso8601String())} ago',
+          value:
+              'Joined ${DateFormat.yMMMMd().format(personView.person.published)} · ${formatTimeToString(dateTime: personView.person.published.toIso8601String())} ago',
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: '${NumberFormat("#,###,###,###").format(personView.counts.postCount)} Posts',
+          value:
+              '${NumberFormat("#,###,###,###").format(personView.counts.postCount)} Posts',
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: '${NumberFormat("#,###,###,###").format(personView.counts.commentCount)} Comments',
+          value:
+              '${NumberFormat("#,###,###,###").format(personView.counts.commentCount)} Comments',
         ),
       ],
     );
@@ -159,8 +178,10 @@ class UserActivityList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalContributions = (personView.counts.postCount + personView.counts.commentCount);
-    Duration accountAge = DateTime.now().difference(personView.person.published);
+    final totalContributions =
+        (personView.counts.postCount + personView.counts.commentCount);
+    Duration accountAge =
+        DateTime.now().difference(personView.person.published);
     final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
 
     final num postsPerMonth;
@@ -184,15 +205,18 @@ class UserActivityList extends StatelessWidget {
       children: [
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: '${NumberFormat("#,###,###,###").format(postsPerMonth)} Average Posts/mo',
+          value:
+              '${NumberFormat("#,###,###,###").format(postsPerMonth)} Average Posts/mo',
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: '${NumberFormat("#,###,###,###").format(commentsPerMonth)} Average Comments/mo',
+          value:
+              '${NumberFormat("#,###,###,###").format(commentsPerMonth)} Average Comments/mo',
         ),
         SidebarStat(
           icon: Icons.score_rounded,
-          value: '${NumberFormat("#,###,###,###").format(totalContributionsPerMonth)} Average Contributions/mo',
+          value:
+              '${NumberFormat("#,###,###,###").format(totalContributionsPerMonth)} Average Contributions/mo',
         ),
       ],
     );
@@ -213,7 +237,8 @@ class UserModeratorList extends StatelessWidget {
         for (CommunityModeratorView mods in getPersonDetailsResponse.moderates)
           Material(
             child: InkWell(
-              onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: mods.community.id),
+              onTap: () => navigateToFeedPage(context,
+                  feedType: FeedType.community, communityId: mods.community.id),
               borderRadius: BorderRadius.circular(50),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -281,7 +306,8 @@ class BlockUserButton extends StatelessWidget {
         bool blocked = false;
 
         if (state.getSiteResponse?.myUser?.personBlocks != null) {
-          for (PersonBlockView personBlockView in state.getSiteResponse!.myUser!.personBlocks) {
+          for (PersonBlockView personBlockView
+              in state.getSiteResponse!.myUser!.personBlocks) {
             if (personBlockView.target.id == personView.person.id) {
               blocked = true;
               break;
@@ -290,12 +316,16 @@ class BlockUserButton extends StatelessWidget {
         }
 
         return Padding(
-          padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
+          padding:
+              const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
           child: ElevatedButton(
             onPressed: isUserLoggedIn
                 ? () {
                     HapticFeedback.heavyImpact();
-                    context.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: personView.person.id, value: !blocked));
+                    context.read<UserBloc>().add(UserActionEvent(
+                        userAction: UserAction.block,
+                        userId: personView.person.id,
+                        value: !blocked));
                   }
                 : null,
             style: TextButton.styleFrom(
@@ -366,7 +396,8 @@ class SidebarStat extends StatelessWidget {
         ),
         Text(
           value,
-          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+          style: TextStyle(
+              color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
         ),
       ],
     );

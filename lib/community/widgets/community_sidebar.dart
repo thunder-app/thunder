@@ -27,7 +27,8 @@ class CommunitySidebar extends StatefulWidget {
   final GetCommunityResponse? getCommunityResponse;
   final Function onDismiss;
 
-  const CommunitySidebar({super.key, this.getCommunityResponse, required this.onDismiss});
+  const CommunitySidebar(
+      {super.key, this.getCommunityResponse, required this.onDismiss});
 
   @override
   State<CommunitySidebar> createState() => _CommunitySidebarState();
@@ -56,15 +57,18 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
       create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
       child: BlocListener<CommunityBloc, CommunityState>(
         listener: (context, state) {
-          if (state.status == CommunityStatus.success && state.communityView != null) {
-            context.read<FeedBloc>().add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
+          if (state.status == CommunityStatus.success &&
+              state.communityView != null) {
+            context.read<FeedBloc>().add(FeedCommunityViewUpdatedEvent(
+                communityView: state.communityView!));
           }
         },
         child: Container(
           alignment: Alignment.centerRight,
           child: Dismissible(
             key: Key(communityView.community.id.toString()),
-            onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
+            onUpdate: (DismissUpdateDetails details) =>
+                details.reached ? widget.onDismiss() : null,
             direction: DismissDirection.startToEnd,
             child: FractionallySizedBox(
               widthFactor: kSidebarWidthFactor,
@@ -76,29 +80,41 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                   children: [
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 100),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
                         return SizeTransition(
                           sizeFactor: animation,
-                          child: FadeTransition(opacity: animation, child: child),
+                          child:
+                              FadeTransition(opacity: animation, child: child),
                         );
                       },
                       child: communityView.blocked == false
                           ? Padding(
-                              padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
-                              child: CommunityActions(isUserLoggedIn: isUserLoggedIn, getCommunityResponse: widget.getCommunityResponse!),
+                              padding: const EdgeInsets.only(
+                                  top: 10, left: 12, right: 12, bottom: 4),
+                              child: CommunityActions(
+                                  isUserLoggedIn: isUserLoggedIn,
+                                  getCommunityResponse:
+                                      widget.getCommunityResponse!),
                             )
                           : null,
                     ),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 150),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
                         return SizeTransition(
                           sizeFactor: animation,
-                          child: FadeTransition(opacity: animation, child: child),
+                          child:
+                              FadeTransition(opacity: animation, child: child),
                         );
                       },
-                      child: communityView.subscribed != SubscribedType.subscribed && communityView.subscribed != SubscribedType.pending
-                          ? BlockCommunityButton(communityView: communityView, isUserLoggedIn: isUserLoggedIn)
+                      child: communityView.subscribed !=
+                                  SubscribedType.subscribed &&
+                              communityView.subscribed != SubscribedType.pending
+                          ? BlockCommunityButton(
+                              communityView: communityView,
+                              isUserLoggedIn: isUserLoggedIn)
                           : null,
                     ),
                     const SizedBox(height: 10.0),
@@ -114,25 +130,33 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                           Material(
                             child: CommonMarkdownBody(
                               body: communityView.community.description ?? '',
-                              imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                              imageMaxWidth: (kSidebarWidthFactor - 0.1) *
+                                  MediaQuery.of(context).size.width,
                             ),
                           ),
                           SidebarSectionHeader(value: l10n.stats),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: CommunityStatsList(communityView: communityView),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: CommunityStatsList(
+                                communityView: communityView),
                           ),
                           SidebarSectionHeader(value: l10n.moderator(2)),
-                          CommunityModeratorList(getCommunityResponse: widget.getCommunityResponse!),
+                          CommunityModeratorList(
+                              getCommunityResponse:
+                                  widget.getCommunityResponse!),
                           Container(
                             child: widget.getCommunityResponse!.site != null
                                 ? Column(
                                     children: [
-                                      SidebarSectionHeader(value: l10n.hostInstance),
+                                      SidebarSectionHeader(
+                                          value: l10n.hostInstance),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
                                         child: InstanceView(
-                                          site: widget.getCommunityResponse!.site!,
+                                          site: widget
+                                              .getCommunityResponse!.site!,
                                         ),
                                       ),
                                     ],
@@ -172,7 +196,8 @@ class CommunityStatsList extends StatelessWidget {
               CommunityVisibility.public => Icons.language_rounded,
               CommunityVisibility.localOnly => Icons.house_rounded,
             },
-            value: l10n.visibility(switch (communityView.community.visibility!) {
+            value:
+                l10n.visibility(switch (communityView.community.visibility!) {
               CommunityVisibility.public => l10n.public,
               CommunityVisibility.localOnly => l10n.localOnly,
             }),
@@ -182,42 +207,51 @@ class CommunityStatsList extends StatelessWidget {
         // TODO Make this use device date format
         SidebarStat(
           icon: Icons.cake_rounded,
-          value: '${l10n.created(DateFormat.yMMMMd().format(communityView.community.published))} · ${l10n.ago(formatTimeToString(dateTime: communityView.community.published.toIso8601String()))}',
+          value:
+              '${l10n.created(DateFormat.yMMMMd().format(communityView.community.published))} · ${l10n.ago(formatTimeToString(dateTime: communityView.community.published.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
           icon: Icons.people_rounded,
-          value: l10n.countSubscribers(NumberFormat("#,###,###,###").format(communityView.counts.subscribers)),
+          value: l10n.countSubscribers(NumberFormat("#,###,###,###")
+              .format(communityView.counts.subscribers)),
         ),
         if (communityView.counts.subscribersLocal != null)
           SidebarStat(
             icon: Icons.people_rounded,
-            value: l10n.countLocalSubscribers(NumberFormat("#,###,###,###").format(communityView.counts.subscribersLocal)),
+            value: l10n.countLocalSubscribers(NumberFormat("#,###,###,###")
+                .format(communityView.counts.subscribersLocal)),
           ),
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: l10n.countPosts(NumberFormat("#,###,###,###").format(communityView.counts.posts)),
+          value: l10n.countPosts(
+              NumberFormat("#,###,###,###").format(communityView.counts.posts)),
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: l10n.countComments(NumberFormat("#,###,###,###").format(communityView.counts.comments)),
+          value: l10n.countComments(NumberFormat("#,###,###,###")
+              .format(communityView.counts.comments)),
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
           icon: Icons.calendar_month_rounded,
-          value: l10n.countUsersActiveHalfYear(NumberFormat("#,###,###,###").format(communityView.counts.usersActiveHalfYear)),
+          value: l10n.countUsersActiveHalfYear(NumberFormat("#,###,###,###")
+              .format(communityView.counts.usersActiveHalfYear)),
         ),
         SidebarStat(
           icon: Icons.calendar_view_month_rounded,
-          value: l10n.countUsersActiveMonth(NumberFormat("#,###,###,###").format(communityView.counts.usersActiveMonth)),
+          value: l10n.countUsersActiveMonth(NumberFormat("#,###,###,###")
+              .format(communityView.counts.usersActiveMonth)),
         ),
         SidebarStat(
           icon: Icons.calendar_view_week_rounded,
-          value: l10n.countUsersActiveWeek(NumberFormat("#,###,###,###").format(communityView.counts.usersActiveWeek)),
+          value: l10n.countUsersActiveWeek(NumberFormat("#,###,###,###")
+              .format(communityView.counts.usersActiveWeek)),
         ),
         SidebarStat(
           icon: Icons.calendar_view_day_rounded,
-          value: l10n.countUsersActiveDay(NumberFormat("#,###,###,###").format(communityView.counts.usersActiveDay)),
+          value: l10n.countUsersActiveDay(NumberFormat("#,###,###,###")
+              .format(communityView.counts.usersActiveDay)),
         ),
       ],
     );
@@ -238,7 +272,8 @@ class CommunityModeratorList extends StatelessWidget {
         for (CommunityModeratorView mods in getCommunityResponse.moderators)
           Material(
             child: InkWell(
-              onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: mods.moderator.id),
+              onTap: () => navigateToFeedPage(context,
+                  feedType: FeedType.user, userId: mods.moderator.id),
               borderRadius: BorderRadius.circular(50),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -314,12 +349,16 @@ class BlockCommunityButton extends StatelessWidget {
         }
 
         return Padding(
-          padding: EdgeInsets.only(top: blocked ? 10 : 4, left: 12, right: 12, bottom: 4),
+          padding: EdgeInsets.only(
+              top: blocked ? 10 : 4, left: 12, right: 12, bottom: 4),
           child: ElevatedButton(
             onPressed: isUserLoggedIn
                 ? () {
                     HapticFeedback.heavyImpact();
-                    context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: communityView.community.id, value: !blocked));
+                    context.read<CommunityBloc>().add(CommunityActionEvent(
+                        communityAction: CommunityAction.block,
+                        communityId: communityView.community.id,
+                        value: !blocked));
                   }
                 : null,
             style: TextButton.styleFrom(
@@ -343,7 +382,10 @@ class BlockCommunityButton extends StatelessWidget {
 }
 
 class CommunityActions extends StatelessWidget {
-  const CommunityActions({super.key, required this.isUserLoggedIn, required this.getCommunityResponse});
+  const CommunityActions(
+      {super.key,
+      required this.isUserLoggedIn,
+      required this.getCommunityResponse});
 
   final bool isUserLoggedIn;
   final GetCommunityResponse getCommunityResponse;
@@ -361,7 +403,9 @@ class CommunityActions extends StatelessWidget {
             onPressed: isUserLoggedIn
                 ? () async {
                     HapticFeedback.mediumImpact();
-                    navigateToCreatePostPage(context, communityId: communityView.community.id, communityView: getCommunityResponse.communityView);
+                    navigateToCreatePostPage(context,
+                        communityId: communityView.community.id,
+                        communityView: getCommunityResponse.communityView);
                   }
                 : null,
             style: TextButton.styleFrom(
@@ -389,7 +433,12 @@ class CommunityActions extends StatelessWidget {
                 ? () {
                     HapticFeedback.mediumImpact();
                     context.read<CommunityBloc>().add(CommunityActionEvent(
-                        communityAction: CommunityAction.follow, communityId: communityView.community.id, value: communityView.subscribed == SubscribedType.notSubscribed ? true : false));
+                        communityAction: CommunityAction.follow,
+                        communityId: communityView.community.id,
+                        value: communityView.subscribed ==
+                                SubscribedType.notSubscribed
+                            ? true
+                            : false));
                   }
                 : null,
             style: TextButton.styleFrom(
@@ -402,9 +451,11 @@ class CommunityActions extends StatelessWidget {
               children: [
                 Icon(
                   switch (communityView.subscribed) {
-                    SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                    SubscribedType.notSubscribed =>
+                      Icons.add_circle_outline_rounded,
                     SubscribedType.pending => Icons.pending_outlined,
-                    SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                    SubscribedType.subscribed =>
+                      Icons.remove_circle_outline_rounded,
                   },
                 ),
                 const SizedBox(width: 4.0),
@@ -472,7 +523,8 @@ class SidebarStat extends StatelessWidget {
         ),
         Text(
           value,
-          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+          style: TextStyle(
+              color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
         ),
       ],
     );

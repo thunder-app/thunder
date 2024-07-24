@@ -26,7 +26,14 @@ void buildRelease() {
 
   // Build for Android
   print('\nStarting Android build...');
-  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--release', '--flavor', 'production', '--no-tree-shake-icons']);
+  ProcessResult androidResult = Process.runSync('flutter', [
+    'build',
+    'apk',
+    '--release',
+    '--flavor',
+    'production',
+    '--no-tree-shake-icons'
+  ]);
   stdout.write(androidResult.stdout);
   stderr.write(androidResult.stderr);
 
@@ -39,7 +46,14 @@ void buildRelease() {
 
   // Build for iOS
   print('\nStarting iOS build...');
-  ProcessResult iosResult = Process.runSync('flutter', ['build', 'ios', '--release', '--flavor', 'production', '--no-tree-shake-icons']);
+  ProcessResult iosResult = Process.runSync('flutter', [
+    'build',
+    'ios',
+    '--release',
+    '--flavor',
+    'production',
+    '--no-tree-shake-icons'
+  ]);
   stdout.write(iosResult.stdout);
   stderr.write(iosResult.stderr);
 
@@ -71,7 +85,8 @@ void createAPKFile(String version) {
   releaseDir.createSync();
 
   // Copy the APK file to the "release" directory and rename it
-  File apkFile = File('build/app/outputs/flutter-apk/app-production-release.apk');
+  File apkFile =
+      File('build/app/outputs/flutter-apk/app-production-release.apk');
   String newApkPath = '${releaseDir.path}/thunder-v$version.apk';
   apkFile.copySync(newApkPath);
 
@@ -95,7 +110,8 @@ void createIPAFile(String version) {
   Directory runnerAppDir = Directory(runnerAppPath);
 
   runnerAppDir.listSync(recursive: true).forEach((file) {
-    String newPath = file.path.replaceFirst(runnerAppDir.path, payloadRunnerDir.path);
+    String newPath =
+        file.path.replaceFirst(runnerAppDir.path, payloadRunnerDir.path);
 
     if (file is File) {
       File newFile = File(newPath);
@@ -105,7 +121,8 @@ void createIPAFile(String version) {
   });
 
   // Compress the "Payload" directory into a zip file, and rename it to .ipa
-  ProcessResult zipResult = Process.runSync('bash', ['-c', 'cd release && zip -r thunder-v$version.ipa Payload']);
+  ProcessResult zipResult = Process.runSync(
+      'bash', ['-c', 'cd release && zip -r thunder-v$version.ipa Payload']);
   if (zipResult.exitCode == 0) {
     print('IPA file created successfully!');
   } else {

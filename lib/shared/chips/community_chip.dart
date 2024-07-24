@@ -44,7 +44,8 @@ class CommunityChip extends StatelessWidget {
 
     return InkWell(
       borderRadius: BorderRadius.circular(5),
-      onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId),
+      onTap: () => navigateToFeedPage(context,
+          feedType: FeedType.community, communityId: communityId),
       child: Tooltip(
         excludeFromSemantics: true,
         message: generateCommunityFullName(
@@ -58,7 +59,10 @@ class CommunityChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (showCommunityAvatar) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: communityAvatar),
+            if (showCommunityAvatar)
+              Padding(
+                  padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3),
+                  child: communityAvatar),
             CommunityFullNameWidget(
               context,
               communityName,

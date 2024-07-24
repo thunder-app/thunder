@@ -18,7 +18,8 @@ part 'theme_state.dart';
 const throttleDuration = Duration(milliseconds: 300);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) =>
+      droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
@@ -29,22 +30,30 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     );
   }
 
-  Future<void> _themeChangeEvent(ThemeChangeEvent event, Emitter<ThemeState> emit) async {
+  Future<void> _themeChangeEvent(
+      ThemeChangeEvent event, Emitter<ThemeState> emit) async {
     try {
       emit(state.copyWith(status: ThemeStatus.loading));
 
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      SharedPreferences prefs =
+          (await UserPreferences.instance).sharedPreferences;
 
-      ThemeType themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
-      CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
+      ThemeType themeType = ThemeType.values[
+          prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
+      CustomThemeType selectedTheme = CustomThemeType.values.byName(
+          prefs.getString(LocalSettings.appThemeAccentColor.name) ??
+              CustomThemeType.deepBlue.name);
 
-      bool useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
+      bool useMaterialYouTheme =
+          prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
 
       // Fetch reduce animations preferences to remove overscrolling effects
-      bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
+      bool reduceAnimations =
+          prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
 
       // Check what the system theme is (light/dark)
-      Brightness brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+      Brightness brightness =
+          SchedulerBinding.instance.platformDispatcher.platformBrightness;
       bool useDarkTheme = themeType != ThemeType.light;
       if (themeType == ThemeType.system) {
         useDarkTheme = brightness == Brightness.dark;

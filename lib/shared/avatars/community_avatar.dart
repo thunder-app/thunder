@@ -24,7 +24,13 @@ class CommunityAvatar extends StatelessWidget {
   /// The image format to request from the instance
   final String? format;
 
-  const CommunityAvatar({super.key, this.community, this.radius = 12.0, this.showCommunityStatus = false, this.thumbnailSize, this.format});
+  const CommunityAvatar(
+      {super.key,
+      this.community,
+      this.radius = 12.0,
+      this.showCommunityStatus = false,
+      this.thumbnailSize,
+      this.format});
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +56,10 @@ class CommunityAvatar extends StatelessWidget {
     Uri imageUri = Uri.parse(community!.icon!);
     bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
     Map<String, dynamic> queryParameters = {};
-    if (isPictrsImageEndpoint && thumbnailSize != null) queryParameters['thumbnail'] = thumbnailSize.toString();
-    if (isPictrsImageEndpoint && format != null) queryParameters['format'] = format;
+    if (isPictrsImageEndpoint && thumbnailSize != null)
+      queryParameters['thumbnail'] = thumbnailSize.toString();
+    if (isPictrsImageEndpoint && format != null)
+      queryParameters['format'] = format;
     Uri thumbnailUri = Uri.https(imageUri.host, imageUri.path, queryParameters);
 
     return CachedNetworkImage(
@@ -64,7 +72,8 @@ class CommunityAvatar extends StatelessWidget {
               foregroundImage: imageProvider,
               maxRadius: radius,
             ),
-            if (community?.postingRestrictedToMods == true && showCommunityStatus)
+            if (community?.postingRestrictedToMods == true &&
+                showCommunityStatus)
               Positioned(
                 bottom: -2.0,
                 right: -2.0,
@@ -72,8 +81,13 @@ class CommunityAvatar extends StatelessWidget {
                   message: l10n.onlyModsCanPostInCommunity,
                   child: Container(
                     padding: const EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(color: theme.colorScheme.surface, shape: BoxShape.circle),
-                    child: Icon(Icons.lock, color: theme.colorScheme.error, size: 18.0, semanticLabel: l10n.onlyModsCanPostInCommunity),
+                    decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        shape: BoxShape.circle),
+                    child: Icon(Icons.lock,
+                        color: theme.colorScheme.error,
+                        size: 18.0,
+                        semanticLabel: l10n.onlyModsCanPostInCommunity),
                   ),
                 ),
               ),

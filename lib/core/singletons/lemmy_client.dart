@@ -45,13 +45,16 @@ class LemmyClient {
   }
 
   bool supportsSortType(SortType? sortType) => switch (sortType) {
-        SortType.controversial => supportsFeature(LemmyFeature.sortTypeControversial),
+        SortType.controversial =>
+          supportsFeature(LemmyFeature.sortTypeControversial),
         SortType.scaled => supportsFeature(LemmyFeature.sortTypeScaled),
         _ => true,
       };
 
-  bool supportsCommentSortType(CommentSortType commentSortType) => switch (commentSortType) {
-        CommentSortType.controversial => supportsFeature(LemmyFeature.commentSortTypeControversial),
+  bool supportsCommentSortType(CommentSortType commentSortType) =>
+      switch (commentSortType) {
+        CommentSortType.controversial =>
+          supportsFeature(LemmyFeature.commentSortTypeControversial),
         _ => true,
       };
 
@@ -80,11 +83,14 @@ class LemmyClient {
 
   String generateCommentUrl(int id) => 'https://${lemmyApiV3.host}/comment/$id';
 
-  String generateCommunityUrl(String community) => 'https://${lemmyApiV3.host}/c/$community';
+  String generateCommunityUrl(String community) =>
+      'https://${lemmyApiV3.host}/c/$community';
 
-  String generateUserUrl(String community) => 'https://${lemmyApiV3.host}/u/$community';
+  String generateUserUrl(String community) =>
+      'https://${lemmyApiV3.host}/u/$community';
 
-  static final Map<String, GetSiteResponse> _lemmySites = <String, GetSiteResponse>{};
+  static final Map<String, GetSiteResponse> _lemmySites =
+      <String, GetSiteResponse>{};
 }
 
 enum LemmyFeature {
@@ -101,7 +107,8 @@ enum LemmyFeature {
   final int patch;
   final List<String> preRelease;
 
-  const LemmyFeature(this.major, this.minor, this.patch, {this.preRelease = const []});
+  const LemmyFeature(this.major, this.minor, this.patch,
+      {this.preRelease = const []});
 
   Version get minSupportedVersion => Version(
         major,

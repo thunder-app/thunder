@@ -65,7 +65,8 @@ class CommentSubview extends StatefulWidget {
   State<CommentSubview> createState() => _CommentSubviewState();
 }
 
-class _CommentSubviewState extends State<CommentSubview> with SingleTickerProviderStateMixin {
+class _CommentSubviewState extends State<CommentSubview>
+    with SingleTickerProviderStateMixin {
   Set collapsedCommentSet = {}; // Retains the collapsed state of any comments
   bool _animatingOut = false;
   bool _animatingIn = false;
@@ -95,7 +96,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       if (status == AnimationStatus.completed && _animatingOut) {
         _animatingOut = false;
         _removeViewFullCommentsButton = true;
-        context.read<PostBloc>().add(const GetPostCommentsEvent(commentParentId: null, viewAllCommentsRefresh: true));
+        context.read<PostBloc>().add(const GetPostCommentsEvent(
+            commentParentId: null, viewAllCommentsRefresh: true));
       }
     });
 
@@ -105,16 +107,29 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
     // It also must be run after there is something to scroll, and the easiest way to do this is to do it in a scroll listener.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.scrollController.addListener(() {
-        if (_bottomSpacerHeight == null && _lastCommentKey.currentContext != null) {
-          final double? lastCommentHeight = (_lastCommentKey.currentContext!.findRenderObject() as RenderBox?)?.size.height;
-          final double? listHeight = (_listKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
-          final double? reachedBottomHeight = (_reachedBottomKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+        if (_bottomSpacerHeight == null &&
+            _lastCommentKey.currentContext != null) {
+          final double? lastCommentHeight =
+              (_lastCommentKey.currentContext!.findRenderObject() as RenderBox?)
+                  ?.size
+                  .height;
+          final double? listHeight =
+              (_listKey.currentContext?.findRenderObject() as RenderBox?)
+                  ?.size
+                  .height;
+          final double? reachedBottomHeight = (_reachedBottomKey.currentContext
+                  ?.findRenderObject() as RenderBox?)
+              ?.size
+              .height;
 
-          if (lastCommentHeight != null && listHeight != null && reachedBottomHeight != null) {
+          if (lastCommentHeight != null &&
+              listHeight != null &&
+              reachedBottomHeight != null) {
             // We will make the bottom spacer the size of the list height, minus the size of the two other widgets.
             // This will allow the last comment to be scrolled to the top, with the "reached bottom" indicator and the spacer
             // taking up the rest of the space.
-            _bottomSpacerHeight = max(160, listHeight - lastCommentHeight - reachedBottomHeight);
+            _bottomSpacerHeight =
+                max(160, listHeight - lastCommentHeight - reachedBottomHeight);
             setState(() {});
           }
         }
@@ -124,7 +139,9 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    if (!_scrolledToComment && widget.selectedCommentId != null && widget.comments.isNotEmpty) {
+    if (!_scrolledToComment &&
+        widget.selectedCommentId != null &&
+        widget.comments.isNotEmpty) {
       _scrolledToComment = true;
       // If we are looking at a comment context, scroll to the first comment.
       // The delay is purely for aesthetics and is not required for the logic to work.
@@ -157,7 +174,9 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
             duration: (estimatedDistance) => const Duration(milliseconds: 250),
             curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
           );
-        } else if (state.newlyCreatedCommentId != null && state.comments.first.commentView?.comment.id == state.newlyCreatedCommentId) {
+        } else if (state.newlyCreatedCommentId != null &&
+            state.comments.first.commentView?.comment.id ==
+                state.newlyCreatedCommentId) {
           // Only scroll for top level comments since you can comment from anywhere in the comment section.
           widget.listController.animateToItem(
             index: 1,
@@ -184,7 +203,9 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                   crossPosts: widget.crossPosts,
                   viewSource: widget.viewSource,
                 ),
-                if (widget.selectedCommentId != null && !_animatingIn && index <= widget.comments.length)
+                if (widget.selectedCommentId != null &&
+                    !_animatingIn &&
+                    index <= widget.comments.length)
                   Center(
                     child: Column(
                       children: [
@@ -198,8 +219,10 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize: const Size.fromHeight(50),
-                                    backgroundColor: theme.colorScheme.primaryContainer,
-                                    textStyle: theme.textTheme.titleMedium?.copyWith(
+                                    backgroundColor:
+                                        theme.colorScheme.primaryContainer,
+                                    textStyle:
+                                        theme.textTheme.titleMedium?.copyWith(
                                       color: theme.colorScheme.primary,
                                     ),
                                   ),
@@ -207,7 +230,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                                     setState(() => _animatingOut = true);
                                     _fullCommentsAnimation.forward();
                                   },
-                                  child: Text(AppLocalizations.of(context)!.viewAllComments),
+                                  child: Text(AppLocalizations.of(context)!
+                                      .viewAllComments),
                                 ),
                               ),
                             ),
@@ -237,20 +261,32 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                 children: [
                   if (index <= widget.comments.length)
                     CommentCard(
-                      key: index == widget.comments.length ? _lastCommentKey : null,
+                      key: index == widget.comments.length
+                          ? _lastCommentKey
+                          : null,
                       selectCommentId: widget.selectedCommentId,
                       selectedCommentPath: widget.selectedCommentPath,
                       newlyCreatedCommentId: widget.newlyCreatedCommentId,
                       moddingCommentId: widget.moddingCommentId,
                       commentViewTree: widget.comments[index - 1],
                       collapsedCommentSet: collapsedCommentSet,
-                      collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
-                      onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                      onVoteAction: (int commentId, int voteType) => widget.onVoteAction(commentId, voteType),
-                      onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
-                      onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
-                      onReportAction: (int commentId) => widget.onReportAction(commentId),
-                      onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
+                      collapsed: collapsedCommentSet.contains(widget
+                              .comments[index - 1].commentView!.comment.id) ||
+                          widget.level == 2,
+                      onSaveAction: (int commentId, bool save) =>
+                          widget.onSaveAction(commentId, save),
+                      onVoteAction: (int commentId, int voteType) =>
+                          widget.onVoteAction(commentId, voteType),
+                      onCollapseCommentChange:
+                          (int commentId, bool collapsed) =>
+                              onCollapseCommentChange(commentId, collapsed),
+                      onDeleteAction: (int commentId, bool deleted) =>
+                          widget.onDeleteAction(commentId, deleted),
+                      onReportAction: (int commentId) =>
+                          widget.onReportAction(commentId),
+                      onReplyEditAction:
+                          (CommentView commentView, bool isEdit) =>
+                              widget.onReplyEditAction(commentView, isEdit),
                     ),
                   if (index == widget.comments.length + 1) ...[
                     if (widget.hasReachedCommentEnd == true) ...[
@@ -262,7 +298,10 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: ScalableText(
-                              widget.comments.isEmpty ? AppLocalizations.of(context)!.noComments : AppLocalizations.of(context)!.reachedTheBottom,
+                              widget.comments.isEmpty
+                                  ? AppLocalizations.of(context)!.noComments
+                                  : AppLocalizations.of(context)!
+                                      .reachedTheBottom,
                               fontScale: state.metadataFontSizeScale,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
@@ -285,7 +324,10 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                     SizedBox(
                       // Initially give this spacer more room than it needs.
                       // When the user scrolls, we will set this to a more reasonable fixed height.
-                      height: widget.hasReachedCommentEnd ? _bottomSpacerHeight ?? MediaQuery.of(context).size.height : 160,
+                      height: widget.hasReachedCommentEnd
+                          ? _bottomSpacerHeight ??
+                              MediaQuery.of(context).size.height
+                          : 160,
                     ),
                 ],
               ),
@@ -301,7 +343,9 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       return 2; // Show post and loading indicator since no comments have been fetched yet
     }
 
-    return widget.postViewMedia != null ? widget.comments.length + 3 : widget.comments.length + 2;
+    return widget.postViewMedia != null
+        ? widget.comments.length + 3
+        : widget.comments.length + 2;
   }
 
   void onCollapseCommentChange(int commentId, bool collapsed) {

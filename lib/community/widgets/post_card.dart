@@ -104,9 +104,11 @@ class _PostCardState extends State<PostCard> {
           triggerPostAction(
             context: context,
             swipeAction: swipeAction,
-            onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
+            onSaveAction: (int postId, bool saved) =>
+                widget.onSaveAction(saved),
             onVoteAction: (int postId, int vote) => widget.onVoteAction(vote),
-            onToggleReadAction: (int postId, bool read) => widget.onReadAction(read),
+            onToggleReadAction: (int postId, bool read) =>
+                widget.onReadAction(read),
             onHideAction: (int postId, bool hide) => widget.onHideAction(hide),
             voteType: myVote ?? 0,
             saved: saved,
@@ -129,11 +131,16 @@ class _PostCardState extends State<PostCard> {
         // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
         // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
         if (horizontalDragDistance > 0) {
-          if (determinePostSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+          if (determinePostSwipeDirection(isUserLoggedIn, state) ==
+                  DismissDirection.endToStart &&
+              isOverridingSwipeGestureAction == false &&
+              dismissThreshold == 0.0) {
             setState(() => isOverridingSwipeGestureAction = true);
           }
         } else {
-          if (determinePostSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+          if (determinePostSwipeDirection(isUserLoggedIn, state) ==
+                  DismissDirection.endToStart &&
+              isOverridingSwipeGestureAction == true) {
             setState(() => isOverridingSwipeGestureAction = false);
           }
         }
@@ -141,26 +148,37 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         children: [
           Dismissible(
-            direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
+            direction: isOverridingSwipeGestureAction == true
+                ? DismissDirection.none
+                : determinePostSwipeDirection(isUserLoggedIn, state),
             key: ObjectKey(widget.postViewMedia.postView.post.id),
             resizeDuration: Duration.zero,
-            dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
+            dismissThresholds: const {
+              DismissDirection.endToStart: 1,
+              DismissDirection.startToEnd: 1
+            },
             confirmDismiss: (DismissDirection direction) async {
               return false;
             },
             onUpdate: (DismissUpdateDetails details) {
               SwipeAction? updatedSwipeAction;
 
-              if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+              if (details.progress > firstActionThreshold &&
+                  details.progress < secondActionThreshold &&
+                  details.direction == DismissDirection.startToEnd) {
                 updatedSwipeAction = state.leftPrimaryPostGesture;
 
                 // Change the hide action to none of not supported by instance
-                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+                if (updatedSwipeAction == SwipeAction.hide &&
+                    !LemmyClient.instance
+                        .supportsFeature(LemmyFeature.hidePosts)) {
                   updatedSwipeAction = SwipeAction.none;
                 }
 
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                if (updatedSwipeAction != swipeAction)
+                  HapticFeedback.mediumImpact();
+              } else if (details.progress > secondActionThreshold &&
+                  details.direction == DismissDirection.startToEnd) {
                 if (state.leftSecondaryPostGesture != SwipeAction.none) {
                   updatedSwipeAction = state.leftSecondaryPostGesture;
                 } else {
@@ -168,21 +186,30 @@ class _PostCardState extends State<PostCard> {
                 }
 
                 // Change the hide action to none of not supported by instance
-                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+                if (updatedSwipeAction == SwipeAction.hide &&
+                    !LemmyClient.instance
+                        .supportsFeature(LemmyFeature.hidePosts)) {
                   updatedSwipeAction = SwipeAction.none;
                 }
 
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                if (updatedSwipeAction != swipeAction)
+                  HapticFeedback.mediumImpact();
+              } else if (details.progress > firstActionThreshold &&
+                  details.progress < secondActionThreshold &&
+                  details.direction == DismissDirection.endToStart) {
                 updatedSwipeAction = state.rightPrimaryPostGesture;
 
                 // Change the hide action to none of not supported by instance
-                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+                if (updatedSwipeAction == SwipeAction.hide &&
+                    !LemmyClient.instance
+                        .supportsFeature(LemmyFeature.hidePosts)) {
                   updatedSwipeAction = SwipeAction.none;
                 }
 
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                if (updatedSwipeAction != swipeAction)
+                  HapticFeedback.mediumImpact();
+              } else if (details.progress > secondActionThreshold &&
+                  details.direction == DismissDirection.endToStart) {
                 if (state.rightSecondaryPostGesture != SwipeAction.none) {
                   updatedSwipeAction = state.rightSecondaryPostGesture;
                 } else {
@@ -190,11 +217,14 @@ class _PostCardState extends State<PostCard> {
                 }
 
                 // Change the hide action to none of not supported by instance
-                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+                if (updatedSwipeAction == SwipeAction.hide &&
+                    !LemmyClient.instance
+                        .supportsFeature(LemmyFeature.hidePosts)) {
                   updatedSwipeAction = SwipeAction.none;
                 }
 
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                if (updatedSwipeAction != swipeAction)
+                  HapticFeedback.mediumImpact();
               } else {
                 updatedSwipeAction = null;
               }
@@ -208,23 +238,40 @@ class _PostCardState extends State<PostCard> {
             background: dismissDirection == DismissDirection.startToEnd
                 ? AnimatedContainer(
                     alignment: Alignment.centerLeft,
-                    color:
-                        swipeAction == null ? state.leftPrimaryPostGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(context),
+                    color: swipeAction == null
+                        ? state.leftPrimaryPostGesture
+                            .getColor(context)
+                            .withOpacity(
+                                dismissThreshold / firstActionThreshold)
+                        : (swipeAction ?? SwipeAction.none).getColor(context),
                     duration: const Duration(milliseconds: 200),
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
-                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read, hidden: hidden)),
+                      width: MediaQuery.of(context).size.width *
+                          (state.tabletMode ? 0.5 : 1) *
+                          dismissThreshold,
+                      child: swipeAction == null
+                          ? Container()
+                          : Icon((swipeAction ?? SwipeAction.none)
+                              .getIcon(read: read, hidden: hidden)),
                     ),
                   )
                 : AnimatedContainer(
                     alignment: Alignment.centerRight,
                     color: swipeAction == null
-                        ? state.rightPrimaryPostGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                        ? state.rightPrimaryPostGesture
+                            .getColor(context)
+                            .withOpacity(
+                                dismissThreshold / firstActionThreshold)
                         : (swipeAction ?? SwipeAction.none).getColor(context),
                     duration: const Duration(milliseconds: 200),
                     child: SizedBox(
-                      width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
-                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read, hidden: hidden)),
+                      width: (MediaQuery.of(context).size.width *
+                              (state.tabletMode ? 0.5 : 1)) *
+                          dismissThreshold,
+                      child: swipeAction == null
+                          ? Container()
+                          : Icon((swipeAction ?? SwipeAction.none)
+                              .getIcon(read: read, hidden: hidden)),
                     ),
                   ),
             child: InkWell(
@@ -234,14 +281,17 @@ class _PostCardState extends State<PostCard> {
                       feedType: widget.feedType,
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
-                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
+                      navigateToPost: ({PostViewMedia? postViewMedia}) async =>
+                          await navigateToPost(context,
+                              postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead,
                       showMedia: !state.hideThumbnails,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
                       hideThumbnails: state.hideThumbnails,
-                      showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
+                      showThumbnailPreviewOnRight:
+                          state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,
                       feedType: widget.feedType,
@@ -257,20 +307,33 @@ class _PostCardState extends State<PostCard> {
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
                       listingType: widget.listingType,
-                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
+                      navigateToPost: ({PostViewMedia? postViewMedia}) async =>
+                          await navigateToPost(context,
+                              postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead,
                     ),
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
                 widget.postViewMedia,
-                onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
-                onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
-                onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
+                onBlockedUser: (userId) => context
+                    .read<FeedBloc>()
+                    .add(FeedDismissBlockedEvent(userId: userId)),
+                onBlockedCommunity: (communityId) => context
+                    .read<FeedBloc>()
+                    .add(FeedDismissBlockedEvent(communityId: communityId)),
+                onPostHidden: (postId) => context
+                    .read<FeedBloc>()
+                    .add(FeedDismissHiddenPostEvent(postId: postId)),
               ),
               onTap: () async {
                 PostView postView = widget.postViewMedia.postView;
-                if (postView.read == false && isUserLoggedIn) context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postView.post.id, postAction: PostAction.read, value: true));
-                return await navigateToPost(context, postViewMedia: widget.postViewMedia);
+                if (postView.read == false && isUserLoggedIn)
+                  context.read<FeedBloc>().add(FeedItemActionedEvent(
+                      postId: postView.post.id,
+                      postAction: PostAction.read,
+                      value: true));
+                return await navigateToPost(context,
+                    postViewMedia: widget.postViewMedia);
               },
             ),
           ),

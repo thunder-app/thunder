@@ -68,18 +68,25 @@ class CommonMarkdownBody extends StatelessWidget {
       h5Padding: EdgeInsets.zero,
       h6: theme.textTheme.bodyLarge!.copyWith(color: Colors.transparent),
       h6Padding: EdgeInsets.zero,
-      em: const TextStyle(fontStyle: FontStyle.italic, color: Colors.transparent),
-      strong: const TextStyle(fontWeight: FontWeight.bold, color: Colors.transparent),
-      del: const TextStyle(decoration: TextDecoration.none, color: Colors.transparent),
-      blockquote: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
+      em: const TextStyle(
+          fontStyle: FontStyle.italic, color: Colors.transparent),
+      strong: const TextStyle(
+          fontWeight: FontWeight.bold, color: Colors.transparent),
+      del: const TextStyle(
+          decoration: TextDecoration.none, color: Colors.transparent),
+      blockquote:
+          theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
       img: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
       checkbox: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
       blockSpacing: 8.0,
       listIndent: 24.0,
-      listBullet: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
+      listBullet:
+          theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
       listBulletPadding: const EdgeInsets.only(right: 4),
-      tableHead: const TextStyle(fontWeight: FontWeight.w600, color: Colors.transparent),
-      tableBody: theme.textTheme.bodyMedium?.copyWith(color: Colors.transparent),
+      tableHead: const TextStyle(
+          fontWeight: FontWeight.w600, color: Colors.transparent),
+      tableBody:
+          theme.textTheme.bodyMedium?.copyWith(color: Colors.transparent),
       tableHeadAlign: TextAlign.center,
       tableBorder: TableBorder.all(color: Colors.transparent),
       tableColumnWidth: const FlexColumnWidth(),
@@ -96,22 +103,33 @@ class CommonMarkdownBody extends StatelessWidget {
         borderRadius: BorderRadius.circular(2.0),
       ),
       horizontalRuleDecoration: BoxDecoration(
-        border: Border(top: BorderSide(width: theme.textTheme.bodyMedium!.fontSize!, color: Colors.transparent)),
+        border: Border(
+            top: BorderSide(
+                width: theme.textTheme.bodyMedium!.fontSize!,
+                color: Colors.transparent)),
       ),
-      textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
+      textScaleFactor: MediaQuery.of(context).textScaleFactor *
+          (isComment == true
+              ? state.commentFontSizeScale.textScaleFactor
+              : state.contentFontSizeScale.textScaleFactor),
     );
 
     // Custom extension set
     md.ExtensionSet customExtensionSet = md.ExtensionSet.gitHubFlavored;
     customExtensionSet = md.ExtensionSet(
       List.from(customExtensionSet.blockSyntaxes)..add(SpoilerBlockSyntax()),
-      List.from(customExtensionSet.inlineSyntaxes)..addAll([SuperscriptInlineSyntax(), SubscriptInlineSyntax()]),
+      List.from(customExtensionSet.inlineSyntaxes)
+        ..addAll([SuperscriptInlineSyntax(), SubscriptInlineSyntax()]),
     );
 
     return ExtendedMarkdownBody(
       data: body,
       extensionSet: customExtensionSet,
-      inlineSyntaxes: [LemmyLinkSyntax(), SubscriptInlineSyntax(), SuperscriptInlineSyntax()],
+      inlineSyntaxes: [
+        LemmyLinkSyntax(),
+        SubscriptInlineSyntax(),
+        SuperscriptInlineSyntax()
+      ],
       builders: {
         'spoiler': SpoilerElementBuilder(),
         'sub': SubscriptElementBuilder(),
@@ -146,14 +164,21 @@ class CommonMarkdownBody extends StatelessWidget {
         );
       },
       onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
-      onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
+      onLongPressLink: (text, url, title) =>
+          handleLinkLongPress(context, state, text, url),
       styleSheet: hideContent
           ? spoilerMarkdownStyleSheet
           : MarkdownStyleSheet.fromTheme(theme).copyWith(
-              textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
+              textScaleFactor: MediaQuery.of(context).textScaleFactor *
+                  (isComment == true
+                      ? state.commentFontSizeScale.textScaleFactor
+                      : state.contentFontSizeScale.textScaleFactor),
               blockquoteDecoration: BoxDecoration(
                 color: getBackgroundColor(context),
-                border: Border(left: BorderSide(color: theme.colorScheme.primary.withOpacity(0.75), width: 4)),
+                border: Border(
+                    left: BorderSide(
+                        color: theme.colorScheme.primary.withOpacity(0.75),
+                        width: 4)),
                 borderRadius: BorderRadius.circular(5),
               ),
               codeblockDecoration: BoxDecoration(
@@ -186,7 +211,8 @@ class CommonMarkdownBody extends StatelessWidget {
 
 class LemmyLinkSyntax extends md.InlineSyntax {
   // https://github.com/LemmyNet/lemmy-ui/blob/61255bf01a8d2acdbb77229838002bf8067ada70/src/shared/config.ts#L38
-  static const String _pattern = r'(\/[cmu]\/|@|!)([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})';
+  static const String _pattern =
+      r'(\/[cmu]\/|@|!)([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})';
 
   LemmyLinkSyntax() : super(_pattern);
 
@@ -389,7 +415,8 @@ class SpoilerWidget extends StatefulWidget {
 
 class _SpoilerWidgetState extends State<SpoilerWidget> {
   /// Whether the spoiler is expanded
-  final ExpandableController expandableController = ExpandableController(initialExpanded: false);
+  final ExpandableController expandableController =
+      ExpandableController(initialExpanded: false);
 
   @override
   Widget build(BuildContext context) {
@@ -409,7 +436,8 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
             borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
             onTap: () {
               expandableController.toggle();
-              setState(() {}); // Update the state to trigger the collapse/expand
+              setState(
+                  () {}); // Update the state to trigger the collapse/expand
             },
             child: Padding(
               padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
@@ -418,8 +446,12 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    expandableController.expanded ? Icons.expand_more_rounded : Icons.chevron_right_rounded,
-                    semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
+                    expandableController.expanded
+                        ? Icons.expand_more_rounded
+                        : Icons.chevron_right_rounded,
+                    semanticLabel: expandableController.expanded
+                        ? l10n.collapseSpoiler
+                        : l10n.expandSpoiler,
                     size: 20,
                   ),
                   const SizedBox(width: 5),
@@ -427,7 +459,8 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
                     child: ScalableText(
                       widget.title ?? l10n.spoiler,
                       fontScale: state.contentFontSizeScale,
-                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -457,7 +490,8 @@ class SubscriptElementBuilder extends MarkdownElementBuilder {
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     final String textContent = element.textContent;
 
-    return SuperscriptSubscriptWidget(text: textContent, type: CustomMarkdownType.subscript);
+    return SuperscriptSubscriptWidget(
+        text: textContent, type: CustomMarkdownType.subscript);
   }
 }
 
@@ -467,7 +501,8 @@ class SuperscriptElementBuilder extends MarkdownElementBuilder {
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     final String textContent = element.textContent;
 
-    return SuperscriptSubscriptWidget(text: textContent, type: CustomMarkdownType.superscript);
+    return SuperscriptSubscriptWidget(
+        text: textContent, type: CustomMarkdownType.superscript);
   }
 }
 
@@ -483,7 +518,8 @@ class SuperscriptSubscriptWidget extends StatelessWidget {
   /// Whether the text is superscript or subscript
   final CustomMarkdownType type;
 
-  const SuperscriptSubscriptWidget({super.key, required this.text, required this.type});
+  const SuperscriptSubscriptWidget(
+      {super.key, required this.text, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -495,7 +531,8 @@ class SuperscriptSubscriptWidget extends StatelessWidget {
         children: [
           WidgetSpan(
             child: Transform.translate(
-              offset: Offset(0.0, type == CustomMarkdownType.subscript ? 3.0 : -5.0),
+              offset: Offset(
+                  0.0, type == CustomMarkdownType.subscript ? 3.0 : -5.0),
               child: ScalableText(
                 text,
                 fontScale: state.contentFontSizeScale,

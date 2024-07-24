@@ -32,7 +32,8 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatefulWidget {
-  const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
+  const FeedPageAppBar(
+      {super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
 
   /// Whether to show the app bar title
   final bool showAppBarTitle;
@@ -62,10 +63,17 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
       floating: true,
       centerTitle: false,
       toolbarHeight: 70.0,
-      surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
+      surfaceTintColor:
+          thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
       title: FeedAppBarTitle(visible: widget.showAppBarTitle),
-      leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
-      leading: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
+      leadingWidth: widget.scaffoldStateKey != null &&
+              thunderBloc.state.useProfilePictureForDrawer &&
+              authState.isLoggedIn
+          ? 50
+          : null,
+      leading: widget.scaffoldStateKey != null &&
+              thunderBloc.state.useProfilePictureForDrawer &&
+              authState.isLoggedIn
           ? Padding(
               padding: const EdgeInsets.only(left: 16.0),
               child: Semantics(
@@ -94,17 +102,27 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
                   ? (!kIsWeb && Platform.isIOS
                       ? Icon(
                           Icons.arrow_back_ios_new_rounded,
-                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                          semanticLabel: MaterialLocalizations.of(context)
+                              .backButtonTooltip,
                         )
-                      : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
-                  : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
+                      : Icon(Icons.arrow_back_rounded,
+                          semanticLabel: MaterialLocalizations.of(context)
+                              .backButtonTooltip))
+                  : Icon(Icons.menu,
+                      semanticLabel: MaterialLocalizations.of(context)
+                          .openAppDrawerTooltip),
               onPressed: () => _openDrawerOrGoBack(context, feedBloc),
             ),
-      actions: (feedBloc.state.status != FeedStatus.initial && feedBloc.state.status != FeedStatus.failureLoadingCommunity && feedBloc.state.status != FeedStatus.failureLoadingUser)
+      actions: (feedBloc.state.status != FeedStatus.initial &&
+              feedBloc.state.status != FeedStatus.failureLoadingCommunity &&
+              feedBloc.state.status != FeedStatus.failureLoadingUser)
           ? [
-              if (feedBloc.state.feedType == FeedType.general) const FeedAppBarGeneralActions(),
-              if (feedBloc.state.feedType == FeedType.community) const FeedAppBarCommunityActions(),
-              if (feedBloc.state.feedType == FeedType.user) const FeedAppBarUserActions(),
+              if (feedBloc.state.feedType == FeedType.general)
+                const FeedAppBarGeneralActions(),
+              if (feedBloc.state.feedType == FeedType.community)
+                const FeedAppBarCommunityActions(),
+              if (feedBloc.state.feedType == FeedType.user)
+                const FeedAppBarUserActions(),
             ]
           : [],
     );
@@ -112,7 +130,9 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
 
   void _openDrawerOrGoBack(BuildContext context, FeedBloc feedBloc) {
     HapticFeedback.mediumImpact();
-    (widget.scaffoldStateKey == null && (feedBloc.state.feedType == FeedType.community || feedBloc.state.feedType == FeedType.user))
+    (widget.scaffoldStateKey == null &&
+            (feedBloc.state.feedType == FeedType.community ||
+                feedBloc.state.feedType == FeedType.user))
         ? Navigator.of(context).maybePop()
         : widget.scaffoldStateKey?.currentState?.openDrawer();
   }
@@ -168,19 +188,26 @@ class FeedAppBarCommunityActions extends StatelessWidget {
       children: [
         BlocConsumer<CommunityBloc, CommunityState>(
           listener: (context, state) {
-            if (state.status == CommunityStatus.success && state.communityView != null) {
-              feedBloc.add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
+            if (state.status == CommunityStatus.success &&
+                state.communityView != null) {
+              feedBloc.add(FeedCommunityViewUpdatedEvent(
+                  communityView: state.communityView!));
             }
           },
           builder: (context, state) => IconButton(
             icon: Icon(
                 switch (_getSubscriptionStatus(context)) {
-                  SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                  SubscribedType.notSubscribed =>
+                    Icons.add_circle_outline_rounded,
                   SubscribedType.pending => Icons.pending_outlined,
-                  SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                  SubscribedType.subscribed =>
+                    Icons.remove_circle_outline_rounded,
                   _ => Icons.add_circle_outline_rounded,
                 },
-                semanticLabel: (_getSubscriptionStatus(context) == SubscribedType.notSubscribed) ? l10n.subscribe : l10n.unsubscribe),
+                semanticLabel: (_getSubscriptionStatus(context) ==
+                        SubscribedType.notSubscribed)
+                    ? l10n.subscribe
+                    : l10n.unsubscribe),
             tooltip: switch (_getSubscriptionStatus(context)) {
               SubscribedType.notSubscribed => l10n.subscribe,
               SubscribedType.pending => l10n.unsubscribePending,
@@ -188,7 +215,8 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               _ => null,
             },
             onPressed: () {
-              if (thunderBloc.state.isFabOpen) thunderBloc.add(const OnFabToggle(false));
+              if (thunderBloc.state.isFabOpen)
+                thunderBloc.add(const OnFabToggle(false));
 
               HapticFeedback.mediumImpact();
               _onSubscribeIconPressed(context);
@@ -206,7 +234,8 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async =>
+                    feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
                 minimumVersion: LemmyClient.instance.version,
               ),
@@ -223,16 +252,28 @@ class FeedAppBarCommunityActions extends StatelessWidget {
             if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
               ThunderPopupMenuItem(
                 onTap: () async {
-                  final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
+                  final Community community = context
+                      .read<FeedBloc>()
+                      .state
+                      .fullCommunityView!
+                      .communityView
+                      .community;
                   bool isFavorite = _getFavoriteStatus(context);
                   await toggleFavoriteCommunity(context, community, isFavorite);
                 },
-                icon: _getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded,
-                title: _getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites,
+                icon: _getFavoriteStatus(context)
+                    ? Icons.star_rounded
+                    : Icons.star_border_rounded,
+                title: _getFavoriteStatus(context)
+                    ? l10n.removeFromFavorites
+                    : l10n.addToFavorites,
               ),
-            if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
+            if (feedBloc
+                    .state.fullCommunityView?.communityView.community.actorId !=
+                null)
               ThunderPopupMenuItem(
-                onTap: () => showCommunityShareSheet(context, feedBloc.state.fullCommunityView!.communityView),
+                onTap: () => showCommunityShareSheet(
+                    context, feedBloc.state.fullCommunityView!.communityView),
                 icon: Icons.share_rounded,
                 title: l10n.share,
               ),
@@ -245,7 +286,9 @@ class FeedAppBarCommunityActions extends StatelessWidget {
 
                   await Navigator.of(context).push(
                     SwipeablePageRoute(
-                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                      transitionDuration: reduceAnimations
+                          ? const Duration(milliseconds: 100)
+                          : null,
                       backGestureDetectionWidth: 45,
                       canOnlySwipeFromEdge: true,
                       builder: (context) => MultiBlocProvider(
@@ -254,7 +297,10 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                           BlocProvider.value(value: searchBloc),
                           BlocProvider.value(value: thunderBloc),
                         ],
-                        child: SearchPage(communityToSearch: feedBloc.state.fullCommunityView!.communityView, isInitiallyFocused: true),
+                        child: SearchPage(
+                            communityToSearch:
+                                feedBloc.state.fullCommunityView!.communityView,
+                            isInitiallyFocused: true),
                       ),
                     ),
                   );
@@ -267,7 +313,8 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 await navigateToModlogPage(
                   context,
                   feedBloc: feedBloc,
-                  communityId: feedBloc.state.fullCommunityView!.communityView.community.id,
+                  communityId: feedBloc
+                      .state.fullCommunityView!.communityView.community.id,
                 );
               },
               icon: Icons.shield_rounded,
@@ -302,7 +349,8 @@ class FeedAppBarUserActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async =>
+                    feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
                 minimumVersion: LemmyClient.instance.version,
               ),
@@ -316,9 +364,11 @@ class FeedAppBarUserActions extends StatelessWidget {
               icon: Icons.refresh_rounded,
               title: l10n.refresh,
             ),
-            if (feedBloc.state.fullPersonView?.personView.person.actorId != null)
+            if (feedBloc.state.fullPersonView?.personView.person.actorId !=
+                null)
               ThunderPopupMenuItem(
-                onTap: () => showUserShareSheet(context, feedBloc.state.fullPersonView!.personView),
+                onTap: () => showUserShareSheet(
+                    context, feedBloc.state.fullPersonView!.personView),
                 icon: Icons.share_rounded,
                 title: l10n.share,
               ),
@@ -358,7 +408,8 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                onSelect: (selected) async =>
+                    feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.sortType,
                 minimumVersion: LemmyClient.instance.version,
               ),
@@ -388,20 +439,26 @@ class FeedAppBarGeneralActions extends StatelessWidget {
 SubscribedType? _getSubscriptionStatus(BuildContext context) {
   final AuthBloc authBloc = context.read<AuthBloc>();
   final FeedBloc feedBloc = context.read<FeedBloc>();
-  final AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  final AnonymousSubscriptionsBloc anonymousSubscriptionsBloc =
+      context.read<AnonymousSubscriptionsBloc>();
 
   if (authBloc.state.isLoggedIn) {
     return feedBloc.state.fullCommunityView?.communityView.subscribed;
   }
 
-  return anonymousSubscriptionsBloc.state.ids.contains(feedBloc.state.fullCommunityView?.communityView.community.id) ? SubscribedType.subscribed : SubscribedType.notSubscribed;
+  return anonymousSubscriptionsBloc.state.ids.contains(
+          feedBloc.state.fullCommunityView?.communityView.community.id)
+      ? SubscribedType.subscribed
+      : SubscribedType.notSubscribed;
 }
 
 /// Checks whether the current community is a favorite of the current user
 bool _getFavoriteStatus(BuildContext context) {
   final AccountState accountState = context.read<AccountBloc>().state;
   final FeedBloc feedBloc = context.read<FeedBloc>();
-  return accountState.favorites.any((communityView) => communityView.community.id == feedBloc.state.fullCommunityView!.communityView.community.id);
+  return accountState.favorites.any((communityView) =>
+      communityView.community.id ==
+      feedBloc.state.fullCommunityView!.communityView.community.id);
 }
 
 void _onSubscribeIconPressed(BuildContext context) async {
@@ -409,13 +466,19 @@ void _onSubscribeIconPressed(BuildContext context) async {
   final FeedBloc feedBloc = context.read<FeedBloc>();
   final FeedState feedState = feedBloc.state;
 
-  final Community community = feedBloc.state.fullCommunityView!.communityView.community;
-  final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+  final Community community =
+      feedBloc.state.fullCommunityView!.communityView.community;
+  final Set<int> currentSubscriptions =
+      context.read<AnonymousSubscriptionsBloc>().state.ids;
 
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  if ((authBloc.state.isLoggedIn && feedState.fullCommunityView?.communityView.subscribed != SubscribedType.notSubscribed) || // If we're logged in and subscribed
-      currentSubscriptions.contains(community.id)) // Or this is an anonymous subscription
+  if ((authBloc.state.isLoggedIn &&
+          feedState.fullCommunityView?.communityView.subscribed !=
+              SubscribedType
+                  .notSubscribed) || // If we're logged in and subscribed
+      currentSubscriptions
+          .contains(community.id)) // Or this is an anonymous subscription
   {
     bool result = false;
 
@@ -423,7 +486,8 @@ void _onSubscribeIconPressed(BuildContext context) async {
       context: context,
       title: l10n.confirm,
       contentText: l10n.confirmUnsubscription,
-      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+      onSecondaryButtonPressed: (dialogContext) =>
+          Navigator.of(dialogContext).pop(),
       secondaryButtonText: l10n.cancel,
       onPrimaryButtonPressed: (dialogContext, _) async {
         Navigator.of(dialogContext).pop();
@@ -438,19 +502,27 @@ void _onSubscribeIconPressed(BuildContext context) async {
   if (authBloc.state.isLoggedIn) {
     context.read<CommunityBloc>().add(
           CommunityActionEvent(
-            communityId: feedBloc.state.fullCommunityView!.communityView.community.id,
+            communityId:
+                feedBloc.state.fullCommunityView!.communityView.community.id,
             communityAction: CommunityAction.follow,
-            value: (feedState.fullCommunityView?.communityView.subscribed == SubscribedType.notSubscribed ? true : false),
+            value: (feedState.fullCommunityView?.communityView.subscribed ==
+                    SubscribedType.notSubscribed
+                ? true
+                : false),
           ),
         );
     return;
   }
 
   if (currentSubscriptions.contains(community.id)) {
-    context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: {community.id}));
+    context
+        .read<AnonymousSubscriptionsBloc>()
+        .add(DeleteSubscriptionsEvent(ids: {community.id}));
     showSnackbar(AppLocalizations.of(context)!.unsubscribed);
   } else {
-    context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {community}));
+    context
+        .read<AnonymousSubscriptionsBloc>()
+        .add(AddSubscriptionsEvent(communities: {community}));
     showSnackbar(AppLocalizations.of(context)!.subscribed);
   }
 }

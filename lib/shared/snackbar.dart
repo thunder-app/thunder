@@ -32,7 +32,10 @@ void showSnackbar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (leadingIcon != null) ...[Icon(leadingIcon, color: leadingIconColor), const SizedBox(width: 8.0)],
+                if (leadingIcon != null) ...[
+                  Icon(leadingIcon, color: leadingIconColor),
+                  const SizedBox(width: 8.0)
+                ],
                 Expanded(child: Text(text)),
                 if (trailingIcon != null)
                   Padding(
@@ -45,7 +48,9 @@ void showSnackbar(
                               trailingAction();
                             }
                           : null,
-                      child: Icon(trailingIcon, color: trailingIconColor ?? Theme.of(context).colorScheme.inversePrimary),
+                      child: Icon(trailingIcon,
+                          color: trailingIconColor ??
+                              Theme.of(context).colorScheme.inversePrimary),
                     ),
                   ),
                 if (closable)
@@ -54,7 +59,8 @@ void showSnackbar(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(50),
                       onTap: () => OverlaySupportEntry.of(context)?.dismiss(),
-                      child: Icon(Icons.close_rounded, color: Theme.of(context).colorScheme.surface),
+                      child: Icon(Icons.close_rounded,
+                          color: Theme.of(context).colorScheme.surface),
                     ),
                   ),
               ],
@@ -65,7 +71,10 @@ void showSnackbar(
         );
       },
       animationDuration: _snackBarTransitionDuration,
-      duration: duration ?? Duration(milliseconds: max(kNotificationDuration.inMilliseconds, max(4000, 1000 * wordCount))), // Assuming 60 WPM or 1 WPS
+      duration: duration ??
+          Duration(
+              milliseconds: max(kNotificationDuration.inMilliseconds,
+                  max(4000, 1000 * wordCount))), // Assuming 60 WPM or 1 WPS
       context: GlobalContext.context,
       key: key,
     );
@@ -78,18 +87,22 @@ class SnackbarNotification extends StatefulWidget {
 
   final double progress;
 
-  const SnackbarNotification({super.key, required this.builder, required this.progress});
+  const SnackbarNotification(
+      {super.key, required this.builder, required this.progress});
 
   @override
   State<SnackbarNotification> createState() => _SnackbarNotificationState();
 }
 
-class _SnackbarNotificationState extends State<SnackbarNotification> with TickerProviderStateMixin {
+class _SnackbarNotificationState extends State<SnackbarNotification>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
 
   static const Curve _snackBarM3HeightCurve = Curves.easeInOutQuart;
-  static const Curve _snackBarM3FadeInCurve = Interval(0.4, 0.6, curve: Curves.easeInCirc);
-  static const Curve _snackBarFadeOutCurve = Interval(0.72, 1.0, curve: Curves.fastOutSlowIn);
+  static const Curve _snackBarM3FadeInCurve =
+      Interval(0.4, 0.6, curve: Curves.easeInCirc);
+  static const Curve _snackBarFadeOutCurve =
+      Interval(0.72, 1.0, curve: Curves.fastOutSlowIn);
 
   @override
   void initState() {
@@ -97,7 +110,8 @@ class _SnackbarNotificationState extends State<SnackbarNotification> with Ticker
 
     _controller = AnimationController(
       vsync: this,
-      duration: _snackBarTransitionDuration, // Set the duration of the animation.
+      duration:
+          _snackBarTransitionDuration, // Set the duration of the animation.
     );
   }
 
@@ -120,7 +134,10 @@ class _SnackbarNotificationState extends State<SnackbarNotification> with Ticker
 
   @override
   Widget build(BuildContext context) {
-    final CurvedAnimation fadeInM3Animation = CurvedAnimation(parent: _controller, curve: _snackBarM3FadeInCurve, reverseCurve: _snackBarFadeOutCurve);
+    final CurvedAnimation fadeInM3Animation = CurvedAnimation(
+        parent: _controller,
+        curve: _snackBarM3FadeInCurve,
+        reverseCurve: _snackBarFadeOutCurve);
 
     final CurvedAnimation heightM3Animation = CurvedAnimation(
       parent: _controller,
@@ -153,13 +170,15 @@ class ThunderSnackbar extends StatefulWidget {
   /// See https://m3.material.io/components/snackbar/specs#c7b5d52a-24e7-45ca-8db6-7ce7d80a1cea
   final bool closable;
 
-  const ThunderSnackbar({super.key, required this.content, this.closable = true});
+  const ThunderSnackbar(
+      {super.key, required this.content, this.closable = true});
 
   @override
   State<ThunderSnackbar> createState() => _ThunderSnackbarState();
 }
 
-class _ThunderSnackbarState extends State<ThunderSnackbar> with WidgetsBindingObserver {
+class _ThunderSnackbarState extends State<ThunderSnackbar>
+    with WidgetsBindingObserver {
   final double horizontalPadding = 16.0;
   final double singleLineVerticalPadding = 14.0;
 
@@ -167,7 +186,9 @@ class _ThunderSnackbarState extends State<ThunderSnackbar> with WidgetsBindingOb
   Widget child = Container();
 
   double calculateBottomPadding() {
-    final double minimumPadding = MediaQuery.viewPaddingOf(context).bottom + kBottomNavigationBarHeight + singleLineVerticalPadding;
+    final double minimumPadding = MediaQuery.viewPaddingOf(context).bottom +
+        kBottomNavigationBarHeight +
+        singleLineVerticalPadding;
     final double bottomViewInsets = MediaQuery.viewInsetsOf(context).bottom;
 
     return max(minimumPadding, bottomViewInsets);
@@ -179,7 +200,8 @@ class _ThunderSnackbarState extends State<ThunderSnackbar> with WidgetsBindingOb
 
     final double elevation = snackBarTheme.elevation ?? 6.0;
     final Color backgroundColor = theme.colorScheme.inverseSurface;
-    final ShapeBorder shape = snackBarTheme.shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0));
+    final ShapeBorder shape = snackBarTheme.shape ??
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0));
 
     child = SafeArea(
       child: Container(
@@ -200,16 +222,21 @@ class _ThunderSnackbarState extends State<ThunderSnackbar> with WidgetsBindingOb
                   child: Theme(
                     data: theme,
                     child: Padding(
-                      padding: EdgeInsetsDirectional.only(start: horizontalPadding, end: widget.closable ? 12.0 : 8.0),
+                      padding: EdgeInsetsDirectional.only(
+                          start: horizontalPadding,
+                          end: widget.closable ? 12.0 : 8.0),
                       child: Wrap(
                         children: <Widget>[
                           Row(
                             children: <Widget>[
                               Expanded(
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(vertical: singleLineVerticalPadding),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: singleLineVerticalPadding),
                                   child: DefaultTextStyle(
-                                    style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onInverseSurface),
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                        color:
+                                            theme.colorScheme.onInverseSurface),
                                     child: widget.content,
                                   ),
                                 ),

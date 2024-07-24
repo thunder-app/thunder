@@ -33,7 +33,11 @@ class Marquee extends StatelessWidget {
     do {
       if (_scrollController.hasClients) {
         await Future.delayed(pauseDuration);
-        if (_scrollController.hasClients) await _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: animationDuration, curve: forwardAnimation);
+        if (_scrollController.hasClients)
+          await _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: animationDuration,
+              curve: forwardAnimation);
         await Future.delayed(pauseDuration);
         if (_scrollController.hasClients) {
           switch (directionMarguee) {
@@ -43,7 +47,8 @@ class Marquee extends StatelessWidget {
               );
               break;
             case DirectionMarguee.twoDirection:
-              await _scrollController.animateTo(0.0, duration: backDuration, curve: backwardAnimation);
+              await _scrollController.animateTo(0.0,
+                  duration: backDuration, curve: backwardAnimation);
               break;
           }
         }

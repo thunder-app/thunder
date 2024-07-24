@@ -15,7 +15,8 @@ import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
-Future<void> navigateToInstancePage(BuildContext context, {required String instanceHost, required int? instanceId}) async {
+Future<void> navigateToInstancePage(BuildContext context,
+    {required String instanceHost, required int? instanceId}) async {
   showLoadingPage(context);
 
   final AppLocalizations l10n = AppLocalizations.of(context)!;
@@ -27,11 +28,17 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
   bool? isBlocked;
 
   try {
-    getSiteResponse = await LemmyApiV3(instanceHost).run(const GetSite()).timeout(const Duration(seconds: 5));
+    getSiteResponse = await LemmyApiV3(instanceHost)
+        .run(const GetSite())
+        .timeout(const Duration(seconds: 5));
 
     // Check whether this instance is blocked (we have to get our user from our current site first).
-    final GetSiteResponse localSite = await LemmyClient.instance.lemmyApiV3.run(GetSite(auth: account?.jwt)).timeout(const Duration(seconds: 5));
-    isBlocked = localSite.myUser?.instanceBlocks?.any((i) => i.instance.domain == instanceHost) == true;
+    final GetSiteResponse localSite = await LemmyClient.instance.lemmyApiV3
+        .run(GetSite(auth: account?.jwt))
+        .timeout(const Duration(seconds: 5));
+    isBlocked = localSite.myUser?.instanceBlocks
+            ?.any((i) => i.instance.domain == instanceHost) ==
+        true;
   } catch (e) {}
 
   if (context.mounted) {
@@ -44,10 +51,14 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
               : reduceAnimations
                   ? const Duration(milliseconds: 100)
                   : null,
-          reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+          reverseTransitionDuration: reduceAnimations
+              ? const Duration(milliseconds: 100)
+              : const Duration(milliseconds: 500),
           backGestureDetectionWidth: 45,
-          canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-          canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+          canSwipe: Platform.isIOS ||
+              thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+          canOnlySwipeFromEdge:
+              !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
           builder: (context) => MultiBlocProvider(
             providers: [
               BlocProvider.value(value: thunderBloc),

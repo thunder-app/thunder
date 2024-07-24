@@ -40,12 +40,14 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   }
 
   /// Handles clearing any messages from the state
-  Future<void> _onCommunityClearMessage(CommunityClearMessageEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _onCommunityClearMessage(
+      CommunityClearMessageEvent event, Emitter<CommunityState> emit) async {
     emit(state.copyWith(status: CommunityStatus.success, message: null));
   }
 
   /// Handles community related actions
-  Future<void> _onCommunityAction(CommunityActionEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _onCommunityAction(
+      CommunityActionEvent event, Emitter<CommunityState> emit) async {
     emit(state.copyWith(status: CommunityStatus.fetching));
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
@@ -54,13 +56,16 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     switch (event.communityAction) {
       case CommunityAction.block:
         try {
-          BlockCommunityResponse blockCommunityResponse = await blockCommunity(event.communityId, event.value);
+          BlockCommunityResponse blockCommunityResponse =
+              await blockCommunity(event.communityId, event.value);
           emit(state.copyWith(
             status: CommunityStatus.success,
             communityView: blockCommunityResponse.communityView,
             message: blockCommunityResponse.blocked
-                ? l10n.successfullyBlockedCommunity(blockCommunityResponse.communityView.community.name)
-                : l10n.successfullyUnblockedCommunity(blockCommunityResponse.communityView.community.name),
+                ? l10n.successfullyBlockedCommunity(
+                    blockCommunityResponse.communityView.community.name)
+                : l10n.successfullyUnblockedCommunity(
+                    blockCommunityResponse.communityView.community.name),
           ));
         } catch (e) {
           return emit(state.copyWith(status: CommunityStatus.failure));
@@ -76,20 +81,27 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             _ => null,
           };
 
-          if (GlobalContext.context.mounted && subscribedType == SubscribedType.subscribed) {
-            showSnackbar(AppLocalizations.of(GlobalContext.context)!.subscriptionRequestSent);
+          if (GlobalContext.context.mounted &&
+              subscribedType == SubscribedType.subscribed) {
+            showSnackbar(AppLocalizations.of(GlobalContext.context)!
+                .subscriptionRequestSent);
           }
 
-          CommunityView communityView = await followCommunity(event.communityId, event.value);
-          emit(state.copyWith(status: CommunityStatus.success, communityView: communityView));
+          CommunityView communityView =
+              await followCommunity(event.communityId, event.value);
+          emit(state.copyWith(
+              status: CommunityStatus.success, communityView: communityView));
 
           // Return early if the subscription was successful. Otherwise, retry fetching the community information after a small delay
           // This generally occurs on communities on the same instance as the current account
-          if (GlobalContext.context.mounted && communityView.subscribed == subscribedType) {
+          if (GlobalContext.context.mounted &&
+              communityView.subscribed == subscribedType) {
             if (subscribedType == SubscribedType.subscribed) {
-              showSnackbar(AppLocalizations.of(GlobalContext.context)!.subscribed);
+              showSnackbar(
+                  AppLocalizations.of(GlobalContext.context)!.subscribed);
             } else {
-              showSnackbar(AppLocalizations.of(GlobalContext.context)!.unsubscribed);
+              showSnackbar(
+                  AppLocalizations.of(GlobalContext.context)!.unsubscribed);
             }
 
             return;
@@ -99,19 +111,27 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
           // Wait for one second before fetching the community information to get any updated information
           await Future.delayed(const Duration(seconds: 1)).then((value) async {
-            GetCommunityResponse? getCommunityResponse = await fetchCommunityInformation(id: event.communityId);
-            emit(state.copyWith(status: CommunityStatus.success, communityView: getCommunityResponse.communityView));
+            GetCommunityResponse? getCommunityResponse =
+                await fetchCommunityInformation(id: event.communityId);
+            emit(state.copyWith(
+                status: CommunityStatus.success,
+                communityView: getCommunityResponse.communityView));
 
-            if (GlobalContext.context.mounted && getCommunityResponse.communityView.subscribed == subscribedType) {
+            if (GlobalContext.context.mounted &&
+                getCommunityResponse.communityView.subscribed ==
+                    subscribedType) {
               if (subscribedType == SubscribedType.subscribed) {
-                showSnackbar(AppLocalizations.of(GlobalContext.context)!.subscribed);
+                showSnackbar(
+                    AppLocalizations.of(GlobalContext.context)!.subscribed);
               } else {
-                showSnackbar(AppLocalizations.of(GlobalContext.context)!.unsubscribed);
+                showSnackbar(
+                    AppLocalizations.of(GlobalContext.context)!.unsubscribed);
               }
             }
           });
         } catch (e) {
-          showSnackbar(AppLocalizations.of(GlobalContext.context)!.failedToPerformAction);
+          showSnackbar(AppLocalizations.of(GlobalContext.context)!
+              .failedToPerformAction);
           return emit(state.copyWith(status: CommunityStatus.failure));
         }
         break;

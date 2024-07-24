@@ -36,7 +36,8 @@ class ProfileModalBody extends StatefulWidget {
     this.reloadOnSwitch = true,
   });
 
-  static final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> shellNavigatorKey =
+      GlobalKey<NavigatorState>();
 
   @override
   State<ProfileModalBody> createState() => _ProfileModalBodyState();
@@ -44,7 +45,8 @@ class ProfileModalBody extends StatefulWidget {
 
 class _ProfileModalBodyState extends State<ProfileModalBody> {
   void pushRegister({bool anonymous = false}) {
-    ProfileModalBody.shellNavigatorKey.currentState!.pushNamed("/login", arguments: {'anonymous': anonymous});
+    ProfileModalBody.shellNavigatorKey.currentState!
+        .pushNamed("/login", arguments: {'anonymous': anonymous});
   }
 
   void popRegister() {
@@ -85,12 +87,21 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
         break;
 
       case '/login':
-        page = LoginPage(popRegister: popRegister, anonymous: (settings.arguments as Map<String, bool>)['anonymous']!);
+        page = LoginPage(
+            popRegister: popRegister,
+            anonymous: (settings.arguments as Map<String, bool>)['anonymous']!);
         break;
     }
     return SwipeablePageRoute<dynamic>(
-      canSwipe: Platform.isIOS || context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
-      canOnlySwipeFromEdge: !context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
+      canSwipe: Platform.isIOS ||
+          context
+              .read<ThunderBloc>()
+              .state
+              .enableFullScreenSwipeNavigationGesture,
+      canOnlySwipeFromEdge: !context
+          .read<ThunderBloc>()
+          .state
+          .enableFullScreenSwipeNavigationGesture,
       builder: (context) {
         return page;
       },
@@ -150,10 +161,13 @@ class _ProfileSelectState extends State<ProfileSelect> {
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
     Color selectedColor = theme.colorScheme.primaryContainer;
     if (!darkTheme) {
-      selectedColor = HSLColor.fromColor(theme.colorScheme.primaryContainer).withLightness(0.95).toColor();
+      selectedColor = HSLColor.fromColor(theme.colorScheme.primaryContainer)
+          .withLightness(0.95)
+          .toColor();
     }
     String? currentAccountId = context.watch<AuthBloc>().state.account?.id;
-    String? currentAnonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
+    String? currentAnonymousInstance =
+        context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
     if (accounts == null) {
       fetchAccounts();
@@ -168,7 +182,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
         BlocListener<ThunderBloc, ThunderState>(
           listener: (context, state) {},
           listenWhen: (previous, current) {
-            if (previous.currentAnonymousInstance != current.currentAnonymousInstance) {
+            if (previous.currentAnonymousInstance !=
+                current.currentAnonymousInstance) {
               anonymousInstances = null;
             }
             return true;
@@ -176,8 +191,11 @@ class _ProfileSelectState extends State<ProfileSelect> {
         ),
         BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state.status == AuthStatus.success && state.isLoggedIn == true) {
-              context.read<ThunderBloc>().add(const OnSetCurrentAnonymousInstance(null));
+            if (state.status == AuthStatus.success &&
+                state.isLoggedIn == true) {
+              context
+                  .read<ThunderBloc>()
+                  .add(const OnSetCurrentAnonymousInstance(null));
             }
           },
         ),
@@ -195,9 +213,13 @@ class _ProfileSelectState extends State<ProfileSelect> {
                   ? [
                       if ((accounts?.length ?? 0) > 1)
                         IconButton(
-                          icon: areAccountsBeingReordered ? const Icon(Icons.check_rounded) : const Icon(Icons.edit_note_rounded),
+                          icon: areAccountsBeingReordered
+                              ? const Icon(Icons.check_rounded)
+                              : const Icon(Icons.edit_note_rounded),
                           tooltip: l10n.reorder,
-                          onPressed: () => setState(() => areAccountsBeingReordered = !areAccountsBeingReordered),
+                          onPressed: () => setState(() =>
+                              areAccountsBeingReordered =
+                                  !areAccountsBeingReordered),
                         ),
                       IconButton(
                         icon: const Icon(Icons.person_add),
@@ -210,8 +232,10 @@ class _ProfileSelectState extends State<ProfileSelect> {
             ),
             if (accounts?.isNotEmpty == true)
               SliverReorderableList(
-                onReorderStart: (index) => setState(() => accountBeingReorderedIndex = index),
-                onReorderEnd: (index) => setState(() => accountBeingReorderedIndex = null),
+                onReorderStart: (index) =>
+                    setState(() => accountBeingReorderedIndex = index),
+                onReorderEnd: (index) =>
+                    setState(() => accountBeingReorderedIndex = null),
                 onReorder: (int oldIndex, int newIndex) {
                   setState(() {
                     if (oldIndex < newIndex) {
@@ -239,13 +263,18 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Material(
-                        color: currentAccountId == accounts![index].account.id ? selectedColor : null,
+                        color: currentAccountId == accounts![index].account.id
+                            ? selectedColor
+                            : null,
                         borderRadius: BorderRadius.circular(50),
                         child: InkWell(
-                          onTap: (currentAccountId == accounts![index].account.id)
+                          onTap: (currentAccountId ==
+                                  accounts![index].account.id)
                               ? null
                               : () {
-                                  context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id, reload: widget.reloadOnSave));
+                                  context.read<AuthBloc>().add(SwitchAccount(
+                                      accountId: accounts![index].account.id,
+                                      reload: widget.reloadOnSave));
                                   context.pop();
                                 },
                           borderRadius: BorderRadius.circular(50),
@@ -255,11 +284,18 @@ class _ProfileSelectState extends State<ProfileSelect> {
                               leading: Stack(
                                 children: [
                                   AnimatedCrossFade(
-                                    crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                    crossFadeState:
+                                        accounts![index].instanceIcon == null
+                                            ? CrossFadeState.showFirst
+                                            : CrossFadeState.showSecond,
                                     duration: const Duration(milliseconds: 500),
                                     firstChild: const SizedBox(
                                       child: Padding(
-                                        padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
+                                        padding: EdgeInsets.only(
+                                            left: 8,
+                                            top: 8,
+                                            right: 8,
+                                            bottom: 8),
                                         child: Icon(
                                           Icons.person,
                                         ),
@@ -267,7 +303,12 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                     ),
                                     secondChild: CircleAvatar(
                                       backgroundColor: Colors.transparent,
-                                      foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
+                                      foregroundImage: accounts![index]
+                                                  .instanceIcon ==
+                                              null
+                                          ? null
+                                          : CachedNetworkImageProvider(
+                                              accounts![index].instanceIcon!),
                                       maxRadius: 20,
                                     ),
                                   ),
@@ -280,7 +321,10 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                       height: 12,
                                       child: Material(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: currentAccountId == accounts![index].account.id ? selectedColor : null,
+                                        color: currentAccountId ==
+                                                accounts![index].account.id
+                                            ? selectedColor
+                                            : null,
                                       ),
                                     ),
                                   ),
@@ -289,12 +333,22 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                     right: 1,
                                     bottom: 1,
                                     child: AnimatedOpacity(
-                                      opacity: accounts![index].alive == null ? 0 : 1,
-                                      duration: const Duration(milliseconds: 500),
+                                      opacity: accounts![index].alive == null
+                                          ? 0
+                                          : 1,
+                                      duration:
+                                          const Duration(milliseconds: 500),
                                       child: Icon(
-                                        accounts![index].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
+                                        accounts![index].alive == true
+                                            ? Icons.check_circle_rounded
+                                            : Icons.remove_circle_rounded,
                                         size: 10,
-                                        color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), accounts![index].alive == true ? Colors.green : Colors.red),
+                                        color: Color.alphaBlend(
+                                            theme.colorScheme.primaryContainer
+                                                .withOpacity(0.6),
+                                            accounts![index].alive == true
+                                                ? Colors.green
+                                                : Colors.red),
                                       ),
                                     ),
                                   ),
@@ -306,7 +360,11 @@ class _ProfileSelectState extends State<ProfileSelect> {
                               ),
                               subtitle: Wrap(
                                 children: [
-                                  Text(accounts![index].account.instance.replaceAll('https://', '') ?? 'N/A'),
+                                  Text(accounts![index]
+                                          .account
+                                          .instance
+                                          .replaceAll('https://', '') ??
+                                      'N/A'),
                                   AnimatedSize(
                                     duration: const Duration(milliseconds: 250),
                                     child: accounts![index].version == null
@@ -318,14 +376,20 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                               Text(
                                                 '•',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimaryContainer
+                                                      .withOpacity(0.55),
                                                 ),
                                               ),
                                               const SizedBox(width: 5),
                                               Text(
                                                 'v${accounts![index].version}',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimaryContainer
+                                                      .withOpacity(0.55),
                                                 ),
                                               ),
                                             ],
@@ -342,14 +406,20 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                               Text(
                                                 '•',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimaryContainer
+                                                      .withOpacity(0.55),
                                                 ),
                                               ),
                                               const SizedBox(width: 5),
                                               Text(
                                                 '${accounts![index].latency?.inMilliseconds}ms',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimaryContainer
+                                                      .withOpacity(0.55),
                                                 ),
                                               ),
                                             ],
@@ -360,36 +430,72 @@ class _ProfileSelectState extends State<ProfileSelect> {
                               trailing: !widget.quickSelectMode
                                   ? areAccountsBeingReordered
                                       ? const Icon(Icons.drag_handle)
-                                      : (currentAccountId == accounts![index].account.id)
+                                      : (currentAccountId ==
+                                              accounts![index].account.id)
                                           ? IconButton(
-                                              icon: loggingOutId == accounts![index].account.id
+                                              icon: loggingOutId ==
+                                                      accounts![index]
+                                                          .account
+                                                          .id
                                                   ? const SizedBox(
                                                       height: 20,
                                                       width: 20,
-                                                      child: CircularProgressIndicator(),
+                                                      child:
+                                                          CircularProgressIndicator(),
                                                     )
-                                                  : Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
-                                              onPressed: () => _logOutOfActiveAccount(activeAccountId: accounts![index].account.id),
+                                                  : Icon(Icons.logout,
+                                                      semanticLabel:
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .logOut),
+                                              onPressed: () =>
+                                                  _logOutOfActiveAccount(
+                                                      activeAccountId:
+                                                          accounts![index]
+                                                              .account
+                                                              .id),
                                             )
                                           : IconButton(
-                                              icon: loggingOutId == accounts![index].account.id
+                                              icon: loggingOutId ==
+                                                      accounts![index]
+                                                          .account
+                                                          .id
                                                   ? const SizedBox(
                                                       height: 20,
                                                       width: 20,
-                                                      child: CircularProgressIndicator(),
+                                                      child:
+                                                          CircularProgressIndicator(),
                                                     )
                                                   : Icon(
                                                       Icons.delete,
-                                                      semanticLabel: AppLocalizations.of(context)!.removeAccount,
+                                                      semanticLabel:
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .removeAccount,
                                                     ),
                                               onPressed: () async {
-                                                context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
+                                                context.read<AuthBloc>().add(
+                                                    RemoveAccount(
+                                                        accountId:
+                                                            accounts![index]
+                                                                .account
+                                                                .id));
 
-                                                setState(() => loggingOutId = accounts![index].account.id);
+                                                setState(() => loggingOutId =
+                                                    accounts![index]
+                                                        .account
+                                                        .id);
 
                                                 if (currentAccountId != null) {
-                                                  await Future.delayed(const Duration(milliseconds: 1000), () {
-                                                    context.read<AuthBloc>().add(SwitchAccount(accountId: currentAccountId));
+                                                  await Future.delayed(
+                                                      const Duration(
+                                                          milliseconds: 1000),
+                                                      () {
+                                                    context
+                                                        .read<AuthBloc>()
+                                                        .add(SwitchAccount(
+                                                            accountId:
+                                                                currentAccountId));
                                                   });
                                                 }
 
@@ -416,7 +522,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     l10n.noAccountsAdded,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontStyle: FontStyle.italic,
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
                     ),
                   ),
                 ),
@@ -431,9 +538,13 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     ? [
                         if ((anonymousInstances?.length ?? 0) > 1)
                           IconButton(
-                            icon: areAnonymousInstancesBeingReordered ? const Icon(Icons.check_rounded) : const Icon(Icons.edit_note_rounded),
+                            icon: areAnonymousInstancesBeingReordered
+                                ? const Icon(Icons.check_rounded)
+                                : const Icon(Icons.edit_note_rounded),
                             tooltip: l10n.reorder,
-                            onPressed: () => setState(() => areAnonymousInstancesBeingReordered = !areAnonymousInstancesBeingReordered),
+                            onPressed: () => setState(() =>
+                                areAnonymousInstancesBeingReordered =
+                                    !areAnonymousInstancesBeingReordered),
                           ),
                         IconButton(
                           icon: const Icon(Icons.add),
@@ -446,14 +557,17 @@ class _ProfileSelectState extends State<ProfileSelect> {
               ),
               if (anonymousInstances?.isNotEmpty == true)
                 SliverReorderableList(
-                  onReorderStart: (index) => setState(() => anonymousInstanceBeingReorderedIndex = index),
-                  onReorderEnd: (index) => setState(() => anonymousInstanceBeingReorderedIndex = null),
+                  onReorderStart: (index) => setState(
+                      () => anonymousInstanceBeingReorderedIndex = index),
+                  onReorderEnd: (index) => setState(
+                      () => anonymousInstanceBeingReorderedIndex = null),
                   onReorder: (int oldIndex, int newIndex) {
                     setState(() {
                       if (oldIndex < newIndex) {
                         newIndex -= 1;
                       }
-                      final AnonymousInstanceExtended item = anonymousInstances!.removeAt(oldIndex);
+                      final AnonymousInstanceExtended item =
+                          anonymousInstances!.removeAt(oldIndex);
                       anonymousInstances!.insert(newIndex, item);
                     });
 
@@ -475,16 +589,39 @@ class _ProfileSelectState extends State<ProfileSelect> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Material(
-                          elevation: anonymousInstanceBeingReorderedIndex == index ? 3 : 0,
-                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : null,
+                          elevation:
+                              anonymousInstanceBeingReorderedIndex == index
+                                  ? 3
+                                  : 0,
+                          color: currentAccountId == null &&
+                                  currentAnonymousInstance ==
+                                      anonymousInstances![index]
+                                          .anonymousInstance
+                                          .instance
+                              ? selectedColor
+                              : null,
                           borderRadius: BorderRadius.circular(50),
                           child: InkWell(
-                            onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
+                            onTap: (currentAccountId == null &&
+                                    currentAnonymousInstance ==
+                                        anonymousInstances![index]
+                                            .anonymousInstance
+                                            .instance)
                                 ? null
                                 : () async {
-                                    context.read<AuthBloc>().add(const LogOutOfAllAccounts());
-                                    context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![index].anonymousInstance.instance));
-                                    context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![index].anonymousInstance.instance));
+                                    context
+                                        .read<AuthBloc>()
+                                        .add(const LogOutOfAllAccounts());
+                                    context.read<ThunderBloc>().add(
+                                        OnSetCurrentAnonymousInstance(
+                                            anonymousInstances![index]
+                                                .anonymousInstance
+                                                .instance));
+                                    context.read<AuthBloc>().add(
+                                        InstanceChanged(
+                                            instance: anonymousInstances![index]
+                                                .anonymousInstance
+                                                .instance));
                                     context.pop();
                                   },
                             borderRadius: BorderRadius.circular(50),
@@ -494,11 +631,20 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 leading: Stack(
                                   children: [
                                     AnimatedCrossFade(
-                                      crossFadeState: anonymousInstances![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                                      duration: const Duration(milliseconds: 500),
+                                      crossFadeState: anonymousInstances![index]
+                                                  .instanceIcon ==
+                                              null
+                                          ? CrossFadeState.showFirst
+                                          : CrossFadeState.showSecond,
+                                      duration:
+                                          const Duration(milliseconds: 500),
                                       firstChild: const SizedBox(
                                         child: Padding(
-                                          padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
+                                          padding: EdgeInsets.only(
+                                              left: 8,
+                                              top: 8,
+                                              right: 8,
+                                              bottom: 8),
                                           child: Icon(
                                             Icons.language,
                                           ),
@@ -506,7 +652,14 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                       ),
                                       secondChild: CircleAvatar(
                                         backgroundColor: Colors.transparent,
-                                        foregroundImage: anonymousInstances![index].instanceIcon == null ? null : CachedNetworkImageProvider(anonymousInstances![index].instanceIcon!),
+                                        foregroundImage:
+                                            anonymousInstances![index]
+                                                        .instanceIcon ==
+                                                    null
+                                                ? null
+                                                : CachedNetworkImageProvider(
+                                                    anonymousInstances![index]
+                                                        .instanceIcon!),
                                         maxRadius: 20,
                                       ),
                                     ),
@@ -517,8 +670,15 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                         width: 12,
                                         height: 12,
                                         child: Material(
-                                          borderRadius: BorderRadius.circular(10),
-                                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : null,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: currentAccountId == null &&
+                                                  currentAnonymousInstance ==
+                                                      anonymousInstances![index]
+                                                          .anonymousInstance
+                                                          .instance
+                                              ? selectedColor
+                                              : null,
                                         ),
                                       ),
                                     ),
@@ -527,12 +687,27 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                       right: 1,
                                       bottom: 1,
                                       child: AnimatedOpacity(
-                                        opacity: anonymousInstances![index].alive == null ? 0 : 1,
-                                        duration: const Duration(milliseconds: 500),
+                                        opacity:
+                                            anonymousInstances![index].alive ==
+                                                    null
+                                                ? 0
+                                                : 1,
+                                        duration:
+                                            const Duration(milliseconds: 500),
                                         child: Icon(
-                                          anonymousInstances![index].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
+                                          anonymousInstances![index].alive ==
+                                                  true
+                                              ? Icons.check_circle_rounded
+                                              : Icons.remove_circle_rounded,
                                           size: 10,
-                                          color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), anonymousInstances![index].alive == true ? Colors.green : Colors.red),
+                                          color: Color.alphaBlend(
+                                              theme.colorScheme.primaryContainer
+                                                  .withOpacity(0.6),
+                                              anonymousInstances![index]
+                                                          .alive ==
+                                                      true
+                                                  ? Colors.green
+                                                  : Colors.red),
                                         ),
                                       ),
                                     ),
@@ -547,16 +722,22 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                     const SizedBox(width: 5),
                                     Text(
                                       AppLocalizations.of(context)!.anonymous,
-                                      style: theme.textTheme.titleMedium?.copyWith(),
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(),
                                     ),
                                   ],
                                 ),
                                 subtitle: Wrap(
                                   children: [
-                                    Text(anonymousInstances![index].anonymousInstance.instance),
+                                    Text(anonymousInstances![index]
+                                        .anonymousInstance
+                                        .instance),
                                     AnimatedSize(
-                                      duration: const Duration(milliseconds: 250),
-                                      child: anonymousInstances![index].version == null
+                                      duration:
+                                          const Duration(milliseconds: 250),
+                                      child: anonymousInstances![index]
+                                                  .version ==
+                                              null
                                           ? const SizedBox(height: 20, width: 0)
                                           : Row(
                                               mainAxisSize: MainAxisSize.min,
@@ -565,22 +746,31 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                                 Text(
                                                   '•',
                                                   style: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onPrimaryContainer
+                                                        .withOpacity(0.55),
                                                   ),
                                                 ),
                                                 const SizedBox(width: 5),
                                                 Text(
                                                   'v${anonymousInstances![index].version}',
                                                   style: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onPrimaryContainer
+                                                        .withOpacity(0.55),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                     ),
                                     AnimatedSize(
-                                      duration: const Duration(milliseconds: 250),
-                                      child: anonymousInstances![index].latency == null
+                                      duration:
+                                          const Duration(milliseconds: 250),
+                                      child: anonymousInstances![index]
+                                                  .latency ==
+                                              null
                                           ? const SizedBox(height: 20, width: 0)
                                           : Row(
                                               mainAxisSize: MainAxisSize.min,
@@ -589,14 +779,20 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                                 Text(
                                                   '•',
                                                   style: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onPrimaryContainer
+                                                        .withOpacity(0.55),
                                                   ),
                                                 ),
                                                 const SizedBox(width: 5),
                                                 Text(
                                                   '${anonymousInstances![index].latency?.inMilliseconds}ms',
                                                   style: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onPrimaryContainer
+                                                        .withOpacity(0.55),
                                                   ),
                                                 ),
                                               ],
@@ -607,34 +803,82 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 trailing: !widget.quickSelectMode
                                     ? areAnonymousInstancesBeingReordered
                                         ? const Icon(Icons.drag_handle)
-                                        : ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
-                                            ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
+                                        : ((accounts?.length ?? 0) > 0 ||
+                                                anonymousInstances!.length > 1)
+                                            ? (currentAccountId == null &&
+                                                    currentAnonymousInstance ==
+                                                        anonymousInstances![
+                                                                index]
+                                                            .anonymousInstance
+                                                            .instance)
                                                 ? IconButton(
-                                                    icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.removeInstance),
+                                                    icon: Icon(Icons.logout,
+                                                        semanticLabel:
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .removeInstance),
                                                     onPressed: () async {
-                                                      await Account.deleteAnonymousInstance(anonymousInstances![index].anonymousInstance.instance);
+                                                      await Account
+                                                          .deleteAnonymousInstance(
+                                                              anonymousInstances![
+                                                                      index]
+                                                                  .anonymousInstance
+                                                                  .instance);
 
-                                                      if (anonymousInstances!.length > 1) {
-                                                        context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(
-                                                            anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![index]).anonymousInstance.instance));
-                                                        context.read<AuthBloc>().add(
-                                                            InstanceChanged(instance: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![index]).anonymousInstance.instance));
+                                                      if (anonymousInstances!
+                                                              .length >
+                                                          1) {
+                                                        context
+                                                            .read<ThunderBloc>()
+                                                            .add(OnSetCurrentAnonymousInstance(anonymousInstances!
+                                                                .lastWhere((instance) =>
+                                                                    instance !=
+                                                                    anonymousInstances![
+                                                                        index])
+                                                                .anonymousInstance
+                                                                .instance));
+                                                        context.read<AuthBloc>().add(InstanceChanged(
+                                                            instance: anonymousInstances!
+                                                                .lastWhere((instance) =>
+                                                                    instance !=
+                                                                    anonymousInstances![
+                                                                        index])
+                                                                .anonymousInstance
+                                                                .instance));
                                                       } else {
-                                                        context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.last.account.id));
+                                                        context
+                                                            .read<AuthBloc>()
+                                                            .add(SwitchAccount(
+                                                                accountId:
+                                                                    accounts!
+                                                                        .last
+                                                                        .account
+                                                                        .id));
                                                       }
 
-                                                      setState(() => anonymousInstances = null);
+                                                      setState(() =>
+                                                          anonymousInstances =
+                                                              null);
                                                     },
                                                   )
                                                 : IconButton(
                                                     icon: Icon(
                                                       Icons.delete,
-                                                      semanticLabel: AppLocalizations.of(context)!.removeInstance,
+                                                      semanticLabel:
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .removeInstance,
                                                     ),
                                                     onPressed: () async {
-                                                      await Account.deleteAnonymousInstance(anonymousInstances![index].anonymousInstance.instance);
+                                                      await Account
+                                                          .deleteAnonymousInstance(
+                                                              anonymousInstances![
+                                                                      index]
+                                                                  .anonymousInstance
+                                                                  .instance);
                                                       setState(() {
-                                                        anonymousInstances = null;
+                                                        anonymousInstances =
+                                                            null;
                                                       });
                                                     })
                                             : null
@@ -656,7 +900,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
                       l10n.noAnonymousInstances,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontStyle: FontStyle.italic,
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
                       ),
                     ),
                   ),
@@ -675,21 +920,28 @@ class _ProfileSelectState extends State<ProfileSelect> {
     final AuthBloc authBloc = context.read<AuthBloc>();
     final ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-    final List<Account> accountsNotCurrent = (await Account.accounts()).where((a) => a.id != activeAccountId).toList();
+    final List<Account> accountsNotCurrent = (await Account.accounts())
+        .where((a) => a.id != activeAccountId)
+        .toList();
 
-    if (context.mounted && activeAccountId != null && await showLogOutDialog(context)) {
+    if (context.mounted &&
+        activeAccountId != null &&
+        await showLogOutDialog(context)) {
       setState(() => loggingOutId = activeAccountId);
 
       await Future.delayed(const Duration(milliseconds: 1000), () async {
         if ((anonymousInstances?.length ?? 0) > 0) {
-          thunderBloc.add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.anonymousInstance.instance));
-          authBloc.add(InstanceChanged(instance: anonymousInstances!.last.anonymousInstance.instance));
+          thunderBloc.add(OnSetCurrentAnonymousInstance(
+              anonymousInstances!.last.anonymousInstance.instance));
+          authBloc.add(InstanceChanged(
+              instance: anonymousInstances!.last.anonymousInstance.instance));
         } else if (accountsNotCurrent.isNotEmpty) {
           authBloc.add(SwitchAccount(accountId: accountsNotCurrent.last.id));
         } else {
           // No accounts and no anonymous instances left. Create a new one.
           authBloc.add(const LogOutOfAllAccounts());
-          await Account.insertAnonymousInstance(const Account(id: '', instance: 'lemmy.ml', index: -1, anonymous: true));
+          await Account.insertAnonymousInstance(const Account(
+              id: '', instance: 'lemmy.ml', index: -1, anonymous: true));
           thunderBloc.add(const OnSetCurrentAnonymousInstance(null));
           thunderBloc.add(const OnSetCurrentAnonymousInstance('lemmy.ml'));
         }
@@ -705,10 +957,12 @@ class _ProfileSelectState extends State<ProfileSelect> {
   Future<void> fetchAccounts() async {
     List<Account> accounts = await Account.accounts();
 
-    List<AccountExtended> accountsExtended = (await Future.wait(accounts.map((Account account) async {
-      return AccountExtended(account: account, instance: account.instance, instanceIcon: null);
+    List<AccountExtended> accountsExtended =
+        (await Future.wait(accounts.map((Account account) async {
+      return AccountExtended(
+          account: account, instance: account.instance, instanceIcon: null);
     })).timeout(const Duration(seconds: 5)))
-      ..sort((a, b) => a.account.index.compareTo(b.account.index));
+          ..sort((a, b) => a.account.index.compareTo(b.account.index));
 
     // Intentionally don't await these here
     fetchInstanceInfo(accountsExtended);
@@ -719,7 +973,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
 
   Future<void> fetchInstanceInfo(List<AccountExtended> accountsExtended) async {
     accountsExtended.forEach((account) async {
-      final GetInstanceInfoResponse instanceinfoResponse = await getInstanceInfo(account.instance).timeout(
+      final GetInstanceInfoResponse instanceinfoResponse =
+          await getInstanceInfo(account.instance).timeout(
         const Duration(seconds: 5),
         onTimeout: () => const GetInstanceInfoResponse(success: false),
       );
@@ -745,8 +1000,13 @@ class _ProfileSelectState extends State<ProfileSelect> {
   }
 
   Future<void> fetchAnonymousInstances() async {
-    final List<AnonymousInstanceExtended> anonymousInstances = (await Account.anonymousInstances()).map((anonymousInstance) => AnonymousInstanceExtended(anonymousInstance: anonymousInstance)).toList()
-      ..sort((a, b) => a.anonymousInstance.index.compareTo(b.anonymousInstance.index));
+    final List<AnonymousInstanceExtended> anonymousInstances =
+        (await Account.anonymousInstances())
+            .map((anonymousInstance) =>
+                AnonymousInstanceExtended(anonymousInstance: anonymousInstance))
+            .toList()
+          ..sort((a, b) =>
+              a.anonymousInstance.index.compareTo(b.anonymousInstance.index));
 
     fetchAnonymousInstanceInfo(anonymousInstances);
     pingAnonymousInstances(anonymousInstances);
@@ -754,9 +1014,13 @@ class _ProfileSelectState extends State<ProfileSelect> {
     setState(() => this.anonymousInstances = anonymousInstances);
   }
 
-  Future<void> fetchAnonymousInstanceInfo(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
+  Future<void> fetchAnonymousInstanceInfo(
+      List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
     anonymousInstancesExtended.forEach((anonymousInstanceExtended) async {
-      final GetInstanceInfoResponse instanceInfoResponse = await getInstanceInfo(anonymousInstanceExtended.anonymousInstance.instance).timeout(
+      final GetInstanceInfoResponse instanceInfoResponse =
+          await getInstanceInfo(
+                  anonymousInstanceExtended.anonymousInstance.instance)
+              .timeout(
         const Duration(seconds: 5),
         onTimeout: () => const GetInstanceInfoResponse(success: false),
       );
@@ -768,14 +1032,16 @@ class _ProfileSelectState extends State<ProfileSelect> {
     });
   }
 
-  Future<void> pingAnonymousInstances(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
+  Future<void> pingAnonymousInstances(
+      List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
     anonymousInstancesExtended.forEach((anonymousInstanceExtended) async {
       PingData pingData = await Ping(
         anonymousInstanceExtended.anonymousInstance.instance,
         count: 1,
         timeout: 5,
       ).stream.first;
-      setState(() => anonymousInstanceExtended.latency = pingData.response?.time);
+      setState(
+          () => anonymousInstanceExtended.latency = pingData.response?.time);
     });
   }
 
@@ -784,11 +1050,16 @@ class _ProfileSelectState extends State<ProfileSelect> {
   /// because they are separate lists in the UI but they are in the same database table.
   void _updateAccountIndices() {
     for (AccountExtended accountExtended in accounts!) {
-      Account.updateAccount(accountExtended.account.copyWith(index: accounts!.indexOf(accountExtended)));
+      Account.updateAccount(accountExtended.account
+          .copyWith(index: accounts!.indexOf(accountExtended)));
     }
 
-    for (AnonymousInstanceExtended anonymousInstanceExtended in anonymousInstances!) {
-      Account.updateAccount(anonymousInstanceExtended.anonymousInstance.copyWith(index: (accounts?.length ?? 0) + anonymousInstances!.indexOf(anonymousInstanceExtended)));
+    for (AnonymousInstanceExtended anonymousInstanceExtended
+        in anonymousInstances!) {
+      Account.updateAccount(anonymousInstanceExtended.anonymousInstance
+          .copyWith(
+              index: (accounts?.length ?? 0) +
+                  anonymousInstances!.indexOf(anonymousInstanceExtended)));
     }
   }
 }
@@ -813,5 +1084,6 @@ class AnonymousInstanceExtended {
   Duration? latency;
   bool? alive;
 
-  AnonymousInstanceExtended({required this.anonymousInstance, this.instanceIcon});
+  AnonymousInstanceExtended(
+      {required this.anonymousInstance, this.instanceIcon});
 }

@@ -107,7 +107,13 @@ enum PostFabAction {
     }
   }
 
-  void execute({BuildContext? context, void Function()? override, PostViewMedia? postView, int? postId, int? selectedCommentId, String? selectedCommentPath}) {
+  void execute(
+      {BuildContext? context,
+      void Function()? override,
+      PostViewMedia? postView,
+      int? postId,
+      int? selectedCommentId,
+      String? selectedCommentPath}) {
     if (override != null) {
       override();
     }
@@ -125,7 +131,11 @@ enum PostFabAction {
         // Invoked via override
         break;
       case PostFabAction.refresh:
-        context?.read<PostBloc>().add(GetPostEvent(postView: postView, postId: postId, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
+        context?.read<PostBloc>().add(GetPostEvent(
+            postView: postView,
+            postId: postId,
+            selectedCommentId: selectedCommentId,
+            selectedCommentPath: selectedCommentPath));
       case PostFabAction.search:
         // Invoked via override
         break;

@@ -44,7 +44,10 @@ class Account {
 
     try {
       // Find the highest index in the current accounts
-      final int maxIndex = await (database.selectOnly(database.accounts)..addColumns([database.accounts.listIndex.max()])).getSingle().then((row) => row.read(database.accounts.listIndex.max()) ?? 0);
+      final int maxIndex = await (database.selectOnly(database.accounts)
+            ..addColumns([database.accounts.listIndex.max()]))
+          .getSingle()
+          .then((row) => row.read(database.accounts.listIndex.max()) ?? 0);
 
       // Assign the next index
       final int newIndex = maxIndex + 1;
@@ -67,13 +70,19 @@ class Account {
     }
   }
 
-  static Future<Account?> insertAnonymousInstance(Account anonymousInstance) async {
+  static Future<Account?> insertAnonymousInstance(
+      Account anonymousInstance) async {
     // If we are given a brand new account to insert with an existing id, something is wrong.
-    assert(anonymousInstance.id.isEmpty && anonymousInstance.index == -1 && anonymousInstance.anonymous);
+    assert(anonymousInstance.id.isEmpty &&
+        anonymousInstance.index == -1 &&
+        anonymousInstance.anonymous);
 
     try {
       // Find the highest index in the current accounts
-      final int maxIndex = await (database.selectOnly(database.accounts)..addColumns([database.accounts.listIndex.max()])).getSingle().then((row) => row.read(database.accounts.listIndex.max()) ?? 0);
+      final int maxIndex = await (database.selectOnly(database.accounts)
+            ..addColumns([database.accounts.listIndex.max()]))
+          .getSingle()
+          .then((row) => row.read(database.accounts.listIndex.max()) ?? 0);
 
       // Assign the next index
       final int newIndex = maxIndex + 1;
@@ -99,7 +108,9 @@ class Account {
   // A method that retrieves all accounts from the database. Does not include anonymous instances
   static Future<List<Account>> accounts() async {
     try {
-      return (await (database.select(database.accounts)..where((t) => t.anonymous.equals(false))).get())
+      return (await (database.select(database.accounts)
+                ..where((t) => t.anonymous.equals(false)))
+              .get())
           .map((account) => Account(
                 id: account.id.toString(),
                 username: account.username,
@@ -119,7 +130,9 @@ class Account {
   // A method that retrieves all anonymous instances from the database. Does not include logged in accounts.
   static Future<List<Account>> anonymousInstances() async {
     try {
-      return (await (database.select(database.accounts)..where((t) => t.anonymous.equals(true))).get())
+      return (await (database.select(database.accounts)
+                ..where((t) => t.anonymous.equals(true)))
+              .get())
           .map((account) => Account(
                 id: account.id.toString(),
                 username: account.username,
@@ -140,7 +153,10 @@ class Account {
     if (accountId.isEmpty) return null;
 
     try {
-      return await (database.select(database.accounts)..where((t) => t.id.equals(int.parse(accountId)))).getSingleOrNull().then((account) {
+      return await (database.select(database.accounts)
+            ..where((t) => t.id.equals(int.parse(accountId))))
+          .getSingleOrNull()
+          .then((account) {
         if (account == null) return null;
         return Account(
           id: account.id.toString(),
@@ -176,7 +192,9 @@ class Account {
 
   static Future<void> deleteAccount(String id) async {
     try {
-      await (database.delete(database.accounts)..where((t) => t.id.equals(int.parse(id)))).go();
+      await (database.delete(database.accounts)
+            ..where((t) => t.id.equals(int.parse(id))))
+          .go();
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -184,7 +202,10 @@ class Account {
 
   static Future<void> deleteAnonymousInstance(String instance) async {
     try {
-      await (database.delete(database.accounts)..where((t) => t.instance.equals(instance) & t.anonymous.equals(true))).go();
+      await (database.delete(database.accounts)
+            ..where(
+                (t) => t.instance.equals(instance) & t.anonymous.equals(true)))
+          .go();
     } catch (e) {
       debugPrint(e.toString());
     }

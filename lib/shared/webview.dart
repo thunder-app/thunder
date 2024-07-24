@@ -42,7 +42,8 @@ class _WebViewState extends State<WebView> {
       params = const PlatformWebViewControllerCreationParams();
     }
 
-    final WebViewController controller = WebViewController.fromPlatformCreationParams(params);
+    final WebViewController controller =
+        WebViewController.fromPlatformCreationParams(params);
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -57,7 +58,8 @@ class _WebViewState extends State<WebView> {
             if (uri != null && uri.scheme != 'https') {
               // Although a non-https scheme is an indication that this link is intended for another app,
               // we actually have to change it back to https in order for the intent to be properly passed to another app.
-              launchUrl(uri.replace(scheme: 'https'), mode: LaunchMode.externalApplication);
+              launchUrl(uri.replace(scheme: 'https'),
+                  mode: LaunchMode.externalApplication);
 
               // Finally, navigate back to the previous URL.
               return NavigationDecision.prevent;
@@ -69,7 +71,8 @@ class _WebViewState extends State<WebView> {
       ));
 
     if (controller.platform is AndroidWebViewController) {
-      (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
+      (controller.platform as AndroidWebViewController)
+          .setMediaPlaybackRequiresUserGesture(false);
     }
     _controller = controller;
 
@@ -82,7 +85,8 @@ class _WebViewState extends State<WebView> {
     super.dispose();
   }
 
-  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+  FutureOr<bool> _handleBack(
+      bool stopDefaultButtonEvent, RouteInfo info) async {
     if (await _controller.canGoBack()) {
       _controller.goBack();
       return true;
@@ -100,8 +104,15 @@ class _WebViewState extends State<WebView> {
           toolbarHeight: 70.0,
           titleSpacing: 0,
           title: ListTile(
-            title: Text(snapshot.data?[0] ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
-            subtitle: Text(snapshot.data?[1]?.replaceFirst('https://', '').replaceFirst('www.', '') ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
+            title: Text(snapshot.data?[0] ?? '',
+                maxLines: 1, overflow: TextOverflow.ellipsis),
+            subtitle: Text(
+                snapshot.data?[1]
+                        ?.replaceFirst('https://', '')
+                        .replaceFirst('www.', '') ??
+                    '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis),
           ),
           actions: <Widget>[
             NavigationControls(
@@ -117,7 +128,8 @@ class _WebViewState extends State<WebView> {
 }
 
 class NavigationControls extends StatelessWidget {
-  const NavigationControls({super.key, required this.webViewController, required this.url});
+  const NavigationControls(
+      {super.key, required this.webViewController, required this.url});
 
   final WebViewController webViewController;
   final String url;
@@ -127,7 +139,8 @@ class NavigationControls extends StatelessWidget {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return FutureBuilder(
-      future: Future.wait([webViewController.canGoBack(), webViewController.canGoForward()]),
+      future: Future.wait(
+          [webViewController.canGoBack(), webViewController.canGoForward()]),
       builder: (context, snapshot) {
         return Row(
           children: <Widget>[
@@ -136,14 +149,18 @@ class NavigationControls extends StatelessWidget {
                 Icons.arrow_back_rounded,
                 semanticLabel: l10n.back,
               ),
-              onPressed: snapshot.hasData && snapshot.data![0] == true ? () async => await webViewController.goBack() : null,
+              onPressed: snapshot.hasData && snapshot.data![0] == true
+                  ? () async => await webViewController.goBack()
+                  : null,
             ),
             IconButton(
               icon: Icon(
                 Icons.arrow_forward_rounded,
                 semanticLabel: l10n.forward,
               ),
-              onPressed: snapshot.hasData && snapshot.data![1] == true ? () async => await webViewController.goForward() : null,
+              onPressed: snapshot.hasData && snapshot.data![1] == true
+                  ? () async => await webViewController.goForward()
+                  : null,
             ),
             PopupMenuButton(
               itemBuilder: (BuildContext context) => [
@@ -153,7 +170,8 @@ class NavigationControls extends StatelessWidget {
                   title: l10n.refresh,
                 ),
                 ThunderPopupMenuItem(
-                  onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+                  onTap: () => launchUrl(Uri.parse(url),
+                      mode: LaunchMode.externalApplication),
                   icon: Icons.open_in_browser_rounded,
                   title: l10n.openInBrowser,
                 ),

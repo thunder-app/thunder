@@ -38,11 +38,15 @@ class MultiPickerItem extends StatelessWidget {
                     message: p.label,
                     child: TextButton(
                       onPressed: p.onSelected,
-                      style: TextButton.styleFrom(foregroundColor: p.backgroundColor),
+                      style: TextButton.styleFrom(
+                          foregroundColor: p.backgroundColor),
                       child: Icon(
                         p.icon,
                         semanticLabel: p.label,
-                        color: p.onSelected == null ? null : p.foregroundColor ?? theme.textTheme.bodyMedium?.color,
+                        color: p.onSelected == null
+                            ? null
+                            : p.foregroundColor ??
+                                theme.textTheme.bodyMedium?.color,
                       ),
                     ),
                   ),

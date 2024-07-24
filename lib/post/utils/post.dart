@@ -61,7 +61,8 @@ Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
   List<int> failed = [];
 
   if (LemmyClient.instance.supportsFeature(LemmyFeature.multiRead)) {
-    MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
+    MarkPostAsReadResponse markPostAsReadResponse =
+        await lemmy.run(MarkPostAsRead(
       auth: account!.jwt!,
       postIds: postIds,
       read: read,
@@ -72,7 +73,8 @@ Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
     }
   } else {
     for (int i = 0; i < postIds.length; i++) {
-      MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
+      MarkPostAsReadResponse markPostAsReadResponse =
+          await lemmy.run(MarkPostAsRead(
         auth: account!.jwt!,
         postId: postIds[i],
         read: read,
@@ -202,7 +204,8 @@ Future<bool> lockPost(int postId, bool lock) async {
 
 // Optimistically pins a post to a community. This changes the value of the post locally, without sending the network request
 PostView optimisticallyPinPostToCommunity(PostView postView, bool pin) {
-  return postView.copyWith(post: postView.post.copyWith(featuredCommunity: pin));
+  return postView.copyWith(
+      post: postView.post.copyWith(featuredCommunity: pin));
 }
 
 /// Logic to pin a post to a community
@@ -279,23 +282,30 @@ Future<PostView> savePost(int postId, bool save) async {
 }
 
 /// Parse a post with media
-Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? resolutionInstance}) async {
+Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews,
+    {String? resolutionInstance}) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) == true && prefs.getBool(LocalSettings.useCompactView.name) != true;
-  bool edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
+  bool fetchImageDimensions =
+      prefs.getBool(LocalSettings.showPostFullHeightImages.name) == true &&
+          prefs.getBool(LocalSettings.useCompactView.name) != true;
+  bool edgeToEdgeImages =
+      prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
   bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
-  bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
+  bool scrapeMissingPreviews =
+      prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
   List<PostView> postViewsFinal = [];
 
   if (resolutionInstance != null) {
-    final LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance)).lemmyApiV3;
+    final LemmyApiV3 lemmy =
+        (LemmyClient()..changeBaseUrl(resolutionInstance)).lemmyApiV3;
 
     for (PostView postView in postViews) {
       try {
-        final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: postView.post.apId));
+        final ResolveObjectResponse resolveObjectResponse =
+            await lemmy.run(ResolveObject(q: postView.post.apId));
         postViewsFinal.add(resolveObjectResponse.post!);
       } catch (e) {
         // If we can't resolve it, we won't even add it
@@ -308,7 +318,9 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
   Iterable<Future<PostViewMedia>> postFutures = postViewsFinal
       .expand(
         (post) => [
-          if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode, scrapeMissingPreviews),
+          if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts))
+            parsePostView(post, fetchImageDimensions, edgeToEdgeImages,
+                tabletMode, scrapeMissingPreviews),
         ],
       )
       .toList();
@@ -317,7 +329,12 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
   return posts;
 }
 
-Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode, bool scrapeMissingPreviews) async {
+Future<PostViewMedia> parsePostView(
+    PostView postView,
+    bool fetchImageDimensions,
+    bool edgeToEdgeImages,
+    bool tabletMode,
+    bool scrapeMissingPreviews) async {
   List<Media> mediaList = [];
 
   // There are three sources of URLs: the main url attached to the post, the thumbnail url attached to the post, and the video url attached to the post
@@ -371,15 +388,24 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
 
     try {
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      int imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+      SharedPreferences prefs =
+          (await UserPreferences.instance).sharedPreferences;
+      int imageDimensionTimeout =
+          prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
 
-      result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
+      result = await retrieveImageDimensions(
+              imageUrl: media.thumbnailUrl ?? media.mediaUrl)
+          .timeout(Duration(seconds: imageDimensionTimeout));
     } catch (e) {
-      debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
+      debugPrint(
+          '${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
     }
 
-    Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+    Size size = MediaExtension.getScaledMediaSize(
+        width: result.width,
+        height: result.height,
+        offset: edgeToEdgeImages ? 0 : 24,
+        tabletMode: tabletMode);
 
     media.width = size.width;
     media.height = size.height;

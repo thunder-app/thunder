@@ -90,7 +90,8 @@ Future<CommentView> saveComment(int commentId, bool save) async {
 
 /// Optimistically deletes a comment without sending the network request
 CommentView optimisticallyDeleteComment(CommentView commentView, bool deleted) {
-  return commentView.copyWith(comment: commentView.comment.copyWith(deleted: deleted));
+  return commentView.copyWith(
+      comment: commentView.comment.copyWith(deleted: deleted));
 }
 
 /// Logic to delete a comment
@@ -98,7 +99,9 @@ Future<CommentView> deleteComment(int commentId, bool deleted) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception(AppLocalizations.of(GlobalContext.context)!.userNotLoggedIn);
+  if (account?.jwt == null)
+    throw Exception(
+        AppLocalizations.of(GlobalContext.context)!.userNotLoggedIn);
 
   CommentResponse commentResponse = await lemmy.run(DeleteComment(
     auth: account!.jwt!,
@@ -113,14 +116,18 @@ Future<CommentView> deleteComment(int commentId, bool deleted) async {
 /// Builds a tree of [CommentView] given a flattened list [CommentView].
 ///
 /// We need to associate replies to the proper parent comment since we cannot guarantee order in the flattened list from the API.
-CommentNode buildCommentTree(List<CommentView> comments, {bool flatten = false}) {
+CommentNode buildCommentTree(List<CommentView> comments,
+    {bool flatten = false}) {
   CommentNode root = CommentNode(commentView: null, replies: []);
 
   for (CommentView commentView in comments) {
     List<String> commentPath = commentView.comment.path.split('.');
-    String parentId = commentPath.length > 2 ? commentPath[commentPath.length - 2] : commentPath.first;
+    String parentId = commentPath.length > 2
+        ? commentPath[commentPath.length - 2]
+        : commentPath.first;
 
-    CommentNode commentNode = CommentNode(commentView: commentView, replies: []);
+    CommentNode commentNode =
+        CommentNode(commentView: commentView, replies: []);
     CommentNode.insertCommentNode(root, parentId, commentNode);
   }
 
@@ -128,14 +135,18 @@ CommentNode buildCommentTree(List<CommentView> comments, {bool flatten = false})
 }
 
 /// Builds a tree of comments given a flattened list
-@Deprecated('This function is used only for the legacy PostPage. Use buildCommentTree instead.')
-List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool flatten = false}) {
+@Deprecated(
+    'This function is used only for the legacy PostPage. Use buildCommentTree instead.')
+List<CommentViewTree> buildCommentViewTree(List<CommentView> comments,
+    {bool flatten = false}) {
   Map<String, CommentViewTree> commentMap = {};
 
   // Create a map of CommentView objects using the comment path as the key
   for (CommentView commentView in comments) {
     bool hasBeenEdited = commentView.comment.updated != null ? true : false;
-    String commentTime = hasBeenEdited ? commentView.comment.updated!.toIso8601String() : commentView.comment.published.toIso8601String();
+    String commentTime = hasBeenEdited
+        ? commentView.comment.updated!.toIso8601String()
+        : commentView.comment.published.toIso8601String();
 
     commentMap[commentView.comment.path] = CommentViewTree(
       datePostedOrEdited: formatTimeToString(dateTime: commentTime),
@@ -162,11 +173,18 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
   }
 
   // Return the root comments (those with an empty or "0" path)
-  return commentMap.values.where((commentView) => commentView.commentView!.comment.path.isEmpty || commentView.commentView!.comment.path == '0.${commentView.commentView!.comment.id}').toList();
+  return commentMap.values
+      .where((commentView) =>
+          commentView.commentView!.comment.path.isEmpty ||
+          commentView.commentView!.comment.path ==
+              '0.${commentView.commentView!.comment.id}')
+      .toList();
 }
 
-@Deprecated('This function is used only for the legacy PostPage. Use CommentNode.insertCommentNode instead.')
-List<CommentViewTree> insertNewComment(List<CommentViewTree> comments, CommentView commentView) {
+@Deprecated(
+    'This function is used only for the legacy PostPage. Use CommentNode.insertCommentNode instead.')
+List<CommentViewTree> insertNewComment(
+    List<CommentViewTree> comments, CommentView commentView) {
   List<String> parentIds = commentView.comment.path.split('.');
   String commentTime = commentView.comment.published.toIso8601String();
 
@@ -183,7 +201,8 @@ List<CommentViewTree> insertNewComment(List<CommentViewTree> comments, CommentVi
   }
 
   String parentId = parentIds[parentIds.length - 2];
-  CommentViewTree? parentComment = findParentComment(1, parentIds, parentId.toString(), comments);
+  CommentViewTree? parentComment =
+      findParentComment(1, parentIds, parentId.toString(), comments);
 
   // TODO: surface some sort of error maybe if for some reason we fail to find parent comment
   if (parentComment != null) {
@@ -193,8 +212,10 @@ List<CommentViewTree> insertNewComment(List<CommentViewTree> comments, CommentVi
   return comments;
 }
 
-@Deprecated('This function is used only for the legacy PostPage. Use CommentNode.findCommentNode instead.')
-CommentViewTree? findParentComment(int index, List<String> parentIds, String targetId, List<CommentViewTree> comments) {
+@Deprecated(
+    'This function is used only for the legacy PostPage. Use CommentNode.findCommentNode instead.')
+CommentViewTree? findParentComment(int index, List<String> parentIds,
+    String targetId, List<CommentViewTree> comments) {
   for (CommentViewTree existing in comments) {
     if (existing.commentView?.comment.id.toString() != parentIds[index]) {
       continue;
@@ -211,17 +232,23 @@ CommentViewTree? findParentComment(int index, List<String> parentIds, String tar
 }
 
 @Deprecated('This function is used only for the legacy PostPage')
-List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTrees, int commentId, [List<int>? indexes]) {
+List<int> findCommentIndexesFromCommentViewTree(
+    List<CommentViewTree> commentTrees, int commentId,
+    [List<int>? indexes]) {
   indexes ??= [];
 
   for (int i = 0; i < commentTrees.length; i++) {
     if (commentTrees[i].commentView!.comment.id == commentId) {
-      return [...indexes, i]; // Return a copy of the indexes list with the current index added
+      return [
+        ...indexes,
+        i
+      ]; // Return a copy of the indexes list with the current index added
     }
 
     indexes.add(i); // Add the current index to the indexes list
 
-    List<int> foundIndexes = findCommentIndexesFromCommentViewTree(commentTrees[i].replies, commentId, indexes);
+    List<int> foundIndexes = findCommentIndexesFromCommentViewTree(
+        commentTrees[i].replies, commentId, indexes);
 
     if (foundIndexes.isNotEmpty) {
       return foundIndexes;
@@ -235,7 +262,8 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
 
 // Used for modifying the comment current comment tree so we don't have to refresh the whole thing
 @Deprecated('This function is used only for the legacy PostPage')
-bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentView commentView) {
+bool updateModifiedComment(
+    List<CommentViewTree> commentTrees, CommentView commentView) {
   for (int i = 0; i < commentTrees.length; i++) {
     if (commentTrees[i].commentView!.comment.id == commentView.comment.id) {
       commentTrees[i].commentView = commentView;
@@ -251,9 +279,11 @@ bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentView comme
   return false;
 }
 
-String cleanCommentContent(Comment comment) => cleanComment(comment.content, comment.removed, comment.deleted);
+String cleanCommentContent(Comment comment) =>
+    cleanComment(comment.content, comment.removed, comment.deleted);
 
-String cleanComment(String commentContent, bool commentRemoved, bool commentDeleted) {
+String cleanComment(
+    String commentContent, bool commentRemoved, bool commentDeleted) {
   String deletedByModerator = "deleted by moderator";
   String deletedByCreator = "deleted by creator";
 

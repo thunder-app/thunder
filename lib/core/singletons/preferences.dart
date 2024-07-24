@@ -11,7 +11,8 @@ class UserPreferences {
   late SharedPreferences sharedPreferences;
 
   static Future<UserPreferences> fetchPreferences() async {
-    _preferences ??= UserPreferences()..sharedPreferences = await SharedPreferences.getInstance();
+    _preferences ??= UserPreferences()
+      ..sharedPreferences = await SharedPreferences.getInstance();
     return _preferences!;
   }
 
@@ -27,7 +28,11 @@ class UserPreferences {
   // Export SharedPreferences data to selected JSON file
   static Future<String?> exportToJson() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> data = prefs.getKeys().where((key) => !LocalSettings.importExportExcludedSettings.any((excluded) => key.startsWith(excluded.name))).fold({}, (prev, key) {
+    Map<String, dynamic> data = prefs
+        .getKeys()
+        .where((key) => !LocalSettings.importExportExcludedSettings
+            .any((excluded) => key.startsWith(excluded.name)))
+        .fold({}, (prev, key) {
       prev[key] = prefs.get(key);
       return prev;
     });

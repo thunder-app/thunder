@@ -8,7 +8,8 @@ class PersistentHeader extends SliverPersistentHeaderDelegate {
   PersistentHeader({required this.child});
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     final ThemeData theme = Theme.of(context);
 
     return Column(

@@ -8,7 +8,8 @@ import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 class ActionColorSettingWidget extends StatelessWidget {
   final LocalSettings? settingToHighlight;
   final GlobalKey settingToHighlightKey;
-  final Future<void> Function(LocalSettings attribute, String? value) setPreferences;
+  final Future<void> Function(LocalSettings attribute, String? value)
+      setPreferences;
   final ActionColor upvoteColor;
   final ActionColor downvoteColor;
   final ActionColor saveColor;
@@ -72,15 +73,18 @@ class ActionColorSettingWidget extends StatelessWidget {
                           style: theme.textTheme.bodyMedium,
                         ),
                         subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
                           child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
                             isExpanded: true,
                             underline: Container(),
                             value: upvoteColor,
                             items: ActionColor.getPossibleValues(upvoteColor)
                                 .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
+                                  (actionColor) =>
+                                      DropdownMenuItem<ActionColor>(
                                     alignment: Alignment.center,
                                     value: actionColor,
                                     child: Row(
@@ -100,8 +104,10 @@ class ActionColorSettingWidget extends StatelessWidget {
                                 )
                                 .toList(),
                             onChanged: (value) async {
-                              await setPreferences(LocalSettings.upvoteColor, value?.colorRaw);
-                              setState(() => upvoteColor = value ?? upvoteColor);
+                              await setPreferences(
+                                  LocalSettings.upvoteColor, value?.colorRaw);
+                              setState(
+                                  () => upvoteColor = value ?? upvoteColor);
                             },
                           ),
                         ),
@@ -115,15 +121,18 @@ class ActionColorSettingWidget extends StatelessWidget {
                           style: theme.textTheme.bodyMedium,
                         ),
                         subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
                           child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
                             isExpanded: true,
                             underline: Container(),
                             value: downvoteColor,
                             items: ActionColor.getPossibleValues(downvoteColor)
                                 .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
+                                  (actionColor) =>
+                                      DropdownMenuItem<ActionColor>(
                                     alignment: Alignment.center,
                                     value: actionColor,
                                     child: Row(
@@ -143,8 +152,10 @@ class ActionColorSettingWidget extends StatelessWidget {
                                 )
                                 .toList(),
                             onChanged: (value) async {
-                              await setPreferences(LocalSettings.downvoteColor, value?.colorRaw);
-                              setState(() => downvoteColor = value ?? downvoteColor);
+                              await setPreferences(
+                                  LocalSettings.downvoteColor, value?.colorRaw);
+                              setState(
+                                  () => downvoteColor = value ?? downvoteColor);
                             },
                           ),
                         ),
@@ -158,15 +169,18 @@ class ActionColorSettingWidget extends StatelessWidget {
                           style: theme.textTheme.bodyMedium,
                         ),
                         subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
                           child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
                             isExpanded: true,
                             underline: Container(),
                             value: saveColor,
                             items: ActionColor.getPossibleValues(saveColor)
                                 .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
+                                  (actionColor) =>
+                                      DropdownMenuItem<ActionColor>(
                                     alignment: Alignment.center,
                                     value: actionColor,
                                     child: Row(
@@ -186,7 +200,8 @@ class ActionColorSettingWidget extends StatelessWidget {
                                 )
                                 .toList(),
                             onChanged: (value) async {
-                              await setPreferences(LocalSettings.saveColor, value?.colorRaw);
+                              await setPreferences(
+                                  LocalSettings.saveColor, value?.colorRaw);
                               setState(() => saveColor = value ?? saveColor);
                             },
                           ),
@@ -201,15 +216,18 @@ class ActionColorSettingWidget extends StatelessWidget {
                           style: theme.textTheme.bodyMedium,
                         ),
                         subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
                           child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
                             isExpanded: true,
                             underline: Container(),
                             value: markReadColor,
                             items: ActionColor.getPossibleValues(markReadColor)
                                 .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
+                                  (actionColor) =>
+                                      DropdownMenuItem<ActionColor>(
                                     alignment: Alignment.center,
                                     value: actionColor,
                                     child: Row(
@@ -229,8 +247,10 @@ class ActionColorSettingWidget extends StatelessWidget {
                                 )
                                 .toList(),
                             onChanged: (value) async {
-                              await setPreferences(LocalSettings.markReadColor, value?.colorRaw);
-                              setState(() => markReadColor = value ?? markReadColor);
+                              await setPreferences(
+                                  LocalSettings.markReadColor, value?.colorRaw);
+                              setState(
+                                  () => markReadColor = value ?? markReadColor);
                             },
                           ),
                         ),
@@ -244,15 +264,18 @@ class ActionColorSettingWidget extends StatelessWidget {
                           style: theme.textTheme.bodyMedium,
                         ),
                         subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
                           child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
                             isExpanded: true,
                             underline: Container(),
                             value: replyColor,
                             items: ActionColor.getPossibleValues(replyColor)
                                 .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
+                                  (actionColor) =>
+                                      DropdownMenuItem<ActionColor>(
                                     alignment: Alignment.center,
                                     value: actionColor,
                                     child: Row(
@@ -272,7 +295,8 @@ class ActionColorSettingWidget extends StatelessWidget {
                                 )
                                 .toList(),
                             onChanged: (value) async {
-                              await setPreferences(LocalSettings.replyColor, value?.colorRaw);
+                              await setPreferences(
+                                  LocalSettings.replyColor, value?.colorRaw);
                               setState(() => replyColor = value ?? replyColor);
                             },
                           ),
@@ -287,15 +311,18 @@ class ActionColorSettingWidget extends StatelessWidget {
                           style: theme.textTheme.bodyMedium,
                         ),
                         subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
                           child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
                             isExpanded: true,
                             underline: Container(),
                             value: hideColor,
                             items: ActionColor.getPossibleValues(hideColor)
                                 .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
+                                  (actionColor) =>
+                                      DropdownMenuItem<ActionColor>(
                                     alignment: Alignment.center,
                                     value: actionColor,
                                     child: Row(
@@ -315,7 +342,8 @@ class ActionColorSettingWidget extends StatelessWidget {
                                 )
                                 .toList(),
                             onChanged: (value) async {
-                              await setPreferences(LocalSettings.hideColor, value?.colorRaw);
+                              await setPreferences(
+                                  LocalSettings.hideColor, value?.colorRaw);
                               setState(() => hideColor = value ?? hideColor);
                             },
                           ),

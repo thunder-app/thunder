@@ -28,9 +28,12 @@ class LoadingPage extends StatelessWidget {
                     icon: !kIsWeb && Platform.isIOS
                         ? Icon(
                             Icons.arrow_back_ios_new_rounded,
-                            semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                            semanticLabel: MaterialLocalizations.of(context)
+                                .backButtonTooltip,
                           )
-                        : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip),
+                        : Icon(Icons.arrow_back_rounded,
+                            semanticLabel: MaterialLocalizations.of(context)
+                                .backButtonTooltip),
                     onPressed: null,
                   )),
               const SliverFillRemaining(
@@ -56,9 +59,11 @@ void showLoadingPage(BuildContext context) {
   final bool reduceAnimations = thunderBloc.state.reduceAnimations;
   Navigator.of(context).push(
     SwipeablePageRoute(
-      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+      transitionDuration:
+          reduceAnimations ? const Duration(milliseconds: 100) : null,
       backGestureDetectionWidth: 45,
-      canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+      canOnlySwipeFromEdge:
+          !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
       canSwipe: false,
       builder: (context) => MultiBlocProvider(
         providers: [

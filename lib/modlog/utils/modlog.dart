@@ -27,7 +27,8 @@ Future<Map<String, dynamic>> fetchModlogEvents({
 
   // Guarantee that we fetch at least x events (unless we reach the end of the feed)
   do {
-    GetModlogResponse getModlogResponse = await lemmyClient.lemmyApiV3.run(GetModlog(
+    GetModlogResponse getModlogResponse =
+        await lemmyClient.lemmyApiV3.run(GetModlog(
       auth: account?.jwt,
       page: currentPage,
       type: modlogActionType,
@@ -39,21 +40,66 @@ Future<Map<String, dynamic>> fetchModlogEvents({
     List<ModlogEventItem> items = [];
 
     // Convert the response to a list of modlog events
-    List<ModlogEventItem> removedPosts = getModlogResponse.removedPosts.map((ModRemovePostView e) => parseModlogEvent(ModlogActionType.modRemovePost, e)).toList();
-    List<ModlogEventItem> lockedPosts = getModlogResponse.lockedPosts.map((ModLockPostView e) => parseModlogEvent(ModlogActionType.modLockPost, e)).toList();
-    List<ModlogEventItem> featuredPosts = getModlogResponse.featuredPosts.map((ModFeaturePostView e) => parseModlogEvent(ModlogActionType.modFeaturePost, e)).toList();
-    List<ModlogEventItem> removedComments = getModlogResponse.removedComments.map((ModRemoveCommentView e) => parseModlogEvent(ModlogActionType.modRemoveComment, e)).toList();
-    List<ModlogEventItem> removedCommunities = getModlogResponse.removedCommunities.map((ModRemoveCommunityView e) => parseModlogEvent(ModlogActionType.modRemoveCommunity, e)).toList();
-    List<ModlogEventItem> bannedFromCommunity = getModlogResponse.bannedFromCommunity.map((ModBanFromCommunityView e) => parseModlogEvent(ModlogActionType.modBanFromCommunity, e)).toList();
-    List<ModlogEventItem> banned = getModlogResponse.banned.map((ModBanView e) => parseModlogEvent(ModlogActionType.modBan, e)).toList();
-    List<ModlogEventItem> addedToCommunity = getModlogResponse.addedToCommunity.map((ModAddCommunityView e) => parseModlogEvent(ModlogActionType.modAddCommunity, e)).toList();
-    List<ModlogEventItem> transferredToCommunity = getModlogResponse.transferredToCommunity.map((ModTransferCommunityView e) => parseModlogEvent(ModlogActionType.modTransferCommunity, e)).toList();
-    List<ModlogEventItem> added = getModlogResponse.added.map((e) => parseModlogEvent(ModlogActionType.modAdd, e)).toList();
-    List<ModlogEventItem> adminPurgedPersons = getModlogResponse.adminPurgedPersons.map((e) => parseModlogEvent(ModlogActionType.adminPurgePerson, e)).toList();
-    List<ModlogEventItem> adminPurgedCommunities = getModlogResponse.adminPurgedCommunities.map((e) => parseModlogEvent(ModlogActionType.adminPurgeCommunity, e)).toList();
-    List<ModlogEventItem> adminPurgedPosts = getModlogResponse.adminPurgedPosts.map((e) => parseModlogEvent(ModlogActionType.adminPurgePost, e)).toList();
-    List<ModlogEventItem> adminPurgedComments = getModlogResponse.adminPurgedComments.map((e) => parseModlogEvent(ModlogActionType.adminPurgeComment, e)).toList();
-    List<ModlogEventItem> hiddenCommunities = getModlogResponse.hiddenCommunities.map((e) => parseModlogEvent(ModlogActionType.modHideCommunity, e)).toList();
+    List<ModlogEventItem> removedPosts = getModlogResponse.removedPosts
+        .map((ModRemovePostView e) =>
+            parseModlogEvent(ModlogActionType.modRemovePost, e))
+        .toList();
+    List<ModlogEventItem> lockedPosts = getModlogResponse.lockedPosts
+        .map((ModLockPostView e) =>
+            parseModlogEvent(ModlogActionType.modLockPost, e))
+        .toList();
+    List<ModlogEventItem> featuredPosts = getModlogResponse.featuredPosts
+        .map((ModFeaturePostView e) =>
+            parseModlogEvent(ModlogActionType.modFeaturePost, e))
+        .toList();
+    List<ModlogEventItem> removedComments = getModlogResponse.removedComments
+        .map((ModRemoveCommentView e) =>
+            parseModlogEvent(ModlogActionType.modRemoveComment, e))
+        .toList();
+    List<ModlogEventItem> removedCommunities = getModlogResponse
+        .removedCommunities
+        .map((ModRemoveCommunityView e) =>
+            parseModlogEvent(ModlogActionType.modRemoveCommunity, e))
+        .toList();
+    List<ModlogEventItem> bannedFromCommunity = getModlogResponse
+        .bannedFromCommunity
+        .map((ModBanFromCommunityView e) =>
+            parseModlogEvent(ModlogActionType.modBanFromCommunity, e))
+        .toList();
+    List<ModlogEventItem> banned = getModlogResponse.banned
+        .map((ModBanView e) => parseModlogEvent(ModlogActionType.modBan, e))
+        .toList();
+    List<ModlogEventItem> addedToCommunity = getModlogResponse.addedToCommunity
+        .map((ModAddCommunityView e) =>
+            parseModlogEvent(ModlogActionType.modAddCommunity, e))
+        .toList();
+    List<ModlogEventItem> transferredToCommunity = getModlogResponse
+        .transferredToCommunity
+        .map((ModTransferCommunityView e) =>
+            parseModlogEvent(ModlogActionType.modTransferCommunity, e))
+        .toList();
+    List<ModlogEventItem> added = getModlogResponse.added
+        .map((e) => parseModlogEvent(ModlogActionType.modAdd, e))
+        .toList();
+    List<ModlogEventItem> adminPurgedPersons = getModlogResponse
+        .adminPurgedPersons
+        .map((e) => parseModlogEvent(ModlogActionType.adminPurgePerson, e))
+        .toList();
+    List<ModlogEventItem> adminPurgedCommunities = getModlogResponse
+        .adminPurgedCommunities
+        .map((e) => parseModlogEvent(ModlogActionType.adminPurgeCommunity, e))
+        .toList();
+    List<ModlogEventItem> adminPurgedPosts = getModlogResponse.adminPurgedPosts
+        .map((e) => parseModlogEvent(ModlogActionType.adminPurgePost, e))
+        .toList();
+    List<ModlogEventItem> adminPurgedComments = getModlogResponse
+        .adminPurgedComments
+        .map((e) => parseModlogEvent(ModlogActionType.adminPurgeComment, e))
+        .toList();
+    List<ModlogEventItem> hiddenCommunities = getModlogResponse
+        .hiddenCommunities
+        .map((e) => parseModlogEvent(ModlogActionType.modHideCommunity, e))
+        .toList();
 
     items.addAll(removedPosts);
     items.addAll(lockedPosts);
@@ -77,7 +123,11 @@ Future<Map<String, dynamic>> fetchModlogEvents({
     currentPage++;
   } while (!hasReachedEnd && modLogEventItems.length < limit);
 
-  return {'modLogEventItems': modLogEventItems, 'hasReachedEnd': hasReachedEnd, 'currentPage': currentPage};
+  return {
+    'modLogEventItems': modLogEventItems,
+    'hasReachedEnd': hasReachedEnd,
+    'currentPage': currentPage
+  };
 }
 
 /// Given a modlog event, return a normalized [ModlogEventItem]. The response from the Lemmy API returns different types of events for different actions.
@@ -118,7 +168,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         actioned: modFeaturePostView.modFeaturePost.featured,
       );
     case ModlogActionType.modRemoveComment:
-      ModRemoveCommentView modRemoveCommentView = (event as ModRemoveCommentView);
+      ModRemoveCommentView modRemoveCommentView =
+          (event as ModRemoveCommentView);
       return ModlogEventItem(
         type: type,
         dateTime: modRemoveCommentView.modRemoveComment.when,
@@ -131,7 +182,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         actioned: modRemoveCommentView.modRemoveComment.removed,
       );
     case ModlogActionType.modRemoveCommunity:
-      ModRemoveCommunityView modRemoveCommunityView = (event as ModRemoveCommunityView);
+      ModRemoveCommunityView modRemoveCommunityView =
+          (event as ModRemoveCommunityView);
       return ModlogEventItem(
         type: type,
         dateTime: modRemoveCommunityView.modRemoveCommunity.when,
@@ -141,7 +193,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         actioned: modRemoveCommunityView.modRemoveCommunity.removed,
       );
     case ModlogActionType.modBanFromCommunity:
-      ModBanFromCommunityView modBanFromCommunityView = (event as ModBanFromCommunityView);
+      ModBanFromCommunityView modBanFromCommunityView =
+          (event as ModBanFromCommunityView);
       return ModlogEventItem(
         type: type,
         dateTime: modBanFromCommunityView.modBanFromCommunity.when,
@@ -172,7 +225,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         actioned: !modAddCommunityView.modAddCommunity.removed,
       );
     case ModlogActionType.modTransferCommunity:
-      ModTransferCommunityView modTransferCommunityView = (event as ModTransferCommunityView);
+      ModTransferCommunityView modTransferCommunityView =
+          (event as ModTransferCommunityView);
       return ModlogEventItem(
         type: type,
         dateTime: modTransferCommunityView.modTransferCommunity.when,
@@ -191,7 +245,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         actioned: !modAddView.modAdd.removed,
       );
     case ModlogActionType.adminPurgePerson:
-      AdminPurgePersonView adminPurgePersonView = (event as AdminPurgePersonView);
+      AdminPurgePersonView adminPurgePersonView =
+          (event as AdminPurgePersonView);
       return ModlogEventItem(
         type: type,
         dateTime: adminPurgePersonView.adminPurgePerson.when,
@@ -200,7 +255,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         actioned: true,
       );
     case ModlogActionType.adminPurgeCommunity:
-      AdminPurgeCommunityView adminPurgeCommunityView = (event as AdminPurgeCommunityView);
+      AdminPurgeCommunityView adminPurgeCommunityView =
+          (event as AdminPurgeCommunityView);
       return ModlogEventItem(
         type: type,
         dateTime: adminPurgeCommunityView.adminPurgeCommunity.when,
@@ -218,7 +274,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         actioned: true,
       );
     case ModlogActionType.adminPurgeComment:
-      AdminPurgeCommentView adminPurgeCommentView = (event as AdminPurgeCommentView);
+      AdminPurgeCommentView adminPurgeCommentView =
+          (event as AdminPurgeCommentView);
       return ModlogEventItem(
         type: type,
         dateTime: adminPurgeCommentView.adminPurgeComment.when,
@@ -227,7 +284,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         actioned: true,
       );
     case ModlogActionType.modHideCommunity:
-      ModHideCommunityView modHideCommunityView = (event as ModHideCommunityView);
+      ModHideCommunityView modHideCommunityView =
+          (event as ModHideCommunityView);
       return ModlogEventItem(
         type: type,
         dateTime: modHideCommunityView.modHideCommunity.when,

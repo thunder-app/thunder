@@ -51,36 +51,47 @@ class SettingProfile extends StatelessWidget {
             builder: (context, setState) => TextButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(45),
-                backgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer),
-                disabledBackgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer).withOpacity(0.5),
+                backgroundColor: theme.colorScheme.primaryContainer
+                    .harmonizeWith(theme.colorScheme.errorContainer),
+                disabledBackgroundColor: theme.colorScheme.primaryContainer
+                    .harmonizeWith(theme.colorScheme.errorContainer)
+                    .withOpacity(0.5),
               ),
               onPressed: recentSuccess
                   ? null
                   : () async {
                       bool success = true;
-                      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                      final SharedPreferences prefs =
+                          (await UserPreferences.instance).sharedPreferences;
 
-                      for (MapEntry<LocalSettings, Object> entry in settingsToChange.entries) {
+                      for (MapEntry<LocalSettings, Object> entry
+                          in settingsToChange.entries) {
                         if (entry.value is bool) {
-                          await prefs.setBool(entry.key.name, entry.value as bool);
+                          await prefs.setBool(
+                              entry.key.name, entry.value as bool);
                         } else {
                           // This should never happen in production, since we should add support for any unsupported types
                           // before adding a profile containing those types.
                           success = false;
                           if (context.mounted) {
-                            showSnackbar(AppLocalizations.of(context)!.settingTypeNotSupported(entry.value.runtimeType));
+                            showSnackbar(AppLocalizations.of(context)!
+                                .settingTypeNotSupported(
+                                    entry.value.runtimeType));
                           }
                         }
                       }
                       if (context.mounted && success) {
-                        showSnackbar(AppLocalizations.of(context)!.profileAppliedSuccessfully(name));
+                        showSnackbar(AppLocalizations.of(context)!
+                            .profileAppliedSuccessfully(name));
                         setState(() => recentSuccess = true);
                         Future.delayed(const Duration(seconds: 5), () async {
                           setState(() => recentSuccess = false);
                         });
                       }
                     },
-              child: recentSuccess ? Text(AppLocalizations.of(context)!.applied) : Text(AppLocalizations.of(context)!.apply),
+              child: recentSuccess
+                  ? Text(AppLocalizations.of(context)!.applied)
+                  : Text(AppLocalizations.of(context)!.apply),
             ),
           ),
         ],
@@ -90,7 +101,9 @@ class SettingProfile extends StatelessWidget {
 
   String _humanizeValue(BuildContext context, Object value) {
     if (value is bool) {
-      return value ? AppLocalizations.of(context)!.on : AppLocalizations.of(context)!.off;
+      return value
+          ? AppLocalizations.of(context)!.on
+          : AppLocalizations.of(context)!.off;
     }
 
     return value.toString();

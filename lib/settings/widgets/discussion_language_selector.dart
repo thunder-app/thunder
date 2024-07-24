@@ -12,7 +12,8 @@ class DiscussionLanguageSelector extends StatefulWidget {
   const DiscussionLanguageSelector({super.key});
 
   @override
-  State<DiscussionLanguageSelector> createState() => _DiscussionLanguageSelector();
+  State<DiscussionLanguageSelector> createState() =>
+      _DiscussionLanguageSelector();
 }
 
 class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
@@ -33,8 +34,11 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
 
     return BlocBuilder<UserSettingsBloc, UserSettingsState>(
       builder: (context, state) {
-        final discussionLanguageIds = state.getSiteResponse?.myUser?.discussionLanguages ?? [];
-        final discussionLanguages = discussionLanguageIds.map((id) => _languages.firstWhere((language) => language.id == id)).toList();
+        final discussionLanguageIds =
+            state.getSiteResponse?.myUser?.discussionLanguages ?? [];
+        final discussionLanguages = discussionLanguageIds
+            .map((id) => _languages.firstWhere((language) => language.id == id))
+            .toList();
 
         return Scaffold(
           floatingActionButton: FloatingActionButton(
@@ -43,8 +47,11 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
               title: l10n.addDiscussionLanguage,
               excludedLanguageIds: [-1],
               onLanguageSelected: (language) {
-                List<Language> updatedDiscussionLanguages = List.from(discussionLanguages)..add(language);
-                context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList()));
+                List<Language> updatedDiscussionLanguages =
+                    List.from(discussionLanguages)..add(language);
+                context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(
+                    discussionLanguages:
+                        updatedDiscussionLanguages.map((e) => e.id).toList()));
               },
             ),
             child: const Icon(Icons.add_rounded),
@@ -62,7 +69,8 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
               if (discussionLanguages.isEmpty)
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 28.0, right: 20.0, bottom: 20.0),
+                    padding: const EdgeInsets.only(
+                        left: 28.0, right: 20.0, bottom: 20.0),
                     child: Text(
                       l10n.noDiscussionLanguages,
                       style: TextStyle(color: theme.hintColor),
@@ -72,30 +80,51 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
               SliverList.builder(
                 itemCount: discussionLanguages.length,
                 itemBuilder: (context, index) => ListTile(
-                  contentPadding: const EdgeInsetsDirectional.only(start: 20.0, end: 12.0),
-                  title: Text(discussionLanguages[index].name, overflow: TextOverflow.ellipsis),
+                  contentPadding:
+                      const EdgeInsetsDirectional.only(start: 20.0, end: 12.0),
+                  title: Text(discussionLanguages[index].name,
+                      overflow: TextOverflow.ellipsis),
                   trailing: IconButton(
                     icon: Icon(Icons.clear, semanticLabel: l10n.remove),
                     onPressed: () {
                       // Warn user against removing 'Undetermined' language when other discussion languages are selected.
                       // This filters out most content. If no discussion languages are selected, all content is displayed.
-                      if (discussionLanguages[index].id == 0 && discussionLanguages.length > 1) {
+                      if (discussionLanguages[index].id == 0 &&
+                          discussionLanguages.length > 1) {
                         showThunderDialog(
                           context: context,
                           title: l10n.warning,
                           contentText: l10n.deselectUndeterminedWarning,
                           primaryButtonText: l10n.remove,
-                          onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-                            final updatedDiscussionLanguages = discussionLanguages.where((element) => element != discussionLanguages[index]).toList();
-                            context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList()));
+                          onPrimaryButtonPressed:
+                              (dialogContext, setPrimaryButtonEnabled) {
+                            final updatedDiscussionLanguages =
+                                discussionLanguages
+                                    .where((element) =>
+                                        element != discussionLanguages[index])
+                                    .toList();
+                            context.read<UserSettingsBloc>().add(
+                                UpdateUserSettingsEvent(
+                                    discussionLanguages:
+                                        updatedDiscussionLanguages
+                                            .map((e) => e.id)
+                                            .toList()));
                             Navigator.of(dialogContext).pop();
                           },
                           secondaryButtonText: l10n.cancel,
-                          onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                          onSecondaryButtonPressed: (dialogContext) =>
+                              Navigator.of(dialogContext).pop(),
                         );
                       } else {
-                        final updatedDiscussionLanguages = discussionLanguages.where((element) => element != discussionLanguages[index]).toList();
-                        context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList()));
+                        final updatedDiscussionLanguages = discussionLanguages
+                            .where((element) =>
+                                element != discussionLanguages[index])
+                            .toList();
+                        context.read<UserSettingsBloc>().add(
+                            UpdateUserSettingsEvent(
+                                discussionLanguages: updatedDiscussionLanguages
+                                    .map((e) => e.id)
+                                    .toList()));
                       }
                     },
                   ),

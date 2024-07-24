@@ -15,9 +15,11 @@ const CommentSortType DEFAULT_COMMENT_SORT_TYPE = CommentSortType.top;
 
 const int COMMENT_MAX_DEPTH = 8;
 
-const NestedCommentIndicatorStyle DEFAULT_NESTED_COMMENT_INDICATOR_STYLE = NestedCommentIndicatorStyle.thick;
+const NestedCommentIndicatorStyle DEFAULT_NESTED_COMMENT_INDICATOR_STYLE =
+    NestedCommentIndicatorStyle.thick;
 
-const NestedCommentIndicatorColor DEFAULT_NESTED_COMMENT_INDICATOR_COLOR = NestedCommentIndicatorColor.colorful;
+const NestedCommentIndicatorColor DEFAULT_NESTED_COMMENT_INDICATOR_COLOR =
+    NestedCommentIndicatorColor.colorful;
 
 /// https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_NEW_TASK
 const int ANDROID_INTENT_FLAG_ACTIVITY_NEW_TASK = 268435456;
@@ -51,7 +53,8 @@ const String SETTINGS_USER_LABELS_PAGE = '/settings/user_labels';
 const String SETTINGS_ABOUT_PAGE = '/settings/about';
 const String SETTINGS_DEBUG_PAGE = '/settings/debug';
 const String SETTINGS_APPEARANCE_POSTS_PAGE = '/settings/appearance/posts';
-const String SETTINGS_APPEARANCE_COMMENTS_PAGE = '/settings/appearance/comments';
+const String SETTINGS_APPEARANCE_COMMENTS_PAGE =
+    '/settings/appearance/comments';
 const String SETTINGS_APPEARANCE_THEMES_PAGE = '/settings/appearance/themes';
 
 const String SETTINGS_VIDEO_PAGE = '/settings/video';

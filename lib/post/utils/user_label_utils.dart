@@ -8,7 +8,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 /// If an existing user label was found (regardless of whether it was changed or deleted) or a new user label was created,
 /// it will be returned in the record.
 /// If a user label was found and deleted, the deleted flag will be set in the record.
-Future<({UserLabel? userLabel, bool deleted})> showUserLabelEditorDialog(BuildContext context, String username) async {
+Future<({UserLabel? userLabel, bool deleted})> showUserLabelEditorDialog(
+    BuildContext context, String username) async {
   final l10n = AppLocalizations.of(context)!;
 
   // Load up any existing label
@@ -17,7 +18,8 @@ Future<({UserLabel? userLabel, bool deleted})> showUserLabelEditorDialog(BuildCo
 
   if (!context.mounted) return (userLabel: existingLabel, deleted: false);
 
-  final TextEditingController controller = TextEditingController(text: existingLabel?.label);
+  final TextEditingController controller =
+      TextEditingController(text: existingLabel?.label);
 
   await showThunderDialog<UserLabel?>(
     // We're checking context.mounted above, so ignore this warning
@@ -53,11 +55,13 @@ Future<({UserLabel? userLabel, bool deleted})> showUserLabelEditorDialog(BuildCo
       }
     },
     secondaryButtonText: l10n.cancel,
-    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+    onSecondaryButtonPressed: (dialogContext) =>
+        Navigator.of(dialogContext).pop(),
     primaryButtonText: l10n.save,
     onPrimaryButtonPressed: (dialogContext, _) async {
       if (controller.text.isNotEmpty) {
-        existingLabel = await UserLabel.upsertUserLabel(UserLabel(id: '', username: username, label: controller.text));
+        existingLabel = await UserLabel.upsertUserLabel(
+            UserLabel(id: '', username: username, label: controller.text));
       } else {
         await UserLabel.deleteUserLabel(username);
         deleted = true;

@@ -56,21 +56,31 @@ class ModlogEventItem {
     final l10n = AppLocalizations.of(GlobalContext.context)!;
 
     return switch (type) {
-      ModlogActionType.modRemovePost => actioned ? l10n.removedPost : l10n.restoredPost,
-      ModlogActionType.modLockPost => actioned ? l10n.lockedPost : l10n.unlockedPost,
-      ModlogActionType.modFeaturePost => actioned ? l10n.featuredPost : l10n.unfeaturedPost,
-      ModlogActionType.modRemoveComment => actioned ? l10n.removedComment : l10n.restoredComment,
-      ModlogActionType.modRemoveCommunity => actioned ? l10n.removedCommunity : l10n.restoredCommunity,
-      ModlogActionType.modBanFromCommunity => actioned ? l10n.bannedUserFromCommunity : l10n.unbannedUserFromCommunity,
+      ModlogActionType.modRemovePost =>
+        actioned ? l10n.removedPost : l10n.restoredPost,
+      ModlogActionType.modLockPost =>
+        actioned ? l10n.lockedPost : l10n.unlockedPost,
+      ModlogActionType.modFeaturePost =>
+        actioned ? l10n.featuredPost : l10n.unfeaturedPost,
+      ModlogActionType.modRemoveComment =>
+        actioned ? l10n.removedComment : l10n.restoredComment,
+      ModlogActionType.modRemoveCommunity =>
+        actioned ? l10n.removedCommunity : l10n.restoredCommunity,
+      ModlogActionType.modBanFromCommunity => actioned
+          ? l10n.bannedUserFromCommunity
+          : l10n.unbannedUserFromCommunity,
       ModlogActionType.modBan => actioned ? l10n.bannedUser : l10n.unbannedUser,
-      ModlogActionType.modAddCommunity => actioned ? l10n.addedModToCommunity : l10n.removedModFromCommunity,
+      ModlogActionType.modAddCommunity =>
+        actioned ? l10n.addedModToCommunity : l10n.removedModFromCommunity,
       ModlogActionType.modTransferCommunity => l10n.transferredModToCommunity,
-      ModlogActionType.modAdd => actioned ? l10n.addedInstanceMod : l10n.removedInstanceMod,
+      ModlogActionType.modAdd =>
+        actioned ? l10n.addedInstanceMod : l10n.removedInstanceMod,
       ModlogActionType.adminPurgePerson => l10n.purgedPerson,
       ModlogActionType.adminPurgeCommunity => l10n.purgedCommunity,
       ModlogActionType.adminPurgePost => l10n.purgedPost,
       ModlogActionType.adminPurgeComment => l10n.purgedComment,
-      ModlogActionType.modHideCommunity => actioned ? l10n.hidCommunity : l10n.unhidCommunity,
+      ModlogActionType.modHideCommunity =>
+        actioned ? l10n.hidCommunity : l10n.unhidCommunity,
       _ => l10n.missingErrorMessage,
     };
   }
@@ -80,10 +90,13 @@ class ModlogEventItem {
     return switch (type) {
       ModlogActionType.modRemovePost => actioned ? Colors.red : Colors.green,
       ModlogActionType.modLockPost => actioned ? Colors.red : Colors.green,
-      ModlogActionType.modFeaturePost => post!.featuredCommunity ? Colors.green : Colors.red,
+      ModlogActionType.modFeaturePost =>
+        post!.featuredCommunity ? Colors.green : Colors.red,
       ModlogActionType.modRemoveComment => actioned ? Colors.red : Colors.green,
-      ModlogActionType.modRemoveCommunity => actioned ? Colors.red : Colors.green,
-      ModlogActionType.modBanFromCommunity => actioned ? Colors.red : Colors.green,
+      ModlogActionType.modRemoveCommunity =>
+        actioned ? Colors.red : Colors.green,
+      ModlogActionType.modBanFromCommunity =>
+        actioned ? Colors.red : Colors.green,
       ModlogActionType.modBan => actioned ? Colors.red : Colors.green,
       ModlogActionType.modAddCommunity => actioned ? Colors.green : Colors.red,
       ModlogActionType.modTransferCommunity => Colors.green,

@@ -90,7 +90,12 @@ final class FeedItemActionedEvent extends FeedEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  const FeedItemActionedEvent({this.postViewMedia, this.postId, this.postIds, required this.postAction, this.value});
+  const FeedItemActionedEvent(
+      {this.postViewMedia,
+      this.postId,
+      this.postIds,
+      required this.postAction,
+      this.value});
 }
 
 final class FeedClearMessageEvent extends FeedEvent {}
@@ -125,7 +130,12 @@ final class CreatePostEvent extends FeedEvent {
   final String? url;
   final bool? nsfw;
 
-  const CreatePostEvent({required this.communityId, required this.name, this.body, this.url, this.nsfw});
+  const CreatePostEvent(
+      {required this.communityId,
+      required this.name,
+      this.body,
+      this.url,
+      this.nsfw});
 }
 
 final class PopulatePostsEvent extends FeedEvent {

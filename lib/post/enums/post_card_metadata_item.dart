@@ -1,1 +1,9 @@
-enum PostCardMetadataItem { upvote, downvote, score, commentCount, dateTime, url, language }
+enum PostCardMetadataItem {
+  upvote,
+  downvote,
+  score,
+  commentCount,
+  dateTime,
+  url,
+  language
+}

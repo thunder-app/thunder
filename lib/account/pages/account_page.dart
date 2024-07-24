@@ -15,7 +15,8 @@ class AccountPage extends StatefulWidget {
   State<AccountPage> createState() => _AccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClientMixin {
+class _AccountPageState extends State<AccountPage>
+    with AutomaticKeepAliveClientMixin {
   final List<bool> selectedUserOption = [true, false];
   final PrimitiveWrapper<bool> savedToggle = PrimitiveWrapper<bool>(false);
 

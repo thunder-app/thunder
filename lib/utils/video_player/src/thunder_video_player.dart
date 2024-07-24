@@ -47,7 +47,8 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     final networkCubit = context.read<NetworkCheckerCubit>().state;
     if (thunderBloc.videoAutoPlay == VideoAutoPlay.always) {
       return true;
-    } else if (thunderBloc.videoAutoPlay == VideoAutoPlay.onWifi && networkCubit.internetConnectionType == InternetConnectionType.wifi) {
+    } else if (thunderBloc.videoAutoPlay == VideoAutoPlay.onWifi &&
+        networkCubit.internetConnectionType == InternetConnectionType.wifi) {
       return true;
     }
 
@@ -60,7 +61,8 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
       BetterPlayerDataSourceType.network,
       widget.videoUrl,
     );
-    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+    BetterPlayerConfiguration betterPlayerConfiguration =
+        BetterPlayerConfiguration(
       aspectRatio: 16 / 10,
       fit: BoxFit.cover,
       autoPlay: autoPlayVideo(thunderBloc),
@@ -110,7 +112,8 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                     onPressed: () => Navigator.pop(context),
                     icon: Icon(
                       Icons.arrow_back,
-                      semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                      semanticLabel:
+                          MaterialLocalizations.of(context).backButtonTooltip,
                       color: Colors.white.withOpacity(0.90),
                     ),
                   ),
@@ -118,7 +121,8 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: IconButton(
-                    onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
+                    onPressed: () => handleLink(context,
+                        url: widget.videoUrl, forceOpenInBrowser: true),
                     icon: Icon(
                       Icons.open_in_browser_rounded,
                       semanticLabel: l10n.openInBrowser,

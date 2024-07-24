@@ -30,7 +30,8 @@ class CommentNode {
   /// There is a constraint where the comment [id] must be unique. If there exists a comment that has the same [id], we will replace it with the new comment.
   void addReply(CommentNode reply) {
     // Add the comment only if theres no other comment with the same id
-    int existingCommentNodeIndex = replies.indexWhere((node) => node.commentView?.comment.id == reply.commentView?.comment.id);
+    int existingCommentNodeIndex = replies.indexWhere((node) =>
+        node.commentView?.comment.id == reply.commentView?.comment.id);
 
     if (existingCommentNodeIndex != -1) {
       // Replace the comment with the new comment
@@ -43,7 +44,8 @@ class CommentNode {
 
   /// A static helper method to insert a comment node into the tree.
   /// If the parent node is not found, the comment node is added to the root node.
-  static void insertCommentNode(CommentNode root, String parentId, CommentNode commentNode) {
+  static void insertCommentNode(
+      CommentNode root, String parentId, CommentNode commentNode) {
     CommentNode? parent = findCommentNode(root, parentId);
 
     if (parent == null) {

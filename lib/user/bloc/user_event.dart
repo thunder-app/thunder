@@ -18,7 +18,8 @@ final class UserActionEvent extends UserEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  const UserActionEvent({required this.userId, required this.userAction, this.value});
+  const UserActionEvent(
+      {required this.userId, required this.userAction, this.value});
 }
 
 final class UserClearMessageEvent extends UserEvent {}

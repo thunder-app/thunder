@@ -29,24 +29,40 @@ class TypeBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
-    const borderRadius = BorderRadius.only(topLeft: Radius.circular(15), bottomLeft: Radius.circular(4), bottomRight: Radius.circular(12), topRight: Radius.circular(4));
+    const borderRadius = BorderRadius.only(
+        topLeft: Radius.circular(15),
+        bottomLeft: Radius.circular(4),
+        bottomRight: Radius.circular(12),
+        topRight: Radius.circular(4));
 
     Map<MediaType, MediaTypeBadgeItem> mediaTypeItems = {
       MediaType.text: MediaTypeBadgeItem(
         baseColor: Colors.green,
-        icon: Icon(size: 17, Icons.wysiwyg_rounded, color: getIconColor(theme, Colors.green)),
+        icon: Icon(
+            size: 17,
+            Icons.wysiwyg_rounded,
+            color: getIconColor(theme, Colors.green)),
       ),
       MediaType.link: MediaTypeBadgeItem(
         baseColor: Colors.blue,
-        icon: Icon(size: 19, Icons.link_rounded, color: getIconColor(theme, Colors.blue)),
+        icon: Icon(
+            size: 19,
+            Icons.link_rounded,
+            color: getIconColor(theme, Colors.blue)),
       ),
       MediaType.image: MediaTypeBadgeItem(
         baseColor: Colors.red,
-        icon: Icon(size: 17, Icons.image_outlined, color: getIconColor(theme, Colors.red)),
+        icon: Icon(
+            size: 17,
+            Icons.image_outlined,
+            color: getIconColor(theme, Colors.red)),
       ),
       MediaType.video: MediaTypeBadgeItem(
         baseColor: Colors.purple,
-        icon: Icon(size: 17, Icons.play_arrow_rounded, color: getIconColor(theme, Colors.purple)),
+        icon: Icon(
+            size: 17,
+            Icons.play_arrow_rounded,
+            color: getIconColor(theme, Colors.purple)),
       ),
     };
 
@@ -57,14 +73,23 @@ class TypeBadge extends StatelessWidget {
         borderRadius: borderRadius,
         // This is the thin sliver between the badge and the preview.
         // It should be made to match the read background color in the compact file.
-        color: dim ? Color.alphaBlend(theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075), theme.colorScheme.background) : theme.colorScheme.background,
+        color: dim
+            ? Color.alphaBlend(
+                theme.colorScheme.onBackground
+                    .withOpacity(darkTheme ? 0.05 : 0.075),
+                theme.colorScheme.background)
+            : theme.colorScheme.background,
         child: Padding(
           padding: const EdgeInsets.only(left: 2.5, top: 2.5),
           child: switch (mediaType) {
-            MediaType.text => typeBadgeItem(context, mediaTypeItems[MediaType.text]!),
-            MediaType.link => typeBadgeItem(context, mediaTypeItems[MediaType.link]!),
-            MediaType.image => typeBadgeItem(context, mediaTypeItems[MediaType.image]!),
-            MediaType.video => typeBadgeItem(context, mediaTypeItems[MediaType.video]!),
+            MediaType.text =>
+              typeBadgeItem(context, mediaTypeItems[MediaType.text]!),
+            MediaType.link =>
+              typeBadgeItem(context, mediaTypeItems[MediaType.link]!),
+            MediaType.image =>
+              typeBadgeItem(context, mediaTypeItems[MediaType.image]!),
+            MediaType.video =>
+              typeBadgeItem(context, mediaTypeItems[MediaType.video]!),
             _ => typeBadgeItem(context, mediaTypeItems[MediaType.text]!),
           },
         ),
@@ -74,7 +99,11 @@ class TypeBadge extends StatelessWidget {
 
   Widget typeBadgeItem(context, MediaTypeBadgeItem mediaTypeBadgeItem) {
     final theme = Theme.of(context);
-    const innerBorderRadius = BorderRadius.only(topLeft: Radius.circular(12), bottomLeft: Radius.circular(4), bottomRight: Radius.circular(12), topRight: Radius.circular(4));
+    const innerBorderRadius = BorderRadius.only(
+        topLeft: Radius.circular(12),
+        bottomLeft: Radius.circular(4),
+        bottomRight: Radius.circular(12),
+        topRight: Radius.circular(4));
 
     return Material(
       borderRadius: innerBorderRadius,
@@ -84,10 +113,14 @@ class TypeBadge extends StatelessWidget {
   }
 
   Color getMaterialColor(ThemeData theme, Color blendColor) {
-    return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), blendColor).withOpacity(dim ? 0.55 : 1);
+    return Color.alphaBlend(
+            theme.colorScheme.primaryContainer.withOpacity(0.6), blendColor)
+        .withOpacity(dim ? 0.55 : 1);
   }
 
   Color getIconColor(ThemeData theme, Color blendColor) {
-    return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor).withOpacity(dim ? 0.55 : 1);
+    return Color.alphaBlend(
+            theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor)
+        .withOpacity(dim ? 0.55 : 1);
   }
 }

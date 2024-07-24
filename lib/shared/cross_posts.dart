@@ -32,7 +32,8 @@ class CrossPosts extends StatefulWidget {
   State<CrossPosts> createState() => _CrossPostsState();
 }
 
-class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateMixin {
+class _CrossPostsState extends State<CrossPosts>
+    with SingleTickerProviderStateMixin {
   bool _areCrossPostsExpanded = false;
 
   late final AnimationController _controller = AnimationController(
@@ -52,7 +53,8 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final TextStyle? crossPostTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4));
+    final TextStyle? crossPostTextStyle = theme.textTheme.bodyMedium
+        ?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4));
     final TextStyle? crossPostLinkTextStyle = crossPostTextStyle?.copyWith(
       color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
     );
@@ -84,13 +86,17 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                           children: [
                             InkWell(
                               borderRadius: BorderRadius.circular(5),
-                              onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index]])).first),
+                              onTap: () async => navigateToPost(context,
+                                  postViewMedia: (await parsePostViews(
+                                          [widget.crossPosts[index]]))
+                                      .first),
                               child: Row(
                                 children: [
                                   Icon(
                                     Icons.repeat_rounded,
                                     size: 14.0,
-                                    color: theme.colorScheme.onBackground.withOpacity(0.9),
+                                    color: theme.colorScheme.onBackground
+                                        .withOpacity(0.9),
                                   ),
                                   Text(
                                     ' to ',
@@ -100,11 +106,13 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                     context,
                                     widget.crossPosts[index].community.name,
                                     widget.crossPosts[index].community.title,
-                                    fetchInstanceNameFromUrl(widget.crossPosts[index].community.actorId),
+                                    fetchInstanceNameFromUrl(widget
+                                        .crossPosts[index].community.actorId),
                                     textStyle: crossPostLinkTextStyle,
                                   ),
                                   const Spacer(),
-                                  CrossPostMetaData(crossPost: widget.crossPosts[index]),
+                                  CrossPostMetaData(
+                                      crossPost: widget.crossPosts[index]),
                                 ],
                               ),
                             ),
@@ -122,7 +130,8 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
           child: InkWell(
             borderRadius: BorderRadius.circular(5),
-            onTap: () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
+            onTap: () => setState(
+                () => _areCrossPostsExpanded = !_areCrossPostsExpanded),
             child: Row(
               children: [
                 Expanded(
@@ -137,7 +146,9 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                               : widget.isNewPost == true
                                   ? '${l10n.alreadyPostedTo} '
                                   : '${l10n.crossPostedTo} ',
-                          style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color
+                                  ?.withOpacity(0.5)),
                         ),
                         if (!_areCrossPostsExpanded)
                           WidgetSpan(
@@ -145,19 +156,28 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                               context,
                               widget.crossPosts[0].community.name,
                               widget.crossPosts[0].community.title,
-                              fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId),
-                              textStyle: theme.textTheme.bodySmall?.copyWith(color: crossPostLinkTextStyle?.color),
+                              fetchInstanceNameFromUrl(
+                                  widget.crossPosts[0].community.actorId),
+                              textStyle: theme.textTheme.bodySmall?.copyWith(
+                                  color: crossPostLinkTextStyle?.color),
                             ),
                           ),
                         TextSpan(
-                          text: _areCrossPostsExpanded || widget.crossPosts.length == 1 ? '' : ' ${l10n.andXMore(widget.crossPosts.length - 1)}',
-                          style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+                          text: _areCrossPostsExpanded ||
+                                  widget.crossPosts.length == 1
+                              ? ''
+                              : ' ${l10n.andXMore(widget.crossPosts.length - 1)}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color
+                                  ?.withOpacity(0.5)),
                         ),
                       ],
                     ),
                   ),
                 ),
-                _areCrossPostsExpanded ? const Icon(Icons.expand_less_rounded, size: 18) : const Icon(Icons.expand_more_rounded, size: 18),
+                _areCrossPostsExpanded
+                    ? const Icon(Icons.expand_less_rounded, size: 18)
+                    : const Icon(Icons.expand_more_rounded, size: 18),
               ],
             ),
           ),
@@ -179,7 +199,8 @@ void createCrossPost(
   if (url?.isNotEmpty == true) {
     text = null;
   } else {
-    final String? quotedText = text?.split('\n').map((value) => '> $value\n').join();
+    final String? quotedText =
+        text?.split('\n').map((value) => '> $value\n').join();
     text = "${l10n.crossPostedFrom(postUrl ?? '')}\n\n$quotedText";
   }
 

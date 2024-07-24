@@ -74,7 +74,8 @@ class CommentCardActions extends StatelessWidget {
               height: 28,
               width: 44,
               child: IconButton(
-                icon: Icon(isEdit ? Icons.edit_rounded : Icons.reply_rounded, semanticLabel: isEdit ? 'Edit' : 'Reply', size: iconSize),
+                icon: Icon(isEdit ? Icons.edit_rounded : Icons.reply_rounded,
+                    semanticLabel: isEdit ? 'Edit' : 'Reply', size: iconSize),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
@@ -91,7 +92,9 @@ class CommentCardActions extends StatelessWidget {
                     semanticLabel: voteType == 1 ? 'Upvoted' : 'Upvote',
                     size: iconSize,
                   ),
-                  color: voteType == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : null,
+                  color: voteType == 1
+                      ? context.read<ThunderBloc>().state.upvoteColor.color
+                      : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
@@ -108,11 +111,14 @@ class CommentCardActions extends StatelessWidget {
                     semanticLabel: voteType == -1 ? 'Downvoted' : 'Downvote',
                     size: iconSize,
                   ),
-                  color: voteType == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : null,
+                  color: voteType == -1
+                      ? context.read<ThunderBloc>().state.downvoteColor.color
+                      : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
-                    onVoteAction(commentView.comment.id, voteType == -1 ? 0 : -1);
+                    onVoteAction(
+                        commentView.comment.id, voteType == -1 ? 0 : -1);
                   },
                 ),
               ),

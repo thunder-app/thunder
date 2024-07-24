@@ -63,7 +63,11 @@ class Draft {
       );
 
   /// See whether this draft contains enough info to save for a post
-  bool get isPostNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || customThumbnail?.isNotEmpty == true || body?.isNotEmpty == true;
+  bool get isPostNotEmpty =>
+      title?.isNotEmpty == true ||
+      url?.isNotEmpty == true ||
+      customThumbnail?.isNotEmpty == true ||
+      body?.isNotEmpty == true;
 
   /// See whether this draft contains enough info to save for a comment
   bool get isCommentNotEmpty => body?.isNotEmpty == true;
@@ -72,9 +76,14 @@ class Draft {
   static Future<Draft?> upsertDraft(Draft draft) async {
     try {
       final existingDraft = await (database.select(database.drafts)
-            ..where((t) => t.draftType.equals(const DraftTypeConverter().toSql(draft.draftType)))
-            ..where((t) => draft.existingId == null ? t.existingId.isNull() : t.existingId.equals(draft.existingId!))
-            ..where((t) => draft.replyId == null ? t.replyId.isNull() : t.replyId.equals(draft.replyId!)))
+            ..where((t) => t.draftType
+                .equals(const DraftTypeConverter().toSql(draft.draftType)))
+            ..where((t) => draft.existingId == null
+                ? t.existingId.isNull()
+                : t.existingId.equals(draft.existingId!))
+            ..where((t) => draft.replyId == null
+                ? t.replyId.isNull()
+                : t.replyId.equals(draft.replyId!)))
           .getSingleOrNull();
 
       if (existingDraft == null) {
@@ -112,12 +121,18 @@ class Draft {
   }
 
   /// Retrieve a draft from the db
-  static Future<Draft?> fetchDraft(DraftType draftType, int? existingId, int? replyId) async {
+  static Future<Draft?> fetchDraft(
+      DraftType draftType, int? existingId, int? replyId) async {
     try {
       final draft = await (database.select(database.drafts)
-            ..where((t) => t.draftType.equals(const DraftTypeConverter().toSql(draftType)))
-            ..where((t) => existingId == null ? t.existingId.isNull() : t.existingId.equals(existingId))
-            ..where((t) => replyId == null ? t.replyId.isNull() : t.replyId.equals(replyId)))
+            ..where((t) =>
+                t.draftType.equals(const DraftTypeConverter().toSql(draftType)))
+            ..where((t) => existingId == null
+                ? t.existingId.isNull()
+                : t.existingId.equals(existingId))
+            ..where((t) => replyId == null
+                ? t.replyId.isNull()
+                : t.replyId.equals(replyId)))
           .getSingleOrNull();
 
       if (draft == null) return null;
@@ -139,12 +154,18 @@ class Draft {
   }
 
   /// Delete a draft from the db
-  static Future<void> deleteDraft(DraftType draftType, int? existingId, int? replyId) async {
+  static Future<void> deleteDraft(
+      DraftType draftType, int? existingId, int? replyId) async {
     try {
       await (database.delete(database.drafts)
-            ..where((t) => t.draftType.equals(const DraftTypeConverter().toSql(draftType)))
-            ..where((t) => existingId == null ? t.existingId.isNull() : t.existingId.equals(existingId))
-            ..where((t) => replyId == null ? t.replyId.isNull() : t.replyId.equals(replyId)))
+            ..where((t) =>
+                t.draftType.equals(const DraftTypeConverter().toSql(draftType)))
+            ..where((t) => existingId == null
+                ? t.existingId.isNull()
+                : t.existingId.equals(existingId))
+            ..where((t) => replyId == null
+                ? t.replyId.isNull()
+                : t.replyId.equals(replyId)))
           .go();
     } catch (e) {
       debugPrint(e.toString());

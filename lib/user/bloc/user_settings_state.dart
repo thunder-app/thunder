@@ -56,7 +56,8 @@ class UserSettingsState extends Equatable {
       communityBlocks: communityBlocks ?? this.communityBlocks,
       instanceBlocks: instanceBlocks ?? this.instanceBlocks,
       personBeingBlocked: personBeingBlocked ?? this.personBeingBlocked,
-      communityBeingBlocked: communityBeingBlocked ?? this.communityBeingBlocked,
+      communityBeingBlocked:
+          communityBeingBlocked ?? this.communityBeingBlocked,
       instanceBeingBlocked: instanceBeingBlocked ?? this.instanceBeingBlocked,
       getSiteResponse: getSiteResponse ?? this.getSiteResponse,
       errorMessage: errorMessage ?? this.errorMessage,

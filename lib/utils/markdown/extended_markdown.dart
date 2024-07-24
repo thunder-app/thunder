@@ -58,7 +58,8 @@ class ExtendedMarkdownBody extends ExtendedMarkdownWidget {
     }
     return Column(
       mainAxisSize: shrinkWrap ? MainAxisSize.min : MainAxisSize.max,
-      crossAxisAlignment: fitContent ? CrossAxisAlignment.start : CrossAxisAlignment.stretch,
+      crossAxisAlignment:
+          fitContent ? CrossAxisAlignment.start : CrossAxisAlignment.stretch,
       children: children,
     );
   }
@@ -103,7 +104,8 @@ abstract class ExtendedMarkdownWidget extends MarkdownWidget {
     super.builders = const <String, MarkdownElementBuilder>{},
     super.paddingBuilders = const <String, MarkdownPaddingBuilder>{},
     super.fitContent = false,
-    super.listItemCrossAxisAlignment = MarkdownListItemCrossAxisAlignment.baseline,
+    super.listItemCrossAxisAlignment =
+        MarkdownListItemCrossAxisAlignment.baseline,
     super.softLineBreak = false,
   });
 
@@ -111,7 +113,8 @@ abstract class ExtendedMarkdownWidget extends MarkdownWidget {
   State<ExtendedMarkdownWidget> createState() => _MarkdownWidgetState();
 }
 
-class _MarkdownWidgetState extends State<ExtendedMarkdownWidget> implements MarkdownBuilderDelegate {
+class _MarkdownWidgetState extends State<ExtendedMarkdownWidget>
+    implements MarkdownBuilderDelegate {
   Timer? _timer;
   late TapGestureRecognizer _tapGestureRecognizer;
 
@@ -127,7 +130,8 @@ class _MarkdownWidgetState extends State<ExtendedMarkdownWidget> implements Mark
   @override
   void didUpdateWidget(ExtendedMarkdownWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.data != oldWidget.data || widget.styleSheet != oldWidget.styleSheet) {
+    if (widget.data != oldWidget.data ||
+        widget.styleSheet != oldWidget.styleSheet) {
       _parseMarkdown();
     }
   }
@@ -143,8 +147,10 @@ class _MarkdownWidgetState extends State<ExtendedMarkdownWidget> implements Mark
   }
 
   void _parseMarkdown() {
-    final MarkdownStyleSheet fallbackStyleSheet = kFallbackStyle(context, widget.styleSheetTheme);
-    final MarkdownStyleSheet styleSheet = fallbackStyleSheet.merge(widget.styleSheet);
+    final MarkdownStyleSheet fallbackStyleSheet =
+        kFallbackStyle(context, widget.styleSheetTheme);
+    final MarkdownStyleSheet styleSheet =
+        fallbackStyleSheet.merge(widget.styleSheet);
 
     _disposeRecognizers();
 
@@ -184,7 +190,8 @@ class _MarkdownWidgetState extends State<ExtendedMarkdownWidget> implements Mark
     if (_recognizers.isEmpty) {
       return;
     }
-    final List<GestureRecognizer> localRecognizers = List<GestureRecognizer>.from(_recognizers);
+    final List<GestureRecognizer> localRecognizers =
+        List<GestureRecognizer>.from(_recognizers);
     _recognizers.clear();
     for (final GestureRecognizer recognizer in localRecognizers) {
       recognizer.dispose();
@@ -246,10 +253,13 @@ final MarkdownStyleSheet Function(BuildContext, MarkdownStyleSheetBaseTheme?)
   MarkdownStyleSheet result;
   switch (baseTheme) {
     case MarkdownStyleSheetBaseTheme.platform:
-      result = (!kIsWeb && (Platform.isIOS || Platform.isMacOS)) ? MarkdownStyleSheet.fromCupertinoTheme(CupertinoTheme.of(context)) : MarkdownStyleSheet.fromTheme(Theme.of(context));
+      result = (!kIsWeb && (Platform.isIOS || Platform.isMacOS))
+          ? MarkdownStyleSheet.fromCupertinoTheme(CupertinoTheme.of(context))
+          : MarkdownStyleSheet.fromTheme(Theme.of(context));
       break;
     case MarkdownStyleSheetBaseTheme.cupertino:
-      result = MarkdownStyleSheet.fromCupertinoTheme(CupertinoTheme.of(context));
+      result =
+          MarkdownStyleSheet.fromCupertinoTheme(CupertinoTheme.of(context));
       break;
     case MarkdownStyleSheetBaseTheme.material:
     // ignore: no_default_cases
@@ -258,6 +268,7 @@ final MarkdownStyleSheet Function(BuildContext, MarkdownStyleSheetBaseTheme?)
   }
 
   return result.copyWith(
-    textScaleFactor: MediaQuery.textScaleFactorOf(context), // ignore: deprecated_member_use
+    textScaleFactor:
+        MediaQuery.textScaleFactorOf(context), // ignore: deprecated_member_use
   );
 };

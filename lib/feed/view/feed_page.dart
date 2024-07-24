@@ -95,7 +95,8 @@ class FeedPage extends StatefulWidget {
   State<FeedPage> createState() => _FeedPageState();
 }
 
-class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<FeedPage> {
+class _FeedPageState extends State<FeedPage>
+    with AutomaticKeepAliveClientMixin<FeedPage> {
   @override
   bool get wantKeepAlive => true;
 
@@ -184,8 +185,12 @@ class _FeedViewState extends State<FeedView> {
 
   /// List of tabs for user profiles
   List<Widget> userOptionTypes = <Widget>[
-    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
-    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
+    Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
+    Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
   ];
 
   /// List of post ids to queue for removal. The ids in this list allow us to remove posts in a staggered method
@@ -199,15 +204,22 @@ class _FeedViewState extends State<FeedView> {
 
     _scrollController.addListener(() {
       // Updates the [showAppBarTitle] value when the user has scrolled past a given threshold
-      if (_scrollController.position.pixels > 100.0 && showAppBarTitle == false) {
+      if (_scrollController.position.pixels > 100.0 &&
+          showAppBarTitle == false) {
         setState(() => showAppBarTitle = true);
-      } else if (_scrollController.position.pixels < 100.0 && showAppBarTitle == true) {
+      } else if (_scrollController.position.pixels < 100.0 &&
+          showAppBarTitle == true) {
         setState(() => showAppBarTitle = false);
       }
 
       // Fetches new posts when the user has scrolled past 70% list
-      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
-        context.read<FeedBloc>().add(FeedFetchedEvent(feedTypeSubview: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment));
+      if (_scrollController.position.pixels >
+              _scrollController.position.maxScrollExtent * 0.7 &&
+          context.read<FeedBloc>().state.status != FeedStatus.fetching) {
+        context.read<FeedBloc>().add(FeedFetchedEvent(
+            feedTypeSubview: selectedUserOption[0]
+                ? FeedTypeSubview.post
+                : FeedTypeSubview.comment));
       }
     });
 
@@ -235,18 +247,21 @@ class _FeedViewState extends State<FeedView> {
       for (PostViewMedia postViewMedia in postViewMedias) {
         if (postViewMedia.postView.read) {
           setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
-          await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
+          await Future.delayed(
+              Duration(milliseconds: state.useCompactView ? 60 : 100));
         }
       }
 
       await Future.delayed(const Duration(milliseconds: 500));
 
-      feedBloc.add(FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
+      feedBloc.add(
+          FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
       setState(() => queuedForRemoval.clear());
     }
   }
 
-  Future<void> dismissBlockedUsersAndCommunities(int? userId, int? communityId) async {
+  Future<void> dismissBlockedUsersAndCommunities(
+      int? userId, int? communityId) async {
     ThunderState state = context.read<ThunderBloc>().state;
 
     FeedBloc feedBloc = context.read<FeedBloc>();
@@ -254,15 +269,18 @@ class _FeedViewState extends State<FeedView> {
 
     if (postViewMedias.isNotEmpty) {
       for (PostViewMedia postViewMedia in postViewMedias) {
-        if (postViewMedia.postView.creator.id == userId || postViewMedia.postView.community.id == communityId) {
+        if (postViewMedia.postView.creator.id == userId ||
+            postViewMedia.postView.community.id == communityId) {
           setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
-          await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
+          await Future.delayed(
+              Duration(milliseconds: state.useCompactView ? 60 : 100));
         }
       }
 
       await Future.delayed(const Duration(milliseconds: 500));
 
-      feedBloc.add(FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
+      feedBloc.add(
+          FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
       setState(() => queuedForRemoval.clear());
     }
   }
@@ -277,13 +295,15 @@ class _FeedViewState extends State<FeedView> {
       for (PostViewMedia postViewMedia in postViewMedias) {
         if (postViewMedia.postView.post.id == postId) {
           setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
-          await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
+          await Future.delayed(
+              Duration(milliseconds: state.useCompactView ? 60 : 100));
         }
       }
 
       await Future.delayed(const Duration(milliseconds: 500));
 
-      feedBloc.add(FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
+      feedBloc.add(
+          FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
       setState(() => queuedForRemoval.clear());
     }
   }
@@ -322,27 +342,48 @@ class _FeedViewState extends State<FeedView> {
       ],
       child: Scaffold(
         body: SafeArea(
-          top: hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+          top:
+              hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
           child: BlocConsumer<FeedBloc, FeedState>(
             listenWhen: (previous, current) {
-              if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
-              if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-              if (previous.dismissReadId != current.dismissReadId) dismissRead();
-              if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
-              if (current.dismissHiddenPostId != null && !thunderBloc.state.showHiddenPosts) dismissHiddenPost(current.dismissHiddenPostId!);
+              if (current.status == FeedStatus.initial)
+                setState(() => showAppBarTitle = false);
+              if (previous.scrollId != current.scrollId)
+                _scrollController.animateTo(0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut);
+              if (previous.dismissReadId != current.dismissReadId)
+                dismissRead();
+              if (current.dismissBlockedUserId != null ||
+                  current.dismissBlockedCommunityId != null)
+                dismissBlockedUsersAndCommunities(current.dismissBlockedUserId,
+                    current.dismissBlockedCommunityId);
+              if (current.dismissHiddenPostId != null &&
+                  !thunderBloc.state.showHiddenPosts)
+                dismissHiddenPost(current.dismissHiddenPostId!);
               return true;
             },
             listener: (context, state) {
               // Continue to fetch more items as long as the device view is not scrollable.
               // This is to avoid cases where more items cannot be fetched because the conditions are not met
-              if (state.status == FeedStatus.success && ((selectedUserOption[0] && state.hasReachedPostsEnd == false) || (selectedUserOption[1] && state.hasReachedCommentsEnd == false))) {
-                bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
-                if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
+              if (state.status == FeedStatus.success &&
+                  ((selectedUserOption[0] &&
+                          state.hasReachedPostsEnd == false) ||
+                      (selectedUserOption[1] &&
+                          state.hasReachedCommentsEnd == false))) {
+                bool isScrollable = _scrollController.position.maxScrollExtent >
+                    _scrollController.position.viewportDimension;
+                if (!isScrollable)
+                  context.read<FeedBloc>().add(const FeedFetchedEvent());
               }
 
-              if ((state.status == FeedStatus.failure || state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser) && state.message != null) {
+              if ((state.status == FeedStatus.failure ||
+                      state.status == FeedStatus.failureLoadingCommunity ||
+                      state.status == FeedStatus.failureLoadingUser) &&
+                  state.message != null) {
                 showSnackbar(state.message!);
-                context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
+                context.read<FeedBloc>().add(
+                    FeedClearMessageEvent()); // Clear the message so that it does not spam
               }
             },
             builder: (context, state) {
@@ -351,8 +392,12 @@ class _FeedViewState extends State<FeedView> {
               List<CommentView> commentViews = state.commentViews;
 
               if (state.status == FeedStatus.initial) {
-                final GetSiteResponse? site = context.read<AuthBloc>().state.getSiteResponse;
-                tagline = site?.taglines.isNotEmpty == true ? site?.taglines[Random().nextInt(site.taglines.length)].content : null;
+                final GetSiteResponse? site =
+                    context.read<AuthBloc>().state.getSiteResponse;
+                tagline = site?.taglines.isNotEmpty == true
+                    ? site?.taglines[Random().nextInt(site.taglines.length)]
+                        .content
+                    : null;
               }
 
               return RefreshIndicator(
@@ -360,15 +405,22 @@ class _FeedViewState extends State<FeedView> {
                   HapticFeedback.mediumImpact();
                   triggerRefresh(context);
                 },
-                edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
+                edgeOffset:
+                    95.0, // This offset is placed to allow the correct positioning of the refresh indicator
                 child: Stack(
                   children: [
                     CustomScrollView(
-                      physics: (showCommunitySidebar || showUserSidebar) ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community/user sidebar is open
+                      physics: (showCommunitySidebar || showUserSidebar)
+                          ? const NeverScrollableScrollPhysics()
+                          : null, // Disable scrolling on the feed page when the community/user sidebar is open
                       controller: _scrollController,
                       slivers: <Widget>[
                         FeedPageAppBar(
-                          showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
+                          showAppBarTitle:
+                              (state.feedType == FeedType.general &&
+                                      state.status != FeedStatus.initial)
+                                  ? true
+                                  : showAppBarTitle,
                           scaffoldStateKey: widget.scaffoldStateKey,
                         ),
                         // Display loading indicator until the feed is fetched
@@ -377,16 +429,25 @@ class _FeedViewState extends State<FeedView> {
                             hasScrollBody: false,
                             child: Center(child: CircularProgressIndicator()),
                           ),
-                        if (state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser)
+                        if (state.status ==
+                                FeedStatus.failureLoadingCommunity ||
+                            state.status == FeedStatus.failureLoadingUser)
                           SliverToBoxAdapter(
                             child: Container(),
                           ),
                         // Display tagline and list of posts once they are fetched
-                        if (state.status != FeedStatus.initial && (state.status != FeedStatus.failureLoadingCommunity || state.status != FeedStatus.failureLoadingUser)) ...[
+                        if (state.status != FeedStatus.initial &&
+                            (state.status !=
+                                    FeedStatus.failureLoadingCommunity ||
+                                state.status !=
+                                    FeedStatus.failureLoadingUser)) ...[
                           SliverToBoxAdapter(
                             child: Visibility(
-                              visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
-                              child: tagline?.isNotEmpty == true ? TagLine(tagline: tagline!) : Container(),
+                              visible: state.feedType == FeedType.general &&
+                                  state.status != FeedStatus.initial,
+                              child: tagline?.isNotEmpty == true
+                                  ? TagLine(tagline: tagline!)
+                                  : Container(),
                             ),
                           ),
                           if (state.fullCommunityView != null)
@@ -394,12 +455,17 @@ class _FeedViewState extends State<FeedView> {
                               child: Visibility(
                                 visible: state.feedType == FeedType.community,
                                 child: CommunityHeader(
-                                  getCommunityResponse: state.fullCommunityView!,
+                                  getCommunityResponse:
+                                      state.fullCommunityView!,
                                   showCommunitySidebar: showCommunitySidebar,
                                   onToggle: (bool toggled) {
                                     // Scroll to top first before showing the sidebar
-                                    _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                                    setState(() => showCommunitySidebar = toggled);
+                                    _scrollController.animateTo(0,
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        curve: Curves.easeInOut);
+                                    setState(
+                                        () => showCommunitySidebar = toggled);
                                   },
                                 ),
                               ),
@@ -411,35 +477,61 @@ class _FeedViewState extends State<FeedView> {
                                 child: Column(
                                   children: [
                                     UserHeader(
-                                      getPersonDetailsResponse: state.fullPersonView!,
+                                      getPersonDetailsResponse:
+                                          state.fullPersonView!,
                                       showUserSidebar: showUserSidebar,
                                       onToggle: (bool toggled) {
                                         // Scroll to top first before showing the sidebar
-                                        _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                                        setState(() => showUserSidebar = toggled);
+                                        _scrollController.animateTo(0,
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            curve: Curves.easeInOut);
+                                        setState(
+                                            () => showUserSidebar = toggled);
                                       },
                                     ),
                                     AnimatedSize(
-                                      duration: const Duration(milliseconds: 100),
+                                      duration:
+                                          const Duration(milliseconds: 100),
                                       curve: Curves.easeInOut,
                                       child: Container(
                                         height: showUserSidebar ? 0 : null,
-                                        margin: showUserSidebar ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 8.0),
+                                        margin: showUserSidebar
+                                            ? EdgeInsets.zero
+                                            : const EdgeInsets.symmetric(
+                                                vertical: 8.0),
                                         child: ToggleButtons(
                                           constraints: showUserSidebar
-                                              ? const BoxConstraints(minHeight: 0.0, maxHeight: 0.0, minWidth: 0.0, maxWidth: 0.0)
-                                              : BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length)) - 12.0),
-                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              ? const BoxConstraints(
+                                                  minHeight: 0.0,
+                                                  maxHeight: 0.0,
+                                                  minWidth: 0.0,
+                                                  maxWidth: 0.0)
+                                              : BoxConstraints.expand(
+                                                  width: (MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          (userOptionTypes
+                                                              .length)) -
+                                                      12.0),
+                                          tapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
                                           direction: Axis.horizontal,
                                           onPressed: (int index) {
                                             setState(() {
                                               // The button that is tapped is set to true, and the others to false.
-                                              for (int i = 0; i < selectedUserOption.length; i++) {
-                                                selectedUserOption[i] = i == index;
+                                              for (int i = 0;
+                                                  i < selectedUserOption.length;
+                                                  i++) {
+                                                selectedUserOption[i] =
+                                                    i == index;
                                               }
                                             });
                                           },
-                                          borderRadius: showUserSidebar ? null : const BorderRadius.all(Radius.circular(8)),
+                                          borderRadius: showUserSidebar
+                                              ? null
+                                              : const BorderRadius.all(
+                                                  Radius.circular(8)),
                                           isSelected: selectedUserOption,
                                           children: userOptionTypes,
                                         ),
@@ -462,7 +554,8 @@ class _FeedViewState extends State<FeedView> {
                                   FeedPostList(
                                       postViewMedias: postViewMedias,
                                       tabletMode: tabletMode,
-                                      markPostReadOnScroll: markPostReadOnScroll,
+                                      markPostReadOnScroll:
+                                          markPostReadOnScroll,
                                       queuedForRemoval: queuedForRemoval,
                                     ),
                               // Widgets to display on the feed when feedType == FeedType.community or feedType == FeedType.user
@@ -472,23 +565,38 @@ class _FeedViewState extends State<FeedView> {
                                   switchOutCurve: Curves.easeOut,
                                   transitionBuilder: (child, animation) {
                                     return FadeTransition(
-                                      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                        CurvedAnimation(parent: animation, curve: const Interval(0, 1.0)),
+                                      opacity:
+                                          Tween<double>(begin: 0.0, end: 1.0)
+                                              .animate(
+                                        CurvedAnimation(
+                                            parent: animation,
+                                            curve: const Interval(0, 1.0)),
                                       ),
                                       child: child,
                                     );
                                   },
                                   duration: const Duration(milliseconds: 300),
-                                  child: (showCommunitySidebar || showUserSidebar)
+                                  child: (showCommunitySidebar ||
+                                          showUserSidebar)
                                       ? GestureDetector(
                                           onTap: () => setState(() {
-                                            if (state.feedType == FeedType.community) showCommunitySidebar = !showCommunitySidebar;
-                                            if (state.feedType == FeedType.user) showUserSidebar = !showUserSidebar;
+                                            if (state.feedType ==
+                                                FeedType.community)
+                                              showCommunitySidebar =
+                                                  !showCommunitySidebar;
+                                            if (state.feedType == FeedType.user)
+                                              showUserSidebar =
+                                                  !showUserSidebar;
                                           }),
                                           child: Container(
-                                            height: MediaQuery.of(context).size.height,
-                                            width: MediaQuery.of(context).size.width,
-                                            color: Colors.black.withOpacity(0.5),
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .height,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            color:
+                                                Colors.black.withOpacity(0.5),
                                           ),
                                         )
                                       : null,
@@ -501,20 +609,27 @@ class _FeedViewState extends State<FeedView> {
                                   switchOutCurve: Curves.easeOut,
                                   transitionBuilder: (child, animation) {
                                     return SlideTransition(
-                                      position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                                      position: Tween<Offset>(
+                                              begin: const Offset(1.2, 0),
+                                              end: const Offset(0, 0))
+                                          .animate(animation),
                                       child: child,
                                     );
                                   },
                                   duration: const Duration(milliseconds: 300),
                                   child: showCommunitySidebar
                                       ? CommunitySidebar(
-                                          getCommunityResponse: state.fullCommunityView,
-                                          onDismiss: () => setState(() => showCommunitySidebar = false),
+                                          getCommunityResponse:
+                                              state.fullCommunityView,
+                                          onDismiss: () => setState(() =>
+                                              showCommunitySidebar = false),
                                         )
                                       : showUserSidebar
                                           ? UserSidebar(
-                                              getPersonDetailsResponse: state.fullPersonView,
-                                              onDismiss: () => setState(() => showUserSidebar = false),
+                                              getPersonDetailsResponse:
+                                                  state.fullPersonView,
+                                              onDismiss: () => setState(() =>
+                                                  showUserSidebar = false),
                                             )
                                           : null,
                                 ),
@@ -522,14 +637,23 @@ class _FeedViewState extends State<FeedView> {
                             ],
                           ),
                           // Widget representing the bottom of the feed (reached end or loading more posts indicators)
-                          if (state.status != FeedStatus.failureLoadingCommunity && state.status != FeedStatus.failureLoadingUser)
+                          if (state.status !=
+                                  FeedStatus.failureLoadingCommunity &&
+                              state.status != FeedStatus.failureLoadingUser)
                             SliverToBoxAdapter(
-                              child: ((selectedUserOption[0] && state.hasReachedPostsEnd) || (selectedUserOption[1] && state.hasReachedCommentsEnd))
+                              child: ((selectedUserOption[0] &&
+                                          state.hasReachedPostsEnd) ||
+                                      (selectedUserOption[1] &&
+                                          state.hasReachedCommentsEnd))
                                   ? const FeedReachedEnd()
                                   : Container(
-                                      height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                      height: state.status == FeedStatus.initial
+                                          ? MediaQuery.of(context).size.height *
+                                              0.5
+                                          : null, // Might have to adjust this to be more robust
                                       alignment: Alignment.center,
-                                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16.0),
                                       child: const CircularProgressIndicator(),
                                     ),
                             ),
@@ -545,19 +669,25 @@ class _FeedViewState extends State<FeedView> {
                         children: [
                           IgnorePointer(
                               child: Container(
-                            color: theme.colorScheme.background.withOpacity(0.95),
+                            color:
+                                theme.colorScheme.background.withOpacity(0.95),
                           )),
                           if (thunderBloc.state.isFabOpen)
                             ModalBarrier(
                               color: null,
                               dismissible: true,
-                              onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                              onDismiss: () => context
+                                  .read<ThunderBloc>()
+                                  .add(const OnFabToggle(false)),
                             ),
                         ],
                       ),
                     ),
                     if (Navigator.of(context).canPop() &&
-                        (state.communityId != null || state.communityName != null || state.userId != null || state.username != null) &&
+                        (state.communityId != null ||
+                            state.communityName != null ||
+                            state.userId != null ||
+                            state.username != null) &&
                         thunderBloc.state.enableFeedsFab)
                       AnimatedOpacity(
                         opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
@@ -565,7 +695,8 @@ class _FeedViewState extends State<FeedView> {
                         curve: Curves.easeIn,
                         child: Container(
                           margin: const EdgeInsets.all(16),
-                          child: FeedFAB(heroTag: state.communityName ?? state.username),
+                          child: FeedFAB(
+                              heroTag: state.communityName ?? state.username),
                         ),
                       ),
                   ],
@@ -578,8 +709,10 @@ class _FeedViewState extends State<FeedView> {
     );
   }
 
-  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
-    final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
+  FutureOr<bool> _handleBack(
+      bool stopDefaultButtonEvent, RouteInfo info) async {
+    final bool topOfNavigationStack =
+        ModalRoute.of(context)?.isCurrent ?? false;
 
     // If the community sidebar is open, close it
     if (topOfNavigationStack && showCommunitySidebar) {
@@ -601,7 +734,9 @@ class _FeedViewState extends State<FeedView> {
     final canPop = Navigator.of(context).canPop();
 
     // Get the desired post listing so we can check against current
-    final desiredListingType = authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBloc.state.defaultListingType;
+    final desiredListingType = authBloc.state.getSiteResponse?.myUser
+            ?.localUserView.localUser.defaultListingType ??
+        thunderBloc.state.defaultListingType;
     final currentListingType = feedBloc.state.postListingType;
 
     // See if we're in a community
@@ -612,10 +747,13 @@ class _FeedViewState extends State<FeedView> {
     // - We're not on the desired listing type OR
     // - We're on a community
     // THEN navigate to the desired listing type
-    if (!canPop && (desiredListingType != currentListingType || communityMode)) {
+    if (!canPop &&
+        (desiredListingType != currentListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
-          sortType: authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
+          sortType: authBloc.state.getSiteResponse?.myUser?.localUserView
+                  .localUser.defaultSortType ??
+              thunderBloc.state.sortTypeForInstance,
           reset: true,
           postListingType: desiredListingType,
           feedType: FeedType.general,
@@ -644,7 +782,8 @@ class FeedHeader extends StatelessWidget {
       children: [
         Text(
           getAppBarTitle(feedBloc.state),
-          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+          style: theme.textTheme.headlineSmall
+              ?.copyWith(fontWeight: FontWeight.w600),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -702,10 +841,13 @@ class _TagLineState extends State<TagLine> {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: AnimatedCrossFade(
-            crossFadeState: taglineIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            crossFadeState: taglineIsLong
+                ? CrossFadeState.showSecond
+                : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 250),
             // TODO: Eventually pass in textScalingFactor
-            firstChild: CommonMarkdownBody(key: taglineBodyKey, body: widget.tagline),
+            firstChild:
+                CommonMarkdownBody(key: taglineBodyKey, body: widget.tagline),
             secondChild: ExpandableNotifier(
               child: Column(
                 children: [
@@ -737,7 +879,8 @@ class _TagLineState extends State<TagLine> {
                                     end: Alignment.bottomCenter,
                                     stops: const [0.0, 0.5, 1.0],
                                     colors: [
-                                      getBackgroundColor(context).withOpacity(0.0),
+                                      getBackgroundColor(context)
+                                          .withOpacity(0.0),
                                       getBackgroundColor(context),
                                       getBackgroundColor(context),
                                     ],
@@ -748,11 +891,13 @@ class _TagLineState extends State<TagLine> {
                             Positioned(
                               bottom: 0,
                               child: ExpandableButton(
-                                theme: const ExpandableThemeData(useInkWell: false),
+                                theme: const ExpandableThemeData(
+                                    useInkWell: false),
                                 child: Text(
                                   AppLocalizations.of(context)!.showMore,
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                                    color: theme.textTheme.bodySmall?.color
+                                        ?.withOpacity(0.5),
                                   ),
                                 ),
                               ),
@@ -770,7 +915,8 @@ class _TagLineState extends State<TagLine> {
                           child: Text(
                             AppLocalizations.of(context)!.showLess,
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                              color: theme.textTheme.bodySmall?.color
+                                  ?.withOpacity(0.5),
                             ),
                           ),
                         ),

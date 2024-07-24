@@ -75,8 +75,10 @@ class PostSubview extends StatefulWidget {
   State<PostSubview> createState() => _PostSubviewState();
 }
 
-class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin {
-  final ExpandableController expandableController = ExpandableController(initialExpanded: true);
+class _PostSubviewState extends State<PostSubview>
+    with SingleTickerProviderStateMixin {
+  final ExpandableController expandableController =
+      ExpandableController(initialExpanded: true);
   late PostViewMedia postViewMedia;
   final FocusNode _selectableRegionFocusNode = FocusNode();
 
@@ -98,33 +100,43 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-    final bool showCrossPosts = context.read<ThunderBloc>().state.showCrossPosts;
+    final bool showCrossPosts =
+        context.read<ThunderBloc>().state.showCrossPosts;
 
     PostView postView = postViewMedia.postView;
     Post post = postView.post;
 
     final bool isUserLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
-    final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
+    final bool downvotesEnabled =
+        context.read<AuthBloc>().state.downvotesEnabled;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
     final AuthState authState = context.watch<AuthBloc>().state;
 
-    final bool showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+    final bool showScores =
+        authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ??
+            true;
 
     final bool scrapeMissingPreviews = thunderState.scrapeMissingPreviews;
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
-    final bool isOwnPost = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
+    final bool isOwnPost =
+        postView.creator.id == context.read<AuthBloc>().state.account?.userId;
 
-    final List<PostView> sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.counts.upvotes.compareTo(a.counts.upvotes));
+    final List<PostView> sortedCrossPosts = List.from(widget.crossPosts ?? [])
+      ..sort((a, b) => b.counts.upvotes.compareTo(a.counts.upvotes));
 
     List<UserType> userGroups = [];
 
     if (postView.creator.botAccount) userGroups.add(UserType.bot);
-    if (postView.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
+    if (postView.creatorIsModerator ?? false)
+      userGroups.add(UserType.moderator);
     if (postView.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
-    if (postView.creator.id == authState.account?.userId) userGroups.add(UserType.self);
-    if (postView.creator.published.month == DateTime.now().month && postView.creator.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
+    if (postView.creator.id == authState.account?.userId)
+      userGroups.add(UserType.self);
+    if (postView.creator.published.month == DateTime.now().month &&
+        postView.creator.published.day == DateTime.now().day)
+      userGroups.add(UserType.birthday);
 
     return ExpandableNotifier(
       controller: expandableController,
@@ -138,8 +150,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 children: [
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
-                    _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
+                  if (thunderState.postBodyViewType ==
+                          PostBodyViewType.condensed &&
+                      !thunderState.showThumbnailPreviewOnRight &&
+                      postViewMedia.media.first.mediaType != MediaType.text)
+                    _getMediaPreview(thunderState, hideNsfwPreviews,
+                        markPostReadOnMediaView, isUserLoggedIn),
                   Expanded(
                     child: ScalableText(
                       HtmlUnescape().convert(post.name),
@@ -147,18 +163,31 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
-                    _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
-                  if ((thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.first.mediaType == MediaType.text) && widget.showExpandableButton)
+                  if (thunderState.postBodyViewType ==
+                          PostBodyViewType.condensed &&
+                      thunderState.showThumbnailPreviewOnRight &&
+                      postViewMedia.media.first.mediaType != MediaType.text)
+                    _getMediaPreview(thunderState, hideNsfwPreviews,
+                        markPostReadOnMediaView, isUserLoggedIn),
+                  if ((thunderState.postBodyViewType !=
+                              PostBodyViewType.condensed ||
+                          postViewMedia.media.first.mediaType ==
+                              MediaType.text) &&
+                      widget.showExpandableButton)
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: Icon(
-                        expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                        semanticLabel: expandableController.expanded ? l10n.collapsePost : l10n.expandPost,
+                        expandableController.expanded
+                            ? Icons.expand_less_rounded
+                            : Icons.expand_more_rounded,
+                        semanticLabel: expandableController.expanded
+                            ? l10n.collapsePost
+                            : l10n.expandPost,
                       ),
                       onPressed: () {
                         expandableController.toggle();
-                        setState(() {}); // Update the state to trigger the collapse/expand
+                        setState(
+                            () {}); // Update the state to trigger the collapse/expand
                       },
                     ),
                 ],
@@ -195,21 +224,26 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       return SelectableRegion(
                         focusNode: _selectableRegionFocusNode,
                         // See comments on [SelectableTextModal] regarding the next two properties
-                        selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
+                        selectionControls: Platform.isIOS
+                            ? cupertinoTextSelectionHandleControls
+                            : materialTextSelectionHandleControls,
                         contextMenuBuilder: (context, selectableRegionState) {
                           return AdaptiveTextSelectionToolbar.buttonItems(
-                            buttonItems: selectableRegionState.contextMenuButtonItems,
+                            buttonItems:
+                                selectableRegionState.contextMenuButtonItems,
                             anchors: selectableRegionState.contextMenuAnchors,
                           );
                         },
-                        onSelectionChanged: (value) => widget.onSelectionChanged?.call(value?.plainText),
+                        onSelectionChanged: (value) =>
+                            widget.onSelectionChanged?.call(value?.plainText),
                         child: child,
                       );
                     },
                     child: widget.viewSource
                         ? ScalableText(
                             post.body ?? '',
-                            style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                            style: theme.textTheme.bodySmall
+                                ?.copyWith(fontFamily: 'monospace'),
                             fontScale: thunderState.contentFontSizeScale,
                           )
                         : CommonMarkdownBody(
@@ -232,20 +266,30 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     children: [
                       UserChip(
                         person: postView.creator,
-                        personAvatar: UserAvatar(person: postView.creator, radius: 10, thumbnailSize: 20, format: 'png'),
+                        personAvatar: UserAvatar(
+                            person: postView.creator,
+                            radius: 10,
+                            thumbnailSize: 20,
+                            format: 'png'),
                         userGroups: userGroups,
-                        includeInstance: thunderState.postBodyShowCommunityInstance,
+                        includeInstance:
+                            thunderState.postBodyShowCommunityInstance,
                       ),
                       ScalableText(
                         'to',
                         fontScale: thunderState.metadataFontSizeScale,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                          color: theme.textTheme.bodyMedium?.color
+                              ?.withOpacity(0.6),
                         ),
                       ),
                       CommunityChip(
                         communityId: postView.community.id,
-                        communityAvatar: CommunityAvatar(community: postView.community, radius: 10, thumbnailSize: 20, format: 'png'),
+                        communityAvatar: CommunityAvatar(
+                            community: postView.community,
+                            radius: 10,
+                            thumbnailSize: 20,
+                            format: 'png'),
                         communityName: postView.community.name,
                         communityTitle: postView.community.title,
                         communityUrl: postView.community.actorId,
@@ -255,11 +299,20 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   PostMetadata(
                     commentCount: postViewMedia.postView.counts.comments,
                     unreadCommentCount: postViewMedia.postView.unreadComments,
-                    dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
-                    hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                    url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                    dateTime: postViewMedia.postView.post.updated != null
+                        ? postViewMedia.postView.post.updated?.toIso8601String()
+                        : postViewMedia.postView.post.published
+                            .toIso8601String(),
+                    hasBeenEdited: postViewMedia.postView.post.updated != null
+                        ? true
+                        : false,
+                    url: postViewMedia.media.firstOrNull != null
+                        ? postViewMedia.media.first.originalUrl
+                        : null,
                   ),
-                  if (widget.showReplyEditorButtons && widget.postViewMedia.postView.post.body?.isNotEmpty == true) ...[
+                  if (widget.showReplyEditorButtons &&
+                      widget.postViewMedia.postView.post.body?.isNotEmpty ==
+                          true) ...[
                     const ThunderDivider(sliver: false, padding: false),
                     ReplyToPreviewActions(
                       onViewSourceToggled: widget.onViewSourceToggled,
@@ -288,11 +341,15 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 isOwnPost: isOwnPost,
                 onVote: (int score) {
                   HapticFeedback.mediumImpact();
-                  context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: score));
+                  context
+                      .read<PostBloc>()
+                      .add(VotePostEvent(postId: post.id, score: score));
                 },
                 onSave: (bool saved) {
                   HapticFeedback.mediumImpact();
-                  context.read<PostBloc>().add(SavePostEvent(postId: post.id, save: saved));
+                  context
+                      .read<PostBloc>()
+                      .add(SavePostEvent(postId: post.id, save: saved));
                 },
                 onShare: () {
                   showPostActionBottomModalSheet(
@@ -306,11 +363,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   AccountBloc accountBloc = context.read<AccountBloc>();
                   CreatePostCubit createPostCubit = CreatePostCubit();
 
-                  final ThunderState thunderState = context.read<ThunderBloc>().state;
+                  final ThunderState thunderState =
+                      context.read<ThunderBloc>().state;
                   final bool reduceAnimations = thunderState.reduceAnimations;
 
                   final Account? account = await fetchActiveProfileAccount();
-                  final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+                  final GetCommunityResponse getCommunityResponse =
+                      await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
                     auth: account?.jwt,
                     id: postViewMedia.postView.community.id,
                   ));
@@ -318,15 +377,20 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   if (context.mounted) {
                     Navigator.of(context).push(
                       SwipeablePageRoute(
-                        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                        transitionDuration: reduceAnimations
+                            ? const Duration(milliseconds: 100)
+                            : null,
                         canOnlySwipeFromEdge: true,
                         backGestureDetectionWidth: 45,
                         builder: (context) {
                           return MultiBlocProvider(
                             providers: [
-                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                              BlocProvider<AccountBloc>.value(value: accountBloc),
-                              BlocProvider<CreatePostCubit>.value(value: createPostCubit),
+                              BlocProvider<ThunderBloc>.value(
+                                  value: thunderBloc),
+                              BlocProvider<AccountBloc>.value(
+                                  value: accountBloc),
+                              BlocProvider<CreatePostCubit>.value(
+                                  value: createPostCubit),
                             ],
                             child: CreatePostPage(
                               communityId: postViewMedia.postView.community.id,
@@ -347,7 +411,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   postViewMedia: widget.postViewMedia,
                   onCommentSuccess: (commentView, userChanged) {
                     if (!userChanged) {
-                      context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: false));
+                      context.read<PostBloc>().add(UpdateCommentEvent(
+                          commentView: commentView, isEdit: false));
                     }
                   },
                 ),
@@ -359,7 +424,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     );
   }
 
-  Widget _getMediaPreview(ThunderState thunderState, bool hideNsfwPreviews, bool markPostReadOnMediaView, bool isUserLoggedIn) {
+  Widget _getMediaPreview(ThunderState thunderState, bool hideNsfwPreviews,
+      bool markPostReadOnMediaView, bool isUserLoggedIn) {
     return Stack(
       alignment: AlignmentDirectional.bottomEnd,
       children: [
@@ -381,7 +447,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
         Padding(
           padding: const EdgeInsets.only(right: 6, bottom: 0),
           child: TypeBadge(
-            mediaType: postViewMedia.media.firstOrNull?.mediaType ?? MediaType.text,
+            mediaType:
+                postViewMedia.media.firstOrNull?.mediaType ?? MediaType.text,
             dim: false,
           ),
         ),
@@ -434,7 +501,8 @@ class PostBodyPreview extends StatelessWidget {
                   child: viewSource
                       ? ScalableText(
                           post.body ?? '',
-                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(fontFamily: 'monospace'),
                           fontScale: thunderState.contentFontSizeScale,
                         )
                       : CommonMarkdownBody(

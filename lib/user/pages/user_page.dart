@@ -49,7 +49,8 @@ class _UserPageState extends State<UserPage> {
     final bool reduceAnimations = state.reduceAnimations;
 
     return BlocProvider<UserBloc>(
-      create: (BuildContext context) => UserBloc(lemmyClient: LemmyClient.instance),
+      create: (BuildContext context) =>
+          UserBloc(lemmyClient: LemmyClient.instance),
       child: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
           if (userActorId == null && state.personView?.person.actorId != null) {
@@ -101,15 +102,22 @@ class _UserPageState extends State<UserPage> {
                   padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0, 4.0),
                   child: IconButton(
                     onPressed: () {
-                      final AccountBloc accountBloc = context.read<AccountBloc>();
-                      final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                      final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
+                      final AccountBloc accountBloc =
+                          context.read<AccountBloc>();
+                      final ThunderBloc thunderBloc =
+                          context.read<ThunderBloc>();
+                      final UserSettingsBloc userSettingsBloc =
+                          UserSettingsBloc();
 
                       Navigator.of(context).push(
                         SwipeablePageRoute(
-                          transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                          canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
-                          canOnlySwipeFromEdge: !state.enableFullScreenSwipeNavigationGesture,
+                          transitionDuration: reduceAnimations
+                              ? const Duration(milliseconds: 100)
+                              : null,
+                          canSwipe: Platform.isIOS ||
+                              state.enableFullScreenSwipeNavigationGesture,
+                          canOnlySwipeFromEdge:
+                              !state.enableFullScreenSwipeNavigationGesture,
                           builder: (context) => MultiBlocProvider(
                             providers: [
                               BlocProvider.value(value: accountBloc),
@@ -123,7 +131,8 @@ class _UserPageState extends State<UserPage> {
                     },
                     icon: Icon(
                       Icons.settings_rounded,
-                      semanticLabel: AppLocalizations.of(context)!.accountSettings,
+                      semanticLabel:
+                          AppLocalizations.of(context)!.accountSettings,
                     ),
                     tooltip: AppLocalizations.of(context)!.accountSettings,
                   ),
@@ -134,13 +143,21 @@ class _UserPageState extends State<UserPage> {
             userBloc = context.read<UserBloc>();
 
             if (state.status == UserStatus.failedToBlock) {
-              showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+              showSnackbar(state.errorMessage ??
+                  AppLocalizations.of(context)!.missingErrorMessage);
             }
 
             switch (state.status) {
               case UserStatus.initial:
-                context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, username: widget.username, reset: true));
-                context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, reset: true));
+                context.read<UserBloc>().add(GetUserEvent(
+                    userId: widget.userId,
+                    isAccountUser: widget.isAccountUser,
+                    username: widget.username,
+                    reset: true));
+                context.read<UserBloc>().add(GetUserSavedEvent(
+                    userId: widget.userId,
+                    isAccountUser: widget.isAccountUser,
+                    reset: true));
                 return const Center(child: CircularProgressIndicator());
               case UserStatus.loading:
                 return const Center(child: CircularProgressIndicator());
@@ -174,7 +191,8 @@ class _UserPageState extends State<UserPage> {
                   actions: [
                     (
                       text: AppLocalizations.of(context)!.refreshContent,
-                      action: () => context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true)),
+                      action: () => context.read<UserBloc>().add(
+                          GetUserEvent(userId: widget.userId, reset: true)),
                       loading: false,
                     ),
                   ],

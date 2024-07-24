@@ -21,28 +21,33 @@ class NotificationsReplyPage extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: InboxBloc.initWith(replies: replies, showUnreadOnly: true)),
+        BlocProvider.value(
+            value: InboxBloc.initWith(replies: replies, showUnreadOnly: true)),
         BlocProvider.value(value: PostBloc()),
       ],
       child: BlocConsumer<InboxBloc, InboxState>(
         listener: (BuildContext context, InboxState state) {
-          if (state.replies.isEmpty && (ModalRoute.of(context)?.isCurrent ?? false)) {
+          if (state.replies.isEmpty &&
+              (ModalRoute.of(context)?.isCurrent ?? false)) {
             Navigator.of(context).pop();
           }
         },
         builder: (context, state) => Material(
           child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return [
                 SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  handle:
+                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverAppBar(
                     pinned: true,
                     centerTitle: false,
                     toolbarHeight: 70.0,
                     forceElevated: innerBoxIsScrolled,
                     title: ListTile(
-                      title: Text(l10n.inbox, style: theme.textTheme.titleLarge),
+                      title:
+                          Text(l10n.inbox, style: theme.textTheme.titleLarge),
                       subtitle: Text(l10n.reply(replies.length)),
                     ),
                   ),

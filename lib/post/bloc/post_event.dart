@@ -15,7 +15,13 @@ class GetPostEvent extends PostEvent {
   final int? selectedCommentId;
   final int? newlyCreatedCommentId;
 
-  const GetPostEvent({this.sortType, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId, this.newlyCreatedCommentId});
+  const GetPostEvent(
+      {this.sortType,
+      this.postView,
+      this.postId,
+      this.selectedCommentPath,
+      this.selectedCommentId,
+      this.newlyCreatedCommentId});
 }
 
 class GetPostCommentsEvent extends PostEvent {
@@ -25,7 +31,12 @@ class GetPostCommentsEvent extends PostEvent {
   final bool viewAllCommentsRefresh;
   final CommentSortType? sortType;
 
-  const GetPostCommentsEvent({this.postId, this.commentParentId, this.reset = false, this.viewAllCommentsRefresh = false, this.sortType});
+  const GetPostCommentsEvent(
+      {this.postId,
+      this.commentParentId,
+      this.reset = false,
+      this.viewAllCommentsRefresh = false,
+      this.sortType});
 }
 
 class VotePostEvent extends PostEvent {
@@ -47,7 +58,8 @@ class CommentActionEvent extends PostEvent {
   final CommentAction action;
   final dynamic value;
 
-  const CommentActionEvent({required this.commentId, required this.action, required this.value});
+  const CommentActionEvent(
+      {required this.commentId, required this.action, required this.value});
 }
 
 final class CommentItemUpdatedEvent extends PostEvent {
@@ -94,7 +106,8 @@ class NavigateCommentEvent extends PostEvent {
   final NavigateCommentDirection direction;
   final int targetIndex;
 
-  const NavigateCommentEvent({required this.targetIndex, required this.direction});
+  const NavigateCommentEvent(
+      {required this.targetIndex, required this.direction});
 }
 
 class StartCommentSearchEvent extends PostEvent {

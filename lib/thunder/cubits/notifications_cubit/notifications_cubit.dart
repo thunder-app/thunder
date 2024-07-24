@@ -15,19 +15,31 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   final Stream<NotificationResponse> notificationsStream;
   StreamSubscription<NotificationResponse>? _notificationsStreamSubscription;
 
-  NotificationsCubit({required this.notificationsStream}) : super(const NotificationsState());
+  NotificationsCubit({required this.notificationsStream})
+      : super(const NotificationsState());
 
   void handleNotifications() {
-    _notificationsStreamSubscription = notificationsStream.listen((notificationResponse) async {
-      NotificationPayload? payload = notificationResponse.payload?.isNotEmpty == true ? NotificationPayload.fromJson(jsonDecode(notificationResponse.payload!)) : null;
+    _notificationsStreamSubscription =
+        notificationsStream.listen((notificationResponse) async {
+      NotificationPayload? payload =
+          notificationResponse.payload?.isNotEmpty == true
+              ? NotificationPayload.fromJson(
+                  jsonDecode(notificationResponse.payload!))
+              : null;
 
       // Check if this is a reply notification
       if (payload?.inboxType == NotificationInboxType.reply) {
-        emit(state.copyWith(status: NotificationsStatus.reply, replyId: payload!.id, accountId: payload.accountId));
+        emit(state.copyWith(
+            status: NotificationsStatus.reply,
+            replyId: payload!.id,
+            accountId: payload.accountId));
       }
 
       // Reset the state
-      emit(state.copyWith(status: NotificationsStatus.none, replyId: null, accountId: payload?.accountId));
+      emit(state.copyWith(
+          status: NotificationsStatus.none,
+          replyId: null,
+          accountId: payload?.accountId));
     });
   }
 

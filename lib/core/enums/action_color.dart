@@ -34,12 +34,24 @@ class ActionColor {
 
   static List<ActionColor> getPossibleValues(ActionColor currentValue) {
     return [
-      currentValue.colorRaw == orange ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.orange),
-      currentValue.colorRaw == blue ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.blue),
-      currentValue.colorRaw == purple ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.purple),
-      currentValue.colorRaw == teal ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.teal),
-      currentValue.colorRaw == green ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.green),
-      currentValue.colorRaw == red ? currentValue : const ActionColor.fromString(colorRaw: ActionColor.red),
+      currentValue.colorRaw == orange
+          ? currentValue
+          : const ActionColor.fromString(colorRaw: ActionColor.orange),
+      currentValue.colorRaw == blue
+          ? currentValue
+          : const ActionColor.fromString(colorRaw: ActionColor.blue),
+      currentValue.colorRaw == purple
+          ? currentValue
+          : const ActionColor.fromString(colorRaw: ActionColor.purple),
+      currentValue.colorRaw == teal
+          ? currentValue
+          : const ActionColor.fromString(colorRaw: ActionColor.teal),
+      currentValue.colorRaw == green
+          ? currentValue
+          : const ActionColor.fromString(colorRaw: ActionColor.green),
+      currentValue.colorRaw == red
+          ? currentValue
+          : const ActionColor.fromString(colorRaw: ActionColor.red),
     ];
   }
 }

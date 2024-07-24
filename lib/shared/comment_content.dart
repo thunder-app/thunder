@@ -62,7 +62,8 @@ class CommentContent extends StatefulWidget {
   State<CommentContent> createState() => _CommentContentState();
 }
 
-class _CommentContentState extends State<CommentContent> with SingleTickerProviderStateMixin {
+class _CommentContentState extends State<CommentContent>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
@@ -118,42 +119,64 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
+                          padding: EdgeInsets.only(
+                              top: 0,
+                              right: 8.0,
+                              left: 8.0,
+                              bottom: (state.showCommentButtonActions &&
+                                      widget.isUserLoggedIn &&
+                                      !widget.disableActions)
+                                  ? 0.0
+                                  : 8.0),
                           child: ConditionalParentWidget(
                             condition: widget.selectable,
                             parentBuilder: (child) {
                               return SelectableRegion(
                                 focusNode: _selectableRegionFocusNode,
                                 // See comments on [SelectableTextModal] regarding the next two properties
-                                selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
-                                contextMenuBuilder: (context, selectableRegionState) {
-                                  return AdaptiveTextSelectionToolbar.buttonItems(
-                                    buttonItems: selectableRegionState.contextMenuButtonItems,
-                                    anchors: selectableRegionState.contextMenuAnchors,
+                                selectionControls: Platform.isIOS
+                                    ? cupertinoTextSelectionHandleControls
+                                    : materialTextSelectionHandleControls,
+                                contextMenuBuilder:
+                                    (context, selectableRegionState) {
+                                  return AdaptiveTextSelectionToolbar
+                                      .buttonItems(
+                                    buttonItems: selectableRegionState
+                                        .contextMenuButtonItems,
+                                    anchors: selectableRegionState
+                                        .contextMenuAnchors,
                                   );
                                 },
-                                onSelectionChanged: (value) => widget.onSelectionChanged?.call(value?.plainText),
+                                onSelectionChanged: (value) => widget
+                                    .onSelectionChanged
+                                    ?.call(value?.plainText),
                                 child: child,
                               );
                             },
                             child: widget.viewSource
                                 ? ScalableText(
                                     cleanCommentContent(widget.comment.comment),
-                                    style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                                    style: theme.textTheme.bodySmall
+                                        ?.copyWith(fontFamily: 'monospace'),
                                     fontScale: state.contentFontSizeScale,
                                   )
                                 : CommonMarkdownBody(
-                                    body: cleanCommentContent(widget.comment.comment),
+                                    body: cleanCommentContent(
+                                        widget.comment.comment),
                                     isComment: true,
                                   ),
                           ),
                         ),
-                        if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
+                        if (state.showCommentButtonActions &&
+                            widget.isUserLoggedIn &&
+                            !widget.disableActions)
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
+                            padding: const EdgeInsets.only(
+                                bottom: 4, top: 6, right: 4.0),
                             child: CommentCardActions(
                               commentView: widget.comment,
-                              onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
+                              onVoteAction: (int commentId, int vote) =>
+                                  widget.onVoteAction(commentId, vote),
                               isEdit: widget.isOwnComment,
                               onSaveAction: widget.onSaveAction,
                               onDeleteAction: widget.onDeleteAction,
@@ -166,7 +189,8 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                       ],
                     ),
             ),
-            if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true) ...[
+            if (widget.showReplyEditorButtons &&
+                widget.comment.comment.content.isNotEmpty == true) ...[
               const Padding(
                 padding: EdgeInsets.only(left: 8.0, right: 8.0),
                 child: ThunderDivider(sliver: false, padding: false),

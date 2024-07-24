@@ -40,7 +40,8 @@ final class ReportFeedChangeFilterTypeEvent extends ReportEvent {
   /// The community id to filter the report feed on
   final int? communityId;
 
-  const ReportFeedChangeFilterTypeEvent({this.showResolved = false, this.communityId});
+  const ReportFeedChangeFilterTypeEvent(
+      {this.showResolved = false, this.communityId});
 }
 
 final class ReportFeedItemActionedEvent extends ReportEvent {
@@ -57,7 +58,11 @@ final class ReportFeedItemActionedEvent extends ReportEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  const ReportFeedItemActionedEvent({this.postReportView, this.commentReportView, required this.reportAction, this.value});
+  const ReportFeedItemActionedEvent(
+      {this.postReportView,
+      this.commentReportView,
+      required this.reportAction,
+      this.value});
 }
 
 /// Event for clearing the report feed snackbar message

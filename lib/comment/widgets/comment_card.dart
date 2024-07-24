@@ -82,7 +82,8 @@ class CommentCard extends StatefulWidget {
   State<CommentCard> createState() => _CommentCardState();
 }
 
-class _CommentCardState extends State<CommentCard> with SingleTickerProviderStateMixin {
+class _CommentCardState extends State<CommentCard>
+    with SingleTickerProviderStateMixin {
   /// The current point at which the user drags the comment
   double dismissThreshold = 0;
 
@@ -125,17 +126,22 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     final state = context.read<ThunderBloc>().state;
 
     // Checks for the same creator id to user id
-    final bool isOwnComment = widget.commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
+    final bool isOwnComment = widget.commentView.creator.id ==
+        context.read<AuthBloc>().state.account?.userId;
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     final int commentId = widget.commentView.comment.id;
-    final bool highlightComment = widget.selectCommentId == commentId && widget.newlyCreatedCommentId == null || widget.newlyCreatedCommentId == commentId;
+    final bool highlightComment = widget.selectCommentId == commentId &&
+            widget.newlyCreatedCommentId == null ||
+        widget.newlyCreatedCommentId == commentId;
 
     // Hide the comment if it is hidden - this happens when a parent comment is collapsed
     if (widget.hidden) return const SizedBox.shrink();
 
-    NestedCommentIndicatorStyle nestedCommentIndicatorStyle = state.nestedCommentIndicatorStyle;
-    NestedCommentIndicatorColor nestedCommentIndicatorColor = state.nestedCommentIndicatorColor;
+    NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
+        state.nestedCommentIndicatorStyle;
+    NestedCommentIndicatorColor nestedCommentIndicatorColor =
+        state.nestedCommentIndicatorColor;
 
     return Container(
       margin: EdgeInsets.only(left: widget.level * 4.0),
@@ -155,9 +161,12 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 triggerCommentAction(
                   context: context,
                   swipeAction: swipeAction,
-                  onSaveAction: (int commentId, bool saved) => widget.onSaveAction?.call(commentId, saved),
-                  onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
-                  onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                  onSaveAction: (int commentId, bool saved) =>
+                      widget.onSaveAction?.call(commentId, saved),
+                  onVoteAction: (int commentId, int vote) =>
+                      widget.onVoteAction?.call(commentId, vote),
+                  onReplyEditAction: (CommentView commentView, bool isEdit) =>
+                      widget.onReplyEditAction?.call(commentView, isEdit),
                   voteType: widget.commentView.myVote ?? 0,
                   saved: widget.commentView.saved,
                   commentView: widget.commentView,
@@ -173,25 +182,37 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
               // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
               if (horizontalDragDistance > 0) {
-                if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+                if (determineCommentSwipeDirection(isUserLoggedIn, state) ==
+                        DismissDirection.endToStart &&
+                    isOverridingSwipeGestureAction == false &&
+                    dismissThreshold == 0.0) {
                   setState(() => isOverridingSwipeGestureAction = true);
                 }
               } else {
-                if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+                if (determineCommentSwipeDirection(isUserLoggedIn, state) ==
+                        DismissDirection.endToStart &&
+                    isOverridingSwipeGestureAction == true) {
                   setState(() => isOverridingSwipeGestureAction = false);
                 }
               }
             },
             child: Dismissible(
               key: ObjectKey(widget.commentView.comment.id),
-              direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
+              direction: isOverridingSwipeGestureAction == true
+                  ? DismissDirection.none
+                  : determineCommentSwipeDirection(isUserLoggedIn, state),
               resizeDuration: Duration.zero,
-              dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
+              dismissThresholds: const {
+                DismissDirection.endToStart: 1,
+                DismissDirection.startToEnd: 1
+              },
               confirmDismiss: (DismissDirection direction) async => false,
               onUpdate: (DismissUpdateDetails details) {
                 SwipeAction? updatedSwipeAction;
 
-                if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                if (details.progress > firstActionThreshold &&
+                    details.progress < secondActionThreshold &&
+                    details.direction == DismissDirection.startToEnd) {
                   updatedSwipeAction = state.leftPrimaryCommentGesture;
 
                   // Change the swipe action to edit for comments
@@ -199,8 +220,10 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     updatedSwipeAction = SwipeAction.edit;
                   }
 
-                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                  if (updatedSwipeAction != swipeAction)
+                    HapticFeedback.mediumImpact();
+                } else if (details.progress > secondActionThreshold &&
+                    details.direction == DismissDirection.startToEnd) {
                   if (state.leftSecondaryCommentGesture != SwipeAction.none) {
                     updatedSwipeAction = state.leftSecondaryCommentGesture;
                   } else {
@@ -212,8 +235,11 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     updatedSwipeAction = SwipeAction.edit;
                   }
 
-                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                  if (updatedSwipeAction != swipeAction)
+                    HapticFeedback.mediumImpact();
+                } else if (details.progress > firstActionThreshold &&
+                    details.progress < secondActionThreshold &&
+                    details.direction == DismissDirection.endToStart) {
                   updatedSwipeAction = state.rightPrimaryCommentGesture;
 
                   // Change the swipe action to edit for comments
@@ -221,8 +247,10 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     updatedSwipeAction = SwipeAction.edit;
                   }
 
-                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                  if (updatedSwipeAction != swipeAction)
+                    HapticFeedback.mediumImpact();
+                } else if (details.progress > secondActionThreshold &&
+                    details.direction == DismissDirection.endToStart) {
                   if (state.rightSecondaryCommentGesture != SwipeAction.none) {
                     updatedSwipeAction = state.rightSecondaryCommentGesture;
                   } else {
@@ -234,7 +262,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     updatedSwipeAction = SwipeAction.edit;
                   }
 
-                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                  if (updatedSwipeAction != swipeAction)
+                    HapticFeedback.mediumImpact();
                 } else {
                   updatedSwipeAction = null;
                 }
@@ -249,36 +278,51 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   ? AnimatedContainer(
                       alignment: Alignment.centerLeft,
                       color: swipeAction == null
-                          ? state.leftPrimaryCommentGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                          ? state.leftPrimaryCommentGesture
+                              .getColor(context)
+                              .withOpacity(
+                                  dismissThreshold / firstActionThreshold)
                           : (swipeAction ?? SwipeAction.none).getColor(context),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
+                        width: MediaQuery.of(context).size.width *
+                            dismissThreshold,
+                        child: swipeAction == null
+                            ? Container()
+                            : Icon((swipeAction ?? SwipeAction.none).getIcon()),
                       ),
                     )
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
                       color: swipeAction == null
-                          ? (state.rightPrimaryCommentGesture).getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                          ? (state.rightPrimaryCommentGesture)
+                              .getColor(context)
+                              .withOpacity(
+                                  dismissThreshold / firstActionThreshold)
                           : (swipeAction ?? SwipeAction.none).getColor(context),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
+                        width: MediaQuery.of(context).size.width *
+                            dismissThreshold,
+                        child: swipeAction == null
+                            ? Container()
+                            : Icon((swipeAction ?? SwipeAction.none).getIcon()),
                       ),
                     ),
               child: Container(
                 decoration: BoxDecoration(
-                  border: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thin
+                  border: nestedCommentIndicatorStyle ==
+                          NestedCommentIndicatorStyle.thin
                       ? Border(
                           left: BorderSide(
                             width: widget.level == 0 ? 0 : 1.0,
                             // This is the color of the nested comment indicator in thin mode
                             color: widget.level == 0
                                 ? theme.colorScheme.background
-                                : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
-                                    ? getCommentLevelColor(context, (widget.level - 1) % 6)
+                                : nestedCommentIndicatorColor ==
+                                        NestedCommentIndicatorColor.colorful
+                                    ? getCommentLevelColor(
+                                        context, (widget.level - 1) % 6)
                                     : theme.hintColor.withOpacity(0.25),
                           ),
                         )
@@ -288,8 +332,10 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             // This is the color of the nested comment indicator in thin mode
                             color: widget.level == 0
                                 ? theme.colorScheme.background
-                                : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
-                                    ? getCommentLevelColor(context, (widget.level - 1) % 6)
+                                : nestedCommentIndicatorColor ==
+                                        NestedCommentIndicatorColor.colorful
+                                    ? getCommentLevelColor(
+                                        context, (widget.level - 1) % 6)
                                     : theme.hintColor,
                           ),
                         ),
@@ -314,7 +360,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 context,
                                 commentView: isEdit ? commentView : null,
                                 parentCommentView: isEdit ? null : commentView,
-                                onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                                onCommentSuccess: (commentView, isEdit) =>
+                                    widget.onReplyEditAction
+                                        ?.call(commentView, isEdit),
                               );
                             },
                             widget.onReportAction ?? () {},
@@ -323,27 +371,36 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           );
                         },
                         onTap: () {
-                          widget.onCollapseCommentChange?.call(widget.commentView.comment.id, !widget.collapsed);
+                          widget.onCollapseCommentChange?.call(
+                              widget.commentView.comment.id, !widget.collapsed);
                         },
                         child: CommentContent(
                           comment: widget.commentView,
                           isUserLoggedIn: isUserLoggedIn,
-                          onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
-                          onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
-                          onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
-                          onReportAction: (int commentId) => widget.onReportAction?.call(commentId),
-                          onReplyEditAction: (CommentView commentView, bool isEdit) {
+                          onSaveAction: (int commentId, bool save) =>
+                              widget.onSaveAction?.call(commentId, save),
+                          onVoteAction: (int commentId, int vote) =>
+                              widget.onVoteAction?.call(commentId, vote),
+                          onDeleteAction: (int commentId, bool deleted) =>
+                              widget.onDeleteAction?.call(commentId, deleted),
+                          onReportAction: (int commentId) =>
+                              widget.onReportAction?.call(commentId),
+                          onReplyEditAction:
+                              (CommentView commentView, bool isEdit) {
                             return navigateToCreateCommentPage(
                               context,
                               commentView: isEdit ? commentView : null,
                               parentCommentView: isEdit ? null : commentView,
-                              onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                              onCommentSuccess: (commentView, isEdit) => widget
+                                  .onReplyEditAction
+                                  ?.call(commentView, isEdit),
                             );
                           },
                           isOwnComment: isOwnComment,
                           isHidden: widget.collapsed,
                           viewSource: viewSource,
-                          onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                          onViewSourceToggled: () =>
+                              setState(() => viewSource = !viewSource),
                         ),
                       ),
                     ],
@@ -352,7 +409,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               ),
             ),
           ),
-          if (widget.replyCount == 0 && widget.commentView.counts.childCount > 0)
+          if (widget.replyCount == 0 &&
+              widget.commentView.counts.childCount > 0)
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
               switchInCurve: Curves.easeInOutCubicEmphasized,
@@ -360,7 +418,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               transitionBuilder: (Widget child, Animation<double> animation) {
                 return SizeTransition(
                   sizeFactor: animation,
-                  child: SlideTransition(position: _offsetAnimation, child: child),
+                  child:
+                      SlideTransition(position: _offsetAnimation, child: child),
                 );
               },
               child: widget.collapsed
@@ -368,7 +427,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   : AdditionalCommentCard(
                       depth: widget.level,
                       replies: widget.commentView.counts.childCount,
-                      onTap: () => context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: widget.commentView.comment.id)),
+                      onTap: () => context.read<PostBloc>().add(
+                          GetPostCommentsEvent(
+                              commentParentId: widget.commentView.comment.id)),
                     ),
             ),
         ],
@@ -407,8 +468,10 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
     final theme = Theme.of(context);
     final state = context.watch<ThunderBloc>().state;
 
-    NestedCommentIndicatorStyle nestedCommentIndicatorStyle = state.nestedCommentIndicatorStyle;
-    NestedCommentIndicatorColor nestedCommentIndicatorColor = state.nestedCommentIndicatorColor;
+    NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
+        state.nestedCommentIndicatorStyle;
+    NestedCommentIndicatorColor nestedCommentIndicatorColor =
+        state.nestedCommentIndicatorColor;
 
     return Container(
       margin: EdgeInsets.only(left: widget.depth + 1 * 4.0),
@@ -428,25 +491,39 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
                   decoration: BoxDecoration(
                     border: Border(
                       left: BorderSide(
-                        width: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? 4.0 : 1,
+                        width: nestedCommentIndicatorStyle ==
+                                NestedCommentIndicatorStyle.thick
+                            ? 4.0
+                            : 1,
                         // This is the color of the nested comment indicator for deferred load
-                        color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? getCommentLevelColor(context, (widget.depth % 6).toInt()) : theme.hintColor,
+                        color: nestedCommentIndicatorColor ==
+                                NestedCommentIndicatorColor.colorful
+                            ? getCommentLevelColor(
+                                context, (widget.depth % 6).toInt())
+                            : theme.hintColor,
                       ),
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 8.0),
                   child: ScalableText(
-                    widget.replies == 1 ? l10n.loadMoreSingular(widget.replies) : l10n.loadMorePlural(widget.replies),
+                    widget.replies == 1
+                        ? l10n.loadMoreSingular(widget.replies)
+                        : l10n.loadMorePlural(widget.replies),
                     fontScale: state.commentFontSizeScale,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
                     ),
                   ),
                 ),
                 if (isLoading)
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                    child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator()),
                   )
               ],
             )

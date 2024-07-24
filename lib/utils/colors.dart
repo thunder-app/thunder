@@ -7,7 +7,9 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 Color getBackgroundColor(BuildContext context) {
   final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
   final ThemeData theme = Theme.of(context);
-  return darkTheme ? theme.dividerColor.darken(5) : theme.dividerColor.lighten(20);
+  return darkTheme
+      ? theme.dividerColor.darken(5)
+      : theme.dividerColor.lighten(20);
 }
 
 /// Retrieves the color based on the depth of the comment in the comment tree
@@ -24,5 +26,6 @@ Color getCommentLevelColor(BuildContext context, int level) {
 
   final theme = Theme.of(context);
 
-  return Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), colors[level]);
+  return Color.alphaBlend(
+      theme.colorScheme.primary.withOpacity(0.4), colors[level]);
 }

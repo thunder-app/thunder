@@ -15,7 +15,8 @@ class InboxPrivateMessagesView extends StatefulWidget {
   const InboxPrivateMessagesView({super.key, this.privateMessages = const []});
 
   @override
-  State<InboxPrivateMessagesView> createState() => _InboxPrivateMessagesViewState();
+  State<InboxPrivateMessagesView> createState() =>
+      _InboxPrivateMessagesViewState();
 }
 
 class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
@@ -29,7 +30,8 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
       return CustomScrollView(
         key: PageStorageKey<String>(l10n.message(10)),
         slivers: [
-          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+          SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
           if (state.status == InboxStatus.loading)
             const SliverFillRemaining(
               hasScrollBody: false,
@@ -45,7 +47,8 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
             itemBuilder: (context, index) {
               return Card(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -57,30 +60,40 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
                             children: [
                               Text(
                                 widget.privateMessages[index].creator.name,
-                                style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
+                                style: theme.textTheme.titleSmall
+                                    ?.copyWith(color: Colors.greenAccent),
                               ),
                               const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Icon(Icons.arrow_forward_rounded, size: 14),
+                                child:
+                                    Icon(Icons.arrow_forward_rounded, size: 14),
                               ),
                               Text(
                                 widget.privateMessages[index].recipient.name,
-                                style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
+                                style: theme.textTheme.titleSmall
+                                    ?.copyWith(color: Colors.greenAccent),
                               ),
                             ],
                           ),
-                          Text(formatTimeToString(dateTime: widget.privateMessages[index].privateMessage.published.toIso8601String()))
+                          Text(formatTimeToString(
+                              dateTime: widget.privateMessages[index]
+                                  .privateMessage.published
+                                  .toIso8601String()))
                         ],
                       ),
                       const SizedBox(height: 10),
-                      CommonMarkdownBody(body: widget.privateMessages[index].privateMessage.content),
+                      CommonMarkdownBody(
+                          body: widget
+                              .privateMessages[index].privateMessage.content),
                     ],
                   ),
                 ),
               );
             },
           ),
-          if (state.hasReachedInboxMentionEnd && widget.privateMessages.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
+          if (state.hasReachedInboxMentionEnd &&
+              widget.privateMessages.isNotEmpty)
+            const SliverToBoxAdapter(child: FeedReachedEnd()),
         ],
       );
     });

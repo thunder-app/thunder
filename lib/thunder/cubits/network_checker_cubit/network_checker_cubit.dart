@@ -12,7 +12,9 @@ class NetworkCheckerCubit extends Cubit<NetworkCheckerState> {
 
   Future<void> getConnectionType() async {
     emit(const NetworkCheckerState(status: NetworkCheckerStatus.loading));
-    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
+    Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> result) {
       // Received changes in available connectivity types!
       switch (result) {
         case [ConnectivityResult.wifi]:

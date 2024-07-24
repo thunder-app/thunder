@@ -23,12 +23,14 @@ final RegExp fullCommunityUrl = RegExp(r'^!?(https?:\/\/)?(.*)\/c\/(.*)@(.*)$');
 /// Matches instance.tld/c/community
 /// Puts community in group 3 and instance.tld in group 2
 /// https://regex101.com/r/AW2qTr/1
-final RegExp shortCommunityUrl = RegExp(r'^!?(https?:\/\/)?(.*)\/c\/([^@\n]*)$');
+final RegExp shortCommunityUrl =
+    RegExp(r'^!?(https?:\/\/)?(.*)\/c\/([^@\n]*)$');
 
 /// Matches community@instance.tld
 /// Puts community in group 2 and instance.tld in group 3
 /// https://regex101.com/r/1VrXgX/1
-final RegExp instanceName = RegExp(r'^!?(https?:\/\/)?((?:(?!\/c\/c).)*)@(.*)$');
+final RegExp instanceName =
+    RegExp(r'^!?(https?:\/\/)?((?:(?!\/c\/c).)*)@(.*)$');
 
 /// Checks if the given text references a community on a valid Lemmy server.
 /// If so, returns the community name in the format community@instance.tld.
@@ -36,7 +38,8 @@ final RegExp instanceName = RegExp(r'^!?(https?:\/\/)?((?:(?!\/c\/c).)*)@(.*)$')
 Future<String?> getLemmyCommunity(String text) async {
   // Do an initial check for usernames in the format /u/user@instance.tld or @user@instance.tld.
   // These can accidentally trip our community name detection.
-  if (text.toLowerCase().startsWith('/u/') || text.toLowerCase().startsWith('@')) {
+  if (text.toLowerCase().startsWith('/u/') ||
+      text.toLowerCase().startsWith('@')) {
     return null;
   }
 
@@ -45,8 +48,10 @@ Future<String?> getLemmyCommunity(String text) async {
     return '${fullCommunityUrlMatch.group(3)}@${fullCommunityUrlMatch.group(4)}';
   }
 
-  final RegExpMatch? shortCommunityUrlMatch = shortCommunityUrl.firstMatch(text);
-  if (shortCommunityUrlMatch != null && shortCommunityUrlMatch.groupCount >= 3) {
+  final RegExpMatch? shortCommunityUrlMatch =
+      shortCommunityUrl.firstMatch(text);
+  if (shortCommunityUrlMatch != null &&
+      shortCommunityUrlMatch.groupCount >= 3) {
     return '${shortCommunityUrlMatch.group(3)}@${shortCommunityUrlMatch.group(2)}';
   }
 
@@ -76,7 +81,8 @@ final RegExp username = RegExp(r'^@?(https?:\/\/)?((?:(?!\/u\/u).)*)@(.*)$');
 Future<String?> getLemmyUser(String text) async {
   // Do an initial check for communities in the format /c/community@instance.tld or !community@instance.tld.
   // These can accidentally trip our user name detection.
-  if (text.toLowerCase().startsWith('/c/') || text.toLowerCase().startsWith('!')) {
+  if (text.toLowerCase().startsWith('/c/') ||
+      text.toLowerCase().startsWith('!')) {
     return null;
   }
 
@@ -115,7 +121,8 @@ Future<int?> getLemmyPostId(BuildContext context, String text) async {
           // Show the loading page while we resolve the post
           showLoadingPage(context);
 
-          final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
+          final ResolveObjectResponse resolveObjectResponse =
+              await lemmy.run(ResolveObject(q: text));
           return resolveObjectResponse.post?.post.id;
         } catch (e) {
           return null;
@@ -144,7 +151,8 @@ Future<int?> getLemmyCommentId(BuildContext context, String text) async {
           // Show the loading page while we resolve the post
           showLoadingPage(context);
 
-          final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
+          final ResolveObjectResponse resolveObjectResponse =
+              await lemmy.run(ResolveObject(q: text));
           return resolveObjectResponse.comment?.comment.id;
         } catch (e) {
           return null;
@@ -175,16 +183,20 @@ class GetInstanceInfoResponse {
     this.id,
   });
 
-  bool isMetadataPopulated() => icon != null || version != null || name != null || users != null;
+  bool isMetadataPopulated() =>
+      icon != null || version != null || name != null || users != null;
 }
 
-Future<GetInstanceInfoResponse> getInstanceInfo(String? url, {int? id, Duration? timeout}) async {
+Future<GetInstanceInfoResponse> getInstanceInfo(String? url,
+    {int? id, Duration? timeout}) async {
   if (url?.isEmpty ?? true) {
     return const GetInstanceInfoResponse(success: false);
   }
 
   try {
-    final site = await LemmyApiV3(url!).run(const GetSite()).timeout(timeout ?? const Duration(seconds: 5));
+    final site = await LemmyApiV3(url!)
+        .run(const GetSite())
+        .timeout(timeout ?? const Duration(seconds: 5));
     return GetInstanceInfoResponse(
       success: true,
       icon: site.siteView.site.icon,

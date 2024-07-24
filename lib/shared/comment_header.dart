@@ -42,19 +42,26 @@ class CommentHeader extends StatelessWidget {
 
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
-    bool? isCommentNew = DateTime.now().toUtc().difference(comment.comment.published).inMinutes < 15;
+    bool? isCommentNew =
+        DateTime.now().toUtc().difference(comment.comment.published).inMinutes <
+            15;
 
     List<UserType> userGroups = [];
 
     if (comment.creator.botAccount) userGroups.add(UserType.bot);
     if (comment.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (comment.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
-    if (comment.post.creatorId == comment.creator.id) userGroups.add(UserType.op);
-    if (comment.creator.id == accountState.personView?.person.id) userGroups.add(UserType.self);
-    if (comment.creator.published.month == DateTime.now().month && comment.creator.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
+    if (comment.post.creatorId == comment.creator.id)
+      userGroups.add(UserType.op);
+    if (comment.creator.id == accountState.personView?.person.id)
+      userGroups.add(UserType.self);
+    if (comment.creator.published.month == DateTime.now().month &&
+        comment.creator.published.day == DateTime.now().day)
+      userGroups.add(UserType.birthday);
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(userGroups.isNotEmpty ? 8.0 : 8.0, 10.0, 8.0, 10.0),
+      padding: EdgeInsets.fromLTRB(
+          userGroups.isNotEmpty ? 8.0 : 8.0, 10.0, 8.0, 10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -65,10 +72,15 @@ class CommentHeader extends StatelessWidget {
                   children: [
                     UserChip(
                       person: comment.creator,
-                      personAvatar: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
+                      personAvatar: UserAvatar(
+                          person: comment.creator,
+                          radius: 10,
+                          thumbnailSize: 20,
+                          format: 'png'),
                       userGroups: userGroups,
                       includeInstance: state.commentShowUserInstance,
-                      ignorePointerEvents: isHidden && collapseParentCommentOnGesture,
+                      ignorePointerEvents:
+                          isHidden && collapseParentCommentOnGesture,
                       opacity: 1.0,
                     ),
                     const SizedBox(width: 8.0),
@@ -79,13 +91,18 @@ class CommentHeader extends StatelessWidget {
               Row(
                 children: [
                   AnimatedOpacity(
-                    opacity: (isHidden && (collapseParentCommentOnGesture || comment.counts.childCount > 0)) ? 1 : 0,
+                    opacity: (isHidden &&
+                            (collapseParentCommentOnGesture ||
+                                comment.counts.childCount > 0))
+                        ? 1
+                        : 0,
                     // Matches the collapse animation
                     duration: const Duration(milliseconds: 130),
                     child: Container(
                       decoration: BoxDecoration(
                         color: theme.colorScheme.primaryContainer,
-                        borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.elliptical(5, 5)),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 5, right: 5),
@@ -99,7 +116,9 @@ class CommentHeader extends StatelessWidget {
                   const SizedBox(width: 8.0),
                   Icon(
                     saved == true ? Icons.star_rounded : null,
-                    color: saved == true ? context.read<ThunderBloc>().state.saveColor.color : null,
+                    color: saved == true
+                        ? context.read<ThunderBloc>().state.saveColor.color
+                        : null,
                     size: saved == true ? 18.0 : 0,
                   ),
                   SizedBox(
@@ -111,7 +130,12 @@ class CommentHeader extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    decoration: isCommentNew ? BoxDecoration(color: theme.splashColor, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))) : null,
+                    decoration: isCommentNew
+                        ? BoxDecoration(
+                            color: theme.splashColor,
+                            borderRadius:
+                                const BorderRadius.all(Radius.elliptical(5, 5)))
+                        : null,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 5, right: 5),
                       child: Row(
@@ -127,16 +151,24 @@ class CommentHeader extends StatelessWidget {
                               : Container(),
                           if (comment.comment.id == moddingCommentId) ...[
                             Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: SizedBox(
-                                    width: state.metadataFontSizeScale.textScaleFactor * 15,
-                                    height: state.metadataFontSizeScale.textScaleFactor * 15,
+                                    width: state.metadataFontSizeScale
+                                            .textScaleFactor *
+                                        15,
+                                    height: state.metadataFontSizeScale
+                                            .textScaleFactor *
+                                        15,
                                     child: CircularProgressIndicator(
                                       color: theme.colorScheme.primary,
                                     )))
                           ] else
                             ScalableText(
-                              formatTimeToString(dateTime: (comment.comment.updated ?? comment.comment.published).toIso8601String()),
+                              formatTimeToString(
+                                  dateTime: (comment.comment.updated ??
+                                          comment.comment.published)
+                                      .toIso8601String()),
                               fontScale: state.metadataFontSizeScale,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.colorScheme.onBackground,
@@ -152,7 +184,8 @@ class CommentHeader extends StatelessWidget {
           ),
           FutureBuilder(
             future: () async {
-              final String username = UserLabel.usernameFromParts(comment.creator.name, comment.creator.actorId);
+              final String username = UserLabel.usernameFromParts(
+                  comment.creator.name, comment.creator.actorId);
               return await UserLabel.fetchUserLabel(username);
             }(),
             builder: (context, snapshot) {
@@ -193,7 +226,9 @@ class CommentHeaderScore extends StatelessWidget {
     final ThunderState state = context.read<ThunderBloc>().state;
     final AuthState authState = context.watch<AuthBloc>().state;
 
-    bool showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+    bool showScores =
+        authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ??
+            true;
     bool combineCommentScores = state.combineCommentScores;
 
     int? myVote = comment.myVote;
@@ -208,7 +243,9 @@ class CommentHeaderScore extends StatelessWidget {
       return Icon(
         myVote == 1 ? Icons.north_rounded : Icons.south_rounded,
         size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-        color: myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : context.read<ThunderBloc>().state.downvoteColor.color,
+        color: myVote == 1
+            ? context.read<ThunderBloc>().state.upvoteColor.color
+            : context.read<ThunderBloc>().state.downvoteColor.color,
       );
     }
 
@@ -218,24 +255,36 @@ class CommentHeaderScore extends StatelessWidget {
         Icon(
           Icons.north_rounded,
           size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-          color: myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.colorScheme.onBackground,
+          color: myVote == 1
+              ? context.read<ThunderBloc>().state.upvoteColor.color
+              : theme.colorScheme.onBackground,
         ),
         const SizedBox(width: 2.0),
         ScalableText(
-          combineCommentScores ? formatNumberToK(score) : formatNumberToK(upvotes),
-          semanticsLabel: combineCommentScores ? l10n.xScore(formatNumberToK(score)) : l10n.xUpvotes(formatNumberToK(upvotes)),
+          combineCommentScores
+              ? formatNumberToK(score)
+              : formatNumberToK(upvotes),
+          semanticsLabel: combineCommentScores
+              ? l10n.xScore(formatNumberToK(score))
+              : l10n.xUpvotes(formatNumberToK(upvotes)),
           fontScale: state.metadataFontSizeScale,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: myVote == 1
                 ? context.read<ThunderBloc>().state.upvoteColor.color
-                : (myVote == -1 && combineCommentScores ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground),
+                : (myVote == -1 && combineCommentScores
+                    ? context.read<ThunderBloc>().state.downvoteColor.color
+                    : theme.colorScheme.onBackground),
           ),
         ),
         SizedBox(width: combineCommentScores ? 2.0 : 10.0),
         Icon(
           Icons.south_rounded,
           size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-          color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground) : Colors.transparent,
+          color: (downvotes != 0 || combineCommentScores)
+              ? (myVote == -1
+                  ? context.read<ThunderBloc>().state.downvoteColor.color
+                  : theme.colorScheme.onBackground)
+              : Colors.transparent,
         ),
         if (!combineCommentScores) ...[
           const SizedBox(width: 2.0),
@@ -245,7 +294,11 @@ class CommentHeaderScore extends StatelessWidget {
               fontScale: state.metadataFontSizeScale,
               semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: downvotes != 0 ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground) : Colors.transparent,
+                color: downvotes != 0
+                    ? (myVote == -1
+                        ? context.read<ThunderBloc>().state.downvoteColor.color
+                        : theme.colorScheme.onBackground)
+                    : Colors.transparent,
               ),
             ),
         ],

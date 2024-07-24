@@ -17,7 +17,8 @@ class ExpandableOption extends StatefulWidget {
   State<ExpandableOption> createState() => _ExpandableOptionState();
 }
 
-class _ExpandableOptionState extends State<ExpandableOption> with SingleTickerProviderStateMixin {
+class _ExpandableOptionState extends State<ExpandableOption>
+    with SingleTickerProviderStateMixin {
   bool isExpanded = false;
 
   late final AnimationController _controller = AnimationController(
@@ -58,7 +59,9 @@ class _ExpandableOptionState extends State<ExpandableOption> with SingleTickerPr
                 const SizedBox(
                   height: 40,
                 ),
-                Icon(isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded),
+                Icon(isExpanded
+                    ? Icons.keyboard_arrow_up_rounded
+                    : Icons.keyboard_arrow_down_rounded),
               ],
             ),
           ),

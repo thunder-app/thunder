@@ -71,7 +71,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
 
     switch (attribute) {
       case LocalSettings.enableExperimentalFeatures:
-        await prefs.setBool(LocalSettings.enableExperimentalFeatures.name, value);
+        await prefs.setBool(
+            LocalSettings.enableExperimentalFeatures.name, value);
         setState(() => enableExperimentalFeatures = value);
         break;
       case LocalSettings.imageDimensionTimeout:
@@ -86,31 +87,44 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
+      final SharedPreferences prefs =
+          (await UserPreferences.instance).sharedPreferences;
+      inboxNotificationType = NotificationType.values.byName(
+          prefs.getString(LocalSettings.inboxNotificationType.name) ??
+              NotificationType.none.name);
 
       if (!kIsWeb && Platform.isAndroid) {
-        AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
-            FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+        AndroidFlutterLocalNotificationsPlugin?
+            androidFlutterLocalNotificationsPlugin =
+            FlutterLocalNotificationsPlugin()
+                .resolvePlatformSpecificImplementation<
+                    AndroidFlutterLocalNotificationsPlugin>();
 
         // Check if notifications are allowed
-        areNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled() ?? false;
+        areNotificationsAllowed = await androidFlutterLocalNotificationsPlugin
+                ?.areNotificationsEnabled() ??
+            false;
 
         // Find the current and available UnifiedPush distributor apps
         unifiedPushDistributorApp = await UnifiedPush.getDistributor();
-        unifiedPushDistributorAppCount = (await UnifiedPush.getDistributors()).length;
+        unifiedPushDistributorAppCount =
+            (await UnifiedPush.getDistributors()).length;
 
         // Find the UnifiedPush server endpoint
-        Uri? unifiedPushEnpoint = Uri.tryParse(prefs.getString('unified_push_endpoint') ?? '');
+        Uri? unifiedPushEnpoint =
+            Uri.tryParse(prefs.getString('unified_push_endpoint') ?? '');
         if (unifiedPushEnpoint != null) {
-          unifiedPushServer = '${unifiedPushEnpoint.scheme}://${unifiedPushEnpoint.host}';
+          unifiedPushServer =
+              '${unifiedPushEnpoint.scheme}://${unifiedPushEnpoint.host}';
         }
 
         // Find the Thunder notification server
-        thunderNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name);
+        thunderNotificationServer =
+            prefs.getString(LocalSettings.pushNotificationServer.name);
 
         // Ping the Thunder notification server
-        Uri? thunderNotificationServerUri = Uri.tryParse(thunderNotificationServer ?? '');
+        Uri? thunderNotificationServerUri =
+            Uri.tryParse(thunderNotificationServer ?? '');
         if (thunderNotificationServerUri != null) {
           Future.microtask(() async {
             PingData pingData = await Ping(
@@ -120,22 +134,35 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
             ).stream.first;
             setState(() {
               pingDone = true;
-              thunderNotificationServerPing = pingData.response?.time == null ? null : '${pingData.response?.time?.inMilliseconds}ms';
+              thunderNotificationServerPing = pingData.response?.time == null
+                  ? null
+                  : '${pingData.response?.time?.inMilliseconds}ms';
             });
           });
         }
       } else if (!kIsWeb && Platform.isIOS) {
-        IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+        IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
+            FlutterLocalNotificationsPlugin()
+                .resolvePlatformSpecificImplementation<
+                    IOSFlutterLocalNotificationsPlugin>();
 
         // TODO: Not sure if this is the right check for iOS.
-        areNotificationsAllowed = (await iosFlutterLocalNotificationsPlugin?.checkPermissions())?.isEnabled ?? false;
+        areNotificationsAllowed =
+            (await iosFlutterLocalNotificationsPlugin?.checkPermissions())
+                    ?.isEnabled ??
+                false;
       }
 
-      pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+      pushNotificationServer =
+          prefs.getString(LocalSettings.pushNotificationServer.name) ??
+              THUNDER_SERVER_URL;
 
       setState(() {
-        enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
-        imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+        enableExperimentalFeatures =
+            prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ??
+                false;
+        imageDimensionTimeout =
+            prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
       });
 
       if (widget.settingToHighlight != null) {
@@ -177,16 +204,19 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
+              padding: const EdgeInsets.only(
+                  left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.resetPreferencesAndData, style: theme.textTheme.titleMedium),
+                  Text(l10n.resetPreferencesAndData,
+                      style: theme.textTheme.titleMedium),
                   const SizedBox(height: 8.0),
                   Text(
                     l10n.debugDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -206,15 +236,19 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   context: context,
                   title: l10n.deleteLocalPreferences,
                   contentText: l10n.deleteLocalPreferencesDescription,
-                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                  onSecondaryButtonPressed: (dialogContext) =>
+                      Navigator.of(dialogContext).pop(),
                   secondaryButtonText: l10n.cancel,
                   onPrimaryButtonPressed: (dialogContext, _) {
                     SharedPreferences.getInstance().then((prefs) async {
                       await prefs.clear();
 
                       if (context.mounted) {
-                        context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
-                        showSnackbar(AppLocalizations.of(context)!.clearedUserPreferences);
+                        context
+                            .read<ThunderBloc>()
+                            .add(UserPreferencesChangeEvent());
+                        showSnackbar(AppLocalizations.of(context)!
+                            .clearedUserPreferences);
                       }
                     });
 
@@ -242,7 +276,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   context: context,
                   title: l10n.deleteLocalDatabase,
                   contentText: l10n.deleteLocalDatabaseDescription,
-                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                  onSecondaryButtonPressed: (dialogContext) =>
+                      Navigator.of(dialogContext).pop(),
                   secondaryButtonText: l10n.cancel,
                   onPrimaryButtonPressed: (dialogContext, _) async {
                     String path = join(await getDatabasesPath(), 'thunder.db');
@@ -253,7 +288,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                     await databaseFactory.deleteDatabase(file.path);
 
                     if (context.mounted) {
-                      showSnackbar(AppLocalizations.of(context)!.clearedDatabase);
+                      showSnackbar(
+                          AppLocalizations.of(context)!.clearedDatabase);
                       Navigator.of(context).pop();
                     }
                   },
@@ -273,7 +309,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 if (snapshot.hasData) {
                   return SettingsListTile(
                     icon: Icons.data_saver_off_rounded,
-                    description: l10n.clearCache('${(snapshot.data! / (1024 * 1024)).toStringAsFixed(2)} MB'),
+                    description: l10n.clearCache(
+                        '${(snapshot.data! / (1024 * 1024)).toStringAsFixed(2)} MB'),
                     widget: const SizedBox(
                       height: 42.0,
                       child: Icon(Icons.chevron_right_rounded),
@@ -281,7 +318,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                     onTap: () async {
                       await clearDiskCachedImages();
                       if (context.mounted) showSnackbar(l10n.clearedCache);
-                      setState(() {}); // Trigger a rebuild to refresh the cache size
+                      setState(
+                          () {}); // Trigger a rebuild to refresh the cache size
                     },
                     highlightKey: settingToHighlightKey,
                     setting: null,
@@ -298,12 +336,14 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.notifications(2), style: theme.textTheme.titleMedium),
+                  Text(l10n.notifications(2),
+                      style: theme.textTheme.titleMedium),
                   const SizedBox(height: 8.0),
                   Text(
                     l10n.debugNotificationsDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -312,17 +352,21 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
+              padding: const EdgeInsets.only(
+                  left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(l10n.status, style: theme.textTheme.titleSmall)],
+                children: [
+                  Text(l10n.status, style: theme.textTheme.titleSmall)
+                ],
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: SettingsListTile(
               icon: Icons.info_rounded,
-              description: l10n.currentNotificationsMode(inboxNotificationType.toString()),
+              description: l10n
+                  .currentNotificationsMode(inboxNotificationType.toString()),
               widget: Container(),
               onTap: null,
               highlightKey: settingToHighlightKey,
@@ -334,7 +378,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
           SliverToBoxAdapter(
             child: SettingsListTile(
               icon: Icons.info_rounded,
-              description: l10n.areNotificationsAllowedBySystem(areNotificationsAllowed ? l10n.yes : l10n.no),
+              description: l10n.areNotificationsAllowedBySystem(
+                  areNotificationsAllowed ? l10n.yes : l10n.no),
               widget: Container(),
               onTap: null,
               highlightKey: settingToHighlightKey,
@@ -347,7 +392,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
             SliverToBoxAdapter(
               child: SettingsListTile(
                 icon: Icons.info_rounded,
-                description: l10n.unifiedPushDistributorApp(unifiedPushDistributorApp ?? l10n.none, unifiedPushDistributorAppCount),
+                description: l10n.unifiedPushDistributorApp(
+                    unifiedPushDistributorApp ?? l10n.none,
+                    unifiedPushDistributorAppCount),
                 widget: Container(),
                 onTap: null,
                 highlightKey: settingToHighlightKey,
@@ -359,7 +406,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
             SliverToBoxAdapter(
               child: SettingsListTile(
                 icon: Icons.info_rounded,
-                description: '${l10n.thunderNotificationServer(thunderNotificationServer ?? l10n.none)} ${pingDone ? '(${thunderNotificationServerPing ?? l10n.offline})' : ''}',
+                description:
+                    '${l10n.thunderNotificationServer(thunderNotificationServer ?? l10n.none)} ${pingDone ? '(${thunderNotificationServerPing ?? l10n.offline})' : ''}',
                 widget: Container(),
                 onTap: null,
                 highlightKey: settingToHighlightKey,
@@ -371,7 +419,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
             SliverToBoxAdapter(
               child: SettingsListTile(
                 icon: Icons.info_rounded,
-                description: l10n.unifiedPushServer(unifiedPushServer ?? l10n.none),
+                description:
+                    l10n.unifiedPushServer(unifiedPushServer ?? l10n.none),
                 widget: Container(),
                 onTap: null,
                 highlightKey: settingToHighlightKey,
@@ -383,10 +432,14 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
           if (!kIsWeb && Platform.isAndroid) ...[
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
+                padding: const EdgeInsets.only(
+                    left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text(l10n.localNotifications, style: theme.textTheme.titleSmall)],
+                  children: [
+                    Text(l10n.localNotifications,
+                        style: theme.textTheme.titleSmall)
+                  ],
                 ),
               ),
             ),
@@ -424,15 +477,18 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         await showThunderDialog(
                           context: context,
                           title: l10n.confirm,
-                          contentWidgetBuilder: (setPrimaryButtonEnabled) => Text(l10n.testBackgroundNotificationDescription),
+                          contentWidgetBuilder: (setPrimaryButtonEnabled) =>
+                              Text(l10n.testBackgroundNotificationDescription),
                           primaryButtonText: l10n.confirm,
                           primaryButtonInitialEnabled: true,
-                          onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+                          onPrimaryButtonPressed:
+                              (dialogContext, setPrimaryButtonEnabled) {
                             dialogContext.pop();
                             result = true;
                           },
                           secondaryButtonText: l10n.cancel,
-                          onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
+                          onSecondaryButtonPressed: (dialogContext) =>
+                              dialogContext.pop(),
                         );
 
                         if (result) {
@@ -454,10 +510,13 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
             if (enableExperimentalFeatures) ...[
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
+                  padding: const EdgeInsets.only(
+                      left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text(l10n.unifiedpush, style: theme.textTheme.titleSmall)],
+                    children: [
+                      Text(l10n.unifiedpush, style: theme.textTheme.titleSmall)
+                    ],
                   ),
                 ),
               ),
@@ -474,7 +533,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                           if (await requestTestNotification()) {
                             showSnackbar(l10n.sentRequestForTestNotification);
                           } else {
-                            showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(pushNotificationServer ?? ''));
+                            showSnackbar(l10n
+                                .failedToCommunicateWithThunderNotificationServer(
+                                    pushNotificationServer ?? ''));
                           }
                         }
                       : null,
@@ -499,22 +560,28 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                           await showThunderDialog(
                             context: context,
                             title: l10n.confirm,
-                            contentWidgetBuilder: (setPrimaryButtonEnabled) => Text(l10n.testBackgroundUnifiedPushNotificationDescription),
+                            contentWidgetBuilder: (setPrimaryButtonEnabled) =>
+                                Text(l10n
+                                    .testBackgroundUnifiedPushNotificationDescription),
                             primaryButtonText: l10n.confirm,
                             primaryButtonInitialEnabled: true,
-                            onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+                            onPrimaryButtonPressed:
+                                (dialogContext, setPrimaryButtonEnabled) {
                               dialogContext.pop();
                               result = true;
                             },
                             secondaryButtonText: l10n.cancel,
-                            onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
+                            onSecondaryButtonPressed: (dialogContext) =>
+                                dialogContext.pop(),
                           );
 
                           if (result) {
                             if (await requestTestNotification()) {
                               showSnackbar(l10n.sentRequestForTestNotification);
                             } else {
-                              showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(pushNotificationServer ?? ''));
+                              showSnackbar(l10n
+                                  .failedToCommunicateWithThunderNotificationServer(
+                                      pushNotificationServer ?? ''));
                             }
 
                             SystemNavigator.pop();
@@ -550,16 +617,19 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              padding:
+                  const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.experimentalFeatures, style: theme.textTheme.titleMedium),
+                  Text(l10n.experimentalFeatures,
+                      style: theme.textTheme.titleMedium),
                   const SizedBox(height: 8.0),
                   Text(
                     l10n.experimentalFeaturesDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -573,7 +643,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               value: enableExperimentalFeatures,
               iconEnabled: Icons.construction_rounded,
               iconDisabled: Icons.construction_outlined,
-              onToggle: (value) => setPreferences(LocalSettings.enableExperimentalFeatures, value),
+              onToggle: (value) => setPreferences(
+                  LocalSettings.enableExperimentalFeatures, value),
               highlightKey: settingToHighlightKey,
               setting: null,
               highlightedSetting: settingToHighlight,
@@ -581,7 +652,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              padding:
+                  const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
               child: Text(l10n.feed, style: theme.textTheme.titleMedium),
             ),
           ),
@@ -589,10 +661,19 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.imageDimensionTimeout,
-              value: ListPickerItem(label: '${imageDimensionTimeout}s', icon: Icons.timelapse, payload: imageDimensionTimeout),
-              options: imageDimensionTimeouts.map((value) => ListPickerItem(icon: Icons.timelapse, label: '${value}s', payload: value)).toList(),
+              value: ListPickerItem(
+                  label: '${imageDimensionTimeout}s',
+                  icon: Icons.timelapse,
+                  payload: imageDimensionTimeout),
+              options: imageDimensionTimeouts
+                  .map((value) => ListPickerItem(
+                      icon: Icons.timelapse,
+                      label: '${value}s',
+                      payload: value))
+                  .toList(),
               icon: Icons.timelapse,
-              onChanged: (value) async => setPreferences(LocalSettings.imageDimensionTimeout, value.payload),
+              onChanged: (value) async => setPreferences(
+                  LocalSettings.imageDimensionTimeout, value.payload),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.imageDimensionTimeout,
               highlightedSetting: settingToHighlight,

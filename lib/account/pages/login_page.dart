@@ -25,13 +25,15 @@ class LoginPage extends StatefulWidget {
   final VoidCallback popRegister;
   final bool anonymous;
 
-  const LoginPage({super.key, required this.popRegister, this.anonymous = false});
+  const LoginPage(
+      {super.key, required this.popRegister, this.anonymous = false});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   late TextEditingController _usernameTextEditingController;
   late TextEditingController _passwordTextEditingController;
   late TextEditingController _totpTextEditingController;
@@ -59,7 +61,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     _instanceTextEditingController = TextEditingController();
 
     _usernameTextEditingController.addListener(() {
-      if (_instanceTextEditingController.text.isNotEmpty && (widget.anonymous || (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty))) {
+      if (_instanceTextEditingController.text.isNotEmpty &&
+          (widget.anonymous ||
+              (_usernameTextEditingController.text.isNotEmpty &&
+                  _passwordTextEditingController.text.isNotEmpty))) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -67,7 +72,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     });
 
     _passwordTextEditingController.addListener(() {
-      if (_instanceTextEditingController.text.isNotEmpty && (widget.anonymous || (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty))) {
+      if (_instanceTextEditingController.text.isNotEmpty &&
+          (widget.anonymous ||
+              (_usernameTextEditingController.text.isNotEmpty &&
+                  _passwordTextEditingController.text.isNotEmpty))) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -80,7 +88,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         currentInstance = _instanceTextEditingController.text;
       }
 
-      if (_instanceTextEditingController.text.isNotEmpty && (widget.anonymous || (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty))) {
+      if (_instanceTextEditingController.text.isNotEmpty &&
+          (widget.anonymous ||
+              (_usernameTextEditingController.text.isNotEmpty &&
+                  _passwordTextEditingController.text.isNotEmpty))) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -90,8 +101,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       if (instanceTextDebounceTimer?.isActive == true) {
         instanceTextDebounceTimer!.cancel();
       }
-      instanceTextDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
-        await getInstanceInfo(_instanceTextEditingController.text).then((value) {
+      instanceTextDebounceTimer =
+          Timer(const Duration(milliseconds: 500), () async {
+        await getInstanceInfo(_instanceTextEditingController.text)
+            .then((value) {
           // Make sure the icon we looked up still matches the text
           if (currentInstance == _instanceTextEditingController.text) {
             setState(() => instanceIcon = value.icon);
@@ -106,17 +119,22 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       if (instanceValidationDebounceTimer?.isActive == true) {
         instanceValidationDebounceTimer!.cancel();
       }
-      instanceValidationDebounceTimer = Timer(const Duration(seconds: 1), () async {
-        await (_instanceTextEditingController.text.isEmpty ? Future<bool>.value(true) : isLemmyInstance(_instanceTextEditingController.text)).then((value) => {
-              if (currentInstance == _instanceTextEditingController.text)
-                {
-                  setState(() {
-                    instanceAwaitingValidation = false;
-                    instanceValidated = value;
-                    instanceError = AppLocalizations.of(context)!.notValidLemmyInstance(currentInstance ?? '');
-                  })
-                }
-            });
+      instanceValidationDebounceTimer =
+          Timer(const Duration(seconds: 1), () async {
+        await (_instanceTextEditingController.text.isEmpty
+                ? Future<bool>.value(true)
+                : isLemmyInstance(_instanceTextEditingController.text))
+            .then((value) => {
+                  if (currentInstance == _instanceTextEditingController.text)
+                    {
+                      setState(() {
+                        instanceAwaitingValidation = false;
+                        instanceValidated = value;
+                        instanceError = AppLocalizations.of(context)!
+                            .notValidLemmyInstance(currentInstance ?? '');
+                      })
+                    }
+                });
       });
     });
   }
@@ -148,8 +166,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 isLoading = false;
               });
 
-              showSnackbar(AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
-            } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
+              showSnackbar(AppLocalizations.of(context)!.loginFailed(
+                  state.errorMessage ??
+                      AppLocalizations.of(context)!.missingErrorMessage));
+            } else if (state.status == AuthStatus.success &&
+                context.read<AuthBloc>().state.isLoggedIn) {
               context.pop();
 
               showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
@@ -160,7 +181,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 context: context,
                 title: l10n.contentWarning,
                 contentText: state.contentWarning,
-                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                onSecondaryButtonPressed: (dialogContext) =>
+                    Navigator.of(dialogContext).pop(),
                 secondaryButtonText: l10n.decline,
                 onPrimaryButtonPressed: (dialogContext, _) async {
                   Navigator.of(dialogContext).pop();
@@ -199,19 +221,28 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 children: [
                   AnimatedCrossFade(
                     duration: const Duration(milliseconds: 500),
-                    crossFadeState: instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                    firstChild: Image.asset('assets/logo.png', width: 80.0, height: 80.0),
+                    crossFadeState: instanceIcon == null
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    firstChild: Image.asset('assets/logo.png',
+                        width: 80.0, height: 80.0),
                     secondChild: instanceIcon == null
                         ? Container()
                         : CircleAvatar(
-                            foregroundImage: CachedNetworkImageProvider(instanceIcon!),
+                            foregroundImage:
+                                CachedNetworkImageProvider(instanceIcon!),
                             backgroundColor: Colors.transparent,
                             maxRadius: 40,
                           ),
                   ),
                   const SizedBox(height: 12.0),
                   AnimatedCrossFade(
-                    crossFadeState: _instanceTextEditingController.text.isNotEmpty && !instanceAwaitingValidation && instanceValidated ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                    crossFadeState:
+                        _instanceTextEditingController.text.isNotEmpty &&
+                                !instanceAwaitingValidation &&
+                                instanceValidated
+                            ? CrossFadeState.showSecond
+                            : CrossFadeState.showFirst,
                     duration: const Duration(milliseconds: 250),
                     firstChild: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -250,7 +281,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       children: [
                         OutlinedButton(
                           onPressed: () {
-                            handleLink(context, url: 'https://${_instanceTextEditingController.text}');
+                            handleLink(context,
+                                url:
+                                    'https://${_instanceTextEditingController.text}');
                           },
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.only(left: 10, right: 16),
@@ -279,10 +312,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           const SizedBox(width: 12),
                           OutlinedButton(
                             onPressed: () {
-                              handleLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
+                              handleLink(context,
+                                  url:
+                                      'https://${_instanceTextEditingController.text}/signup');
                             },
                             style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.only(left: 10, right: 16),
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 16),
                               backgroundColor: theme.colorScheme.surface,
                               textStyle: theme.textTheme.titleMedium?.copyWith(
                                 color: theme.colorScheme.onPrimary,
@@ -336,7 +372,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       if (pattern.isNotEmpty != true) {
                         return [];
                       }
-                      return instances.where((instance) => instance.contains(pattern)).toList();
+                      return instances
+                          .where((instance) => instance.contains(pattern))
+                          .toList();
                     },
                     itemBuilder: (BuildContext context, String itemData) {
                       return ListTile(title: Text(itemData));
@@ -372,28 +410,43 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           ),
                           const SizedBox(height: 12.0),
                           TextField(
-                            onSubmitted:
-                                (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
-                                    ? (_) => _handleLogin()
-                                    : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
-                                        ? (_) => _addAnonymousInstance(context)
-                                        : null,
+                            onSubmitted: (!isLoading &&
+                                    _passwordTextEditingController
+                                        .text.isNotEmpty &&
+                                    _passwordTextEditingController
+                                        .text.isNotEmpty &&
+                                    _instanceTextEditingController
+                                        .text.isNotEmpty)
+                                ? (_) => _handleLogin()
+                                : (_instanceTextEditingController
+                                            .text.isNotEmpty &&
+                                        widget.anonymous)
+                                    ? (_) => _addAnonymousInstance(context)
+                                    : null,
                             autocorrect: false,
                             controller: _passwordTextEditingController,
                             obscureText: !showPassword,
                             enableSuggestions: false,
-                            maxLength: 60, // This is what lemmy retricts password length to
+                            maxLength:
+                                60, // This is what lemmy retricts password length to
                             autofillHints: const [AutofillHints.password],
                             decoration: InputDecoration(
                               isDense: true,
                               border: const OutlineInputBorder(),
                               labelText: AppLocalizations.of(context)!.password,
                               suffixIcon: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4.0),
                                 child: IconButton(
                                   icon: Icon(
-                                    showPassword ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                                    semanticLabel: showPassword ? AppLocalizations.of(context)!.hidePassword : AppLocalizations.of(context)!.showPassword,
+                                    showPassword
+                                        ? Icons.visibility_rounded
+                                        : Icons.visibility_off_rounded,
+                                    semanticLabel: showPassword
+                                        ? AppLocalizations.of(context)!
+                                            .hidePassword
+                                        : AppLocalizations.of(context)!
+                                            .showPassword,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -413,7 +466,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       controller: _totpTextEditingController,
                       maxLength: 6,
                       keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                       decoration: InputDecoration(
                         isDense: true,
                         border: const OutlineInputBorder(),
@@ -432,19 +487,31 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         color: theme.colorScheme.onPrimary,
                       ),
                     ),
-                    onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
+                    onPressed: (!isLoading &&
+                            _passwordTextEditingController.text.isNotEmpty &&
+                            _passwordTextEditingController.text.isNotEmpty &&
+                            _instanceTextEditingController.text.isNotEmpty)
                         ? _handleLogin
-                        : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
+                        : (_instanceTextEditingController.text.isNotEmpty &&
+                                widget.anonymous)
                             ? () => _addAnonymousInstance(context)
                             : null,
-                    child: Text(widget.anonymous ? AppLocalizations.of(context)!.add : AppLocalizations.of(context)!.login,
-                        style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
+                    child: Text(
+                        widget.anonymous
+                            ? AppLocalizations.of(context)!.add
+                            : AppLocalizations.of(context)!.login,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                            color: !isLoading && fieldsFilledIn
+                                ? theme.colorScheme.onPrimary
+                                : theme.colorScheme.primary)),
                   ),
                   const SizedBox(height: 12.0),
                   TextButton(
-                    style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(60)),
                     onPressed: !isLoading ? () => widget.popRegister() : null,
-                    child: Text(AppLocalizations.of(context)!.cancel, style: theme.textTheme.titleMedium),
+                    child: Text(AppLocalizations.of(context)!.cancel,
+                        style: theme.textTheme.titleMedium),
                   ),
                   const SizedBox(height: 32.0),
                 ],
@@ -474,15 +541,21 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     if (await isLemmyInstance(_instanceTextEditingController.text)) {
-      final List<Account> anonymousInstances = await Account.anonymousInstances();
-      if (anonymousInstances.any((anonymousInstance) => anonymousInstance.instance == _instanceTextEditingController.text)) {
+      final List<Account> anonymousInstances =
+          await Account.anonymousInstances();
+      if (anonymousInstances.any((anonymousInstance) =>
+          anonymousInstance.instance == _instanceTextEditingController.text)) {
         setState(() {
           instanceValidated = false;
-          instanceError = AppLocalizations.of(context)!.instanceHasAlreadyBenAdded(currentInstance ?? '');
+          instanceError = AppLocalizations.of(context)!
+              .instanceHasAlreadyBenAdded(currentInstance ?? '');
         });
       } else {
         // Check for content warning on anyonmous instance
-        GetSiteResponse getSiteResponse = await (LemmyClient()..changeBaseUrl(_instanceTextEditingController.text)).lemmyApiV3.run(const GetSite());
+        GetSiteResponse getSiteResponse = await (LemmyClient()
+              ..changeBaseUrl(_instanceTextEditingController.text))
+            .lemmyApiV3
+            .run(const GetSite());
 
         bool acceptedContentWarning = true;
 
@@ -493,7 +566,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             context: context,
             title: l10n.contentWarning,
             contentText: getSiteResponse.siteView.site.contentWarning,
-            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+            onSecondaryButtonPressed: (dialogContext) =>
+                Navigator.of(dialogContext).pop(),
             secondaryButtonText: l10n.decline,
             onPrimaryButtonPressed: (dialogContext, _) async {
               Navigator.of(dialogContext).pop();
@@ -505,8 +579,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
         if (acceptedContentWarning) {
           context.read<AuthBloc>().add(const LogOutOfAllAccounts());
-          await Account.insertAnonymousInstance(Account(id: '', instance: _instanceTextEditingController.text, index: -1, anonymous: true));
-          context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
+          await Account.insertAnonymousInstance(Account(
+              id: '',
+              instance: _instanceTextEditingController.text,
+              index: -1,
+              anonymous: true));
+          context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(
+              _instanceTextEditingController.text));
           widget.popRegister();
         }
       }

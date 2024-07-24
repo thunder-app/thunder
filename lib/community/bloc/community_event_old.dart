@@ -14,7 +14,12 @@ class GetCommunityPostsEvent extends CommunityEvent {
   final int? communityId;
   final String? communityName;
 
-  const GetCommunityPostsEvent({this.reset = false, this.sortType, this.listingType, this.communityId, this.communityName});
+  const GetCommunityPostsEvent(
+      {this.reset = false,
+      this.sortType,
+      this.listingType,
+      this.communityId,
+      this.communityName});
 }
 
 class VotePostEvent extends CommunityEvent {
@@ -37,7 +42,8 @@ class ChangeCommunitySubsciptionStatusEvent extends CommunityEvent {
   final int communityId;
   final bool follow;
 
-  const ChangeCommunitySubsciptionStatusEvent({required this.communityId, required this.follow});
+  const ChangeCommunitySubsciptionStatusEvent(
+      {required this.communityId, required this.follow});
 }
 
 class CreatePostEvent extends CommunityEvent {
@@ -46,7 +52,8 @@ class CreatePostEvent extends CommunityEvent {
   final String? url;
   final bool nsfw;
 
-  const CreatePostEvent({required this.name, required this.body, this.url, this.nsfw = false});
+  const CreatePostEvent(
+      {required this.name, required this.body, this.url, this.nsfw = false});
 }
 
 class MarkPostAsReadEvent extends CommunityEvent {

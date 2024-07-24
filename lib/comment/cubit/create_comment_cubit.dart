@@ -11,7 +11,8 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 part 'create_comment_state.dart';
 
 class CreateCommentCubit extends Cubit<CreateCommentState> {
-  CreateCommentCubit() : super(const CreateCommentState(status: CreateCommentStatus.initial));
+  CreateCommentCubit()
+      : super(const CreateCommentState(status: CreateCommentStatus.initial));
 
   Future<void> clearMessage() async {
     emit(state.copyWith(status: CreateCommentStatus.initial, message: null));
@@ -28,24 +29,35 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
 
     try {
       for (String imageFile in imageFiles) {
-        PictrsUpload result = await pictrs.upload(filePath: imageFile, auth: account.jwt);
-        String url = "https://${account.instance!}/pictrs/image/${result.files[0].file}";
+        PictrsUpload result =
+            await pictrs.upload(filePath: imageFile, auth: account.jwt);
+        String url =
+            "https://${account.instance!}/pictrs/image/${result.files[0].file}";
 
         urls.add(url);
 
         // Add a delay between each upload to avoid possible rate limiting
-        await Future.wait(urls.map((url) => Future.delayed(const Duration(milliseconds: 500))));
+        await Future.wait(urls
+            .map((url) => Future.delayed(const Duration(milliseconds: 500))));
       }
 
-      emit(state.copyWith(status: CreateCommentStatus.imageUploadSuccess, imageUrls: urls));
+      emit(state.copyWith(
+          status: CreateCommentStatus.imageUploadSuccess, imageUrls: urls));
     } catch (e) {
-      emit(state.copyWith(status: CreateCommentStatus.imageUploadFailure, message: e.toString()));
+      emit(state.copyWith(
+          status: CreateCommentStatus.imageUploadFailure,
+          message: e.toString()));
     }
   }
 
   /// Creates or edits a comment. When successful, it emits the newly created/updated comment in the form of a [CommentView]
   /// and returns the newly created comment id.
-  Future<int?> createOrEditComment({int? postId, int? parentCommentId, required String content, int? commentIdBeingEdited, int? languageId}) async {
+  Future<int?> createOrEditComment(
+      {int? postId,
+      int? parentCommentId,
+      required String content,
+      int? commentIdBeingEdited,
+      int? languageId}) async {
     assert(!(postId == null && commentIdBeingEdited == null));
     emit(state.copyWith(status: CreateCommentStatus.submitting));
 
@@ -72,10 +84,14 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
         ));
       }
 
-      emit(state.copyWith(status: CreateCommentStatus.success, commentView: commentResponse.commentView));
+      emit(state.copyWith(
+          status: CreateCommentStatus.success,
+          commentView: commentResponse.commentView));
       return commentResponse.commentView.comment.id;
     } catch (e) {
-      emit(state.copyWith(status: CreateCommentStatus.error, message: getExceptionErrorMessage(e)));
+      emit(state.copyWith(
+          status: CreateCommentStatus.error,
+          message: getExceptionErrorMessage(e)));
     }
 
     return null;

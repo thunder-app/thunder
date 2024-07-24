@@ -16,7 +16,8 @@ import 'package:thunder/shared/snackbar.dart';
 
 String generateRandomHeroString({int? len}) {
   Random r = Random();
-  return String.fromCharCodes(List.generate(len ?? 32, (index) => r.nextInt(33) + 89));
+  return String.fromCharCodes(
+      List.generate(len ?? 32, (index) => r.nextInt(33) + 89));
 }
 
 bool isImageUrl(String url) {
@@ -54,7 +55,8 @@ Future<bool> isImageUriSvg(Uri? imageUri) async {
         'Range': 'bytes=0-0',
       },
     );
-    return response.headers['content-type']?.toLowerCase().contains('svg') == true;
+    return response.headers['content-type']?.toLowerCase().contains('svg') ==
+        true;
   } catch (e) {
     // If it fails for any reason, it's not an SVG!
     return false;
@@ -62,7 +64,8 @@ Future<bool> isImageUriSvg(Uri? imageUri) async {
 }
 
 /// Retrieves the size of the given image. Must provide either [imageUrl] or [imageBytes].
-Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) async {
+Future<Size> retrieveImageDimensions(
+    {String? imageUrl, Uint8List? imageBytes}) async {
   assert(imageUrl != null || imageBytes != null);
 
   try {
@@ -78,9 +81,11 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
     bool isImage = isImageUrl(imageUrl!);
     if (!isImage) throw Exception('The URL provided was not an image');
 
-    final imageProvider = ExtendedNetworkImageProvider(imageUrl, cache: true, cacheRawData: true);
+    final imageProvider =
+        ExtendedNetworkImageProvider(imageUrl, cache: true, cacheRawData: true);
     final imageData = await imageProvider.getNetworkImageData();
-    if (imageData == null) throw Exception('Failed to retrieve image data from $imageUrl');
+    if (imageData == null)
+      throw Exception('Failed to retrieve image data from $imageUrl');
 
     final codec = await instantiateImageCodec(imageData);
     final frame = await codec.getNextFrame();
@@ -93,7 +98,8 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
   }
 }
 
-void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = false, String? imagePath}) async {
+void uploadImage(BuildContext context, ImageBloc imageBloc,
+    {bool postImage = false, String? imagePath}) async {
   final ImagePicker picker = ImagePicker();
   String path;
   if (imagePath == null || imagePath.isEmpty) {
@@ -105,9 +111,15 @@ void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = fa
 
   try {
     Account? account = await fetchActiveProfileAccount();
-    imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!, postImage: postImage));
+    imageBloc.add(ImageUploadEvent(
+        imageFile: path,
+        instance: account!.instance!,
+        jwt: account.jwt!,
+        postImage: postImage));
   } catch (e) {
-    showSnackbar(AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: Theme.of(context).colorScheme.errorContainer);
+    showSnackbar(AppLocalizations.of(context)!.postUploadImageError,
+        leadingIcon: Icons.warning_rounded,
+        leadingIconColor: Theme.of(context).colorScheme.errorContainer);
   }
 }
 
@@ -123,13 +135,18 @@ Future<List<String>> selectImagesToUpload({bool allowMultiple = false}) async {
   return [file!.path];
 }
 
-void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost}) {
+void showImageViewer(BuildContext context,
+    {String? url,
+    Uint8List? bytes,
+    int? postId,
+    void Function()? navigateToPost}) {
   Navigator.of(context).push(
     PageRouteBuilder(
       opaque: false,
       transitionDuration: const Duration(milliseconds: 100),
       reverseTransitionDuration: const Duration(milliseconds: 50),
-      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
         return ImageViewer(
           url: url,
           bytes: bytes,
@@ -137,7 +154,8 @@ void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? 
           navigateToPost: navigateToPost,
         );
       },
-      transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+      transitionsBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation, Widget child) {
         return Align(
           child: FadeTransition(
             opacity: animation,

@@ -15,7 +15,8 @@ import 'package:thunder/core/singletons/preferences.dart';
 /// For each table, it retrieves all records and migrates them to SQLite format.
 ///
 /// Returns a [Future] that completes when the migration is finished.
-Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool deleteOriginalDB = false}) async {
+Future<bool> migrateToSQLite(AppDatabase database,
+    {Database? originalDB, bool deleteOriginalDB = false}) async {
   try {
     // Open the database
     File originalDBFile = File(join(await getDatabasesPath(), 'thunder.db'));
@@ -24,7 +25,8 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool d
     Database db = originalDB ?? await openDatabase(originalDBFile.path);
 
     // Retrieve a list of all tables in the database
-    List<Map<String, dynamic>> tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
+    List<Map<String, dynamic>> tables =
+        await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
 
     Map<String, dynamic> data = {};
 
@@ -41,10 +43,13 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool d
       // Check if there's an active user, and switch the account if so
       SharedPreferences? prefs;
 
-      if (Platform.isAndroid || Platform.isIOS) prefs = (await UserPreferences.instance).sharedPreferences;
+      if (Platform.isAndroid || Platform.isIOS)
+        prefs = (await UserPreferences.instance).sharedPreferences;
 
       for (Map<String, dynamic> record in data['accounts']) {
-        int accountId = await database.into(database.accounts).insert(AccountsCompanion.insert(
+        int accountId = await database
+            .into(database.accounts)
+            .insert(AccountsCompanion.insert(
               username: Value(record['username']),
               jwt: Value(record['jwt']),
               instance: Value(record['instance']),
@@ -59,19 +64,27 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool d
 
         // Find any favorites associated with the account, and append the new account id
         if (data.containsKey('favorites') && data['favorites'].isNotEmpty) {
-          List<Map<String, dynamic>> favorites = data['favorites'].where((favorite) => favorite['accountId'] == record['accountId']).toList();
+          List<Map<String, dynamic>> favorites = data['favorites']
+              .where((favorite) => favorite['accountId'] == record['accountId'])
+              .toList();
 
           for (Map<String, dynamic> favorite in favorites) {
-            await database.into(database.favorites).insert(FavoritesCompanion.insert(communityId: favorite['communityId'], accountId: accountId));
+            await database.into(database.favorites).insert(
+                FavoritesCompanion.insert(
+                    communityId: favorite['communityId'],
+                    accountId: accountId));
           }
         }
       }
     }
 
     // Migrate AnonymousSubscriptions table
-    if (data.containsKey('anonymous_subscriptions') && data['anonymous_subscriptions'].isNotEmpty) {
+    if (data.containsKey('anonymous_subscriptions') &&
+        data['anonymous_subscriptions'].isNotEmpty) {
       for (Map<String, dynamic> record in data['anonymous_subscriptions']) {
-        await database.into(database.localSubscriptions).insert(LocalSubscriptionsCompanion.insert(
+        await database
+            .into(database.localSubscriptions)
+            .insert(LocalSubscriptionsCompanion.insert(
               name: record['name'],
               title: record['title'],
               actorId: record['actorId'],
@@ -98,7 +111,8 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool d
     await db.close();
 
     // Remove old database if everthing went well
-    if (await originalDBFile.exists() && deleteOriginalDB) await originalDBFile.delete();
+    if (await originalDBFile.exists() && deleteOriginalDB)
+      await originalDBFile.delete();
   } catch (e) {
     debugPrint(e.toString());
     return false;

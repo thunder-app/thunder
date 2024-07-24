@@ -72,5 +72,15 @@ final class ModlogState extends Equatable {
   }
 
   @override
-  List<dynamic> get props => [status, modlogActionType, communityId, userId, moderatorId, modlogEventItems, hasReachedEnd, currentPage, message];
+  List<dynamic> get props => [
+        status,
+        modlogActionType,
+        communityId,
+        userId,
+        moderatorId,
+        modlogEventItems,
+        hasReachedEnd,
+        currentPage,
+        message
+      ];
 }

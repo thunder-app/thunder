@@ -46,20 +46,36 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   List<ListPickerItem> customThemeOptions = [
     ListPickerItem(
-        colors: [CustomThemeType.deepBlue.primaryColor, CustomThemeType.deepBlue.secondaryColor, CustomThemeType.deepBlue.tertiaryColor],
+        colors: [
+          CustomThemeType.deepBlue.primaryColor,
+          CustomThemeType.deepBlue.secondaryColor,
+          CustomThemeType.deepBlue.tertiaryColor
+        ],
         label: '${CustomThemeType.deepBlue.label} (Default)',
         payload: CustomThemeType.deepBlue),
-    ...CustomThemeType.values.where((element) => element != CustomThemeType.deepBlue).map((CustomThemeType scheme) {
-      return ListPickerItem(colors: [scheme.primaryColor, scheme.secondaryColor, scheme.tertiaryColor], label: scheme.label, payload: scheme);
+    ...CustomThemeType.values
+        .where((element) => element != CustomThemeType.deepBlue)
+        .map((CustomThemeType scheme) {
+      return ListPickerItem(colors: [
+        scheme.primaryColor,
+        scheme.secondaryColor,
+        scheme.tertiaryColor
+      ], label: scheme.label, payload: scheme);
     })
   ];
 
-  ActionColor upvoteColor = const ActionColor.fromString(colorRaw: ActionColor.orange);
-  ActionColor downvoteColor = const ActionColor.fromString(colorRaw: ActionColor.blue);
-  ActionColor saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple);
-  ActionColor markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal);
-  ActionColor replyColor = const ActionColor.fromString(colorRaw: ActionColor.green);
-  ActionColor hideColor = const ActionColor.fromString(colorRaw: ActionColor.red);
+  ActionColor upvoteColor =
+      const ActionColor.fromString(colorRaw: ActionColor.orange);
+  ActionColor downvoteColor =
+      const ActionColor.fromString(colorRaw: ActionColor.blue);
+  ActionColor saveColor =
+      const ActionColor.fromString(colorRaw: ActionColor.purple);
+  ActionColor markReadColor =
+      const ActionColor.fromString(colorRaw: ActionColor.teal);
+  ActionColor replyColor =
+      const ActionColor.fromString(colorRaw: ActionColor.green);
+  ActionColor hideColor =
+      const ActionColor.fromString(colorRaw: ActionColor.red);
 
   // Font Settings
   FontScale titleFontSizeScale = FontScale.base;
@@ -78,18 +94,22 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   /// Defines the style used to denote full usernames
   NameThickness userFullNameUserNameThickness = NameThickness.normal;
-  NameColor userFullNameUserNameColor = const NameColor.fromString(color: NameColor.defaultColor);
+  NameColor userFullNameUserNameColor =
+      const NameColor.fromString(color: NameColor.defaultColor);
   NameThickness userFullNameInstanceNameThickness = NameThickness.light;
-  NameColor userFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor);
+  NameColor userFullNameInstanceNameColor =
+      const NameColor.fromString(color: NameColor.defaultColor);
 
   /// Defines the separator used to denote full commuity names
   FullNameSeparator communitySeparator = FullNameSeparator.dot;
 
   /// Defines the style used to denote full community names
   NameThickness communityFullNameCommunityNameThickness = NameThickness.normal;
-  NameColor communityFullNameCommunityNameColor = const NameColor.fromString(color: NameColor.defaultColor);
+  NameColor communityFullNameCommunityNameColor =
+      const NameColor.fromString(color: NameColor.defaultColor);
   NameThickness communityFullNameInstanceNameThickness = NameThickness.light;
-  NameColor communityFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor);
+  NameColor communityFullNameInstanceNameColor =
+      const NameColor.fromString(color: NameColor.defaultColor);
 
   /// When enabled, displays the user's display name instead of the username
   bool useDisplayNamesForUsers = false;
@@ -113,10 +133,14 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         await prefs.setInt(LocalSettings.appTheme.name, value);
         setState(() => themeType = ThemeType.values[value]);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
-        Future.delayed(const Duration(milliseconds: 300), () => _initFontScaleOptions()); // Refresh the font scale options since the textTheme has most likely changed (dark -> light and vice versa)
+        Future.delayed(
+            const Duration(milliseconds: 300),
+            () =>
+                _initFontScaleOptions()); // Refresh the font scale options since the textTheme has most likely changed (dark -> light and vice versa)
         break;
       case LocalSettings.appThemeAccentColor:
-        await prefs.setString(LocalSettings.appThemeAccentColor.name, (value as CustomThemeType).name);
+        await prefs.setString(LocalSettings.appThemeAccentColor.name,
+            (value as CustomThemeType).name);
         setState(() => selectedTheme = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
@@ -154,22 +178,26 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
       // Font Settings
       case LocalSettings.titleFontSizeScale:
-        await prefs.setString(LocalSettings.titleFontSizeScale.name, (value as FontScale).name);
+        await prefs.setString(
+            LocalSettings.titleFontSizeScale.name, (value as FontScale).name);
         setState(() => titleFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
       case LocalSettings.contentFontSizeScale:
-        await prefs.setString(LocalSettings.contentFontSizeScale.name, (value as FontScale).name);
+        await prefs.setString(
+            LocalSettings.contentFontSizeScale.name, (value as FontScale).name);
         setState(() => contentFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
       case LocalSettings.commentFontSizeScale:
-        await prefs.setString(LocalSettings.commentFontSizeScale.name, (value as FontScale).name);
+        await prefs.setString(
+            LocalSettings.commentFontSizeScale.name, (value as FontScale).name);
         setState(() => commentFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
       case LocalSettings.metadataFontSizeScale:
-        await prefs.setString(LocalSettings.metadataFontSizeScale.name, (value as FontScale).name);
+        await prefs.setString(LocalSettings.metadataFontSizeScale.name,
+            (value as FontScale).name);
         setState(() => metadataFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
@@ -177,50 +205,69 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       // Name Settings
       case LocalSettings.userFormat:
         await prefs.setString(LocalSettings.userFormat.name, value);
-        setState(() => userSeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.at));
+        setState(() => userSeparator =
+            FullNameSeparator.values.byName(value ?? FullNameSeparator.at));
         break;
       case LocalSettings.userFullNameUserNameThickness:
-        await prefs.setString(LocalSettings.userFullNameUserNameThickness.name, value);
-        setState(() => userFullNameUserNameThickness = NameThickness.values.byName(value ?? NameThickness.normal));
+        await prefs.setString(
+            LocalSettings.userFullNameUserNameThickness.name, value);
+        setState(() => userFullNameUserNameThickness =
+            NameThickness.values.byName(value ?? NameThickness.normal));
         break;
       case LocalSettings.userFullNameInstanceNameThickness:
-        await prefs.setString(LocalSettings.userFullNameInstanceNameThickness.name, value);
-        setState(() => userFullNameInstanceNameThickness = NameThickness.values.byName(value ?? NameThickness.light));
+        await prefs.setString(
+            LocalSettings.userFullNameInstanceNameThickness.name, value);
+        setState(() => userFullNameInstanceNameThickness =
+            NameThickness.values.byName(value ?? NameThickness.light));
         break;
       case LocalSettings.userFullNameUserNameColor:
-        await prefs.setString(LocalSettings.userFullNameUserNameColor.name, value);
-        setState(() => userFullNameUserNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
+        await prefs.setString(
+            LocalSettings.userFullNameUserNameColor.name, value);
+        setState(() => userFullNameUserNameColor =
+            NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
       case LocalSettings.userFullNameInstanceNameColor:
-        await prefs.setString(LocalSettings.userFullNameInstanceNameColor.name, value);
-        setState(() => userFullNameInstanceNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
+        await prefs.setString(
+            LocalSettings.userFullNameInstanceNameColor.name, value);
+        setState(() => userFullNameInstanceNameColor =
+            NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
       case LocalSettings.communityFormat:
         await prefs.setString(LocalSettings.communityFormat.name, value);
-        setState(() => communitySeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.dot));
+        setState(() => communitySeparator =
+            FullNameSeparator.values.byName(value ?? FullNameSeparator.dot));
         break;
       case LocalSettings.communityFullNameCommunityNameThickness:
-        await prefs.setString(LocalSettings.communityFullNameCommunityNameThickness.name, value);
-        setState(() => communityFullNameCommunityNameThickness = NameThickness.values.byName(value ?? NameThickness.normal));
+        await prefs.setString(
+            LocalSettings.communityFullNameCommunityNameThickness.name, value);
+        setState(() => communityFullNameCommunityNameThickness =
+            NameThickness.values.byName(value ?? NameThickness.normal));
         break;
       case LocalSettings.communityFullNameInstanceNameThickness:
-        await prefs.setString(LocalSettings.communityFullNameInstanceNameThickness.name, value);
-        setState(() => communityFullNameInstanceNameThickness = NameThickness.values.byName(value ?? NameThickness.normal));
+        await prefs.setString(
+            LocalSettings.communityFullNameInstanceNameThickness.name, value);
+        setState(() => communityFullNameInstanceNameThickness =
+            NameThickness.values.byName(value ?? NameThickness.normal));
         break;
       case LocalSettings.communityFullNameCommunityNameColor:
-        await prefs.setString(LocalSettings.communityFullNameCommunityNameColor.name, value);
-        setState(() => communityFullNameCommunityNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
+        await prefs.setString(
+            LocalSettings.communityFullNameCommunityNameColor.name, value);
+        setState(() => communityFullNameCommunityNameColor =
+            NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
       case LocalSettings.communityFullNameInstanceNameColor:
-        await prefs.setString(LocalSettings.communityFullNameInstanceNameColor.name, value);
-        setState(() => communityFullNameInstanceNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
+        await prefs.setString(
+            LocalSettings.communityFullNameInstanceNameColor.name, value);
+        setState(() => communityFullNameInstanceNameColor =
+            NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
       case LocalSettings.useDisplayNamesForUsers:
         await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
         setState(() => useDisplayNamesForUsers = value);
         break;
       case LocalSettings.useDisplayNamesForCommunities:
-        await prefs.setBool(LocalSettings.useDisplayNamesForCommunities.name, value);
+        await prefs.setBool(
+            LocalSettings.useDisplayNamesForCommunities.name, value);
         setState(() => useDisplayNamesForCommunities = value);
         break;
     }
@@ -236,37 +283,91 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     setState(() {
       /// -------------------------- Theme Related Settings --------------------------
       // Theme Settings
-      themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
-      selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
-      useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
+      themeType = ThemeType.values[
+          prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
+      selectedTheme = CustomThemeType.values.byName(
+          prefs.getString(LocalSettings.appThemeAccentColor.name) ??
+              CustomThemeType.deepBlue.name);
+      useMaterialYouTheme =
+          prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
 
       // Color settings
-      upvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.upvoteColor.name) ?? ActionColor.orange);
-      downvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.downvoteColor.name) ?? ActionColor.blue);
-      saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
-      markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
-      replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
-      hideColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.hideColor.name) ?? ActionColor.red);
+      upvoteColor = ActionColor.fromString(
+          colorRaw: prefs.getString(LocalSettings.upvoteColor.name) ??
+              ActionColor.orange);
+      downvoteColor = ActionColor.fromString(
+          colorRaw: prefs.getString(LocalSettings.downvoteColor.name) ??
+              ActionColor.blue);
+      saveColor = ActionColor.fromString(
+          colorRaw: prefs.getString(LocalSettings.saveColor.name) ??
+              ActionColor.purple);
+      markReadColor = ActionColor.fromString(
+          colorRaw: prefs.getString(LocalSettings.markReadColor.name) ??
+              ActionColor.teal);
+      replyColor = ActionColor.fromString(
+          colorRaw: prefs.getString(LocalSettings.replyColor.name) ??
+              ActionColor.green);
+      hideColor = ActionColor.fromString(
+          colorRaw:
+              prefs.getString(LocalSettings.hideColor.name) ?? ActionColor.red);
 
       // Font Settings
-      titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
-      contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
-      commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
-      metadataFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.metadataFontSizeScale.name) ?? FontScale.base.name);
+      titleFontSizeScale = FontScale.values.byName(
+          prefs.getString(LocalSettings.titleFontSizeScale.name) ??
+              FontScale.base.name);
+      contentFontSizeScale = FontScale.values.byName(
+          prefs.getString(LocalSettings.contentFontSizeScale.name) ??
+              FontScale.base.name);
+      commentFontSizeScale = FontScale.values.byName(
+          prefs.getString(LocalSettings.commentFontSizeScale.name) ??
+              FontScale.base.name);
+      metadataFontSizeScale = FontScale.values.byName(
+          prefs.getString(LocalSettings.metadataFontSizeScale.name) ??
+              FontScale.base.name);
 
       // Name Settings
-      userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-      userFullNameUserNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameUserNameThickness.name) ?? NameThickness.normal.name);
-      userFullNameUserNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameUserNameColor.name) ?? NameColor.defaultColor);
-      userFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
-      userFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
-      communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
-      communityFullNameCommunityNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameCommunityNameThickness.name) ?? NameThickness.normal.name);
-      communityFullNameCommunityNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameCommunityNameColor.name) ?? NameColor.defaultColor);
-      communityFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
-      communityFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
-      useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
-      useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
+      userSeparator = FullNameSeparator.values.byName(
+          prefs.getString(LocalSettings.userFormat.name) ??
+              FullNameSeparator.at.name);
+      userFullNameUserNameThickness = NameThickness.values.byName(
+          prefs.getString(LocalSettings.userFullNameUserNameThickness.name) ??
+              NameThickness.normal.name);
+      userFullNameUserNameColor = NameColor.fromString(
+          color:
+              prefs.getString(LocalSettings.userFullNameUserNameColor.name) ??
+                  NameColor.defaultColor);
+      userFullNameInstanceNameThickness = NameThickness.values.byName(
+          prefs.getString(
+                  LocalSettings.userFullNameInstanceNameThickness.name) ??
+              NameThickness.light.name);
+      userFullNameInstanceNameColor = NameColor.fromString(
+          color: prefs.getString(
+                  LocalSettings.userFullNameInstanceNameColor.name) ??
+              NameColor.defaultColor);
+      communitySeparator = FullNameSeparator.values.byName(
+          prefs.getString(LocalSettings.communityFormat.name) ??
+              FullNameSeparator.dot.name);
+      communityFullNameCommunityNameThickness = NameThickness.values.byName(
+          prefs.getString(
+                  LocalSettings.communityFullNameCommunityNameThickness.name) ??
+              NameThickness.normal.name);
+      communityFullNameCommunityNameColor = NameColor.fromString(
+          color: prefs.getString(
+                  LocalSettings.communityFullNameCommunityNameColor.name) ??
+              NameColor.defaultColor);
+      communityFullNameInstanceNameThickness = NameThickness.values.byName(
+          prefs.getString(
+                  LocalSettings.communityFullNameInstanceNameThickness.name) ??
+              NameThickness.light.name);
+      communityFullNameInstanceNameColor = NameColor.fromString(
+          color: prefs.getString(
+                  LocalSettings.communityFullNameInstanceNameColor.name) ??
+              NameColor.defaultColor);
+      useDisplayNamesForUsers =
+          prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+      useDisplayNamesForCommunities =
+          prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ??
+              false;
 
       isLoading = false;
     });
@@ -284,7 +385,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
               payload: fontScale,
               textTheme: theme.textTheme.copyWith(
                 bodyMedium: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * fontScale.textScaleFactor),
+                  fontSize: MediaQuery.textScalerOf(context).scale(
+                      theme.textTheme.bodyMedium!.fontSize! *
+                          fontScale.textScaleFactor),
                 ),
               ),
             ),
@@ -296,14 +399,27 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   @override
   void initState() {
     themeOptions = [
-      ListPickerItem(icon: Icons.phonelink_setup_rounded, label: l10n.system, payload: ThemeType.system),
-      ListPickerItem(icon: Icons.light_mode_rounded, label: l10n.light, payload: ThemeType.light),
-      ListPickerItem(icon: Icons.dark_mode_outlined, label: l10n.dark, payload: ThemeType.dark),
-      ListPickerItem(icon: Icons.dark_mode, label: l10n.pureBlack, payload: ThemeType.pureBlack)
+      ListPickerItem(
+          icon: Icons.phonelink_setup_rounded,
+          label: l10n.system,
+          payload: ThemeType.system),
+      ListPickerItem(
+          icon: Icons.light_mode_rounded,
+          label: l10n.light,
+          payload: ThemeType.light),
+      ListPickerItem(
+          icon: Icons.dark_mode_outlined,
+          label: l10n.dark,
+          payload: ThemeType.dark),
+      ListPickerItem(
+          icon: Icons.dark_mode,
+          label: l10n.pureBlack,
+          payload: ThemeType.pureBlack)
     ];
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initFontScaleOptions());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _initFontScaleOptions());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.settingToHighlight != null) {
@@ -350,22 +466,31 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                          child: Text(l10n.theme, style: theme.textTheme.titleLarge),
+                          padding:
+                              const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                          child: Text(l10n.theme,
+                              style: theme.textTheme.titleLarge),
                         ),
                         ListOption(
                           description: l10n.theme,
-                          value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
+                          value: ListPickerItem(
+                              label: themeType.name.capitalize,
+                              icon: Icons.wallpaper_rounded,
+                              payload: themeType),
                           options: themeOptions,
                           icon: Icons.wallpaper_rounded,
-                          onChanged: (value) async => setPreferences(LocalSettings.appTheme, value.payload.index),
+                          onChanged: (value) async => setPreferences(
+                              LocalSettings.appTheme, value.payload.index),
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.appTheme,
                           highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.themeAccentColor,
-                          value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
+                          value: ListPickerItem(
+                              label: selectedTheme.label,
+                              icon: Icons.wallpaper_rounded,
+                              payload: selectedTheme),
                           valueDisplay: Stack(
                             children: [
                               Container(
@@ -407,7 +532,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ),
                           options: customThemeOptions,
                           icon: Icons.wallpaper_rounded,
-                          onChanged: (value) async => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
+                          onChanged: (value) async => setPreferences(
+                              LocalSettings.appThemeAccentColor, value.payload),
                           closeOnSelect: false,
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.appThemeAccentColor,
@@ -420,7 +546,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             value: useMaterialYouTheme,
                             iconEnabled: Icons.color_lens_rounded,
                             iconDisabled: Icons.color_lens_rounded,
-                            onToggle: (bool value) => setPreferences(LocalSettings.useMaterialYouTheme, value),
+                            onToggle: (bool value) => setPreferences(
+                                LocalSettings.useMaterialYouTheme, value),
                             highlightKey: settingToHighlightKey,
                             setting: LocalSettings.useMaterialYouTheme,
                             highlightedSetting: settingToHighlight,
@@ -447,45 +574,66 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                          child: Text(l10n.fonts, style: theme.textTheme.titleLarge),
+                          padding:
+                              const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                          child: Text(l10n.fonts,
+                              style: theme.textTheme.titleLarge),
                         ),
                         ListOption(
                           description: l10n.postTitleFontScale,
-                          value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
+                          value: ListPickerItem(
+                              label: titleFontSizeScale.name.capitalize,
+                              icon: Icons.feed,
+                              payload: titleFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) async => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
+                          onChanged: (value) async => setPreferences(
+                              LocalSettings.titleFontSizeScale, value.payload),
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.titleFontSizeScale,
                           highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.postContentFontScale,
-                          value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
+                          value: ListPickerItem(
+                              label: contentFontSizeScale.name.capitalize,
+                              icon: Icons.feed,
+                              payload: contentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) async => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
+                          onChanged: (value) async => setPreferences(
+                              LocalSettings.contentFontSizeScale,
+                              value.payload),
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.contentFontSizeScale,
                           highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.commentFontScale,
-                          value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
+                          value: ListPickerItem(
+                              label: commentFontSizeScale.name.capitalize,
+                              icon: Icons.feed,
+                              payload: commentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) async => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
+                          onChanged: (value) async => setPreferences(
+                              LocalSettings.commentFontSizeScale,
+                              value.payload),
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.commentFontSizeScale,
                           highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.metadataFontScale,
-                          value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
+                          value: ListPickerItem(
+                              label: metadataFontSizeScale.name.capitalize,
+                              icon: Icons.feed,
+                              payload: metadataFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) async => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
+                          onChanged: (value) async => setPreferences(
+                              LocalSettings.metadataFontSizeScale,
+                              value.payload),
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.metadataFontSizeScale,
                           highlightedSetting: settingToHighlight,
@@ -500,18 +648,22 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                          child: Text(l10n.names, style: theme.textTheme.titleLarge),
+                          padding:
+                              const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                          child: Text(l10n.names,
+                              style: theme.textTheme.titleLarge),
                         ),
                         ListOption(
                           description: l10n.userFormat,
                           value: ListPickerItem(
-                            label: generateSampleUserFullName(userSeparator, useDisplayNamesForUsers),
+                            label: generateSampleUserFullName(
+                                userSeparator, useDisplayNamesForUsers),
                             labelWidget: generateSampleUserFullNameWidget(
                               userSeparator,
                               userNameThickness: userFullNameUserNameThickness,
                               userNameColor: userFullNameUserNameColor,
-                              instanceNameThickness: userFullNameInstanceNameThickness,
+                              instanceNameThickness:
+                                  userFullNameInstanceNameThickness,
                               instanceNameColor: userFullNameInstanceNameColor,
                               textStyle: theme.textTheme.bodyMedium,
                               useDisplayName: useDisplayNamesForUsers,
@@ -523,13 +675,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: [
                             ListPickerItem(
                               icon: const IconData(0x2022),
-                              label: generateSampleUserFullName(FullNameSeparator.dot, useDisplayNamesForUsers),
+                              label: generateSampleUserFullName(
+                                  FullNameSeparator.dot,
+                                  useDisplayNamesForUsers),
                               labelWidget: generateSampleUserFullNameWidget(
                                 FullNameSeparator.dot,
-                                userNameThickness: userFullNameUserNameThickness,
+                                userNameThickness:
+                                    userFullNameUserNameThickness,
                                 userNameColor: userFullNameUserNameColor,
-                                instanceNameThickness: userFullNameInstanceNameThickness,
-                                instanceNameColor: userFullNameInstanceNameColor,
+                                instanceNameThickness:
+                                    userFullNameInstanceNameThickness,
+                                instanceNameColor:
+                                    userFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
                                 useDisplayName: useDisplayNamesForUsers,
                               ),
@@ -538,13 +695,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleUserFullName(FullNameSeparator.at, useDisplayNamesForUsers),
+                              label: generateSampleUserFullName(
+                                  FullNameSeparator.at,
+                                  useDisplayNamesForUsers),
                               labelWidget: generateSampleUserFullNameWidget(
                                 FullNameSeparator.at,
-                                userNameThickness: userFullNameUserNameThickness,
+                                userNameThickness:
+                                    userFullNameUserNameThickness,
                                 userNameColor: userFullNameUserNameColor,
-                                instanceNameThickness: userFullNameInstanceNameThickness,
-                                instanceNameColor: userFullNameInstanceNameColor,
+                                instanceNameThickness:
+                                    userFullNameInstanceNameThickness,
+                                instanceNameColor:
+                                    userFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
                                 useDisplayName: useDisplayNamesForUsers,
                               ),
@@ -553,13 +715,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleUserFullName(FullNameSeparator.lemmy, useDisplayNamesForUsers),
+                              label: generateSampleUserFullName(
+                                  FullNameSeparator.lemmy,
+                                  useDisplayNamesForUsers),
                               labelWidget: generateSampleUserFullNameWidget(
                                 FullNameSeparator.lemmy,
-                                userNameThickness: userFullNameUserNameThickness,
+                                userNameThickness:
+                                    userFullNameUserNameThickness,
                                 userNameColor: userFullNameUserNameColor,
-                                instanceNameThickness: userFullNameInstanceNameThickness,
-                                instanceNameColor: userFullNameInstanceNameColor,
+                                instanceNameThickness:
+                                    userFullNameInstanceNameThickness,
+                                instanceNameColor:
+                                    userFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
                                 useDisplayName: useDisplayNamesForUsers,
                               ),
@@ -568,7 +735,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                           ],
                           icon: Icons.person_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.userFormat, value.payload.name),
+                          onChanged: (value) => setPreferences(
+                              LocalSettings.userFormat, value.payload.name),
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.userFormat,
                           highlightedSetting: settingToHighlight,
@@ -587,10 +755,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 title: l10n.userStyle,
                                 heading: generateSampleUserFullNameWidget(
                                   userSeparator,
-                                  userNameThickness: userFullNameUserNameThickness,
+                                  userNameThickness:
+                                      userFullNameUserNameThickness,
                                   userNameColor: userFullNameUserNameColor,
-                                  instanceNameThickness: userFullNameInstanceNameThickness,
-                                  instanceNameColor: userFullNameInstanceNameColor,
+                                  instanceNameThickness:
+                                      userFullNameInstanceNameThickness,
+                                  instanceNameColor:
+                                      userFullNameInstanceNameColor,
                                   textStyle: theme.textTheme.bodyMedium,
                                   useDisplayName: useDisplayNamesForUsers,
                                 ),
@@ -605,12 +776,19 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                       subtitle: SizedBox(
                                         width: 200.0,
                                         child: Slider(
-                                          value: userFullNameUserNameThickness.toSliderValue(),
+                                          value: userFullNameUserNameThickness
+                                              .toSliderValue(),
                                           max: 2,
                                           divisions: 2,
-                                          label: userFullNameUserNameThickness.label(context),
+                                          label: userFullNameUserNameThickness
+                                              .label(context),
                                           onChanged: (double value) async {
-                                            await setPreferences(LocalSettings.userFullNameUserNameThickness, NameThickness.fromSliderValue(value).name);
+                                            await setPreferences(
+                                                LocalSettings
+                                                    .userFullNameUserNameThickness,
+                                                NameThickness.fromSliderValue(
+                                                        value)
+                                                    .name);
                                             setState(() {});
                                           },
                                         ),
@@ -627,12 +805,21 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                       subtitle: SizedBox(
                                         width: 200.0,
                                         child: Slider(
-                                          value: userFullNameInstanceNameThickness.toSliderValue(),
+                                          value:
+                                              userFullNameInstanceNameThickness
+                                                  .toSliderValue(),
                                           max: 2,
                                           divisions: 2,
-                                          label: userFullNameInstanceNameThickness.label(context),
+                                          label:
+                                              userFullNameInstanceNameThickness
+                                                  .label(context),
                                           onChanged: (double value) async {
-                                            await setPreferences(LocalSettings.userFullNameInstanceNameThickness, NameThickness.fromSliderValue(value).name);
+                                            await setPreferences(
+                                                LocalSettings
+                                                    .userFullNameInstanceNameThickness,
+                                                NameThickness.fromSliderValue(
+                                                        value)
+                                                    .name);
                                             setState(() {});
                                           },
                                         ),
@@ -647,27 +834,36 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                         style: theme.textTheme.bodyMedium,
                                       ),
                                       subtitle: Padding(
-                                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                        padding: const EdgeInsets.only(
+                                            left: 16.0, right: 16.0),
                                         child: DropdownButton<NameColor>(
-                                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10.0)),
                                           isExpanded: true,
                                           underline: Container(),
                                           value: userFullNameUserNameColor,
-                                          items: NameColor.getPossibleValues(userFullNameUserNameColor)
+                                          items: NameColor.getPossibleValues(
+                                                  userFullNameUserNameColor)
                                               .map(
-                                                (nameColor) => DropdownMenuItem<NameColor>(
+                                                (nameColor) =>
+                                                    DropdownMenuItem<NameColor>(
                                                   alignment: Alignment.center,
                                                   value: nameColor,
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
                                                         radius: 10.0,
-                                                        backgroundColor: nameColor.toColor(context),
+                                                        backgroundColor:
+                                                            nameColor.toColor(
+                                                                context),
                                                       ),
-                                                      const SizedBox(width: 16.0),
+                                                      const SizedBox(
+                                                          width: 16.0),
                                                       Text(
-                                                        nameColor.label(context),
-                                                        style: theme.textTheme.bodyMedium,
+                                                        nameColor
+                                                            .label(context),
+                                                        style: theme.textTheme
+                                                            .bodyMedium,
                                                       ),
                                                     ],
                                                   ),
@@ -675,7 +871,10 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                               )
                                               .toList(),
                                           onChanged: (value) async {
-                                            await setPreferences(LocalSettings.userFullNameUserNameColor, value?.color);
+                                            await setPreferences(
+                                                LocalSettings
+                                                    .userFullNameUserNameColor,
+                                                value?.color);
                                             setState(() {});
                                           },
                                         ),
@@ -690,27 +889,36 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                         style: theme.textTheme.bodyMedium,
                                       ),
                                       subtitle: Padding(
-                                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                        padding: const EdgeInsets.only(
+                                            left: 16.0, right: 16.0),
                                         child: DropdownButton<NameColor>(
-                                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10.0)),
                                           isExpanded: true,
                                           underline: Container(),
                                           value: userFullNameInstanceNameColor,
-                                          items: NameColor.getPossibleValues(userFullNameInstanceNameColor)
+                                          items: NameColor.getPossibleValues(
+                                                  userFullNameInstanceNameColor)
                                               .map(
-                                                (nameColor) => DropdownMenuItem<NameColor>(
+                                                (nameColor) =>
+                                                    DropdownMenuItem<NameColor>(
                                                   alignment: Alignment.center,
                                                   value: nameColor,
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
                                                         radius: 10.0,
-                                                        backgroundColor: nameColor.toColor(context),
+                                                        backgroundColor:
+                                                            nameColor.toColor(
+                                                                context),
                                                       ),
-                                                      const SizedBox(width: 16.0),
+                                                      const SizedBox(
+                                                          width: 16.0),
                                                       Text(
-                                                        nameColor.label(context),
-                                                        style: theme.textTheme.bodyMedium,
+                                                        nameColor
+                                                            .label(context),
+                                                        style: theme.textTheme
+                                                            .bodyMedium,
                                                       ),
                                                     ],
                                                   ),
@@ -718,7 +926,10 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                               )
                                               .toList(),
                                           onChanged: (value) async {
-                                            await setPreferences(LocalSettings.userFullNameInstanceNameColor, value?.color);
+                                            await setPreferences(
+                                                LocalSettings
+                                                    .userFullNameInstanceNameColor,
+                                                value?.color);
                                             setState(() {});
                                           },
                                         ),
@@ -733,13 +944,19 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ListOption(
                           description: l10n.communityFormat,
                           value: ListPickerItem(
-                            label: generateSampleCommunityFullName(communitySeparator, useDisplayNamesForCommunities),
+                            label: generateSampleCommunityFullName(
+                                communitySeparator,
+                                useDisplayNamesForCommunities),
                             labelWidget: generateSampleCommunityFullNameWidget(
                               communitySeparator,
-                              communityNameThickness: communityFullNameCommunityNameThickness,
-                              communityNameColor: communityFullNameCommunityNameColor,
-                              instanceNameThickness: communityFullNameInstanceNameThickness,
-                              instanceNameColor: communityFullNameInstanceNameColor,
+                              communityNameThickness:
+                                  communityFullNameCommunityNameThickness,
+                              communityNameColor:
+                                  communityFullNameCommunityNameColor,
+                              instanceNameThickness:
+                                  communityFullNameInstanceNameThickness,
+                              instanceNameColor:
+                                  communityFullNameInstanceNameColor,
                               textStyle: theme.textTheme.bodyMedium,
                               useDisplayName: useDisplayNamesForCommunities,
                             ),
@@ -750,13 +967,20 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: [
                             ListPickerItem(
                               icon: const IconData(0x2022),
-                              label: generateSampleCommunityFullName(FullNameSeparator.dot, useDisplayNamesForCommunities),
-                              labelWidget: generateSampleCommunityFullNameWidget(
+                              label: generateSampleCommunityFullName(
+                                  FullNameSeparator.dot,
+                                  useDisplayNamesForCommunities),
+                              labelWidget:
+                                  generateSampleCommunityFullNameWidget(
                                 FullNameSeparator.dot,
-                                communityNameThickness: communityFullNameCommunityNameThickness,
-                                communityNameColor: communityFullNameCommunityNameColor,
-                                instanceNameThickness: communityFullNameInstanceNameThickness,
-                                instanceNameColor: communityFullNameInstanceNameColor,
+                                communityNameThickness:
+                                    communityFullNameCommunityNameThickness,
+                                communityNameColor:
+                                    communityFullNameCommunityNameColor,
+                                instanceNameThickness:
+                                    communityFullNameInstanceNameThickness,
+                                instanceNameColor:
+                                    communityFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
                                 useDisplayName: useDisplayNamesForCommunities,
                               ),
@@ -765,13 +989,20 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleCommunityFullName(FullNameSeparator.at, useDisplayNamesForCommunities),
-                              labelWidget: generateSampleCommunityFullNameWidget(
+                              label: generateSampleCommunityFullName(
+                                  FullNameSeparator.at,
+                                  useDisplayNamesForCommunities),
+                              labelWidget:
+                                  generateSampleCommunityFullNameWidget(
                                 FullNameSeparator.at,
-                                communityNameThickness: communityFullNameCommunityNameThickness,
-                                communityNameColor: communityFullNameCommunityNameColor,
-                                instanceNameThickness: communityFullNameInstanceNameThickness,
-                                instanceNameColor: communityFullNameInstanceNameColor,
+                                communityNameThickness:
+                                    communityFullNameCommunityNameThickness,
+                                communityNameColor:
+                                    communityFullNameCommunityNameColor,
+                                instanceNameThickness:
+                                    communityFullNameInstanceNameThickness,
+                                instanceNameColor:
+                                    communityFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
                                 useDisplayName: useDisplayNamesForCommunities,
                               ),
@@ -780,13 +1011,20 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleCommunityFullName(FullNameSeparator.lemmy, useDisplayNamesForCommunities),
-                              labelWidget: generateSampleCommunityFullNameWidget(
+                              label: generateSampleCommunityFullName(
+                                  FullNameSeparator.lemmy,
+                                  useDisplayNamesForCommunities),
+                              labelWidget:
+                                  generateSampleCommunityFullNameWidget(
                                 FullNameSeparator.lemmy,
-                                communityNameThickness: communityFullNameCommunityNameThickness,
-                                communityNameColor: communityFullNameCommunityNameColor,
-                                instanceNameThickness: communityFullNameInstanceNameThickness,
-                                instanceNameColor: communityFullNameInstanceNameColor,
+                                communityNameThickness:
+                                    communityFullNameCommunityNameThickness,
+                                communityNameColor:
+                                    communityFullNameCommunityNameColor,
+                                instanceNameThickness:
+                                    communityFullNameInstanceNameThickness,
+                                instanceNameColor:
+                                    communityFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
                                 useDisplayName: useDisplayNamesForCommunities,
                               ),
@@ -795,7 +1033,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                           ],
                           icon: Icons.people_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),
+                          onChanged: (value) => setPreferences(
+                              LocalSettings.communityFormat,
+                              value.payload.name),
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.communityFormat,
                           highlightedSetting: settingToHighlight,
@@ -814,10 +1054,14 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 title: l10n.communityStyle,
                                 heading: generateSampleCommunityFullNameWidget(
                                   communitySeparator,
-                                  communityNameThickness: communityFullNameCommunityNameThickness,
-                                  communityNameColor: communityFullNameCommunityNameColor,
-                                  instanceNameThickness: communityFullNameInstanceNameThickness,
-                                  instanceNameColor: communityFullNameInstanceNameColor,
+                                  communityNameThickness:
+                                      communityFullNameCommunityNameThickness,
+                                  communityNameColor:
+                                      communityFullNameCommunityNameColor,
+                                  instanceNameThickness:
+                                      communityFullNameInstanceNameThickness,
+                                  instanceNameColor:
+                                      communityFullNameInstanceNameColor,
                                   textStyle: theme.textTheme.bodyMedium,
                                   useDisplayName: useDisplayNamesForCommunities,
                                 ),
@@ -832,12 +1076,21 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                       subtitle: SizedBox(
                                         width: 200.0,
                                         child: Slider(
-                                          value: communityFullNameCommunityNameThickness.toSliderValue(),
+                                          value:
+                                              communityFullNameCommunityNameThickness
+                                                  .toSliderValue(),
                                           max: 2,
                                           divisions: 2,
-                                          label: communityFullNameCommunityNameThickness.label(context),
+                                          label:
+                                              communityFullNameCommunityNameThickness
+                                                  .label(context),
                                           onChanged: (double value) async {
-                                            await setPreferences(LocalSettings.communityFullNameCommunityNameThickness, NameThickness.fromSliderValue(value).name);
+                                            await setPreferences(
+                                                LocalSettings
+                                                    .communityFullNameCommunityNameThickness,
+                                                NameThickness.fromSliderValue(
+                                                        value)
+                                                    .name);
                                             setState(() {});
                                           },
                                         ),
@@ -854,12 +1107,21 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                       subtitle: SizedBox(
                                         width: 200.0,
                                         child: Slider(
-                                          value: communityFullNameInstanceNameThickness.toSliderValue(),
+                                          value:
+                                              communityFullNameInstanceNameThickness
+                                                  .toSliderValue(),
                                           max: 2,
                                           divisions: 2,
-                                          label: communityFullNameInstanceNameThickness.label(context),
+                                          label:
+                                              communityFullNameInstanceNameThickness
+                                                  .label(context),
                                           onChanged: (double value) async {
-                                            await setPreferences(LocalSettings.communityFullNameInstanceNameThickness, NameThickness.fromSliderValue(value).name);
+                                            await setPreferences(
+                                                LocalSettings
+                                                    .communityFullNameInstanceNameThickness,
+                                                NameThickness.fromSliderValue(
+                                                        value)
+                                                    .name);
                                             setState(() {});
                                           },
                                         ),
@@ -874,27 +1136,37 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                         style: theme.textTheme.bodyMedium,
                                       ),
                                       subtitle: Padding(
-                                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                        padding: const EdgeInsets.only(
+                                            left: 16.0, right: 16.0),
                                         child: DropdownButton<NameColor>(
-                                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10.0)),
                                           isExpanded: true,
                                           underline: Container(),
-                                          value: communityFullNameCommunityNameColor,
-                                          items: NameColor.getPossibleValues(communityFullNameCommunityNameColor)
+                                          value:
+                                              communityFullNameCommunityNameColor,
+                                          items: NameColor.getPossibleValues(
+                                                  communityFullNameCommunityNameColor)
                                               .map(
-                                                (nameColor) => DropdownMenuItem<NameColor>(
+                                                (nameColor) =>
+                                                    DropdownMenuItem<NameColor>(
                                                   alignment: Alignment.center,
                                                   value: nameColor,
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
                                                         radius: 10.0,
-                                                        backgroundColor: nameColor.toColor(context),
+                                                        backgroundColor:
+                                                            nameColor.toColor(
+                                                                context),
                                                       ),
-                                                      const SizedBox(width: 16.0),
+                                                      const SizedBox(
+                                                          width: 16.0),
                                                       Text(
-                                                        nameColor.label(context),
-                                                        style: theme.textTheme.bodyMedium,
+                                                        nameColor
+                                                            .label(context),
+                                                        style: theme.textTheme
+                                                            .bodyMedium,
                                                       ),
                                                     ],
                                                   ),
@@ -902,7 +1174,10 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                               )
                                               .toList(),
                                           onChanged: (value) async {
-                                            await setPreferences(LocalSettings.communityFullNameCommunityNameColor, value?.color);
+                                            await setPreferences(
+                                                LocalSettings
+                                                    .communityFullNameCommunityNameColor,
+                                                value?.color);
                                             setState(() {});
                                           },
                                         ),
@@ -917,27 +1192,37 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                         style: theme.textTheme.bodyMedium,
                                       ),
                                       subtitle: Padding(
-                                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                        padding: const EdgeInsets.only(
+                                            left: 16.0, right: 16.0),
                                         child: DropdownButton<NameColor>(
-                                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10.0)),
                                           isExpanded: true,
                                           underline: Container(),
-                                          value: communityFullNameInstanceNameColor,
-                                          items: NameColor.getPossibleValues(communityFullNameInstanceNameColor)
+                                          value:
+                                              communityFullNameInstanceNameColor,
+                                          items: NameColor.getPossibleValues(
+                                                  communityFullNameInstanceNameColor)
                                               .map(
-                                                (nameColor) => DropdownMenuItem<NameColor>(
+                                                (nameColor) =>
+                                                    DropdownMenuItem<NameColor>(
                                                   alignment: Alignment.center,
                                                   value: nameColor,
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
                                                         radius: 10.0,
-                                                        backgroundColor: nameColor.toColor(context),
+                                                        backgroundColor:
+                                                            nameColor.toColor(
+                                                                context),
                                                       ),
-                                                      const SizedBox(width: 16.0),
+                                                      const SizedBox(
+                                                          width: 16.0),
                                                       Text(
-                                                        nameColor.label(context),
-                                                        style: theme.textTheme.bodyMedium,
+                                                        nameColor
+                                                            .label(context),
+                                                        style: theme.textTheme
+                                                            .bodyMedium,
                                                       ),
                                                     ],
                                                   ),
@@ -945,7 +1230,10 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                               )
                                               .toList(),
                                           onChanged: (value) async {
-                                            await setPreferences(LocalSettings.communityFullNameInstanceNameColor, value?.color);
+                                            await setPreferences(
+                                                LocalSettings
+                                                    .communityFullNameInstanceNameColor,
+                                                value?.color);
                                             setState(() {});
                                           },
                                         ),
@@ -962,7 +1250,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           value: useDisplayNamesForUsers,
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.useDisplayNamesForUsers, value),
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.useDisplayNamesForUsers,
                           highlightedSetting: settingToHighlight,
@@ -972,7 +1261,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           value: useDisplayNamesForCommunities,
                           iconEnabled: Icons.people_rounded,
                           iconDisabled: Icons.people_outline_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForCommunities, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.useDisplayNamesForCommunities,
+                              value),
                           highlightKey: settingToHighlightKey,
                           setting: LocalSettings.useDisplayNamesForCommunities,
                           highlightedSetting: settingToHighlight,

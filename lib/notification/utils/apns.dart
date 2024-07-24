@@ -17,7 +17,8 @@ import 'package:thunder/notification/shared/notification_server.dart';
 /// For now, initializing APNs will enable push notifications for all accounts active on the app.
 ///
 /// The [controller] is passed in so that we can react to push notifications when the user taps on the notification.
-void initAPNs({required StreamController<NotificationResponse> controller}) async {
+void initAPNs(
+    {required StreamController<NotificationResponse> controller}) async {
   const String repliesGroupKey = 'replies';
 
   // Fetch device token for APNs. We need to send this device token along with the jwt so that the server can poll for new notifications and send them to this device.
@@ -34,8 +35,14 @@ void initAPNs({required StreamController<NotificationResponse> controller}) asyn
 
   // TODO: Select accounts to enable push notifications
   for (Account account in accounts) {
-    bool success = await sendAuthTokenToNotificationServer(type: NotificationType.apn, token: token, jwt: account.jwt!, instance: account.instance!);
-    if (!success) debugPrint("Failed to send device token to server for account ${account.id}. Skipping.");
+    bool success = await sendAuthTokenToNotificationServer(
+        type: NotificationType.apn,
+        token: token,
+        jwt: account.jwt!,
+        instance: account.instance!);
+    if (!success)
+      debugPrint(
+          "Failed to send device token to server for account ${account.id}. Skipping.");
   }
 
   // Handle new tokens generated from the device
@@ -44,12 +51,19 @@ void initAPNs({required StreamController<NotificationResponse> controller}) asyn
 
     // We should remove any previously sent tokens, and send them again
     bool removed = await deleteAccountFromNotificationServer();
-    if (!removed) debugPrint("Failed to delete previous device token from server.");
+    if (!removed)
+      debugPrint("Failed to delete previous device token from server.");
 
     // TODO: Select accounts to enable push notifications
     for (Account account in accounts) {
-      bool success = await sendAuthTokenToNotificationServer(type: NotificationType.apn, token: token, jwt: account.jwt!, instance: account.instance!);
-      if (!success) debugPrint("Failed to send device token to server for account ${account.id}. Skipping.");
+      bool success = await sendAuthTokenToNotificationServer(
+          type: NotificationType.apn,
+          token: token,
+          jwt: account.jwt!,
+          instance: account.instance!);
+      if (!success)
+        debugPrint(
+            "Failed to send device token to server for account ${account.id}. Skipping.");
     }
   });
 

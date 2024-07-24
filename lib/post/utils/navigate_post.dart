@@ -22,7 +22,12 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 
-Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia, int? selectedCommentId, String? selectedCommentPath, int? postId, Function(PostViewMedia)? onPostUpdated}) async {
+Future<void> navigateToPost(BuildContext context,
+    {PostViewMedia? postViewMedia,
+    int? selectedCommentId,
+    String? selectedCommentPath,
+    int? postId,
+    Function(PostViewMedia)? onPostUpdated}) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
   AccountBloc accountBloc = context.read<AccountBloc>();
@@ -52,10 +57,14 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
 
   // Mark post as read when tapped
   if (authBloc.state.isLoggedIn) {
-    feedBloc?.add(FeedItemActionedEvent(postId: postViewMedia?.postView.post.id ?? postId, postAction: PostAction.read, value: true));
+    feedBloc?.add(FeedItemActionedEvent(
+        postId: postViewMedia?.postView.post.id ?? postId,
+        postAction: PostAction.read,
+        value: true));
   }
 
-  bool enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
+  bool enableExperimentalFeatures =
+      prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
 
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
@@ -63,11 +72,18 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
         : reduceAnimations
             ? const Duration(milliseconds: 100)
             : null,
-    reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+    reverseTransitionDuration: reduceAnimations
+        ? const Duration(milliseconds: 100)
+        : const Duration(milliseconds: 500),
     backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
     backGestureDetectionWidth: 45,
-    canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+    canSwipe: Platform.isIOS ||
+        thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(
+            isUserLoggedIn: authBloc.state.isLoggedIn,
+            state: thunderBloc.state,
+            isPostPage: true) ||
+        !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
     builder: (otherContext) {
       return MultiBlocProvider(
         providers: [
@@ -77,7 +93,8 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
           BlocProvider.value(value: instanceBloc),
           BlocProvider(create: (context) => post_bloc.PostBloc()),
           if (communityBloc != null) BlocProvider.value(value: communityBloc),
-          if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
+          if (anonymousSubscriptionsBloc != null)
+            BlocProvider.value(value: anonymousSubscriptionsBloc),
         ],
         child: enableExperimentalFeatures
             ? PostPage(
@@ -88,7 +105,10 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
                     feedBloc = context.read<FeedBloc>();
                   } catch (e) {}
                   // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
-                  feedBloc?.add(FeedItemUpdatedEvent(postViewMedia: PostViewMedia(postView: postViewMedia.postView.copyWith(read: true), media: postViewMedia.media)));
+                  feedBloc?.add(FeedItemUpdatedEvent(
+                      postViewMedia: PostViewMedia(
+                          postView: postViewMedia.postView.copyWith(read: true),
+                          media: postViewMedia.media)));
                 },
               )
             : legacy_post_page.PostPage(
@@ -102,7 +122,10 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
                     feedBloc = context.read<FeedBloc>();
                   } catch (e) {}
                   // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
-                  feedBloc?.add(FeedItemUpdatedEvent(postViewMedia: PostViewMedia(postView: postViewMedia.postView.copyWith(read: true), media: postViewMedia.media)));
+                  feedBloc?.add(FeedItemUpdatedEvent(
+                      postViewMedia: PostViewMedia(
+                          postView: postViewMedia.postView.copyWith(read: true),
+                          media: postViewMedia.media)));
                 },
               ),
       );

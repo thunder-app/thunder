@@ -49,7 +49,8 @@ class GeneralSettingsPage extends StatefulWidget {
   State<GeneralSettingsPage> createState() => _GeneralSettingsPageState();
 }
 
-class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTickerProviderStateMixin {
+class _GeneralSettingsPageState extends State<GeneralSettingsPage>
+    with SingleTickerProviderStateMixin {
   /// The list of supported locales determined by the l10n .arb files
   Iterable<Locale> get supportedLocales => AppLocalizations.supportedLocales;
 
@@ -136,7 +137,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// Controller for the push notification server URL
   TextEditingController controller = TextEditingController();
 
-  AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+  AndroidFlutterLocalNotificationsPlugin?
+      androidFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin()
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
 
   /// Whether the Android system is allowing Thunder to send notifications
   bool? areAndroidNotificationsAllowed;
@@ -154,22 +158,27 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     switch (attribute) {
       case LocalSettings.defaultFeedListingType:
         await prefs.setString(LocalSettings.defaultFeedListingType.name, value);
-        setState(() => defaultListingType = ListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
+        setState(() => defaultListingType =
+            ListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
         break;
       case LocalSettings.defaultFeedSortType:
         await prefs.setString(LocalSettings.defaultFeedSortType.name, value);
-        setState(() => defaultSortType = SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
+        setState(() => defaultSortType =
+            SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
         break;
       case LocalSettings.defaultCommentSortType:
         await prefs.setString(LocalSettings.defaultCommentSortType.name, value);
-        setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
+        setState(() => defaultCommentSortType = CommentSortType.values
+            .byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
       case LocalSettings.appLanguageCode:
-        await prefs.setString(LocalSettings.appLanguageCode.name, value.languageCode);
+        await prefs.setString(
+            LocalSettings.appLanguageCode.name, value.languageCode);
         setState(() => currentLocale = value);
         break;
       case LocalSettings.useProfilePictureForDrawer:
-        await prefs.setBool(LocalSettings.useProfilePictureForDrawer.name, value);
+        await prefs.setBool(
+            LocalSettings.useProfilePictureForDrawer.name, value);
         setState(() => useProfilePictureForDrawer = value);
         break;
 
@@ -182,7 +191,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => tappableAuthorCommunity = value);
         break;
       case LocalSettings.markPostAsReadOnMediaView:
-        await prefs.setBool(LocalSettings.markPostAsReadOnMediaView.name, value);
+        await prefs.setBool(
+            LocalSettings.markPostAsReadOnMediaView.name, value);
         setState(() => markPostReadOnMediaView = value);
         break;
       case LocalSettings.markPostAsReadOnScroll:
@@ -202,7 +212,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => showHiddenPosts = value);
         break;
       case LocalSettings.collapseParentCommentBodyOnGesture:
-        await prefs.setBool(LocalSettings.collapseParentCommentBodyOnGesture.name, value);
+        await prefs.setBool(
+            LocalSettings.collapseParentCommentBodyOnGesture.name, value);
         setState(() => collapseParentCommentOnGesture = value);
         break;
       case LocalSettings.enableCommentNavigation:
@@ -216,7 +227,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       case LocalSettings.browserMode:
         await prefs.setString(LocalSettings.browserMode.name, value);
-        setState(() => browserMode = BrowserMode.values.byName(value ?? BrowserMode.customTabs));
+        setState(() => browserMode =
+            BrowserMode.values.byName(value ?? BrowserMode.customTabs));
         break;
       case LocalSettings.openLinksInReaderMode:
         await prefs.setBool(LocalSettings.openLinksInReaderMode.name, value);
@@ -228,7 +240,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         break;
 
       case LocalSettings.showInAppUpdateNotification:
-        await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
+        await prefs.setBool(
+            LocalSettings.showInAppUpdateNotification.name, value);
         setState(() => showInAppUpdateNotification = value);
         break;
       case LocalSettings.showUpdateChangelogs:
@@ -236,7 +249,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => showUpdateChangelogs = value);
         break;
       case LocalSettings.inboxNotificationType:
-        await prefs.setString(LocalSettings.inboxNotificationType.name, (value as NotificationType).name);
+        await prefs.setString(LocalSettings.inboxNotificationType.name,
+            (value as NotificationType).name);
         setState(() => inboxNotificationType = value);
         break;
       case LocalSettings.pushNotificationServer:
@@ -246,7 +260,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       case LocalSettings.imageCachingMode:
         await prefs.setString(LocalSettings.imageCachingMode.name, value);
-        setState(() => imageCachingMode = ImageCachingMode.values.byName(value ?? ImageCachingMode.relaxed));
+        setState(() => imageCachingMode =
+            ImageCachingMode.values.byName(value ?? ImageCachingMode.relaxed));
         break;
       case LocalSettings.showNavigationLabels:
         await prefs.setBool(LocalSettings.showNavigationLabels.name, value);
@@ -268,46 +283,78 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     setState(() {
       // Default Sorts and Listing
       try {
-        defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
-        defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
+        defaultListingType = ListingType.values.byName(
+            prefs.getString(LocalSettings.defaultFeedListingType.name) ??
+                DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(
+            prefs.getString(LocalSettings.defaultFeedSortType.name) ??
+                DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultListingType =
+            ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
-      defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      defaultCommentSortType = CommentSortType.values.byName(
+          prefs.getString(LocalSettings.defaultCommentSortType.name) ??
+              DEFAULT_COMMENT_SORT_TYPE.name);
       currentLocale = Localizations.localeOf(context);
-      useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
+      useProfilePictureForDrawer =
+          prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
 
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
-      tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
-      markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
-      markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
+      tappableAuthorCommunity =
+          prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
+      markPostReadOnMediaView =
+          prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
+      markPostReadOnScroll =
+          prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
-      hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
-      showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
+      hideTopBarOnScroll =
+          prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
+      showHiddenPosts =
+          prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
 
-      collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
-      enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
-      combineNavAndFab = prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
+      collapseParentCommentOnGesture = prefs
+              .getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ??
+          true;
+      enableCommentNavigation =
+          prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
+      combineNavAndFab =
+          prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
 
-      browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
+      browserMode = BrowserMode.values.byName(
+          prefs.getString(LocalSettings.browserMode.name) ??
+              BrowserMode.customTabs.name);
 
-      openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
-      scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
+      openInReaderMode =
+          prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
+      scrapeMissingPreviews =
+          prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
-      imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
-      showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
+      imageCachingMode = ImageCachingMode.values.byName(
+          prefs.getString(LocalSettings.imageCachingMode.name) ??
+              ImageCachingMode.relaxed.name);
+      showNavigationLabels =
+          prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
 
-      showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
-      showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
-      inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
-      pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+      showInAppUpdateNotification =
+          prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ??
+              false;
+      showUpdateChangelogs =
+          prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
+      inboxNotificationType = NotificationType.values.byName(
+          prefs.getString(LocalSettings.inboxNotificationType.name) ??
+              NotificationType.none.name);
+      pushNotificationServer =
+          prefs.getString(LocalSettings.pushNotificationServer.name) ??
+              THUNDER_SERVER_URL;
       controller.text = pushNotificationServer;
 
       accounts = accountList;
 
-      enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
+      enableExperimentalFeatures =
+          prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
     });
   }
 
@@ -338,9 +385,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         });
       }
 
-      areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+      areAndroidNotificationsAllowed =
+          await androidFlutterLocalNotificationsPlugin
+              ?.areNotificationsEnabled();
       unifiedPushConnectedDistributorApp = await UnifiedPush.getDistributor();
-      unifiedPushAvailableDistributorApps = (await UnifiedPush.getDistributors()).length;
+      unifiedPushAvailableDistributorApps =
+          (await UnifiedPush.getDistributors()).length;
       setState(() {});
     });
   }
@@ -363,33 +413,50 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             delegate: SliverChildListDelegate(
               [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l10n.guestModeFeedSettings, style: theme.textTheme.titleMedium),
+                      Text(l10n.guestModeFeedSettings,
+                          style: theme.textTheme.titleMedium),
                       Text(l10n.guestModeFeedSettingsLabel),
                     ],
                   ),
                 ),
                 ListOption(
                   description: l10n.defaultFeedType,
-                  value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
+                  value: ListPickerItem(
+                      label: defaultListingType.value,
+                      icon: Icons.feed,
+                      payload: defaultListingType),
                   options: [
-                    ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
-                    ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
+                    ListPickerItem(
+                        icon: Icons.home_rounded,
+                        label: ListingType.all.value,
+                        payload: ListingType.all),
+                    ListPickerItem(
+                        icon: Icons.grid_view_rounded,
+                        label: ListingType.local.value,
+                        payload: ListingType.local),
                   ],
                   icon: Icons.filter_alt_rounded,
-                  onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),
+                  onChanged: (value) => setPreferences(
+                      LocalSettings.defaultFeedListingType, value.payload.name),
                   highlightKey: settingToHighlightKey,
                   setting: LocalSettings.defaultFeedListingType,
                   highlightedSetting: settingToHighlight,
                 ),
                 ListOption(
                   description: l10n.defaultFeedSortType,
-                  value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
+                  value: ListPickerItem(
+                      label: defaultSortType.value,
+                      icon: Icons.local_fire_department_rounded,
+                      payload: defaultSortType),
                   options: [
-                    ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                    ...SortPicker.getDefaultSortTypeItems(
+                        minimumVersion:
+                            Version(0, 19, 0, preRelease: ["rc", "1"])),
                     ...topSortTypeItems
                   ],
                   icon: Icons.sort_rounded,
@@ -399,16 +466,25 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                     title: l10n.defaultFeedSortType,
                     onSelect: (value) async {
-                      setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
+                      setPreferences(LocalSettings.defaultFeedSortType,
+                          value.payload.name);
                     },
                     previouslySelected: defaultSortType,
                   ),
                   valueDisplay: Row(
                     children: [
-                      Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).icon, size: 13),
+                      Icon(
+                          allSortTypeItems
+                              .firstWhere((sortTypeItem) =>
+                                  sortTypeItem.payload == defaultSortType)
+                              .icon,
+                          size: 13),
                       const SizedBox(width: 4),
                       Text(
-                        allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).label,
+                        allSortTypeItems
+                            .firstWhere((sortTypeItem) =>
+                                sortTypeItem.payload == defaultSortType)
+                            .label,
                         style: theme.textTheme.titleSmall,
                       ),
                     ],
@@ -422,7 +498,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   value: hideNsfwPosts,
                   iconEnabled: Icons.no_adult_content,
                   iconDisabled: Icons.no_adult_content,
-                  onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
+                  onToggle: (bool value) =>
+                      setPreferences(LocalSettings.hideNsfwPosts, value),
                   highlightKey: settingToHighlightKey,
                   setting: LocalSettings.hideNsfwPosts,
                   highlightedSetting: settingToHighlight,
@@ -433,16 +510,29 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.feedBehaviourSettings, style: theme.textTheme.titleMedium),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(l10n.feedBehaviourSettings,
+                  style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.appLanguage,
-              bottomSheetHeading: Align(alignment: Alignment.centerLeft, child: Text(l10n.translationsMayNotBeComplete)),
-              value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
-              options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode, e.toLanguageTag()), icon: Icons.language_rounded, payload: e)).toList(),
+              bottomSheetHeading: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(l10n.translationsMayNotBeComplete)),
+              value: ListPickerItem(
+                  label: currentLocale.languageCode,
+                  icon: Icons.language_rounded,
+                  payload: currentLocale),
+              options: supportedLocales
+                  .map((e) => ListPickerItem(
+                      label: LanguageLocal.getDisplayLanguage(
+                          e.languageCode, e.toLanguageTag()),
+                      icon: Icons.language_rounded,
+                      payload: e))
+                  .toList(),
               icon: Icons.language_rounded,
               onChanged: (ListPickerItem<Locale> value) async {
                 setPreferences(LocalSettings.appLanguageCode, value.payload);
@@ -450,7 +540,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               valueDisplay: Row(
                 children: [
                   Text(
-                    LanguageLocal.getDisplayLanguage(currentLocale.languageCode, currentLocale.toLanguageTag()),
+                    LanguageLocal.getDisplayLanguage(currentLocale.languageCode,
+                        currentLocale.toLanguageTag()),
                     style: theme.textTheme.titleSmall,
                   ),
                 ],
@@ -467,7 +558,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: useProfilePictureForDrawer,
               iconEnabled: Icons.person_rounded,
               iconDisabled: Icons.person_outline_rounded,
-              onToggle: (value) => setPreferences(LocalSettings.useProfilePictureForDrawer, value),
+              onToggle: (value) => setPreferences(
+                  LocalSettings.useProfilePictureForDrawer, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.useProfilePictureForDrawer,
               highlightedSetting: settingToHighlight,
@@ -479,7 +571,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: tappableAuthorCommunity,
               iconEnabled: Icons.touch_app_rounded,
               iconDisabled: Icons.touch_app_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.tappableAuthorCommunity, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.tappableAuthorCommunity, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.tappableAuthorCommunity,
               highlightedSetting: settingToHighlight,
@@ -491,7 +584,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: markPostReadOnMediaView,
               iconEnabled: Icons.visibility,
               iconDisabled: Icons.remove_red_eye_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnMediaView, value),
+              onToggle: (bool value) => setPreferences(
+                  LocalSettings.markPostAsReadOnMediaView, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.markPostAsReadOnMediaView,
               highlightedSetting: settingToHighlight,
@@ -503,7 +597,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: markPostReadOnScroll,
               iconEnabled: Icons.playlist_add_check,
               iconDisabled: Icons.playlist_add,
-              onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnScroll, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.markPostAsReadOnScroll, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.markPostAsReadOnScroll,
               highlightedSetting: settingToHighlight,
@@ -515,7 +610,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: tabletMode,
               iconEnabled: Icons.tablet_rounded,
               iconDisabled: Icons.smartphone_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.useTabletMode, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.useTabletMode, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.useTabletMode,
               highlightedSetting: settingToHighlight,
@@ -527,7 +623,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: hideTopBarOnScroll,
               iconEnabled: Icons.app_settings_alt_outlined,
               iconDisabled: Icons.app_settings_alt_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.hideTopBarOnScroll, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.hideTopBarOnScroll, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.hideTopBarOnScroll,
               highlightedSetting: settingToHighlight,
@@ -539,7 +636,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: showHiddenPosts,
               iconEnabled: Icons.visibility_rounded,
               iconDisabled: Icons.visibility_off_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.showHiddenPosts, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.showHiddenPosts, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showHiddenPosts,
               highlightedSetting: settingToHighlight,
@@ -548,31 +646,48 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.commentBehaviourSettings, style: theme.textTheme.titleMedium),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(l10n.commentBehaviourSettings,
+                  style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.defaultCommentSortType,
-              value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
-              options: CommentSortPicker.getCommentSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+              value: ListPickerItem(
+                  label: defaultCommentSortType.value,
+                  icon: Icons.local_fire_department_rounded,
+                  payload: defaultCommentSortType),
+              options: CommentSortPicker.getCommentSortTypeItems(
+                  minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
               icon: Icons.comment_bank_rounded,
               onChanged: (_) async {},
               customListPicker: CommentSortPicker(
                 minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                 title: l10n.commentSortType,
                 onSelect: (value) async {
-                  setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
+                  setPreferences(
+                      LocalSettings.defaultCommentSortType, value.payload.name);
                 },
                 previouslySelected: defaultCommentSortType,
               ),
               valueDisplay: Row(
                 children: [
-                  Icon(CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).icon, size: 13),
+                  Icon(
+                      CommentSortPicker.getCommentSortTypeItems(
+                              minimumVersion: LemmyClient.maxVersion)
+                          .firstWhere((sortTypeItem) =>
+                              sortTypeItem.payload == defaultCommentSortType)
+                          .icon,
+                      size: 13),
                   const SizedBox(width: 4),
                   Text(
-                    CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).label,
+                    CommentSortPicker.getCommentSortTypeItems(
+                            minimumVersion: LemmyClient.maxVersion)
+                        .firstWhere((sortTypeItem) =>
+                            sortTypeItem.payload == defaultCommentSortType)
+                        .label,
                     style: theme.textTheme.titleSmall,
                   ),
                 ],
@@ -588,7 +703,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: collapseParentCommentOnGesture,
               iconEnabled: Icons.mode_comment_outlined,
               iconDisabled: Icons.comment_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.collapseParentCommentBodyOnGesture, value),
+              onToggle: (bool value) => setPreferences(
+                  LocalSettings.collapseParentCommentBodyOnGesture, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.collapseParentCommentBodyOnGesture,
               highlightedSetting: settingToHighlight,
@@ -600,7 +716,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: enableCommentNavigation,
               iconEnabled: Icons.unfold_more_rounded,
               iconDisabled: Icons.unfold_less_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.enableCommentNavigation, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.enableCommentNavigation, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.enableCommentNavigation,
               highlightedSetting: settingToHighlight,
@@ -613,7 +730,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: combineNavAndFab,
               iconEnabled: Icons.join_full_rounded,
               iconDisabled: Icons.join_inner_rounded,
-              onToggle: enableCommentNavigation != true ? null : (bool value) => setPreferences(LocalSettings.combineNavAndFab, value),
+              onToggle: enableCommentNavigation != true
+                  ? null
+                  : (bool value) =>
+                      setPreferences(LocalSettings.combineNavAndFab, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.combineNavAndFab,
               highlightedSetting: settingToHighlight,
@@ -623,8 +743,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.linksBehaviourSettings, style: theme.textTheme.titleMedium),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(l10n.linksBehaviourSettings,
+                  style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
@@ -640,12 +762,22 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 capitalizeLabel: false,
               ),
               options: [
-                ListPickerItem(label: l10n.linkHandlingInApp, icon: Icons.dataset_linked_rounded, payload: BrowserMode.inApp),
-                ListPickerItem(label: l10n.linkHandlingCustomTabs, icon: Icons.language_rounded, payload: BrowserMode.customTabs),
-                ListPickerItem(label: l10n.linkHandlingExternal, icon: Icons.open_in_browser_rounded, payload: BrowserMode.external),
+                ListPickerItem(
+                    label: l10n.linkHandlingInApp,
+                    icon: Icons.dataset_linked_rounded,
+                    payload: BrowserMode.inApp),
+                ListPickerItem(
+                    label: l10n.linkHandlingCustomTabs,
+                    icon: Icons.language_rounded,
+                    payload: BrowserMode.customTabs),
+                ListPickerItem(
+                    label: l10n.linkHandlingExternal,
+                    icon: Icons.open_in_browser_rounded,
+                    payload: BrowserMode.external),
               ],
               icon: Icons.link_rounded,
-              onChanged: (value) => setPreferences(LocalSettings.browserMode, value.payload.name),
+              onChanged: (value) =>
+                  setPreferences(LocalSettings.browserMode, value.payload.name),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.browserMode,
               highlightedSetting: settingToHighlight,
@@ -658,7 +790,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 value: openInReaderMode,
                 iconEnabled: Icons.menu_book_rounded,
                 iconDisabled: Icons.menu_book_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.openLinksInReaderMode, value),
+                onToggle: (bool value) =>
+                    setPreferences(LocalSettings.openLinksInReaderMode, value),
                 highlightKey: settingToHighlightKey,
                 setting: LocalSettings.openLinksInReaderMode,
                 highlightedSetting: settingToHighlight,
@@ -700,7 +833,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: scrapeMissingPreviews,
               iconEnabled: Icons.image_search_rounded,
               iconDisabled: Icons.link_off_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.scrapeMissingPreviews, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.scrapeMissingPreviews, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.scrapeMissingPreviews,
               highlightedSetting: settingToHighlight,
@@ -709,7 +843,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(l10n.advanced, style: theme.textTheme.titleMedium),
             ),
           ),
@@ -719,21 +854,32 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 description: l10n.imageCachingMode,
                 value: ListPickerItem(
                   label: switch (imageCachingMode) {
-                    ImageCachingMode.aggressive => l10n.imageCachingModeAggressiveShort,
-                    ImageCachingMode.relaxed => l10n.imageCachingModeRelaxedShort,
+                    ImageCachingMode.aggressive =>
+                      l10n.imageCachingModeAggressiveShort,
+                    ImageCachingMode.relaxed =>
+                      l10n.imageCachingModeRelaxedShort,
                   },
                   payload: imageCachingMode,
                   capitalizeLabel: false,
                 ),
                 options: [
-                  ListPickerItem(icon: Icons.broken_image, label: l10n.imageCachingModeAggressive, payload: ImageCachingMode.aggressive, capitalizeLabel: false),
-                  ListPickerItem(icon: Icons.broken_image_outlined, label: l10n.imageCachingModeRelaxed, payload: ImageCachingMode.relaxed, capitalizeLabel: false),
+                  ListPickerItem(
+                      icon: Icons.broken_image,
+                      label: l10n.imageCachingModeAggressive,
+                      payload: ImageCachingMode.aggressive,
+                      capitalizeLabel: false),
+                  ListPickerItem(
+                      icon: Icons.broken_image_outlined,
+                      label: l10n.imageCachingModeRelaxed,
+                      payload: ImageCachingMode.relaxed,
+                      capitalizeLabel: false),
                 ],
                 icon: switch (imageCachingMode) {
                   ImageCachingMode.aggressive => Icons.broken_image,
                   ImageCachingMode.relaxed => Icons.broken_image_outlined,
                 },
-                onChanged: (value) => setPreferences(LocalSettings.imageCachingMode, value.payload.name),
+                onChanged: (value) => setPreferences(
+                    LocalSettings.imageCachingMode, value.payload.name),
                 highlightKey: settingToHighlightKey,
                 setting: LocalSettings.imageCachingMode,
                 highlightedSetting: settingToHighlight,
@@ -746,7 +892,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: showNavigationLabels,
               iconEnabled: Icons.short_text_rounded,
               iconDisabled: Icons.short_text_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.showNavigationLabels, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.showNavigationLabels, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showNavigationLabels,
               highlightedSetting: settingToHighlight,
@@ -756,8 +903,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.notificationsBehaviourSettings, style: theme.textTheme.titleMedium),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(l10n.notificationsBehaviourSettings,
+                  style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
@@ -766,7 +915,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: showInAppUpdateNotification,
               iconEnabled: Icons.update_rounded,
               iconDisabled: Icons.update_disabled_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.showInAppUpdateNotification, value),
+              onToggle: (bool value) => setPreferences(
+                  LocalSettings.showInAppUpdateNotification, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showInAppUpdateNotification,
               highlightedSetting: settingToHighlight,
@@ -779,7 +929,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               value: showUpdateChangelogs,
               iconEnabled: Icons.featured_play_list_rounded,
               iconDisabled: Icons.featured_play_list_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.showUpdateChangelogs, value),
+              onToggle: (bool value) =>
+                  setPreferences(LocalSettings.showUpdateChangelogs, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showUpdateChangelogs,
               highlightedSetting: settingToHighlight,
@@ -790,13 +941,20 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               child: ListOption(
                 description: l10n.enableInboxNotifications,
                 subtitleWidget: Text.rich(
-                  style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8)),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                      color:
+                          theme.textTheme.bodySmall?.color?.withOpacity(0.8)),
                   softWrap: true,
                   TextSpan(
                     children: [
-                      TextSpan(text: accounts.isEmpty ? l10n.loginToPerformAction : inboxNotificationType.toString()),
+                      TextSpan(
+                          text: accounts.isEmpty
+                              ? l10n.loginToPerformAction
+                              : inboxNotificationType.toString()),
                       if (Platform.isAndroid &&
-                          (inboxNotificationType == NotificationType.local || inboxNotificationType == NotificationType.unifiedPush) &&
+                          (inboxNotificationType == NotificationType.local ||
+                              inboxNotificationType ==
+                                  NotificationType.unifiedPush) &&
                           areAndroidNotificationsAllowed != true) ...[
                         const TextSpan(text: '\n'),
                         TextSpan(
@@ -807,9 +965,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ),
                         ),
                       ],
-                      if (Platform.isAndroid && inboxNotificationType == NotificationType.unifiedPush) ...[
-                        if (unifiedPushConnectedDistributorApp?.isNotEmpty != true) ...[
-                          if ((unifiedPushAvailableDistributorApps ?? 0) == 1) ...[
+                      if (Platform.isAndroid &&
+                          inboxNotificationType ==
+                              NotificationType.unifiedPush) ...[
+                        if (unifiedPushConnectedDistributorApp?.isNotEmpty !=
+                            true) ...[
+                          if ((unifiedPushAvailableDistributorApps ?? 0) ==
+                              1) ...[
                             const TextSpan(text: '\n'),
                             TextSpan(
                               text: '- ${l10n.foundUnifiedPushDistribtorApp}',
@@ -819,17 +981,20 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               ),
                             ),
                           ],
-                          if ((unifiedPushAvailableDistributorApps ?? 0) > 1) ...[
+                          if ((unifiedPushAvailableDistributorApps ?? 0) >
+                              1) ...[
                             const TextSpan(text: '\n'),
                             TextSpan(
-                              text: '- ${l10n.doNotSupportMultipleUnifiedPushApps}',
+                              text:
+                                  '- ${l10n.doNotSupportMultipleUnifiedPushApps}',
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontStyle: FontStyle.italic,
                                 color: Colors.red.withOpacity(0.8),
                               ),
                             ),
                           ],
-                          if ((unifiedPushAvailableDistributorApps ?? 0) == 0) ...[
+                          if ((unifiedPushAvailableDistributorApps ?? 0) ==
+                              0) ...[
                             const TextSpan(text: '\n'),
                             TextSpan(
                               text: '- ${l10n.noCompatibleAppFound}',
@@ -840,10 +1005,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             ),
                           ],
                         ],
-                        if (unifiedPushConnectedDistributorApp?.isNotEmpty == true) ...[
+                        if (unifiedPushConnectedDistributorApp?.isNotEmpty ==
+                            true) ...[
                           const TextSpan(text: '\n'),
                           TextSpan(
-                            text: l10n.connectedToUnifiedPushDistributorApp(unifiedPushConnectedDistributorApp!),
+                            text: l10n.connectedToUnifiedPushDistributorApp(
+                                unifiedPushConnectedDistributorApp!),
                             style: theme.textTheme.bodySmall?.copyWith(
                               fontStyle: FontStyle.italic,
                               color: Colors.green.withOpacity(0.8),
@@ -856,7 +1023,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ),
                 value: const ListPickerItem(payload: -1),
                 disabled: accounts.isEmpty,
-                icon: inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded,
+                icon: inboxNotificationType == NotificationType.none
+                    ? Icons.notifications_off_rounded
+                    : Icons.notifications_on_rounded,
                 highlightKey: settingToHighlightKey,
                 setting: LocalSettings.inboxNotificationType,
                 highlightedSetting: settingToHighlight,
@@ -866,7 +1035,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       title: l10n.pushNotification,
                       heading: Align(
                         alignment: Alignment.centerLeft,
-                        child: CommonMarkdownBody(body: l10n.pushNotificationDescription),
+                        child: CommonMarkdownBody(
+                            body: l10n.pushNotificationDescription),
                       ),
                       previouslySelected: inboxNotificationType,
                       items: Platform.isAndroid
@@ -889,20 +1059,27 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useUnifiedPushNotifications,
                                   subtitleWidget: Text.rich(
-                                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: theme.textTheme.bodyMedium?.color
+                                            ?.withOpacity(0.5)),
                                     softWrap: true,
                                     TextSpan(
                                       children: [
-                                        TextSpan(text: l10n.useUnifiedPushNotificationsDescription),
+                                        TextSpan(
+                                            text: l10n
+                                                .useUnifiedPushNotificationsDescription),
                                         const TextSpan(text: ' ('),
                                         TextSpan(text: l10n.suchAs),
                                         const TextSpan(text: ' '),
                                         TextSpan(
                                           text: 'ntfy',
-                                          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.blue),
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(color: Colors.blue),
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
-                                              handleLink(context, url: 'https://f-droid.org/packages/io.heckel.ntfy/');
+                                              handleLink(context,
+                                                  url:
+                                                      'https://f-droid.org/packages/io.heckel.ntfy/');
                                             },
                                         ),
                                         const TextSpan(text: ')'),
@@ -924,33 +1101,45 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 ListPickerItem(
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useApplePushNotifications,
-                                  subtitle: l10n.useApplePushNotificationsDescription,
+                                  subtitle:
+                                      l10n.useApplePushNotificationsDescription,
                                   payload: NotificationType.apn,
                                   softWrap: true,
                                 ),
                             ],
-                      onSelect: (ListPickerItem<NotificationType> notificationType) async {
-                        if (notificationType.payload == inboxNotificationType) return;
+                      onSelect: (ListPickerItem<NotificationType>
+                          notificationType) async {
+                        if (notificationType.payload == inboxNotificationType)
+                          return;
 
                         bool success = await updateNotificationSettings(
                           context,
                           currentNotificationType: inboxNotificationType,
                           updatedNotificationType: notificationType.payload,
-                          onUpdate: (NotificationType updatedNotificationType) async {
-                            setPreferences(LocalSettings.inboxNotificationType, updatedNotificationType);
+                          onUpdate:
+                              (NotificationType updatedNotificationType) async {
+                            setPreferences(LocalSettings.inboxNotificationType,
+                                updatedNotificationType);
 
                             if (Platform.isAndroid) {
-                              areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+                              areAndroidNotificationsAllowed =
+                                  await androidFlutterLocalNotificationsPlugin
+                                      ?.areNotificationsEnabled();
 
-                              if (updatedNotificationType == NotificationType.unifiedPush) {
-                                unifiedPushConnectedDistributorApp = await UnifiedPush.getDistributor();
-                                unifiedPushAvailableDistributorApps = (await UnifiedPush.getDistributors()).length;
+                              if (updatedNotificationType ==
+                                  NotificationType.unifiedPush) {
+                                unifiedPushConnectedDistributorApp =
+                                    await UnifiedPush.getDistributor();
+                                unifiedPushAvailableDistributorApps =
+                                    (await UnifiedPush.getDistributors())
+                                        .length;
                               }
                             }
                           },
                         );
 
-                        if (!success) showSnackbar(l10n.failedToUpdateNotificationSettings);
+                        if (!success)
+                          showSnackbar(l10n.failedToUpdateNotificationSettings);
                         _initPreferences();
                       },
                     );
@@ -958,7 +1147,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ),
               ),
             ),
-            if (inboxNotificationType == NotificationType.unifiedPush || inboxNotificationType == NotificationType.apn)
+            if (inboxNotificationType == NotificationType.unifiedPush ||
+                inboxNotificationType == NotificationType.apn)
               SliverToBoxAdapter(
                 child: SettingsListTile(
                   icon: Icons.electrical_services_rounded,
@@ -976,7 +1166,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         return Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            CommonMarkdownBody(body: l10n.pushNotificationServerDescription),
+                            CommonMarkdownBody(
+                                body: l10n.pushNotificationServerDescription),
                             const SizedBox(height: 32.0),
                             TextField(
                               textInputAction: TextInputAction.done,
@@ -995,10 +1186,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         );
                       },
                       secondaryButtonText: l10n.cancel,
-                      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                      onSecondaryButtonPressed: (dialogContext) =>
+                          Navigator.of(dialogContext).pop(),
                       primaryButtonText: l10n.confirm,
                       onPrimaryButtonPressed: (dialogContext, _) {
-                        setPreferences(LocalSettings.pushNotificationServer, controller.text);
+                        setPreferences(LocalSettings.pushNotificationServer,
+                            controller.text);
                         Navigator.of(dialogContext).pop();
                       },
                     );
@@ -1030,8 +1223,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.importExportSettings, style: theme.textTheme.titleMedium),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(l10n.importExportSettings,
+                  style: theme.textTheme.titleMedium),
             ),
           ),
           SliverToBoxAdapter(
@@ -1047,7 +1242,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 String? savedFilePath = await UserPreferences.exportToJson();
 
                 if (savedFilePath?.isNotEmpty == true) {
-                  showSnackbar(l10n.settingsExportedSuccessfully(savedFilePath!));
+                  showSnackbar(
+                      l10n.settingsExportedSuccessfully(savedFilePath!));
                 } else {
                   showSnackbar(l10n.settingsNotExportedSuccessfully);
                 }
@@ -1066,14 +1262,17 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 child: Icon(Icons.chevron_right_rounded),
               ),
               onTap: () async {
-                bool? importedSuccessfully = await UserPreferences.importFromJson();
+                bool? importedSuccessfully =
+                    await UserPreferences.importFromJson();
 
                 if (importedSuccessfully == true) {
                   showSnackbar(l10n.settingsImportedSuccessfully);
 
                   if (context.mounted) {
                     _initPreferences();
-                    context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                    context
+                        .read<ThunderBloc>()
+                        .add(UserPreferencesChangeEvent());
                   } else {
                     showSnackbar(l10n.settingsNotImportedSuccessfully);
                   }
@@ -1100,7 +1299,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   context: context,
                   title: l10n.warning,
                   contentText: l10n.databaseExportWarning,
-                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                  onSecondaryButtonPressed: (dialogContext) =>
+                      Navigator.of(dialogContext).pop(),
                   secondaryButtonText: l10n.cancel,
                   onPrimaryButtonPressed: (dialogContext, _) async {
                     Navigator.of(dialogContext).pop();
@@ -1114,7 +1314,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 String? savedFilePath = await exportDatabase();
 
                 if (savedFilePath?.isNotEmpty == true) {
-                  showSnackbar(l10n.databaseExportedSuccessfully(savedFilePath!));
+                  showSnackbar(
+                      l10n.databaseExportedSuccessfully(savedFilePath!));
                 } else {
                   showSnackbar(l10n.databaseNotExportedSuccessfully);
                 }

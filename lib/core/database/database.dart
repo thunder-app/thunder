@@ -16,7 +16,8 @@ import 'package:thunder/drafts/draft_type.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts])
+@DriftDatabase(
+    tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -57,8 +58,10 @@ class AppDatabase extends _$AppDatabase {
 
           if (kDebugMode) {
             // Fail if the migration broke foreign keys
-            final wrongForeignKeys = await customSelect('PRAGMA foreign_key_check').get();
-            assert(wrongForeignKeys.isEmpty, '${wrongForeignKeys.map((e) => e.data)}');
+            final wrongForeignKeys =
+                await customSelect('PRAGMA foreign_key_check').get();
+            assert(wrongForeignKeys.isEmpty,
+                '${wrongForeignKeys.map((e) => e.data)}');
           }
 
           await customStatement('PRAGMA foreign_keys = ON;');

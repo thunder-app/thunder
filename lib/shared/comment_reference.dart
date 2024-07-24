@@ -89,7 +89,8 @@ class _CommentReferenceState extends State<CommentReference> {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Semantics(
-      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
+      label:
+          """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
           ${fetchInstanceNameFromUrl(widget.comment.community.actorId)}\n
           ${widget.comment.creator.name}\n
           ${widget.comment.counts.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.counts.upvotes))}\n
@@ -97,14 +98,17 @@ class _CommentReferenceState extends State<CommentReference> {
           ${formatTimeToString(dateTime: (widget.comment.comment.updated ?? widget.comment.comment.published).toIso8601String())}\n
           ${cleanCommentContent(widget.comment.comment)}""",
       child: InkWell(
-        onTap: widget.comment.post.deleted ? null : () async => await navigateToComment(context, widget.comment),
+        onTap: widget.comment.post.deleted
+            ? null
+            : () async => await navigateToComment(context, widget.comment),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -143,7 +147,8 @@ class _CommentReferenceState extends State<CommentReference> {
                                   l10n.in_,
                                   fontScale: state.contentFontSizeScale,
                                   style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                                    color: theme.textTheme.bodyMedium?.color
+                                        ?.withOpacity(0.4),
                                   ),
                                 ),
                               ),
@@ -153,9 +158,11 @@ class _CommentReferenceState extends State<CommentReference> {
                                   context,
                                   widget.comment.community.name,
                                   widget.comment.community.title,
-                                  fetchInstanceNameFromUrl(widget.comment.community.actorId),
+                                  fetchInstanceNameFromUrl(
+                                      widget.comment.community.actorId),
                                   fontScale: state.contentFontSizeScale,
-                                  transformColor: (color) => color?.withOpacity(0.75),
+                                  transformColor: (color) =>
+                                      color?.withOpacity(0.75),
                                 ),
                               ),
                             ],
@@ -179,12 +186,15 @@ class _CommentReferenceState extends State<CommentReference> {
                     onPointerUp: (event) {
                       setState(() => isOverridingSwipeGestureAction = false);
 
-                      if (swipeAction != null && swipeAction != SwipeAction.none) {
+                      if (swipeAction != null &&
+                          swipeAction != SwipeAction.none) {
                         triggerCommentAction(
                           context: context,
                           swipeAction: swipeAction,
-                          onSaveAction: (int commentId, bool saved) => widget.onSaveAction?.call(commentId, saved),
-                          onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
+                          onSaveAction: (int commentId, bool saved) =>
+                              widget.onSaveAction?.call(commentId, saved),
+                          onVoteAction: (int commentId, int vote) =>
+                              widget.onVoteAction?.call(commentId, vote),
                           voteType: widget.comment.myVote ?? 0,
                           saved: widget.comment.saved,
                           commentView: widget.comment,
@@ -201,70 +211,105 @@ class _CommentReferenceState extends State<CommentReference> {
                       // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
                       // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
                       if (horizontalDragDistance > 0) {
-                        if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+                        if (determineCommentSwipeDirection(
+                                    isUserLoggedIn, state) ==
+                                DismissDirection.endToStart &&
+                            isOverridingSwipeGestureAction == false &&
+                            dismissThreshold == 0.0) {
                           setState(() => isOverridingSwipeGestureAction = true);
                         }
                       } else {
-                        if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
-                          setState(() => isOverridingSwipeGestureAction = false);
+                        if (determineCommentSwipeDirection(
+                                    isUserLoggedIn, state) ==
+                                DismissDirection.endToStart &&
+                            isOverridingSwipeGestureAction == true) {
+                          setState(
+                              () => isOverridingSwipeGestureAction = false);
                         }
                       }
                     },
                     child: Dismissible(
-                      direction: (widget.disableActions || isOverridingSwipeGestureAction == true) ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
+                      direction: (widget.disableActions ||
+                              isOverridingSwipeGestureAction == true)
+                          ? DismissDirection.none
+                          : determineCommentSwipeDirection(
+                              isUserLoggedIn, state),
                       key: ObjectKey(widget.comment.comment.id),
                       resizeDuration: Duration.zero,
-                      dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
+                      dismissThresholds: const {
+                        DismissDirection.endToStart: 1,
+                        DismissDirection.startToEnd: 1
+                      },
                       confirmDismiss: (DismissDirection direction) async {
                         return false;
                       },
                       onUpdate: (DismissUpdateDetails details) {
                         SwipeAction? updatedSwipeAction;
 
-                        if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                        if (details.progress > firstActionThreshold &&
+                            details.progress < secondActionThreshold &&
+                            details.direction == DismissDirection.startToEnd) {
                           updatedSwipeAction = state.leftPrimaryCommentGesture;
 
                           // Change the swipe action to edit for comments
-                          if (updatedSwipeAction == SwipeAction.reply && widget.isOwnComment) {
+                          if (updatedSwipeAction == SwipeAction.reply &&
+                              widget.isOwnComment) {
                             updatedSwipeAction = SwipeAction.edit;
                           }
 
-                          if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                        } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                          if (state.leftSecondaryCommentGesture != SwipeAction.none) {
-                            updatedSwipeAction = state.leftSecondaryCommentGesture;
+                          if (updatedSwipeAction != swipeAction)
+                            HapticFeedback.mediumImpact();
+                        } else if (details.progress > secondActionThreshold &&
+                            details.direction == DismissDirection.startToEnd) {
+                          if (state.leftSecondaryCommentGesture !=
+                              SwipeAction.none) {
+                            updatedSwipeAction =
+                                state.leftSecondaryCommentGesture;
                           } else {
-                            updatedSwipeAction = state.leftPrimaryCommentGesture;
+                            updatedSwipeAction =
+                                state.leftPrimaryCommentGesture;
                           }
 
                           // Change the swipe action to edit for comments
-                          if (updatedSwipeAction == SwipeAction.reply && widget.isOwnComment) {
+                          if (updatedSwipeAction == SwipeAction.reply &&
+                              widget.isOwnComment) {
                             updatedSwipeAction = SwipeAction.edit;
                           }
 
-                          if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                        } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                          if (updatedSwipeAction != swipeAction)
+                            HapticFeedback.mediumImpact();
+                        } else if (details.progress > firstActionThreshold &&
+                            details.progress < secondActionThreshold &&
+                            details.direction == DismissDirection.endToStart) {
                           updatedSwipeAction = state.rightPrimaryCommentGesture;
 
                           // Change the swipe action to edit for comments
-                          if (updatedSwipeAction == SwipeAction.reply && widget.isOwnComment) {
+                          if (updatedSwipeAction == SwipeAction.reply &&
+                              widget.isOwnComment) {
                             updatedSwipeAction = SwipeAction.edit;
                           }
 
-                          if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                        } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                          if (state.rightSecondaryCommentGesture != SwipeAction.none) {
-                            updatedSwipeAction = state.rightSecondaryCommentGesture;
+                          if (updatedSwipeAction != swipeAction)
+                            HapticFeedback.mediumImpact();
+                        } else if (details.progress > secondActionThreshold &&
+                            details.direction == DismissDirection.endToStart) {
+                          if (state.rightSecondaryCommentGesture !=
+                              SwipeAction.none) {
+                            updatedSwipeAction =
+                                state.rightSecondaryCommentGesture;
                           } else {
-                            updatedSwipeAction = state.rightPrimaryCommentGesture;
+                            updatedSwipeAction =
+                                state.rightPrimaryCommentGesture;
                           }
 
                           // Change the swipe action to edit for comments
-                          if (updatedSwipeAction == SwipeAction.reply && widget.isOwnComment) {
+                          if (updatedSwipeAction == SwipeAction.reply &&
+                              widget.isOwnComment) {
                             updatedSwipeAction = SwipeAction.edit;
                           }
 
-                          if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                          if (updatedSwipeAction != swipeAction)
+                            HapticFeedback.mediumImpact();
                         } else {
                           updatedSwipeAction = null;
                         }
@@ -275,43 +320,68 @@ class _CommentReferenceState extends State<CommentReference> {
                           swipeAction = updatedSwipeAction;
                         });
                       },
-                      background: dismissDirection == DismissDirection.startToEnd
-                          ? AnimatedContainer(
-                              alignment: Alignment.centerLeft,
-                              color: swipeAction == null
-                                  ? state.leftPrimaryCommentGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
-                                  : (swipeAction ?? SwipeAction.none).getColor(context),
-                              duration: const Duration(milliseconds: 200),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * dismissThreshold,
-                                child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
-                              ),
-                            )
-                          : AnimatedContainer(
-                              alignment: Alignment.centerRight,
-                              color: swipeAction == null
-                                  ? (state.rightPrimaryCommentGesture).getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
-                                  : (swipeAction ?? SwipeAction.none).getColor(context),
-                              duration: const Duration(milliseconds: 200),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * dismissThreshold,
-                                child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
-                              ),
-                            ),
+                      background:
+                          dismissDirection == DismissDirection.startToEnd
+                              ? AnimatedContainer(
+                                  alignment: Alignment.centerLeft,
+                                  color: swipeAction == null
+                                      ? state.leftPrimaryCommentGesture
+                                          .getColor(context)
+                                          .withOpacity(dismissThreshold /
+                                              firstActionThreshold)
+                                      : (swipeAction ?? SwipeAction.none)
+                                          .getColor(context),
+                                  duration: const Duration(milliseconds: 200),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        dismissThreshold,
+                                    child: swipeAction == null
+                                        ? Container()
+                                        : Icon((swipeAction ?? SwipeAction.none)
+                                            .getIcon()),
+                                  ),
+                                )
+                              : AnimatedContainer(
+                                  alignment: Alignment.centerRight,
+                                  color: swipeAction == null
+                                      ? (state.rightPrimaryCommentGesture)
+                                          .getColor(context)
+                                          .withOpacity(dismissThreshold /
+                                              firstActionThreshold)
+                                      : (swipeAction ?? SwipeAction.none)
+                                          .getColor(context),
+                                  duration: const Duration(milliseconds: 200),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        dismissThreshold,
+                                    child: swipeAction == null
+                                        ? Container()
+                                        : Icon((swipeAction ?? SwipeAction.none)
+                                            .getIcon()),
+                                  ),
+                                ),
                       child: CommentContent(
                         comment: widget.comment,
                         isUserLoggedIn: isUserLoggedIn,
-                        onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
-                        onVoteAction: (int commentId, int voteType) => widget.onVoteAction?.call(commentId, voteType),
-                        onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
-                        onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, widget.isOwnComment),
-                        onReportAction: (int commentId) => widget.onReportAction?.call(commentId),
+                        onSaveAction: (int commentId, bool save) =>
+                            widget.onSaveAction?.call(commentId, save),
+                        onVoteAction: (int commentId, int voteType) =>
+                            widget.onVoteAction?.call(commentId, voteType),
+                        onDeleteAction: (int commentId, bool deleted) =>
+                            widget.onDeleteAction?.call(commentId, deleted),
+                        onReplyEditAction:
+                            (CommentView commentView, bool isEdit) => widget
+                                .onReplyEditAction
+                                ?.call(commentView, widget.isOwnComment),
+                        onReportAction: (int commentId) =>
+                            widget.onReportAction?.call(commentId),
                         isOwnComment: widget.isOwnComment,
                         isHidden: false,
                         excludeSemantics: true,
                         disableActions: widget.disableActions,
                         viewSource: viewSource,
-                        onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                        onViewSourceToggled: () =>
+                            setState(() => viewSource = !viewSource),
                       ),
                     ),
                   ),

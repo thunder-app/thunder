@@ -148,7 +148,10 @@ class PostAppBarActions extends StatelessWidget {
           onPressed: () async {
             HapticFeedback.mediumImpact();
             await onReset?.call();
-            if (context.mounted) context.read<PostBloc>().add(GetPostEvent(postView: state.postView));
+            if (context.mounted)
+              context
+                  .read<PostBloc>()
+                  .add(GetPostEvent(postView: state.postView));
           },
         ),
         IconButton(
@@ -163,7 +166,9 @@ class PostAppBarActions extends StatelessWidget {
                 title: l10n.sortOptions,
                 onSelect: (selected) async {
                   await onReset?.call();
-                  if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(sortType: selected.payload, reset: true));
+                  if (context.mounted)
+                    context.read<PostBloc>().add(GetPostCommentsEvent(
+                        sortType: selected.payload, reset: true));
                 },
                 previouslySelected: state.sortType,
                 minimumVersion: LemmyClient.instance.version,
@@ -194,7 +199,13 @@ class PostAppBarActions extends StatelessWidget {
                   context,
                   profileModalHeading: l10n.viewPostAsDifferentAccount,
                   onUserChanged: onUserChanged,
-                  postActorId: context.read<PostBloc>().state.postView?.postView.post.apId,
+                  postActorId: context
+                      .read<PostBloc>()
+                      .state
+                      .postView
+                      ?.postView
+                      .post
+                      .apId,
                   onPostChanged: onPostChanged,
                 );
               },
@@ -215,8 +226,11 @@ class PostAppBarActions extends StatelessWidget {
     return ('', null);
   }
 
-  final sortTypeItemIndex = CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.instance.version).indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
-  final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
+  final sortTypeItemIndex = CommentSortPicker.getCommentSortTypeItems(
+          minimumVersion: LemmyClient.instance.version)
+      .indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
+  final sortTypeItem =
+      sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
 
   return (sortTypeItem?.label ?? '', sortTypeItem?.icon);
 }

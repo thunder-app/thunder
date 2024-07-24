@@ -77,7 +77,9 @@ class _PostPageState extends State<PostPage> {
 
     scrollController.addListener(() {
       // Fetches new comments when the user has scrolled past 70% list
-      if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.7 && context.read<PostBloc>().state.status == PostStatus.success) {
+      if (scrollController.position.pixels >
+              scrollController.position.maxScrollExtent * 0.7 &&
+          context.read<PostBloc>().state.status == PostStatus.success) {
         context.read<PostBloc>().add(const GetPostCommentsEvent());
       }
     });
@@ -91,10 +93,14 @@ class _PostPageState extends State<PostPage> {
           final deviceHeight = MediaQuery.sizeOf(context).height;
 
           // Get the height of the "reached end" indicator widget
-          final reachedEndHeight = (reachedEndKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+          final reachedEndHeight =
+              (reachedEndKey.currentContext?.findRenderObject() as RenderBox?)
+                  ?.size
+                  .height;
 
           // Get the height of the app bar
-          final renderObject = appBarKey.currentContext?.findRenderObject() as RenderSliverFloatingPersistentHeader?;
+          final renderObject = appBarKey.currentContext?.findRenderObject()
+              as RenderSliverFloatingPersistentHeader?;
           final appBarHeight = renderObject?.geometry!.maxPaintExtent;
 
           if (appBarHeight != null && reachedEndHeight != null) {
@@ -134,7 +140,9 @@ class _PostPageState extends State<PostPage> {
                   alignment: Alignment.bottomCenter,
                   child: CommentNavigatorFab(
                     initialIndex: 0,
-                    maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
+                    maxIndex: listController.isAttached
+                        ? listController.numberOfItems - 1
+                        : 0,
                     scrollController: scrollController,
                     listController: listController,
                   ),
@@ -144,11 +152,13 @@ class _PostPageState extends State<PostPage> {
           ],
         ),
         body: SafeArea(
-          top: thunderState.hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+          top: thunderState
+              .hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
           bottom: false,
           child: BlocConsumer<PostBloc, PostState>(
             listener: (context, state) {
-              if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia) {
+              if (state.status == PostStatus.success &&
+                  state.postView != widget.initialPostViewMedia) {
                 if (!userChanged) {
                   widget.onPostUpdated?.call(state.postView!);
                 }
@@ -158,10 +168,13 @@ class _PostPageState extends State<PostPage> {
             builder: (context, state) {
               if (state.status == PostStatus.initial) {
                 // This is required because listener does not get called on initial build
-                context.read<PostBloc>().add(GetPostEvent(postView: widget.initialPostViewMedia));
+                context
+                    .read<PostBloc>()
+                    .add(GetPostEvent(postView: widget.initialPostViewMedia));
               }
 
-              List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
+              List<CommentNode> flattenedComments =
+                  CommentNode.flattenCommentTree(state.commentNodes);
 
               return CustomScrollView(
                 controller: scrollController,
@@ -170,7 +183,9 @@ class _PostPageState extends State<PostPage> {
                     key: appBarKey,
                     viewSource: viewSource,
                     onViewSource: (value) => setState(() => viewSource = value),
-                    onReset: () async => await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized),
+                    onReset: () async => await scrollController.animateTo(0,
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeInOutCubicEmphasized),
                     onCreateCrossPost: () {
                       createCrossPost(
                         context,
@@ -188,11 +203,14 @@ class _PostPageState extends State<PostPage> {
                       );
                     },
                     onUserChanged: () => userChanged = true,
-                    onPostChanged: (newPostViewMedia) => context.read<PostBloc>().add(GetPostEvent(postView: newPostViewMedia)),
+                    onPostChanged: (newPostViewMedia) => context
+                        .read<PostBloc>()
+                        .add(GetPostEvent(postView: newPostViewMedia)),
                   ),
                   SliverToBoxAdapter(
                     child: PostSubview(
-                      postViewMedia: state.postView ?? widget.initialPostViewMedia,
+                      postViewMedia:
+                          state.postView ?? widget.initialPostViewMedia,
                       crossPosts: state.crossPosts,
                       viewSource: viewSource,
                     ),
@@ -210,8 +228,11 @@ class _PostPageState extends State<PostPage> {
                         CommentNode commentNode = flattenedComments[index];
                         CommentView commentView = commentNode.commentView!;
 
-                        bool isCollapsed = collapsedComments.contains(commentView.comment.id);
-                        bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
+                        bool isCollapsed =
+                            collapsedComments.contains(commentView.comment.id);
+                        bool isHidden = collapsedComments.any((int id) =>
+                            commentView.comment.path.contains('$id') &&
+                            id != commentView.comment.id);
 
                         return CommentCard(
                           commentView: commentView,
@@ -219,12 +240,33 @@ class _PostPageState extends State<PostPage> {
                           level: commentNode.depth,
                           collapsed: isCollapsed,
                           hidden: isHidden,
-                          onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
-                          onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
-                          onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
-                          onReplyEditAction: (CommentView commentView, bool isEdit) async => context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView)),
-                          onReportAction: (int commentId) => showReportCommentActionBottomSheet(context, commentId: commentId),
-                          onCollapseCommentChange: (int commentId, bool collapsed) {
+                          onVoteAction: (int commentId, int voteType) => context
+                              .read<PostBloc>()
+                              .add(CommentActionEvent(
+                                  commentId: commentId,
+                                  action: CommentAction.vote,
+                                  value: voteType)),
+                          onSaveAction: (int commentId, bool saved) => context
+                              .read<PostBloc>()
+                              .add(CommentActionEvent(
+                                  commentId: commentId,
+                                  action: CommentAction.save,
+                                  value: saved)),
+                          onDeleteAction: (int commentId, bool deleted) =>
+                              context.read<PostBloc>().add(CommentActionEvent(
+                                  commentId: commentId,
+                                  action: CommentAction.delete,
+                                  value: deleted)),
+                          onReplyEditAction:
+                              (CommentView commentView, bool isEdit) async =>
+                                  context.read<PostBloc>().add(
+                                      CommentItemUpdatedEvent(
+                                          commentView: commentView)),
+                          onReportAction: (int commentId) =>
+                              showReportCommentActionBottomSheet(context,
+                                  commentId: commentId),
+                          onCollapseCommentChange:
+                              (int commentId, bool collapsed) {
                             if (collapsed) {
                               collapsedComments.add(commentId);
                             } else {
@@ -243,7 +285,9 @@ class _PostPageState extends State<PostPage> {
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: ScalableText(
-                              flattenedComments.isEmpty ? l10n.noComments : l10n.reachedTheBottom,
+                              flattenedComments.isEmpty
+                                  ? l10n.noComments
+                                  : l10n.reachedTheBottom,
                               fontScale: thunderState.metadataFontSizeScale,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
@@ -254,12 +298,14 @@ class _PostPageState extends State<PostPage> {
                             child: Container(
                               height: 100.0,
                               alignment: Alignment.center,
-                              padding: const EdgeInsets.symmetric(vertical: 16.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
                               child: const CircularProgressIndicator(),
                             ),
                           ),
                   ),
-                  SliverToBoxAdapter(child: SizedBox(height: bottomSpacerHeight)),
+                  SliverToBoxAdapter(
+                      child: SizedBox(height: bottomSpacerHeight)),
                 ],
               );
             },

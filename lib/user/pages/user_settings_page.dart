@@ -70,7 +70,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         child: BlocListener<AccountBloc, AccountState>(
           listener: (context, state) {
             if (!context.mounted) return;
-            context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
+            context
+                .read<UserSettingsBloc>()
+                .add(const ResetUserSettingsEvent());
             context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
           },
           child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
@@ -91,7 +93,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               Person? person = myUserInfo?.localUserView.person;
 
               return CustomScrollView(
-                physics: state.status == UserSettingsStatus.notLoggedIn ? const NeverScrollableScrollPhysics() : null,
+                physics: state.status == UserSettingsStatus.notLoggedIn
+                    ? const NeverScrollableScrollPhysics()
+                    : null,
                 slivers: [
                   SliverAppBar(
                     pinned: true,
@@ -107,7 +111,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     ],
                   ),
                   switch (state.status) {
-                    UserSettingsStatus.notLoggedIn => const SliverFillRemaining(hasScrollBody: false, child: AccountPlaceholder()),
+                    UserSettingsStatus.notLoggedIn => const SliverFillRemaining(
+                        hasScrollBody: false, child: AccountPlaceholder()),
                     UserSettingsStatus.initial => const SliverFillRemaining(
                         hasScrollBody: false,
                         child: Center(
@@ -122,54 +127,73 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         delegate: SliverChildListDelegate(
                           [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   const UserIndicator(),
                                   IconButton(
                                     icon: const Icon(Icons.logout_rounded),
-                                    onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
+                                    onPressed: () => showProfileModalSheet(
+                                        context,
+                                        showLogoutDialog: true),
                                   ),
                                 ],
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                              padding: const EdgeInsets.only(
+                                  top: 0, bottom: 8.0, left: 16.0, right: 16.0),
                               child: Text(
                                 l10n.userSettingDescription,
                                 style: theme.textTheme.bodyMedium!.copyWith(
                                   fontWeight: FontWeight.w400,
-                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                  color: theme.colorScheme.onBackground
+                                      .withOpacity(0.75),
                                 ),
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(l10n.general, style: theme.textTheme.titleMedium),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.general,
+                                  style: theme.textTheme.titleMedium),
                             ),
                             SettingsListTile(
                               icon: Icons.person_rounded,
                               description: l10n.displayName,
-                              subtitle: person?.displayName?.isNotEmpty == true ? person?.displayName : l10n.noDisplayNameSet,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              subtitle: person?.displayName?.isNotEmpty == true
+                                  ? person?.displayName
+                                  : l10n.noDisplayNameSet,
+                              widget:
+                                  const Padding(padding: EdgeInsets.all(20.0)),
                               onTap: () {
-                                displayNameTextController.text = person?.displayName ?? "";
+                                displayNameTextController.text =
+                                    person?.displayName ?? "";
                                 showThunderDialog(
                                   context: context,
                                   title: l10n.displayName,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                  contentWidgetBuilder:
+                                      (setPrimaryButtonEnabled) => TextField(
                                     controller: displayNameTextController,
-                                    decoration: InputDecoration(hintText: l10n.displayName),
+                                    decoration: InputDecoration(
+                                        hintText: l10n.displayName),
                                   ),
                                   primaryButtonText: l10n.save,
                                   onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(displayName: displayNameTextController.text));
+                                    context.read<UserSettingsBloc>().add(
+                                        UpdateUserSettingsEvent(
+                                            displayName:
+                                                displayNameTextController
+                                                    .text));
                                     Navigator.of(dialogContext).pop();
                                   },
                                   secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  onSecondaryButtonPressed: (dialogContext) =>
+                                      Navigator.of(dialogContext).pop(),
                                 );
                               },
                               highlightKey: null,
@@ -179,15 +203,22 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             SettingsListTile(
                               icon: Icons.note_rounded,
                               description: l10n.profileBio,
-                              subtitle: person?.bio?.isNotEmpty == true ? parse(markdownToHtml(person?.bio ?? "")).documentElement?.text.trim() : l10n.noProfileBioSet,
+                              subtitle: person?.bio?.isNotEmpty == true
+                                  ? parse(markdownToHtml(person?.bio ?? ""))
+                                      .documentElement
+                                      ?.text
+                                      .trim()
+                                  : l10n.noProfileBioSet,
                               subtitleMaxLines: 1,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              widget:
+                                  const Padding(padding: EdgeInsets.all(20.0)),
                               onTap: () {
                                 bioTextController.text = person?.bio ?? "";
                                 showThunderDialog(
                                   context: context,
                                   title: l10n.profileBio,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                  contentWidgetBuilder:
+                                      (setPrimaryButtonEnabled) => TextField(
                                     controller: bioTextController,
                                     minLines: 8,
                                     maxLines: 8,
@@ -199,11 +230,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   ),
                                   primaryButtonText: l10n.save,
                                   onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(bio: bioTextController.text));
+                                    context.read<UserSettingsBloc>().add(
+                                        UpdateUserSettingsEvent(
+                                            bio: bioTextController.text));
                                     Navigator.of(dialogContext).pop();
                                   },
                                   secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  onSecondaryButtonPressed: (dialogContext) =>
+                                      Navigator.of(dialogContext).pop(),
                                 );
                               },
                               highlightKey: null,
@@ -213,25 +247,34 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             SettingsListTile(
                               icon: Icons.email_rounded,
                               description: l10n.email,
-                              subtitle: localUser?.email?.isNotEmpty == true ? localUser?.email : l10n.noEmailSet,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              subtitle: localUser?.email?.isNotEmpty == true
+                                  ? localUser?.email
+                                  : l10n.noEmailSet,
+                              widget:
+                                  const Padding(padding: EdgeInsets.all(20.0)),
                               onTap: () {
-                                emailTextController.text = localUser?.email ?? "";
+                                emailTextController.text =
+                                    localUser?.email ?? "";
                                 showThunderDialog(
                                   context: context,
                                   title: l10n.email,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                  contentWidgetBuilder:
+                                      (setPrimaryButtonEnabled) => TextField(
                                     controller: emailTextController,
-                                    decoration: InputDecoration(hintText: l10n.email),
+                                    decoration:
+                                        InputDecoration(hintText: l10n.email),
                                     keyboardType: TextInputType.emailAddress,
                                   ),
                                   primaryButtonText: l10n.save,
                                   onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(email: emailTextController.text));
+                                    context.read<UserSettingsBloc>().add(
+                                        UpdateUserSettingsEvent(
+                                            email: emailTextController.text));
                                     Navigator.of(dialogContext).pop();
                                   },
                                   secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  onSecondaryButtonPressed: (dialogContext) =>
+                                      Navigator.of(dialogContext).pop(),
                                 );
                               },
                               highlightKey: null,
@@ -241,24 +284,34 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             SettingsListTile(
                               icon: Icons.person_rounded,
                               description: l10n.matrixUser,
-                              subtitle: person?.matrixUserId?.isNotEmpty == true ? person?.matrixUserId : l10n.noMatrixUserSet,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              subtitle: person?.matrixUserId?.isNotEmpty == true
+                                  ? person?.matrixUserId
+                                  : l10n.noMatrixUserSet,
+                              widget:
+                                  const Padding(padding: EdgeInsets.all(20.0)),
                               onTap: () {
-                                matrixUserTextController.text = person?.matrixUserId ?? "";
+                                matrixUserTextController.text =
+                                    person?.matrixUserId ?? "";
                                 showThunderDialog(
                                   context: context,
                                   title: l10n.matrixUser,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                  contentWidgetBuilder:
+                                      (setPrimaryButtonEnabled) => TextField(
                                     controller: matrixUserTextController,
-                                    decoration: const InputDecoration(hintText: "@user:instance"),
+                                    decoration: const InputDecoration(
+                                        hintText: "@user:instance"),
                                   ),
                                   primaryButtonText: l10n.save,
                                   onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(matrixUserId: matrixUserTextController.text));
+                                    context.read<UserSettingsBloc>().add(
+                                        UpdateUserSettingsEvent(
+                                            matrixUserId:
+                                                matrixUserTextController.text));
                                     Navigator.of(dialogContext).pop();
                                   },
                                   secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  onSecondaryButtonPressed: (dialogContext) =>
+                                      Navigator.of(dialogContext).pop(),
                                 );
                               },
                               highlightKey: null,
@@ -266,54 +319,91 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               highlightedSetting: null,
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.feedSettings,
+                                  style: theme.textTheme.titleMedium),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                              padding: const EdgeInsets.only(
+                                  top: 0, bottom: 8.0, left: 16.0, right: 16.0),
                               child: Text(
                                 l10n.settingOverrideLabel,
                                 style: theme.textTheme.bodyMedium!.copyWith(
                                   fontWeight: FontWeight.w400,
-                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                  color: theme.colorScheme.onBackground
+                                      .withOpacity(0.75),
                                 ),
                               ),
                             ),
                             ListOption(
                               description: l10n.defaultFeedType,
-                              value: ListPickerItem(label: localUser!.defaultListingType.value, icon: Icons.feed, payload: localUser.defaultListingType),
+                              value: ListPickerItem(
+                                  label: localUser!.defaultListingType.value,
+                                  icon: Icons.feed,
+                                  payload: localUser.defaultListingType),
                               options: [
-                                ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
-                                ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
-                                ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
+                                ListPickerItem(
+                                    icon: Icons.view_list_rounded,
+                                    label: ListingType.subscribed.value,
+                                    payload: ListingType.subscribed),
+                                ListPickerItem(
+                                    icon: Icons.home_rounded,
+                                    label: ListingType.all.value,
+                                    payload: ListingType.all),
+                                ListPickerItem(
+                                    icon: Icons.grid_view_rounded,
+                                    label: ListingType.local.value,
+                                    payload: ListingType.local),
                               ],
                               icon: Icons.filter_alt_rounded,
-                              onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultListingType: value.payload)),
+                              onChanged: (value) async => context
+                                  .read<UserSettingsBloc>()
+                                  .add(UpdateUserSettingsEvent(
+                                      defaultListingType: value.payload)),
                             ),
                             ListOption(
                               description: l10n.defaultFeedSortType,
-                              value: ListPickerItem(label: localUser.defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: localUser.defaultSortType),
+                              value: ListPickerItem(
+                                  label: localUser.defaultSortType.value,
+                                  icon: Icons.local_fire_department_rounded,
+                                  payload: localUser.defaultSortType),
                               options: [
-                                ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                                ...SortPicker.getDefaultSortTypeItems(
+                                    minimumVersion: Version(0, 19, 0,
+                                        preRelease: ["rc", "1"])),
                                 ...topSortTypeItems
                               ],
                               icon: Icons.sort_rounded,
                               onChanged: (_) async {},
                               isBottomModalScrollControlled: true,
                               customListPicker: SortPicker(
-                                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
+                                minimumVersion:
+                                    Version(0, 19, 0, preRelease: ["rc", "1"]),
                                 title: l10n.defaultFeedSortType,
                                 onSelect: (value) async {
-                                  context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultSortType: value.payload));
+                                  context.read<UserSettingsBloc>().add(
+                                      UpdateUserSettingsEvent(
+                                          defaultSortType: value.payload));
                                 },
                                 previouslySelected: localUser.defaultSortType,
                               ),
                               valueDisplay: Row(
                                 children: [
-                                  Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).icon, size: 13),
+                                  Icon(
+                                      allSortTypeItems
+                                          .firstWhere((sortTypeItem) =>
+                                              sortTypeItem.payload ==
+                                              localUser.defaultSortType)
+                                          .icon,
+                                      size: 13),
                                   const SizedBox(width: 4),
                                   Text(
-                                    allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).label,
+                                    allSortTypeItems
+                                        .firstWhere((sortTypeItem) =>
+                                            sortTypeItem.payload ==
+                                            localUser.defaultSortType)
+                                        .label,
                                     style: theme.textTheme.titleSmall,
                                   ),
                                 ],
@@ -327,7 +417,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               value: localUser.showNsfw,
                               iconEnabled: Icons.no_adult_content,
                               iconDisabled: Icons.no_adult_content,
-                              onToggle: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
+                              onToggle: (bool value) => context
+                                  .read<UserSettingsBloc>()
+                                  .add(
+                                      UpdateUserSettingsEvent(showNsfw: value)),
                               highlightKey: null,
                               setting: null,
                               highlightedSetting: null,
@@ -337,7 +430,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               value: localUser.showScores,
                               iconEnabled: Icons.onetwothree_rounded,
                               iconDisabled: Icons.onetwothree_rounded,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                              onToggle: (bool value) => {
+                                context.read<UserSettingsBloc>().add(
+                                    UpdateUserSettingsEvent(showScores: value))
+                              },
                               highlightKey: null,
                               setting: null,
                               highlightedSetting: null,
@@ -347,7 +443,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               value: localUser.showReadPosts,
                               iconEnabled: Icons.fact_check_rounded,
                               iconDisabled: Icons.fact_check_outlined,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                              onToggle: (bool value) => {
+                                context.read<UserSettingsBloc>().add(
+                                    UpdateUserSettingsEvent(
+                                        showReadPosts: value))
+                              },
                               highlightKey: null,
                               setting: null,
                               highlightedSetting: null,
@@ -358,7 +458,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               iconEnabled: Thunder.robot,
                               iconDisabled: Thunder.robot,
                               iconSpacing: 14.0,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
+                              onToggle: (bool value) => {
+                                context.read<UserSettingsBloc>().add(
+                                    UpdateUserSettingsEvent(botAccount: value))
+                              },
                               highlightKey: null,
                               setting: null,
                               highlightedSetting: null,
@@ -369,30 +472,45 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               iconEnabled: Thunder.robot,
                               iconDisabled: Thunder.robot,
                               iconSpacing: 14.0,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                              onToggle: (bool value) => {
+                                context.read<UserSettingsBloc>().add(
+                                    UpdateUserSettingsEvent(
+                                        showBotAccounts: value))
+                              },
                               highlightKey: null,
                               setting: null,
                               highlightedSetting: null,
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(l10n.contentManagement, style: theme.textTheme.titleMedium),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.contentManagement,
+                                  style: theme.textTheme.titleMedium),
                             ),
                             SettingsListTile(
                               icon: Icons.language_rounded,
                               description: l10n.discussionLanguages,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              widget: const SizedBox(
+                                  height: 42.0,
+                                  child: Icon(Icons.chevron_right_rounded)),
                               onTap: () async {
                                 final state = context.read<ThunderBloc>().state;
                                 await Navigator.of(context).push(
                                   SwipeablePageRoute(
-                                    transitionDuration: state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                    transitionDuration: state.reduceAnimations
+                                        ? const Duration(milliseconds: 100)
+                                        : null,
                                     canOnlySwipeFromEdge: true,
                                     backGestureDetectionWidth: 45,
                                     builder: (navigatorContext) {
                                       return MultiBlocProvider(
-                                        providers: [BlocProvider<UserSettingsBloc>.value(value: context.read<UserSettingsBloc>())],
-                                        child: const DiscussionLanguageSelector(),
+                                        providers: [
+                                          BlocProvider<UserSettingsBloc>.value(
+                                              value: context
+                                                  .read<UserSettingsBloc>())
+                                        ],
+                                        child:
+                                            const DiscussionLanguageSelector(),
                                       );
                                     },
                                   ),
@@ -405,17 +523,25 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             SettingsListTile(
                               icon: Icons.block_rounded,
                               description: l10n.blockSettingLabel,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              widget: const SizedBox(
+                                  height: 42.0,
+                                  child: Icon(Icons.chevron_right_rounded)),
                               onTap: () async {
                                 final state = context.read<ThunderBloc>().state;
                                 await Navigator.of(context).push(
                                   SwipeablePageRoute(
-                                    transitionDuration: state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                    transitionDuration: state.reduceAnimations
+                                        ? const Duration(milliseconds: 100)
+                                        : null,
                                     canOnlySwipeFromEdge: true,
                                     backGestureDetectionWidth: 45,
                                     builder: (navigatorContext) {
                                       return MultiBlocProvider(
-                                        providers: [BlocProvider<UserSettingsBloc>.value(value: context.read<UserSettingsBloc>())],
+                                        providers: [
+                                          BlocProvider<UserSettingsBloc>.value(
+                                              value: context
+                                                  .read<UserSettingsBloc>())
+                                        ],
                                         child: const UserSettingsBlockPage(),
                                       );
                                     },
@@ -427,24 +553,32 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               highlightedSetting: null,
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.dangerZone,
+                                  style: theme.textTheme.titleMedium),
                             ),
                             SettingsListTile(
                               icon: Icons.password,
                               description: l10n.changePassword,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              widget: const SizedBox(
+                                  height: 42.0,
+                                  child: Icon(Icons.chevron_right_rounded)),
                               onTap: () async {
                                 showThunderDialog<void>(
                                   context: context,
                                   title: l10n.changePassword,
                                   contentText: l10n.changePasswordWarning,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  onSecondaryButtonPressed: (dialogContext) =>
+                                      Navigator.of(dialogContext).pop(),
                                   secondaryButtonText: l10n.cancel,
-                                  onPrimaryButtonPressed: (dialogContext, _) async {
+                                  onPrimaryButtonPressed:
+                                      (dialogContext, _) async {
                                     if (context.mounted) {
                                       Navigator.of(context).pop();
-                                      handleLink(context, url: "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
+                                      handleLink(context,
+                                          url:
+                                              "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
                                     }
                                   },
                                   primaryButtonText: l10n.confirm,
@@ -457,19 +591,25 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             SettingsListTile(
                               icon: Icons.delete_forever_rounded,
                               description: l10n.deleteAccount,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              widget: const SizedBox(
+                                  height: 42.0,
+                                  child: Icon(Icons.chevron_right_rounded)),
                               onTap: () async {
                                 showThunderDialog<void>(
                                   context: context,
                                   title: l10n.deleteAccount,
                                   contentText: l10n.deleteAccountDescription,
                                   secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  onSecondaryButtonPressed: (dialogContext) =>
+                                      Navigator.of(dialogContext).pop(),
                                   primaryButtonText: l10n.confirm,
-                                  onPrimaryButtonPressed: (dialogContext, _) async {
+                                  onPrimaryButtonPressed:
+                                      (dialogContext, _) async {
                                     if (context.mounted) {
                                       Navigator.of(context).pop();
-                                      handleLink(context, url: "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
+                                      handleLink(context,
+                                          url:
+                                              "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
                                     }
                                   },
                                 );

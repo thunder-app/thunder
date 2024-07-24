@@ -80,7 +80,8 @@ class _UserSelectorState extends State<UserSelector> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const UserIndicator(),
-              if (widget.enableAccountSwitching) const Icon(Icons.chevron_right_rounded),
+              if (widget.enableAccountSwitching)
+                const Icon(Icons.chevron_right_rounded),
             ],
           ),
         ),
@@ -118,7 +119,9 @@ Future<void> temporarilySwitchAccount(
   if (context.mounted) {
     Account? newUser = context.read<AuthBloc>().state.account;
 
-    if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
+    if (originalUser != null &&
+        newUser != null &&
+        originalUser.id != newUser.id) {
       // The user changed. Reload the widget.
       setState?.call(() {});
       onUserChanged?.call();
@@ -127,7 +130,9 @@ Future<void> temporarilySwitchAccount(
       if (communityActorId?.isNotEmpty == true && onCommunityChanged != null) {
         CommunityView? resolvedCommunity;
         try {
-          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: communityActorId!));
+          final ResolveObjectResponse resolveObjectResponse =
+              await LemmyApiV3(newUser.instance!)
+                  .run(ResolveObject(q: communityActorId!));
           resolvedCommunity = resolveObjectResponse.community;
         } catch (e) {
           // We'll just return null if we can't find it.
@@ -139,7 +144,9 @@ Future<void> temporarilySwitchAccount(
       if (postActorId?.isNotEmpty == true && onPostChanged != null) {
         PostView? resolvedPost;
         try {
-          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: postActorId!));
+          final ResolveObjectResponse resolveObjectResponse =
+              await LemmyApiV3(newUser.instance!)
+                  .run(ResolveObject(q: postActorId!));
           resolvedPost = resolveObjectResponse.post;
           if (resolvedPost != null) {
             onPostChanged((await parsePostViews([resolvedPost])).first);
@@ -150,15 +157,21 @@ Future<void> temporarilySwitchAccount(
         if (resolvedPost == null) {
           // This is not allowed, so we must block the account switch.
           showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance!));
-          if (context.mounted) context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
+          if (context.mounted)
+            context
+                .read<AuthBloc>()
+                .add(SwitchAccount(accountId: originalUser.id, reload: false));
         }
       }
 
       // If there is a selected parent comment, see if we can resolve it to the new user's instance.
-      if (parentCommentActorId?.isNotEmpty == true && onParentCommentChanged != null) {
+      if (parentCommentActorId?.isNotEmpty == true &&
+          onParentCommentChanged != null) {
         CommentView? resolvedComment;
         try {
-          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: parentCommentActorId!));
+          final ResolveObjectResponse resolveObjectResponse =
+              await LemmyApiV3(newUser.instance!)
+                  .run(ResolveObject(q: parentCommentActorId!));
           resolvedComment = resolveObjectResponse.comment;
           if (resolvedComment != null) {
             onParentCommentChanged(resolvedComment);
@@ -168,8 +181,12 @@ Future<void> temporarilySwitchAccount(
         }
         if (resolvedComment == null) {
           // This is not allowed, so we must block the accout switch.
-          showSnackbar(l10n.accountSwitchParentCommentNotFound(newUser.instance!));
-          if (context.mounted) context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
+          showSnackbar(
+              l10n.accountSwitchParentCommentNotFound(newUser.instance!));
+          if (context.mounted)
+            context
+                .read<AuthBloc>()
+                .add(SwitchAccount(accountId: originalUser.id, reload: false));
         }
       }
     }

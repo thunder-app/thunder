@@ -1,6 +1,13 @@
 part of 'anonymous_subscriptions_bloc.dart';
 
-enum AnonymousSubscriptionsStatus { initial, loading, refreshing, success, empty, failure }
+enum AnonymousSubscriptionsStatus {
+  initial,
+  loading,
+  refreshing,
+  success,
+  empty,
+  failure
+}
 
 class AnonymousSubscriptionsState extends Equatable {
   const AnonymousSubscriptionsState({

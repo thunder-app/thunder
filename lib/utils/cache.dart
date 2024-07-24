@@ -9,7 +9,10 @@ import 'package:extended_image/extended_image.dart';
 /// or else re-fetch the value using the given [getValue] function.
 class Cache<T> {
   T getOrSet(T Function() getValue, Duration expiration) {
-    if (_value == null || (_lastSetTime ?? DateTime.fromMicrosecondsSinceEpoch(0)).add(expiration).isBefore(DateTime.now())) {
+    if (_value == null ||
+        (_lastSetTime ?? DateTime.fromMicrosecondsSinceEpoch(0))
+            .add(expiration)
+            .isBefore(DateTime.now())) {
       _value = getValue();
       _lastSetTime = DateTime.now();
     }
@@ -24,7 +27,8 @@ class Cache<T> {
 Future<int> getExtendedImageCacheSize() async {
   try {
     if (kIsWeb) return 0;
-    final Directory cacheImagesDirectory = Directory(join((await getTemporaryDirectory()).path, cacheImageFolderName));
+    final Directory cacheImagesDirectory = Directory(
+        join((await getTemporaryDirectory()).path, cacheImageFolderName));
     if (!cacheImagesDirectory.existsSync()) return 0;
 
     int totalSize = 0;
@@ -47,9 +51,11 @@ Future<int> getExtendedImageCacheSize() async {
 
 /// Clears the image cache from ExtendedImage, by deleting all files older than [duration].
 /// If [duration] is not provided, it defaults to 7 days.
-Future<void> clearExtendedImageCache({Duration expiration = const Duration(days: 7)}) async {
+Future<void> clearExtendedImageCache(
+    {Duration expiration = const Duration(days: 7)}) async {
   if (kIsWeb) return;
-  final Directory cacheImagesDirectory = Directory(join((await getTemporaryDirectory()).path, cacheImageFolderName));
+  final Directory cacheImagesDirectory = Directory(
+      join((await getTemporaryDirectory()).path, cacheImageFolderName));
   if (!cacheImagesDirectory.existsSync()) return;
 
   await clearDiskCachedImages(duration: expiration);

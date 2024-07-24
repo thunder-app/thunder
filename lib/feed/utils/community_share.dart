@@ -13,10 +13,12 @@ enum CommunityShareOptions {
 }
 
 /// Shows a mottom modal sheet which allows sharing the given [communityView].
-Future<void> showCommunityShareSheet(BuildContext context, CommunityView communityView) async {
+Future<void> showCommunityShareSheet(
+    BuildContext context, CommunityView communityView) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  String community = await getLemmyCommunity(communityView.community.actorId) ?? '';
+  String community =
+      await getLemmyCommunity(communityView.community.actorId) ?? '';
   String lemmyLink = '!$community';
   String localLink = LemmyClient.instance.generateCommunityUrl(community);
 
@@ -34,7 +36,8 @@ Future<void> showCommunityShareSheet(BuildContext context, CommunityView communi
             subtitle: communityView.community.actorId,
             icon: Icons.link_rounded,
           ),
-          if (!communityView.community.actorId.contains(LemmyClient.instance.lemmyApiV3.host))
+          if (!communityView.community.actorId
+              .contains(LemmyClient.instance.lemmyApiV3.host))
             ListPickerItem(
               label: l10n.shareCommunityLinkLocal,
               payload: CommunityShareOptions.localLink,

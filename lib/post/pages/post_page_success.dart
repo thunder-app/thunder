@@ -55,7 +55,8 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => widget.scrollController.addListener(_onScroll));
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => widget.scrollController.addListener(_onScroll));
   }
 
   void _onScroll() {
@@ -65,7 +66,8 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
     if (widget.selectedCommentId != null || widget.hasReachedCommentEnd) {
       return;
     }
-    if (widget.scrollController.position.pixels >= widget.scrollController.position.maxScrollExtent * 0.6) {
+    if (widget.scrollController.position.pixels >=
+        widget.scrollController.position.maxScrollExtent * 0.6) {
       context.read<PostBloc>().add(const GetPostCommentsEvent());
     }
   }
@@ -86,22 +88,31 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             postViewMedia: widget.postView,
             comments: widget.comments,
             hasReachedCommentEnd: widget.hasReachedCommentEnd,
-            onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-            onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-            onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+            onVoteAction: (int commentId, int voteType) => context
+                .read<PostBloc>()
+                .add(VoteCommentEvent(commentId: commentId, score: voteType)),
+            onSaveAction: (int commentId, bool save) => context
+                .read<PostBloc>()
+                .add(SaveCommentEvent(commentId: commentId, save: save)),
+            onDeleteAction: (int commentId, bool deleted) => context
+                .read<PostBloc>()
+                .add(
+                    DeleteCommentEvent(deleted: deleted, commentId: commentId)),
             onReportAction: (int commentId) {
               showReportCommentActionBottomSheet(
                 context,
                 commentId: commentId,
               );
             },
-            onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+            onReplyEditAction: (CommentView commentView, bool isEdit) async =>
+                navigateToCreateCommentPage(
               context,
               commentView: isEdit ? commentView : null,
               parentCommentView: isEdit ? null : commentView,
               onCommentSuccess: (commentView, userChanged) {
                 if (!userChanged) {
-                  context.read<PostBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit));
+                  context.read<PostBloc>().add(UpdateCommentEvent(
+                      commentView: commentView, isEdit: isEdit));
                 }
               },
             ),

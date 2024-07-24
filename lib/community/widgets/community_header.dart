@@ -47,8 +47,12 @@ class _CommunityHeaderState extends State<CommunityHeader> {
         },
         child: Stack(
           children: [
-            if (widget.getCommunityResponse.communityView.community.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.background)),
-            if (widget.getCommunityResponse.communityView.community.banner != null)
+            if (widget.getCommunityResponse.communityView.community.banner ==
+                null)
+              Positioned.fill(
+                  child: Container(color: theme.colorScheme.background)),
+            if (widget.getCommunityResponse.communityView.community.banner !=
+                null)
               Positioned.fill(
                 child: Row(
                   children: [
@@ -58,7 +62,11 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(widget.getCommunityResponse.communityView.community.banner!),
+                            image: CachedNetworkImageProvider(widget
+                                .getCommunityResponse
+                                .communityView
+                                .community
+                                .banner!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -67,7 +75,8 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                   ],
                 ),
               ),
-            if (widget.getCommunityResponse.communityView.community.banner != null)
+            if (widget.getCommunityResponse.communityView.community.banner !=
+                null)
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -88,7 +97,8 @@ class _CommunityHeaderState extends State<CommunityHeader> {
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
+                  padding: const EdgeInsets.only(
+                      top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -96,7 +106,8 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       Row(
                         children: [
                           CommunityAvatar(
-                            community: widget.getCommunityResponse.communityView.community,
+                            community: widget
+                                .getCommunityResponse.communityView.community,
                             radius: 45.0,
                             showCommunityStatus: true,
                           ),
@@ -107,14 +118,23 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  widget.getCommunityResponse.communityView.community.title,
-                                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                                  widget.getCommunityResponse.communityView
+                                      .community.title,
+                                  style: theme.textTheme.headlineSmall
+                                      ?.copyWith(fontWeight: FontWeight.w600),
                                 ),
                                 CommunityFullNameWidget(
                                   context,
-                                  widget.getCommunityResponse.communityView.community.name,
-                                  widget.getCommunityResponse.communityView.community.title,
-                                  fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A',
+                                  widget.getCommunityResponse.communityView
+                                      .community.name,
+                                  widget.getCommunityResponse.communityView
+                                      .community.title,
+                                  fetchInstanceNameFromUrl(widget
+                                          .getCommunityResponse
+                                          .communityView
+                                          .community
+                                          .actorId) ??
+                                      'N/A',
                                   // Override because we're showing right above
                                   useDisplayName: false,
                                 ),
@@ -123,12 +143,21 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                   children: [
                                     IconText(
                                       icon: const Icon(Icons.people_rounded),
-                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.subscribers),
+                                      text: formatNumberToK(widget
+                                          .getCommunityResponse
+                                          .communityView
+                                          .counts
+                                          .subscribers),
                                     ),
                                     const SizedBox(width: 8.0),
                                     IconText(
-                                      icon: const Icon(Icons.calendar_month_rounded),
-                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.usersActiveMonth),
+                                      icon: const Icon(
+                                          Icons.calendar_month_rounded),
+                                      text: formatNumberToK(widget
+                                          .getCommunityResponse
+                                          .communityView
+                                          .counts
+                                          .usersActiveMonth),
                                     ),
                                     const SizedBox(width: 8.0),
                                     IconText(
@@ -145,7 +174,14 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                             child: Icon(
                               Icons.info_outline_rounded,
                               size: 25,
-                              shadows: <Shadow>[Shadow(color: theme.colorScheme.background, blurRadius: 10.0), Shadow(color: theme.colorScheme.background, blurRadius: 20.0)],
+                              shadows: <Shadow>[
+                                Shadow(
+                                    color: theme.colorScheme.background,
+                                    blurRadius: 10.0),
+                                Shadow(
+                                    color: theme.colorScheme.background,
+                                    blurRadius: 20.0)
+                              ],
                             ),
                           ),
                         ],

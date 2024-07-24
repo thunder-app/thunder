@@ -20,7 +20,11 @@ class GetInboxEvent extends InboxEvent {
   /// The comment sort type to use for replies/mentions
   final CommentSortType commentSortType;
 
-  const GetInboxEvent({this.inboxType, this.showAll = false, this.reset = false, this.commentSortType = CommentSortType.new_});
+  const GetInboxEvent(
+      {this.inboxType,
+      this.showAll = false,
+      this.reset = false,
+      this.commentSortType = CommentSortType.new_});
 }
 
 class InboxItemActionEvent extends InboxEvent {
@@ -36,7 +40,11 @@ class InboxItemActionEvent extends InboxEvent {
   /// The value to pass to the action
   final dynamic value;
 
-  const InboxItemActionEvent({required this.action, this.commentReplyId, this.personMentionId, this.value});
+  const InboxItemActionEvent(
+      {required this.action,
+      this.commentReplyId,
+      this.personMentionId,
+      this.value});
 }
 
 class MarkAllAsReadEvent extends InboxEvent {}

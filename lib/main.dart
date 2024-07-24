@@ -55,7 +55,8 @@ Future<void> initializeDatabase() async {
 
   debugPrint('Initializing drift db.');
 
-  File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
+  File dbFile = File(
+      join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
 
   database = AppDatabase();
 
@@ -84,7 +85,10 @@ void main() async {
     DartPingIOS.register();
   }
 
-  final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
+  final String initialInstance = (await UserPreferences.instance)
+          .sharedPreferences
+          .getString(LocalSettings.currentAnonymousInstance.name) ??
+      'lemmy.ml';
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
   // Perform preference migrations
@@ -107,20 +111,24 @@ class ThunderApp extends StatefulWidget {
 
 class _ThunderAppState extends State<ThunderApp> {
   /// Allows the top-level notification handlers to trigger actions farther down
-  final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
+  final StreamController<NotificationResponse> notificationsStreamController =
+      StreamController<NotificationResponse>();
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      String? inboxNotificationType = prefs.getString(LocalSettings.inboxNotificationType.name);
+      SharedPreferences prefs =
+          (await UserPreferences.instance).sharedPreferences;
+      String? inboxNotificationType =
+          prefs.getString(LocalSettings.inboxNotificationType.name);
 
       // If notification type is null, then don't perform any logic
       if (inboxNotificationType == null) return;
 
-      if (NotificationType.values.byName(inboxNotificationType) != NotificationType.none) {
+      if (NotificationType.values.byName(inboxNotificationType) !=
+          NotificationType.none) {
         // Initialize notification logic
         initPushNotificationLogic(controller: notificationsStreamController);
       } else {
@@ -160,7 +168,8 @@ class _ThunderAppState extends State<ThunderApp> {
           create: (context) => DeepLinksCubit(),
         ),
         BlocProvider(
-          create: (context) => NotificationsCubit(notificationsStream: notificationsStreamController.stream),
+          create: (context) => NotificationsCubit(
+              notificationsStream: notificationsStreamController.stream),
         ),
         BlocProvider(
           create: (context) => ThunderBloc(),
@@ -191,8 +200,13 @@ class _ThunderAppState extends State<ThunderApp> {
 
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
-              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name));
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name), darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
+              ThemeData theme = FlexThemeData.light(
+                  useMaterial3: true,
+                  scheme: FlexScheme.values.byName(state.selectedTheme.name));
+              ThemeData darkTheme = FlexThemeData.dark(
+                  useMaterial3: true,
+                  scheme: FlexScheme.values.byName(state.selectedTheme.name),
+                  darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
@@ -209,7 +223,8 @@ class _ThunderAppState extends State<ThunderApp> {
               }
 
               // Set the page transitions
-              const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(builders: {
+              const PageTransitionsTheme pageTransitionsTheme =
+                  PageTransitionsTheme(builders: {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               });
@@ -228,7 +243,10 @@ class _ThunderAppState extends State<ThunderApp> {
                 ),
               );
 
-              Locale? locale = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == thunderBloc.state.appLanguageCode).firstOrNull;
+              Locale? locale = AppLocalizations.supportedLocales
+                  .where((Locale locale) =>
+                      locale.languageCode == thunderBloc.state.appLanguageCode)
+                  .firstOrNull;
 
               return OverlaySupport.global(
                 child: MaterialApp.router(
@@ -241,15 +259,22 @@ class _ThunderAppState extends State<ThunderApp> {
                   ],
                   supportedLocales: const [
                     ...AppLocalizations.supportedLocales,
-                    Locale('eo'), // Additional locale which is not officially supported: Esperanto
+                    Locale(
+                        'eo'), // Additional locale which is not officially supported: Esperanto
                   ],
                   routerConfig: router,
-                  themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                  themeMode: state.themeType == ThemeType.system
+                      ? ThemeMode.system
+                      : (state.themeType == ThemeType.light
+                          ? ThemeMode.light
+                          : ThemeMode.dark),
                   theme: theme,
                   darkTheme: darkTheme,
                   debugShowCheckedModeBanner: false,
                   scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
-                  scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                  scrollBehavior: (state.reduceAnimations && Platform.isAndroid)
+                      ? const ScrollBehavior().copyWith(overscroll: false)
+                      : null,
                 ),
               );
             },

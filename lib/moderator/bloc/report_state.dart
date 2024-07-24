@@ -65,8 +65,10 @@ final class ReportState extends Equatable {
       communityId: communityId ?? this.communityId,
       postReports: postReports ?? this.postReports,
       commentReports: commentReports ?? this.commentReports,
-      hasReachedPostReportsEnd: hasReachedPostReportsEnd ?? this.hasReachedPostReportsEnd,
-      hasReachedCommentReportsEnd: hasReachedCommentReportsEnd ?? this.hasReachedCommentReportsEnd,
+      hasReachedPostReportsEnd:
+          hasReachedPostReportsEnd ?? this.hasReachedPostReportsEnd,
+      hasReachedCommentReportsEnd:
+          hasReachedCommentReportsEnd ?? this.hasReachedCommentReportsEnd,
       currentPage: currentPage ?? this.currentPage,
       message: message ?? this.message,
     );
@@ -78,5 +80,16 @@ final class ReportState extends Equatable {
   }
 
   @override
-  List<dynamic> get props => [status, reportFeedType, showResolved, communityId, postReports, commentReports, hasReachedPostReportsEnd, hasReachedCommentReportsEnd, currentPage, message];
+  List<dynamic> get props => [
+        status,
+        reportFeedType,
+        showResolved,
+        communityId,
+        postReports,
+        commentReports,
+        hasReachedPostReportsEnd,
+        hasReachedCommentReportsEnd,
+        currentPage,
+        message
+      ];
 }

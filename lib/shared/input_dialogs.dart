@@ -25,7 +25,9 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 /// Shows a dialog which allows typing/search for a user
-void showUserInputDialog(BuildContext context, {required String title, required void Function(PersonView) onUserSelected}) async {
+void showUserInputDialog(BuildContext context,
+    {required String title,
+    required void Function(PersonView) onUserSelected}) async {
   Future<String?> onSubmitted({PersonView? payload, String? value}) async {
     if (payload != null) {
       onUserSelected(payload);
@@ -36,7 +38,8 @@ void showUserInputDialog(BuildContext context, {required String title, required 
       if (normalizedUsername != null) {
         try {
           Account? account = await fetchActiveProfileAccount();
-          final GetPersonDetailsResponse getPersonDetailsResponse = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
+          final GetPersonDetailsResponse getPersonDetailsResponse =
+              await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
             auth: account?.jwt,
             username: normalizedUsername,
           ));
@@ -69,7 +72,8 @@ Future<List<PersonView>> getUserSuggestions(String query) async {
     return [];
   }
   Account? account = await fetchActiveProfileAccount();
-  final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
+  final SearchResponse searchResponse =
+      await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
     auth: account?.jwt,
     type: SearchType.users,
@@ -78,7 +82,8 @@ Future<List<PersonView>> getUserSuggestions(String query) async {
   return searchResponse.users;
 }
 
-Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void Function(PersonView)? onSelected}) {
+Widget buildUserSuggestionWidget(BuildContext context, PersonView payload,
+    {void Function(PersonView)? onSelected}) {
   return Tooltip(
     message: generateUserFullName(
       context,
@@ -118,11 +123,15 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
 }
 
 /// Shows a dialog which allows typing/search for a community
-void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, List<CommunityView>? emptySuggestions}) async {
+void showCommunityInputDialog(BuildContext context,
+    {required String title,
+    required void Function(CommunityView) onCommunitySelected,
+    List<CommunityView>? emptySuggestions}) async {
   try {
     final AccountState accountState = context.read<AccountBloc>().state;
     emptySuggestions ??= accountState.subsciptions;
-    emptySuggestions = prioritizeFavorites(emptySuggestions.toList(), accountState.favorites);
+    emptySuggestions =
+        prioritizeFavorites(emptySuggestions.toList(), accountState.favorites);
   } catch (e) {
     // If we can't read the AccountBloc here, for whatever reason, it's ok. No need for subscriptions.
   }
@@ -137,7 +146,8 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
       if (normalizedCommunity != null) {
         try {
           Account? account = await fetchActiveProfileAccount();
-          final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+          final GetCommunityResponse getCommunityResponse =
+              await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
             auth: account?.jwt,
             name: normalizedCommunity,
           ));
@@ -160,17 +170,21 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
     title: title,
     inputLabel: AppLocalizations.of(context)!.community,
     onSubmitted: onSubmitted,
-    getSuggestions: (query) => getCommunitySuggestions(context, query, emptySuggestions),
-    suggestionBuilder: (communityView) => buildCommunitySuggestionWidget(context, communityView),
+    getSuggestions: (query) =>
+        getCommunitySuggestions(context, query, emptySuggestions),
+    suggestionBuilder: (communityView) =>
+        buildCommunitySuggestionWidget(context, communityView),
   );
 }
 
-Future<List<CommunityView>> getCommunitySuggestions(BuildContext context, String query, List<CommunityView>? emptySuggestions) async {
+Future<List<CommunityView>> getCommunitySuggestions(BuildContext context,
+    String query, List<CommunityView>? emptySuggestions) async {
   if (query.isNotEmpty != true) {
     return emptySuggestions ?? [];
   }
   Account? account = await fetchActiveProfileAccount();
-  final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
+  final SearchResponse searchResponse =
+      await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
     auth: account?.jwt,
     type: SearchType.communities,
@@ -187,10 +201,13 @@ Future<List<CommunityView>> getCommunitySuggestions(BuildContext context, String
     }
   }
 
-  return prioritizeFavorites(searchResponse.communities.toList(), favorites) ?? [];
+  return prioritizeFavorites(searchResponse.communities.toList(), favorites) ??
+      [];
 }
 
-Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payload, {void Function(CommunityView)? onSelected}) {
+Widget buildCommunitySuggestionWidget(
+    BuildContext context, CommunityView payload,
+    {void Function(CommunityView)? onSelected}) {
   final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
 
   return Tooltip(
@@ -257,7 +274,8 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
 /// Checks whether the current community is a favorite of the current user
 bool _getFavoriteStatus(BuildContext context, Community community) {
   final AccountState accountState = context.read<AccountBloc>().state;
-  return accountState.favorites.any((communityView) => communityView.community.id == community.id);
+  return accountState.favorites
+      .any((communityView) => communityView.community.id == community.id);
 }
 
 /// Shows a dialog which allows typing/search for an instance
@@ -269,18 +287,23 @@ void showInstanceInputDialog(
 }) async {
   Account? account = await fetchActiveProfileAccount();
 
-  GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(
+  GetFederatedInstancesResponse getFederatedInstancesResponse =
+      await LemmyClient.instance.lemmyApiV3.run(
     GetFederatedInstances(
       auth: account?.jwt,
     ),
   );
 
-  Future<String?> onSubmitted({InstanceWithFederationState? payload, String? value}) async {
+  Future<String?> onSubmitted(
+      {InstanceWithFederationState? payload, String? value}) async {
     if (payload != null) {
       onInstanceSelected(payload);
       Navigator.of(context).pop();
     } else if (value != null) {
-      final InstanceWithFederationState? instance = getFederatedInstancesResponse.federatedInstances?.linked.firstWhereOrNull((InstanceWithFederationState instance) => instance.domain == value);
+      final InstanceWithFederationState? instance =
+          getFederatedInstancesResponse.federatedInstances?.linked
+              .firstWhereOrNull((InstanceWithFederationState instance) =>
+                  instance.domain == value);
 
       if (instance != null) {
         onInstanceSelected(instance);
@@ -299,22 +322,30 @@ void showInstanceInputDialog(
       title: title,
       inputLabel: AppLocalizations.of(context)!.instance(1),
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => getInstanceSuggestions(query, getFederatedInstancesResponse.federatedInstances?.linked),
-      suggestionBuilder: (payload) => buildInstanceSuggestionWidget(payload, context: context),
+      getSuggestions: (query) => getInstanceSuggestions(
+          query, getFederatedInstancesResponse.federatedInstances?.linked),
+      suggestionBuilder: (payload) =>
+          buildInstanceSuggestionWidget(payload, context: context),
     );
   }
 }
 
-Future<List<InstanceWithFederationState>> getInstanceSuggestions(String query, List<InstanceWithFederationState>? emptySuggestions) async {
+Future<List<InstanceWithFederationState>> getInstanceSuggestions(
+    String query, List<InstanceWithFederationState>? emptySuggestions) async {
   if (query.isEmpty) {
     return [];
   }
 
-  List<InstanceWithFederationState> filteredInstances = emptySuggestions?.where((InstanceWithFederationState instance) => instance.domain.contains(query)).toList() ?? [];
+  List<InstanceWithFederationState> filteredInstances = emptySuggestions
+          ?.where((InstanceWithFederationState instance) =>
+              instance.domain.contains(query))
+          .toList() ??
+      [];
   return filteredInstances;
 }
 
-Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelected, BuildContext? context}) {
+Widget buildInstanceSuggestionWidget(payload,
+    {void Function(Instance)? onSelected, BuildContext? context}) {
   final theme = Theme.of(context!);
 
   return Tooltip(
@@ -347,11 +378,17 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
 
 /// Shows a dialog which allows typing/search for an language
 void showLanguageInputDialog(BuildContext context,
-    {required String title, required void Function(Language) onLanguageSelected, Iterable<int>? excludedLanguageIds, Iterable<Language>? emptySuggestions}) async {
+    {required String title,
+    required void Function(Language) onLanguageSelected,
+    Iterable<int>? excludedLanguageIds,
+    Iterable<Language>? emptySuggestions}) async {
   AuthState state = context.read<AuthBloc>().state;
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  List<Language> languages = [Language(id: -1, code: '', name: l10n.noLanguage), ...(state.getSiteResponse?.allLanguages ?? [])];
+  List<Language> languages = [
+    Language(id: -1, code: '', name: l10n.noLanguage),
+    ...(state.getSiteResponse?.allLanguages ?? [])
+  ];
   languages = languages.where((language) {
     if (excludedLanguageIds != null && excludedLanguageIds.isNotEmpty) {
       return !excludedLanguageIds.contains(language.id);
@@ -364,7 +401,9 @@ void showLanguageInputDialog(BuildContext context,
       onLanguageSelected(payload);
       Navigator.of(context).pop();
     } else if (value != null) {
-      final Language? language = languages.firstWhereOrNull((Language language) => language.name.toLowerCase().contains(value.toLowerCase()));
+      final Language? language = languages.firstWhereOrNull(
+          (Language language) =>
+              language.name.toLowerCase().contains(value.toLowerCase()));
 
       if (language != null) {
         onLanguageSelected(language);
@@ -383,16 +422,20 @@ void showLanguageInputDialog(BuildContext context,
       title: title,
       inputLabel: AppLocalizations.of(context)!.language,
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => getLanguageSuggestions(context, query, languages),
-      suggestionBuilder: (payload) => buildLanguageSuggestionWidget(payload, context: context),
+      getSuggestions: (query) =>
+          getLanguageSuggestions(context, query, languages),
+      suggestionBuilder: (payload) =>
+          buildLanguageSuggestionWidget(payload, context: context),
     );
   }
 }
 
-Future<List<Language>> getLanguageSuggestions(BuildContext context, String query, List<Language>? emptySuggestions) async {
+Future<List<Language>> getLanguageSuggestions(BuildContext context,
+    String query, List<Language>? emptySuggestions) async {
   final Locale currentLocale = Localizations.localeOf(context);
 
-  final Language? currentLanguage = emptySuggestions?.firstWhereOrNull((Language l) => l.code == currentLocale.languageCode);
+  final Language? currentLanguage = emptySuggestions
+      ?.firstWhereOrNull((Language l) => l.code == currentLocale.languageCode);
   if (currentLanguage != null && (emptySuggestions?.length ?? 0) >= 2) {
     emptySuggestions = emptySuggestions?.toList()
       ?..remove(currentLanguage)
@@ -403,11 +446,16 @@ Future<List<Language>> getLanguageSuggestions(BuildContext context, String query
     return emptySuggestions ?? [];
   }
 
-  List<Language> filteredLanguages = emptySuggestions?.where((Language language) => language.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
+  List<Language> filteredLanguages = emptySuggestions
+          ?.where((Language language) =>
+              language.name.toLowerCase().contains(query.toLowerCase()))
+          .toList() ??
+      [];
   return filteredLanguages;
 }
 
-Widget buildLanguageSuggestionWidget(payload, {void Function(Language)? onSelected, BuildContext? context}) {
+Widget buildLanguageSuggestionWidget(payload,
+    {void Function(Language)? onSelected, BuildContext? context}) {
   return Tooltip(
     message: '${payload.name}',
     preferBelow: false,
@@ -425,7 +473,9 @@ Widget buildLanguageSuggestionWidget(payload, {void Function(Language)? onSelect
 }
 
 /// Shows a dialog which allows typing/search for a keyword
-void showKeywordInputDialog(BuildContext context, {required String title, required void Function(String) onKeywordSelected}) async {
+void showKeywordInputDialog(BuildContext context,
+    {required String title,
+    required void Function(String) onKeywordSelected}) async {
   final l10n = AppLocalizations.of(context)!;
 
   Future<String?> onSubmitted({String? payload, String? value}) async {
@@ -472,7 +522,8 @@ void showInputDialog<T>({
   await showThunderDialog(
     context: context,
     title: title,
-    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+    onSecondaryButtonPressed: (dialogContext) =>
+        Navigator.of(dialogContext).pop(),
     secondaryButtonText: AppLocalizations.of(context)!.cancel,
     primaryButtonInitialEnabled: false,
     onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
@@ -482,7 +533,8 @@ void showInputDialog<T>({
     },
     primaryButtonText: AppLocalizations.of(context)!.ok,
     // Use a stateful widget for the content so we can update the error message
-    contentWidgetBuilder: (setPrimaryButtonEnabled) => StatefulBuilder(builder: (context, setState) {
+    contentWidgetBuilder: (setPrimaryButtonEnabled) =>
+        StatefulBuilder(builder: (context, setState) {
       contentWidgetSetState = setState;
       return SizedBox(
         width: min(MediaQuery.of(context).size.width, 700),

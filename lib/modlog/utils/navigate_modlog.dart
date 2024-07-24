@@ -28,13 +28,19 @@ Future<void> navigateToModlogPage(
   bool canOnlySwipeFromEdge = true;
   try {
     AuthBloc authBloc = context.read<AuthBloc>();
-    canSwipe = Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture;
-    canOnlySwipeFromEdge = disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture;
+    canSwipe = Platform.isIOS ||
+        thunderBloc.state.enableFullScreenSwipeNavigationGesture;
+    canOnlySwipeFromEdge = disableFullPageSwipe(
+            isUserLoggedIn: authBloc.state.isLoggedIn,
+            state: thunderBloc.state,
+            isPostPage: false) ||
+        !thunderBloc.state.enableFullScreenSwipeNavigationGesture;
   } catch (e) {}
 
   await Navigator.of(context).push(
     SwipeablePageRoute(
-      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+      transitionDuration:
+          reduceAnimations ? const Duration(milliseconds: 100) : null,
       backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
       canSwipe: canSwipe,
       canOnlySwipeFromEdge: canOnlySwipeFromEdge,

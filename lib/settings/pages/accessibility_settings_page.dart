@@ -20,10 +20,12 @@ class AccessibilitySettingsPage extends StatefulWidget {
   const AccessibilitySettingsPage({super.key, this.settingToHighlight});
 
   @override
-  State<AccessibilitySettingsPage> createState() => _AccessibilitySettingsPageState();
+  State<AccessibilitySettingsPage> createState() =>
+      _AccessibilitySettingsPageState();
 }
 
-class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> with SingleTickerProviderStateMixin {
+class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage>
+    with SingleTickerProviderStateMixin {
   /// -------------------------- Accessibility Related Settings --------------------------
   bool reduceAnimations = false;
 
@@ -50,7 +52,8 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     setState(() {
-      reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
+      reduceAnimations =
+          prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
     });
   }
 
@@ -88,7 +91,9 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.accessibility), centerTitle: false),
+      appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.accessibility),
+          centerTitle: false),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -111,7 +116,8 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                     value: reduceAnimations,
                     iconEnabled: Icons.animation,
                     iconDisabled: Icons.animation,
-                    onToggle: (bool value) => setPreferences(LocalSettings.reduceAnimations, value),
+                    onToggle: (bool value) =>
+                        setPreferences(LocalSettings.reduceAnimations, value),
                     highlightKey: settingToHighlightKey,
                     setting: LocalSettings.reduceAnimations,
                     highlightedSetting: settingToHighlight,
@@ -135,7 +141,8 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                   Padding(
                     padding: const EdgeInsets.all(6.0),
                     child: Text(
-                      AppLocalizations.of(context)!.accessibilityProfilesDescription,
+                      AppLocalizations.of(context)!
+                          .accessibilityProfilesDescription,
                       style: TextStyle(
                         color: theme.colorScheme.onBackground.withOpacity(0.75),
                       ),
@@ -146,7 +153,8 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                   ),
                   SettingProfile(
                     name: AppLocalizations.of(context)!.screenReaderProfile,
-                    description: AppLocalizations.of(context)!.screenReaderProfileDescription,
+                    description: AppLocalizations.of(context)!
+                        .screenReaderProfileDescription,
                     icon: Icons.smart_screen_rounded,
                     settingsToChange: const {
                       LocalSettings.useCompactView: true,

@@ -97,24 +97,33 @@ class _ImagePreviewState extends State<ImagePreview> {
           // in both compact and comfortable view
           widget.url != null
               ? ExtendedImage.network(
-                  color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-                  colorBlendMode: widget.read == true ? BlendMode.modulate : null,
+                  color: widget.read == true
+                      ? const Color.fromRGBO(255, 255, 255, 0.55)
+                      : null,
+                  colorBlendMode:
+                      widget.read == true ? BlendMode.modulate : null,
                   constraints: widget.isComment == true
                       ? BoxConstraints(
                           maxHeight: MediaQuery.of(context).size.width * 0.55,
                           maxWidth: MediaQuery.of(context).size.width * 0.60,
                         )
                       : BoxConstraints(
-                          maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - 24,
+                          maxWidth: widget.maxWidth ??
+                              MediaQuery.of(context).size.width - 24,
                         ),
-                  alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
+                  alignment: widget.isComment == true
+                      ? Alignment.topCenter
+                      : Alignment.center,
                   widget.url!,
                   height: widget.height,
                   width: widget.width,
                   fit: BoxFit.cover,
                   cache: true,
-                  clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
-                  cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+                  clearMemoryCacheWhenDispose:
+                      thunderState.imageCachingMode == ImageCachingMode.relaxed,
+                  cacheWidth: ((MediaQuery.of(context).size.width - 24) *
+                          View.of(context).devicePixelRatio.ceil())
+                      .toInt(),
                   loadStateChanged: (state) {
                     if (state.extendedImageLoadState == LoadState.loading) {
                       return Container(color: getBackgroundColor(context));
@@ -129,23 +138,32 @@ class _ImagePreviewState extends State<ImagePreview> {
                   },
                 )
               : ExtendedImage.memory(
-                  color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-                  colorBlendMode: widget.read == true ? BlendMode.modulate : null,
+                  color: widget.read == true
+                      ? const Color.fromRGBO(255, 255, 255, 0.55)
+                      : null,
+                  colorBlendMode:
+                      widget.read == true ? BlendMode.modulate : null,
                   constraints: widget.isComment == true
                       ? BoxConstraints(
                           maxHeight: MediaQuery.of(context).size.width * 0.55,
                           maxWidth: MediaQuery.of(context).size.width * 0.60,
                         )
                       : BoxConstraints(
-                          maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - 24,
+                          maxWidth: widget.maxWidth ??
+                              MediaQuery.of(context).size.width - 24,
                         ),
-                  alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
+                  alignment: widget.isComment == true
+                      ? Alignment.topCenter
+                      : Alignment.center,
                   widget.bytes!,
                   height: widget.height,
                   width: widget.width,
                   fit: BoxFit.cover,
-                  clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
-                  cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+                  clearMemoryCacheWhenDispose:
+                      thunderState.imageCachingMode == ImageCachingMode.relaxed,
+                  cacheWidth: ((MediaQuery.of(context).size.width - 24) *
+                          View.of(context).devicePixelRatio.ceil())
+                      .toInt(),
                   loadStateChanged: (state) {
                     if (state.extendedImageLoadState == LoadState.loading) {
                       return Container(color: getBackgroundColor(context));
@@ -154,7 +172,8 @@ class _ImagePreviewState extends State<ImagePreview> {
                       return Text(
                         l10n.unableToLoadImage,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                          color: theme.textTheme.bodyMedium?.color
+                              ?.withOpacity(0.5),
                         ),
                       );
                     }
@@ -162,7 +181,9 @@ class _ImagePreviewState extends State<ImagePreview> {
                   },
                 ),
           TweenAnimationBuilder<double>(
-            tween: Tween<double>(begin: blur ? startBlur : endBlur, end: blur ? endBlur : startBlur),
+            tween: Tween<double>(
+                begin: blur ? startBlur : endBlur,
+                end: blur ? endBlur : startBlur),
             duration: Duration(milliseconds: widget.nsfw ? 250 : 0),
             builder: (_, value, child) {
               return BackdropFilter(

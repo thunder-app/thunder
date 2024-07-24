@@ -48,15 +48,17 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ModlogBloc>(
-      create: (_) => ModlogBloc(lemmyClient: widget.lemmyClient ?? LemmyClient.instance)
-        ..add(ModlogFeedFetchedEvent(
-          modlogActionType: widget.modlogActionType,
-          communityId: widget.communityId,
-          userId: widget.userId,
-          moderatorId: widget.moderatorId,
-          reset: true,
-        )),
-      child: ModlogFeedView(lemmyClient: widget.lemmyClient ?? LemmyClient.instance),
+      create: (_) =>
+          ModlogBloc(lemmyClient: widget.lemmyClient ?? LemmyClient.instance)
+            ..add(ModlogFeedFetchedEvent(
+              modlogActionType: widget.modlogActionType,
+              communityId: widget.communityId,
+              userId: widget.userId,
+              moderatorId: widget.moderatorId,
+              reset: true,
+            )),
+      child: ModlogFeedView(
+          lemmyClient: widget.lemmyClient ?? LemmyClient.instance),
     );
   }
 }
@@ -83,14 +85,18 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
 
     _scrollController.addListener(() {
       // Updates the [showAppBarTitle] value when the user has scrolled past a given threshold
-      if (_scrollController.position.pixels > 100.0 && showAppBarTitle == false) {
+      if (_scrollController.position.pixels > 100.0 &&
+          showAppBarTitle == false) {
         setState(() => showAppBarTitle = true);
-      } else if (_scrollController.position.pixels < 100.0 && showAppBarTitle == true) {
+      } else if (_scrollController.position.pixels < 100.0 &&
+          showAppBarTitle == true) {
         setState(() => showAppBarTitle = false);
       }
 
       // Fetches new modlog events when the user has scrolled past 70% list
-      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<ModlogBloc>().state.status != ModlogStatus.fetching) {
+      if (_scrollController.position.pixels >
+              _scrollController.position.maxScrollExtent * 0.7 &&
+          context.read<ModlogBloc>().state.status != ModlogStatus.fetching) {
         context.read<ModlogBloc>().add(const ModlogFeedFetchedEvent());
       }
     });
@@ -132,7 +138,8 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
 
     return Scaffold(
       body: SafeArea(
-        top: thunderState.hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+        top: thunderState
+            .hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
         child: BlocConsumer<ModlogBloc, ModlogState>(
           listenWhen: (previous, current) {
             if (current.status == ModlogStatus.initial) {
@@ -144,17 +151,24 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
           listener: (context, state) {
             // Continue to fetch more modlog events as long as the device view is not scrollable.
             // This is to avoid cases where more modlog events cannot be fetched because the conditions are not met
-            if (state.status == ModlogStatus.success && state.hasReachedEnd == false) {
+            if (state.status == ModlogStatus.success &&
+                state.hasReachedEnd == false) {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 // Wait until the layout is complete before performing check
-                bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
-                if (!isScrollable) context.read<ModlogBloc>().add(const ModlogFeedFetchedEvent());
+                bool isScrollable = _scrollController.position.maxScrollExtent >
+                    _scrollController.position.viewportDimension;
+                if (!isScrollable)
+                  context
+                      .read<ModlogBloc>()
+                      .add(const ModlogFeedFetchedEvent());
               });
             }
 
-            if ((state.status == ModlogStatus.failure) && state.message != null) {
+            if ((state.status == ModlogStatus.failure) &&
+                state.message != null) {
               showSnackbar(state.message!);
-              context.read<ModlogBloc>().add(ModlogFeedClearMessageEvent()); // Clear the message so that it does not spam
+              context.read<ModlogBloc>().add(
+                  ModlogFeedClearMessageEvent()); // Clear the message so that it does not spam
             }
           },
           builder: (context, state) {
@@ -163,18 +177,24 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
             return RefreshIndicator(
               onRefresh: () async {
                 HapticFeedback.mediumImpact();
-                context
-                    .read<ModlogBloc>()
-                    .add(ModlogFeedFetchedEvent(modlogActionType: state.modlogActionType, communityId: state.communityId, userId: state.userId, moderatorId: state.moderatorId, reset: true));
+                context.read<ModlogBloc>().add(ModlogFeedFetchedEvent(
+                    modlogActionType: state.modlogActionType,
+                    communityId: state.communityId,
+                    userId: state.userId,
+                    moderatorId: state.moderatorId,
+                    reset: true));
               },
-              edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
+              edgeOffset:
+                  95.0, // This offset is placed to allow the correct positioning of the refresh indicator
               child: Stack(
                 children: [
                   CustomScrollView(
                     controller: _scrollController,
                     slivers: <Widget>[
                       ModlogFeedPageAppBar(
-                        showAppBarTitle: state.status != ModlogStatus.initial ? true : showAppBarTitle,
+                        showAppBarTitle: state.status != ModlogStatus.initial
+                            ? true
+                            : showAppBarTitle,
                         lemmyClient: widget.lemmyClient,
                       ),
                       // Display loading indicator until the feed is fetched
@@ -187,7 +207,10 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                       // Widget representing the list of modlog events on the feed
                       SliverList.builder(
                         itemBuilder: (context, index) {
-                          TextStyle? metaTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75));
+                          TextStyle? metaTextStyle = theme.textTheme.bodyMedium
+                              ?.copyWith(
+                                  color: theme.textTheme.bodyMedium?.color
+                                      ?.withOpacity(0.75));
                           ModlogEventItem event = state.modlogEventItems[index];
 
                           return Column(
@@ -202,37 +225,62 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                 ),
                               ),
                               Container(
-                                padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                                padding: const EdgeInsets.only(
+                                    bottom: 8.0, top: 8.0),
                                 child: Wrap(
                                   spacing: 8.0,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
                                       child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: event.getModlogEventColor().withOpacity(0.2),
-                                              borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+                                              color: event
+                                                  .getModlogEventColor()
+                                                  .withOpacity(0.2),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.elliptical(5, 5)),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 4.0),
                                               child: Row(
                                                 children: [
                                                   Padding(
-                                                    padding: const EdgeInsets.only(right: 4.0),
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 4.0),
                                                     child: Icon(
-                                                      event.getModlogEventIcon(),
-                                                      size: 16.0 * thunderState.metadataFontSizeScale.textScaleFactor,
-                                                      color: theme.colorScheme.onBackground,
+                                                      event
+                                                          .getModlogEventIcon(),
+                                                      size: 16.0 *
+                                                          thunderState
+                                                              .metadataFontSizeScale
+                                                              .textScaleFactor,
+                                                      color: theme.colorScheme
+                                                          .onBackground,
                                                     ),
                                                   ),
                                                   ScalableText(
-                                                    event.getModlogEventTypeName(),
-                                                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                                                    fontScale: thunderState.titleFontSizeScale,
+                                                    event
+                                                        .getModlogEventTypeName(),
+                                                    style: theme
+                                                        .textTheme.bodyMedium
+                                                        ?.copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                    fontScale: thunderState
+                                                        .titleFontSizeScale,
                                                   ),
                                                 ],
                                               ),
@@ -243,35 +291,54 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                             children: [
                                               ScalableText(
                                                 getModeratorName(event),
-                                                fontScale: thunderState.metadataFontSizeScale,
+                                                fontScale: thunderState
+                                                    .metadataFontSizeScale,
                                                 style: metaTextStyle,
                                               ),
                                               const Text('·'),
-                                              DateTimePostCardMetaData(dateTime: event.dateTime),
+                                              DateTimePostCardMetaData(
+                                                  dateTime: event.dateTime),
                                             ],
                                           ),
                                         ],
                                       ),
                                     ),
                                     const SizedBox(height: 8.0),
-                                    ModlogItemContextCard(type: event.type, post: event.post, comment: event.comment, community: event.community, user: event.user),
+                                    ModlogItemContextCard(
+                                        type: event.type,
+                                        post: event.post,
+                                        comment: event.comment,
+                                        community: event.community,
+                                        user: event.user),
                                     if (event.reason != null)
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                            Divider(
+                                                thickness: 1.0,
+                                                color: theme.dividerColor
+                                                    .withOpacity(0.3)),
                                             Padding(
-                                              padding: const EdgeInsets.only(bottom: 6.0),
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 6.0),
                                               child: ScalableText(
-                                                l10n.detailedReason('${event.reason}'),
+                                                l10n.detailedReason(
+                                                    '${event.reason}'),
                                                 maxLines: 4,
                                                 overflow: TextOverflow.ellipsis,
-                                                fontScale: thunderState.contentFontSizeScale,
-                                                style: theme.textTheme.bodyMedium?.copyWith(
-                                                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.90),
+                                                fontScale: thunderState
+                                                    .contentFontSizeScale,
+                                                style: theme
+                                                    .textTheme.bodyMedium
+                                                    ?.copyWith(
+                                                  color: theme.textTheme
+                                                      .bodyMedium?.color
+                                                      ?.withOpacity(0.90),
                                                 ),
                                               ),
                                             ),
@@ -292,9 +359,12 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                         child: state.hasReachedEnd
                             ? const FeedReachedEnd()
                             : Container(
-                                height: state.status == ModlogStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                height: state.status == ModlogStatus.initial
+                                    ? MediaQuery.of(context).size.height * 0.5
+                                    : null, // Might have to adjust this to be more robust
                                 alignment: Alignment.center,
-                                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16.0),
                                 child: const CircularProgressIndicator(),
                               ),
                       ),

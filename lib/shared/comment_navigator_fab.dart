@@ -100,7 +100,8 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                       onTap: navigateDown,
                       child: Icon(
                         Icons.keyboard_arrow_down_rounded,
-                        semanticLabel: AppLocalizations.of(context)!.navigateDown,
+                        semanticLabel:
+                            AppLocalizations.of(context)!.navigateDown,
                       ),
                     ),
                   ),
@@ -114,10 +115,12 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
   }
 
   void navigateUp() {
-    var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
+    var unobstructedVisibleRange =
+        widget.listController.unobstructedVisibleRange;
 
     int nextIndex = currentIndex - 1;
-    if (unobstructedVisibleRange?.$1 != null && unobstructedVisibleRange!.$1 != currentIndex) {
+    if (unobstructedVisibleRange?.$1 != null &&
+        unobstructedVisibleRange!.$1 != currentIndex) {
       nextIndex = unobstructedVisibleRange.$1;
     } else if (currentIndex != 0) {
       nextIndex = unobstructedVisibleRange!.$1 - 1;
@@ -137,10 +140,12 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
   }
 
   void navigateDown() {
-    var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
+    var unobstructedVisibleRange =
+        widget.listController.unobstructedVisibleRange;
 
     int nextIndex = currentIndex + 1;
-    if (unobstructedVisibleRange?.$1 != null) nextIndex = unobstructedVisibleRange!.$1 + 1;
+    if (unobstructedVisibleRange?.$1 != null)
+      nextIndex = unobstructedVisibleRange!.$1 + 1;
 
     widget.listController.animateToItem(
       index: nextIndex,

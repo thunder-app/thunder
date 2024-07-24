@@ -39,7 +39,9 @@ class _ReportFeedPageState extends State<ReportFeedPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ReportBloc>(
-      create: (_) => ReportBloc(lemmyClient: LemmyClient.instance)..add(const ReportFeedFetchedEvent(reportFeedType: ReportFeedType.post, reset: true)),
+      create: (_) => ReportBloc(lemmyClient: LemmyClient.instance)
+        ..add(const ReportFeedFetchedEvent(
+            reportFeedType: ReportFeedType.post, reset: true)),
       child: const ReportFeedView(),
     );
   }
@@ -64,7 +66,10 @@ class _ReportFeedViewState extends State<ReportFeedView> {
 
   /// List of tabs for the report page
   /// TODO: Add support for private messages
-  List<String> reportOptionTypes = [AppLocalizations.of(GlobalContext.context)!.posts, AppLocalizations.of(GlobalContext.context)!.comments];
+  List<String> reportOptionTypes = [
+    AppLocalizations.of(GlobalContext.context)!.posts,
+    AppLocalizations.of(GlobalContext.context)!.comments
+  ];
 
   @override
   void initState() {
@@ -73,9 +78,14 @@ class _ReportFeedViewState extends State<ReportFeedView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       globalKey.currentState?.innerController.addListener(() {
         // Fetches new post/comment reports when the user has scrolled past 70% list
-        if (globalKey.currentState!.innerController.position.pixels > globalKey.currentState!.innerController.position.maxScrollExtent * 0.7 &&
+        if (globalKey.currentState!.innerController.position.pixels >
+                globalKey.currentState!.innerController.position
+                        .maxScrollExtent *
+                    0.7 &&
             context.read<ReportBloc>().state.status != ReportStatus.fetching) {
-          context.read<ReportBloc>().add(ReportFeedFetchedEvent(reportFeedType: reportFeedType));
+          context
+              .read<ReportBloc>()
+              .add(ReportFeedFetchedEvent(reportFeedType: reportFeedType));
         }
       });
     });
@@ -95,16 +105,24 @@ class _ReportFeedViewState extends State<ReportFeedView> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
               SliverOverlapAbsorber(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
                   pinned: true,
                   centerTitle: false,
                   forceElevated: innerBoxIsScrolled,
-                  title: Text(l10n.report(2), style: theme.textTheme.titleLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  title: Text(l10n.report(2),
+                      style: theme.textTheme.titleLarge,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
                   leading: IconButton(
                     icon: (!kIsWeb && Platform.isIOS
-                        ? Icon(Icons.arrow_back_ios_new_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip)
-                        : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip)),
+                        ? Icon(Icons.arrow_back_ios_new_rounded,
+                            semanticLabel: MaterialLocalizations.of(context)
+                                .backButtonTooltip)
+                        : Icon(Icons.arrow_back_rounded,
+                            semanticLabel: MaterialLocalizations.of(context)
+                                .backButtonTooltip)),
                     onPressed: () {
                       HapticFeedback.mediumImpact();
                       Navigator.of(context).maybePop();
@@ -123,10 +141,12 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           reset: true,
                         ));
                       },
-                      icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
+                      icon: Icon(Icons.refresh_rounded,
+                          semanticLabel: l10n.refresh),
                     ),
                     IconButton(
-                      icon: Icon(Icons.filter_alt_rounded, semanticLabel: l10n.filters),
+                      icon: Icon(Icons.filter_alt_rounded,
+                          semanticLabel: l10n.filters),
                       onPressed: () {
                         HapticFeedback.mediumImpact();
 
@@ -134,13 +154,20 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           showDragHandle: true,
                           context: context,
                           builder: (builderContext) => ReportFilterBottomSheet(
-                            status: showResolved ? ReportResolveStatus.all : ReportResolveStatus.unresolved,
-                            onSubmit: (ReportResolveStatus status, CommunityView? communityView) async => {
+                            status: showResolved
+                                ? ReportResolveStatus.all
+                                : ReportResolveStatus.unresolved,
+                            onSubmit: (ReportResolveStatus status,
+                                    CommunityView? communityView) async =>
+                                {
                               HapticFeedback.mediumImpact(),
                               Navigator.of(context).maybePop(),
-                              setState(() => showResolved = status != ReportResolveStatus.unresolved),
-                              BlocProvider.of<ReportBloc>(context).add(ReportFeedChangeFilterTypeEvent(
-                                showResolved: status != ReportResolveStatus.unresolved,
+                              setState(() => showResolved =
+                                  status != ReportResolveStatus.unresolved),
+                              BlocProvider.of<ReportBloc>(context)
+                                  .add(ReportFeedChangeFilterTypeEvent(
+                                showResolved:
+                                    status != ReportResolveStatus.unresolved,
                                 communityId: communityView?.community.id,
                               ))
                             },
@@ -151,7 +178,9 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                     const SizedBox(width: 10),
                   ],
                   bottom: TabBar(
-                    tabs: reportOptionTypes.map((String title) => Tab(text: title)).toList(),
+                    tabs: reportOptionTypes
+                        .map((String title) => Tab(text: title))
+                        .toList(),
                     onTap: (index) {
                       HapticFeedback.mediumImpact();
                       setState(() {
@@ -169,13 +198,16 @@ class _ReportFeedViewState extends State<ReportFeedView> {
           },
           body: BlocConsumer<ReportBloc, ReportState>(
             listenWhen: (previous, current) {
-              if (current.status == ReportStatus.initial) globalKey.currentState?.innerController.jumpTo(0);
+              if (current.status == ReportStatus.initial)
+                globalKey.currentState?.innerController.jumpTo(0);
               return true;
             },
             listener: (context, state) {
-              if ((state.status == ReportStatus.failure) && state.message != null) {
+              if ((state.status == ReportStatus.failure) &&
+                  state.message != null) {
                 showSnackbar(state.message!);
-                context.read<ReportBloc>().add(ReportFeedClearMessageEvent()); // Clear the message so that it does not spam
+                context.read<ReportBloc>().add(
+                    ReportFeedClearMessageEvent()); // Clear the message so that it does not spam
               }
             },
             builder: (BuildContext context, ReportState state) => TabBarView(
@@ -189,7 +221,9 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                       return CustomScrollView(
                         key: PageStorageKey<String>(title),
                         slivers: <Widget>[
-                          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+                          SliverOverlapInjector(
+                              handle: NestedScrollView
+                                  .sliverOverlapAbsorberHandleFor(context)),
                           // Display loading indicator until the feed is fetched
                           if (state.status == ReportStatus.initial)
                             const SliverFillRemaining(
@@ -205,9 +239,12 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   post: state.postReports[index].post,
                                   creator: state.postReports[index].creator,
                                   community: state.postReports[index].community,
-                                  creatorBannedFromCommunity: state.postReports[index].creatorBannedFromCommunity,
+                                  creatorBannedFromCommunity: state
+                                      .postReports[index]
+                                      .creatorBannedFromCommunity,
                                   counts: state.postReports[index].counts,
-                                  subscribed: SubscribedType.notSubscribed, // Not available
+                                  subscribed: SubscribedType
+                                      .notSubscribed, // Not available
                                   saved: false, // Not available
                                   read: false, // Not available
                                   creatorBlocked: false, // Not available
@@ -220,12 +257,21 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                       spacing: 8.0,
                                       children: [
                                         InkWell(
-                                          onTap: () => navigateToPost(context, postId: state.postReports[index].post.id),
+                                          onTap: () => navigateToPost(context,
+                                              postId: state
+                                                  .postReports[index].post.id),
                                           child: Padding(
-                                            padding: const EdgeInsets.only(top: 8.0),
+                                            padding:
+                                                const EdgeInsets.only(top: 8.0),
                                             child: PostCardViewCompact(
                                               showMedia: false,
-                                              postViewMedia: PostViewMedia(postView: postView, media: [Media(mediaType: MediaType.text)]),
+                                              postViewMedia: PostViewMedia(
+                                                  postView: postView,
+                                                  media: [
+                                                    Media(
+                                                        mediaType:
+                                                            MediaType.text)
+                                                  ]),
                                               feedType: FeedType.general,
                                               isUserLoggedIn: false,
                                               listingType: ListingType.all,
@@ -233,37 +279,74 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0,
+                                              right: 8.0,
+                                              bottom: 8.0),
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                              Divider(
+                                                  thickness: 1.0,
+                                                  color: theme.dividerColor
+                                                      .withOpacity(0.3)),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   ScalableText(
-                                                    l10n.detailedReason(state.postReports[index].postReport.reason),
+                                                    l10n.detailedReason(state
+                                                        .postReports[index]
+                                                        .postReport
+                                                        .reason),
                                                     maxLines: 4,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    fontScale: thunderState.contentFontSizeScale,
-                                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                                      color: theme.colorScheme.error,
-                                                      fontWeight: FontWeight.w600,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontScale: thunderState
+                                                        .contentFontSizeScale,
+                                                    style: theme
+                                                        .textTheme.bodyMedium
+                                                        ?.copyWith(
+                                                      color: theme
+                                                          .colorScheme.error,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
                                                   IconButton(
-                                                    visualDensity: VisualDensity.compact,
+                                                    visualDensity:
+                                                        VisualDensity.compact,
                                                     onPressed: () {
-                                                      HapticFeedback.mediumImpact();
-                                                      context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
-                                                            reportAction: ReportAction.resolvePost,
-                                                            postReportView: state.postReports[index],
-                                                            value: !state.postReports[index].postReport.resolved,
+                                                      HapticFeedback
+                                                          .mediumImpact();
+                                                      context
+                                                          .read<ReportBloc>()
+                                                          .add(
+                                                              ReportFeedItemActionedEvent(
+                                                            reportAction:
+                                                                ReportAction
+                                                                    .resolvePost,
+                                                            postReportView:
+                                                                state.postReports[
+                                                                    index],
+                                                            value: !state
+                                                                .postReports[
+                                                                    index]
+                                                                .postReport
+                                                                .resolved,
                                                           ));
                                                     },
-                                                    icon: Icon(state.postReports[index].postReport.resolved ? Icons.undo_rounded : Icons.check_rounded),
+                                                    icon: Icon(state
+                                                            .postReports[index]
+                                                            .postReport
+                                                            .resolved
+                                                        ? Icons.undo_rounded
+                                                        : Icons.check_rounded),
                                                   ),
                                                 ],
                                               ),
@@ -294,10 +377,14 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   comment: state.commentReports[index].comment,
                                   creator: state.commentReports[index].creator,
                                   post: state.commentReports[index].post,
-                                  community: state.commentReports[index].community,
+                                  community:
+                                      state.commentReports[index].community,
                                   counts: state.commentReports[index].counts,
-                                  creatorBannedFromCommunity: state.commentReports[index].creatorBannedFromCommunity,
-                                  subscribed: SubscribedType.notSubscribed, // Not available
+                                  creatorBannedFromCommunity: state
+                                      .commentReports[index]
+                                      .creatorBannedFromCommunity,
+                                  subscribed: SubscribedType
+                                      .notSubscribed, // Not available
                                   saved: false, // Not available
                                   creatorBlocked: false, // Not available
                                 );
@@ -309,42 +396,87 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                       children: [
                                         CommentReference(
                                           comment: commentView,
-                                          isOwnComment: commentView.creator.id == context.read<AccountBloc>().state.personView?.person.id,
+                                          isOwnComment:
+                                              commentView.creator.id ==
+                                                  context
+                                                      .read<AccountBloc>()
+                                                      .state
+                                                      .personView
+                                                      ?.person
+                                                      .id,
                                           disableActions: true,
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0,
+                                              right: 8.0,
+                                              bottom: 8.0),
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                              Divider(
+                                                  thickness: 1.0,
+                                                  color: theme.dividerColor
+                                                      .withOpacity(0.3)),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   ScalableText(
-                                                    l10n.detailedReason(state.commentReports[index].commentReport.reason),
+                                                    l10n.detailedReason(state
+                                                        .commentReports[index]
+                                                        .commentReport
+                                                        .reason),
                                                     maxLines: 4,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    fontScale: thunderState.contentFontSizeScale,
-                                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                                      color: theme.colorScheme.error,
-                                                      fontWeight: FontWeight.w600,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontScale: thunderState
+                                                        .contentFontSizeScale,
+                                                    style: theme
+                                                        .textTheme.bodyMedium
+                                                        ?.copyWith(
+                                                      color: theme
+                                                          .colorScheme.error,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
                                                   IconButton(
-                                                    visualDensity: VisualDensity.compact,
+                                                    visualDensity:
+                                                        VisualDensity.compact,
                                                     onPressed: () {
-                                                      HapticFeedback.mediumImpact();
+                                                      HapticFeedback
+                                                          .mediumImpact();
 
-                                                      context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
-                                                            reportAction: ReportAction.resolveComment,
-                                                            commentReportView: state.commentReports[index],
-                                                            value: !state.commentReports[index].commentReport.resolved,
+                                                      context
+                                                          .read<ReportBloc>()
+                                                          .add(
+                                                              ReportFeedItemActionedEvent(
+                                                            reportAction:
+                                                                ReportAction
+                                                                    .resolveComment,
+                                                            commentReportView:
+                                                                state.commentReports[
+                                                                    index],
+                                                            value: !state
+                                                                .commentReports[
+                                                                    index]
+                                                                .commentReport
+                                                                .resolved,
                                                           ));
                                                     },
-                                                    icon: Icon(state.commentReports[index].commentReport.resolved ? Icons.undo_rounded : Icons.check_rounded),
+                                                    icon: Icon(state
+                                                            .commentReports[
+                                                                index]
+                                                            .commentReport
+                                                            .resolved
+                                                        ? Icons.undo_rounded
+                                                        : Icons.check_rounded),
                                                   ),
                                                 ],
                                               ),
@@ -370,12 +502,19 @@ class _ReportFeedViewState extends State<ReportFeedView> {
 
                           // Widget representing the bottom of the feed (reached end or loading more events indicators)
                           SliverToBoxAdapter(
-                            child: (reportFeedType == ReportFeedType.post && state.hasReachedPostReportsEnd) || (reportFeedType == ReportFeedType.comment && state.hasReachedCommentReportsEnd)
+                            child: (reportFeedType == ReportFeedType.post &&
+                                        state.hasReachedPostReportsEnd) ||
+                                    (reportFeedType == ReportFeedType.comment &&
+                                        state.hasReachedCommentReportsEnd)
                                 ? const FeedReachedEnd()
                                 : Container(
-                                    height: state.status == ReportStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                    height: state.status == ReportStatus.initial
+                                        ? MediaQuery.of(context).size.height *
+                                            0.5
+                                        : null, // Might have to adjust this to be more robust
                                     alignment: Alignment.center,
-                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16.0),
                                     child: const CircularProgressIndicator(),
                                   ),
                           ),

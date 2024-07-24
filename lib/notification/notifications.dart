@@ -21,11 +21,15 @@ import 'package:thunder/notification/utils/unified_push.dart';
 /// The main function which triggers push notification logic. This handles delegating push notification logic to the correct service.
 ///
 /// The [controller] is passed in so that we can react to push notifications.
-Future<void> initPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
+Future<void> initPushNotificationLogic(
+    {required StreamController<NotificationResponse> controller}) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-  NotificationType notificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
+  NotificationType notificationType = NotificationType.values.byName(
+      prefs.getString(LocalSettings.inboxNotificationType.name) ??
+          NotificationType.none.name);
 
-  debugPrint("Initializing push notifications for type: ${notificationType.name}");
+  debugPrint(
+      "Initializing push notifications for type: ${notificationType.name}");
 
   switch (notificationType) {
     case NotificationType.local:
@@ -42,28 +46,42 @@ Future<void> initPushNotificationLogic({required StreamController<NotificationRe
   }
 
   // Initialize the Flutter Local Notifications plugin for both UnifiedPush and Local notifications
-  if (notificationType == NotificationType.local || notificationType == NotificationType.unifiedPush) {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  if (notificationType == NotificationType.local ||
+      notificationType == NotificationType.unifiedPush) {
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
 
     // Initialize the Android-specific settings, using the splash asset as the notification icon.
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('icon');
-    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('icon');
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (notificationResponse) => controller.add(notificationResponse),
+      onDidReceiveNotificationResponse: (notificationResponse) =>
+          controller.add(notificationResponse),
     );
 
     // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
-    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await FlutterLocalNotificationsPlugin().getNotificationAppLaunchDetails();
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails =
+        await FlutterLocalNotificationsPlugin()
+            .getNotificationAppLaunchDetails();
 
-    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true && notificationAppLaunchDetails?.notificationResponse != null) {
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp == true &&
+        notificationAppLaunchDetails?.notificationResponse != null) {
       controller.add(notificationAppLaunchDetails!.notificationResponse!);
     }
 
-    bool startupDueToGroupNotification =
-        notificationAppLaunchDetails?.notificationResponse?.payload?.isNotEmpty == true && NotificationPayload.fromJson(jsonDecode(notificationAppLaunchDetails!.notificationResponse!.payload!)).group;
+    bool startupDueToGroupNotification = notificationAppLaunchDetails
+                ?.notificationResponse?.payload?.isNotEmpty ==
+            true &&
+        NotificationPayload.fromJson(jsonDecode(
+                notificationAppLaunchDetails!.notificationResponse!.payload!))
+            .group;
     // Do a notifications check on startup, if the user isn't clicking on a group notification
-    if (!startupDueToGroupNotification && notificationType == NotificationType.local) pollRepliesAndShowNotifications();
+    if (!startupDueToGroupNotification &&
+        notificationType == NotificationType.local)
+      pollRepliesAndShowNotifications();
   }
 }

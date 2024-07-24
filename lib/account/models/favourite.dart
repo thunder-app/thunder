@@ -26,7 +26,9 @@ class Favorite {
     assert(favourite.id.isEmpty);
 
     try {
-      int id = await database.into(database.favorites).insert(FavoritesCompanion.insert(
+      int id = await database
+          .into(database.favorites)
+          .insert(FavoritesCompanion.insert(
             accountId: int.parse(favourite.accountId),
             communityId: favourite.communityId,
           ));
@@ -40,7 +42,12 @@ class Favorite {
   // A method that retrieves all favourites from the database
   static Future<List<Favorite>> favorites(String accountId) async {
     try {
-      return (await database.favorites.all().get()).map((favorite) => Favorite(id: favorite.id.toString(), accountId: favorite.accountId.toString(), communityId: favorite.communityId)).toList();
+      return (await database.favorites.all().get())
+          .map((favorite) => Favorite(
+              id: favorite.id.toString(),
+              accountId: favorite.accountId.toString(),
+              communityId: favorite.communityId))
+          .toList();
     } catch (e) {
       debugPrint(e.toString());
       return [];
@@ -49,9 +56,15 @@ class Favorite {
 
   static Future<Favorite?> fetchFavourite(String id) async {
     try {
-      return await (database.select(database.favorites)..where((t) => t.id.equals(int.parse(id)))).getSingleOrNull().then((favorite) {
+      return await (database.select(database.favorites)
+            ..where((t) => t.id.equals(int.parse(id))))
+          .getSingleOrNull()
+          .then((favorite) {
         if (favorite == null) return null;
-        return Favorite(id: favorite.id.toString(), accountId: favorite.accountId.toString(), communityId: favorite.communityId);
+        return Favorite(
+            id: favorite.id.toString(),
+            accountId: favorite.accountId.toString(),
+            communityId: favorite.communityId);
       });
     } catch (e) {
       debugPrint(e.toString());
@@ -74,12 +87,16 @@ class Favorite {
   static Future<void> deleteFavorite({String? id, int? communityId}) async {
     try {
       if (id != null) {
-        await (database.delete(database.favorites)..where((t) => t.id.equals(int.parse(id)))).go();
+        await (database.delete(database.favorites)
+              ..where((t) => t.id.equals(int.parse(id))))
+            .go();
         return;
       }
 
       if (communityId != null) {
-        await (database.delete(database.favorites)..where((t) => t.communityId.equals(communityId))).go();
+        await (database.delete(database.favorites)
+              ..where((t) => t.communityId.equals(communityId)))
+            .go();
         return;
       }
     } catch (e) {

@@ -51,21 +51,30 @@ class ModlogItemContextCard extends StatelessWidget {
       case ModlogActionType.modRemovePost:
       case ModlogActionType.modFeaturePost:
       case ModlogActionType.adminPurgePost:
-        return post != null ? ModlogPostItemContextCard(post: post!, community: community) : Container();
+        return post != null
+            ? ModlogPostItemContextCard(post: post!, community: community)
+            : Container();
       case ModlogActionType.modRemoveComment:
       case ModlogActionType.adminPurgeComment:
-        return comment != null ? ModlogCommentItemContextCard(comment: comment!, user: user, post: post, community: community) : Container();
+        return comment != null
+            ? ModlogCommentItemContextCard(
+                comment: comment!, user: user, post: post, community: community)
+            : Container();
       case ModlogActionType.modHideCommunity:
       case ModlogActionType.adminPurgeCommunity:
       case ModlogActionType.modRemoveCommunity:
       case ModlogActionType.modTransferCommunity:
-        return community != null ? ModlogCommunityItemContextCard(community: community) : Container();
+        return community != null
+            ? ModlogCommunityItemContextCard(community: community)
+            : Container();
       case ModlogActionType.modAdd:
       case ModlogActionType.modBan:
       case ModlogActionType.adminPurgePerson:
       case ModlogActionType.modAddCommunity:
       case ModlogActionType.modBanFromCommunity:
-        return user != null ? ModlogUserItemContextCard(user: user) : Container();
+        return user != null
+            ? ModlogUserItemContextCard(user: user)
+            : Container();
       default:
         return Container();
     }
@@ -103,7 +112,8 @@ class ModlogPostItemContextCard extends StatelessWidget {
         }
       },
       child: Container(
-        padding: const EdgeInsets.only(bottom: 8.0, top: 6, left: 8.0, right: 8.0),
+        padding:
+            const EdgeInsets.only(bottom: 8.0, top: 6, left: 8.0, right: 8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -113,14 +123,17 @@ class ModlogPostItemContextCard extends StatelessWidget {
                 children: [
                   ScalableText(
                     HtmlUnescape().convert(post.name),
-                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
                     fontScale: state.titleFontSizeScale,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 6.0, top: 6.0),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(6),
-                      onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: community?.id),
+                      onTap: () => navigateToFeedPage(context,
+                          feedType: FeedType.community,
+                          communityId: community?.id),
                       child: CommunityFullNameWidget(
                         context,
                         community?.name,
@@ -167,10 +180,12 @@ class ModlogCommentItemContextCard extends StatefulWidget {
   final Community? community;
 
   @override
-  State<ModlogCommentItemContextCard> createState() => _ModlogCommentItemContextCardState();
+  State<ModlogCommentItemContextCard> createState() =>
+      _ModlogCommentItemContextCardState();
 }
 
-class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextCard> {
+class _ModlogCommentItemContextCardState
+    extends State<ModlogCommentItemContextCard> {
   /// Whether to show the sensitive content
   bool showSensitiveContent = false;
 
@@ -180,7 +195,8 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
     final l10n = AppLocalizations.of(context)!;
     final state = context.watch<ThunderBloc>().state;
 
-    Color? textStyleCommunityAndAuthor(Color? color) => color?.withOpacity(0.75);
+    Color? textStyleCommunityAndAuthor(Color? color) =>
+        color?.withOpacity(0.75);
 
     return InkWell(
       onTap: () {
@@ -188,13 +204,17 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
           if (widget.post == null) {
             return showSnackbar(l10n.unableToFindPost);
           }
-          navigateToPost(context, postId: widget.post!.id, selectedCommentId: widget.comment.id, selectedCommentPath: widget.comment.path);
+          navigateToPost(context,
+              postId: widget.post!.id,
+              selectedCommentId: widget.comment.id,
+              selectedCommentPath: widget.comment.path);
         } catch (e) {
           showSnackbar(l10n.unableToFindPost);
         }
       },
       child: Container(
-        padding: const EdgeInsets.only(bottom: 8.0, top: 6, left: 8.0, right: 8.0),
+        padding:
+            const EdgeInsets.only(bottom: 8.0, top: 6, left: 8.0, right: 8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -210,7 +230,8 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             padding: const EdgeInsets.only(right: 4.0),
                             child: Icon(
                               Icons.article_rounded,
-                              size: MediaQuery.textScalerOf(context).scale(18 * state.titleFontSizeScale.textScaleFactor),
+                              size: MediaQuery.textScalerOf(context).scale(18 *
+                                  state.titleFontSizeScale.textScaleFactor),
                             ),
                           ),
                         ),
@@ -220,26 +241,35 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                       ],
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
+                        fontSize: MediaQuery.textScalerOf(context).scale(
+                            theme.textTheme.bodyMedium!.fontSize! *
+                                state.titleFontSizeScale.textScaleFactor),
                       ),
                     ),
                     textScaler: TextScaler.noScaling,
                   ),
-                  Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                  Divider(
+                      thickness: 1.0,
+                      color: theme.dividerColor.withOpacity(0.3)),
                   AnimatedSize(
                     duration: const Duration(milliseconds: 100),
                     child: showSensitiveContent
-                        ? CommonMarkdownBody(body: widget.comment.content, isComment: true)
+                        ? CommonMarkdownBody(
+                            body: widget.comment.content, isComment: true)
                         : InkWell(
-                            borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.elliptical(5, 5)),
                             onTap: () => setState(() {
                               showSensitiveContent = !showSensitiveContent;
                             }),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
                               child: ScalableText(
                                 l10n.sensitiveContentWarning,
-                                style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.secondary),
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: theme.colorScheme.secondary),
                                 fontScale: state.metadataFontSizeScale,
                               ),
                             ),
@@ -257,11 +287,15 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                           children: [
                             InkWell(
                               borderRadius: BorderRadius.circular(6),
-                              onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user?.id),
+                              onTap: () => navigateToFeedPage(context,
+                                  feedType: FeedType.user,
+                                  userId: widget.user?.id),
                               child: ScalableText(
                                 '${widget.user?.displayName ?? widget.user?.name}',
                                 fontScale: state.metadataFontSizeScale,
-                                style: theme.textTheme.bodyMedium?.copyWith(color: textStyleCommunityAndAuthor(theme.textTheme.bodyMedium?.color)),
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: textStyleCommunityAndAuthor(
+                                        theme.textTheme.bodyMedium?.color)),
                               ),
                             ),
                             ScalableText(
@@ -269,14 +303,17 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                               fontScale: state.metadataFontSizeScale,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
-                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                                color: theme.textTheme.bodyMedium?.color
+                                    ?.withOpacity(0.4),
                               ),
                             ),
                           ],
                         ),
                         InkWell(
                           borderRadius: BorderRadius.circular(6),
-                          onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community?.id),
+                          onTap: () => navigateToFeedPage(context,
+                              feedType: FeedType.community,
+                              communityId: widget.community?.id),
                           child: CommunityFullNameWidget(
                             context,
                             widget.community?.name,
@@ -315,13 +352,15 @@ class ModlogUserItemContextCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (user != null) {
-          navigateToFeedPage(context, feedType: FeedType.user, userId: user!.id);
+          navigateToFeedPage(context,
+              feedType: FeedType.user, userId: user!.id);
         } else {
           showSnackbar(l10n.unableToFindUser);
         }
       },
       child: Container(
-        padding: const EdgeInsets.only(bottom: 8.0, top: 8.0, left: 8.0, right: 8.0),
+        padding:
+            const EdgeInsets.only(bottom: 8.0, top: 8.0, left: 8.0, right: 8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -334,8 +373,10 @@ class ModlogUserItemContextCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ScalableText(
-                      HtmlUnescape().convert(user?.displayName ?? user?.name ?? l10n.user),
-                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                      HtmlUnescape().convert(
+                          user?.displayName ?? user?.name ?? l10n.user),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
                     UserFullNameWidget(
@@ -372,13 +413,15 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (community != null && !community!.removed) {
-          navigateToFeedPage(context, feedType: FeedType.community, communityId: community!.id);
+          navigateToFeedPage(context,
+              feedType: FeedType.community, communityId: community!.id);
         } else {
           showSnackbar(l10n.unableToFindCommunity);
         }
       },
       child: Container(
-        padding: const EdgeInsets.only(bottom: 8.0, top: 8.0, left: 8.0, right: 8.0),
+        padding:
+            const EdgeInsets.only(bottom: 8.0, top: 8.0, left: 8.0, right: 8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -391,8 +434,11 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ScalableText(
-                      HtmlUnescape().convert(community?.title ?? community?.name ?? l10n.community),
-                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                      HtmlUnescape().convert(community?.title ??
+                          community?.name ??
+                          l10n.community),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
                     CommunityFullNameWidget(

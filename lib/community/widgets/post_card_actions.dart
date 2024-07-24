@@ -31,7 +31,8 @@ class PostCardActions extends StatelessWidget {
         final bool showVoteActions = state.showVoteActions;
         final bool showSaveAction = state.showSaveAction;
 
-        final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
+        final bool downvotesEnabled =
+            context.read<AuthBloc>().state.downvotesEnabled;
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -43,7 +44,9 @@ class PostCardActions extends StatelessWidget {
                     Icons.arrow_upward,
                     semanticLabel: voteType == 1 ? 'Upvoted' : 'Upvote',
                   ),
-                  color: voteType == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : null,
+                  color: voteType == 1
+                      ? context.read<ThunderBloc>().state.upvoteColor.color
+                      : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
@@ -55,7 +58,9 @@ class PostCardActions extends StatelessWidget {
                   Icons.arrow_downward,
                   semanticLabel: voteType == -1 ? 'Downvoted' : 'Downvote',
                 ),
-                color: voteType == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : null,
+                color: voteType == -1
+                    ? context.read<ThunderBloc>().state.downvoteColor.color
+                    : null,
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
@@ -68,7 +73,9 @@ class PostCardActions extends StatelessWidget {
                   saved ? Icons.star_rounded : Icons.star_border_rounded,
                   semanticLabel: saved ? 'Saved' : 'Save',
                 ),
-                color: saved ? context.read<ThunderBloc>().state.saveColor.color : null,
+                color: saved
+                    ? context.read<ThunderBloc>().state.saveColor.color
+                    : null,
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();

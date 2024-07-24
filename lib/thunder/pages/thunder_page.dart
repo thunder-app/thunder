@@ -101,7 +101,8 @@ class _ThunderState extends State<Thunder> {
 
     // Listen for callbacks from Android native code
     if (!kIsWeb && Platform.isAndroid) {
-      const MethodChannel('com.hjiangsu.thunder/method_channel').setMethodCallHandler((MethodCall call) {
+      const MethodChannel('com.hjiangsu.thunder/method_channel')
+          .setMethodCallHandler((MethodCall call) {
         if (call.method == 'set_intent') {
           currentIntent = call.arguments;
         }
@@ -133,29 +134,39 @@ class _ThunderState extends State<Thunder> {
   void handleSharedFilesAndText() async {
     try {
       // For sharing files from outside the app while the app is closed
-      List<SharedFile> sharedFiles = await FlutterSharingIntent.instance.getInitialSharing();
-      if (sharedFiles.isNotEmpty && currentIntent != ANDROID_INTENT_ACTION_VIEW) handleSharedItems(sharedFiles.first);
+      List<SharedFile> sharedFiles =
+          await FlutterSharingIntent.instance.getInitialSharing();
+      if (sharedFiles.isNotEmpty && currentIntent != ANDROID_INTENT_ACTION_VIEW)
+        handleSharedItems(sharedFiles.first);
 
       // For sharing files while the app is in the memory
-      mediaIntentDataStreamSubscription = FlutterSharingIntent.instance.getMediaStream().listen((List<SharedFile> sharedFiles) {
-        if (!context.mounted || sharedFiles.isEmpty || currentIntent == ANDROID_INTENT_ACTION_VIEW) return;
+      mediaIntentDataStreamSubscription = FlutterSharingIntent.instance
+          .getMediaStream()
+          .listen((List<SharedFile> sharedFiles) {
+        if (!context.mounted ||
+            sharedFiles.isEmpty ||
+            currentIntent == ANDROID_INTENT_ACTION_VIEW) return;
         handleSharedItems(sharedFiles.first);
       });
     } catch (e) {
-      if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
+      if (context.mounted)
+        showSnackbar(AppLocalizations.of(context)!.unexpectedError);
     }
   }
 
   void handleSharedItems(SharedFile sharedFile) {
     switch (sharedFile.type) {
       case SharedMediaType.IMAGE:
-        navigateToCreatePostPage(context, image: File(sharedFile.value!), prePopulated: true);
+        navigateToCreatePostPage(context,
+            image: File(sharedFile.value!), prePopulated: true);
         break;
       case SharedMediaType.URL:
-        navigateToCreatePostPage(context, url: sharedFile.value!, prePopulated: true);
+        navigateToCreatePostPage(context,
+            url: sharedFile.value!, prePopulated: true);
         break;
       case SharedMediaType.TEXT:
-        navigateToCreatePostPage(context, text: sharedFile.value, prePopulated: true);
+        navigateToCreatePostPage(context,
+            text: sharedFile.value, prePopulated: true);
         break;
       default:
         break;
@@ -170,8 +181,10 @@ class _ThunderState extends State<Thunder> {
     );
   }
 
-  FutureOr<bool> _handleBackButtonPress(bool stopDefaultButtonEvent, RouteInfo info) async {
-    final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
+  FutureOr<bool> _handleBackButtonPress(
+      bool stopDefaultButtonEvent, RouteInfo info) async {
+    final bool topOfNavigationStack =
+        ModalRoute.of(context)?.isCurrent ?? false;
 
     if (!topOfNavigationStack) return false;
     if (stopDefaultButtonEvent) return false;
@@ -212,14 +225,19 @@ class _ThunderState extends State<Thunder> {
     String? link,
   }) async {
     // Start by retrieving the active account, if any, and setting the Lemmy base domain
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    SharedPreferences prefs =
+        (await UserPreferences.instance).sharedPreferences;
     String? activeProfileId = prefs.getString('active_profile_id');
     List<Account> accounts = await Account.accounts();
-    Account? activeAccount = accounts.firstWhereOrNull((Account account) => account.id == activeProfileId);
+    Account? activeAccount = accounts
+        .firstWhereOrNull((Account account) => account.id == activeProfileId);
 
-    if (activeAccount?.username != null && activeAccount?.jwt != null && activeAccount?.instance != null) {
+    if (activeAccount?.username != null &&
+        activeAccount?.jwt != null &&
+        activeAccount?.instance != null) {
       // Set lemmy client to use the instance
-      LemmyClient.instance.changeBaseUrl(activeAccount!.instance!.replaceAll('https://', ''));
+      LemmyClient.instance
+          .changeBaseUrl(activeAccount!.instance!.replaceAll('https://', ''));
     }
 
     // If the incoming link is a custom URL, replace it back with https://
@@ -242,7 +260,8 @@ class _ThunderState extends State<Thunder> {
         if (context.mounted) await _navigateToInternal(link);
       case LinkType.unknown:
         if (context.mounted) {
-          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link);
+          _showLinkProcessingError(
+              context, AppLocalizations.of(context)!.uriNotSupported, link);
         }
     }
   }
@@ -251,14 +270,16 @@ class _ThunderState extends State<Thunder> {
     try {
       await navigateToInstancePage(
         context,
-        instanceHost: link.replaceAll(RegExp(r'https?:\/\/'), '').replaceAll('/', ''),
+        instanceHost:
+            link.replaceAll(RegExp(r'https?:\/\/'), '').replaceAll('/', ''),
         // We have no context here to determine what the id of this instance would be on our server.
         // It just means we can't block through this flow, which is ok.
         instanceId: null,
       );
     } catch (e) {
       if (context.mounted) {
-        _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+        _showLinkProcessingError(context,
+            AppLocalizations.of(context)!.exceptionProcessingUri, link);
       }
     }
   }
@@ -275,7 +296,9 @@ class _ThunderState extends State<Thunder> {
           auth: account?.jwt,
         ));
         if (context.mounted) {
-          navigateToPost(context, postViewMedia: (await parsePostViews([fullPostView.postView])).first);
+          navigateToPost(context,
+              postViewMedia:
+                  (await parsePostViews([fullPostView.postView])).first);
           return;
         }
       } catch (e) {
@@ -286,7 +309,8 @@ class _ThunderState extends State<Thunder> {
     // postId not found or could not resolve link.
     // show a snackbar with option to open link
     if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      _showLinkProcessingError(
+          context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
     }
   }
 
@@ -294,7 +318,8 @@ class _ThunderState extends State<Thunder> {
     final String? communityName = await getLemmyCommunity(link);
     if (context.mounted && communityName != null) {
       try {
-        await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
+        await navigateToFeedPage(context,
+            feedType: FeedType.community, communityName: communityName);
         return;
       } catch (e) {
         // Ignore exception, if it's not a valid community, we'll perform the next fallback
@@ -304,7 +329,8 @@ class _ThunderState extends State<Thunder> {
     // community not found or could not resolve link.
     // show a snackbar with option to open link
     if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      _showLinkProcessingError(
+          context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
     }
   }
 
@@ -317,7 +343,8 @@ class _ThunderState extends State<Thunder> {
         await navigateToModlogPage(
           context,
           feedBloc: feedBloc,
-          modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
+          modlogActionType: ModlogActionType.fromJson(
+              uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
           communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
           userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
           moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),
@@ -329,7 +356,8 @@ class _ThunderState extends State<Thunder> {
 
     // Show an error for any issues processing the link
     if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      _showLinkProcessingError(
+          context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
     }
   }
 
@@ -356,7 +384,8 @@ class _ThunderState extends State<Thunder> {
     // commentId not found or could not resolve link.
     // show a snackbar with option to open link
     if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      _showLinkProcessingError(
+          context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
     }
   }
 
@@ -364,7 +393,8 @@ class _ThunderState extends State<Thunder> {
     final String? username = await getLemmyUser(link);
     if (context.mounted && username != null) {
       try {
-        await navigateToFeedPage(context, feedType: FeedType.user, username: username);
+        await navigateToFeedPage(context,
+            feedType: FeedType.user, username: username);
         return;
       } catch (e) {
         // Ignore exception, if it's not a valid comment, we'll perform the next fallback
@@ -372,7 +402,8 @@ class _ThunderState extends State<Thunder> {
     }
 
     if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      _showLinkProcessingError(
+          context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
     }
   }
 
@@ -380,11 +411,15 @@ class _ThunderState extends State<Thunder> {
     link = link.replaceFirst('https://', '');
     if (link.startsWith('setting-')) {
       String setting = link.replaceFirst('setting-', '');
-      navigateToSetting(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
+      navigateToSetting(
+          context,
+          LocalSettings.values
+              .firstWhere((localSetting) => localSetting.name == setting));
     }
   }
 
-  void _showLinkProcessingError(BuildContext context, String error, String link) {
+  void _showLinkProcessingError(
+      BuildContext context, String error, String link) {
     showSnackbar(
       error,
       trailingIcon: Icons.open_in_browser_rounded,
@@ -401,14 +436,16 @@ class _ThunderState extends State<Thunder> {
       providers: [
         BlocProvider(create: (context) => InboxBloc()),
         BlocProvider(create: (context) => SearchBloc()),
-        BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
+        BlocProvider(
+            create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
       ],
       child: MultiBlocListener(
         listeners: [
           BlocListener<NotificationsCubit, NotificationsState>(
             listener: (context, state) {
               if (state.status == NotificationsStatus.reply) {
-                navigateToNotificationReplyPage(context, replyId: state.replyId, accountId: state.accountId);
+                navigateToNotificationReplyPage(context,
+                    replyId: state.replyId, accountId: state.accountId);
               }
             },
           ),
@@ -424,9 +461,13 @@ class _ThunderState extends State<Thunder> {
 
                 case DeepLinkStatus.success:
                   try {
-                    _handleDeepLinkNavigation(context, linkType: state.linkType, link: state.link);
+                    _handleDeepLinkNavigation(context,
+                        linkType: state.linkType, link: state.link);
                   } catch (e) {
-                    _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, state.link!);
+                    _showLinkProcessingError(
+                        context,
+                        AppLocalizations.of(context)!.uriNotSupported,
+                        state.link!);
                   }
 
                 case DeepLinkStatus.unknown:
@@ -467,10 +508,13 @@ class _ThunderState extends State<Thunder> {
                           opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
                           duration: const Duration(milliseconds: 150),
                           curve: Curves.easeIn,
-                          child: IgnorePointer(ignoring: selectedPageIndex != 0, child: const FeedFAB()),
+                          child: IgnorePointer(
+                              ignoring: selectedPageIndex != 0,
+                              child: const FeedFAB()),
                         )
                       : null,
-                  floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+                  floatingActionButtonAnimator:
+                      FloatingActionButtonAnimator.scaling,
                   bottomNavigationBar: CustomBottomNavigationBar(
                     selectedPageIndex: selectedPageIndex,
                     onPageChange: (int index) {
@@ -482,29 +526,51 @@ class _ThunderState extends State<Thunder> {
                   ),
                   body: BlocConsumer<AuthBloc, AuthState>(
                     listenWhen: (AuthState previous, AuthState current) {
-                      if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
+                      if (previous.isLoggedIn != current.isLoggedIn ||
+                          previous.status == AuthStatus.initial) return true;
                       return false;
                     },
-                    buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
+                    buildWhen: (previous, current) =>
+                        current.status != AuthStatus.failure &&
+                        current.status != AuthStatus.loading,
                     listener: (context, state) {
                       // Although the buildWhen delegate exlcudes this state,
                       // there seems to be a timing issue where we can end up here anyway.
                       // So just return.
                       if (state.status == AuthStatus.loading) return;
 
-                      context.read<AccountBloc>().add(RefreshAccountInformation(reload: state.reload));
+                      context
+                          .read<AccountBloc>()
+                          .add(RefreshAccountInformation(reload: state.reload));
 
                       // If we have not been requested to reload, don't!
                       if (!state.reload) return;
 
                       // Add a bit of artificial delay to allow preferences to set the proper active profile
-                      Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
-                      if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
+                      Future.delayed(
+                          const Duration(milliseconds: 500),
+                          () => context
+                              .read<InboxBloc>()
+                              .add(const GetInboxEvent(reset: true)));
+                      if (context.read<FeedBloc>().state.status !=
+                          FeedStatus.initial) {
                         context.read<FeedBloc>().add(
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
-                                postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
-                                sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
+                                postListingType: state
+                                        .getSiteResponse
+                                        ?.myUser
+                                        ?.localUserView
+                                        .localUser
+                                        .defaultListingType ??
+                                    thunderBlocState.defaultListingType,
+                                sortType: state
+                                        .getSiteResponse
+                                        ?.myUser
+                                        ?.localUserView
+                                        .localUser
+                                        .defaultSortType ??
+                                    thunderBlocState.sortTypeForInstance,
                                 reset: true,
                                 showHidden: thunderBlocState.showHiddenPosts,
                               ),
@@ -524,16 +590,20 @@ class _ThunderState extends State<Thunder> {
                         case AuthStatus.contentWarning:
                         case AuthStatus.success:
                           Version? version = thunderBlocState.version;
-                          bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
+                          bool showInAppUpdateNotification =
+                              thunderBlocState.showInAppUpdateNotification;
 
-                          if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
+                          if (version?.hasUpdate == true &&
+                              hasShownUpdateDialog == false &&
+                              showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               showUpdateNotification(context, version);
                               setState(() => hasShownUpdateDialog = true);
                             });
                           }
 
-                          WidgetsBinding.instance.addPostFrameCallback((_) async {
+                          WidgetsBinding.instance
+                              .addPostFrameCallback((_) async {
                             if (hasShownChangelogDialog) return;
 
                             // Only ever come in here once per run
@@ -543,15 +613,22 @@ class _ThunderState extends State<Thunder> {
                             // If the last known version is not null (meaning we've run before)
                             // and the current version is different (meaning we've updated)
                             // show the changelog (if we are configured to do so).
-                            SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                            String? lastKnownVersion = prefs.getString('current_version');
-                            String currentVersion = getCurrentVersion(removeInternalBuildNumber: true, trimV: true);
+                            SharedPreferences prefs =
+                                (await UserPreferences.instance)
+                                    .sharedPreferences;
+                            String? lastKnownVersion =
+                                prefs.getString('current_version');
+                            String currentVersion = getCurrentVersion(
+                                removeInternalBuildNumber: true, trimV: true);
 
                             // Immediately update the current version for next time.
                             prefs.setString('current_version', currentVersion);
 
-                            if (lastKnownVersion != null && lastKnownVersion != currentVersion && thunderBlocState.showUpdateChangelogs) {
-                              final String changelog = await fetchCurrentVersionChangelog();
+                            if (lastKnownVersion != null &&
+                                lastKnownVersion != currentVersion &&
+                                thunderBlocState.showUpdateChangelogs) {
+                              final String changelog =
+                                  await fetchCurrentVersionChangelog();
 
                               if (context.mounted) {
                                 showModalBottomSheet(
@@ -565,34 +642,55 @@ class _ThunderState extends State<Thunder> {
                                       builder: (context, setState) {
                                         return AnimatedSize(
                                           alignment: Alignment.bottomCenter,
-                                          duration: const Duration(milliseconds: 100),
+                                          duration:
+                                              const Duration(milliseconds: 100),
                                           child: FractionallySizedBox(
-                                            heightFactor: isChangelogExpanded ? 0.9 : 0.6,
+                                            heightFactor:
+                                                isChangelogExpanded ? 0.9 : 0.6,
                                             child: Container(
-                                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom,
+                                                  left: 26.0,
+                                                  right: 16.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Align(
-                                                    alignment: Alignment.centerLeft,
+                                                    alignment:
+                                                        Alignment.centerLeft,
                                                     child: Text(
-                                                      l10n.thunderHasBeenUpdated(currentVersion),
-                                                      style: theme.textTheme.titleLarge,
+                                                      l10n.thunderHasBeenUpdated(
+                                                          currentVersion),
+                                                      style: theme
+                                                          .textTheme.titleLarge,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 24.0),
                                                   Expanded(
-                                                    child: FadingEdgeScrollView.fromSingleChildScrollView(
-                                                      gradientFractionOnStart: 0.1,
-                                                      gradientFractionOnEnd: 0.1,
-                                                      child: SingleChildScrollView(
-                                                        controller: _changelogScrollController,
+                                                    child: FadingEdgeScrollView
+                                                        .fromSingleChildScrollView(
+                                                      gradientFractionOnStart:
+                                                          0.1,
+                                                      gradientFractionOnEnd:
+                                                          0.1,
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        controller:
+                                                            _changelogScrollController,
                                                         child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          mainAxisSize: MainAxisSize.max,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
                                                           children: [
-                                                            CommonMarkdownBody(body: changelog),
+                                                            CommonMarkdownBody(
+                                                                body:
+                                                                    changelog),
                                                           ],
                                                         ),
                                                       ),
@@ -600,18 +698,29 @@ class _ThunderState extends State<Thunder> {
                                                   ),
                                                   const SizedBox(height: 16.0),
                                                   Row(
-                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
                                                     children: [
                                                       TextButton(
                                                         onPressed: () {
-                                                          Navigator.of(context).pop();
-                                                          prefs.setBool(LocalSettings.showUpdateChangelogs.name, false);
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          prefs.setBool(
+                                                              LocalSettings
+                                                                  .showUpdateChangelogs
+                                                                  .name,
+                                                              false);
                                                         },
-                                                        child: Text(l10n.doNotShowAgain),
+                                                        child: Text(l10n
+                                                            .doNotShowAgain),
                                                       ),
-                                                      const SizedBox(width: 6.0),
+                                                      const SizedBox(
+                                                          width: 6.0),
                                                       FilledButton(
-                                                        onPressed: () => Navigator.of(context).pop(),
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(),
                                                         child: Text(l10n.close),
                                                       ),
                                                     ],
@@ -632,14 +741,27 @@ class _ThunderState extends State<Thunder> {
 
                           return PageView(
                             controller: widget.pageController,
-                            onPageChanged: (index) => setState(() => selectedPageIndex = index),
+                            onPageChanged: (index) =>
+                                setState(() => selectedPageIndex = index),
                             physics: const NeverScrollableScrollPhysics(),
                             children: <Widget>[
                               FeedPage(
                                 useGlobalFeedBloc: true,
                                 feedType: FeedType.general,
-                                postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
-                                sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
+                                postListingType: state
+                                        .getSiteResponse
+                                        ?.myUser
+                                        ?.localUserView
+                                        .localUser
+                                        .defaultListingType ??
+                                    thunderBlocState.defaultListingType,
+                                sortType: state
+                                        .getSiteResponse
+                                        ?.myUser
+                                        ?.localUserView
+                                        .localUser
+                                        .defaultSortType ??
+                                    thunderBlocState.sortTypeForInstance,
                                 scaffoldStateKey: scaffoldStateKey,
                                 showHidden: thunderBlocState.showHiddenPosts,
                               ),
@@ -655,12 +777,17 @@ class _ThunderState extends State<Thunder> {
                         case AuthStatus.loading:
                           return Container();
                         case AuthStatus.failureCheckingInstance:
-                          showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+                          showSnackbar(state.errorMessage ??
+                              AppLocalizations.of(context)!
+                                  .missingErrorMessage);
                           errorMessageLoading = false;
                           return StatefulBuilder(
                             builder: (context, setState) => ErrorMessage(
-                              title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
-                              message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+                              title: AppLocalizations.of(context)!
+                                  .unableToLoadInstance(
+                                      LemmyClient.instance.lemmyApiV3.host),
+                              message: AppLocalizations.of(context)!
+                                  .internetOrInstanceIssues,
                               actions: [
                                 (
                                   text: AppLocalizations.of(context)!.retry,
@@ -671,7 +798,8 @@ class _ThunderState extends State<Thunder> {
                                   loading: errorMessageLoading,
                                 ),
                                 (
-                                  text: AppLocalizations.of(context)!.accountSettings,
+                                  text: AppLocalizations.of(context)!
+                                      .accountSettings,
                                   action: () => showProfileModalSheet(context),
                                   loading: false,
                                 ),
@@ -712,7 +840,8 @@ class _ThunderState extends State<Thunder> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              AppLocalizations.of(context)!.updateReleased(version?.latestVersion ?? ''),
+              AppLocalizations.of(context)!
+                  .updateReleased(version?.latestVersion ?? ''),
               style: theme.textTheme.titleMedium,
             ),
             Icon(
@@ -722,7 +851,9 @@ class _ThunderState extends State<Thunder> {
           ],
         ),
         onTap: () {
-          handleLink(context, url: version?.latestVersionUrl ?? 'https://github.com/thunder-app/thunder/releases');
+          handleLink(context,
+              url: version?.latestVersionUrl ??
+                  'https://github.com/thunder-app/thunder/releases');
         },
       ),
       background: theme.cardColor,

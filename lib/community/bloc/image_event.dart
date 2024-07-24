@@ -13,5 +13,9 @@ class ImageUploadEvent extends ImageEvent {
   final String jwt;
   final bool postImage;
 
-  const ImageUploadEvent({required this.imageFile, required this.instance, required this.jwt, this.postImage = false});
+  const ImageUploadEvent(
+      {required this.imageFile,
+      required this.instance,
+      required this.jwt,
+      this.postImage = false});
 }

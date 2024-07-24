@@ -77,56 +77,105 @@ final class Schema2 extends i0.VersionedSchema {
 
 class Shape0 extends i0.VersionedTable {
   Shape0({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get username => columnsByName['username']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get jwt => columnsByName['jwt']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get instance => columnsByName['instance']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<bool> get anonymous => columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
-  i1.GeneratedColumn<int> get userId => columnsByName['user_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get username =>
+      columnsByName['username']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get jwt =>
+      columnsByName['jwt']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get instance =>
+      columnsByName['instance']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get anonymous =>
+      columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<int> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<int>;
 }
 
 i1.GeneratedColumn<int> _column_0(String aliasedName) =>
-    i1.GeneratedColumn<int>('id', aliasedName, false, hasAutoIncrement: true, type: i1.DriftSqlType.int, defaultConstraints: i1.GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-i1.GeneratedColumn<String> _column_1(String aliasedName) => i1.GeneratedColumn<String>('username', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_2(String aliasedName) => i1.GeneratedColumn<String>('jwt', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_3(String aliasedName) => i1.GeneratedColumn<String>('instance', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<bool> _column_4(String aliasedName) => i1.GeneratedColumn<bool>('anonymous', aliasedName, false,
-    type: i1.DriftSqlType.bool, defaultConstraints: i1.GeneratedColumn.constraintIsAlways('CHECK ("anonymous" IN (0, 1))'), defaultValue: const Constant(false));
-i1.GeneratedColumn<int> _column_5(String aliasedName) => i1.GeneratedColumn<int>('user_id', aliasedName, true, type: i1.DriftSqlType.int);
+    i1.GeneratedColumn<int>('id', aliasedName, false,
+        hasAutoIncrement: true,
+        type: i1.DriftSqlType.int,
+        defaultConstraints:
+            i1.GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+i1.GeneratedColumn<String> _column_1(String aliasedName) =>
+    i1.GeneratedColumn<String>('username', aliasedName, true,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_2(String aliasedName) =>
+    i1.GeneratedColumn<String>('jwt', aliasedName, true,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_3(String aliasedName) =>
+    i1.GeneratedColumn<String>('instance', aliasedName, true,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<bool> _column_4(String aliasedName) =>
+    i1.GeneratedColumn<bool>('anonymous', aliasedName, false,
+        type: i1.DriftSqlType.bool,
+        defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+            'CHECK ("anonymous" IN (0, 1))'),
+        defaultValue: const Constant(false));
+i1.GeneratedColumn<int> _column_5(String aliasedName) =>
+    i1.GeneratedColumn<int>('user_id', aliasedName, true,
+        type: i1.DriftSqlType.int);
 
 class Shape1 extends i0.VersionedTable {
   Shape1({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get accountId => columnsByName['account_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get communityId => columnsByName['community_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get accountId =>
+      columnsByName['account_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get communityId =>
+      columnsByName['community_id']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_6(String aliasedName) => i1.GeneratedColumn<int>('account_id', aliasedName, false, type: i1.DriftSqlType.int);
-i1.GeneratedColumn<int> _column_7(String aliasedName) => i1.GeneratedColumn<int>('community_id', aliasedName, false, type: i1.DriftSqlType.int);
+i1.GeneratedColumn<int> _column_6(String aliasedName) =>
+    i1.GeneratedColumn<int>('account_id', aliasedName, false,
+        type: i1.DriftSqlType.int);
+i1.GeneratedColumn<int> _column_7(String aliasedName) =>
+    i1.GeneratedColumn<int>('community_id', aliasedName, false,
+        type: i1.DriftSqlType.int);
 
 class Shape2 extends i0.VersionedTable {
   Shape2({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get name => columnsByName['name']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get title => columnsByName['title']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get actorId => columnsByName['actor_id']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get icon => columnsByName['icon']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get actorId =>
+      columnsByName['actor_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get icon =>
+      columnsByName['icon']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_8(String aliasedName) => i1.GeneratedColumn<String>('name', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_9(String aliasedName) => i1.GeneratedColumn<String>('title', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_10(String aliasedName) => i1.GeneratedColumn<String>('actor_id', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_11(String aliasedName) => i1.GeneratedColumn<String>('icon', aliasedName, true, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_8(String aliasedName) =>
+    i1.GeneratedColumn<String>('name', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_9(String aliasedName) =>
+    i1.GeneratedColumn<String>('title', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_10(String aliasedName) =>
+    i1.GeneratedColumn<String>('actor_id', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_11(String aliasedName) =>
+    i1.GeneratedColumn<String>('icon', aliasedName, true,
+        type: i1.DriftSqlType.string);
 
 class Shape3 extends i0.VersionedTable {
   Shape3({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get username => columnsByName['username']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get label => columnsByName['label']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get username =>
+      columnsByName['username']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get label =>
+      columnsByName['label']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_12(String aliasedName) => i1.GeneratedColumn<String>('username', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_13(String aliasedName) => i1.GeneratedColumn<String>('label', aliasedName, false, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_12(String aliasedName) =>
+    i1.GeneratedColumn<String>('username', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_13(String aliasedName) =>
+    i1.GeneratedColumn<String>('label', aliasedName, false,
+        type: i1.DriftSqlType.string);
 
 final class Schema3 extends i0.VersionedSchema {
   Schema3({required super.database}) : super(version: 3);
@@ -221,21 +270,40 @@ final class Schema3 extends i0.VersionedSchema {
 
 class Shape4 extends i0.VersionedTable {
   Shape4({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get draftType => columnsByName['draft_type']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<int> get existingId => columnsByName['existing_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get replyId => columnsByName['reply_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get title => columnsByName['title']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get url => columnsByName['url']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get body => columnsByName['body']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get draftType =>
+      columnsByName['draft_type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get existingId =>
+      columnsByName['existing_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get replyId =>
+      columnsByName['reply_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get url =>
+      columnsByName['url']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get body =>
+      columnsByName['body']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_14(String aliasedName) => i1.GeneratedColumn<String>('draft_type', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_15(String aliasedName) => i1.GeneratedColumn<int>('existing_id', aliasedName, true, type: i1.DriftSqlType.int);
-i1.GeneratedColumn<int> _column_16(String aliasedName) => i1.GeneratedColumn<int>('reply_id', aliasedName, true, type: i1.DriftSqlType.int);
-i1.GeneratedColumn<String> _column_17(String aliasedName) => i1.GeneratedColumn<String>('title', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_18(String aliasedName) => i1.GeneratedColumn<String>('url', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_19(String aliasedName) => i1.GeneratedColumn<String>('body', aliasedName, true, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_14(String aliasedName) =>
+    i1.GeneratedColumn<String>('draft_type', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<int> _column_15(String aliasedName) =>
+    i1.GeneratedColumn<int>('existing_id', aliasedName, true,
+        type: i1.DriftSqlType.int);
+i1.GeneratedColumn<int> _column_16(String aliasedName) =>
+    i1.GeneratedColumn<int>('reply_id', aliasedName, true,
+        type: i1.DriftSqlType.int);
+i1.GeneratedColumn<String> _column_17(String aliasedName) =>
+    i1.GeneratedColumn<String>('title', aliasedName, true,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_18(String aliasedName) =>
+    i1.GeneratedColumn<String>('url', aliasedName, true,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_19(String aliasedName) =>
+    i1.GeneratedColumn<String>('body', aliasedName, true,
+        type: i1.DriftSqlType.string);
 
 final class Schema4 extends i0.VersionedSchema {
   Schema4({required super.database}) : super(version: 4);
@@ -331,17 +399,27 @@ final class Schema4 extends i0.VersionedSchema {
 
 class Shape5 extends i0.VersionedTable {
   Shape5({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get draftType => columnsByName['draft_type']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<int> get existingId => columnsByName['existing_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get replyId => columnsByName['reply_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get title => columnsByName['title']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get url => columnsByName['url']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get customThumbnail => columnsByName['custom_thumbnail']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get body => columnsByName['body']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get draftType =>
+      columnsByName['draft_type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get existingId =>
+      columnsByName['existing_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get replyId =>
+      columnsByName['reply_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get url =>
+      columnsByName['url']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get customThumbnail =>
+      columnsByName['custom_thumbnail']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get body =>
+      columnsByName['body']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_20(String aliasedName) => i1.GeneratedColumn<String>('custom_thumbnail', aliasedName, true, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_20(String aliasedName) =>
+    i1.GeneratedColumn<String>('custom_thumbnail', aliasedName, true,
+        type: i1.DriftSqlType.string);
 
 final class Schema5 extends i0.VersionedSchema {
   Schema5({required super.database}) : super(version: 5);
@@ -438,16 +516,25 @@ final class Schema5 extends i0.VersionedSchema {
 
 class Shape6 extends i0.VersionedTable {
   Shape6({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get username => columnsByName['username']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get jwt => columnsByName['jwt']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get instance => columnsByName['instance']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<bool> get anonymous => columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
-  i1.GeneratedColumn<int> get userId => columnsByName['user_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get listIndex => columnsByName['list_index']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get username =>
+      columnsByName['username']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get jwt =>
+      columnsByName['jwt']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get instance =>
+      columnsByName['instance']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get anonymous =>
+      columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<int> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get listIndex =>
+      columnsByName['list_index']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_21(String aliasedName) => i1.GeneratedColumn<int>('list_index', aliasedName, false, type: i1.DriftSqlType.int, defaultValue: const Constant(-1));
+i1.GeneratedColumn<int> _column_21(String aliasedName) =>
+    i1.GeneratedColumn<int>('list_index', aliasedName, false,
+        type: i1.DriftSqlType.int, defaultValue: const Constant(-1));
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,

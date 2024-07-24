@@ -15,28 +15,36 @@ void main() {
   });
 
   group('Test user group logic', () {
-    testWidgets('fetchUsernameDescriptor returns empty string if user is in no groups', (tester) async {
+    testWidgets(
+        'fetchUsernameDescriptor returns empty string if user is in no groups',
+        (tester) async {
       await tester.pumpWidget(const BaseWidget());
 
       String result = fetchUserGroupDescriptor([], null);
       expect(result, '');
     });
 
-    testWidgets('fetchUsernameDescriptor returns correct string for a single group', (tester) async {
+    testWidgets(
+        'fetchUsernameDescriptor returns correct string for a single group',
+        (tester) async {
       await tester.pumpWidget(const BaseWidget());
 
       String result = fetchUserGroupDescriptor([UserType.admin], null);
       expect(result, ' (Admin)');
     });
 
-    testWidgets('fetchUsernameDescriptor returns correct string for multiple groups', (tester) async {
+    testWidgets(
+        'fetchUsernameDescriptor returns correct string for multiple groups',
+        (tester) async {
       await tester.pumpWidget(const BaseWidget());
 
-      String result = fetchUserGroupDescriptor([UserType.admin, UserType.moderator], null);
+      String result =
+          fetchUserGroupDescriptor([UserType.admin, UserType.moderator], null);
       expect(result, ' (Admin, Moderator)');
     });
 
-    testWidgets('fetchUsernameColor returns no color if user is in no groups', (tester) async {
+    testWidgets('fetchUsernameColor returns no color if user is in no groups',
+        (tester) async {
       await tester.pumpWidget(BaseWidget(
         child: BlocProvider(
           create: (context) => ThemeBloc(),
@@ -50,7 +58,9 @@ void main() {
       ));
     });
 
-    testWidgets('fetchUsernameColor returns correct color if user is in a single group', (tester) async {
+    testWidgets(
+        'fetchUsernameColor returns correct color if user is in a single group',
+        (tester) async {
       await tester.pumpWidget(BaseWidget(
         child: BlocProvider(
           create: (context) => ThemeBloc(),
@@ -59,7 +69,9 @@ void main() {
 
             Color? color = fetchUserGroupColor(context, [UserType.moderator]);
             Color? expectedColor = HSLColor.fromColor(
-              Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.35), UserType.moderator.color),
+              Color.alphaBlend(
+                  theme.colorScheme.primaryContainer.withOpacity(0.35),
+                  UserType.moderator.color),
             ).withLightness(0.85).toColor();
 
             expect(color, expectedColor);
@@ -69,7 +81,9 @@ void main() {
       ));
     });
 
-    testWidgets('fetchUsernameColor returns correct color if user is in multiple groups', (tester) async {
+    testWidgets(
+        'fetchUsernameColor returns correct color if user is in multiple groups',
+        (tester) async {
       await tester.pumpWidget(BaseWidget(
         child: BlocProvider(
           create: (context) => ThemeBloc(),
@@ -77,9 +91,12 @@ void main() {
             final theme = Theme.of(context);
 
             // The order of precedence is op -> self -> admin -> moderator -> bot
-            Color? color = fetchUserGroupColor(context, [UserType.moderator, UserType.admin, UserType.self]);
+            Color? color = fetchUserGroupColor(
+                context, [UserType.moderator, UserType.admin, UserType.self]);
             Color? expectedColor = HSLColor.fromColor(
-              Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.35), UserType.self.color),
+              Color.alphaBlend(
+                  theme.colorScheme.primaryContainer.withOpacity(0.35),
+                  UserType.self.color),
             ).withLightness(0.85).toColor();
 
             expect(color, expectedColor);

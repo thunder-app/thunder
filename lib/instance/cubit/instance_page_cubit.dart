@@ -15,7 +15,8 @@ class InstancePageCubit extends Cubit<InstancePageState> {
 
   final String instance;
 
-  InstancePageCubit({required this.instance, required String resolutionInstance})
+  InstancePageCubit(
+      {required this.instance, required String resolutionInstance})
       : super(InstancePageState(
           status: InstancePageStatus.success,
           resolutionInstance: resolutionInstance,
@@ -39,12 +40,20 @@ class InstancePageCubit extends Cubit<InstancePageState> {
       ));
 
       emit(state.copyWith(
-        status: searchResponse.communities.isEmpty || searchResponse.communities.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
-        communities: [...(state.communities ?? []), ...searchResponse.communities],
+        status: searchResponse.communities.isEmpty ||
+                searchResponse.communities.length < _pageLimit
+            ? InstancePageStatus.done
+            : InstancePageStatus.success,
+        communities: [
+          ...(state.communities ?? []),
+          ...searchResponse.communities
+        ],
         page: page ?? 1,
       ));
     } catch (e) {
-      emit(state.copyWith(status: InstancePageStatus.failure, errorMessage: getExceptionErrorMessage(e)));
+      emit(state.copyWith(
+          status: InstancePageStatus.failure,
+          errorMessage: getExceptionErrorMessage(e)));
     }
   }
 
@@ -66,12 +75,17 @@ class InstancePageCubit extends Cubit<InstancePageState> {
       ));
 
       emit(state.copyWith(
-        status: searchResponse.users.isEmpty || searchResponse.users.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
+        status: searchResponse.users.isEmpty ||
+                searchResponse.users.length < _pageLimit
+            ? InstancePageStatus.done
+            : InstancePageStatus.success,
         users: [...(state.users ?? []), ...searchResponse.users],
         page: page ?? 1,
       ));
     } catch (e) {
-      emit(state.copyWith(status: InstancePageStatus.failure, errorMessage: getExceptionErrorMessage(e)));
+      emit(state.copyWith(
+          status: InstancePageStatus.failure,
+          errorMessage: getExceptionErrorMessage(e)));
     }
   }
 
@@ -93,12 +107,21 @@ class InstancePageCubit extends Cubit<InstancePageState> {
       ));
 
       emit(state.copyWith(
-        status: searchResponse.posts.isEmpty || searchResponse.posts.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
-        posts: [...(state.posts ?? []), ...(await parsePostViews(searchResponse.posts, resolutionInstance: state.resolutionInstance))],
+        status: searchResponse.posts.isEmpty ||
+                searchResponse.posts.length < _pageLimit
+            ? InstancePageStatus.done
+            : InstancePageStatus.success,
+        posts: [
+          ...(state.posts ?? []),
+          ...(await parsePostViews(searchResponse.posts,
+              resolutionInstance: state.resolutionInstance))
+        ],
         page: page ?? 1,
       ));
     } catch (e) {
-      emit(state.copyWith(status: InstancePageStatus.failure, errorMessage: getExceptionErrorMessage(e)));
+      emit(state.copyWith(
+          status: InstancePageStatus.failure,
+          errorMessage: getExceptionErrorMessage(e)));
     }
   }
 
@@ -119,12 +142,18 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         type: SearchType.comments,
       ));
 
-      List<CommentView> comments = [...(state.comments ?? []), ...searchResponse.comments];
+      List<CommentView> comments = [
+        ...(state.comments ?? []),
+        ...searchResponse.comments
+      ];
       List<CommentView> commentsFinal = [];
-      final LemmyApiV3 resolutionLemmy = (LemmyClient()..changeBaseUrl(state.resolutionInstance)).lemmyApiV3;
+      final LemmyApiV3 resolutionLemmy =
+          (LemmyClient()..changeBaseUrl(state.resolutionInstance)).lemmyApiV3;
       for (final CommentView commentView in comments) {
         try {
-          final ResolveObjectResponse resolveObjectResponse = await resolutionLemmy.run(ResolveObject(q: commentView.comment.apId));
+          final ResolveObjectResponse resolveObjectResponse =
+              await resolutionLemmy
+                  .run(ResolveObject(q: commentView.comment.apId));
           commentsFinal.add(resolveObjectResponse.comment!);
         } catch (e) {
           // If we can't resolve it, we won't even add it
@@ -132,12 +161,17 @@ class InstancePageCubit extends Cubit<InstancePageState> {
       }
 
       emit(state.copyWith(
-        status: searchResponse.comments.isEmpty || searchResponse.comments.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
+        status: searchResponse.comments.isEmpty ||
+                searchResponse.comments.length < _pageLimit
+            ? InstancePageStatus.done
+            : InstancePageStatus.success,
         comments: commentsFinal,
         page: page ?? 1,
       ));
     } catch (e) {
-      emit(state.copyWith(status: InstancePageStatus.failure, errorMessage: getExceptionErrorMessage(e)));
+      emit(state.copyWith(
+          status: InstancePageStatus.failure,
+          errorMessage: getExceptionErrorMessage(e)));
     }
   }
 }

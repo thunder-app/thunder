@@ -49,7 +49,8 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
       return CustomScrollView(
         key: PageStorageKey<String>(l10n.mention(10)),
         slivers: [
-          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+          SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
           if (state.status == InboxStatus.loading)
             const SliverFillRemaining(
               hasScrollBody: false,
@@ -70,9 +71,14 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
                 children: [
                   CommentReference(
                     comment: personMentionView.toCommentView(),
-                    isOwnComment: personMentionView.creator.id == context.read<AuthBloc>().state.account?.userId,
+                    isOwnComment: personMentionView.creator.id ==
+                        context.read<AuthBloc>().state.account?.userId,
                     child: IconButton(
-                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: personMention.id, value: !personMention.read)),
+                      onPressed: () => context.read<InboxBloc>().add(
+                          InboxItemActionEvent(
+                              action: CommentAction.read,
+                              personMentionId: personMention.id,
+                              value: !personMention.read)),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,
@@ -81,12 +87,14 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
                       visualDensity: VisualDensity.compact,
                     ),
                   ),
-                  if (index != widget.mentions.length - 1) const ThunderDivider(sliver: false, padding: false),
+                  if (index != widget.mentions.length - 1)
+                    const ThunderDivider(sliver: false, padding: false),
                 ],
               );
             },
           ),
-          if (state.hasReachedInboxMentionEnd && widget.mentions.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
+          if (state.hasReachedInboxMentionEnd && widget.mentions.isNotEmpty)
+            const SliverToBoxAdapter(child: FeedReachedEnd()),
         ],
       );
     });

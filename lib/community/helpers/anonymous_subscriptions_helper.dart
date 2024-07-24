@@ -3,12 +3,14 @@ import 'package:lemmy_api_client/v3.dart';
 import '../models/anonymous_subscriptions.dart';
 
 Future<List<Community>> getSubscriptions() async {
-  List<LocalCommunity> subscribedCommunities = await AnonymousSubscriptions.getSubscribedCommunities();
+  List<LocalCommunity> subscribedCommunities =
+      await AnonymousSubscriptions.getSubscribedCommunities();
   return subscribedCommunities.map((e) => e.toCommunity).toList();
 }
 
 Future<void> insertSubscriptions(Set<Community> communities) async {
-  Set<LocalCommunity> newCommunities = communities.map((e) => e.toLocalCommunity).toSet();
+  Set<LocalCommunity> newCommunities =
+      communities.map((e) => e.toLocalCommunity).toSet();
   await AnonymousSubscriptions.insertCommunities(newCommunities);
 }
 
@@ -34,6 +36,7 @@ extension on LocalCommunity {
 
 extension on Community {
   LocalCommunity get toLocalCommunity {
-    return LocalCommunity(id: id, name: name, title: title, icon: icon, actorId: actorId);
+    return LocalCommunity(
+        id: id, name: name, title: title, icon: icon, actorId: actorId);
   }
 }

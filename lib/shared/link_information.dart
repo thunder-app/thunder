@@ -56,7 +56,8 @@ class _LinkInformationState extends State<LinkInformation> {
     return Semantics(
       link: true,
       child: InkWell(
-        customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        customBorder:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         onTap: () {
           if (widget.onTap != null) {
             widget.onTap?.call();
@@ -73,20 +74,25 @@ class _LinkInformationState extends State<LinkInformation> {
           }
 
           if (widget.mediaType == MediaType.link) {
-            handleLinkLongPress(context, state, widget.originURL!, widget.originURL);
+            handleLinkLongPress(
+                context, state, widget.originURL!, widget.originURL);
           }
         },
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: ElevationOverlay.applySurfaceTint(theme.colorScheme.surface.withOpacity(0.8), theme.colorScheme.surfaceTint, 10),
+            color: ElevationOverlay.applySurfaceTint(
+                theme.colorScheme.surface.withOpacity(0.8),
+                theme.colorScheme.surfaceTint,
+                10),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Row(
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: Icon(icon, color: theme.colorScheme.onSecondaryContainer),
+                child:
+                    Icon(icon, color: theme.colorScheme.onSecondaryContainer),
               ),
               if (widget.viewMode != ViewMode.compact)
                 Expanded(

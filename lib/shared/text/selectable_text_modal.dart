@@ -13,7 +13,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
-void showSelectableTextModal(BuildContext context, {String? title, required String text}) {
+void showSelectableTextModal(BuildContext context,
+    {String? title, required String text}) {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
   final ThemeData theme = Theme.of(context);
   final ThunderState thunderState = context.read<ThunderBloc>().state;
@@ -50,8 +51,12 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                       children: [
                         const SizedBox(width: 26),
                         SearchActionChip(
-                          onPressed: () => setState(() => viewSource = !viewSource),
-                          backgroundColor: viewSource ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                          onPressed: () =>
+                              setState(() => viewSource = !viewSource),
+                          backgroundColor: viewSource
+                              ? theme.colorScheme.primaryContainer
+                                  .withOpacity(0.25)
+                              : null,
                           children: [
                             Text(l10n.viewSource),
                             if (viewSource) ...[
@@ -64,20 +69,28 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                         SearchActionChip(
                           children: [Text(l10n.selectAll)],
                           onPressed: () {
-                            (selectableRegionKey.currentState as SelectableRegionState).selectAll();
+                            (selectableRegionKey.currentState
+                                    as SelectableRegionState)
+                                .selectAll();
                           },
                         ),
                         const SizedBox(width: 10),
                         SearchActionChip(
                           onPressed: isAnythingSelected
                               ? () async {
-                                  (selectableRegionKey.currentState as SelectableRegionState).copySelection(SelectionChangedCause.tap);
+                                  (selectableRegionKey.currentState
+                                          as SelectableRegionState)
+                                      .copySelection(SelectionChangedCause.tap);
                                   setState(() => copySuccess = true);
-                                  await Future.delayed(const Duration(seconds: 2));
+                                  await Future.delayed(
+                                      const Duration(seconds: 2));
                                   setState(() => copySuccess = false);
                                 }
                               : null,
-                          backgroundColor: copySuccess ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                          backgroundColor: copySuccess
+                              ? theme.colorScheme.primaryContainer
+                                  .withOpacity(0.25)
+                              : null,
                           children: [
                             Text(l10n.copySelected),
                             if (copySuccess) ...[
@@ -94,7 +107,10 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                 const SizedBox(height: 24.0),
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                        left: 26.0,
+                        right: 16.0),
                     child: FadingEdgeScrollView.fromSingleChildScrollView(
                       gradientFractionOnStart: 0.1,
                       gradientFractionOnEnd: 0.1,
@@ -106,20 +122,26 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                           children: [
                             SelectableRegion(
                               onSelectionChanged: (value) {
-                                setState(() => isAnythingSelected = value != null);
+                                setState(
+                                    () => isAnythingSelected = value != null);
                               },
                               key: selectableRegionKey,
                               focusNode: focusNode,
                               // Note: material/cupertinoTextSelectionHandleControls will be deprecated eventually,
                               // but is still required in order to also use contextMenuBuilder.
                               // See https://github.com/flutter/flutter/issues/122421 for more info.
-                              selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
-                              contextMenuBuilder: (context, selectableRegionState) {
+                              selectionControls: Platform.isIOS
+                                  ? cupertinoTextSelectionHandleControls
+                                  : materialTextSelectionHandleControls,
+                              contextMenuBuilder:
+                                  (context, selectableRegionState) {
                                 // While this isn't strictly needed right now, it's here so that when we upgrade the Flutter version, we'll get "Share" for free.
                                 // This comment canbe deleted at that time.
                                 return AdaptiveTextSelectionToolbar.buttonItems(
-                                  buttonItems: selectableRegionState.contextMenuButtonItems,
-                                  anchors: selectableRegionState.contextMenuAnchors,
+                                  buttonItems: selectableRegionState
+                                      .contextMenuButtonItems,
+                                  anchors:
+                                      selectableRegionState.contextMenuAnchors,
                                 );
                               },
                               child: Column(
@@ -129,9 +151,18 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                       alignment: Alignment.centerLeft,
                                       child: Text(
                                         HtmlUnescape().convert(title!),
-                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
                                           fontWeight: FontWeight.w600,
-                                          fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * thunderState.titleFontSizeScale.textScaleFactor),
+                                          fontSize:
+                                              MediaQuery.textScalerOf(context)
+                                                  .scale(theme
+                                                          .textTheme
+                                                          .bodyMedium!
+                                                          .fontSize! *
+                                                      thunderState
+                                                          .titleFontSizeScale
+                                                          .textScaleFactor),
                                         ),
                                       ),
                                     ),
@@ -142,8 +173,11 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                     child: viewSource
                                         ? ScalableText(
                                             text,
-                                            style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                                            fontScale: thunderState.contentFontSizeScale,
+                                            style: theme.textTheme.bodySmall
+                                                ?.copyWith(
+                                                    fontFamily: 'monospace'),
+                                            fontScale: thunderState
+                                                .contentFontSizeScale,
                                           )
                                         : CommonMarkdownBody(
                                             body: text,
@@ -161,7 +195,10 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                 ),
                 const SizedBox(height: 16.0),
                 Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                      left: 26.0,
+                      right: 16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

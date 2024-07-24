@@ -39,12 +39,14 @@ class InstanceBloc extends Bloc<InstanceEvent, InstanceState> {
   }
 
   /// Handles clearing any messages from the state
-  Future<void> _onInstanceClearMessage(InstanceClearMessageEvent event, Emitter<InstanceState> emit) async {
+  Future<void> _onInstanceClearMessage(
+      InstanceClearMessageEvent event, Emitter<InstanceState> emit) async {
     emit(state.copyWith(status: InstanceStatus.success, message: null));
   }
 
   /// Handles instance related actions
-  Future<void> _onInstanceAction(InstanceActionEvent event, Emitter<InstanceState> emit) async {
+  Future<void> _onInstanceAction(
+      InstanceActionEvent event, Emitter<InstanceState> emit) async {
     emit(state.copyWith(status: InstanceStatus.fetching));
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
@@ -52,10 +54,15 @@ class InstanceBloc extends Bloc<InstanceEvent, InstanceState> {
     switch (event.instanceAction) {
       case InstanceAction.block:
         try {
-          BlockInstanceResponse blockInstanceResponse = await blockInstance(event.instanceId, event.value);
+          BlockInstanceResponse blockInstanceResponse =
+              await blockInstance(event.instanceId, event.value);
           emit(state.copyWith(
-            status: blockInstanceResponse.blocked == event.value ? InstanceStatus.success : InstanceStatus.failure,
-            message: blockInstanceResponse.blocked ? l10n.successfullyBlockedCommunity(event.domain ?? '') : l10n.successfullyUnblockedCommunity(event.domain ?? ''),
+            status: blockInstanceResponse.blocked == event.value
+                ? InstanceStatus.success
+                : InstanceStatus.failure,
+            message: blockInstanceResponse.blocked
+                ? l10n.successfullyBlockedCommunity(event.domain ?? '')
+                : l10n.successfullyUnblockedCommunity(event.domain ?? ''),
           ));
         } catch (e) {
           return emit(state.copyWith(status: InstanceStatus.failure));

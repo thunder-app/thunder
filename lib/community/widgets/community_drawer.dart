@@ -54,7 +54,8 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     AccountState accountState = context.watch<AccountBloc>().state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
 
-    AnonymousSubscriptionsBloc subscriptionsBloc = context.watch<AnonymousSubscriptionsBloc>();
+    AnonymousSubscriptionsBloc subscriptionsBloc =
+        context.watch<AnonymousSubscriptionsBloc>();
     subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
 
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
@@ -62,13 +63,19 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     List<Community> subscriptions = [];
 
     if (isLoggedIn) {
-      Set<int> favoriteCommunityIds = accountState.favorites.map((cv) => cv.community.id).toSet();
-      Set<int> moderatedCommunityIds = accountState.moderates.map((cmv) => cmv.community.id).toSet();
+      Set<int> favoriteCommunityIds =
+          accountState.favorites.map((cv) => cv.community.id).toSet();
+      Set<int> moderatedCommunityIds =
+          accountState.moderates.map((cmv) => cmv.community.id).toSet();
 
       List<CommunityView> filteredSubscriptions = accountState.subsciptions
-          .where((CommunityView communityView) => !favoriteCommunityIds.contains(communityView.community.id) && !moderatedCommunityIds.contains(communityView.community.id))
+          .where((CommunityView communityView) =>
+              !favoriteCommunityIds.contains(communityView.community.id) &&
+              !moderatedCommunityIds.contains(communityView.community.id))
           .toList();
-      subscriptions = filteredSubscriptions.map((CommunityView communityView) => communityView.community).toList();
+      subscriptions = filteredSubscriptions
+          .map((CommunityView communityView) => communityView.community)
+          .toList();
     } else {
       subscriptions = subscriptionsBloc.state.subscriptions;
     }
@@ -78,7 +85,9 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
       child: SafeArea(
         child: CustomScrollView(
           slivers: [
-            SliverPinnedHeader(child: UserDrawerItem(navigateToAccount: widget.navigateToAccount)),
+            SliverPinnedHeader(
+                child: UserDrawerItem(
+                    navigateToAccount: widget.navigateToAccount)),
             SliverList(
               delegate: SliverChildListDelegate(
                 [
@@ -87,12 +96,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                   const ModeratedCommunities(),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
-                    child: Text(l10n.subscriptions, style: theme.textTheme.titleSmall),
+                    child: Text(l10n.subscriptions,
+                        style: theme.textTheme.titleSmall),
                   ),
                   if (subscriptions.isNotEmpty)
                     ...subscriptions.map(
                       (community) {
-                        final bool isCommunitySelected = feedState.communityId == community.id;
+                        final bool isCommunitySelected =
+                            feedState.communityId == community.id;
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 14.0),
@@ -100,31 +111,45 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                             style: TextButton.styleFrom(
                               alignment: Alignment.centerLeft,
                               minimumSize: const Size.fromHeight(50),
-                              backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+                              backgroundColor: isCommunitySelected
+                                  ? theme.colorScheme.primaryContainer
+                                      .withOpacity(0.25)
+                                  : Colors.transparent,
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
                               context.read<FeedBloc>().add(
                                     FeedFetchedEvent(
                                       feedType: FeedType.community,
-                                      sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                                      sortType: authState
+                                              .getSiteResponse
+                                              ?.myUser
+                                              ?.localUserView
+                                              .localUser
+                                              .defaultSortType ??
+                                          thunderState.sortTypeForInstance,
                                       communityId: community.id,
                                       reset: true,
                                       showHidden: thunderState.showHiddenPosts,
                                     ),
                                   );
                             },
-                            child: CommunityItem(community: community, showFavoriteAction: isLoggedIn, isFavorite: false),
+                            child: CommunityItem(
+                                community: community,
+                                showFavoriteAction: isLoggedIn,
+                                isFavorite: false),
                           ),
                         );
                       },
                     ).toList() as List<Widget>,
                   if (subscriptions.isEmpty)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 28.0, vertical: 8.0),
                       child: Text(
                         l10n.noSubscriptions,
-                        style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
+                        style: theme.textTheme.labelLarge
+                            ?.copyWith(color: theme.dividerColor),
                       ),
                     ),
                 ],
@@ -151,7 +176,8 @@ class UserDrawerItem extends StatelessWidget {
     AccountState accountState = context.watch<AccountBloc>().state;
 
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
-    String? anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
+    String? anonymousInstance =
+        context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
     return Material(
       color: theme.colorScheme.surface,
@@ -187,15 +213,20 @@ class UserDrawerItem extends StatelessWidget {
                         const SizedBox(width: 5),
                       ],
                       Text(
-                        isLoggedIn ? accountState.personView?.person.name ?? '' : l10n.anonymous,
-                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                        isLoggedIn
+                            ? accountState.personView?.person.name ?? ''
+                            : l10n.anonymous,
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w500),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                   Text(
-                    isLoggedIn ? authState.account?.instance ?? '' : anonymousInstance ?? '',
+                    isLoggedIn
+                        ? authState.account?.instance ?? ''
+                        : anonymousInstance ?? '',
                     style: theme.textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -245,11 +276,15 @@ class FeedDrawerItems extends StatelessWidget {
           children: destinations.map(
             (Destination destination) {
               return DrawerItem(
-                disabled: destination.listingType == ListingType.subscribed && isLoggedIn == false,
-                isSelected: destination.listingType == feedState.postListingType,
+                disabled: destination.listingType == ListingType.subscribed &&
+                    isLoggedIn == false,
+                isSelected:
+                    destination.listingType == feedState.postListingType,
                 onTap: () {
                   Navigator.of(context).pop();
-                  navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType);
+                  navigateToFeedPage(context,
+                      feedType: FeedType.general,
+                      postListingType: destination.listingType);
                 },
                 label: destination.label,
                 icon: destination.icon,
@@ -257,7 +292,8 @@ class FeedDrawerItems extends StatelessWidget {
             },
           ).toList(),
         ),
-        if (accountState.moderates.isNotEmpty || accountState.personView?.isAdmin == true)
+        if (accountState.moderates.isNotEmpty ||
+            accountState.personView?.isAdmin == true)
           DrawerItem(
             label: l10n.report(2),
             onTap: () async {
@@ -266,8 +302,11 @@ class FeedDrawerItems extends StatelessWidget {
 
               await Navigator.of(context).push(
                 SwipeablePageRoute(
-                  transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                  backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                  transitionDuration: thunderBloc.state.reduceAnimations
+                      ? const Duration(milliseconds: 100)
+                      : null,
+                  backGestureDetectionStartOffset:
+                      !kIsWeb && Platform.isAndroid ? 45 : 0,
                   backGestureDetectionWidth: 45,
                   canOnlySwipeFromEdge: true,
                   builder: (otherContext) {
@@ -330,14 +369,18 @@ class FavoriteCommunities extends StatelessWidget {
                 style: TextButton.styleFrom(
                   alignment: Alignment.centerLeft,
                   minimumSize: const Size.fromHeight(50),
-                  backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+                  backgroundColor: isCommunitySelected
+                      ? theme.colorScheme.primaryContainer.withOpacity(0.25)
+                      : Colors.transparent,
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
                           feedType: FeedType.community,
-                          sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                          sortType: authState.getSiteResponse?.myUser
+                                  ?.localUserView.localUser.defaultSortType ??
+                              thunderState.sortTypeForInstance,
                           communityId: community.id,
                           reset: true,
                           showHidden: thunderState.showHiddenPosts,
@@ -375,7 +418,8 @@ class ModeratedCommunities extends StatelessWidget {
         if (moderatedCommunities.isNotEmpty) ...[
           Padding(
             padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
-            child: Text(l10n.moderatedCommunities, style: theme.textTheme.titleSmall),
+            child: Text(l10n.moderatedCommunities,
+                style: theme.textTheme.titleSmall),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
@@ -386,27 +430,35 @@ class ModeratedCommunities extends StatelessWidget {
               itemBuilder: (context, index) {
                 Community community = moderatedCommunities[index].community;
 
-                final bool isCommunitySelected = feedState.communityId == community.id;
+                final bool isCommunitySelected =
+                    feedState.communityId == community.id;
 
                 return TextButton(
                   style: TextButton.styleFrom(
                     alignment: Alignment.centerLeft,
                     minimumSize: const Size.fromHeight(50),
-                    backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+                    backgroundColor: isCommunitySelected
+                        ? theme.colorScheme.primaryContainer.withOpacity(0.25)
+                        : Colors.transparent,
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                            sortType: authState.getSiteResponse?.myUser
+                                    ?.localUserView.localUser.defaultSortType ??
+                                thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
                             showHidden: thunderState.showHiddenPosts,
                           ),
                         );
                   },
-                  child: CommunityItem(community: community, showFavoriteAction: false, isFavorite: false),
+                  child: CommunityItem(
+                      community: community,
+                      showFavoriteAction: false,
+                      isFavorite: false),
                 );
               },
             ),
@@ -426,9 +478,12 @@ class Destination {
 }
 
 List<Destination> destinations = <Destination>[
-  Destination(AppLocalizations.of(GlobalContext.context)!.subscriptions, ListingType.subscribed, Icons.view_list_rounded),
-  Destination(AppLocalizations.of(GlobalContext.context)!.localPosts, ListingType.local, Icons.home_rounded),
-  Destination(AppLocalizations.of(GlobalContext.context)!.allPosts, ListingType.all, Icons.grid_view_rounded),
+  Destination(AppLocalizations.of(GlobalContext.context)!.subscriptions,
+      ListingType.subscribed, Icons.view_list_rounded),
+  Destination(AppLocalizations.of(GlobalContext.context)!.localPosts,
+      ListingType.local, Icons.home_rounded),
+  Destination(AppLocalizations.of(GlobalContext.context)!.allPosts,
+      ListingType.all, Icons.grid_view_rounded),
 ];
 
 class DrawerItem extends StatelessWidget {
@@ -459,7 +514,9 @@ class DrawerItem extends StatelessWidget {
       child: SizedBox(
         height: 56.0,
         child: Material(
-          color: isSelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+          color: isSelected
+              ? theme.colorScheme.primaryContainer.withOpacity(0.25)
+              : Colors.transparent,
           shape: const StadiumBorder(),
           child: InkWell(
             splashColor: disabled ? Colors.transparent : null,
@@ -476,7 +533,10 @@ class DrawerItem extends StatelessWidget {
                     const SizedBox(width: 12),
                     Text(
                       label,
-                      style: disabled ? theme.textTheme.bodyMedium?.copyWith(color: theme.dividerColor) : null,
+                      style: disabled
+                          ? theme.textTheme.bodyMedium
+                              ?.copyWith(color: theme.dividerColor)
+                          : null,
                     ),
                     if (trailing != null) ...[
                       const Spacer(),
@@ -495,7 +555,11 @@ class DrawerItem extends StatelessWidget {
 }
 
 class CommunityItem extends StatelessWidget {
-  const CommunityItem({super.key, required this.community, this.showFavoriteAction = true, this.isFavorite = false});
+  const CommunityItem(
+      {super.key,
+      required this.community,
+      this.showFavoriteAction = true,
+      this.isFavorite = false});
 
   final Community community;
   final bool isFavorite;
@@ -508,7 +572,11 @@ class CommunityItem extends StatelessWidget {
 
     return Row(
       children: [
-        CommunityAvatar(community: community, radius: 16, thumbnailSize: 100, format: 'png'),
+        CommunityAvatar(
+            community: community,
+            radius: 16,
+            thumbnailSize: 100,
+            format: 'png'),
         const SizedBox(width: 16.0),
         Expanded(
           child: Tooltip(
@@ -540,10 +608,13 @@ class CommunityItem extends StatelessWidget {
         ),
         showFavoriteAction
             ? IconButton(
-                onPressed: () async => await toggleFavoriteCommunity(context, community, isFavorite),
+                onPressed: () async => await toggleFavoriteCommunity(
+                    context, community, isFavorite),
                 icon: Icon(
                   isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
-                  semanticLabel: isFavorite ? l10n.removeFromFavorites : l10n.addToFavorites,
+                  semanticLabel: isFavorite
+                      ? l10n.removeFromFavorites
+                      : l10n.addToFavorites,
                 ),
               )
             : Container(),

@@ -44,12 +44,16 @@ void navigateToSetting(BuildContext context, LocalSettings setting) {
   );
 }
 
-void shareSetting(BuildContext context, LocalSettings? setting, String description) {
+void shareSetting(
+    BuildContext context, LocalSettings? setting, String description) {
   if (setting == null) return;
 
   final AppLocalizations l10n = AppLocalizations.of(context)!;
-  final String settingPath = '${l10n.getLocalSettingLocalization(setting.category!.toString())} > ${l10n.getLocalSettingLocalization(setting.subCategory.toString())} > $description';
+  final String settingPath =
+      '${l10n.getLocalSettingLocalization(setting.category!.toString())} > ${l10n.getLocalSettingLocalization(setting.subCategory.toString())} > $description';
 
-  Clipboard.setData(ClipboardData(text: '[Thunder Setting: $settingPath](thunder://setting-${setting.name})'));
+  Clipboard.setData(ClipboardData(
+      text:
+          '[Thunder Setting: $settingPath](thunder://setting-${setting.name})'));
   showSnackbar('Setting link copied to clipboard!');
 }

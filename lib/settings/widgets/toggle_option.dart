@@ -93,7 +93,9 @@ class ToggleOption extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SmoothHighlight(
-      key: highlightedSetting == setting && setting != null ? highlightKey : null,
+      key: highlightedSetting == setting && setting != null
+          ? highlightKey
+          : null,
       useInitialHighLight: highlightedSetting == setting && setting != null,
       enabled: highlightedSetting == setting && setting != null,
       color: theme.colorScheme.primaryContainer,
@@ -104,7 +106,10 @@ class ToggleOption extends StatelessWidget {
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(50)),
             onTap: onToggle == null ? null : onTapInkWell,
-            onLongPress: onToggle == null ? null : onLongPress ?? () => shareSetting(context, setting, description),
+            onLongPress: onToggle == null
+                ? null
+                : onLongPress ??
+                    () => shareSetting(context, setting, description),
             child: Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Row(
@@ -112,12 +117,19 @@ class ToggleOption extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      if (iconEnabled != null && iconDisabled != null) Icon(value == true ? iconEnabled : iconDisabled, size: value == true ? iconEnabledSize : iconDisabledSize),
-                      if (iconEnabled != null && iconDisabled != null) SizedBox(width: iconSpacing ?? 8.0),
+                      if (iconEnabled != null && iconDisabled != null)
+                        Icon(value == true ? iconEnabled : iconDisabled,
+                            size: value == true
+                                ? iconEnabledSize
+                                : iconDisabledSize),
+                      if (iconEnabled != null && iconDisabled != null)
+                        SizedBox(width: iconSpacing ?? 8.0),
                       Column(
                         children: [
                           ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+                            constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width - 140),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -130,7 +142,13 @@ class ToggleOption extends StatelessWidget {
                                     style: theme.textTheme.bodyMedium,
                                   ),
                                 ),
-                                if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+                                if (subtitle != null)
+                                  Text(subtitle!,
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                              color: theme
+                                                  .textTheme.bodySmall?.color
+                                                  ?.withOpacity(0.8))),
                               ],
                             ),
                           ),

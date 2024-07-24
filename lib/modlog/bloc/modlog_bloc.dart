@@ -49,12 +49,18 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
   }
 
   /// Handles clearing any messages from the state
-  Future<void> _onModlogFeedClearMessage(ModlogFeedClearMessageEvent event, Emitter<ModlogState> emit) async {
-    emit(state.copyWith(status: state.status == ModlogStatus.failure ? state.status : ModlogStatus.success, message: null));
+  Future<void> _onModlogFeedClearMessage(
+      ModlogFeedClearMessageEvent event, Emitter<ModlogState> emit) async {
+    emit(state.copyWith(
+        status: state.status == ModlogStatus.failure
+            ? state.status
+            : ModlogStatus.success,
+        message: null));
   }
 
   /// Resets the ModlogState to its initial state
-  Future<void> _onResetModlogFeed(ResetModlogEvent event, Emitter<ModlogState> emit) async {
+  Future<void> _onResetModlogFeed(
+      ResetModlogEvent event, Emitter<ModlogState> emit) async {
     emit(const ModlogState(
       status: ModlogStatus.initial,
       modlogActionType: ModlogActionType.all,
@@ -69,7 +75,8 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
   }
 
   /// Changes the current filter type of the modlog feed
-  Future<void> _onModlogFeedChangeFilterType(ModlogFeedChangeFilterTypeEvent event, Emitter<ModlogState> emit) async {
+  Future<void> _onModlogFeedChangeFilterType(
+      ModlogFeedChangeFilterTypeEvent event, Emitter<ModlogState> emit) async {
     add(ModlogFeedFetchedEvent(
       modlogActionType: event.modlogActionType,
       communityId: state.communityId,
@@ -80,7 +87,8 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
   }
 
   /// Fetches the list of modlog events
-  Future<void> _onModlogFeedFetched(ModlogFeedFetchedEvent event, Emitter<ModlogState> emit) async {
+  Future<void> _onModlogFeedFetched(
+      ModlogFeedFetchedEvent event, Emitter<ModlogState> emit) async {
     // Handle the initial fetch or reload of a feed
     if (event.reset) {
       if (state.status != ModlogStatus.initial) add(ResetModlogEvent());
@@ -95,12 +103,14 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
       );
 
       // Extract information from the response
-      List<ModlogEventItem> modlogEventItems = fetchModlogEventsResult['modLogEventItems'];
+      List<ModlogEventItem> modlogEventItems =
+          fetchModlogEventsResult['modLogEventItems'];
       bool hasReachedEnd = fetchModlogEventsResult['hasReachedEnd'];
       int currentPage = fetchModlogEventsResult['currentPage'];
 
       // Sort the modlog events in descending order
-      modlogEventItems.sort((ModlogEventItem a, ModlogEventItem b) => b.dateTime.compareTo(a.dateTime));
+      modlogEventItems.sort((ModlogEventItem a, ModlogEventItem b) =>
+          b.dateTime.compareTo(a.dateTime));
 
       return emit(
         state.copyWith(
@@ -134,13 +144,15 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
     );
 
     // Extract information from the response
-    List<ModlogEventItem> newModLogEventItems = fetchModlogEventsResult['modLogEventItems'];
+    List<ModlogEventItem> newModLogEventItems =
+        fetchModlogEventsResult['modLogEventItems'];
     bool hasReachedEnd = fetchModlogEventsResult['hasReachedEnd'];
     int currentPage = fetchModlogEventsResult['currentPage'];
 
     // Add the new modlog events and sort them in descending order
     modlogEventItems.addAll(newModLogEventItems);
-    modlogEventItems.sort((ModlogEventItem a, ModlogEventItem b) => b.dateTime.compareTo(a.dateTime));
+    modlogEventItems.sort((ModlogEventItem a, ModlogEventItem b) =>
+        b.dateTime.compareTo(a.dateTime));
 
     return emit(
       state.copyWith(

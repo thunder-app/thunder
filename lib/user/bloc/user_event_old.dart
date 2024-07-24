@@ -15,7 +15,11 @@ class GetUserEvent extends UserEvent {
   final bool isAccountUser;
   final String? username;
 
-  const GetUserEvent({this.userId, this.reset = false, this.isAccountUser = false, this.username});
+  const GetUserEvent(
+      {this.userId,
+      this.reset = false,
+      this.isAccountUser = false,
+      this.username});
 }
 
 class GetUserSavedEvent extends UserEvent {
@@ -23,7 +27,8 @@ class GetUserSavedEvent extends UserEvent {
   final bool reset;
   final bool isAccountUser;
 
-  const GetUserSavedEvent({this.userId, this.reset = false, this.isAccountUser = false});
+  const GetUserSavedEvent(
+      {this.userId, this.reset = false, this.isAccountUser = false});
 }
 
 class VotePostEvent extends UserEvent {

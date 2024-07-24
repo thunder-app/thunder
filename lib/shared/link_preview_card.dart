@@ -59,7 +59,8 @@ class LinkPreviewCard extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
-    if ((mediaURL != null || originURL != null) && viewMode == ViewMode.comfortable) {
+    if ((mediaURL != null || originURL != null) &&
+        viewMode == ViewMode.comfortable) {
       return Semantics(
         label: originURL ?? mediaURL,
         child: Container(
@@ -78,16 +79,24 @@ class LinkPreviewCard extends StatelessWidget {
                         child: ImagePreview(
                           read: read,
                           url: mediaURL ?? originURL!,
-                          height: showFullHeightImages ? mediaHeight : ViewMode.comfortable.height,
-                          width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                          height: showFullHeightImages
+                              ? mediaHeight
+                              : ViewMode.comfortable.height,
+                          width: mediaWidth ??
+                              MediaQuery.of(context).size.width -
+                                  (edgeToEdgeImages ? 0 : 24),
                           isExpandable: false,
                         ),
                       )
                     : ImagePreview(
                         read: read,
                         url: mediaURL ?? originURL!,
-                        height: showFullHeightImages ? mediaHeight : ViewMode.comfortable.height,
-                        width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                        height: showFullHeightImages
+                            ? mediaHeight
+                            : ViewMode.comfortable.height,
+                        width: mediaWidth ??
+                            MediaQuery.of(context).size.width -
+                                (edgeToEdgeImages ? 0 : 24),
                         isExpandable: false,
                       )
               ] else if (scrapeMissingPreviews)
@@ -138,8 +147,12 @@ class LinkPreviewCard extends StatelessWidget {
                   child: InkWell(
                     splashColor: theme.colorScheme.primary.withOpacity(0.4),
                     onTap: () => triggerOnTap(context),
-                    onLongPress: originURL != null ? () => handleLinkLongPress(context, thunderState, originURL!, originURL) : null,
-                    borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
+                    onLongPress: originURL != null
+                        ? () => handleLinkLongPress(
+                            context, thunderState, originURL!, originURL)
+                        : null,
+                    borderRadius:
+                        BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
                   ),
                 ),
               ),
@@ -147,7 +160,8 @@ class LinkPreviewCard extends StatelessWidget {
           ),
         ),
       );
-    } else if ((mediaURL != null || originURL != null) && viewMode == ViewMode.compact) {
+    } else if ((mediaURL != null || originURL != null) &&
+        viewMode == ViewMode.compact) {
       return Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -183,7 +197,8 @@ class LinkPreviewCard extends StatelessWidget {
                         // This is only used in compact mode.
                         child: hideNsfw
                             ? ImageFiltered(
-                                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                                imageFilter:
+                                    ImageFilter.blur(sigmaX: 30, sigmaY: 30),
                                 child: LinkPreviewGenerator(
                                   opacity: read == true ? 0.55 : 1,
                                   link: originURL!,
@@ -207,7 +222,8 @@ class LinkPreviewCard extends StatelessWidget {
                         color: theme.cardColor.darken(5),
                         child: Icon(
                           hideNsfw ? null : Icons.language,
-                          color: theme.colorScheme.onSecondaryContainer.withOpacity(read == true ? 0.55 : 1.0),
+                          color: theme.colorScheme.onSecondaryContainer
+                              .withOpacity(read == true ? 0.55 : 1.0),
                         ),
                       ),
             if (hideNsfw)
@@ -226,7 +242,10 @@ class LinkPreviewCard extends StatelessWidget {
                 child: InkWell(
                   splashColor: theme.colorScheme.primary.withOpacity(0.4),
                   onTap: () => triggerOnTap(context),
-                  onLongPress: originURL != null ? () => handleLinkLongPress(context, thunderState, originURL!, originURL) : null,
+                  onLongPress: originURL != null
+                      ? () => handleLinkLongPress(
+                          context, thunderState, originURL!, originURL)
+                      : null,
                 ),
               ),
             ),
@@ -247,7 +266,8 @@ class LinkPreviewCard extends StatelessWidget {
       );
       if (edgeToEdgeImages) {
         return Padding(
-          padding: const EdgeInsets.only(top: 4.0, bottom: 8.0, left: 12.0, right: 12.0),
+          padding: const EdgeInsets.only(
+              top: 4.0, bottom: 8.0, left: 12.0, right: 12.0),
           child: inkWell,
         );
       } else {
@@ -264,7 +284,8 @@ class LinkPreviewCard extends StatelessWidget {
       // Mark post as read when on the feed page
       try {
         FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
-        feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
+        feedBloc.add(FeedItemActionedEvent(
+            postAction: PostAction.read, postId: postId, value: true));
       } catch (e) {}
     }
     if (originURL != null) {

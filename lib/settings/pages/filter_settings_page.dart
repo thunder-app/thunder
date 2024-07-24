@@ -26,7 +26,8 @@ class FilterSettingsPage extends StatefulWidget {
   State<FilterSettingsPage> createState() => _FilterSettingsPageState();
 }
 
-class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTickerProviderStateMixin {
+class _FilterSettingsPageState extends State<FilterSettingsPage>
+    with SingleTickerProviderStateMixin {
   /// The list of keyword filters to apply for posts
   List<String> keywordFilters = [];
 
@@ -52,7 +53,8 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     setState(() {
-      keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
+      keywordFilters =
+          prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
     });
   }
 
@@ -114,16 +116,21 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
           ),
           SliverToBoxAdapter(
             child: SmoothHighlight(
-              key: settingToHighlight == LocalSettings.keywordFilters ? settingToHighlightKey : null,
-              useInitialHighLight: settingToHighlight == LocalSettings.keywordFilters,
+              key: settingToHighlight == LocalSettings.keywordFilters
+                  ? settingToHighlightKey
+                  : null,
+              useInitialHighLight:
+                  settingToHighlight == LocalSettings.keywordFilters,
               enabled: settingToHighlight == LocalSettings.keywordFilters,
               color: theme.colorScheme.primaryContainer,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(l10n.keywordFilters, style: theme.textTheme.titleMedium),
+                    Text(l10n.keywordFilters,
+                        style: theme.textTheme.titleMedium),
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: Icon(
@@ -134,7 +141,8 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                         context,
                         title: l10n.addKeywordFilter,
                         onKeywordSelected: (keyword) {
-                          setPreferences(LocalSettings.keywordFilters, [...keywordFilters, keyword]);
+                          setPreferences(LocalSettings.keywordFilters,
+                              [...keywordFilters, keyword]);
                         },
                       ),
                     ),
@@ -152,7 +160,8 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                       child: Text(
                         l10n.noKeywordFilters,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                          color: theme.textTheme.bodyMedium?.color
+                              ?.withOpacity(0.8),
                         ),
                       ),
                     )
@@ -164,19 +173,29 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                       itemBuilder: (context, index) {
                         return SettingsListTile(
                           description: keywordFilters[index],
-                          widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                          widget: const SizedBox(
+                              height: 42.0,
+                              child: Icon(Icons.chevron_right_rounded)),
                           onTap: () async {
                             showThunderDialog(
                               context: context,
                               title: l10n.removeKeywordFilter,
-                              contentText: l10n.removeKeyword(keywordFilters[index]),
+                              contentText:
+                                  l10n.removeKeyword(keywordFilters[index]),
                               primaryButtonText: l10n.remove,
-                              onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-                                setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
+                              onPrimaryButtonPressed:
+                                  (dialogContext, setPrimaryButtonEnabled) {
+                                setPreferences(
+                                    LocalSettings.keywordFilters,
+                                    keywordFilters
+                                        .where((element) =>
+                                            element != keywordFilters[index])
+                                        .toList());
                                 Navigator.of(dialogContext).pop();
                               },
                               secondaryButtonText: l10n.cancel,
-                              onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                              onSecondaryButtonPressed: (dialogContext) =>
+                                  Navigator.of(dialogContext).pop(),
                             );
                           },
                           highlightKey: settingToHighlightKey,
@@ -198,7 +217,9 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
               ),
               onTap: () {
                 // Can only set discussion language if user is logged in
-                if (authState.isLoggedIn && accountState.status == AccountStatus.success && accountState.personView != null) {
+                if (authState.isLoggedIn &&
+                    accountState.status == AccountStatus.success &&
+                    accountState.personView != null) {
                   GoRouter.of(context).push(SETTINGS_ACCOUNT_PAGE, extra: [
                     context.read<ThunderBloc>(),
                     LocalSettings.discussionLanguages,
@@ -209,7 +230,9 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                     title: l10n.userNotLoggedIn,
                     contentText: l10n.mustBeLoggedIn,
                     primaryButtonText: l10n.ok,
-                    onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) => Navigator.of(dialogContext).pop(),
+                    onPrimaryButtonPressed:
+                        (dialogContext, setPrimaryButtonEnabled) =>
+                            Navigator.of(dialogContext).pop(),
                   );
                 }
               },

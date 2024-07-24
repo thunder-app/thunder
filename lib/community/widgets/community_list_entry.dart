@@ -18,9 +18,14 @@ class CommunityListEntry extends StatelessWidget {
   final bool isUserLoggedIn;
   final Set<int>? currentSubscriptions;
   final bool indicateFavorites;
-  final bool Function(BuildContext context, Community community)? getFavoriteStatus;
-  final SubscribedType Function(bool isUserLoggedIn, CommunityView communityView, Set<int>? currentSubscriptions)? getCurrentSubscriptionStatus;
-  final void Function(bool isUserLoggedIn, BuildContext context, CommunityView communityView)? onSubscribeIconPressed;
+  final bool Function(BuildContext context, Community community)?
+      getFavoriteStatus;
+  final SubscribedType Function(
+      bool isUserLoggedIn,
+      CommunityView communityView,
+      Set<int>? currentSubscriptions)? getCurrentSubscriptionStatus;
+  final void Function(bool isUserLoggedIn, BuildContext context,
+      CommunityView communityView)? onSubscribeIconPressed;
 
   /// Whether the community should be resolved to a different instance
   final String? resolutionInstance;
@@ -51,7 +56,8 @@ class CommunityListEntry extends StatelessWidget {
       )}',
       preferBelow: false,
       child: ListTile(
-        leading: CommunityAvatar(community: communityView.community, radius: 25),
+        leading:
+            CommunityAvatar(community: communityView.community, radius: 25),
         title: Text(
           communityView.community.title,
           overflow: TextOverflow.ellipsis,
@@ -69,13 +75,17 @@ class CommunityListEntry extends StatelessWidget {
           ),
           Text(
             ' · ${formatLongNumber(communityView.counts.subscribers)}',
-            semanticsLabel: l10n.countSubscribers(communityView.counts.subscribers),
+            semanticsLabel:
+                l10n.countSubscribers(communityView.counts.subscribers),
           ),
           const SizedBox(width: 4),
           const Icon(Icons.people_rounded, size: 16.0),
           if (indicateFavorites &&
-              getFavoriteStatus?.call(context, communityView.community) == true &&
-              getCurrentSubscriptionStatus?.call(isUserLoggedIn, communityView, currentSubscriptions) == SubscribedType.subscribed) ...const [
+              getFavoriteStatus?.call(context, communityView.community) ==
+                  true &&
+              getCurrentSubscriptionStatus?.call(
+                      isUserLoggedIn, communityView, currentSubscriptions) ==
+                  SubscribedType.subscribed) ...const [
             Text(' · '),
             Icon(Icons.star_rounded, size: 15),
           ]
@@ -84,20 +94,32 @@ class CommunityListEntry extends StatelessWidget {
             ? null
             : IconButton(
                 onPressed: () {
-                  SubscribedType? subscriptionStatus = getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions);
-                  onSubscribeIconPressed?.call(isUserLoggedIn, context, communityView);
-                  showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
-                  context.read<AccountBloc>().add(const GetAccountSubscriptions());
+                  SubscribedType? subscriptionStatus =
+                      getCurrentSubscriptionStatus!(
+                          isUserLoggedIn, communityView, currentSubscriptions);
+                  onSubscribeIconPressed?.call(
+                      isUserLoggedIn, context, communityView);
+                  showSnackbar(
+                      subscriptionStatus == SubscribedType.notSubscribed
+                          ? l10n.addedCommunityToSubscriptions
+                          : l10n.removedCommunityFromSubscriptions);
+                  context
+                      .read<AccountBloc>()
+                      .add(const GetAccountSubscriptions());
                 },
                 icon: Icon(
-                  switch (getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions)) {
-                    SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                  switch (getCurrentSubscriptionStatus!(
+                      isUserLoggedIn, communityView, currentSubscriptions)) {
+                    SubscribedType.notSubscribed =>
+                      Icons.add_circle_outline_rounded,
                     SubscribedType.pending => Icons.pending_outlined,
-                    SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                    SubscribedType.subscribed =>
+                      Icons.remove_circle_outline_rounded,
                     _ => null,
                   },
                 ),
-                tooltip: switch (getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions)) {
+                tooltip: switch (getCurrentSubscriptionStatus!(
+                    isUserLoggedIn, communityView, currentSubscriptions)) {
                   SubscribedType.notSubscribed => l10n.subscribe,
                   SubscribedType.pending => l10n.unsubscribePending,
                   SubscribedType.subscribed => l10n.unsubscribe,
@@ -108,9 +130,11 @@ class CommunityListEntry extends StatelessWidget {
         onTap: () async {
           int? communityId = communityView.community.id;
           if (resolutionInstance != null) {
-            final LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance!)).lemmyApiV3;
+            final LemmyApiV3 lemmy =
+                (LemmyClient()..changeBaseUrl(resolutionInstance!)).lemmyApiV3;
             try {
-              final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: communityView.community.actorId));
+              final ResolveObjectResponse resolveObjectResponse = await lemmy
+                  .run(ResolveObject(q: communityView.community.actorId));
               communityId = resolveObjectResponse.community?.community.id;
             } catch (e) {
               // If we can't find it, then we'll get a standard error message about communityId being un-navigable
@@ -118,7 +142,8 @@ class CommunityListEntry extends StatelessWidget {
           }
 
           if (context.mounted) {
-            navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId);
+            navigateToFeedPage(context,
+                feedType: FeedType.community, communityId: communityId);
           }
         },
       ),

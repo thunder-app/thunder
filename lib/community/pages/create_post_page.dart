@@ -145,7 +145,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
-  final TextEditingController _customThumbnailTextController = TextEditingController();
+  final TextEditingController _customThumbnailTextController =
+      TextEditingController();
 
   /// The focus node for the body. This is used to keep track of the position of the cursor when toggling preview
   final FocusNode _bodyFocusNode = FocusNode();
@@ -179,7 +180,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _customThumbnailTextController.addListener(() {
       customThumbnail = _customThumbnailTextController.text;
       _validateSubmission();
-      debounce(const Duration(milliseconds: 1000), _updatePreview, [customThumbnail]);
+      debounce(const Duration(milliseconds: 1000), _updatePreview,
+          [customThumbnail]);
     });
 
     // Logic for pre-populating the post with the given fields
@@ -192,7 +194,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          if (context.mounted) context.read<CreatePostCubit>().uploadImages([widget.image!.path], isPostImage: true);
+          if (context.mounted)
+            context
+                .read<CreatePostCubit>()
+                .uploadImages([widget.image!.path], isPostImage: true);
         });
       }
 
@@ -203,7 +208,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
     if (widget.postView != null) {
       _titleTextController.text = widget.postView!.post.name;
       _urlTextController.text = widget.postView!.post.url ?? '';
-      _customThumbnailTextController.text = widget.postView!.post.thumbnailUrl ?? '';
+      _customThumbnailTextController.text =
+          widget.postView!.post.thumbnailUrl ?? '';
       _bodyTextController.text = widget.postView!.post.body ?? '';
       isNSFW = widget.postView!.post.nsfw;
       languageId = widget.postView!.post.languageId;
@@ -254,7 +260,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       draftType = DraftType.postCreateGeneral;
     }
 
-    Draft? draft = await Draft.fetchDraft(draftType, draftExistingId, draftReplyId);
+    Draft? draft =
+        await Draft.fetchDraft(draftType, draftExistingId, draftReplyId);
 
     if (draft != null) {
       _titleTextController.text = draft.title ?? '';
@@ -272,7 +279,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
       }
     });
 
-    if (context.mounted && draft?.isPostNotEmpty == true && _draftDiffersFromEdit(draft!)) {
+    if (context.mounted &&
+        draft?.isPostNotEmpty == true &&
+        _draftDiffersFromEdit(draft!)) {
       showSnackbar(
         AppLocalizations.of(context)!.restoredPostFromDraft,
         trailingIcon: Icons.delete_forever_rounded,
@@ -281,7 +290,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
           Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
           _titleTextController.text = widget.postView?.post.name ?? '';
           _urlTextController.text = widget.postView?.post.url ?? '';
-          _customThumbnailTextController.text = widget.postView?.post.thumbnailUrl ?? '';
+          _customThumbnailTextController.text =
+              widget.postView?.post.thumbnailUrl ?? '';
           _bodyTextController.text = widget.postView?.post.body ?? '';
         },
       );
@@ -315,7 +325,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   /// Attempts to get the suggested title for a given link
-  Future<String?> _getDataFromLink({String? link, bool updateTitleField = true}) async {
+  Future<String?> _getDataFromLink(
+      {String? link, bool updateTitleField = true}) async {
     link ??= widget.url;
 
     if (link?.isNotEmpty == true) {
@@ -345,7 +356,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       },
       child: BlocConsumer<CreatePostCubit, CreatePostState>(
         listener: (context, state) {
-          if (state.status == CreatePostStatus.success && state.postViewMedia != null) {
+          if (state.status == CreatePostStatus.success &&
+              state.postViewMedia != null) {
             widget.onPostSuccess?.call(state.postViewMedia!, userChanged);
             Navigator.of(context).pop();
           }
@@ -357,15 +369,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
           switch (state.status) {
             case CreatePostStatus.imageUploadSuccess:
-              String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
-              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
+              String markdownImages =
+                  state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
+              _bodyTextController.text = _bodyTextController.text.replaceRange(
+                  _bodyTextController.selection.end,
+                  _bodyTextController.selection.end,
+                  markdownImages);
               break;
             case CreatePostStatus.postImageUploadSuccess:
               _urlTextController.text = state.imageUrls?.first ?? '';
               break;
             case CreatePostStatus.imageUploadFailure:
             case CreatePostStatus.postImageUploadFailure:
-              showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              showSnackbar(l10n.postUploadImageError,
+                  leadingIcon: Icons.warning_rounded,
+                  leadingIconColor: theme.colorScheme.errorContainer);
             default:
               break;
           }
@@ -374,14 +392,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
           return KeyboardDismissOnTap(
             child: Scaffold(
               appBar: AppBar(
-                title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
+                title: Text(
+                    widget.postView != null ? l10n.editPost : l10n.createPost),
                 toolbarHeight: 70.0,
                 centerTitle: false,
                 actions: [
                   state.status == CreatePostStatus.submitting
                       ? const Padding(
                           padding: EdgeInsets.only(right: 20.0),
-                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                          child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator()),
                         )
                       : Padding(
                           padding: const EdgeInsets.only(right: 8.0),
@@ -391,20 +413,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 : () {
                                     saveDraft = false;
 
-                                    context.read<CreatePostCubit>().createOrEditPost(
+                                    context
+                                        .read<CreatePostCubit>()
+                                        .createOrEditPost(
                                           communityId: communityId!,
                                           name: _titleTextController.text,
                                           body: _bodyTextController.text,
                                           nsfw: isNSFW,
                                           url: url,
                                           customThumbnail: customThumbnail,
-                                          postIdBeingEdited: widget.postView?.post.id,
+                                          postIdBeingEdited:
+                                              widget.postView?.post.id,
                                           languageId: languageId,
                                         );
                                   },
                             icon: Icon(
-                              widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
-                              semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                              widget.postView != null
+                                  ? Icons.edit_rounded
+                                  : Icons.send_rounded,
+                              semanticLabel: widget.postView != null
+                                  ? l10n.editPost
+                                  : l10n.createPost,
                             ),
                           ),
                         ),
@@ -418,187 +447,233 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       child: SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                            CommunitySelector(
-                              communityId: communityId,
-                              communityView: communityView,
-                              onCommunitySelected: (CommunityView cv) {
-                                setState(() {
-                                  communityId = cv.community.id;
-                                  communityView = cv;
-                                });
-                                _validateSubmission();
-                              },
-                            ),
-                            const SizedBox(height: 4.0),
-                            UserSelector(
-                              profileModalHeading: l10n.selectAccountToPostAs,
-                              communityActorId: communityView?.community.actorId,
-                              onCommunityChanged: (CommunityView? cv) {
-                                if (cv == null) {
-                                  showSnackbar(l10n.unableToFindCommunityOnInstance);
-                                }
-
-                                setState(() {
-                                  communityId = cv?.community.id;
-                                  communityView = cv;
-                                });
-                                _validateSubmission();
-                              },
-                              onUserChanged: () => userChanged = true,
-                              enableAccountSwitching: widget.postView == null,
-                            ),
-                            const SizedBox(height: 12.0),
-                            TypeAheadField<String>(
-                              controller: _titleTextController,
-                              suggestionsCallback: (String pattern) async {
-                                if (pattern.isEmpty) {
-                                  String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
-                                  if (linkTitle?.isNotEmpty == true) {
-                                    return [linkTitle!];
-                                  }
-                                }
-                                return [];
-                              },
-                              itemBuilder: (BuildContext context, String itemData) {
-                                return ListTile(
-                                  title: Text(itemData),
-                                  subtitle: Text(l10n.suggestedTitle),
-                                );
-                              },
-                              onSelected: (String suggestion) {
-                                _titleTextController.text = suggestion;
-                              },
-                              builder: (context, controller, focusNode) => TextField(
-                                controller: controller,
-                                focusNode: focusNode,
-                                decoration: InputDecoration(hintText: l10n.postTitle),
-                              ),
-                              hideOnEmpty: true,
-                              hideOnLoading: true,
-                              hideOnError: true,
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _urlTextController,
-                              decoration: InputDecoration(
-                                hintText: l10n.postURL,
-                                errorText: urlError,
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    if (state.status == CreatePostStatus.postImageUploadInProgress) return;
-
-                                    List<String> imagesPath = await selectImagesToUpload();
-                                    if (context.mounted) context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
-                                  },
-                                  icon: state.status == CreatePostStatus.postImageUploadInProgress
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: Center(
-                                            child: SizedBox(
-                                              width: 18,
-                                              height: 18,
-                                              child: CircularProgressIndicator(),
-                                            ),
-                                          ),
-                                        )
-                                      : Icon(Icons.image, semanticLabel: l10n.uploadImage),
-                                ),
-                              ),
-                            ),
-                            if (LemmyClient.instance.supportsFeature(LemmyFeature.customThumbnail) && !isImageUrl(_urlTextController.text)) ...[
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                controller: _customThumbnailTextController,
-                                decoration: InputDecoration(
-                                  hintText: l10n.thumbnailUrl,
-                                  errorText: customThumbnailError,
-                                ),
-                              ),
-                            ],
-                            const SizedBox(height: 10),
-                            Visibility(
-                              visible: url.isNotEmpty,
-                              child: LinkPreviewCard(
-                                hideNsfw: false,
-                                scrapeMissingPreviews: false,
-                                originURL: url,
-                                mediaURL: isImageUrl(url)
-                                    ? url
-                                    : customThumbnail?.isNotEmpty == true && isImageUrl(customThumbnail!)
-                                        ? customThumbnail
-                                        : null,
-                                mediaHeight: null,
-                                mediaWidth: null,
-                                showFullHeightImages: false,
-                                edgeToEdgeImages: false,
-                                viewMode: ViewMode.comfortable,
-                                postId: null,
-                                markPostReadOnMediaView: false,
-                                isUserLoggedIn: true,
-                              ),
-                            ),
-                            if (crossPosts.isNotEmpty && widget.postView == null) const SizedBox(height: 6),
-                            Visibility(
-                              visible: url.isNotEmpty && crossPosts.isNotEmpty,
-                              child: CrossPosts(
-                                crossPosts: crossPosts,
-                                isNewPost: true,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60),
-                                  child: LanguageSelector(
-                                    languageId: languageId,
-                                    onLanguageSelected: (Language? language) {
-                                      setState(() => languageId = language?.id);
-                                    },
+                                CommunitySelector(
+                                  communityId: communityId,
+                                  communityView: communityView,
+                                  onCommunitySelected: (CommunityView cv) {
+                                    setState(() {
+                                      communityId = cv.community.id;
+                                      communityView = cv;
+                                    });
+                                    _validateSubmission();
+                                  },
+                                ),
+                                const SizedBox(height: 4.0),
+                                UserSelector(
+                                  profileModalHeading:
+                                      l10n.selectAccountToPostAs,
+                                  communityActorId:
+                                      communityView?.community.actorId,
+                                  onCommunityChanged: (CommunityView? cv) {
+                                    if (cv == null) {
+                                      showSnackbar(
+                                          l10n.unableToFindCommunityOnInstance);
+                                    }
+
+                                    setState(() {
+                                      communityId = cv?.community.id;
+                                      communityView = cv;
+                                    });
+                                    _validateSubmission();
+                                  },
+                                  onUserChanged: () => userChanged = true,
+                                  enableAccountSwitching:
+                                      widget.postView == null,
+                                ),
+                                const SizedBox(height: 12.0),
+                                TypeAheadField<String>(
+                                  controller: _titleTextController,
+                                  suggestionsCallback: (String pattern) async {
+                                    if (pattern.isEmpty) {
+                                      String? linkTitle =
+                                          await _getDataFromLink(
+                                              link: _urlTextController.text,
+                                              updateTitleField: false);
+                                      if (linkTitle?.isNotEmpty == true) {
+                                        return [linkTitle!];
+                                      }
+                                    }
+                                    return [];
+                                  },
+                                  itemBuilder:
+                                      (BuildContext context, String itemData) {
+                                    return ListTile(
+                                      title: Text(itemData),
+                                      subtitle: Text(l10n.suggestedTitle),
+                                    );
+                                  },
+                                  onSelected: (String suggestion) {
+                                    _titleTextController.text = suggestion;
+                                  },
+                                  builder: (context, controller, focusNode) =>
+                                      TextField(
+                                    controller: controller,
+                                    focusNode: focusNode,
+                                    decoration: InputDecoration(
+                                        hintText: l10n.postTitle),
+                                  ),
+                                  hideOnEmpty: true,
+                                  hideOnLoading: true,
+                                  hideOnError: true,
+                                ),
+                                const SizedBox(height: 20),
+                                TextFormField(
+                                  controller: _urlTextController,
+                                  decoration: InputDecoration(
+                                    hintText: l10n.postURL,
+                                    errorText: urlError,
+                                    suffixIcon: IconButton(
+                                      onPressed: () async {
+                                        if (state.status ==
+                                            CreatePostStatus
+                                                .postImageUploadInProgress)
+                                          return;
+
+                                        List<String> imagesPath =
+                                            await selectImagesToUpload();
+                                        if (context.mounted)
+                                          context
+                                              .read<CreatePostCubit>()
+                                              .uploadImages(imagesPath,
+                                                  isPostImage: true);
+                                      },
+                                      icon: state.status ==
+                                              CreatePostStatus
+                                                  .postImageUploadInProgress
+                                          ? const SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: Center(
+                                                child: SizedBox(
+                                                  width: 18,
+                                                  height: 18,
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
+                                              ),
+                                            )
+                                          : Icon(Icons.image,
+                                              semanticLabel: l10n.uploadImage),
+                                    ),
                                   ),
                                 ),
-                                Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: [
-                                    Text(l10n.nsfw),
-                                    const SizedBox(width: 4.0),
-                                    Switch(
-                                      value: isNSFW,
-                                      onChanged: (bool value) => setState(() => isNSFW = value),
+                                if (LemmyClient.instance.supportsFeature(
+                                        LemmyFeature.customThumbnail) &&
+                                    !isImageUrl(_urlTextController.text)) ...[
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    controller: _customThumbnailTextController,
+                                    decoration: InputDecoration(
+                                      hintText: l10n.thumbnailUrl,
+                                      errorText: customThumbnailError,
+                                    ),
+                                  ),
+                                ],
+                                const SizedBox(height: 10),
+                                Visibility(
+                                  visible: url.isNotEmpty,
+                                  child: LinkPreviewCard(
+                                    hideNsfw: false,
+                                    scrapeMissingPreviews: false,
+                                    originURL: url,
+                                    mediaURL: isImageUrl(url)
+                                        ? url
+                                        : customThumbnail?.isNotEmpty == true &&
+                                                isImageUrl(customThumbnail!)
+                                            ? customThumbnail
+                                            : null,
+                                    mediaHeight: null,
+                                    mediaWidth: null,
+                                    showFullHeightImages: false,
+                                    edgeToEdgeImages: false,
+                                    viewMode: ViewMode.comfortable,
+                                    postId: null,
+                                    markPostReadOnMediaView: false,
+                                    isUserLoggedIn: true,
+                                  ),
+                                ),
+                                if (crossPosts.isNotEmpty &&
+                                    widget.postView == null)
+                                  const SizedBox(height: 6),
+                                Visibility(
+                                  visible:
+                                      url.isNotEmpty && crossPosts.isNotEmpty,
+                                  child: CrossPosts(
+                                    crossPosts: crossPosts,
+                                    isNewPost: true,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                          maxWidth: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.60),
+                                      child: LanguageSelector(
+                                        languageId: languageId,
+                                        onLanguageSelected:
+                                            (Language? language) {
+                                          setState(
+                                              () => languageId = language?.id);
+                                        },
+                                      ),
+                                    ),
+                                    Wrap(
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        Text(l10n.nsfw),
+                                        const SizedBox(width: 4.0),
+                                        Switch(
+                                          value: isNSFW,
+                                          onChanged: (bool value) =>
+                                              setState(() => isNSFW = value),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            AnimatedCrossFade(
-                              firstChild: Container(
-                                margin: const EdgeInsets.only(top: 8.0),
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                  color: getBackgroundColor(context),
-                                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                const SizedBox(height: 10),
+                                AnimatedCrossFade(
+                                  firstChild: Container(
+                                    margin: const EdgeInsets.only(top: 8.0),
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      color: getBackgroundColor(context),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8.0)),
+                                    ),
+                                    child: CommonMarkdownBody(
+                                        body: _bodyTextController.text,
+                                        isComment: true),
+                                  ),
+                                  secondChild: MarkdownTextInputField(
+                                    controller: _bodyTextController,
+                                    focusNode: _bodyFocusNode,
+                                    label: l10n.postBody,
+                                    minLines: 8,
+                                    maxLines: null,
+                                    textStyle: theme.textTheme.bodyLarge,
+                                    spellCheckConfiguration:
+                                        const SpellCheckConfiguration
+                                            .disabled(),
+                                  ),
+                                  crossFadeState: showPreview
+                                      ? CrossFadeState.showFirst
+                                      : CrossFadeState.showSecond,
+                                  duration: const Duration(milliseconds: 120),
+                                  excludeBottomFocus: false,
                                 ),
-                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
-                              ),
-                              secondChild: MarkdownTextInputField(
-                                controller: _bodyTextController,
-                                focusNode: _bodyFocusNode,
-                                label: l10n.postBody,
-                                minLines: 8,
-                                maxLines: null,
-                                textStyle: theme.textTheme.bodyLarge,
-                                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
-                              ),
-                              crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                              duration: const Duration(milliseconds: 120),
-                              excludeBottomFocus: false,
-                            ),
-                          ]),
+                              ]),
                         ),
                       ),
                     ),
@@ -630,46 +705,71 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               ],
                               customTapActions: {
                                 MarkdownType.username: () {
-                                  showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
-                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                        '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                  showUserInputDialog(context,
+                                      title: l10n.username,
+                                      onUserSelected: (person) {
+                                    _bodyTextController.text =
+                                        _bodyTextController.text.replaceRange(
+                                            _bodyTextController.selection.end,
+                                            _bodyTextController.selection.end,
+                                            '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
                                   });
                                 },
                                 MarkdownType.community: () {
-                                  showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                    _bodyTextController.text = _bodyTextController.text.replaceRange(
-                                        _bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
+                                  showCommunityInputDialog(context,
+                                      title: l10n.community,
+                                      onCommunitySelected: (community) {
+                                    _bodyTextController.text =
+                                        _bodyTextController.text.replaceRange(
+                                            _bodyTextController.selection.end,
+                                            _bodyTextController.selection.end,
+                                            '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
                                   });
                                 },
                               },
-                              imageIsLoading: state.status == CreatePostStatus.imageUploadInProgress,
+                              imageIsLoading: state.status ==
+                                  CreatePostStatus.imageUploadInProgress,
                               customImageButtonAction: () async {
-                                if (state.status == CreatePostStatus.imageUploadInProgress) return;
+                                if (state.status ==
+                                    CreatePostStatus.imageUploadInProgress)
+                                  return;
 
-                                List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
-                                if (context.mounted) context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
+                                List<String> imagesPath =
+                                    await selectImagesToUpload(
+                                        allowMultiple: true);
+                                if (context.mounted)
+                                  context.read<CreatePostCubit>().uploadImages(
+                                      imagesPath,
+                                      isPostImage: false);
                               },
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
+                            padding: const EdgeInsets.only(
+                                bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
                             child: IconButton(
                               onPressed: () {
                                 if (!showPreview) {
-                                  setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
+                                  setState(() => wasKeyboardVisible =
+                                      keyboardVisibilityController.isVisible);
                                   FocusManager.instance.primaryFocus?.unfocus();
                                 }
 
                                 setState(() => showPreview = !showPreview);
-                                if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
+                                if (!showPreview && wasKeyboardVisible)
+                                  _bodyFocusNode.requestFocus();
                               },
                               icon: Icon(
-                                showPreview ? Icons.visibility_outlined : Icons.visibility,
+                                showPreview
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility,
                                 color: theme.colorScheme.onSecondary,
                                 semanticLabel: l10n.postTogglePreview,
                               ),
-                              visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
-                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
+                              visualDensity: const VisualDensity(
+                                  horizontal: 1.0, vertical: 1.0),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.secondary),
                             ),
                           ),
                         ],
@@ -711,11 +811,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   void _validateSubmission() {
     final Uri? parsedUrl = Uri.tryParse(_urlTextController.text);
-    final Uri? parsedCustomThumbnail = Uri.tryParse(_customThumbnailTextController.text);
+    final Uri? parsedCustomThumbnail =
+        Uri.tryParse(_customThumbnailTextController.text);
 
     if (isSubmitButtonDisabled) {
       // It's disabled, check if we can enable it.
-      if (_titleTextController.text.isNotEmpty && parsedUrl != null && parsedCustomThumbnail != null && communityId != null) {
+      if (_titleTextController.text.isNotEmpty &&
+          parsedUrl != null &&
+          parsedCustomThumbnail != null &&
+          communityId != null) {
         setState(() {
           isSubmitButtonDisabled = false;
           urlError = null;
@@ -724,11 +828,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
       }
     } else {
       // It's enabled, check if we need to disable it.
-      if (_titleTextController.text.isEmpty || parsedUrl == null || parsedCustomThumbnail == null || communityId == null) {
+      if (_titleTextController.text.isEmpty ||
+          parsedUrl == null ||
+          parsedCustomThumbnail == null ||
+          communityId == null) {
         setState(() {
           isSubmitButtonDisabled = true;
-          urlError = parsedUrl == null ? AppLocalizations.of(context)!.notValidUrl : null;
-          customThumbnailError = parsedCustomThumbnail == null ? AppLocalizations.of(context)!.notValidUrl : null;
+          urlError = parsedUrl == null
+              ? AppLocalizations.of(context)!.notValidUrl
+              : null;
+          customThumbnailError = parsedCustomThumbnail == null
+              ? AppLocalizations.of(context)!.notValidUrl
+              : null;
         });
       }
     }
@@ -784,7 +895,8 @@ class _CommunitySelectorState extends State<CommunitySelector> {
             children: [
               Row(
                 children: [
-                  CommunityAvatar(community: widget.communityView?.community, radius: 16),
+                  CommunityAvatar(
+                      community: widget.communityView?.community, radius: 16),
                   const SizedBox(width: 12),
                   widget.communityId != null
                       ? Column(
@@ -795,7 +907,8 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                               context,
                               widget.communityView?.community.name,
                               widget.communityView?.community.title,
-                              fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                              fetchInstanceNameFromUrl(
+                                  widget.communityView?.community.actorId),
                               // Override, because we have the display name right above
                               useDisplayName: false,
                             )
@@ -836,7 +949,11 @@ class DraftPost {
 
   Map<String, dynamic> toJson() => {'title': title, 'url': url, 'text': text};
 
-  static fromJson(Map<String, dynamic> json) => DraftPost(title: json['title'], url: json['url'], text: json['text']);
+  static fromJson(Map<String, dynamic> json) =>
+      DraftPost(title: json['title'], url: json['url'], text: json['text']);
 
-  bool get isNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || text?.isNotEmpty == true;
+  bool get isNotEmpty =>
+      title?.isNotEmpty == true ||
+      url?.isNotEmpty == true ||
+      text?.isNotEmpty == true;
 }

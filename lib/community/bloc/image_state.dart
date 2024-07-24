@@ -1,6 +1,13 @@
 part of 'image_bloc.dart';
 
-enum ImageStatus { initial, uploading, uploadingPostImage, success, successPostImage, failure }
+enum ImageStatus {
+  initial,
+  uploading,
+  uploadingPostImage,
+  success,
+  successPostImage,
+  failure
+}
 
 class ImageState extends Equatable {
   const ImageState({

@@ -20,7 +20,8 @@ import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/pages/notifications_pages.dart';
 
-void navigateToNotificationReplyPage(BuildContext context, {required int? replyId, required String? accountId}) async {
+void navigateToNotificationReplyPage(BuildContext context,
+    {required int? replyId, required String? accountId}) async {
   // It can take a little while to set up notifications, so show a loading page
   showLoadingPage(context);
 
@@ -30,11 +31,15 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
 
   bool switchedAccount = false;
   String? originalAccount = account?.id;
-  String? originalAnonymousInstance = context.mounted ? context.read<ThunderBloc>().state.currentAnonymousInstance : null;
+  String? originalAnonymousInstance = context.mounted
+      ? context.read<ThunderBloc>().state.currentAnonymousInstance
+      : null;
 
   if (account?.id != accountId && accountId != null && context.mounted) {
     // Switch to the notification's account without reloading the app
-    context.read<AuthBloc>().add(SwitchAccount(accountId: accountId, reload: false));
+    context
+        .read<AuthBloc>()
+        .add(SwitchAccount(accountId: accountId, reload: false));
 
     // Set the account locally here so we don't have to wait for the event to complete
     account = await Account.fetchAccount(accountId);
@@ -54,7 +59,10 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
 
   // Load the notifications
   while (!doneFetching) {
-    final GetRepliesResponse getRepliesResponse = await (LemmyClient()..changeBaseUrl(account.instance!)).lemmyApiV3.run(GetReplies(
+    final GetRepliesResponse getRepliesResponse = await (LemmyClient()
+          ..changeBaseUrl(account.instance!))
+        .lemmyApiV3
+        .run(GetReplies(
           sort: CommentSortType.new_,
           page: currentPage,
           limit: 50,
@@ -63,14 +71,17 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
         ));
 
     allReplies.addAll(getRepliesResponse.replies);
-    specificReply ??= getRepliesResponse.replies.firstWhereOrNull((crv) => crv.commentReply.id == replyId);
+    specificReply ??= getRepliesResponse.replies
+        .firstWhereOrNull((crv) => crv.commentReply.id == replyId);
 
     doneFetching = specificReply != null || getRepliesResponse.replies.isEmpty;
     ++currentPage;
   }
 
   if (context.mounted) {
-    final NotificationsReplyPage notificationsReplyPage = NotificationsReplyPage(replies: specificReply == null ? allReplies : [specificReply]);
+    final NotificationsReplyPage notificationsReplyPage =
+        NotificationsReplyPage(
+            replies: specificReply == null ? allReplies : [specificReply]);
 
     final SwipeablePageRoute route = SwipeablePageRoute(
       transitionDuration: isLoadingPageShown
@@ -78,10 +89,14 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
           : reduceAnimations
               ? const Duration(milliseconds: 100)
               : null,
-      reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
+      reverseTransitionDuration: reduceAnimations
+          ? const Duration(milliseconds: 100)
+          : const Duration(milliseconds: 500),
       backGestureDetectionWidth: 45,
-      canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-      canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+      canSwipe: Platform.isIOS ||
+          thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+      canOnlySwipeFromEdge:
+          !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: thunderBloc),
@@ -95,16 +110,24 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
       if (switchedAccount) {
         if (originalAccount != null) {
           // We switched from an account, so switch back
-          context.read<AuthBloc>().add(SwitchAccount(accountId: originalAccount, reload: false));
+          context
+              .read<AuthBloc>()
+              .add(SwitchAccount(accountId: originalAccount, reload: false));
         } else if (originalAnonymousInstance != null) {
           // We switched from anonymous, so switch back
           context.read<AuthBloc>().add(const LogOutOfAllAccounts());
-          context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(originalAnonymousInstance));
-          context.read<AuthBloc>().add(InstanceChanged(instance: originalAnonymousInstance));
+          context
+              .read<ThunderBloc>()
+              .add(OnSetCurrentAnonymousInstance(originalAnonymousInstance));
+          context
+              .read<AuthBloc>()
+              .add(InstanceChanged(instance: originalAnonymousInstance));
         }
       }
 
-      context.read<InboxBloc>().add(const GetInboxEvent(reset: true, inboxType: InboxType.all));
+      context
+          .read<InboxBloc>()
+          .add(const GetInboxEvent(reset: true, inboxType: InboxType.all));
     });
   }
 }

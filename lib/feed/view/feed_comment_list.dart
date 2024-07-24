@@ -47,7 +47,8 @@ class FeedCommentList extends StatelessWidget {
               onReplyEditAction: (CommentView commentView, bool isEdit) {
                 // TODO: Implement action
               },
-              isOwnComment: commentViews[index].comment.creatorId == state.account?.userId,
+              isOwnComment: commentViews[index].comment.creatorId ==
+                  state.account?.userId,
               disableActions: true,
             ),
             const FeedCardDivider(),

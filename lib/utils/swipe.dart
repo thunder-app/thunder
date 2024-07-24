@@ -3,7 +3,11 @@ import 'package:thunder/community/utils/post_actions.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
-bool disableFullPageSwipe({bool isUserLoggedIn = false, required ThunderState state, bool isPostPage = false, isFeedPage = false}) {
+bool disableFullPageSwipe(
+    {bool isUserLoggedIn = false,
+    required ThunderState state,
+    bool isPostPage = false,
+    isFeedPage = false}) {
   if (isPostPage == false && isFeedPage == false) {
     return false;
   }
@@ -20,7 +24,8 @@ bool disableFullPageSwipe({bool isUserLoggedIn = false, required ThunderState st
     direction = determinePostSwipeDirection(isUserLoggedIn, state);
   }
 
-  if (direction == DismissDirection.none || direction == DismissDirection.endToStart) {
+  if (direction == DismissDirection.none ||
+      direction == DismissDirection.endToStart) {
     return false;
   }
 

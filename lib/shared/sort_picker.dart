@@ -65,12 +65,17 @@ List<ListPickerItem<SortType>> topSortTypeItems = [
   ),
 ];
 
-List<ListPickerItem<SortType>> allSortTypeItems = [...SortPicker.getDefaultSortTypeItems(minimumVersion: LemmyClient.maxVersion), ...topSortTypeItems];
+List<ListPickerItem<SortType>> allSortTypeItems = [
+  ...SortPicker.getDefaultSortTypeItems(minimumVersion: LemmyClient.maxVersion),
+  ...topSortTypeItems
+];
 
 class SortPicker extends BottomSheetListPicker<SortType> {
   final Version? minimumVersion;
 
-  static List<ListPickerItem<SortType>> getDefaultSortTypeItems({required Version? minimumVersion}) => [
+  static List<ListPickerItem<SortType>> getDefaultSortTypeItems(
+          {required Version? minimumVersion}) =>
+      [
         ListPickerItem(
           payload: SortType.hot,
           icon: Icons.local_fire_department_rounded,
@@ -81,13 +86,15 @@ class SortPicker extends BottomSheetListPicker<SortType> {
           icon: Icons.rocket_launch_rounded,
           label: AppLocalizations.of(GlobalContext.context)!.active,
         ),
-        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.sortTypeScaled))
+        if (LemmyClient.versionSupportsFeature(
+            minimumVersion, LemmyFeature.sortTypeScaled))
           ListPickerItem(
             payload: SortType.scaled,
             icon: Icons.line_weight_rounded,
             label: AppLocalizations.of(GlobalContext.context)!.scaled,
           ),
-        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.sortTypeControversial))
+        if (LemmyClient.versionSupportsFeature(
+            minimumVersion, LemmyFeature.sortTypeControversial))
           ListPickerItem(
             payload: SortType.controversial,
             icon: Icons.warning_rounded,
@@ -126,7 +133,9 @@ class SortPicker extends BottomSheetListPicker<SortType> {
     List<ListPickerItem<SortType>>? items,
     super.previouslySelected,
     required this.minimumVersion,
-  }) : super(items: items ?? getDefaultSortTypeItems(minimumVersion: minimumVersion));
+  }) : super(
+            items: items ??
+                getDefaultSortTypeItems(minimumVersion: minimumVersion));
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -141,7 +150,9 @@ class _SortPickerState extends State<SortPicker> {
       child: AnimatedSize(
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeInOut,
-        child: topSelected ? topSortPicker() : defaultSortPicker(minimumVersion: widget.minimumVersion),
+        child: topSelected
+            ? topSortPicker()
+            : defaultSortPicker(minimumVersion: widget.minimumVersion),
       ),
     );
   }
@@ -168,7 +179,10 @@ class _SortPickerState extends State<SortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(SortPicker.getDefaultSortTypeItems(minimumVersion: widget.minimumVersion), theme),
+            ..._generateList(
+                SortPicker.getDefaultSortTypeItems(
+                    minimumVersion: widget.minimumVersion),
+                theme),
             PickerItem(
               label: AppLocalizations.of(GlobalContext.context)!.top,
               icon: Icons.military_tech,
@@ -177,7 +191,9 @@ class _SortPickerState extends State<SortPicker> {
                   topSelected = true;
                 });
               },
-              isSelected: topSortTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
+              isSelected: topSortTypeItems
+                  .map((item) => item.payload)
+                  .contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
             )
           ],
@@ -196,7 +212,8 @@ class _SortPickerState extends State<SortPicker> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Semantics(
-          label: '${AppLocalizations.of(context)!.sortByTop},${AppLocalizations.of(context)!.backButton}',
+          label:
+              '${AppLocalizations.of(context)!.sortByTop},${AppLocalizations.of(context)!.backButton}',
           child: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: Material(
@@ -249,7 +266,8 @@ class _SortPickerState extends State<SortPicker> {
     );
   }
 
-  List<Widget> _generateList(List<ListPickerItem<SortType>> items, ThemeData theme) {
+  List<Widget> _generateList(
+      List<ListPickerItem<SortType>> items, ThemeData theme) {
     return items
         .map((item) => PickerItem(
             label: item.label,

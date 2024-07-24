@@ -9,7 +9,8 @@ import 'package:thunder/core/models/version.dart';
 import 'package:version/version.dart' as version_parser;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-String getCurrentVersion({bool removeInternalBuildNumber = false, bool trimV = false}) {
+String getCurrentVersion(
+    {bool removeInternalBuildNumber = false, bool trimV = false}) {
   RegExp regex = RegExp(r'(.+)\+.*');
   Match? match = regex.firstMatch(globals.currentVersion);
 
@@ -28,14 +29,17 @@ Future<String> fetchCurrentVersionChangelog() async {
 
   const url = 'https://api.github.com/repos/thunder-app/thunder/releases';
 
-  final String currentVersion = getCurrentVersion(removeInternalBuildNumber: true, trimV: true);
+  final String currentVersion =
+      getCurrentVersion(removeInternalBuildNumber: true, trimV: true);
 
   try {
-    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 5));
+    final response =
+        await http.get(Uri.parse(url)).timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       var releases = json.decode(response.body);
-      var thisRelease = (releases as List).firstWhere((release) => release['tag_name'] == currentVersion);
+      var thisRelease = (releases as List)
+          .firstWhere((release) => release['tag_name'] == currentVersion);
       _currentVersionChangelog = thisRelease['body'] as String;
       return _currentVersionChangelog!;
     }
@@ -43,7 +47,10 @@ Future<String> fetchCurrentVersionChangelog() async {
     // Ignore, we will return error message below.
   }
 
-  return GlobalContext.context.mounted ? AppLocalizations.of(GlobalContext.context)!.unableToRetrieveChangelog(currentVersion) : '';
+  return GlobalContext.context.mounted
+      ? AppLocalizations.of(GlobalContext.context)!
+          .unableToRetrieveChangelog(currentVersion)
+      : '';
 }
 
 Future<Version> fetchVersion() async {
@@ -51,25 +58,37 @@ Future<Version> fetchVersion() async {
 
   try {
     String currentVersion = getCurrentVersion();
-    version_parser.Version currentVersionParsed = version_parser.Version.parse(_trimV(currentVersion));
+    version_parser.Version currentVersionParsed =
+        version_parser.Version.parse(_trimV(currentVersion));
 
-    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 5));
+    final response =
+        await http.get(Uri.parse(url)).timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       final release = json.decode(response.body);
       String latestVersion = release[0]['tag_name'];
       String latestVersionUrl = release[0]['html_url'];
 
-      version_parser.Version latestVersionParsed = version_parser.Version.parse(_trimV(latestVersion));
+      version_parser.Version latestVersionParsed =
+          version_parser.Version.parse(_trimV(latestVersion));
 
       if (latestVersionParsed > currentVersionParsed) {
-        return Version(version: currentVersion, latestVersion: latestVersion, latestVersionUrl: latestVersionUrl, hasUpdate: true);
+        return Version(
+            version: currentVersion,
+            latestVersion: latestVersion,
+            latestVersionUrl: latestVersionUrl,
+            hasUpdate: true);
       } else {
-        return Version(version: 'N/A', latestVersion: latestVersion, latestVersionUrl: latestVersionUrl, hasUpdate: false);
+        return Version(
+            version: 'N/A',
+            latestVersion: latestVersion,
+            latestVersionUrl: latestVersionUrl,
+            hasUpdate: false);
       }
     }
 
-    return Version(version: currentVersion, latestVersion: 'N/A', hasUpdate: false);
+    return Version(
+        version: currentVersion, latestVersion: 'N/A', hasUpdate: false);
   } catch (e) {
     return Version(version: 'N/A', latestVersion: 'N/A', hasUpdate: false);
   }

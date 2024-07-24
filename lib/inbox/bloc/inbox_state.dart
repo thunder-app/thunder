@@ -75,15 +75,20 @@ class InboxState extends Equatable {
       showUnreadOnly: showUnreadOnly ?? this.showUnreadOnly,
       inboxReplyPage: inboxReplyPage ?? this.inboxReplyPage,
       inboxMentionPage: inboxMentionPage ?? this.inboxMentionPage,
-      inboxPrivateMessagePage: inboxPrivateMessagePage ?? this.inboxPrivateMessagePage,
+      inboxPrivateMessagePage:
+          inboxPrivateMessagePage ?? this.inboxPrivateMessagePage,
       totalUnreadCount: totalUnreadCount ?? this.totalUnreadCount,
       repliesUnreadCount: repliesUnreadCount ?? this.repliesUnreadCount,
       mentionsUnreadCount: mentionsUnreadCount ?? this.mentionsUnreadCount,
       messagesUnreadCount: messagesUnreadCount ?? this.messagesUnreadCount,
-      hasReachedInboxReplyEnd: hasReachedInboxReplyEnd ?? this.hasReachedInboxReplyEnd,
-      hasReachedInboxMentionEnd: hasReachedInboxMentionEnd ?? this.hasReachedInboxMentionEnd,
-      hasReachedInboxPrivateMessageEnd: hasReachedInboxPrivateMessageEnd ?? this.hasReachedInboxPrivateMessageEnd,
-      inboxReplyMarkedAsRead: inboxReplyMarkedAsRead ?? this.inboxReplyMarkedAsRead,
+      hasReachedInboxReplyEnd:
+          hasReachedInboxReplyEnd ?? this.hasReachedInboxReplyEnd,
+      hasReachedInboxMentionEnd:
+          hasReachedInboxMentionEnd ?? this.hasReachedInboxMentionEnd,
+      hasReachedInboxPrivateMessageEnd: hasReachedInboxPrivateMessageEnd ??
+          this.hasReachedInboxPrivateMessageEnd,
+      inboxReplyMarkedAsRead:
+          inboxReplyMarkedAsRead ?? this.inboxReplyMarkedAsRead,
     );
   }
 

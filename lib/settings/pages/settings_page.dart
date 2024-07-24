@@ -36,17 +36,50 @@ class _SettingsPageState extends State<SettingsPage> {
     final l10n = AppLocalizations.of(context)!;
 
     final List<SettingTopic> topics = [
-      SettingTopic(title: l10n.general, icon: Icons.settings, path: SETTINGS_GENERAL_PAGE),
-      SettingTopic(title: l10n.filters, icon: Icons.filter_alt_rounded, path: SETTINGS_FILTERS_PAGE),
-      SettingTopic(title: l10n.appearance, icon: Icons.color_lens_rounded, path: SETTINGS_APPEARANCE_PAGE),
-      SettingTopic(title: l10n.gestures, icon: Icons.swipe, path: SETTINGS_GESTURES_PAGE),
-      SettingTopic(title: l10n.video, icon: Icons.video_settings, path: SETTINGS_VIDEO_PAGE),
-      SettingTopic(title: l10n.floatingActionButton, icon: Icons.settings_applications_rounded, path: SETTINGS_FAB_PAGE),
-      SettingTopic(title: l10n.accessibility, icon: Icons.accessibility, path: SETTINGS_ACCESSIBILITY_PAGE),
-      SettingTopic(title: l10n.account(0), icon: Icons.person_rounded, path: SETTINGS_ACCOUNT_PAGE),
-      SettingTopic(title: l10n.userLabels, icon: Icons.label_rounded, path: SETTINGS_USER_LABELS_PAGE),
-      SettingTopic(title: l10n.about, icon: Icons.info_rounded, path: SETTINGS_ABOUT_PAGE),
-      SettingTopic(title: l10n.debug, icon: Icons.developer_mode_rounded, path: SETTINGS_DEBUG_PAGE),
+      SettingTopic(
+          title: l10n.general,
+          icon: Icons.settings,
+          path: SETTINGS_GENERAL_PAGE),
+      SettingTopic(
+          title: l10n.filters,
+          icon: Icons.filter_alt_rounded,
+          path: SETTINGS_FILTERS_PAGE),
+      SettingTopic(
+          title: l10n.appearance,
+          icon: Icons.color_lens_rounded,
+          path: SETTINGS_APPEARANCE_PAGE),
+      SettingTopic(
+          title: l10n.gestures,
+          icon: Icons.swipe,
+          path: SETTINGS_GESTURES_PAGE),
+      SettingTopic(
+          title: l10n.video,
+          icon: Icons.video_settings,
+          path: SETTINGS_VIDEO_PAGE),
+      SettingTopic(
+          title: l10n.floatingActionButton,
+          icon: Icons.settings_applications_rounded,
+          path: SETTINGS_FAB_PAGE),
+      SettingTopic(
+          title: l10n.accessibility,
+          icon: Icons.accessibility,
+          path: SETTINGS_ACCESSIBILITY_PAGE),
+      SettingTopic(
+          title: l10n.account(0),
+          icon: Icons.person_rounded,
+          path: SETTINGS_ACCOUNT_PAGE),
+      SettingTopic(
+          title: l10n.userLabels,
+          icon: Icons.label_rounded,
+          path: SETTINGS_USER_LABELS_PAGE),
+      SettingTopic(
+          title: l10n.about,
+          icon: Icons.info_rounded,
+          path: SETTINGS_ABOUT_PAGE),
+      SettingTopic(
+          title: l10n.debug,
+          icon: Icons.developer_mode_rounded,
+          path: SETTINGS_DEBUG_PAGE),
     ];
 
     return Scaffold(
@@ -70,14 +103,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
                 child: SearchAnchor.bar(
                   searchController: _searchController,
-                  barBackgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.surfaceVariant),
+                  barBackgroundColor: MaterialStatePropertyAll(
+                      Theme.of(context).colorScheme.surfaceVariant),
                   barElevation: MaterialStateProperty.all(0),
                   barHintText: l10n.search,
-                  suggestionsBuilder: (BuildContext context, SearchController controller) {
-                    final List<LocalSettings> localSettings = LocalSettings.values
+                  suggestionsBuilder:
+                      (BuildContext context, SearchController controller) {
+                    final List<LocalSettings> localSettings = LocalSettings
+                        .values
                         .where((item) =>
                             item.searchable &&
-                            l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
+                            l10n
+                                .getLocalSettingLocalization(item.key)
+                                .toLowerCase()
+                                .contains(
                                   controller.text.toLowerCase(),
                                 ))
                         .toSet()
@@ -92,13 +131,18 @@ class _SettingsPageState extends State<SettingsPage> {
                               subtitle: Text(
                                   "${l10n.getLocalSettingLocalization(localSettings[index].category!.toString())}${localSettings[index].subCategory == null ? '' : ' > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}'}"),
                               onTap: () {
-                                navigateToSetting(context, localSettings[index]);
+                                navigateToSetting(
+                                    context, localSettings[index]);
                                 controller.closeView(null);
                                 controller.clear();
                               },
                               title: Text(
-                                l10n.getLocalSettingLocalization(localSettings[index].key),
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                                l10n.getLocalSettingLocalization(
+                                    localSettings[index].key),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                             ));
                   },
@@ -136,7 +180,8 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.all(16.0),
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Text('Thunder ${getCurrentVersion(removeInternalBuildNumber: true)}'),
+                child: Text(
+                    'Thunder ${getCurrentVersion(removeInternalBuildNumber: true)}'),
               ),
             ),
           )

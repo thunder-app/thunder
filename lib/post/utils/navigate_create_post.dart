@@ -42,13 +42,18 @@ Future<void> navigateToCreatePostPage(
     final bool reduceAnimations = thunderBloc.state.reduceAnimations;
 
     await Navigator.of(context).push(SwipeablePageRoute(
-      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+      transitionDuration:
+          reduceAnimations ? const Duration(milliseconds: 100) : null,
       canOnlySwipeFromEdge: true,
       backGestureDetectionWidth: 45,
       builder: (navigatorContext) {
         return MultiBlocProvider(
           providers: [
-            feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
+            feedBloc != null
+                ? BlocProvider<FeedBloc>.value(value: feedBloc)
+                : BlocProvider(
+                    create: (context) =>
+                        FeedBloc(lemmyClient: LemmyClient.instance)),
             BlocProvider<ThunderBloc>.value(value: thunderBloc),
             BlocProvider<AccountBloc>.value(value: accountBloc),
             BlocProvider<CreatePostCubit>.value(value: createPostCubit),
@@ -72,7 +77,9 @@ Future<void> navigateToCreatePostPage(
                     },
                   );
 
-                  context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
+                  context
+                      .read<FeedBloc>()
+                      .add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
                 } catch (e) {}
               }
             },
@@ -81,6 +88,7 @@ Future<void> navigateToCreatePostPage(
       },
     ));
   } catch (e) {
-    if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
+    if (context.mounted)
+      showSnackbar(AppLocalizations.of(context)!.unexpectedError);
   }
 }

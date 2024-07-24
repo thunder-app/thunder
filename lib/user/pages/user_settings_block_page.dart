@@ -24,7 +24,8 @@ class UserSettingsBlockPage extends StatefulWidget {
   State<UserSettingsBlockPage> createState() => _UserSettingsBlockPageState();
 }
 
-class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with SingleTickerProviderStateMixin {
+class _UserSettingsBlockPageState extends State<UserSettingsBlockPage>
+    with SingleTickerProviderStateMixin {
   /// The controller for the tab bar used for switching between blocked users, blocked communities, and blocked instances.
   late TabController tabController;
 
@@ -41,7 +42,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     super.dispose();
   }
 
-  List<Widget> getPersonBlocks(BuildContext context, UserSettingsState state, List<Person> persons) {
+  List<Widget> getPersonBlocks(
+      BuildContext context, UserSettingsState state, List<Person> persons) {
     final l10n = AppLocalizations.of(context)!;
 
     return persons.map((person) {
@@ -54,8 +56,10 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
         ),
         preferBelow: false,
         child: ListTile(
-          contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
-          title: Text(person.displayName ?? person.name, overflow: TextOverflow.ellipsis),
+          contentPadding:
+              const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
+          title: Text(person.displayName ?? person.name,
+              overflow: TextOverflow.ellipsis),
           subtitle: UserFullNameWidget(
             context,
             person.name,
@@ -65,7 +69,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             useDisplayName: false,
           ),
           leading: UserAvatar(person: person),
-          trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id
+          trailing: state.status == UserSettingsStatus.blocking &&
+                  state.personBeingBlocked == person.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: SizedBox(
@@ -76,17 +81,23 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: person.id)),
+                  onPressed: () => context
+                      .read<UserSettingsBloc>()
+                      .add(UnblockPersonEvent(personId: person.id)),
                 ),
           onTap: () {
-            navigateToFeedPage(context, feedType: FeedType.user, username: "${person.name}@${fetchInstanceNameFromUrl(person.actorId)}");
+            navigateToFeedPage(context,
+                feedType: FeedType.user,
+                username:
+                    "${person.name}@${fetchInstanceNameFromUrl(person.actorId)}");
           },
         ),
       );
     }).toList();
   }
 
-  List<Widget> getCommunityBlocks(BuildContext context, UserSettingsState state, List<Community> communities) {
+  List<Widget> getCommunityBlocks(BuildContext context, UserSettingsState state,
+      List<Community> communities) {
     final l10n = AppLocalizations.of(context)!;
 
     return communities.map((community) {
@@ -99,7 +110,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
         ),
         preferBelow: false,
         child: ListTile(
-          contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
+          contentPadding:
+              const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
           title: Text(community.title, overflow: TextOverflow.ellipsis),
           subtitle: CommunityFullNameWidget(
             context,
@@ -110,7 +122,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             useDisplayName: false,
           ),
           leading: CommunityAvatar(community: community, radius: 16.0),
-          trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
+          trailing: state.status == UserSettingsStatus.blocking &&
+                  state.communityBeingBlocked == community.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: SizedBox(
@@ -121,17 +134,23 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: community.id)),
+                  onPressed: () => context
+                      .read<UserSettingsBloc>()
+                      .add(UnblockCommunityEvent(communityId: community.id)),
                 ),
           onTap: () {
-            navigateToFeedPage(context, feedType: FeedType.community, communityName: "${community.name}@${fetchInstanceNameFromUrl(community.actorId)}");
+            navigateToFeedPage(context,
+                feedType: FeedType.community,
+                communityName:
+                    "${community.name}@${fetchInstanceNameFromUrl(community.actorId)}");
           },
         ),
       );
     }).toList();
   }
 
-  List<Widget> getInstanceBlocks(BuildContext context, UserSettingsState state, List<Instance> instances) {
+  List<Widget> getInstanceBlocks(
+      BuildContext context, UserSettingsState state, List<Instance> instances) {
     final l10n = AppLocalizations.of(context)!;
 
     final theme = Theme.of(context);
@@ -141,7 +160,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
         message: instance.domain,
         preferBelow: false,
         child: ListTile(
-          contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
+          contentPadding:
+              const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
           title: Text(instance.domain, overflow: TextOverflow.ellipsis),
           leading: CircleAvatar(
             backgroundColor: theme.colorScheme.secondaryContainer,
@@ -155,7 +175,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
               ),
             ),
           ),
-          trailing: state.status == UserSettingsStatus.blocking && state.instanceBeingBlocked == instance.id
+          trailing: state.status == UserSettingsStatus.blocking &&
+                  state.instanceBeingBlocked == instance.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: SizedBox(
@@ -166,10 +187,13 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id)),
+                  onPressed: () => context
+                      .read<UserSettingsBloc>()
+                      .add(UnblockInstanceEvent(instanceId: instance.id)),
                 ),
           onTap: () {
-            navigateToInstancePage(context, instanceHost: instance.domain, instanceId: instance.id);
+            navigateToInstancePage(context,
+                instanceHost: instance.domain, instanceId: instance.id);
           },
         ),
       );
@@ -189,7 +213,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 context,
                 title: l10n.blockUser,
                 onUserSelected: (personView) {
-                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personView.person.id, unblock: false));
+                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(
+                      personId: personView.person.id, unblock: false));
                 },
               );
               break;
@@ -198,7 +223,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 context,
                 title: l10n.blockCommunity,
                 onCommunitySelected: (communityView) {
-                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
+                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(
+                      communityId: communityView.community.id, unblock: false));
                 },
               );
               break;
@@ -207,7 +233,9 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 context,
                 title: l10n.blockInstance,
                 onInstanceSelected: (instanceWithFederationState) {
-                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instanceWithFederationState.id, unblock: false));
+                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(
+                      instanceId: instanceWithFederationState.id,
+                      unblock: false));
                 },
               );
               break;
@@ -219,16 +247,20 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
       ),
       body: BlocConsumer<UserSettingsBloc, UserSettingsState>(
         listener: (context, state) {
-          bool isBlock = (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0);
+          bool isBlock = (state.personBeingBlocked != 0 ||
+              state.communityBeingBlocked != 0 ||
+              state.instanceBeingBlocked != 0);
 
           if (state.status == UserSettingsStatus.failure && !isBlock) {
             return showSnackbar(state.errorMessage ?? l10n.unexpectedError);
           }
 
           if (state.status == UserSettingsStatus.failure) {
-            showSnackbar(l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage));
+            showSnackbar(l10n.failedToUnblock(
+                state.errorMessage ?? l10n.missingErrorMessage));
           } else if (state.status == UserSettingsStatus.failedRevert) {
-            showSnackbar(l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
+            showSnackbar(l10n
+                .failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
           } else if (state.status == UserSettingsStatus.revert) {
             showSnackbar(l10n.successfullyBlocked);
           } else if (state.status == UserSettingsStatus.successBlock) {
@@ -237,23 +269,31 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
               trailingIcon: Icons.undo_rounded,
               trailingAction: () {
                 if (state.personBeingBlocked != 0) {
-                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBeingBlocked, unblock: false));
+                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(
+                      personId: state.personBeingBlocked, unblock: false));
                 } else if (state.communityBeingBlocked != 0) {
-                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: state.communityBeingBlocked, unblock: false));
+                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(
+                      communityId: state.communityBeingBlocked,
+                      unblock: false));
                 } else if (state.instanceBeingBlocked != 0) {
-                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: state.instanceBeingBlocked, unblock: false));
+                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(
+                      instanceId: state.instanceBeingBlocked, unblock: false));
                 }
               },
             );
           }
         },
         builder: (context, state) {
-          List<Widget> blockedUsers = getPersonBlocks(context, state, state.personBlocks);
-          List<Widget> blockedCommunities = getCommunityBlocks(context, state, state.communityBlocks);
-          List<Widget> blockedInstances = getInstanceBlocks(context, state, state.instanceBlocks);
+          List<Widget> blockedUsers =
+              getPersonBlocks(context, state, state.personBlocks);
+          List<Widget> blockedCommunities =
+              getCommunityBlocks(context, state, state.communityBlocks);
+          List<Widget> blockedInstances =
+              getInstanceBlocks(context, state, state.instanceBlocks);
 
           return NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
                   pinned: true,
@@ -330,9 +370,12 @@ class UserSettingBlockList extends StatelessWidget {
     }
 
     if (items.isEmpty) {
-      return Center(child: Text(emptyText ?? "", style: TextStyle(color: theme.hintColor)));
+      return Center(
+          child:
+              Text(emptyText ?? "", style: TextStyle(color: theme.hintColor)));
     }
 
-    return CustomScrollView(slivers: [SliverList(delegate: SliverChildListDelegate(items))]);
+    return CustomScrollView(
+        slivers: [SliverList(delegate: SliverChildListDelegate(items))]);
   }
 }

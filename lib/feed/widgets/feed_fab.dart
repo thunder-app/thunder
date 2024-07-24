@@ -52,17 +52,23 @@ class FeedFAB extends StatelessWidget {
     FeedFabAction longPressAction = state.feedFabLongPressAction;
 
     // Check to see if we are in the general feeds
-    bool isGeneralFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.general;
-    bool isCommunityFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.community;
-    bool isUserFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.user;
+    bool isGeneralFeed = feedState.status != FeedStatus.initial &&
+        feedState.feedType == FeedType.general;
+    bool isCommunityFeed = feedState.status != FeedStatus.initial &&
+        feedState.feedType == FeedType.community;
+    bool isUserFeed = feedState.status != FeedStatus.initial &&
+        feedState.feedType == FeedType.user;
     bool isNavigatedFeed = Navigator.canPop(context);
 
     bool isPostLocked = false;
 
     if (authState.isLoggedIn && isCommunityFeed) {
-      final CommunityView communityView = feedState.fullCommunityView!.communityView;
+      final CommunityView communityView =
+          feedState.fullCommunityView!.communityView;
 
-      if (communityView.community.postingRestrictedToMods && !accountState.moderates.any((CommunityModeratorView cmv) => cmv.community.id == communityView.community.id)) {
+      if (communityView.community.postingRestrictedToMods &&
+          !accountState.moderates.any((CommunityModeratorView cmv) =>
+              cmv.community.id == communityView.community.id)) {
         isPostLocked = true;
       }
     }
@@ -78,21 +84,36 @@ class FeedFAB extends StatelessWidget {
     }
 
     // Check single-press action
-    if (isGeneralFeed && unsupportedGeneralFeedFabActions.contains(singlePressAction)) {
-      singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    } else if (isCommunityFeed && isNavigatedFeed && unsupportedNavigatedCommunityFeedFabActions.contains(singlePressAction)) {
-      singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    } else if (isUserFeed && unsupportedNavigatedUserFeedFabActions.contains(singlePressAction)) {
-      singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
+    if (isGeneralFeed &&
+        unsupportedGeneralFeedFabActions.contains(singlePressAction)) {
+      singlePressAction =
+          FeedFabAction.openFab; // Default to open fab on unsupported actions
+    } else if (isCommunityFeed &&
+        isNavigatedFeed &&
+        unsupportedNavigatedCommunityFeedFabActions
+            .contains(singlePressAction)) {
+      singlePressAction =
+          FeedFabAction.openFab; // Default to open fab on unsupported actions
+    } else if (isUserFeed &&
+        unsupportedNavigatedUserFeedFabActions.contains(singlePressAction)) {
+      singlePressAction =
+          FeedFabAction.openFab; // Default to open fab on unsupported actions
     }
 
     // Check long-press action
-    if (isGeneralFeed && unsupportedGeneralFeedFabActions.contains(longPressAction)) {
-      longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    } else if (isCommunityFeed && isNavigatedFeed && unsupportedNavigatedCommunityFeedFabActions.contains(longPressAction)) {
-      longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    } else if (isUserFeed && unsupportedNavigatedUserFeedFabActions.contains(longPressAction)) {
-      longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
+    if (isGeneralFeed &&
+        unsupportedGeneralFeedFabActions.contains(longPressAction)) {
+      longPressAction =
+          FeedFabAction.openFab; // Default to open fab on unsupported actions
+    } else if (isCommunityFeed &&
+        isNavigatedFeed &&
+        unsupportedNavigatedCommunityFeedFabActions.contains(longPressAction)) {
+      longPressAction =
+          FeedFabAction.openFab; // Default to open fab on unsupported actions
+    } else if (isUserFeed &&
+        unsupportedNavigatedUserFeedFabActions.contains(longPressAction)) {
+      longPressAction =
+          FeedFabAction.openFab; // Default to open fab on unsupported actions
     }
 
     return AnimatedSwitcher(
@@ -101,7 +122,9 @@ class FeedFAB extends StatelessWidget {
       switchOutCurve: Curves.ease,
       transitionBuilder: (child, animation) {
         return SlideTransition(
-          position: Tween<Offset>(begin: const Offset(0, 0.2), end: const Offset(0, 0)).animate(animation),
+          position: Tween<Offset>(
+                  begin: const Offset(0, 0.2), end: const Offset(0, 0))
+              .animate(animation),
           child: child,
         );
       },
@@ -109,9 +132,14 @@ class FeedFAB extends StatelessWidget {
           ? GestureFab(
               heroTag: heroTag,
               distance: 60,
-              fabBackgroundColor: (singlePressAction == FeedFabAction.newPost && isPostLocked) ? theme.colorScheme.errorContainer : null,
+              fabBackgroundColor:
+                  (singlePressAction == FeedFabAction.newPost && isPostLocked)
+                      ? theme.colorScheme.errorContainer
+                      : null,
               icon: Icon(
-                (singlePressAction == FeedFabAction.newPost && isPostLocked) ? Icons.lock : singlePressAction.icon,
+                (singlePressAction == FeedFabAction.newPost && isPostLocked)
+                    ? Icons.lock
+                    : singlePressAction.icon,
                 semanticLabel: singlePressAction.title,
                 size: 35,
               ),
@@ -173,7 +201,9 @@ class FeedFAB extends StatelessWidget {
                     break;
                 }
               },
-              children: getEnabledActions(context, isPostingLocked: isPostLocked, disabledActions: disabledActions),
+              children: getEnabledActions(context,
+                  isPostingLocked: isPostLocked,
+                  disabledActions: disabledActions),
             )
           : Stack(
               // This creates an invisible touch target to summon the FAB
@@ -185,7 +215,9 @@ class FeedFAB extends StatelessWidget {
                   child: GestureDetector(
                     onVerticalDragEnd: (DragEndDetails details) {
                       if (details.primaryVelocity! < 0) {
-                        context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                        context
+                            .read<ThunderBloc>()
+                            .add(const OnFabSummonToggle(true));
                       }
                     },
                   ),
@@ -195,16 +227,24 @@ class FeedFAB extends StatelessWidget {
     );
   }
 
-  List<ActionButton> getEnabledActions(BuildContext context, {bool isPostingLocked = false, List<FeedFabAction> disabledActions = const []}) {
+  List<ActionButton> getEnabledActions(BuildContext context,
+      {bool isPostingLocked = false,
+      List<FeedFabAction> disabledActions = const []}) {
     final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
 
-    bool enableBackToTop = state.enableBackToTop && !disabledActions.contains(FeedFabAction.backToTop);
-    bool enableSubscriptions = state.enableSubscriptions && !disabledActions.contains(FeedFabAction.subscriptions);
-    bool enableChangeSort = state.enableChangeSort && !disabledActions.contains(FeedFabAction.changeSort);
-    bool enableRefresh = state.enableRefresh && !disabledActions.contains(FeedFabAction.refresh);
-    bool enableDismissRead = state.enableDismissRead && !disabledActions.contains(FeedFabAction.dismissRead);
-    bool enableNewPost = state.enableNewPost && !disabledActions.contains(FeedFabAction.newPost);
+    bool enableBackToTop = state.enableBackToTop &&
+        !disabledActions.contains(FeedFabAction.backToTop);
+    bool enableSubscriptions = state.enableSubscriptions &&
+        !disabledActions.contains(FeedFabAction.subscriptions);
+    bool enableChangeSort = state.enableChangeSort &&
+        !disabledActions.contains(FeedFabAction.changeSort);
+    bool enableRefresh =
+        state.enableRefresh && !disabledActions.contains(FeedFabAction.refresh);
+    bool enableDismissRead = state.enableDismissRead &&
+        !disabledActions.contains(FeedFabAction.dismissRead);
+    bool enableNewPost =
+        state.enableNewPost && !disabledActions.contains(FeedFabAction.newPost);
 
     List<ActionButton> actions = [
       if (enableDismissRead)
@@ -256,7 +296,8 @@ class FeedFAB extends StatelessWidget {
         ActionButton(
           title: FeedFabAction.newPost.title,
           icon: Icon(isPostingLocked ? Icons.lock : FeedFabAction.newPost.icon),
-          backgroundColor: isPostingLocked ? theme.colorScheme.errorContainer : null,
+          backgroundColor:
+              isPostingLocked ? theme.colorScheme.errorContainer : null,
           onPressed: () {
             HapticFeedback.lightImpact();
             triggerNewPost(context, isPostingLocked: isPostingLocked);
@@ -284,7 +325,9 @@ class FeedFAB extends StatelessWidget {
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
         title: l10n.sortOptions,
-        onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
+        onSelect: (selected) async => context
+            .read<FeedBloc>()
+            .add(FeedChangeSortTypeEvent(selected.payload)),
         previouslySelected: context.read<FeedBloc>().state.sortType,
         minimumVersion: LemmyClient.instance.version,
       ),
@@ -299,7 +342,8 @@ class FeedFAB extends StatelessWidget {
     context.read<FeedBloc>().add(ScrollToTopEvent());
   }
 
-  Future<void> triggerNewPost(BuildContext context, {bool isPostingLocked = false}) async {
+  Future<void> triggerNewPost(BuildContext context,
+      {bool isPostingLocked = false}) async {
     final l10n = AppLocalizations.of(context)!;
 
     if (!context.read<AuthBloc>().state.isLoggedIn) {
@@ -311,6 +355,8 @@ class FeedFAB extends StatelessWidget {
     }
 
     FeedBloc feedBloc = context.read<FeedBloc>();
-    navigateToCreatePostPage(context, communityId: feedBloc.state.communityId, communityView: feedBloc.state.fullCommunityView?.communityView);
+    navigateToCreatePostPage(context,
+        communityId: feedBloc.state.communityId,
+        communityView: feedBloc.state.fullCommunityView?.communityView);
   }
 }

@@ -54,7 +54,8 @@ void triggerPostAction({
   }
 }
 
-DismissDirection determinePostSwipeDirection(bool isUserLoggedIn, ThunderState state) {
+DismissDirection determinePostSwipeDirection(
+    bool isUserLoggedIn, ThunderState state) {
   if (!isUserLoggedIn) return DismissDirection.none;
 
   if (state.enablePostGestures == false) return DismissDirection.none;
@@ -68,18 +69,22 @@ DismissDirection determinePostSwipeDirection(bool isUserLoggedIn, ThunderState s
   }
 
   // If there is at least 1 action on either side, then allow swiping from both sides
-  if ((state.leftPrimaryPostGesture != SwipeAction.none || state.leftSecondaryPostGesture != SwipeAction.none) &&
-      (state.rightPrimaryPostGesture != SwipeAction.none || state.rightSecondaryPostGesture != SwipeAction.none)) {
+  if ((state.leftPrimaryPostGesture != SwipeAction.none ||
+          state.leftSecondaryPostGesture != SwipeAction.none) &&
+      (state.rightPrimaryPostGesture != SwipeAction.none ||
+          state.rightSecondaryPostGesture != SwipeAction.none)) {
     return DismissDirection.horizontal;
   }
 
   // If there is no action on left side, disable left side swiping
-  if (state.leftPrimaryPostGesture == SwipeAction.none && state.leftSecondaryPostGesture == SwipeAction.none) {
+  if (state.leftPrimaryPostGesture == SwipeAction.none &&
+      state.leftSecondaryPostGesture == SwipeAction.none) {
     return DismissDirection.endToStart;
   }
 
   // If there is no action on the right side, disable right side swiping
-  if (state.rightPrimaryPostGesture == SwipeAction.none && state.rightSecondaryPostGesture == SwipeAction.none) {
+  if (state.rightPrimaryPostGesture == SwipeAction.none &&
+      state.rightSecondaryPostGesture == SwipeAction.none) {
     return DismissDirection.startToEnd;
   }
 

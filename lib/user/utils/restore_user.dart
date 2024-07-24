@@ -8,7 +8,11 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 void restoreUser(BuildContext context, Account? originalUser) {
   final Account? newUser = context.read<AuthBloc>().state.account;
 
-  if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
-    context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
+  if (originalUser != null &&
+      newUser != null &&
+      originalUser.id != newUser.id) {
+    context
+        .read<AuthBloc>()
+        .add(SwitchAccount(accountId: originalUser.id, reload: false));
   }
 }

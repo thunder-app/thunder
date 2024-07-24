@@ -14,7 +14,9 @@ import 'package:version/version.dart';
 class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
   final Version? minimumVersion;
 
-  static List<ListPickerItem<CommentSortType>> getCommentSortTypeItems({required Version? minimumVersion}) => [
+  static List<ListPickerItem<CommentSortType>> getCommentSortTypeItems(
+          {required Version? minimumVersion}) =>
+      [
         ListPickerItem(
           payload: CommentSortType.hot,
           icon: Icons.local_fire_department,
@@ -25,7 +27,8 @@ class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
           icon: Icons.military_tech,
           label: AppLocalizations.of(GlobalContext.context)!.top,
         ),
-        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.commentSortTypeControversial))
+        if (LemmyClient.versionSupportsFeature(
+            minimumVersion, LemmyFeature.commentSortTypeControversial))
           ListPickerItem(
             payload: CommentSortType.controversial,
             icon: Icons.warning_rounded,
@@ -50,7 +53,10 @@ class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
     List<ListPickerItem<CommentSortType>>? items,
     super.previouslySelected,
     required this.minimumVersion,
-  }) : super(items: items ?? CommentSortPicker.getCommentSortTypeItems(minimumVersion: minimumVersion));
+  }) : super(
+            items: items ??
+                CommentSortPicker.getCommentSortTypeItems(
+                    minimumVersion: minimumVersion));
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -94,7 +100,10 @@ class _SortPickerState extends State<CommentSortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(CommentSortPicker.getCommentSortTypeItems(minimumVersion: widget.minimumVersion), theme),
+            ..._generateList(
+                CommentSortPicker.getCommentSortTypeItems(
+                    minimumVersion: widget.minimumVersion),
+                theme),
           ],
         ),
         const SizedBox(height: 16.0),
@@ -102,7 +111,8 @@ class _SortPickerState extends State<CommentSortPicker> {
     );
   }
 
-  List<Widget> _generateList(List<ListPickerItem<CommentSortType>> items, ThemeData theme) {
+  List<Widget> _generateList(
+      List<ListPickerItem<CommentSortType>> items, ThemeData theme) {
     return items
         .map(
           (item) => PickerItem(

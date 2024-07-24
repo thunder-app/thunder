@@ -46,13 +46,15 @@ Future<bool> updateNotificationSettings(
   }
 
   // Perform any additional actions required if the notification type switches
-  if (currentNotificationType == NotificationType.local && updatedNotificationType == NotificationType.none) {
+  if (currentNotificationType == NotificationType.local &&
+      updatedNotificationType == NotificationType.none) {
     // If we are deactivating turning off push notifications, we'll remove the preference
     prefs.remove(LocalSettings.inboxNotificationType.name);
     return true;
   }
 
-  if (currentNotificationType == NotificationType.unifiedPush || currentNotificationType == NotificationType.apn) {
+  if (currentNotificationType == NotificationType.unifiedPush ||
+      currentNotificationType == NotificationType.apn) {
     // If the current notification type is unified push or apns, we'll delete all tokens from the server first
     bool success = await deleteAccountFromNotificationServer();
 
@@ -63,7 +65,9 @@ Future<bool> updateNotificationSettings(
     } else if (updatedNotificationType == NotificationType.none && !success) {
       // If we failed to remove all tokens from the server, we'll set the preference to NotificationType.none
       // The next time the app is opened, it will attempt to remove tokens from the server
-      showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL));
+      showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(
+          prefs.getString(LocalSettings.pushNotificationServer.name) ??
+              THUNDER_SERVER_URL));
       onUpdate?.call(updatedNotificationType);
       return true;
     }
@@ -100,13 +104,20 @@ Future<bool> updateNotificationSettings(
     case NotificationType.local:
     case NotificationType.unifiedPush:
       // We're on Android. Request notifications permissions if needed. This is a no-op if on SDK version < 33
-      AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
-          FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      AndroidFlutterLocalNotificationsPlugin?
+          androidFlutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin()
+              .resolvePlatformSpecificImplementation<
+                  AndroidFlutterLocalNotificationsPlugin>();
 
-      bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+      bool? areAndroidNotificationsAllowed =
+          await androidFlutterLocalNotificationsPlugin
+              ?.areNotificationsEnabled();
 
       if (areAndroidNotificationsAllowed != true) {
-        areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
+        areAndroidNotificationsAllowed =
+            await androidFlutterLocalNotificationsPlugin
+                ?.requestNotificationsPermission();
         if (areAndroidNotificationsAllowed != true) {
           showSnackbar(
             l10n.permissionDenied,
@@ -115,7 +126,9 @@ Future<bool> updateNotificationSettings(
               try {
                 const AndroidIntent intent = AndroidIntent(
                   action: "android.settings.APP_NOTIFICATION_SETTINGS",
-                  arguments: {"android.provider.extra.APP_PACKAGE": "com.hjiangsu.thunder"},
+                  arguments: {
+                    "android.provider.extra.APP_PACKAGE": "com.hjiangsu.thunder"
+                  },
                   flags: [ANDROID_INTENT_FLAG_ACTIVITY_NEW_TASK],
                 );
                 await intent.launch();
@@ -135,12 +148,18 @@ Future<bool> updateNotificationSettings(
       return true;
     case NotificationType.apn:
       // We're on iOS. Request notifications permissions if needed.
-      IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+      IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin()
+              .resolvePlatformSpecificImplementation<
+                  IOSFlutterLocalNotificationsPlugin>();
 
-      NotificationsEnabledOptions? notificationsEnabledOptions = await iosFlutterLocalNotificationsPlugin?.checkPermissions();
+      NotificationsEnabledOptions? notificationsEnabledOptions =
+          await iosFlutterLocalNotificationsPlugin?.checkPermissions();
 
       if (notificationsEnabledOptions?.isEnabled != true) {
-        bool? areIOSNotificationsAllowed = await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
+        bool? areIOSNotificationsAllowed =
+            await iosFlutterLocalNotificationsPlugin?.requestPermissions(
+                alert: true, badge: true, sound: true);
         if (areIOSNotificationsAllowed != true) {
           showSnackbar(l10n.permissionDenied);
           return Future.delayed(const Duration(seconds: 2)).then((_) => false);

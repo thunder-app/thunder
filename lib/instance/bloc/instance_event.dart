@@ -21,7 +21,11 @@ final class InstanceActionEvent extends InstanceEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  const InstanceActionEvent({required this.instanceId, this.domain, required this.instanceAction, this.value});
+  const InstanceActionEvent(
+      {required this.instanceId,
+      this.domain,
+      required this.instanceAction,
+      this.value});
 }
 
 final class InstanceClearMessageEvent extends InstanceEvent {}

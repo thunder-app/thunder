@@ -25,7 +25,8 @@ class InstanceView extends StatelessWidget {
                       child: Text(
                         site.name[0],
                         semanticsLabel: '',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     )
                   : CachedNetworkImage(
@@ -48,7 +49,8 @@ class InstanceView extends StatelessWidget {
                     site.name,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
-                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.headlineSmall
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   Row(
                     children: [

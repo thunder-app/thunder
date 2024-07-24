@@ -25,16 +25,25 @@ const String _testChannelName = 'Troubleshooting';
 ///
 /// This displays an empty notification which will be used in conjunction with the [showAndroidNotification]
 /// to help display a group of notifications on Android.
-void showNotificationGroups({required NotificationType type, required List<Account> accounts, required List<NotificationInboxType> inboxTypes}) async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-  final bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+void showNotificationGroups(
+    {required NotificationType type,
+    required List<Account> accounts,
+    required List<NotificationInboxType> inboxTypes}) async {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  final SharedPreferences prefs =
+      (await UserPreferences.instance).sharedPreferences;
+  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(
+      prefs.getString(LocalSettings.userFormat.name) ??
+          FullNameSeparator.at.name);
+  final bool useDisplayNamesForUsers =
+      prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
 
   for (Account account in accounts) {
     for (NotificationInboxType inboxType in inboxTypes) {
       // Create a summary notification for the group.
-      final InboxStyleInformation inboxStyleInformationSummary = InboxStyleInformation(
+      final InboxStyleInformation inboxStyleInformationSummary =
+          InboxStyleInformation(
         [],
         contentTitle: '',
         summaryText: generateUserFullName(
@@ -47,7 +56,8 @@ void showNotificationGroups({required NotificationType type, required List<Accou
         ),
       );
 
-      final AndroidNotificationDetails androidNotificationDetailsSummary = AndroidNotificationDetails(
+      final AndroidNotificationDetails androidNotificationDetailsSummary =
+          AndroidNotificationDetails(
         switch (inboxType) {
           NotificationInboxType.reply => _repliesChannelId,
           NotificationInboxType.mention => _mentionsChannelId,
@@ -59,11 +69,14 @@ void showNotificationGroups({required NotificationType type, required List<Accou
           NotificationInboxType.message => _messagesChannelName,
         },
         styleInformation: inboxStyleInformationSummary,
-        groupKey: NotificationGroupKey(accountId: account.id, inboxType: inboxType).toString(),
+        groupKey:
+            NotificationGroupKey(accountId: account.id, inboxType: inboxType)
+                .toString(),
         setAsGroupSummary: true,
       );
 
-      final NotificationDetails notificationDetailsSummary = NotificationDetails(android: androidNotificationDetailsSummary);
+      final NotificationDetails notificationDetailsSummary =
+          NotificationDetails(android: androidNotificationDetailsSummary);
 
       // Send the summary message!
       await flutterLocalNotificationsPlugin.show(
@@ -93,10 +106,12 @@ void showAndroidNotification({
   required String payload,
   required NotificationInboxType inboxType,
 }) async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   // Configure Android-specific settings
-  final AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+  final AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails(
     switch (inboxType) {
       NotificationInboxType.reply => _repliesChannelId,
       NotificationInboxType.mention => _mentionsChannelId,
@@ -108,20 +123,25 @@ void showAndroidNotification({
       NotificationInboxType.message => _messagesChannelName,
     },
     styleInformation: bigTextStyleInformation,
-    groupKey: NotificationGroupKey(accountId: account.id, inboxType: inboxType).toString(),
+    groupKey: NotificationGroupKey(accountId: account.id, inboxType: inboxType)
+        .toString(),
   );
 
-  final NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+  final NotificationDetails notificationDetails =
+      NotificationDetails(android: androidNotificationDetails);
 
   // Show the notification!
-  await flutterLocalNotificationsPlugin.show(id, title, content, notificationDetails, payload: payload);
+  await flutterLocalNotificationsPlugin
+      .show(id, title, content, notificationDetails, payload: payload);
 }
 
 Future<void> showTestAndroidNotification() async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   // Configure Android-specific settings
-  const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+  const AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails(
     _testChannelId,
     _testChannelName,
     styleInformation: BigTextStyleInformation(
@@ -133,8 +153,10 @@ Future<void> showTestAndroidNotification() async {
     groupKey: 'test',
   );
 
-  const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+  const NotificationDetails notificationDetails =
+      NotificationDetails(android: androidNotificationDetails);
 
   // Show the notification!
-  await flutterLocalNotificationsPlugin.show(-1, 'Test', 'Test', notificationDetails);
+  await flutterLocalNotificationsPlugin.show(
+      -1, 'Test', 'Test', notificationDetails);
 }

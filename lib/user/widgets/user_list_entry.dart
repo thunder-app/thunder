@@ -13,13 +13,15 @@ class UserListEntry extends StatelessWidget {
   final PersonView personView;
   final String? resolutionInstance;
 
-  const UserListEntry({super.key, required this.personView, this.resolutionInstance});
+  const UserListEntry(
+      {super.key, required this.personView, this.resolutionInstance});
 
   @override
   Widget build(BuildContext context) {
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${personView.person.displayName ?? personView.person.name}\n${generateUserFullName(
+      message:
+          '${personView.person.displayName ?? personView.person.name}\n${generateUserFullName(
         context,
         personView.person.name,
         personView.person.displayName,
@@ -47,9 +49,11 @@ class UserListEntry extends StatelessWidget {
         onTap: () async {
           int? personId = personView.person.id;
           if (resolutionInstance != null) {
-            final LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance!)).lemmyApiV3;
+            final LemmyApiV3 lemmy =
+                (LemmyClient()..changeBaseUrl(resolutionInstance!)).lemmyApiV3;
             try {
-              final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: personView.person.actorId));
+              final ResolveObjectResponse resolveObjectResponse =
+                  await lemmy.run(ResolveObject(q: personView.person.actorId));
               personId = resolveObjectResponse.person?.person.id;
             } catch (e) {
               // If we can't find it, then we'll get a standard error message about personId being un-navigable
@@ -57,7 +61,8 @@ class UserListEntry extends StatelessWidget {
           }
 
           if (context.mounted) {
-            navigateToFeedPage(context, feedType: FeedType.user, userId: personId);
+            navigateToFeedPage(context,
+                feedType: FeedType.user, userId: personId);
           }
         },
       ),

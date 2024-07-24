@@ -33,7 +33,8 @@ const String _lastPollTimeId = 'thunder_last_notifications_poll_time';
 /// For now, initializing local notifications will enable push notifications for all accounts active on the app.
 ///
 /// The [controller] is passed in so that we can react to push notifications when the user taps on the notification.
-void initLocalNotifications({required StreamController<NotificationResponse> controller}) async {
+void initLocalNotifications(
+    {required StreamController<NotificationResponse> controller}) async {
   // Initialize background fetch (this is async and can go run on its own).
   initBackgroundFetch();
 
@@ -50,17 +51,26 @@ Future<void> pollRepliesAndShowNotifications() async {
   // If we see this line outputted when notifications are disabled, then something is wrong with our configuration of background_fetch.
   debugPrint('Thunder - Background fetch - Running notification poll');
 
-  final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-  final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
-  final bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
-  final bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
+  final SharedPreferences prefs =
+      (await UserPreferences.instance).sharedPreferences;
+  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(
+      prefs.getString(LocalSettings.userFormat.name) ??
+          FullNameSeparator.at.name);
+  final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(
+      prefs.getString(LocalSettings.communityFormat.name) ??
+          FullNameSeparator.dot.name);
+  final bool useDisplayNamesForUsers =
+      prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+  final bool useDisplayNamesForCommunities =
+      prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
 
   // Ensure that the db is initialized before attempting to access below.
   await initializeDatabase();
 
   List<Account> accounts = await Account.accounts();
-  DateTime lastPollTime = DateTime.tryParse(prefs.getString(_lastPollTimeId) ?? '') ?? DateTime.now();
+  DateTime lastPollTime =
+      DateTime.tryParse(prefs.getString(_lastPollTimeId) ?? '') ??
+          DateTime.now();
 
   Map<Account, List<CommentReplyView>> notifications = {};
 
@@ -79,9 +89,12 @@ Future<void> pollRepliesAndShowNotifications() async {
     );
 
     // Only handle messages that have arrived since the last time we polled
-    final Iterable<CommentReplyView> newReplies = getRepliesResponse.replies.where((CommentReplyView commentReplyView) => commentReplyView.commentReply.published.isAfter(lastPollTime));
+    final Iterable<CommentReplyView> newReplies = getRepliesResponse.replies
+        .where((CommentReplyView commentReplyView) =>
+            commentReplyView.commentReply.published.isAfter(lastPollTime));
 
-    if (newReplies.isNotEmpty) notifications.putIfAbsent(account, () => newReplies.toList());
+    if (newReplies.isNotEmpty)
+      notifications.putIfAbsent(account, () => newReplies.toList());
   }
 
   if (notifications.isEmpty) {
@@ -91,7 +104,10 @@ Future<void> pollRepliesAndShowNotifications() async {
   }
 
   // Create a notification group for each account that has replies
-  showNotificationGroups(accounts: notifications.keys.toList(), inboxTypes: [NotificationInboxType.reply], type: NotificationType.local);
+  showNotificationGroups(
+      accounts: notifications.keys.toList(),
+      inboxTypes: [NotificationInboxType.reply],
+      type: NotificationType.local);
 
   // Show the notifications
   for (final entry in notifications.entries) {
@@ -99,11 +115,16 @@ Future<void> pollRepliesAndShowNotifications() async {
     List<CommentReplyView> replies = entry.value;
 
     for (CommentReplyView commentReplyView in replies) {
-      final String commentContent = cleanCommentContent(commentReplyView.comment);
-      final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
-      final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
+      final String commentContent =
+          cleanCommentContent(commentReplyView.comment);
+      final String htmlComment =
+          cleanImagesFromHtml(markdownToHtml(commentContent));
+      final String plaintextComment =
+          parse(parse(htmlComment).body?.text).documentElement?.text ??
+              commentContent;
 
-      final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+      final BigTextStyleInformation bigTextStyleInformation =
+          BigTextStyleInformation(
         '${commentReplyView.post.name} · ${generateCommunityFullName(
           null,
           commentReplyView.community.name,
