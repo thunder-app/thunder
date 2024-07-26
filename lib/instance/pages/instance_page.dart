@@ -7,7 +7,7 @@ import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/view/feed_widget.dart';
+import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
@@ -345,7 +345,7 @@ class _InstancePageState extends State<InstancePage> {
                             ),
                           ),
                         if (viewType == SearchType.posts)
-                          FeedPostList(
+                          FeedPostCardList(
                             markPostReadOnScroll: false,
                             postViewMedias: state.posts ?? [],
                             tabletMode: tabletMode,

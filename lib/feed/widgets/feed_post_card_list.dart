@@ -3,19 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/feed/feed.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
-class FeedPostList extends StatefulWidget {
-  /// Determines the number of columns to display
+/// Widget representing the list of posts on the feed.
+class FeedPostCardList extends StatefulWidget {
+  /// Whether or not the screen is in tablet mode. Determines the number of columns to display
   final bool tabletMode;
 
   /// Determines whether to mark posts as read on scroll
@@ -27,7 +27,7 @@ class FeedPostList extends StatefulWidget {
   /// The list of posts to show on the feed
   final List<PostViewMedia> postViewMedias;
 
-  const FeedPostList({
+  const FeedPostCardList({
     super.key,
     required this.postViewMedias,
     required this.tabletMode,
@@ -36,10 +36,10 @@ class FeedPostList extends StatefulWidget {
   });
 
   @override
-  State<FeedPostList> createState() => _FeedPostListState();
+  State<FeedPostCardList> createState() => _FeedPostCardListState();
 }
 
-class _FeedPostListState extends State<FeedPostList> {
+class _FeedPostCardListState extends State<FeedPostCardList> {
   /// The index of the last tapped post.
   /// This is used to calculate the read status of posts in the range [0, lastTappedIndex]
   int lastTappedIndex = -1;
@@ -65,11 +65,11 @@ class _FeedPostListState extends State<FeedPostList> {
 
   @override
   Widget build(BuildContext context) {
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
-    final FeedState state = context.read<FeedBloc>().state;
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final state = context.read<FeedBloc>().state;
 
-    // Widget representing the list of posts on the feed
+    final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final dimReadPosts = isUserLoggedIn && context.read<ThunderBloc>().state.dimReadPosts;
+
     return SliverMasonryGrid.count(
       crossAxisCount: widget.tabletMode ? 2 : 1,
       crossAxisSpacing: 40,
@@ -100,7 +100,7 @@ class _FeedPostListState extends State<FeedPostList> {
           },
           child: widget.queuedForRemoval?.contains(widget.postViewMedias[index].postView.post.id) != true
               ? VisibilityDetector(
-                  key: Key('post-card-vis-$index'),
+                  key: Key('post-card-visibility-$index'),
                   onVisibilityChanged: (info) {
                     if (!isUserLoggedIn || !widget.markPostReadOnScroll || !isScrollingDown) return;
 
@@ -156,7 +156,7 @@ class _FeedPostListState extends State<FeedPostList> {
                       }
                     },
                     listingType: state.postListingType,
-                    indicateRead: thunderState.dimReadPosts,
+                    indicateRead: dimReadPosts,
                   ))
               : null,
         );

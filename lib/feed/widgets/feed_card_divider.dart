@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+/// A user-customizable divider used between items (posts/comments) in the feed page.
+///
+/// This is used in [FeedPostCardList] and [FeedCommentCardList].
 class FeedCardDivider extends StatelessWidget {
   const FeedCardDivider({super.key});
 
