@@ -382,5 +382,9 @@
   "clearedCache": "Cache erfolgreich geleert.",
   "@clearedCache": {
     "description": "Message indicating that cache was cleared successfully"
+  },
+  "accept": "Annehmen",
+  "@accept": {
+    "description": "The ability to accept an option"
   }
 }
