@@ -789,7 +789,7 @@
   "@searchTerm": {},
   "searchUsersFederatedWith": "Buscar los usuarios federados con {instance}",
   "@searchUsersFederatedWith": {},
-  "selectCommunity": "Elija una comunidad",
+  "selectCommunity": "Elija una comunidad (obligatorio)",
   "@selectCommunity": {},
   "selectFeedType": "Seleccione el tipo del Feed",
   "@selectFeedType": {},
