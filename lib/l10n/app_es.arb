@@ -2718,5 +2718,9 @@
   "noAccountsAdded": "No se han añadido cuentas",
   "@noAccountsAdded": {
     "description": "Placeholder text when no accounts have been added"
+  },
+  "requiredField": "*obligatorio",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
   }
 }
