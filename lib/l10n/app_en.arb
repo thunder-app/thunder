@@ -1785,6 +1785,10 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "requiredField": "*required",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
+  },
   "reset": "Reset",
   "@reset": {
     "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
@@ -1899,7 +1903,7 @@
   "@selectAll": {
     "description": "Action for selecting all text"
   },
-  "selectCommunity": "Select a community",
+  "selectCommunity": "Select a community (required)",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
   "@selectFeedType": {},
