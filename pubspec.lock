@@ -1727,10 +1727,10 @@ packages:
     dependency: "direct main"
     description:
       name: swipeable_page_route
-      sha256: ff27a8fb380e95b464e6c389273d0ac8149ad7f900c6f1dae8c0f2a65d33c295
+      sha256: e2f394746f974532f8695b84b5b2d7840d0f2d97041af0bc0439e3cfc101cd9a
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.3"
   synchronized:
     dependency: transitive
     description:
@@ -2084,5 +2084,5 @@ packages:
     source: hosted
     version: "2.0.2"
 sdks:
-  dart: ">=3.3.0 <4.0.0"
-  flutter: ">=3.19.0"
+  dart: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0"
