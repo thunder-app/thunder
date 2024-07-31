@@ -83,7 +83,7 @@ dependencies:
   dart_ping_ios: ^4.0.0
   flutter_typeahead: ^5.2.0
   sliver_tools: ^0.2.12
-  screenshot: ^2.1.0
+  screenshot: ^3.0.0
   html_unescape: ^2.0.0
   uni_links: ^0.5.1
   android_intent_plus: ^5.0.1
