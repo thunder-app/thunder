@@ -78,8 +78,7 @@ class PostCardMetadata extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AuthBloc>().state;
-    final showScores = state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+    final showScores = context.watch<AuthBloc>().state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
 
     List<PostCardMetadataItem> postCardMetadataItems = switch (postCardViewType) {
       ViewMode.compact => context.read<ThunderBloc>().state.compactPostCardMetadataItems,
@@ -87,15 +86,15 @@ class PostCardMetadata extends StatelessWidget {
     };
 
     return Wrap(
-      spacing: 8.0,
+      spacing: 0,
       runSpacing: 4.0,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: postCardMetadataItems.map(
         (PostCardMetadataItem postCardMetadataItem) {
           return switch (postCardMetadataItem) {
-            PostCardMetadataItem.score => showScores ? ScorePostCardMetaData(score: score, voteType: voteType, hasBeenRead: hasBeenRead ?? false) : Container(),
-            PostCardMetadataItem.upvote => showScores ? UpvotePostCardMetaData(upvotes: upvoteCount, isUpvoted: voteType == 1, hasBeenRead: hasBeenRead ?? false) : Container(),
-            PostCardMetadataItem.downvote => showScores ? DownvotePostCardMetaData(downvotes: downvoteCount, isDownvoted: voteType == -1, hasBeenRead: hasBeenRead ?? false) : Container(),
+            PostCardMetadataItem.score => ScorePostCardMetaData(score: score, voteType: voteType, hasBeenRead: hasBeenRead ?? false, showScores: showScores),
+            PostCardMetadataItem.upvote => UpvotePostCardMetaData(upvotes: upvoteCount, isUpvoted: voteType == 1, hasBeenRead: hasBeenRead ?? false, showScores: showScores),
+            PostCardMetadataItem.downvote => DownvotePostCardMetaData(downvotes: downvoteCount, isDownvoted: voteType == -1, hasBeenRead: hasBeenRead ?? false, showScores: showScores),
             PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(commentCount: commentCount, unreadCommentCount: unreadCommentCount ?? 0, hasBeenRead: hasBeenRead ?? false),
             PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: dateTime!, hasBeenRead: hasBeenRead ?? false, hasBeenEdited: hasBeenEdited ?? false),
             PostCardMetadataItem.url => UrlPostCardMetaData(url: url, hasBeenRead: hasBeenRead ?? false),
@@ -118,11 +117,15 @@ class ScorePostCardMetaData extends StatelessWidget {
   /// Whether or not the post has been read. This is used to determine the color.
   final bool hasBeenRead;
 
+  /// Whether or not the scores should be displayed. Defaults to true.
+  final bool showScores;
+
   const ScorePostCardMetaData({
     super.key,
     this.score = 0,
     this.voteType = 0,
     this.hasBeenRead = false,
+    this.showScores = true,
   });
 
   @override
@@ -139,31 +142,39 @@ class ScorePostCardMetaData extends StatelessWidget {
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
-    return Wrap(
-      spacing: 2.0,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      runAlignment: WrapAlignment.center,
-      children: [
-        SizedBox(
-          width: 21,
-          height: 17,
-          child: Stack(
-            children: [
-              Align(alignment: Alignment.topLeft, child: Icon(Icons.arrow_upward, size: 13.5, color: voteType == -1 ? readColor : color)),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Icon(Icons.arrow_downward, size: 13.5, color: voteType == 1 ? readColor : color),
-              ),
-            ],
+    if (!showScores && voteType == 0) {
+      return const SizedBox();
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(right: 4.0),
+      child: Wrap(
+        spacing: 2.0,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        runAlignment: WrapAlignment.center,
+        children: [
+          SizedBox(
+            width: 21,
+            height: 17,
+            child: Stack(
+              children: [
+                Align(alignment: Alignment.topLeft, child: Icon(Icons.arrow_upward, size: 13.5, color: voteType == -1 ? readColor : color)),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Icon(Icons.arrow_downward, size: 13.5, color: voteType == 1 ? readColor : color),
+                ),
+              ],
+            ),
           ),
-        ),
-        ScalableText(
-          formatNumberToK(score ?? 0),
-          semanticsLabel: l10n.xScore(formatNumberToK(score ?? 0)),
-          fontScale: state.metadataFontSizeScale,
-          style: theme.textTheme.bodyMedium?.copyWith(color: color),
-        ),
-      ],
+          if (showScores)
+            ScalableText(
+              formatNumberToK(score ?? 0),
+              semanticsLabel: l10n.xScore(formatNumberToK(score ?? 0)),
+              fontScale: state.metadataFontSizeScale,
+              style: theme.textTheme.bodyMedium?.copyWith(color: color),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -179,11 +190,15 @@ class UpvotePostCardMetaData extends StatelessWidget {
   /// Whether or not the post has been read. This is used to determine the color.
   final bool hasBeenRead;
 
+  /// Whether or not the scores should be displayed. Defaults to true.
+  final bool showScores;
+
   const UpvotePostCardMetaData({
     super.key,
     this.upvotes = 0,
     this.isUpvoted = false,
     this.hasBeenRead = false,
+    this.showScores = true,
   });
 
   @override
@@ -197,12 +212,19 @@ class UpvotePostCardMetaData extends StatelessWidget {
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
-    return IconText(
-      fontScale: state.metadataFontSizeScale,
-      text: formatNumberToK(upvotes ?? 0),
-      textColor: color,
-      padding: 2.0,
-      icon: Icon(Icons.arrow_upward, size: 17.0, color: color),
+    if (!showScores && isUpvoted == false) {
+      return const SizedBox();
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(right: 4.0),
+      child: IconText(
+        fontScale: state.metadataFontSizeScale,
+        text: showScores ? formatNumberToK(upvotes ?? 0) : null,
+        textColor: color,
+        padding: 2.0,
+        icon: Icon(Icons.arrow_upward, size: 17.0, color: color),
+      ),
     );
   }
 }
@@ -218,11 +240,15 @@ class DownvotePostCardMetaData extends StatelessWidget {
   /// Whether or not the post has been read. This is used to determine the color.
   final bool hasBeenRead;
 
+  /// Whether or not the scores should be displayed. Defaults to true.
+  final bool showScores;
+
   const DownvotePostCardMetaData({
     super.key,
     this.downvotes = 0,
     this.isDownvoted = false,
     this.hasBeenRead = false,
+    this.showScores = true,
   });
 
   @override
@@ -236,12 +262,19 @@ class DownvotePostCardMetaData extends StatelessWidget {
       _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
     };
 
-    return IconText(
-      fontScale: state.metadataFontSizeScale,
-      text: formatNumberToK(downvotes ?? 0),
-      textColor: color,
-      padding: 2.0,
-      icon: Icon(Icons.arrow_downward, size: 17.0, color: color),
+    if (!showScores && isDownvoted == false) {
+      return const SizedBox();
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(right: 4.0),
+      child: IconText(
+        fontScale: state.metadataFontSizeScale,
+        text: showScores ? formatNumberToK(downvotes ?? 0) : null,
+        textColor: color,
+        padding: 2.0,
+        icon: Icon(Icons.arrow_downward, size: 17.0, color: color),
+      ),
     );
   }
 }
@@ -275,12 +308,15 @@ class CommentCountPostCardMetaData extends StatelessWidget {
       _ => (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? theme.primaryColor : theme.textTheme.bodyMedium?.color,
     };
 
-    return IconText(
-      fontScale: state.metadataFontSizeScale,
-      text: (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? '+${formatNumberToK(unreadCommentCount)}' : formatNumberToK(commentCount ?? 0),
-      textColor: color,
-      padding: 5.0,
-      icon: Icon(unreadCommentCount > 0 && unreadCommentCount != commentCount ? Icons.mark_unread_chat_alt_rounded : Icons.chat, size: 17.0, color: color),
+    return Container(
+      margin: const EdgeInsets.only(right: 4.0),
+      child: IconText(
+        fontScale: state.metadataFontSizeScale,
+        text: (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? '+${formatNumberToK(unreadCommentCount)}' : formatNumberToK(commentCount ?? 0),
+        textColor: color,
+        padding: 5.0,
+        icon: Icon(unreadCommentCount > 0 && unreadCommentCount != commentCount ? Icons.mark_unread_chat_alt_rounded : Icons.chat, size: 17.0, color: color),
+      ),
     );
   }
 }
@@ -314,12 +350,15 @@ class DateTimePostCardMetaData extends StatelessWidget {
       _ => state.showFullPostDate ? theme.textTheme.bodyMedium?.color?.withOpacity(0.75) : theme.textTheme.bodyMedium?.color,
     };
 
-    return IconText(
-      fontScale: state.metadataFontSizeScale,
-      text: state.showFullPostDate ? state.dateFormat?.format(DateTime.parse(dateTime)) : formatTimeToString(dateTime: dateTime),
-      textColor: color,
-      padding: 2.0,
-      icon: Icon(hasBeenEdited ? Icons.edit : Icons.history_rounded, size: 17.0, color: color),
+    return Container(
+      margin: const EdgeInsets.only(right: 4.0),
+      child: IconText(
+        fontScale: state.metadataFontSizeScale,
+        text: state.showFullPostDate ? state.dateFormat?.format(DateTime.parse(dateTime)) : formatTimeToString(dateTime: dateTime),
+        textColor: color,
+        padding: 2.0,
+        icon: Icon(hasBeenEdited ? Icons.edit : Icons.history_rounded, size: 17.0, color: color),
+      ),
     );
   }
 }
@@ -353,15 +392,18 @@ class UrlPostCardMetaData extends StatelessWidget {
       return Container();
     }
 
-    return Tooltip(
-      message: url,
-      preferBelow: false,
-      child: IconText(
-        fontScale: state.metadataFontSizeScale,
-        text: Uri.parse(url ?? '').host.replaceFirst('www.', ''),
-        textColor: color,
-        padding: 3.0,
-        icon: Icon(Icons.public, size: 17.0, color: color),
+    return Container(
+      margin: const EdgeInsets.only(right: 4.0),
+      child: Tooltip(
+        message: url,
+        preferBelow: false,
+        child: IconText(
+          fontScale: state.metadataFontSizeScale,
+          text: Uri.parse(url ?? '').host.replaceFirst('www.', ''),
+          textColor: color,
+          padding: 3.0,
+          icon: Icon(Icons.public, size: 17.0, color: color),
+        ),
       ),
     );
   }
@@ -400,15 +442,18 @@ class LanguagePostCardMetaData extends StatelessWidget {
       return Container();
     }
 
-    return Tooltip(
-      message: languageId == -1 ? 'English' : language!.name,
-      preferBelow: false,
-      child: IconText(
-        fontScale: state.metadataFontSizeScale,
-        text: languageId == -1 ? 'English' : language!.name,
-        textColor: color,
-        padding: 3.0,
-        icon: Icon(Icons.map_rounded, size: 17.0, color: color),
+    return Container(
+      margin: const EdgeInsets.only(right: 4.0),
+      child: Tooltip(
+        message: languageId == -1 ? 'English' : language!.name,
+        preferBelow: false,
+        child: IconText(
+          fontScale: state.metadataFontSizeScale,
+          text: languageId == -1 ? 'English' : language!.name,
+          textColor: color,
+          padding: 3.0,
+          icon: Icon(Icons.map_rounded, size: 17.0, color: color),
+        ),
       ),
     );
   }
