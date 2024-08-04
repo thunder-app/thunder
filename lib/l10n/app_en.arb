@@ -157,6 +157,10 @@
   },
   "blockCommunity": "Block Community",
   "@blockCommunity": {},
+  "blockCommunityInstance": "Block Community Instance",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
   "blockInstance": "Block Instance",
   "@blockInstance": {},
   "blockManagement": "Block Management",
@@ -169,6 +173,10 @@
   },
   "blockUser": "Block User",
   "@blockUser": {},
+  "blockUserInstance": "Block User Instance",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
   "blockedCommunities": "Blocked Communities",
   "@blockedCommunities": {},
   "blockedInstances": "Blocked Instances",
@@ -2711,8 +2719,16 @@
   },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
+  "visitCommunityInstance": "Visit Community Instance",
+  "@visitCommunityInstance": {
+    "description": "Action to visit the instance of a community"
+  },
   "visitInstance": "Visit Instance",
   "@visitInstance": {},
+  "visitUserInstance": "Visit User Instance",
+  "@visitUserInstance": {
+    "description": "Action to visit the instance of a user"
+  },
   "visitUserProfile": "Visit User Profile",
   "@visitUserProfile": {},
   "warning": "Warning",
