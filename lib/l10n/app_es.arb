@@ -2722,5 +2722,21 @@
   "requiredField": "*obligatorio",
   "@requiredField": {
     "description": "Helper text for a required form field"
+  },
+  "blockCommunityInstance": "Bloquear la instancia de una comunidad",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
+  "blockUserInstance": "Bloquear la instancia de un usuario",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
+  "visitCommunityInstance": "Visitar la instancia de una comunidad",
+  "@visitCommunityInstance": {
+    "description": "Action to visit the instance of a community"
+  },
+  "visitUserInstance": "Visitar la instancia de un usuario",
+  "@visitUserInstance": {
+    "description": "Action to visit the instance of a user"
   }
 }
