@@ -656,11 +656,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             child: SizedBox(
                               width: 60,
                               child: IconButton(
-                                onPressed: isSubmitButtonDisabled ? null : () => _onCreatePost(context),
-                                icon: Icon(
-                                  widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
-                                  semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
-                                ),
+                                onPressed: isSubmitButtonDisabled || state.status == CreatePostStatus.submitting ? null : () => _onCreatePost(context),
+                                icon: state.status == CreatePostStatus.submitting
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : Icon(
+                                        widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                        semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                                      ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: theme.colorScheme.secondary,
                                   disabledBackgroundColor: getBackgroundColor(context),
