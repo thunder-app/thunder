@@ -13,6 +13,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -398,7 +399,10 @@ void showPostActionBottomModalSheet(
 
   // Remove the share link option if there is no link
   // Or if the media link is the same as the external link
-  if (postViewMedia.media.isEmpty || postViewMedia.media.first.originalUrl == postViewMedia.media.first.imageUrl || postViewMedia.media.first.originalUrl == postViewMedia.media.first.mediaUrl) {
+  if (postViewMedia.media.isEmpty ||
+      postViewMedia.media.first.mediaType == MediaType.text ||
+      postViewMedia.media.first.originalUrl == postViewMedia.media.first.imageUrl ||
+      postViewMedia.media.first.originalUrl == postViewMedia.media.first.mediaUrl) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareLink);
   }
 
