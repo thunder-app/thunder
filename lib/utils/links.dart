@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/message_format.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
@@ -15,8 +16,8 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
+import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/webview.dart';
-import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
@@ -309,80 +310,167 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
   return false;
 }
 
-void handleLinkLongPress(BuildContext context, ThunderState state, String text, String? url) {
-  final theme = Theme.of(context);
-  final l10n = AppLocalizations.of(context)!;
-
+void handleLinkLongPress(BuildContext context, String text, String? url, {LinkBottomSheetPage initialPage = LinkBottomSheetPage.general}) {
   HapticFeedback.mediumImpact();
   showModalBottomSheet(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (ctx) {
-      bool isValidUrl = url?.startsWith('http') ?? false;
+    builder: (ctx) => LinkBottomSheet(
+      text: text,
+      url: url,
+      initialPage: initialPage,
+    ),
+  );
+}
 
-      return AnimatedSize(
+enum LinkBottomSheetPage {
+  general,
+  alternativeLinks,
+}
+
+class LinkBottomSheet extends StatefulWidget {
+  final String? url;
+  final String text;
+  final LinkBottomSheetPage initialPage;
+
+  const LinkBottomSheet({
+    super.key,
+    required this.text,
+    required this.url,
+    this.initialPage = LinkBottomSheetPage.general,
+  });
+
+  @override
+  State<LinkBottomSheet> createState() => _LinkBottomSheetState();
+}
+
+class _LinkBottomSheetState extends State<LinkBottomSheet> {
+  LinkBottomSheetPage? page;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
+
+    bool isValidUrl = widget.url?.startsWith('http') ?? false;
+
+    return SingleChildScrollView(
+      child: AnimatedSize(
         duration: const Duration(milliseconds: 250),
         alignment: Alignment.bottomCenter,
-        child: BottomSheetListPicker(
-          title: l10n.linkActions,
-          heading: Column(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: [
-              if (isValidUrl) ...[
-                LinkPreviewGenerator(
-                  link: url!,
-                  placeholderWidget: const CircularProgressIndicator(),
-                  linkPreviewStyle: LinkPreviewStyle.large,
-                  cacheDuration: Duration.zero,
-                  onTap: null,
-                  bodyTextOverflow: TextOverflow.fade,
-                  graphicFit: BoxFit.scaleDown,
-                  removeElevation: true,
-                  backgroundColor: theme.dividerColor.withOpacity(0.25),
-                  borderRadius: 10,
-                  useDefaultOnTap: false,
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: Material(
+                  borderRadius: BorderRadius.circular(50),
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: (page ?? widget.initialPage) == LinkBottomSheetPage.general ? null : () => setState(() => page = LinkBottomSheetPage.general),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            if ((page ?? widget.initialPage) != LinkBottomSheetPage.general) ...[
+                              const Icon(Icons.chevron_left, size: 30),
+                              const SizedBox(width: 12),
+                            ],
+                            Text(
+                              switch (page ?? widget.initialPage) {
+                                LinkBottomSheetPage.alternativeLinks => l10n.alternativeSources,
+                                _ => l10n.linkActions,
+                              },
+                              style: theme.textTheme.titleLarge,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              if (isValidUrl && (page ?? widget.initialPage) == LinkBottomSheetPage.general) ...[
+                Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 24),
+                  child: LinkPreviewGenerator(
+                    link: widget.url!,
+                    placeholderWidget: const CircularProgressIndicator(),
+                    linkPreviewStyle: LinkPreviewStyle.large,
+                    cacheDuration: Duration.zero,
+                    onTap: null,
+                    bodyTextOverflow: TextOverflow.fade,
+                    graphicFit: BoxFit.scaleDown,
+                    removeElevation: true,
+                    backgroundColor: theme.dividerColor.withOpacity(0.25),
+                    borderRadius: 10,
+                    useDefaultOnTap: false,
+                  ),
                 ),
                 const SizedBox(height: 10),
               ],
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: theme.dividerColor.withOpacity(0.25),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Text(url!),
-                    ),
+              Padding(
+                padding: const EdgeInsets.only(left: 24, right: 24),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor.withOpacity(0.25),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Text(widget.url!),
+                  ),
+                ),
               ),
+              const SizedBox(height: 10),
+              if ((page ?? widget.initialPage) == LinkBottomSheetPage.general) ...[
+                PickerItem(
+                  label: l10n.open,
+                  icon: Icons.language,
+                  onSelected: () => handleLinkTap(context, thunderState, widget.text, widget.url),
+                ),
+                PickerItem(
+                  label: l10n.copy,
+                  icon: Icons.copy_rounded,
+                  onSelected: () => Clipboard.setData(ClipboardData(text: widget.url ?? widget.text)),
+                ),
+                PickerItem(
+                  label: l10n.share,
+                  icon: Icons.share_rounded,
+                  onSelected: () => Share.share(widget.url ?? widget.text),
+                ),
+                PickerItem(
+                  label: l10n.alternativeSources,
+                  icon: Icons.link_rounded,
+                  onSelected: () => setState(() => page = LinkBottomSheetPage.alternativeLinks),
+                  trailingIcon: Icons.chevron_right_rounded,
+                ),
+              ],
+              if ((page ?? widget.initialPage) == LinkBottomSheetPage.alternativeLinks)
+                ...generateAlternativeSources(widget.url ?? widget.text).map((alternativeSource) {
+                  return PickerItem(
+                    label: alternativeSource.sourceName,
+                    subtitle: alternativeSource.link,
+                    icon: Icons.archive_rounded,
+                    onSelected: () => handleLink(context, url: alternativeSource.link),
+                    trailingIcon: Icons.chevron_right_rounded,
+                  );
+                }),
+              const SizedBox(height: 40.0),
             ],
           ),
-          items: [
-            ListPickerItem(label: l10n.open, payload: 'open', icon: Icons.language),
-            ListPickerItem(label: l10n.copy, payload: 'copy', icon: Icons.copy_rounded),
-            ListPickerItem(label: l10n.share, payload: 'share', icon: Icons.share_rounded),
-          ],
-          onSelect: (value) async {
-            switch (value.payload) {
-              case 'open':
-                handleLinkTap(context, state, text, url);
-                break;
-              case 'copy':
-                Clipboard.setData(ClipboardData(text: url));
-                break;
-              case 'share':
-                Share.share(url);
-                break;
-            }
-          },
         ),
-      );
-    },
-  );
+      ),
+    );
+  }
 }
 
 Future<void> handleLinkTap(BuildContext context, ThunderState state, String text, String? url) async {
@@ -406,3 +494,15 @@ Future<void> handleLinkTap(BuildContext context, ThunderState state, String text
     handleLink(context, url: parsedUrl);
   }
 }
+
+List<({String sourceName, String link})> generateAlternativeSources(String link) {
+  return _alternativeSources.map((alternativeSource) {
+    return (sourceName: alternativeSource.sourceName, link: alternativeSource.template.format({'link': link}));
+  }).toList();
+}
+
+List<({String sourceName, MessageFormat template})> _alternativeSources = [
+  (sourceName: 'Archive Today', template: MessageFormat('https://archive.today/{link}')),
+  (sourceName: 'Internet Archive', template: MessageFormat('https://web.archive.org/save/{link}')),
+  (sourceName: 'Ground News', template: MessageFormat('https://ground.news/find?url={link}')),
+];

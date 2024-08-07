@@ -101,6 +101,10 @@
   },
   "alreadyPostedTo": "Already posted to",
   "@alreadyPostedTo": {},
+  "alternativeSources": "Alternative Sources",
+  "@alternativeSources": {
+    "description": "Action for viewing a link from alternative sources"
+  },
   "always": "Always",
   "@always": {},
   "andXMore": "and {count} more",
