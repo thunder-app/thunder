@@ -169,11 +169,11 @@ class NavigationControls extends StatelessWidget {
                       context,
                       url,
                       url,
-                      initialPage: LinkBottomSheetPage.alternativeLinks,
+                      initialPage: LinkBottomSheetPage.alternateLinks,
                     );
                   },
                   icon: Icons.link_rounded,
-                  title: l10n.alternativeSources,
+                  title: l10n.alternateSources,
                 ),
               ],
             ),

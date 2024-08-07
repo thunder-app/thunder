@@ -326,7 +326,7 @@ void handleLinkLongPress(BuildContext context, String text, String? url, {LinkBo
 
 enum LinkBottomSheetPage {
   general,
-  alternativeLinks,
+  alternateLinks,
 }
 
 class LinkBottomSheet extends StatefulWidget {
@@ -385,7 +385,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                             ],
                             Text(
                               switch (page ?? widget.initialPage) {
-                                LinkBottomSheetPage.alternativeLinks => l10n.alternativeSources,
+                                LinkBottomSheetPage.alternateLinks => l10n.alternateSources,
                                 _ => l10n.linkActions,
                               },
                               style: theme.textTheme.titleLarge,
@@ -448,19 +448,19 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                   onSelected: () => Share.share(widget.url ?? widget.text),
                 ),
                 PickerItem(
-                  label: l10n.alternativeSources,
+                  label: l10n.alternateSources,
                   icon: Icons.link_rounded,
-                  onSelected: () => setState(() => page = LinkBottomSheetPage.alternativeLinks),
+                  onSelected: () => setState(() => page = LinkBottomSheetPage.alternateLinks),
                   trailingIcon: Icons.chevron_right_rounded,
                 ),
               ],
-              if ((page ?? widget.initialPage) == LinkBottomSheetPage.alternativeLinks)
-                ...generateAlternativeSources(widget.url ?? widget.text).map((alternativeSource) {
+              if ((page ?? widget.initialPage) == LinkBottomSheetPage.alternateLinks)
+                ...generateAlternateSources(widget.url ?? widget.text).map((alternateSource) {
                   return PickerItem(
-                    label: alternativeSource.sourceName,
-                    subtitle: alternativeSource.link,
+                    label: alternateSource.sourceName,
+                    subtitle: alternateSource.link,
                     icon: Icons.archive_rounded,
-                    onSelected: () => handleLink(context, url: alternativeSource.link),
+                    onSelected: () => handleLink(context, url: alternateSource.link),
                     trailingIcon: Icons.chevron_right_rounded,
                   );
                 }),
@@ -495,13 +495,13 @@ Future<void> handleLinkTap(BuildContext context, ThunderState state, String text
   }
 }
 
-List<({String sourceName, String link})> generateAlternativeSources(String link) {
-  return _alternativeSources.map((alternativeSource) {
-    return (sourceName: alternativeSource.sourceName, link: alternativeSource.template.format({'link': link}));
+List<({String sourceName, String link})> generateAlternateSources(String link) {
+  return _alternateSources.map((alternateSource) {
+    return (sourceName: alternateSource.sourceName, link: alternateSource.template.format({'link': link}));
   }).toList();
 }
 
-List<({String sourceName, MessageFormat template})> _alternativeSources = [
+List<({String sourceName, MessageFormat template})> _alternateSources = [
   (sourceName: 'Archive Today', template: MessageFormat('https://archive.today/{link}')),
   (sourceName: 'Internet Archive', template: MessageFormat('https://web.archive.org/save/{link}')),
   (sourceName: 'Ground News', template: MessageFormat('https://ground.news/find?url={link}')),

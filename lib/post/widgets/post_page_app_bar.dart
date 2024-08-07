@@ -210,11 +210,11 @@ class PostAppBarActions extends StatelessWidget {
                     context,
                     state.postView!.media.first.originalUrl!,
                     state.postView!.media.first.originalUrl!,
-                    initialPage: LinkBottomSheetPage.alternativeLinks,
+                    initialPage: LinkBottomSheetPage.alternateLinks,
                   );
                 },
                 icon: Icons.link_rounded,
-                title: l10n.alternativeSources,
+                title: l10n.alternateSources,
               ),
           ],
         ),
