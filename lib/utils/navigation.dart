@@ -62,6 +62,8 @@ import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 
+({String postApId, post_bloc.PostBloc postBloc})? _cachedPostBloc;
+
 /// Navigates to the instance page for the given [instanceHost].
 ///
 /// When [instanceId] is provided, the instance page will allow the option to block that given instance. This value represents
@@ -178,6 +180,14 @@ Future<void> navigateToPost(
   final reduceAnimations = state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
 
+  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == postViewMedia!.postView.post.apId
+      ? _cachedPostBloc!.postBloc
+      : (_cachedPostBloc = (
+          postApId: postViewMedia.postView.post.apId,
+          postBloc: post_bloc.PostBloc(),
+        ))
+          .postBloc;
+
   final route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
@@ -195,13 +205,13 @@ Future<void> navigateToPost(
           BlocProvider.value(value: accountBloc),
           BlocProvider.value(value: authBloc),
           BlocProvider.value(value: thunderBloc),
-          BlocProvider(create: (context) => post_bloc.PostBloc()),
+          BlocProvider.value(value: postBloc),
           BlocProvider(create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance)),
           BlocProvider(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
           BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
         child: PostPage(
-          initialPostViewMedia: pvm!,
+          initialPostViewMedia: postBloc.state.postView ?? pvm!,
           onPostUpdated: (PostViewMedia postViewMedia) {
             // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
             feedBloc?.add(FeedItemUpdatedEvent(

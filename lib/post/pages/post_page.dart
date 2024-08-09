@@ -77,9 +77,6 @@ class _PostPageState extends State<PostPage> {
   /// Whether the post source should be displayed.
   bool viewSource = false;
 
-  /// Keeps track of which comments should be collapsed. When a comment is collapsed, its child comments are hidden.
-  List<int> collapsedComments = [];
-
   /// The active account that was selected when the page was opened
   Account? originalUser;
 
@@ -88,6 +85,10 @@ class _PostPageState extends State<PostPage> {
 
   /// The height of the bottom spacer
   double? bottomSpacerHeight;
+
+  /// Whether we have set the initial scroll offset.
+  /// This needs to be done after building so the controller is attached
+  bool hasSetInitialScroll = false;
 
   /// The ID of the comment that should be highlighted
   int? highlightedCommentId;
@@ -105,6 +106,15 @@ class _PostPageState extends State<PostPage> {
       // Fetches new comments when the user has scrolled past 70% list
       if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.7 && context.read<PostBloc>().state.status == PostStatus.success) {
         context.read<PostBloc>().add(const GetPostCommentsEvent());
+      }
+
+      context.read<PostBloc>().add(UpdateScrollPosition(scrollPosition: scrollController.position.pixels));
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!hasSetInitialScroll) {
+        hasSetInitialScroll = true;
+        scrollController.jumpTo(context.read<PostBloc>().state.scrollPosition ?? 0.0);
       }
     });
   }
@@ -244,12 +254,19 @@ class _PostPageState extends State<PostPage> {
       },
       child: BlocConsumer<PostBloc, PostState>(
         listener: (context, state) {
+          if (state.didScrollPositionChange) {
+            return;
+          }
+
           if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia && state.postView != null) {
             if (!userChanged) {
               widget.onPostUpdated?.call(state.postView!);
             }
             setState(() {});
           }
+        },
+        buildWhen: (previous, current) {
+          return !current.didScrollPositionChange;
         },
         builder: (context, state) {
           if (state.status == PostStatus.initial) {
@@ -532,6 +549,8 @@ class _PostPageState extends State<PostPage> {
                             CommentNode commentNode = flattenedComments[index - 1];
                             CommentView commentView = commentNode.commentView!;
 
+                            final List<int> collapsedComments = context.read<PostBloc>().state.collapsedComments;
+
                             bool isCollapsed = collapsedComments.contains(commentView.comment.id);
                             bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
 
@@ -549,12 +568,7 @@ class _PostPageState extends State<PostPage> {
                                 context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
                               },
                               onCollapseCommentChange: (int commentId, bool collapsed) {
-                                if (collapsed) {
-                                  collapsedComments.add(commentId);
-                                } else {
-                                  collapsedComments.remove(commentId);
-                                }
-
+                                context.read<PostBloc>().add(UpdateCollapsedComment(commentId: commentId, collapsed: collapsed));
                                 setState(() {});
                               },
                             );
