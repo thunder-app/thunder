@@ -66,7 +66,6 @@ class CommentSubview extends StatefulWidget {
 }
 
 class _CommentSubviewState extends State<CommentSubview> with SingleTickerProviderStateMixin {
-  Set collapsedCommentSet = {}; // Retains the collapsed state of any comments
   bool _animatingOut = false;
   bool _animatingIn = false;
   bool _removeViewFullCommentsButton = false;
@@ -75,6 +74,10 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
   final GlobalKey _listKey = GlobalKey();
   final GlobalKey _lastCommentKey = GlobalKey();
   final GlobalKey _reachedBottomKey = GlobalKey();
+
+  /// Whether we have set the initial scroll offset.
+  /// This needs to be done after building so the controller is attached
+  bool hasSetInitialScroll = false;
 
   late final AnimationController _fullCommentsAnimation = AnimationController(
     duration: const Duration(milliseconds: 500),
@@ -91,6 +94,11 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
+
+    widget.scrollController.addListener(() {
+      context.read<PostBloc>().add(UpdateScrollPosition(scrollPosition: widget.scrollController.position.pixels));
+    });
+
     _fullCommentsOffsetAnimation.addStatusListener((status) {
       if (status == AnimationStatus.completed && _animatingOut) {
         _animatingOut = false;
@@ -119,6 +127,11 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
           }
         }
       });
+
+      if (!hasSetInitialScroll) {
+        hasSetInitialScroll = true;
+        widget.scrollController.jumpTo(context.read<PostBloc>().state.scrollPosition ?? 0.0);
+      }
     });
   }
 
@@ -243,11 +256,10 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       newlyCreatedCommentId: widget.newlyCreatedCommentId,
                       moddingCommentId: widget.moddingCommentId,
                       commentViewTree: widget.comments[index - 1],
-                      collapsedCommentSet: collapsedCommentSet,
-                      collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
+                      collapsed: context.read<PostBloc>().state.collapsedComments.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
                       onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
                       onVoteAction: (int commentId, int voteType) => widget.onVoteAction(commentId, voteType),
-                      onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
+                      onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(context, commentId, collapsed),
                       onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
                       onReportAction: (int commentId) => widget.onReportAction(commentId),
                       onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
@@ -304,11 +316,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
     return widget.postViewMedia != null ? widget.comments.length + 3 : widget.comments.length + 2;
   }
 
-  void onCollapseCommentChange(int commentId, bool collapsed) {
-    if (collapsed == false && collapsedCommentSet.contains(commentId)) {
-      setState(() => collapsedCommentSet.remove(commentId));
-    } else if (collapsed == true && !collapsedCommentSet.contains(commentId)) {
-      setState(() => collapsedCommentSet.add(commentId));
-    }
+  void onCollapseCommentChange(BuildContext context, int commentId, bool collapsed) {
+    context.read<PostBloc>().add(UpdateCollapsedComment(commentId: commentId, collapsed: collapsed));
+    setState(() {});
   }
 }

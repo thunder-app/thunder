@@ -22,6 +22,8 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 
+({String postApId, post_bloc.PostBloc postBloc})? _cachedPostBloc;
+
 Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia, int? selectedCommentId, String? selectedCommentPath, int? postId, Function(PostViewMedia)? onPostUpdated}) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
@@ -57,6 +59,14 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
 
   bool enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
 
+  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == postViewMedia!.postView.post.apId
+      ? _cachedPostBloc!.postBloc
+      : (_cachedPostBloc = (
+          postApId: postViewMedia.postView.post.apId,
+          postBloc: post_bloc.PostBloc(),
+        ))
+          .postBloc;
+
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
@@ -75,13 +85,13 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
           BlocProvider.value(value: authBloc),
           BlocProvider.value(value: thunderBloc),
           BlocProvider.value(value: instanceBloc),
-          BlocProvider(create: (context) => post_bloc.PostBloc()),
+          BlocProvider.value(value: postBloc),
           if (communityBloc != null) BlocProvider.value(value: communityBloc),
           if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
         ],
         child: enableExperimentalFeatures
             ? PostPage(
-                initialPostViewMedia: postViewMedia!,
+                initialPostViewMedia: postViewMedia,
                 onPostUpdated: (PostViewMedia postViewMedia) {
                   FeedBloc? feedBloc;
                   try {

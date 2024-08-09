@@ -24,7 +24,6 @@ class CommentCard extends StatefulWidget {
   final Function(CommentView, bool) onReplyEditAction;
   final Function(int) onReportAction;
 
-  final Set collapsedCommentSet;
   final int? selectCommentId;
   final String? selectedCommentPath;
   final int? newlyCreatedCommentId;
@@ -40,7 +39,6 @@ class CommentCard extends StatefulWidget {
     required this.onCollapseCommentChange,
     required this.onReplyEditAction,
     required this.onReportAction,
-    this.collapsedCommentSet = const {},
     this.selectCommentId,
     this.selectedCommentPath,
     this.newlyCreatedCommentId,
@@ -467,8 +465,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               selectCommentId: widget.selectCommentId,
                               newlyCreatedCommentId: widget.newlyCreatedCommentId,
                               commentViewTree: widget.commentViewTree.replies[index],
-                              collapsedCommentSet: widget.collapsedCommentSet,
-                              collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].commentView!.comment.id),
+                              collapsed: context.read<PostBloc>().state.collapsedComments.contains(widget.commentViewTree.replies[index].commentView!.comment.id),
                               level: widget.level + 1,
                               onVoteAction: widget.onVoteAction,
                               onReportAction: widget.onReportAction,

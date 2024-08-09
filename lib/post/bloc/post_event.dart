@@ -120,3 +120,16 @@ class ReportCommentEvent extends PostEvent {
     required this.message,
   });
 }
+
+class UpdateScrollPosition extends PostEvent {
+  final double scrollPosition;
+
+  const UpdateScrollPosition({required this.scrollPosition});
+}
+
+class UpdateCollapsedComment extends PostEvent {
+  final int commentId;
+  final bool collapsed;
+
+  const UpdateCollapsedComment({required this.commentId, required this.collapsed});
+}
