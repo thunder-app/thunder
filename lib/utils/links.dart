@@ -310,7 +310,7 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
   return false;
 }
 
-void handleLinkLongPress(BuildContext context, String text, String? url, {LinkBottomSheetPage initialPage = LinkBottomSheetPage.general}) {
+void handleLinkLongPress(BuildContext context, String text, String? url, {LinkBottomSheetPage initialPage = LinkBottomSheetPage.general, void Function(String)? customNavigation}) {
   HapticFeedback.mediumImpact();
   showModalBottomSheet(
     context: context,
@@ -320,6 +320,7 @@ void handleLinkLongPress(BuildContext context, String text, String? url, {LinkBo
       text: text,
       url: url,
       initialPage: initialPage,
+      customNavigation: customNavigation,
     ),
   );
 }
@@ -333,12 +334,14 @@ class LinkBottomSheet extends StatefulWidget {
   final String? url;
   final String text;
   final LinkBottomSheetPage initialPage;
+  final void Function(String)? customNavigation;
 
   const LinkBottomSheet({
     super.key,
     required this.text,
     required this.url,
     this.initialPage = LinkBottomSheetPage.general,
+    this.customNavigation,
   });
 
   @override
@@ -460,7 +463,15 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                     label: alternateSource.sourceName,
                     subtitle: alternateSource.link,
                     icon: Icons.archive_rounded,
-                    onSelected: () => handleLink(context, url: alternateSource.link),
+                    onSelected: () {
+                      if (widget.customNavigation != null) {
+                        widget.customNavigation!.call(alternateSource.link);
+                      } else {
+                        handleLink(context, url: alternateSource.link);
+                      }
+
+                      Navigator.of(context).pop();
+                    },
                     trailingIcon: Icons.chevron_right_rounded,
                   );
                 }),

@@ -170,6 +170,7 @@ class NavigationControls extends StatelessWidget {
                       url,
                       url,
                       initialPage: LinkBottomSheetPage.alternateLinks,
+                      customNavigation: (url) => webViewController.loadRequest(Uri.parse(url)),
                     );
                   },
                   icon: Icons.link_rounded,
