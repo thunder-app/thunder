@@ -269,7 +269,10 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
             }
           },
           builder: (context, state) {
-            return KeyboardDismissOnTap(
+            return GestureDetector(
+              onTap: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
