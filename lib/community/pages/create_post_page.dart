@@ -371,7 +371,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
           }
         },
         builder: (context, state) {
-          return KeyboardDismissOnTap(
+          return GestureDetector(
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
             child: Scaffold(
               appBar: AppBar(
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
