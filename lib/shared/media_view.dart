@@ -81,18 +81,24 @@ class MediaView extends StatefulWidget {
   State<MediaView> createState() => _MediaViewState();
 }
 
-class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMixin {
+class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   late AnimationController _controller;
+
+  // Overlay used for image peeking
+  OverlayEntry? _overlayEntry;
+  late final AnimationController _overlayAnimationController;
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 130), lowerBound: 0.0, upperBound: 1.0);
+    _overlayAnimationController = AnimationController(duration: const Duration(milliseconds: 100), vsync: this);
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _overlayAnimationController.dispose();
     super.dispose();
   }
 
@@ -181,56 +187,89 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     // (This can be implemented once the web UI does the same.)
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
 
-    return InkWell(
-      splashColor: theme.colorScheme.primary.withOpacity(0.4),
-      borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-      onTap: showImage,
-      child: Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-          color: getBackgroundColor(context),
-        ),
-        constraints: BoxConstraints(
-            maxHeight: switch (widget.viewMode) {
-              ViewMode.compact => ViewMode.compact.height,
-              ViewMode.comfortable => widget.showFullHeightImages
-                  ? widget.postViewMedia.media.first.height ?? (widget.allowUnconstrainedImageHeight ? double.infinity : ViewMode.comfortable.height)
-                  : ViewMode.comfortable.height,
-            },
-            minHeight: switch (widget.viewMode) {
-              ViewMode.compact => ViewMode.compact.height,
-              ViewMode.comfortable => widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? ViewMode.comfortable.height : ViewMode.comfortable.height,
-            },
-            maxWidth: switch (widget.viewMode) {
-              ViewMode.compact => ViewMode.compact.height,
-              ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
-            },
-            minWidth: switch (widget.viewMode) {
-              ViewMode.compact => ViewMode.compact.height,
-              ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
-            }),
-        child: Stack(
-          fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
-          alignment: Alignment.center,
-          children: [
-            ImageFiltered(
-              enabled: blurNSFWPreviews,
-              imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-              child: previewImage(context),
-            ),
-            if (blurNSFWPreviews)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                  if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
-                ],
+    return Stack(
+      children: [
+        Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+            color: getBackgroundColor(context),
+          ),
+          constraints: BoxConstraints(
+              maxHeight: switch (widget.viewMode) {
+                ViewMode.compact => ViewMode.compact.height,
+                ViewMode.comfortable => widget.showFullHeightImages
+                    ? widget.postViewMedia.media.first.height ?? (widget.allowUnconstrainedImageHeight ? double.infinity : ViewMode.comfortable.height)
+                    : ViewMode.comfortable.height,
+              },
+              minHeight: switch (widget.viewMode) {
+                ViewMode.compact => ViewMode.compact.height,
+                ViewMode.comfortable => widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? ViewMode.comfortable.height : ViewMode.comfortable.height,
+              },
+              maxWidth: switch (widget.viewMode) {
+                ViewMode.compact => ViewMode.compact.height,
+                ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
+              },
+              minWidth: switch (widget.viewMode) {
+                ViewMode.compact => ViewMode.compact.height,
+                ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
+              }),
+          child: Stack(
+            fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
+            alignment: Alignment.center,
+            children: [
+              ImageFiltered(
+                enabled: blurNSFWPreviews,
+                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                child: previewImage(context),
               ),
-          ],
+              if (blurNSFWPreviews)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                    if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
+                  ],
+                ),
+            ],
+          ),
         ),
-      ),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              splashColor: theme.colorScheme.primary.withOpacity(0.4),
+              borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+              onTap: showImage,
+              child: GestureDetector(
+                onLongPressStart: (_) {
+                  _overlayEntry = OverlayEntry(
+                    builder: (context) {
+                      return FadeTransition(
+                        opacity: _overlayAnimationController,
+                        child: ImageViewer(
+                          url: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.mediaUrl,
+                          postId: widget.postViewMedia.postView.post.id,
+                          navigateToPost: widget.navigateToPost,
+                          isPeek: true,
+                        ),
+                      );
+                    },
+                  );
+                  Overlay.of(context).insert(_overlayEntry!);
+                  _overlayAnimationController.forward();
+                },
+                onLongPressEnd: (_) async {
+                  await _overlayAnimationController.reverse();
+                  _overlayEntry?.remove();
+                  _overlayEntry = null;
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
