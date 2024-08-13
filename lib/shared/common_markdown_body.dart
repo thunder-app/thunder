@@ -120,8 +120,17 @@ class CommonMarkdownBody extends StatelessWidget {
       imageBuilder: (uri, title, alt) {
         if (hideContent) return Container();
 
+        // Handle urls that are proxied via /image_proxy
+        Uri? parsedUri = uri;
+
+        if (uri.path == '/api/v3/image_proxy' && uri.queryParameters.containsKey('url')) {
+          parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
+        }
+
+        if (parsedUri == null) return Container();
+
         return FutureBuilder(
-          future: isImageUriSvg(uri),
+          future: isImageUriSvg(parsedUri),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -130,15 +139,26 @@ class CommonMarkdownBody extends StatelessWidget {
                 children: [
                   snapshot.data != true
                       ? ImagePreview(
-                          url: uri.toString(),
+                          url: parsedUri.toString(),
                           isExpandable: true,
                           isComment: isComment,
                           showFullHeightImages: true,
                           maxWidth: imageMaxWidth,
                         )
-                      : ScalableImageWidget.fromSISource(
-                          si: ScalableImageSource.fromSvgHttpUrl(uri),
-                        )
+                      : Container(
+                          constraints: isComment == true
+                              ? BoxConstraints(
+                                  maxHeight: MediaQuery.of(context).size.width * 0.55,
+                                  maxWidth: MediaQuery.of(context).size.width * 0.60,
+                                )
+                              : BoxConstraints(
+                                  maxWidth: imageMaxWidth ?? MediaQuery.of(context).size.width - 24,
+                                ),
+                          child: ScalableImageWidget.fromSISource(
+                            fit: BoxFit.contain,
+                            si: ScalableImageSource.fromSvgHttpUrl(parsedUri!),
+                          ),
+                        ),
                 ],
               ),
             );
