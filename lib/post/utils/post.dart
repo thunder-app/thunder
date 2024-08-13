@@ -325,13 +325,6 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   String? thumbnailUrl = postView.post.thumbnailUrl;
   String? videoUrl = postView.post.embedVideoUrl;
 
-  // Handle thumbnail urls that are proxied via /image_proxy
-  Uri? thumbnailUri = Uri.tryParse(thumbnailUrl ?? '');
-
-  if (thumbnailUri?.path == '/api/v3/image_proxy') {
-    thumbnailUrl = thumbnailUri?.queryParameters['url'];
-  }
-
   // First, check what type of link we're dealing with based on the url (MediaType.image, MediaType.video, MediaType.link, MediaType.text)
   bool isImage = isImageUrl(url);
   bool isVideo = isVideoUrl(videoUrl ?? url);
