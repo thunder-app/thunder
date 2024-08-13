@@ -120,17 +120,8 @@ class CommonMarkdownBody extends StatelessWidget {
       imageBuilder: (uri, title, alt) {
         if (hideContent) return Container();
 
-        // Handle urls that are proxied via /image_proxy
-        Uri? parsedUri = uri;
-
-        if (uri.path == '/api/v3/image_proxy' && uri.queryParameters.containsKey('url')) {
-          parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
-        }
-
-        if (parsedUri == null) return Container();
-
         return FutureBuilder(
-          future: isImageUriSvg(parsedUri),
+          future: isImageUriSvg(uri),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -139,7 +130,7 @@ class CommonMarkdownBody extends StatelessWidget {
                 children: [
                   snapshot.data != true
                       ? ImagePreview(
-                          url: parsedUri.toString(),
+                          url: uri.toString(),
                           isExpandable: true,
                           isComment: isComment,
                           showFullHeightImages: true,
@@ -156,7 +147,7 @@ class CommonMarkdownBody extends StatelessWidget {
                                 ),
                           child: ScalableImageWidget.fromSISource(
                             fit: BoxFit.contain,
-                            si: ScalableImageSource.fromSvgHttpUrl(parsedUri!),
+                            si: ScalableImageSource.fromSvgHttpUrl(uri),
                           ),
                         ),
                 ],
