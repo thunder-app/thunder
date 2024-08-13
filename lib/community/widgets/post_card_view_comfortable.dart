@@ -44,7 +44,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool markPostReadOnMediaView;
   final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
-  final bool indicateRead;
+  final bool? indicateRead;
 
   const PostCardViewComfortable({
     super.key,
@@ -66,7 +66,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
     required this.listingType,
-    required this.indicateRead,
+    this.indicateRead,
     this.navigateToPost,
   });
 
@@ -74,6 +74,8 @@ class PostCardViewComfortable extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+
+    bool indicateRead = this.indicateRead ?? state.dimReadPosts;
 
     final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) &&
         isUserLoggedIn &&
