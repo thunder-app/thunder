@@ -33,11 +33,12 @@ bool isImageUrl(String url) {
 
   // Handle thumbnail urls that are proxied via /image_proxy
   if (uri.path == '/api/v3/image_proxy') {
-    path = uri.queryParameters['url'] ?? '';
+    Uri? parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
+    if (parsedUri != null) path = parsedUri.path;
   }
 
   for (final extension in imageExtensions) {
-    if (path.contains(extension)) {
+    if (path.endsWith(extension)) {
       return true;
     }
   }
@@ -81,6 +82,7 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
     }
 
     // The image provider should throw an error if a valid image is not found
+    // This is to catch cases where the URL may return a valid image, but the URL path does not conform to the expected format
     final imageProvider = ExtendedNetworkImageProvider(imageUrl ?? '', cache: true, cacheRawData: true);
     final imageData = await imageProvider.getNetworkImageData();
     if (imageData == null) throw Exception('Failed to retrieve image data from $imageUrl');
