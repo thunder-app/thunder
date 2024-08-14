@@ -147,7 +147,7 @@ class ScorePostCardMetaData extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.only(right: 4.0),
+      margin: const EdgeInsets.only(right: 8.0),
       child: Wrap(
         spacing: 2.0,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -217,7 +217,7 @@ class UpvotePostCardMetaData extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.only(right: 4.0),
+      margin: const EdgeInsets.only(right: 8.0),
       child: IconText(
         fontScale: state.metadataFontSizeScale,
         text: showScores ? formatNumberToK(upvotes ?? 0) : null,
@@ -267,7 +267,7 @@ class DownvotePostCardMetaData extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.only(right: 4.0),
+      margin: const EdgeInsets.only(right: 8.0),
       child: IconText(
         fontScale: state.metadataFontSizeScale,
         text: showScores ? formatNumberToK(downvotes ?? 0) : null,
@@ -309,12 +309,12 @@ class CommentCountPostCardMetaData extends StatelessWidget {
     };
 
     return Container(
-      margin: const EdgeInsets.only(right: 4.0),
+      margin: const EdgeInsets.only(right: 8.0),
       child: IconText(
         fontScale: state.metadataFontSizeScale,
         text: (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? '+${formatNumberToK(unreadCommentCount)}' : formatNumberToK(commentCount ?? 0),
         textColor: color,
-        padding: 5.0,
+        padding: 4.0,
         icon: Icon(unreadCommentCount > 0 && unreadCommentCount != commentCount ? Icons.mark_unread_chat_alt_rounded : Icons.chat, size: 17.0, color: color),
       ),
     );
@@ -351,7 +351,7 @@ class DateTimePostCardMetaData extends StatelessWidget {
     };
 
     return Container(
-      margin: const EdgeInsets.only(right: 4.0),
+      margin: const EdgeInsets.only(right: 8.0),
       child: IconText(
         fontScale: state.metadataFontSizeScale,
         text: state.showFullPostDate ? state.dateFormat?.format(DateTime.parse(dateTime)) : formatTimeToString(dateTime: dateTime),
@@ -393,7 +393,7 @@ class UrlPostCardMetaData extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.only(right: 4.0),
+      margin: const EdgeInsets.only(right: 8.0),
       child: Tooltip(
         message: url,
         preferBelow: false,
@@ -443,7 +443,7 @@ class LanguagePostCardMetaData extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.only(right: 4.0),
+      margin: const EdgeInsets.only(right: 8.0),
       child: Tooltip(
         message: languageId == -1 ? 'English' : language!.name,
         preferBelow: false,
