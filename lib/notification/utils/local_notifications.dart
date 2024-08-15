@@ -65,7 +65,7 @@ Future<void> pollRepliesAndShowNotifications() async {
   Map<Account, List<CommentReplyView>> notifications = {};
 
   for (final Account account in accounts) {
-    LemmyClient client = LemmyClient()..changeBaseUrl(account.instance!);
+    LemmyClient client = LemmyClient()..changeBaseUrl(account.instance);
 
     // Iterate through inbox replies
     GetRepliesResponse getRepliesResponse = await client.lemmyApiV3.run(
@@ -209,11 +209,10 @@ Future<void> initBackgroundFetch() async {
 }
 
 /// Initializes BackgroundFetch to send a test notification
-/// It uses an interval of 1 and the alarm manager so the user doesn't have to wait too long.
 Future<void> initTestBackgroundFetch() async {
   await BackgroundFetch.configure(
     BackgroundFetchConfig(
-      minimumFetchInterval: 1,
+      minimumFetchInterval: 15,
       stopOnTerminate: false,
       startOnBoot: true,
       enableHeadless: true,
@@ -222,7 +221,6 @@ Future<void> initTestBackgroundFetch() async {
       requiresStorageNotLow: false,
       requiresCharging: false,
       requiresDeviceIdle: false,
-      forceAlarmManager: true,
     ),
     (String taskId) async {
       BackgroundFetch.finish(taskId);

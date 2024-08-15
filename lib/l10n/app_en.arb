@@ -2277,7 +2277,7 @@
   "@teal": {
     "description": "The color teal"
   },
-  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It may take a few minutes.)",
+  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It will take at least 15 minutes.)",
   "@testBackgroundNotificationDescription": {
     "description": "A message describing the background test notification"
   },
