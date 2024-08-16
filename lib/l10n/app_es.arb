@@ -2271,7 +2271,7 @@
   "@suchAs": {
     "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
   },
-  "testBackgroundNotificationDescription": "Thunder se cerrará e intentará generar una notificación en segundo plano. (Puede tardar unos minutos)",
+  "testBackgroundNotificationDescription": "Thunder se cerrará y luego intentará generar una notificación en segundo plano (esto demorará al menos 15 minutos)",
   "@testBackgroundNotificationDescription": {
     "description": "A message describing the background test notification"
   },
