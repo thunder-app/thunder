@@ -138,9 +138,13 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
             setState(() {});
           },
           onElementStoppedBeingTapped: (element) {
-            elementsBeingTapped.remove(element);
-            _extendedMarkdownBody?.forceParseMarkdown?.call();
-            setState(() {});
+            // Add a tiny delay before removing the element.
+            // This allows the visual indication to be displayed, even if the user taps very quickly
+            Future.delayed(const Duration(milliseconds: 50), () {
+              elementsBeingTapped.remove(element);
+              _extendedMarkdownBody?.forceParseMarkdown?.call();
+              setState(() {});
+            });
           },
         ),
       },
