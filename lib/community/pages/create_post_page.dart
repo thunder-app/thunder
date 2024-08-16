@@ -668,6 +668,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                       )
                                     : Icon(
                                         widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                        color: theme.colorScheme.onSecondary,
                                         semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
                                       ),
                                 style: ElevatedButton.styleFrom(
