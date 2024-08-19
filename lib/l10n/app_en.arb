@@ -787,6 +787,8 @@
   "@enablePostFab": {
     "description": "Enable the Floating Action Button for the post"
   },
+  "endOfComments": "End of comments",
+  "@endOfComments": {},
   "endSearch": "End Search",
   "@endSearch": {},
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
@@ -1381,13 +1383,11 @@
   "@noAnonymousInstances": {
     "description": "Placeholder text when no anonymous instances have been added"
   },
-  "noComments": "There are no comments.",
-  "@noComments": {},
-  "noCommentsFound": "No comments found.",
+  "noCommentsFound": "No comments found",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No communities found.",
+  "noCommunitiesFound": "No communities found",
   "@noCommunitiesFound": {},
-  "noCommunityBlocks": "No blocked communities.",
+  "noCommunityBlocks": "No blocked communities",
   "@noCommunityBlocks": {},
   "noCompatibleAppFound": "No compatible app found",
   "@noCompatibleAppFound": {
@@ -1703,7 +1703,7 @@
   "@pushNotificationServerDescription": {
     "description": "Description of choosing push notification server setting"
   },
-  "reachedTheBottom": "Reached the end.",
+  "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
