@@ -1381,7 +1381,7 @@
   "@noAnonymousInstances": {
     "description": "Placeholder text when no anonymous instances have been added"
   },
-  "noComments": "Oh. There are no comments.",
+  "noComments": "There are no comments.",
   "@noComments": {},
   "noCommentsFound": "No comments found.",
   "@noCommentsFound": {},
@@ -1703,7 +1703,7 @@
   "@pushNotificationServerDescription": {
     "description": "Description of choosing push notification server setting"
   },
-  "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
+  "reachedTheBottom": "Reached the end.",
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
