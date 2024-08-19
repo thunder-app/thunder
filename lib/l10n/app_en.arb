@@ -259,6 +259,10 @@
   "@clearCache": {
     "description": "Label for action to clear cache in the dialog"
   },
+  "clearCacheLabel": "Clear Cache",
+  "@clearCacheLabel": {
+    "description": "Label for action to clear cache in the dialog"
+  },
   "clearDatabase": "Clear Database",
   "@clearDatabase": {
     "description": "Label for action to clear local database in the dialog"
@@ -1221,6 +1225,10 @@
   "@loginToPerformAction": {},
   "loginToSeeInbox": "Log in to see your inbox",
   "@loginToSeeInbox": {},
+  "lookingForAccountSpecificFeedSettings": "Looking for account-specific feed settings?",
+  "@lookingForAccountSpecificFeedSettings": {
+    "description": "Helper setting which navigates to account page"
+  },
   "malformedUri": "The link you provided is in an unsupported format. Please make sure it's a valid link.",
   "@malformedUri": {
     "description": "Error related to unsupported link format."
