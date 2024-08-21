@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -18,6 +20,7 @@ import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc_old.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
+import 'package:thunder/utils/instance.dart';
 
 class UserPage extends StatefulWidget {
   final int? userId;
@@ -41,24 +44,25 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   UserBloc? userBloc;
-  String? userActorId;
+  Person? person;
 
   @override
   Widget build(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
     final bool reduceAnimations = state.reduceAnimations;
+    final ThemeData theme = Theme.of(context);
 
     return BlocProvider<UserBloc>(
       create: (BuildContext context) => UserBloc(lemmyClient: LemmyClient.instance),
       child: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
-          if (userActorId == null && state.personView?.person.actorId != null) {
-            setState(() => userActorId = state.personView!.person.actorId);
+          if (person == null && state.personView?.person != null) {
+            setState(() => person = state.personView!.person);
           }
         },
         child: Scaffold(
           appBar: AppBar(
-            scrolledUnderElevation: 0,
+            titleSpacing: 0,
             leading: widget.isAccountUser
                 ? Padding(
                     padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
@@ -72,6 +76,24 @@ class _UserPageState extends State<UserPage> {
                     ),
                   )
                 : null,
+            title: person == null
+                ? const SizedBox.shrink()
+                : ListTile(
+                    title: Text(
+                      person!.name,
+                      style: theme.textTheme.titleLarge,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                    ),
+                    subtitle: UserFullNameWidget(
+                      context,
+                      person!.name,
+                      person!.displayName,
+                      fetchInstanceNameFromUrl(person!.actorId) ?? '',
+                      // Override because we're showing right above
+                      useDisplayName: false,
+                    ),
+                  ),
             actions: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
@@ -84,11 +106,11 @@ class _UserPageState extends State<UserPage> {
                   tooltip: AppLocalizations.of(context)!.refresh,
                 ),
               ),
-              if (!widget.isAccountUser && userActorId != null)
+              if (!widget.isAccountUser && person?.actorId != null)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
                   child: IconButton(
-                    onPressed: () => Share.share(userActorId!),
+                    onPressed: () => Share.share(person!.actorId),
                     icon: Icon(
                       Icons.share_rounded,
                       semanticLabel: AppLocalizations.of(context)!.share,

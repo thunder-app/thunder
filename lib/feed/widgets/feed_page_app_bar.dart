@@ -156,8 +156,8 @@ class FeedAppBarTitle extends StatelessWidget {
       title: Text(
         getAppBarTitle(feedBloc.state),
         style: theme.textTheme.titleLarge,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+        softWrap: false,
+        overflow: TextOverflow.fade,
       ),
       subtitle: AnimatedCrossFade(
         duration: const Duration(milliseconds: 250),
