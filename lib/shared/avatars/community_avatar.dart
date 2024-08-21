@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:thunder/shared/avatars/avatar_border.dart';
+import 'package:thunder/shared/conditional_parent_widget.dart';
 
 /// A community avatar. Displays the associated community icon if available.
 ///
@@ -24,7 +26,18 @@ class CommunityAvatar extends StatelessWidget {
   /// The image format to request from the instance
   final String? format;
 
-  const CommunityAvatar({super.key, this.community, this.radius = 12.0, this.showCommunityStatus = false, this.thumbnailSize, this.format});
+  /// Whether or not to display a border around the avatar
+  final bool showBorder;
+
+  const CommunityAvatar({
+    super.key,
+    this.community,
+    this.radius = 12.0,
+    this.showCommunityStatus = false,
+    this.thumbnailSize,
+    this.format,
+    this.showBorder = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +58,13 @@ class CommunityAvatar extends StatelessWidget {
       ),
     );
 
-    if (community?.icon?.isNotEmpty != true) return placeholderIcon;
+    if (community?.icon?.isNotEmpty != true) {
+      return ConditionalParentWidget(
+        condition: showBorder,
+        parentBuilder: (child) => AvatarBorder(child: child),
+        child: placeholderIcon,
+      );
+    }
 
     Uri imageUri = Uri.parse(community!.icon!);
     bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
@@ -54,34 +73,38 @@ class CommunityAvatar extends StatelessWidget {
     if (isPictrsImageEndpoint && format != null) queryParameters['format'] = format;
     Uri thumbnailUri = Uri.https(imageUri.host, imageUri.path, queryParameters);
 
-    return CachedNetworkImage(
-      imageUrl: thumbnailUri.toString(),
-      imageBuilder: (context, imageProvider) {
-        return Stack(
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.transparent,
-              foregroundImage: imageProvider,
-              maxRadius: radius,
-            ),
-            if (community?.postingRestrictedToMods == true && showCommunityStatus)
-              Positioned(
-                bottom: -2.0,
-                right: -2.0,
-                child: Tooltip(
-                  message: l10n.onlyModsCanPostInCommunity,
-                  child: Container(
-                    padding: const EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(color: theme.colorScheme.surface, shape: BoxShape.circle),
-                    child: Icon(Icons.lock, color: theme.colorScheme.error, size: 18.0, semanticLabel: l10n.onlyModsCanPostInCommunity),
+    return ConditionalParentWidget(
+      condition: showBorder,
+      parentBuilder: (child) => AvatarBorder(child: child),
+      child: CachedNetworkImage(
+        imageUrl: thumbnailUri.toString(),
+        imageBuilder: (context, imageProvider) {
+          return Stack(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.transparent,
+                foregroundImage: imageProvider,
+                maxRadius: radius,
+              ),
+              if (community?.postingRestrictedToMods == true && showCommunityStatus)
+                Positioned(
+                  bottom: -2.0,
+                  right: -2.0,
+                  child: Tooltip(
+                    message: l10n.onlyModsCanPostInCommunity,
+                    child: Container(
+                      padding: EdgeInsets.all(radius * 0.15),
+                      decoration: BoxDecoration(color: theme.colorScheme.surface, shape: BoxShape.circle),
+                      child: Icon(Icons.lock, color: theme.colorScheme.error, size: radius * 0.5, semanticLabel: l10n.onlyModsCanPostInCommunity),
+                    ),
                   ),
                 ),
-              ),
-          ],
-        );
-      },
-      placeholder: (context, url) => placeholderIcon,
-      errorWidget: (context, url, error) => placeholderIcon,
+            ],
+          );
+        },
+        placeholder: (context, url) => placeholderIcon,
+        errorWidget: (context, url, error) => placeholderIcon,
+      ),
     );
   }
 }

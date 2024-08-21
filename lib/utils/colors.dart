@@ -10,6 +10,13 @@ Color getBackgroundColor(BuildContext context) {
   return darkTheme ? theme.dividerColor.darken(5) : theme.dividerColor.lighten(20);
 }
 
+/// Gets a tinted background color that looks good in light and dark mode, and looks good on top of the backgroud color
+Color getBackgroundColorAlt(BuildContext context) {
+  final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+  final ThemeData theme = Theme.of(context);
+  return darkTheme ? theme.dividerColor.darken(10) : theme.dividerColor.lighten(15);
+}
+
 /// Retrieves the color based on the depth of the comment in the comment tree
 Color getCommentLevelColor(BuildContext context, int level) {
   // TODO: make this themeable
