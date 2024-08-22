@@ -541,11 +541,11 @@
   "@newComments": {},
   "new_": "Nuevo",
   "@new_": {},
-  "noCommentsFound": "No hay comentarios.",
+  "noCommentsFound": "No hay comentarios",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No se han encontrado comunidades.",
+  "noCommunitiesFound": "No se han encontrado comunidades",
   "@noCommunitiesFound": {},
-  "noCommunityBlocks": "Ninguna comunidad bloqueada.",
+  "noCommunityBlocks": "Ninguna comunidad bloqueada",
   "@noCommunityBlocks": {},
   "noFavoritedCommunities": "Ninguna comunidad favorita",
   "@noFavoritedCommunities": {
@@ -679,7 +679,7 @@
   "@profileAppliedSuccessfully": {},
   "profiles": "Perfiles",
   "@profiles": {},
-  "reachedTheBottom": "Mmm. Parece que has llegado al final.",
+  "reachedTheBottom": "No hay elementos para cargar",
   "@reachedTheBottom": {},
   "readAll": "Leer todo",
   "@readAll": {},
@@ -2736,5 +2736,7 @@
   "visitUserInstance": "Visitar la instancia de un usuario",
   "@visitUserInstance": {
     "description": "Action to visit the instance of a user"
-  }
+  },
+  "endOfComments": "Fin de las observaciones",
+  "@endOfComments": {}
 }
