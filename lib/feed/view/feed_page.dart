@@ -792,6 +792,7 @@ class FeedReachedEnd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
@@ -802,7 +803,7 @@ class FeedReachedEnd extends StatelessWidget {
           color: theme.dividerColor.withOpacity(0.1),
           padding: const EdgeInsets.symmetric(vertical: 32.0),
           child: ScalableText(
-            'Hmmm. It seems like you\'ve reached the bottom.',
+            l10n.reachedTheBottom,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleSmall,
             fontScale: state.metadataFontSizeScale,
