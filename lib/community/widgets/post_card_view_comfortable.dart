@@ -16,6 +16,8 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -42,7 +44,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool markPostReadOnMediaView;
   final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
-  final bool indicateRead;
+  final bool? indicateRead;
 
   const PostCardViewComfortable({
     super.key,
@@ -64,7 +66,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
     required this.listingType,
-    required this.indicateRead,
+    this.indicateRead,
     this.navigateToPost,
   });
 
@@ -72,6 +74,8 @@ class PostCardViewComfortable extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+
+    bool indicateRead = this.indicateRead ?? state.dimReadPosts;
 
     final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) &&
         isUserLoggedIn &&
@@ -112,6 +116,15 @@ class PostCardViewComfortable extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   children: [
+                    if (postViewMedia.postView.hidden == true)
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.visibility_off_rounded,
+                          color: indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.hideColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.hideColor.color,
+                          size: 16 * textScaleFactor,
+                          semanticLabel: l10n.hidden,
+                        ),
+                      ),
                     if (postViewMedia.postView.post.locked) ...[
                       WidgetSpan(
                           child: Icon(
@@ -196,6 +209,18 @@ class PostCardViewComfortable extends StatelessWidget {
                 child: Text.rich(
                   TextSpan(
                     children: [
+                      if (postViewMedia.postView.hidden == true) ...[
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.visibility_off_rounded,
+                            color:
+                                indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.hideColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.hideColor.color,
+                            size: 16 * textScaleFactor,
+                            semanticLabel: l10n.hidden,
+                          ),
+                        ),
+                        const WidgetSpan(child: SizedBox(width: 2)),
+                      ],
                       if (postViewMedia.postView.post.locked) ...[
                         WidgetSpan(
                             child: Icon(
@@ -325,6 +350,9 @@ class PostCardViewComfortable extends StatelessWidget {
                       showPostActionBottomModalSheet(
                         context,
                         postViewMedia,
+                        onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
+                        onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
+                        onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
                       );
                       HapticFeedback.mediumImpact();
                     }),

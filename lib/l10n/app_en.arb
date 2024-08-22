@@ -3,6 +3,10 @@
   "@about": {
     "description": "About settings category."
   },
+  "accept": "Accept",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
   "accessibility": "Accessibility",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
@@ -105,6 +109,10 @@
   "@animations": {},
   "anonymous": "Anonymous",
   "@anonymous": {},
+  "anonymousInstances": "Anonymous Instances",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
   "appLanguage": "App Language",
   "@appLanguage": {
     "description": "Language selection in settings."
@@ -149,6 +157,10 @@
   },
   "blockCommunity": "Block Community",
   "@blockCommunity": {},
+  "blockCommunityInstance": "Block Community Instance",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
   "blockInstance": "Block Instance",
   "@blockInstance": {},
   "blockManagement": "Block Management",
@@ -161,6 +173,10 @@
   },
   "blockUser": "Block User",
   "@blockUser": {},
+  "blockUserInstance": "Block User Instance",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
   "blockedCommunities": "Blocked Communities",
   "@blockedCommunities": {},
   "blockedInstances": "Blocked Instances",
@@ -233,7 +249,7 @@
   "@changePassword": {
     "description": "Label for action to change password"
   },
-  "changePasswordWarning": "To change your password, you will be redirected to your instance site. \\n\\nAre you sure you want to continue?",
+  "changePasswordWarning": "To change your password, you will be redirected to your instance site. \n\nAre you sure you want to continue?",
   "@changePasswordWarning": {
     "description": "Warning label for changing password"
   },
@@ -429,7 +445,7 @@
   "@confirmMarkAllAsReadBody": {
     "description": "The body of the confirm mark all as read dialog"
   },
-  "confirmMarkAllAsReadTitle": "Mark All As Read?",
+  "confirmMarkAllAsReadTitle": "Mark all as read?",
   "@confirmMarkAllAsReadTitle": {
     "description": "The title of the confirm mark all as read dialog"
   },
@@ -452,6 +468,10 @@
   "contentManagement": "Content Management",
   "@contentManagement": {
     "description": "Setting for content management (languages/blocking)"
+  },
+  "contentWarning": "Content Warning",
+  "@contentWarning": {
+    "description": "Heading for content warning dialog"
   },
   "controversial": "Controversial",
   "@controversial": {},
@@ -595,6 +615,10 @@
   "@debugNotificationsDescription": {
     "description": "A description for the notification debugging section"
   },
+  "decline": "Decline",
+  "@decline": {
+    "description": "The ability to decline an option"
+  },
   "defaultColor": "Default",
   "@defaultColor": {
     "description": "Default setting value (e.g., color)"
@@ -636,6 +660,10 @@
   "deleteLocalPreferencesDescription": "This will clear all your user preferences and settings in Thunder.\n\nDo you want to continue?",
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
+  },
+  "deleteUserLabelConfirmation": "Are you sure you want to delete the label?",
+  "@deleteUserLabelConfirmation": {
+    "description": "Confirmation message for deleting a label"
   },
   "deletedByCreator": "deleted by creator",
   "@deletedByCreator": {
@@ -759,6 +787,8 @@
   "@enablePostFab": {
     "description": "Enable the Floating Action Button for the post"
   },
+  "endOfComments": "End of comments",
+  "@endOfComments": {},
   "endSearch": "End Search",
   "@endSearch": {},
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
@@ -842,6 +872,10 @@
   "failedToLoadVideo": "Failed to load video. Open link in browser?",
   "@failedToLoadVideo": {
     "description": "Error message that displays when we fail to load a video"
+  },
+  "failedToPerformAction": "Failed to perform action",
+  "@failedToPerformAction": {
+    "description": "Error message when we fail to perform an action"
   },
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
@@ -946,6 +980,18 @@
   "hidCommunity": "Hid Community",
   "@hidCommunity": {
     "description": "Short decription for moderator action to hide a community"
+  },
+  "hidden": "Hidden",
+  "@hidden": {
+    "description": "Describes a post that is hidden"
+  },
+  "hide": "Hide",
+  "@hide": {
+    "description": "The action to hide a post"
+  },
+  "hideColor": "Hide Color",
+  "@hideColor": {
+    "description": "Name of the hide color setting"
   },
   "hideNsfwPostsFromFeed": "Hide NSFW Posts from Feed",
   "@hideNsfwPostsFromFeed": {
@@ -1163,8 +1209,14 @@
   "@logOut": {},
   "login": "Log in",
   "@login": {},
-  "loginFailed": "Could not log in. Please try again:({errorMessage})",
-  "@loginFailed": {},
+  "loginAttemptCanceled": "Login attempt canceled.",
+  "@loginAttemptCanceled": {
+    "description": "Message shown to user when they cancel a login attempt"
+  },
+  "loginFailed": "Could not log in. Please try again. (Error: {errorMessage})",
+  "@loginFailed": {
+    "description": "Message shown to user when their login attempt failed"
+  },
   "loginSucceeded": "Logged in.",
   "@loginSucceeded": {},
   "loginToPerformAction": "You need to be logged in to carry out this task.",
@@ -1177,7 +1229,7 @@
   },
   "manageAccounts": "Manage Accounts",
   "@manageAccounts": {},
-  "markAllAsRead": "Mark All As Read",
+  "markAllAsRead": "Mark all as read",
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
@@ -1323,13 +1375,19 @@
   "@no": {
     "description": "A negative status"
   },
-  "noComments": "Oh. There are no comments.",
-  "@noComments": {},
-  "noCommentsFound": "No comments found.",
+  "noAccountsAdded": "No accounts have been added",
+  "@noAccountsAdded": {
+    "description": "Placeholder text when no accounts have been added"
+  },
+  "noAnonymousInstances": "No anonymous instances have been added",
+  "@noAnonymousInstances": {
+    "description": "Placeholder text when no anonymous instances have been added"
+  },
+  "noCommentsFound": "No comments found",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No communities found.",
+  "noCommunitiesFound": "No communities found",
   "@noCommunitiesFound": {},
-  "noCommunityBlocks": "No blocked communities.",
+  "noCommunityBlocks": "No blocked communities",
   "@noCommunityBlocks": {},
   "noCompatibleAppFound": "No compatible app found",
   "@noCompatibleAppFound": {
@@ -1369,6 +1427,14 @@
   "@noMatrixUserSet": {
     "description": "Message for no matrix user set"
   },
+  "noMentions": "No mentions",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
+  },
+  "noMessages": "No messages",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
   "noPostsFound": "No posts found.",
   "@noPostsFound": {},
   "noProfileBioSet": "No profile bio set",
@@ -1387,6 +1453,10 @@
   },
   "noUserBlocks": "No blocked users.",
   "@noUserBlocks": {},
+  "noUserLabels": "You have not created any user labels yet",
+  "@noUserLabels": {
+    "description": "Placeholder message for empty list of labels"
+  },
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
   "none": "None",
@@ -1633,7 +1703,7 @@
   "@pushNotificationServerDescription": {
     "description": "Description of choosing push notification server setting"
   },
-  "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
+  "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
@@ -1703,6 +1773,10 @@
   "@removedPost": {
     "description": "Short decription for moderator action to remove a post"
   },
+  "reorder": "Reorder",
+  "@reorder": {
+    "description": "Tooltip text for the list editor button"
+  },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},
   "replyColor": "Reply Color",
@@ -1719,6 +1793,10 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "requiredField": "*required",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
+  },
   "reset": "Reset",
   "@reset": {
     "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
@@ -1833,7 +1911,7 @@
   "@selectAll": {
     "description": "Action for selecting all text"
   },
-  "selectCommunity": "Select a community",
+  "selectCommunity": "Select a community (required)",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
   "@selectFeedType": {},
@@ -1975,7 +2053,7 @@
   "@shareUserLinkLocal": {
     "description": "Menu item for sharing a local user link"
   },
-  "showAll": "Show All",
+  "showAll": "Show all",
   "@showAll": {},
   "showBotAccounts": "Show Bot Accounts",
   "@showBotAccounts": {
@@ -1984,6 +2062,10 @@
   "showCommentActionButtons": "Show Comment Action Buttons",
   "@showCommentActionButtons": {
     "description": "Toggle to show comment action buttons."
+  },
+  "showCommunityDisplayNames": "Show Community Display Names",
+  "@showCommunityDisplayNames": {
+    "description": "Setting for showing community display names"
   },
   "showCrossPosts": "Show Cross Posts",
   "@showCrossPosts": {
@@ -2004,6 +2086,10 @@
   "showFullHeightImages": "Show Full Height Images",
   "@showFullHeightImages": {
     "description": "Toggle to view full height images."
+  },
+  "showHiddenPosts": "Show Hidden Posts",
+  "@showHiddenPosts": {
+    "description": "The name of the setting for showing hidden posts"
   },
   "showInAppUpdateNotifications": "Get Notified of new GitHub Releases",
   "@showInAppUpdateNotifications": {
@@ -2075,6 +2161,10 @@
   "@showThumbnailPreviewOnRight": {
     "description": "Toggle to show thumbnails on the right side."
   },
+  "showUnreadOnly": "Show unread only",
+  "@showUnreadOnly": {
+    "description": "Show unread replies/mentions/messages only"
+  },
   "showUpdateChangelogs": "Show Update Changelogs",
   "@showUpdateChangelogs": {
     "description": "Setting for showing changelogs after updates"
@@ -2139,6 +2229,10 @@
   },
   "subscribed": "Subscribed",
   "@subscribed": {},
+  "subscriptionRequestSent": "Subscription request sent",
+  "@subscriptionRequestSent": {
+    "description": "Message for subscription request sent"
+  },
   "subscriptions": "Subscriptions",
   "@subscriptions": {},
   "successfullyBlocked": "Blocked.",
@@ -2183,7 +2277,7 @@
   "@teal": {
     "description": "The color teal"
   },
-  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It may take a few minutes.)",
+  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It will take at least 15 minutes.)",
   "@testBackgroundNotificationDescription": {
     "description": "A message describing the background test notification"
   },
@@ -2228,6 +2322,10 @@
   "thisAccount": "This Account",
   "@thisAccount": {
     "description": "Referring to the currently active account in account settings"
+  },
+  "thumbnailUrl": "Thumbnail URL",
+  "@thumbnailUrl": {
+    "description": "Post field for adding a custom thumbnail to the post"
   },
   "thunderHasBeenUpdated": "Thunder updated to {version}!",
   "@thunderHasBeenUpdated": {
@@ -2377,6 +2475,10 @@
   "@unhidCommunity": {
     "description": "Short decription for moderator action to unhide a community"
   },
+  "unhide": "Unhide",
+  "@unhide": {
+    "description": "The action to unhide a post"
+  },
   "unifiedPushDistributorApp": "UnifiedPush Distributor app: {app} ({count} available)",
   "@unifiedPushDistributorApp": {
     "description": "A status indicator telling the current state of the UnifiedPush distributor app"
@@ -2515,6 +2617,14 @@
   "@userLabelHint": {
     "description": "Hint text for adding a new user label"
   },
+  "userLabels": "User Labels",
+  "@userLabels": {
+    "description": "Heading for user labels settings"
+  },
+  "userLabelsSettingsPageDescription": "You can add, modify, or remove labels associated with users.",
+  "@userLabelsSettingsPageDescription": {
+    "description": "Description text for user labels settings page"
+  },
   "userNameColor": "User Name Color",
   "@userNameColor": {
     "description": "Setting for username color"
@@ -2609,8 +2719,16 @@
   },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
+  "visitCommunityInstance": "Visit Community Instance",
+  "@visitCommunityInstance": {
+    "description": "Action to visit the instance of a community"
+  },
   "visitInstance": "Visit Instance",
   "@visitInstance": {},
+  "visitUserInstance": "Visit User Instance",
+  "@visitUserInstance": {
+    "description": "Action to visit the instance of a user"
+  },
   "visitUserProfile": "Visit User Profile",
   "@visitUserProfile": {},
   "warning": "Warning",

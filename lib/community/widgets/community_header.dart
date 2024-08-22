@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/utils/utils.dart';
 
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
@@ -29,6 +32,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final FeedBloc feedBloc = context.watch<FeedBloc>();
 
     return Material(
       elevation: widget.showCommunitySidebar ? 5.0 : 0,
@@ -109,10 +113,13 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                 CommunityFullNameWidget(
                                   context,
                                   widget.getCommunityResponse.communityView.community.name,
+                                  widget.getCommunityResponse.communityView.community.title,
                                   fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A',
+                                  // Override because we're showing right above
+                                  useDisplayName: false,
                                 ),
                                 const SizedBox(height: 8.0),
-                                Row(
+                                Wrap(
                                   children: [
                                     IconText(
                                       icon: const Icon(Icons.people_rounded),
@@ -122,6 +129,11 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                     IconText(
                                       icon: const Icon(Icons.calendar_month_rounded),
                                       text: formatNumberToK(widget.getCommunityResponse.communityView.counts.usersActiveMonth),
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    IconText(
+                                      icon: Icon(getSortIcon(feedBloc.state)),
+                                      text: getSortName(feedBloc.state),
                                     ),
                                   ],
                                 ),

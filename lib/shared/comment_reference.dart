@@ -152,6 +152,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                 child: CommunityFullNameWidget(
                                   context,
                                   widget.comment.community.name,
+                                  widget.comment.community.title,
                                   fetchInstanceNameFromUrl(widget.comment.community.actorId),
                                   fontScale: state.contentFontSizeScale,
                                   transformColor: (color) => color?.withOpacity(0.75),

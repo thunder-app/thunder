@@ -9,6 +9,7 @@ enum SwipeAction {
   save(label: 'Save'),
   edit(label: 'Edit'),
   toggleRead(label: 'Mark As Read/Unread'),
+  hide(label: 'Hide'),
   none(label: 'None');
 
   const SwipeAction({
@@ -17,7 +18,7 @@ enum SwipeAction {
 
   final String label;
 
-  IconData? getIcon({bool? read}) {
+  IconData? getIcon({bool? read, bool? hidden}) {
     switch (this) {
       case SwipeAction.upvote:
         return Icons.north_rounded;
@@ -35,6 +36,12 @@ enum SwipeAction {
             : read
                 ? Icons.mark_email_unread_rounded
                 : Icons.mark_email_read_outlined;
+      case SwipeAction.hide:
+        return hidden == null
+            ? Icons.visibility_off_rounded
+            : hidden
+                ? Icons.visibility_rounded
+                : Icons.visibility_off_rounded;
       default:
         return Icons.not_interested_rounded;
     }
@@ -54,6 +61,8 @@ enum SwipeAction {
         return context.read<ThunderBloc>().state.saveColor.color;
       case SwipeAction.toggleRead:
         return context.read<ThunderBloc>().state.markReadColor.color;
+      case SwipeAction.hide:
+        return context.read<ThunderBloc>().state.hideColor.color;
       default:
         return Colors.transparent;
     }

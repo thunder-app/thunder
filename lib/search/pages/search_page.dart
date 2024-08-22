@@ -23,7 +23,7 @@ import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/view/feed_widget.dart';
+import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/instance/widgets/instance_list_entry.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -165,7 +165,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final String? accountInstance = context.read<AuthBloc>().state.account?.instance;
-    final String currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
+    final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     return BlocProvider(
       create: (context) => FeedBloc(lemmyClient: LemmyClient.instance),
@@ -416,7 +416,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                       showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
                                         setState(() {
                                           _currentCommunityFilter = communityView.community.id;
-                                          _currentCommunityFilterName = generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId));
+                                          _currentCommunityFilterName = generateCommunityFullName(
+                                            context,
+                                            communityView.community.name,
+                                            communityView.community.title,
+                                            fetchInstanceNameFromUrl(communityView.community.actorId),
+                                          );
                                         });
                                         _doSearch();
                                       });
@@ -445,7 +450,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                     showUserInputDialog(context, title: l10n.creator, onUserSelected: (personView) {
                                       setState(() {
                                         _currentCreatorFilter = personView.person.id;
-                                        _currentCreatorFilterName = generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId));
+                                        _currentCreatorFilterName = generateUserFullName(
+                                          context,
+                                          personView.person.name,
+                                          personView.person.displayName,
+                                          fetchInstanceNameFromUrl(personView.person.actorId),
+                                        );
                                       });
                                       _doSearch();
                                     });
@@ -471,7 +481,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  Widget _getSearchBody(BuildContext context, SearchState state, bool isUserLoggedIn, String? accountInstance, String currentAnonymousInstance) {
+  Widget _getSearchBody(BuildContext context, SearchState state, bool isUserLoggedIn, String? accountInstance, String? currentAnonymousInstance) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
@@ -755,7 +765,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             child: CustomScrollView(
               controller: _scrollController,
               slivers: [
-                FeedPostList(postViewMedias: state.posts ?? [], tabletMode: tabletMode, markPostReadOnScroll: false),
+                FeedPostCardList(postViewMedias: state.posts ?? [], tabletMode: tabletMode, markPostReadOnScroll: false),
                 if (state.status == SearchStatus.refreshing)
                   const SliverToBoxAdapter(
                     child: Center(

@@ -14,6 +14,7 @@ class ActionColorSettingWidget extends StatelessWidget {
   final ActionColor saveColor;
   final ActionColor markReadColor;
   final ActionColor replyColor;
+  final ActionColor hideColor;
 
   const ActionColorSettingWidget({
     super.key,
@@ -25,6 +26,7 @@ class ActionColorSettingWidget extends StatelessWidget {
     required this.saveColor,
     required this.markReadColor,
     required this.replyColor,
+    required this.hideColor,
   });
 
   @override
@@ -37,6 +39,7 @@ class ActionColorSettingWidget extends StatelessWidget {
     ActionColor saveColor = this.saveColor;
     ActionColor markReadColor = this.markReadColor;
     ActionColor replyColor = this.replyColor;
+    ActionColor hideColor = this.hideColor;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
@@ -271,6 +274,49 @@ class ActionColorSettingWidget extends StatelessWidget {
                             onChanged: (value) async {
                               await setPreferences(LocalSettings.replyColor, value?.colorRaw);
                               setState(() => replyColor = value ?? replyColor);
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    ListPickerItem(
+                      payload: -1,
+                      customWidget: ListTile(
+                        title: Text(
+                          l10n.hideColor,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                          child: DropdownButton<ActionColor>(
+                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                            isExpanded: true,
+                            underline: Container(),
+                            value: hideColor,
+                            items: ActionColor.getPossibleValues(hideColor)
+                                .map(
+                                  (actionColor) => DropdownMenuItem<ActionColor>(
+                                    alignment: Alignment.center,
+                                    value: actionColor,
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 10.0,
+                                          backgroundColor: actionColor.color,
+                                        ),
+                                        const SizedBox(width: 16.0),
+                                        Text(
+                                          actionColor.label(context),
+                                          style: theme.textTheme.bodyMedium,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) async {
+                              await setPreferences(LocalSettings.hideColor, value?.colorRaw);
+                              setState(() => hideColor = value ?? hideColor);
                             },
                           ),
                         ),

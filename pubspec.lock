@@ -752,10 +752,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: "87e11b9df25a42e2db315b8b7a51fae8e66f57a4b2f50ec4b822d0fa155e6b52"
+      sha256: a23c41ee57573e62fc2190a1f36a0480c4d90bde3a8a8d7126e5d5992fb53fb7
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.22"
+    version: "0.7.3+1"
   flutter_native_splash:
     dependency: "direct main"
     description:
@@ -1108,8 +1108,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "3196471d8e1b26873aecaf04254043cf9817bbe3"
-      resolved-ref: "3196471d8e1b26873aecaf04254043cf9817bbe3"
+      ref: "514e3718a42d4398619d66b6ac1ccd53bafd9b3f"
+      resolved-ref: "514e3718a42d4398619d66b6ac1ccd53bafd9b3f"
       url: "https://github.com/thunder-app/markdown-editor.git"
     source: git
     version: "0.1.0"

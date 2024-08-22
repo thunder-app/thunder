@@ -136,9 +136,20 @@ class CommonMarkdownBody extends StatelessWidget {
                           showFullHeightImages: true,
                           maxWidth: imageMaxWidth,
                         )
-                      : ScalableImageWidget.fromSISource(
-                          si: ScalableImageSource.fromSvgHttpUrl(uri),
-                        )
+                      : Container(
+                          constraints: isComment == true
+                              ? BoxConstraints(
+                                  maxHeight: MediaQuery.of(context).size.width * 0.55,
+                                  maxWidth: MediaQuery.of(context).size.width * 0.60,
+                                )
+                              : BoxConstraints(
+                                  maxWidth: imageMaxWidth ?? MediaQuery.of(context).size.width - 24,
+                                ),
+                          child: ScalableImageWidget.fromSISource(
+                            fit: BoxFit.contain,
+                            si: ScalableImageSource.fromSvgHttpUrl(uri),
+                          ),
+                        ),
                 ],
               ),
             );

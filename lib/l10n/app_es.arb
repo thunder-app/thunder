@@ -465,7 +465,7 @@
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "Es posible que no esté conectado a Internet o que tu instancia no esté disponible actualmente.",
   "@internetOrInstanceIssues": {},
-  "keywordFilterDescription": "Filtra los mensajes que contienen palabras clave en el título o en el cuerpo",
+  "keywordFilterDescription": "Filtra los mensajes que contienen palabras clave en el título, cuerpo o URL",
   "@keywordFilterDescription": {
     "description": "Description of keyword filter settings"
   },
@@ -1453,7 +1453,7 @@
   "@unpinFromCommunity": {
     "description": "Setting for unpinning a post from a community (moderator action)"
   },
-  "lockPost": "Bloquear tema",
+  "lockPost": "Bloquear Publicación",
   "@lockPost": {
     "description": "Action for locking a post (moderator action)"
   },
@@ -1561,7 +1561,7 @@
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
   },
-  "moderator": "Moderador",
+  "moderator": "{count, plural, zero {Moderator} one {Moderator} other {Moderators}}",
   "@moderator": {
     "description": "Role name for moderator"
   },
@@ -2375,7 +2375,7 @@
   "@accountBirthday": {
     "description": "User descriptor for accounts created on today's date"
   },
-  "xYearsOld": "{count, plural, zero {{x} años} one {{x} año} other {{x} años}}",
+  "xYearsOld": "{count, plural, zero {{x} año} one {{x} años} other {{x} años}}",
   "@xYearsOld": {
     "description": "An account descriptor representing how old an account is"
   },
@@ -2483,7 +2483,7 @@
   "@countLocalSubscribers": {
     "description": "Number of local subscribers"
   },
-  "changePasswordWarning": "Para cambiar su contraseña, será direccionado a su instancia principal. \\n\\n¿Seguro que desea continuar?",
+  "changePasswordWarning": "Para cambiar tu contraseña, será redirigido al sitio de tu instancia. \n\n¿Está seguro de que deseas continuar?",
   "@changePasswordWarning": {
     "description": "Warning label for changing password"
   },
@@ -2574,5 +2574,65 @@
   "userLabelHint": "Este es mi usuario favorito",
   "@userLabelHint": {
     "description": "Hint text for adding a new user label"
+  },
+  "databaseNotExportedSuccessfully": "La base de datos no fue exportada exitosamente o la operación fue cancelada.",
+  "@databaseNotExportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully exported"
+  },
+  "email": "Correo Electrónico",
+  "@email": {
+    "description": "Label for email input"
+  },
+  "exportSettingsSubtitle": "Las configuraciones incluyen todas las preferencias que ha configurado en Thunder.",
+  "@exportSettingsSubtitle": {
+    "description": "Subtitle of setting for exporting settings"
+  },
+  "guestModeFeedSettings": "Configuración de Feed Modo Invitado",
+  "@guestModeFeedSettings": {
+    "description": "Feed settings for guest accounts"
+  },
+  "hostInstance": "Instancia de Host",
+  "@hostInstance": {
+    "description": "The instance hosting a community"
+  },
+  "imageDimensionTimeout": "Tiempo de Espera de Dimensión de Imagen",
+  "@imageDimensionTimeout": {
+    "description": "Setting for how long to wait for the image dimensions to be fetched"
+  },
+  "matrixUser": "Usuario de Matrix",
+  "@matrixUser": {
+    "description": "Label for Matrix user id"
+  },
+  "databaseNotImportedSuccessfully": "La base de datos no fue importada exitosamente o la operación fue cancelada.",
+  "@databaseNotImportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully imported"
+  },
+  "exportDatabaseSubtitle": "La base de datos contiene información acerca de cuentas, favoritos, subscripciones anónimas y etiquetas de usuario.",
+  "@exportDatabaseSubtitle": {
+    "description": "Subtitle of setting for exporting the db"
+  },
+  "displayName": "Nombre para mostrar",
+  "@displayName": {
+    "description": "Label for display name"
+  },
+  "guestModeFeedSettingsLabel": "Las siguientes configuraciones aplican solo para cuentas de invitado. Para ajustar las configuraciones del feed de su cuenta, vaya a Configuración de Cuenta.",
+  "@guestModeFeedSettingsLabel": {
+    "description": "Description for guest mode feed settings"
+  },
+  "exportDatabase": "Exportar Base de Datos",
+  "@exportDatabase": {
+    "description": "Name of the setting for exporting the db"
+  },
+  "showCommunityDisplayNames": "Mostrar nombres para mostrar de la comunidad",
+  "@showCommunityDisplayNames": {
+    "description": "Setting for showing community display names"
+  },
+  "noMessages": "Sin mensajes",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
+  "noMentions": "Sin menciones",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
   }
 }

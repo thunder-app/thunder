@@ -24,6 +24,9 @@ class Draft {
   /// The URL of the post
   final String? url;
 
+  /// The custom thumbnail of the post
+  final String? customThumbnail;
+
   /// The body of the post/comment
   final String? body;
 
@@ -34,6 +37,7 @@ class Draft {
     this.replyId,
     this.title,
     this.url,
+    this.customThumbnail,
     this.body,
   });
 
@@ -44,6 +48,7 @@ class Draft {
     int? replyId,
     String? title,
     String? url,
+    String? customThumbnail,
     String? body,
   }) =>
       Draft(
@@ -53,11 +58,12 @@ class Draft {
         replyId: replyId ?? this.replyId,
         title: title ?? this.title,
         url: url ?? this.url,
+        customThumbnail: customThumbnail ?? this.customThumbnail,
         body: body ?? this.body,
       );
 
   /// See whether this draft contains enough info to save for a post
-  bool get isPostNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || body?.isNotEmpty == true;
+  bool get isPostNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || customThumbnail?.isNotEmpty == true || body?.isNotEmpty == true;
 
   /// See whether this draft contains enough info to save for a comment
   bool get isCommentNotEmpty => body?.isNotEmpty == true;
@@ -79,6 +85,7 @@ class Draft {
                 replyId: Value(draft.replyId),
                 title: Value(draft.title),
                 url: Value(draft.url),
+                customThumbnail: Value(draft.customThumbnail),
                 body: Value(draft.body),
               ),
             );
@@ -92,6 +99,7 @@ class Draft {
                 replyId: Value(draft.replyId),
                 title: Value(draft.title),
                 url: Value(draft.url),
+                customThumbnail: Value(draft.customThumbnail),
                 body: Value(draft.body),
               ),
             );
@@ -121,6 +129,7 @@ class Draft {
         replyId: draft.replyId,
         title: draft.title,
         url: draft.url,
+        customThumbnail: draft.customThumbnail,
         body: draft.body,
       );
     } catch (e) {

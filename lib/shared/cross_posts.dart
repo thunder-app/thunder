@@ -8,6 +8,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
@@ -95,9 +96,12 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                     ' to ',
                                     style: crossPostTextStyle,
                                   ),
-                                  Text(
-                                    generateCommunityFullName(context, widget.crossPosts[index].community.name, fetchInstanceNameFromUrl(widget.crossPosts[index].community.actorId)),
-                                    style: crossPostLinkTextStyle,
+                                  CommunityFullNameWidget(
+                                    context,
+                                    widget.crossPosts[index].community.name,
+                                    widget.crossPosts[index].community.title,
+                                    fetchInstanceNameFromUrl(widget.crossPosts[index].community.actorId),
+                                    textStyle: crossPostLinkTextStyle,
                                   ),
                                   const Spacer(),
                                   CrossPostMetaData(crossPost: widget.crossPosts[index]),
@@ -135,14 +139,18 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                   : '${l10n.crossPostedTo} ',
                           style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
                         ),
+                        if (!_areCrossPostsExpanded)
+                          WidgetSpan(
+                            child: CommunityFullNameWidget(
+                              context,
+                              widget.crossPosts[0].community.name,
+                              widget.crossPosts[0].community.title,
+                              fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId),
+                              textStyle: theme.textTheme.bodySmall?.copyWith(color: crossPostLinkTextStyle?.color),
+                            ),
+                          ),
                         TextSpan(
-                          text: _areCrossPostsExpanded
-                              ? ''
-                              : '${generateCommunityFullName(context, widget.crossPosts[0].community.name, fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId))} ',
-                          style: crossPostLinkTextStyle?.copyWith(fontSize: 12),
-                        ),
-                        TextSpan(
-                          text: _areCrossPostsExpanded || widget.crossPosts.length == 1 ? '' : l10n.andXMore(widget.crossPosts.length - 1),
+                          text: _areCrossPostsExpanded || widget.crossPosts.length == 1 ? '' : ' ${l10n.andXMore(widget.crossPosts.length - 1)}',
                           style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
                         ),
                       ],

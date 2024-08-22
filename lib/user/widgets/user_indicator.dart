@@ -24,7 +24,7 @@ class _UserIndicatorState extends State<UserIndicator> {
     super.initState();
 
     person = context.read<AccountBloc>().state.personView?.person;
-    if (person == null) context.read<AccountBloc>().add(GetAccountInformation());
+    if (person == null) context.read<AccountBloc>().add(const GetAccountInformation());
   }
 
   @override
@@ -56,7 +56,7 @@ class _UserIndicatorState extends State<UserIndicator> {
                   )),
                   TextButton.icon(
                       onPressed: () {
-                        context.read<AccountBloc>().add(GetAccountInformation());
+                        context.read<AccountBloc>().add(const GetAccountInformation());
                         setState(() => accountError = false);
                       },
                       icon: const Icon(Icons.refresh_rounded),
@@ -77,7 +77,10 @@ class _UserIndicatorState extends State<UserIndicator> {
                           UserFullNameWidget(
                             context,
                             person!.name,
+                            person!.displayName,
                             fetchInstanceNameFromUrl(person!.actorId) ?? '-',
+                            // Override because we're showing display name above
+                            useDisplayName: false,
                           ),
                         ],
                       ),
