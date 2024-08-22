@@ -444,7 +444,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 controller: controller,
                                 focusNode: focusNode,
                                 decoration: InputDecoration(
-                                  hintText: l10n.postTitle,
+                                  labelText: l10n.postTitle,
                                   helperText: l10n.requiredField,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
@@ -459,7 +459,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             TextFormField(
                               controller: _urlTextController,
                               decoration: InputDecoration(
-                                hintText: l10n.postURL,
+                                labelText: l10n.postURL,
                                 errorText: urlError,
                                 isDense: true,
                                 border: const OutlineInputBorder(),
@@ -492,7 +492,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               TextFormField(
                                 controller: _customThumbnailTextController,
                                 decoration: InputDecoration(
-                                  hintText: l10n.thumbnailUrl,
+                                  labelText: l10n.thumbnailUrl,
                                   errorText: customThumbnailError,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
