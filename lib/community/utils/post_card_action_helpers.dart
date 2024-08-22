@@ -29,6 +29,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/user/widgets/user_ban_bottom_sheet.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -66,6 +67,7 @@ enum PostCardAction {
   delete,
   moderatorActions,
   moderatorLockPost,
+  moderatorBanUser,
   moderatorPinCommunity,
   moderatorRemovePost,
 }
@@ -307,6 +309,13 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     getOverrideLabel: (context, postView) => postView.post.locked ? l10n.unlockPost : l10n.lockPost,
   ),
   ExtendedPostCardActions(
+    postCardAction: PostCardAction.moderatorBanUser,
+    icon: Icons.person_off_rounded,
+    label: l10n.banUserFromCommunity,
+    getOverrideIcon: (postView) => postView.creatorBannedFromCommunity ? Icons.person_rounded : Icons.person_off_rounded,
+    getOverrideLabel: (context, postView) => postView.creatorBannedFromCommunity ? l10n.unbanUserFromCommunity : l10n.banUserFromCommunity,
+  ),
+  ExtendedPostCardActions(
     postCardAction: PostCardAction.moderatorPinCommunity,
     icon: Icons.push_pin_rounded,
     label: l10n.pinToCommunity,
@@ -380,6 +389,7 @@ void showPostActionBottomModalSheet(
   final List<ExtendedPostCardActions> moderatorPostCardActions = postCardActionItems
       .where((extendedAction) => [
             PostCardAction.moderatorLockPost,
+            PostCardAction.moderatorBanUser,
             PostCardAction.moderatorPinCommunity,
             PostCardAction.moderatorRemovePost,
           ].contains(extendedAction.postCardAction))
@@ -820,6 +830,9 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
             .read<FeedBloc>()
             .add(FeedItemActionedEvent(postAction: PostAction.lock, postId: widget.postViewMedia.postView.post.id, value: !widget.postViewMedia.postView.post.locked));
         break;
+      case PostCardAction.moderatorBanUser:
+        action = () => showBanUserBottomSheet(widget.outerContext, widget.postViewMedia);
+        break;
       case PostCardAction.moderatorPinCommunity:
         action = () => widget.outerContext
             .read<FeedBloc>()
@@ -868,6 +881,35 @@ void showRemovePostReasonBottomSheet(BuildContext context, PostViewMedia postVie
                 value: {
                   'remove': !postViewMedia.postView.post.removed,
                   'reason': message,
+                },
+              ),
+            );
+        Navigator.of(context).pop();
+      },
+    ),
+  );
+}
+
+void showBanUserBottomSheet(BuildContext context, PostViewMedia postViewMedia) {
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (_) => UserBanBottomSheet(
+      title: 'Ban user from community',
+      submitLabel: postViewMedia.postView.post.removed ? l10n.restore : l10n.remove,
+      textHint: l10n.reason,
+      onSubmit: ({String? reason, int? expiration, bool? removeData}) {
+        context.read<UserBloc>().add(
+              UserActionEvent(
+                userAction: UserAction.ban,
+                userId: postViewMedia.postView.creator.id,
+                value: true,
+                additionalParameters: {
+                  'communityId': postViewMedia.postView.community.id,
+                  'reason': reason,
+                  'expiration': expiration,
+                  'removeData': removeData,
                 },
               ),
             );

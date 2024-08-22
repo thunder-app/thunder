@@ -63,6 +63,34 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           return emit(state.copyWith(status: UserStatus.failure));
         }
         break;
+      case UserAction.ban:
+        assert(event.additionalParameters?.containsKey('communityId') == true);
+
+        try {
+          int communityId = event.additionalParameters!['communityId']! as int;
+
+          String? reason = event.additionalParameters?['reason'];
+          int? expiration = event.additionalParameters?['expiration'];
+          bool? removeData = event.additionalParameters?['removeData'];
+
+          BanFromCommunityResponse banFromCommunityResponse = await banUserFromCommunity(
+            userId: event.userId,
+            communityId: communityId,
+            ban: event.value,
+            reason: reason,
+            expiration: expiration,
+            removeData: removeData,
+          );
+
+          emit(state.copyWith(
+            status: UserStatus.success,
+            personView: banFromCommunityResponse.personView,
+            message: banFromCommunityResponse.banned ? l10n.bannedUserFromCommunity : l10n.unbannedUserFromCommunity,
+          ));
+        } catch (e) {
+          return emit(state.copyWith(status: UserStatus.failure));
+        }
+        break;
     }
   }
 }

@@ -143,6 +143,10 @@
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
   },
+  "banUserFromCommunity": "Ban User from Community",
+  "@banUserFromCommunity": {
+    "description": "Action to ban a user from a community"
+  },
   "bannedUser": "Banned User",
   "@bannedUser": {
     "description": "Short decription for moderator action to ban a user"
@@ -2444,6 +2448,10 @@
   "unableToRetrieveChangelog": "Unable to retrieve changelog for version {version}.",
   "@unableToRetrieveChangelog": {
     "description": "Error message for when we are unable to retrieve the changelog."
+  },
+  "unbanUserFromCommunity": "Unban User from Community",
+  "@unbanUserFromCommunity": {
+    "description": "Action to unban a user from a community"
   },
   "unbannedUser": "Unbanned User",
   "@unbannedUser": {
