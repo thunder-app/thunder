@@ -149,6 +149,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final ThunderState thunderState = context.read<ThunderBloc>().state;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140), vsync: this);
     Function() animationListener = () {};
@@ -417,7 +418,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       await Share.shareXFiles([XFile(mediaFile!.path)]);
                                     } catch (e) {
                                       // Tell the user that the download failed
-                                      showSnackbar(AppLocalizations.of(context)!.errorDownloadingMedia(e));
+                                      showSnackbar(l10n.errorDownloadingMedia(e));
                                     } finally {
                                       setState(() => isDownloadingMedia = false);
                                     }
@@ -570,6 +571,7 @@ class _ImageAltTextWrapperState extends State<ImageAltTextWrapper> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return AnimatedCrossFade(
       crossFadeState: altTextIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
@@ -584,7 +586,7 @@ class _ImageAltTextWrapperState extends State<ImageAltTextWrapper> {
               ExpandableButton(
                 theme: const ExpandableThemeData(useInkWell: false),
                 child: Text(
-                  AppLocalizations.of(context)!.showLess,
+                  l10n.showLess,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white.withOpacity(0.5),
                   ),
@@ -618,7 +620,7 @@ class _ImageAltTextWrapperState extends State<ImageAltTextWrapper> {
                 child: ExpandableButton(
                   theme: const ExpandableThemeData(useInkWell: false),
                   child: Text(
-                    AppLocalizations.of(context)!.showMore,
+                    l10n.showMore,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.white.withOpacity(0.5),
                     ),
