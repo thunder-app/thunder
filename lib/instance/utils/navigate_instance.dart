@@ -14,6 +14,7 @@ import 'package:thunder/instance/pages/instance_page.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/links.dart';
 
 Future<void> navigateToInstancePage(BuildContext context, {required String instanceHost, required int? instanceId}) async {
   showLoadingPage(context);
@@ -61,7 +62,11 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
         ),
       );
     } else {
-      showSnackbar(l10n.unableToNavigateToInstance(instanceHost));
+      showSnackbar(
+        l10n.unableToNavigateToInstance(instanceHost),
+        trailingAction: () => handleLink(context, url: "https://$instanceHost", forceOpenInBrowser: true),
+        trailingIcon: Icons.open_in_browser_rounded,
+      );
       hideLoadingPage(context);
     }
   }

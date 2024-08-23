@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:flutter/material.dart' hide Table;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
+import 'package:thunder/core/database/schema_versions.dart';
 import 'package:thunder/core/database/tables.dart';
 import 'package:thunder/core/database/type_converters.dart';
 import 'package:thunder/drafts/draft_type.dart';
@@ -20,38 +21,47 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (migrator, from, to) async {
-          // --- UPGRADES ---
+        onCreate: (Migrator m) async {
+          await m.createAll();
+        },
+        onUpgrade: (m, from, to) async {
+          await customStatement('PRAGMA foreign_keys = OFF');
 
-          // If we are migrating from 1 to anything higher
-          if (from <= 1 && to > 1) {
-            // Create the UserLabels table
-            await migrator.createTable(userLabels);
+          await m.runMigrationSteps(
+            from: from,
+            to: to,
+            steps: migrationSteps(
+              from1To2: (m, schema) async {
+                // Create the UserLabels table
+                await m.createTable(schema.userLabels);
+              },
+              from2To3: (m, schema) async {
+                // Create the Drafts table
+                await m.createTable(schema.drafts);
+              },
+              from3To4: (m, schema) async {
+                // Create the custom_thumbnail column on the drafts table
+                await m.addColumn(schema.drafts, schema.drafts.customThumbnail);
+              },
+              from4To5: (m, schema) async {
+                // Add the list_index column to the Accounts table and use id as the default value
+                await m.addColumn(schema.accounts, schema.accounts.listIndex);
+                await customStatement('UPDATE accounts SET list_index = id');
+              },
+            ),
+          );
+
+          if (kDebugMode) {
+            // Fail if the migration broke foreign keys
+            final wrongForeignKeys = await customSelect('PRAGMA foreign_key_check').get();
+            assert(wrongForeignKeys.isEmpty, '${wrongForeignKeys.map((e) => e.data)}');
           }
 
-          // If we are migrating from 2 or lower to anything higher
-          if (from <= 2 && to > 2) {
-            // Create the Drafts table
-            await migrator.createTable(drafts);
-          }
-
-          // --- DOWNGRADES ---
-
-          // If we are downgrading from 2 or higher to 1
-          if (from >= 2 && to <= 1) {
-            // Delete the UserLabels table
-            await migrator.deleteTable('user_labels');
-          }
-
-          // If we are downgrading from 3 or higher to 2 or lower
-          if (from >= 3 && to <= 2) {
-            // Delete the Drafts table
-            await migrator.deleteTable('drafts');
-          }
+          await customStatement('PRAGMA foreign_keys = ON;');
         },
       );
 }

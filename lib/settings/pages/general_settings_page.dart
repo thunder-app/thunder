@@ -89,6 +89,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, the top bar will be hidden on scroll
   bool hideTopBarOnScroll = false;
 
+  /// When enabled, hidden posts will still be displayed in the feed
+  bool showHiddenPosts = false;
+
   /// When enabled, an app update notification will be shown when an update is available
   bool showInAppUpdateNotification = false;
 
@@ -194,6 +197,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.hideTopBarOnScroll.name, value);
         setState(() => hideTopBarOnScroll = value);
         break;
+      case LocalSettings.showHiddenPosts:
+        await prefs.setBool(LocalSettings.showHiddenPosts.name, value);
+        setState(() => showHiddenPosts = value);
+        break;
       case LocalSettings.collapseParentCommentBodyOnGesture:
         await prefs.setBool(LocalSettings.collapseParentCommentBodyOnGesture.name, value);
         setState(() => collapseParentCommentOnGesture = value);
@@ -278,6 +285,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
       hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
+      showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
 
       collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
@@ -419,6 +427,23 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   setting: LocalSettings.hideNsfwPosts,
                   highlightedSetting: settingToHighlight,
                 ),
+                SettingsListTile(
+                  icon: Icons.manage_accounts_rounded,
+                  description: l10n.lookingForAccountSpecificFeedSettings,
+                  widget: const SizedBox(
+                    height: 42.0,
+                    child: Icon(Icons.chevron_right_rounded),
+                  ),
+                  onTap: () {
+                    GoRouter.of(context).push(SETTINGS_ACCOUNT_PAGE, extra: [
+                      context.read<ThunderBloc>(),
+                      LocalSettings.accountDefaultFeedType,
+                    ]);
+                  },
+                  highlightKey: settingToHighlightKey,
+                  setting: null,
+                  highlightedSetting: settingToHighlight,
+                ),
                 const ThunderDivider(sliver: false),
               ],
             ),
@@ -522,6 +547,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               onToggle: (bool value) => setPreferences(LocalSettings.hideTopBarOnScroll, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.hideTopBarOnScroll,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showHiddenPosts,
+              value: showHiddenPosts,
+              iconEnabled: Icons.visibility_rounded,
+              iconDisabled: Icons.visibility_off_rounded,
+              onToggle: (bool value) => setPreferences(LocalSettings.showHiddenPosts, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.showHiddenPosts,
               highlightedSetting: settingToHighlight,
             ),
           ),

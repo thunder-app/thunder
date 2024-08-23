@@ -68,9 +68,33 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         break;
       case CommunityAction.follow:
         try {
-          CommunityView communityView = await followCommunity(event.communityId, event.value);
+          // Determines the desired subscribed type outcome based on the value
+          // If [event.value] is true, then the desired outcome is to subscribe. If [event.value] is false, then the desired outcome is to unsubscribe
+          SubscribedType? subscribedType = switch (event.value) {
+            true => SubscribedType.subscribed,
+            false => SubscribedType.notSubscribed,
+            _ => null,
+          };
 
+          if (GlobalContext.context.mounted && subscribedType == SubscribedType.subscribed) {
+            showSnackbar(AppLocalizations.of(GlobalContext.context)!.subscriptionRequestSent);
+          }
+
+          CommunityView communityView = await followCommunity(event.communityId, event.value);
           emit(state.copyWith(status: CommunityStatus.success, communityView: communityView));
+
+          // Return early if the subscription was successful. Otherwise, retry fetching the community information after a small delay
+          // This generally occurs on communities on the same instance as the current account
+          if (GlobalContext.context.mounted && communityView.subscribed == subscribedType) {
+            if (subscribedType == SubscribedType.subscribed) {
+              showSnackbar(AppLocalizations.of(GlobalContext.context)!.subscribed);
+            } else {
+              showSnackbar(AppLocalizations.of(GlobalContext.context)!.unsubscribed);
+            }
+
+            return;
+          }
+
           emit(state.copyWith(status: CommunityStatus.fetching));
 
           // Wait for one second before fetching the community information to get any updated information
@@ -78,8 +102,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             GetCommunityResponse? getCommunityResponse = await fetchCommunityInformation(id: event.communityId);
             emit(state.copyWith(status: CommunityStatus.success, communityView: getCommunityResponse.communityView));
 
-            if (GlobalContext.context.mounted) {
-              if (event.value) {
+            if (GlobalContext.context.mounted && getCommunityResponse.communityView.subscribed == subscribedType) {
+              if (subscribedType == SubscribedType.subscribed) {
                 showSnackbar(AppLocalizations.of(GlobalContext.context)!.subscribed);
               } else {
                 showSnackbar(AppLocalizations.of(GlobalContext.context)!.unsubscribed);
@@ -87,6 +111,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             }
           });
         } catch (e) {
+          showSnackbar(AppLocalizations.of(GlobalContext.context)!.failedToPerformAction);
           return emit(state.copyWith(status: CommunityStatus.failure));
         }
         break;

@@ -110,6 +110,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                       sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                                       communityId: community.id,
                                       reset: true,
+                                      showHidden: thunderState.showHiddenPosts,
                                     ),
                                   );
                             },
@@ -150,7 +151,7 @@ class UserDrawerItem extends StatelessWidget {
     AccountState accountState = context.watch<AccountBloc>().state;
 
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
-    String anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
+    String? anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
     return Material(
       color: theme.colorScheme.surface,
@@ -194,7 +195,7 @@ class UserDrawerItem extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    isLoggedIn ? authState.account?.instance ?? '' : anonymousInstance,
+                    isLoggedIn ? authState.account?.instance ?? '' : anonymousInstance ?? '',
                     style: theme.textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -339,6 +340,7 @@ class FavoriteCommunities extends StatelessWidget {
                           sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                           communityId: community.id,
                           reset: true,
+                          showHidden: thunderState.showHiddenPosts,
                         ),
                       );
                 },
@@ -400,6 +402,7 @@ class ModeratedCommunities extends StatelessWidget {
                             sortType: authState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
+                            showHidden: thunderState.showHiddenPosts,
                           ),
                         );
                   },

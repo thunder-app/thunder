@@ -24,7 +24,9 @@ final class FeedState extends Equatable {
     this.dismissReadId = 0,
     this.dismissBlockedUserId,
     this.dismissBlockedCommunityId,
+    this.dismissHiddenPostId,
     this.insertedPostIds = const [],
+    this.showHidden = false,
   });
 
   /// The status of the feed
@@ -87,8 +89,14 @@ final class FeedState extends Equatable {
   /// This id is used for dismissing posts from blocked communities
   final int? dismissBlockedCommunityId;
 
+  /// This id is used for dismissing posts that have been hidden by the user
+  final int? dismissHiddenPostId;
+
   /// The inserted post ids. This is used to prevent duplicate posts
   final List<int> insertedPostIds;
+
+  /// Whether to show hidden posts in the fed
+  final bool showHidden;
 
   FeedState copyWith({
     FeedStatus? status,
@@ -111,7 +119,9 @@ final class FeedState extends Equatable {
     int? dismissReadId,
     int? dismissBlockedUserId,
     int? dismissBlockedCommunityId,
+    int? dismissHiddenPostId,
     List<int>? insertedPostIds,
+    bool? showHidden,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -134,7 +144,9 @@ final class FeedState extends Equatable {
       dismissReadId: dismissReadId ?? this.dismissReadId,
       dismissBlockedUserId: dismissBlockedUserId,
       dismissBlockedCommunityId: dismissBlockedCommunityId,
+      dismissHiddenPostId: dismissHiddenPostId,
       insertedPostIds: insertedPostIds ?? this.insertedPostIds,
+      showHidden: showHidden ?? this.showHidden,
     );
   }
 
@@ -165,6 +177,8 @@ final class FeedState extends Equatable {
         dismissReadId,
         dismissBlockedUserId,
         dismissBlockedCommunityId,
-        insertedPostIds
+        dismissHiddenPostId,
+        insertedPostIds,
+        showHidden
       ];
 }

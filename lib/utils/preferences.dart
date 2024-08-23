@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/models/draft.dart';
 import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
@@ -113,5 +114,19 @@ Future<void> performSharedPreferencesMigration() async {
   ListingType defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
   if (defaultListingType == ListingType.subscribed) {
     await prefs.setString(LocalSettings.defaultFeedListingType.name, DEFAULT_LISTING_TYPE.name);
+  }
+
+  // Migrate anonymous instances to database
+  final List<String>? anonymousInstances = prefs.getStringList('setting_anonymous_instances');
+  try {
+    for (String instance in anonymousInstances ?? []) {
+      Account anonymousInstance = Account(id: '', instance: instance, index: -1, anonymous: true);
+      Account.insertAnonymousInstance(anonymousInstance);
+    }
+
+    // If we've gotten this far without exception, it's safe to delete the shared pref eky
+    prefs.remove('setting_anonymous_instances');
+  } catch (e) {
+    debugPrint('Cannot migrate anonymous instances from SharedPreferences: $e');
   }
 }
