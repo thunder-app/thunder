@@ -128,7 +128,7 @@ Future<List<String>> selectImagesToUpload({bool allowMultiple = false}) async {
   return [file!.path];
 }
 
-void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost}) {
+void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost, String? altText}) {
   Navigator.of(context).push(
     PageRouteBuilder(
       opaque: false,
@@ -140,6 +140,7 @@ void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? 
           bytes: bytes,
           postId: postId,
           navigateToPost: navigateToPost,
+          altText: altText,
         );
       },
       transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {

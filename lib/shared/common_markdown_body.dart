@@ -135,6 +135,7 @@ class CommonMarkdownBody extends StatelessWidget {
                           isComment: isComment,
                           showFullHeightImages: true,
                           maxWidth: imageMaxWidth,
+                          altText: alt,
                         )
                       : Container(
                           constraints: isComment == true

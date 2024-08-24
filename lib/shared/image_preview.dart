@@ -26,6 +26,7 @@ class ImagePreview extends StatefulWidget {
   final void Function()? navigateToPost;
   final bool? isComment;
   final bool? read;
+  final String? altText;
 
   const ImagePreview({
     super.key,
@@ -42,6 +43,7 @@ class ImagePreview extends StatefulWidget {
     this.navigateToPost,
     this.isComment,
     this.read,
+    this.altText,
   }) : assert(url != null || bytes != null);
 
   @override
@@ -75,6 +77,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                     bytes: widget.bytes,
                     postId: widget.postId,
                     navigateToPost: widget.navigateToPost,
+                    altText: widget.altText,
                   );
                 }
               },
