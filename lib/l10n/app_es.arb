@@ -2738,5 +2738,17 @@
     "description": "Action to visit the instance of a user"
   },
   "endOfComments": "Fin de las observaciones",
-  "@endOfComments": {}
+  "@endOfComments": {},
+  "clearCacheLabel": "Limpiar la cache",
+  "@clearCacheLabel": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "lookingForAccountSpecificFeedSettings": "¿Buscas ajustes de feed específicos para tu cuenta?",
+  "@lookingForAccountSpecificFeedSettings": {
+    "description": "Helper setting which navigates to account page"
+  },
+  "reporter": "Reportero:",
+  "@reporter": {
+    "description": "Name of reporter that reported a post/comment"
+  }
 }
