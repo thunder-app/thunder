@@ -1801,6 +1801,10 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "reporter": "Reporter:",
+  "@reporter": {
+    "description": "Name of reporter that reported a post/comment"
+  },
   "requiredField": "*required",
   "@requiredField": {
     "description": "Helper text for a required form field"
