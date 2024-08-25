@@ -73,6 +73,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           int? expiration = event.additionalParameters?['expiration'];
           bool? removeData = event.additionalParameters?['removeData'];
 
+          if (expiration != null) {
+            // Convert from milliseconds to seconds
+            expiration = expiration ~/ 1000;
+          }
+
           BanFromCommunityResponse banFromCommunityResponse = await banUserFromCommunity(
             userId: event.userId,
             communityId: communityId,

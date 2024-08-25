@@ -395,6 +395,11 @@ void showPostActionBottomModalSheet(
           ].contains(extendedAction.postCardAction))
       .toList();
 
+  // Prevent banning yourself
+  if (isModerator && isOwnPost) {
+    moderatorPostCardActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.moderatorBanUser);
+  }
+
   // Generate the list of share actions
   final List<ExtendedPostCardActions> sharePostCardActions = postCardActionItems
       .where((extendedAction) => [
@@ -896,15 +901,16 @@ void showBanUserBottomSheet(BuildContext context, PostViewMedia postViewMedia) {
     showDragHandle: true,
     isScrollControlled: true,
     builder: (_) => UserBanBottomSheet(
-      title: 'Ban user from community',
-      submitLabel: postViewMedia.postView.post.removed ? l10n.restore : l10n.remove,
+      ban: postViewMedia.postView.creatorBannedFromCommunity,
+      title: postViewMedia.postView.creatorBannedFromCommunity ? 'Unban user from community' : 'Ban user from community',
+      submitLabel: postViewMedia.postView.creatorBannedFromCommunity ? "Unban user" : "Ban user",
       textHint: l10n.reason,
       onSubmit: ({String? reason, int? expiration, bool? removeData}) {
         context.read<UserBloc>().add(
               UserActionEvent(
                 userAction: UserAction.ban,
                 userId: postViewMedia.postView.creator.id,
-                value: true,
+                value: !postViewMedia.postView.creatorBannedFromCommunity,
                 additionalParameters: {
                   'communityId': postViewMedia.postView.community.id,
                   'reason': reason,

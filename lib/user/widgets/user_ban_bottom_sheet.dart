@@ -5,7 +5,10 @@ import 'package:intl/intl.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 
 class UserBanBottomSheet extends StatefulWidget {
-  const UserBanBottomSheet({super.key, this.title, this.textHint, this.submitLabel, this.errorMessage, required this.onSubmit});
+  const UserBanBottomSheet({super.key, this.ban, this.title, this.textHint, this.submitLabel, this.errorMessage, required this.onSubmit});
+
+  /// Whether to show the ban or unban options
+  final bool? ban;
 
   /// A custom title of the bottom sheet. Defaults to "Reason"
   final String? title;
@@ -52,6 +55,71 @@ class _UserBanBottomSheetState extends State<UserBanBottomSheet> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    List<Widget> userUnbanWidgets = [
+      ToggleOption(
+        padding: EdgeInsets.zero,
+        description: 'Restore data',
+        value: !removeData,
+        onToggle: (bool value) => setState(() => removeData = value),
+        highlightKey: null,
+        setting: null,
+        highlightedSetting: null,
+      ),
+    ];
+
+    List<Widget> userBanWidgets = [
+      TextFormField(
+        controller: reasonController,
+        decoration: InputDecoration(
+          isDense: true,
+          border: const OutlineInputBorder(),
+          labelText: widget.textHint ?? l10n.message(0),
+          alignLabelWithHint: true,
+        ),
+        maxLines: 2,
+      ),
+      const SizedBox(height: 12.0),
+      TextFormField(
+        controller: expirationController,
+        decoration: const InputDecoration(
+          isDense: true,
+          border: OutlineInputBorder(),
+          labelText: 'Expiration Date',
+        ),
+        onTap: () async {
+          final DateTime? selectedDateTime = await showDateTimePicker(
+            context: context,
+            initialDate: null,
+            firstDate: DateTime.now(),
+            lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
+          );
+
+          setState(() => expiration = selectedDateTime);
+
+          if (selectedDateTime != null) {
+            expirationController.text = DateFormat.yMMMMd(Intl.systemLocale).add_jm().format(selectedDateTime);
+          } else {
+            expirationController.text = '';
+          }
+        },
+        validator: (value) {
+          DateTime? dateTime = DateTime.tryParse(value ?? '');
+          if (value != null && dateTime == null) return 'Invalid date';
+          return null;
+        },
+      ),
+      const SizedBox(height: 12.0),
+      ToggleOption(
+        padding: EdgeInsets.zero,
+        description: 'Remove data',
+        value: removeData,
+        onToggle: (bool value) => setState(() => removeData = value),
+        highlightKey: null,
+        setting: null,
+        highlightedSetting: null,
+      ),
+    ];
+
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.only(left: 26.0, right: 16.0),
@@ -65,56 +133,8 @@ class _UserBanBottomSheetState extends State<UserBanBottomSheet> {
               style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 20.0),
-            TextFormField(
-              controller: reasonController,
-              decoration: InputDecoration(
-                isDense: true,
-                border: const OutlineInputBorder(),
-                labelText: widget.textHint ?? l10n.message(0),
-                alignLabelWithHint: true,
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 12.0),
-            TextFormField(
-              controller: expirationController,
-              decoration: const InputDecoration(
-                isDense: true,
-                border: OutlineInputBorder(),
-                labelText: 'Expiration Date',
-              ),
-              onTap: () async {
-                final DateTime? selectedDateTime = await showDateTimePicker(
-                  context: context,
-                  initialDate: null,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
-                );
-
-                setState(() => expiration = selectedDateTime);
-
-                if (selectedDateTime != null) {
-                  expirationController.text = DateFormat.yMMMMd(Intl.systemLocale).add_jm().format(selectedDateTime);
-                } else {
-                  expirationController.text = '';
-                }
-              },
-              validator: (value) {
-                DateTime? dateTime = DateTime.tryParse(value ?? '');
-                if (value != null && dateTime == null) return 'Invalid date';
-                return null;
-              },
-            ),
-            const SizedBox(height: 12.0),
-            ToggleOption(
-              padding: EdgeInsets.zero,
-              description: 'Remove data',
-              value: removeData,
-              onToggle: (bool value) => setState(() => removeData = value),
-              highlightKey: null,
-              setting: null,
-              highlightedSetting: null,
-            ),
+            if (widget.ban == false) ...userBanWidgets,
+            if (widget.ban == true) ...userUnbanWidgets,
             const SizedBox(height: 36.0),
             if (widget.errorMessage != null)
               Text(
@@ -130,7 +150,7 @@ class _UserBanBottomSheetState extends State<UserBanBottomSheet> {
                 ),
                 const SizedBox(width: 8),
                 FilledButton(
-                  onPressed: widget.errorMessage != null ? null : () => widget.onSubmit(),
+                  onPressed: widget.errorMessage != null ? null : () => widget.onSubmit(expiration: expiration?.millisecondsSinceEpoch, reason: reasonController.text, removeData: removeData),
                   child: Text(widget.submitLabel ?? l10n.submit),
                 )
               ],
