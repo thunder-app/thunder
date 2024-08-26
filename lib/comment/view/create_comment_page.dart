@@ -487,6 +487,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         )
                                       : Icon(
                                           widget.commentView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                          color: theme.colorScheme.onSecondary,
                                           semanticLabel: widget.commentView != null ? l10n.editComment : l10n.createComment,
                                         ),
                                   style: ElevatedButton.styleFrom(

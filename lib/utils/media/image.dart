@@ -28,7 +28,14 @@ bool isImageUrl(String url) {
   } catch (e) {
     return false;
   }
-  final path = uri.path.toLowerCase();
+
+  String path = uri.path.toLowerCase();
+
+  // Handle thumbnail urls that are proxied via /image_proxy
+  if (uri.path == '/api/v3/image_proxy') {
+    Uri? parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
+    if (parsedUri != null) path = parsedUri.path;
+  }
 
   for (final extension in imageExtensions) {
     if (path.endsWith(extension)) {
@@ -74,11 +81,9 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
       return Size(uiImage.width.toDouble(), uiImage.height.toDouble());
     }
 
-    // We know imageUrl is not null here due to the assertion.
-    bool isImage = isImageUrl(imageUrl!);
-    if (!isImage) throw Exception('The URL provided was not an image');
-
-    final imageProvider = ExtendedNetworkImageProvider(imageUrl, cache: true, cacheRawData: true);
+    // The image provider should throw an error if a valid image is not found
+    // This is to catch cases where the URL may return a valid image, but the URL path does not conform to the expected format
+    final imageProvider = ExtendedNetworkImageProvider(imageUrl ?? '', cache: true, cacheRawData: true);
     final imageData = await imageProvider.getNetworkImageData();
     if (imageData == null) throw Exception('Failed to retrieve image data from $imageUrl');
 
@@ -86,7 +91,7 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
     final frame = await codec.getNextFrame();
     final uiImage = frame.image;
 
-    print('width: ${uiImage.width} \t height: ${uiImage.height} \t $imageUrl');
+    debugPrint('width: ${uiImage.width} \t height: ${uiImage.height} \t $imageUrl');
     return Size(uiImage.width.toDouble(), uiImage.height.toDouble());
   } catch (e) {
     throw Exception('Failed to retrieve image dimensions from $imageUrl: $e');
@@ -105,7 +110,7 @@ void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = fa
 
   try {
     Account? account = await fetchActiveProfileAccount();
-    imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!, postImage: postImage));
+    imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance, jwt: account.jwt!, postImage: postImage));
   } catch (e) {
     showSnackbar(AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: Theme.of(context).colorScheme.errorContainer);
   }
@@ -123,7 +128,7 @@ Future<List<String>> selectImagesToUpload({bool allowMultiple = false}) async {
   return [file!.path];
 }
 
-void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost}) {
+void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost, String? altText}) {
   Navigator.of(context).push(
     PageRouteBuilder(
       opaque: false,
@@ -135,6 +140,7 @@ void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? 
           bytes: bytes,
           postId: postId,
           navigateToPost: navigateToPost,
+          altText: altText,
         );
       },
       transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {

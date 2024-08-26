@@ -172,6 +172,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
             url: widget.postViewMedia.media.first.imageUrl,
             postId: widget.postViewMedia.postView.post.id,
             navigateToPost: widget.navigateToPost,
+            altText: widget.postViewMedia.media.first.altText,
           );
         },
       ),
