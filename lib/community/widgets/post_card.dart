@@ -5,7 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/community/utils/post_actions.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -263,9 +263,9 @@ class _PostCardState extends State<PostCard> {
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
                 widget.postViewMedia,
-                onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
-                onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
-                onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
+                // onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
+                // onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
+                // onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
               ),
               onTap: () async {
                 PostView postView = widget.postViewMedia.postView;

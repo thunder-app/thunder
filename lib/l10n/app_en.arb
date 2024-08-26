@@ -2251,6 +2251,10 @@
   },
   "subscriptions": "Subscriptions",
   "@subscriptions": {},
+  "successfullyBannedUser": "Banned {username}",
+  "@successfullyBannedUser": {
+    "description": "Notification for successfully banning a user"
+  },
   "successfullyBlocked": "Blocked.",
   "@successfullyBlocked": {},
   "successfullyBlockedCommunity": "Blocked {communityName}",
@@ -2258,6 +2262,10 @@
   "successfullyBlockedUser": "Blocked {username}",
   "@successfullyBlockedUser": {
     "description": "Notification for successfully blocking a user"
+  },
+  "successfullyUnbannedUser": "Unbanned {username}",
+  "@successfullyUnbannedUser": {
+    "description": "Notification for successfully unbanning a user"
   },
   "successfullyUnblocked": "Unblocked.",
   "@successfullyUnblocked": {},

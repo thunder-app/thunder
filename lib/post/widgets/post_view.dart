@@ -18,7 +18,8 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/post/widgets/general_post_action_bottom_sheet.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -298,7 +299,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   showPostActionBottomModalSheet(
                     context,
                     widget.postViewMedia,
-                    page: PostActionBottomSheetPage.share,
+                    page: GeneralPostAction.share,
                   );
                 },
                 onEdit: () async {

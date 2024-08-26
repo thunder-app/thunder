@@ -8,7 +8,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -348,9 +348,9 @@ class PostCardViewComfortable extends StatelessWidget {
                       showPostActionBottomModalSheet(
                         context,
                         postViewMedia,
-                        onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
-                        onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
-                        onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
+                        // onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
+                        // onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
+                        // onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
                       );
                       HapticFeedback.mediumImpact();
                     }),

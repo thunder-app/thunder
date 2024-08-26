@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -58,6 +59,47 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             personView: blockPersonResponse.personView,
             message:
                 blockPersonResponse.blocked ? l10n.successfullyBlockedUser(blockPersonResponse.personView.person.name) : l10n.successfullyUnblockedUser(blockPersonResponse.personView.person.name),
+          ));
+        } catch (e) {
+          return emit(state.copyWith(status: UserStatus.failure));
+        }
+        break;
+      case UserAction.banFromCommunity:
+        try {
+          assert(event.metadata != null);
+          assert(event.metadata!.containsKey('communityId'));
+
+          int communityId = event.metadata!['communityId'] as int;
+          String? reason = event.metadata?['reason'];
+          int? expires = event.metadata?['expires'];
+          bool removeData = event.metadata?['removeData'] ?? false;
+
+          BanFromCommunityResponse banFromCommunityResponse = await banUserFromCommunity(event.userId, event.value, communityId: communityId, reason: reason, expires: expires, removeData: removeData);
+
+          emit(state.copyWith(
+            status: UserStatus.success,
+            personView: banFromCommunityResponse.personView,
+            message: banFromCommunityResponse.banned
+                ? l10n.successfullyBannedUser(banFromCommunityResponse.personView.person.name)
+                : l10n.successfullyUnbannedUser(banFromCommunityResponse.personView.person.name),
+          ));
+        } catch (e) {
+          return emit(state.copyWith(status: UserStatus.failure));
+        }
+        break;
+      case UserAction.addModerator:
+        try {
+          assert(event.metadata != null);
+          assert(event.metadata!.containsKey('communityId'));
+
+          int communityId = event.metadata!['communityId'] as int;
+
+          AddModToCommunityResponse addModToCommunityResponse = await addModerator(event.userId, event.value, communityId: communityId);
+          CommunityModeratorView? communityModeratorView = addModToCommunityResponse.moderators.firstWhereOrNull((communityModeratorView) => communityModeratorView.moderator.id == event.userId);
+
+          emit(state.copyWith(
+            status: UserStatus.success,
+            message: communityModeratorView != null ? 'Successfully added moderator' : 'Successfully removed moderator',
           ));
         } catch (e) {
           return emit(state.copyWith(status: UserStatus.failure));
