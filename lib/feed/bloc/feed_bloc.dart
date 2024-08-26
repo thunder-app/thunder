@@ -333,7 +333,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.report:
-      // TODO: Handle this case.
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+
+        try {
+          await reportPost(postViewMedia.postView.post.id, event.value);
+          return emit(state.copyWith(status: FeedStatus.success));
+        } catch (e) {
+          return emit(state.copyWith(status: FeedStatus.failure));
+        }
       case PostAction.lock:
         // Optimistically lock the post
         int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);

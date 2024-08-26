@@ -10,24 +10,25 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 
 /// Defines the actions that can be taken on a community
 enum CommunityPostAction {
-  viewCommunity(icon: Icons.person, permissionType: PermissionType.user, requiresAuthentication: false),
+  viewCommunity(icon: Icons.home_work_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
   subscribeToCommunity(icon: Icons.add_circle_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
   unsubscribeFromCommunity(icon: Icons.remove_circle_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  blockCommunity(icon: Icons.block, permissionType: PermissionType.user, requiresAuthentication: true),
-  unblockCommunity(icon: Icons.block, permissionType: PermissionType.user, requiresAuthentication: true),
+  blockCommunity(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  unblockCommunity(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
   ;
 
   String get name => switch (this) {
-        CommunityPostAction.viewCommunity => "View Community",
-        CommunityPostAction.subscribeToCommunity => "Subscribe To Community",
-        CommunityPostAction.unsubscribeFromCommunity => "Unsubscribe From Community",
-        CommunityPostAction.blockCommunity => "Block Community",
+        CommunityPostAction.viewCommunity => l10n.visitCommunity,
+        CommunityPostAction.subscribeToCommunity => l10n.subscribeToCommunity,
+        CommunityPostAction.unsubscribeFromCommunity => l10n.unsubscribeFromCommunity,
+        CommunityPostAction.blockCommunity => l10n.blockCommunity,
         CommunityPostAction.unblockCommunity => "Unblock Community",
       };
 

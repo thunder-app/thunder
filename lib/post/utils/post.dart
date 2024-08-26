@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -240,6 +241,23 @@ Future<bool> removePost(int postId, bool remove, String reason) async {
   ));
 
   return postResponse.postView.post.removed == remove;
+}
+
+/// Logic to remove a post to a community (moderator action)
+Future<PostReportResponse> reportPost(int postId, String reason) async {
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  final lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception(l10n.userNotLoggedIn);
+
+  PostReportResponse postReportResponse = await lemmy.run(CreatePostReport(
+    auth: account!.jwt!,
+    postId: postId,
+    reason: reason,
+  ));
+
+  return postReportResponse;
 }
 
 /// Logic to vote on a post

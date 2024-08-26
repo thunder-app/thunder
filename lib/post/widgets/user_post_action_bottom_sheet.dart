@@ -16,11 +16,12 @@ import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 
-// Defines the actions that can be taken on a user
+/// Defines the actions that can be taken on a user
+/// TODO: Implement admin-level actions
 enum UserPostAction {
-  viewProfile(icon: Icons.person, permissionType: PermissionType.user, requiresAuthentication: false),
-  blockUser(icon: Icons.block, permissionType: PermissionType.user, requiresAuthentication: true),
-  unblockUser(icon: Icons.block, permissionType: PermissionType.user, requiresAuthentication: true),
+  viewProfile(icon: Icons.person_search_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
+  blockUser(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  unblockUser(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
   banUserFromCommunity(icon: Icons.block, permissionType: PermissionType.moderator, requiresAuthentication: true),
   unbanUserFromCommunity(icon: Icons.block, permissionType: PermissionType.moderator, requiresAuthentication: true),
   addUserAsCommunityModerator(icon: Icons.person_add_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
@@ -133,12 +134,16 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
     final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.postViewMedia.postView.creator.actorId).isNotEmpty;
     final isUserCommunityModerator = widget.postViewMedia.postView.creatorIsModerator ?? false;
     final isUserBannedFromCommunity = widget.postViewMedia.postView.creatorBannedFromCommunity;
-    final isUserBannedFromInstance = widget.postViewMedia.postView.creator.banned;
-    final isUserAdmin = widget.postViewMedia.postView.creatorIsAdmin ?? false;
+    // final isUserBannedFromInstance = widget.postViewMedia.postView.creator.banned;
+    // final isUserAdmin = widget.postViewMedia.postView.creatorIsAdmin ?? false;
 
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
+      if (account?.actorId == widget.postViewMedia.postView.creator.actorId) {
+        userActions = userActions.where((action) => action != UserPostAction.blockUser && action != UserPostAction.unblockUser).toList();
+      }
+
       if (isUserBlocked) {
         userActions = userActions.where((action) => action != UserPostAction.blockUser).toList();
       } else {
