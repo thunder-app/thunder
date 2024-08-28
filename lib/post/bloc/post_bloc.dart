@@ -95,6 +95,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _reportCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<ReportPostEvent>(
+      _reportPostEvent,
+    );
   }
 
   /// Fetches the post, along with the initial set of comments
@@ -788,5 +791,23 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
 
     return null;
+  }
+
+  Future<void> _reportPostEvent(ReportPostEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(
+        status: PostStatus.loading,
+        selectedCommentPath: state.selectedCommentPath,
+        selectedCommentId: state.selectedCommentId,
+        newlyCreatedCommentId: state.newlyCreatedCommentId,
+      ));
+
+      await reportPost(event.postId, event.message);
+
+      return emit(
+          state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+    } catch (e) {
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+    }
   }
 }

@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +13,9 @@ import 'package:thunder/core/models/media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/feed.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/widgets/report_post_dialog.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/links.dart';
@@ -244,6 +246,17 @@ Future<bool> removePost(int postId, bool remove, String reason) async {
   return postResponse.postView.post.removed == remove;
 }
 
+/// Logic to report a post
+Future<bool> reportPost(int postId, String reason) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+  PostReportResponse? postReportResponse = await lemmy.run(CreatePostReport(postId: postId, reason: reason, auth: account!.jwt!));
+  // PostReportView has a .saved but only available for v 0.19.4
+  return postReportResponse?.postReportView != null;
+}
+
 /// Logic to vote on a post
 Future<PostView> votePost(int postId, int score) async {
   Account? account = await fetchActiveProfileAccount();
@@ -390,4 +403,28 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   mediaList.add(media);
 
   return PostViewMedia(postView: postView, media: mediaList);
+}
+
+void showReportPostActionBottomSheet(
+  BuildContext context, {
+  required int? postId,
+  final void Function(String)? onReport,
+}) {
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (_) => MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PostBloc(),
+        ),
+        if (onReport != null)
+          BlocProvider.value(
+            value: context.read<FeedBloc>(),
+          ),
+      ],
+      child: ReportPostDialog(postId: postId!, onReport: onReport),
+    ),
+  );
 }
