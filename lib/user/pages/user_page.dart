@@ -13,6 +13,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc_old.dart';
@@ -59,13 +60,16 @@ class _UserPageState extends State<UserPage> {
           appBar: AppBar(
             scrolledUnderElevation: 0,
             leading: widget.isAccountUser
-                ? IconButton(
-                    onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
-                    icon: Icon(
-                      Icons.logout,
-                      semanticLabel: AppLocalizations.of(context)!.logOut,
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
+                    child: IconButton(
+                      onPressed: () => showProfileModalSheet(context),
+                      icon: Icon(
+                        Icons.people_alt_rounded,
+                        semanticLabel: AppLocalizations.of(context)!.profiles,
+                      ),
+                      tooltip: AppLocalizations.of(context)!.profiles,
                     ),
-                    tooltip: AppLocalizations.of(context)!.logOut,
                   )
                 : null,
             actions: [
@@ -99,6 +103,8 @@ class _UserPageState extends State<UserPage> {
                     onPressed: () {
                       final AccountBloc accountBloc = context.read<AccountBloc>();
                       final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                      final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
+
                       Navigator.of(context).push(
                         SwipeablePageRoute(
                           transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
@@ -108,6 +114,7 @@ class _UserPageState extends State<UserPage> {
                             providers: [
                               BlocProvider.value(value: accountBloc),
                               BlocProvider.value(value: thunderBloc),
+                              BlocProvider.value(value: userSettingsBloc),
                             ],
                             child: const UserSettingsPage(),
                           ),
@@ -119,18 +126,6 @@ class _UserPageState extends State<UserPage> {
                       semanticLabel: AppLocalizations.of(context)!.accountSettings,
                     ),
                     tooltip: AppLocalizations.of(context)!.accountSettings,
-                  ),
-                ),
-              if (widget.isAccountUser)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
-                  child: IconButton(
-                    onPressed: () => showProfileModalSheet(context),
-                    icon: Icon(
-                      Icons.people_alt_rounded,
-                      semanticLabel: AppLocalizations.of(context)!.profiles,
-                    ),
-                    tooltip: AppLocalizations.of(context)!.profiles,
                   ),
                 ),
             ],
@@ -152,6 +147,9 @@ class _UserPageState extends State<UserPage> {
               case UserStatus.refreshing:
               case UserStatus.success:
               case UserStatus.failedToBlock:
+                if (state.personView == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 return UserPageSuccess(
                   userId: widget.userId,
                   isAccountUser: widget.isAccountUser,

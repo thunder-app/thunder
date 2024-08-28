@@ -15,6 +15,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
+import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/pages/notifications_pages.dart';
@@ -90,8 +91,6 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
     );
 
     pushOnTopOfLoadingPage(context, route).then((_) {
-      context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
-
       // If needed, switch back to the original account or anonymous instance
       if (switchedAccount) {
         if (originalAccount != null) {
@@ -104,6 +103,8 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
           context.read<AuthBloc>().add(InstanceChanged(instance: originalAnonymousInstance));
         }
       }
+
+      context.read<InboxBloc>().add(const GetInboxEvent(reset: true, inboxType: InboxType.all));
     });
   }
 }

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html/parser.dart';
 import 'package:html_unescape/html_unescape_small.dart';
-
 import 'package:lemmy_api_client/v3.dart';
+import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
@@ -15,6 +16,8 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -41,7 +44,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool markPostReadOnMediaView;
   final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
-  final bool indicateRead;
+  final bool? indicateRead;
 
   const PostCardViewComfortable({
     super.key,
@@ -63,7 +66,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
     required this.listingType,
-    required this.indicateRead,
+    this.indicateRead,
     this.navigateToPost,
   });
 
@@ -71,6 +74,8 @@ class PostCardViewComfortable extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+
+    bool indicateRead = this.indicateRead ?? state.dimReadPosts;
 
     final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) &&
         isUserLoggedIn &&
@@ -81,7 +86,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
-    var mediaView = MediaView(
+    Widget mediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
       postViewMedia: postViewMedia,
       showFullHeightImages: showFullHeightImages,
@@ -93,7 +98,6 @@ class PostCardViewComfortable extends StatelessWidget {
       navigateToPost: navigateToPost,
       read: indicateRead && postViewMedia.postView.read,
     );
-
     final bool useSaveButton = state.showSaveAction;
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
@@ -112,6 +116,15 @@ class PostCardViewComfortable extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   children: [
+                    if (postViewMedia.postView.hidden == true)
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.visibility_off_rounded,
+                          color: indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.hideColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.hideColor.color,
+                          size: 16 * textScaleFactor,
+                          semanticLabel: l10n.hidden,
+                        ),
+                      ),
                     if (postViewMedia.postView.post.locked) ...[
                       WidgetSpan(
                           child: Icon(
@@ -196,6 +209,18 @@ class PostCardViewComfortable extends StatelessWidget {
                 child: Text.rich(
                   TextSpan(
                     children: [
+                      if (postViewMedia.postView.hidden == true) ...[
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.visibility_off_rounded,
+                            color:
+                                indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.hideColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.hideColor.color,
+                            size: 16 * textScaleFactor,
+                            semanticLabel: l10n.hidden,
+                          ),
+                        ),
+                        const WidgetSpan(child: SizedBox(width: 2)),
+                      ],
                       if (postViewMedia.postView.post.locked) ...[
                         WidgetSpan(
                             child: Icon(
@@ -269,12 +294,12 @@ class PostCardViewComfortable extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
               child: ScalableText(
-                textContent,
+                parse(markdownToHtml(textContent)).documentElement?.text.trim() ?? textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 fontScale: state.contentFontSizeScale,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: readColor,
+                  color: postViewMedia.postView.read ? readColor : theme.textTheme.bodyMedium?.color?.withOpacity(0.70),
                 ),
               ),
             ),
@@ -309,6 +334,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
                         hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                         url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                        languageId: postViewMedia.postView.post.languageId,
                         hasBeenRead: indicateRead && postViewMedia.postView.read,
                       ),
                     ],
@@ -324,6 +350,9 @@ class PostCardViewComfortable extends StatelessWidget {
                       showPostActionBottomModalSheet(
                         context,
                         postViewMedia,
+                        onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
+                        onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
+                        onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
                       );
                       HapticFeedback.mediumImpact();
                     }),

@@ -58,6 +58,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _markPostAsReadEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<MarkUserPostAsHiddenEvent>(
+      _markPostAsHiddenEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<BlockUserEvent>(
       _blockUserEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -328,6 +332,30 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
+  Future<void> _markPostAsHiddenEvent(MarkUserPostAsHiddenEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing, userId: state.userId));
+
+      PostViewMedia? postViewMedia = _getPost(event.postId);
+      PostView? postView = postViewMedia?.postView;
+
+      bool success = await markPostAsHidden(event.postId, event.hide);
+
+      if (postView != null && success) {
+        postView = postView.copyWith(hidden: event.hide);
+        _updatePosts(postView, event.postId);
+      }
+
+      return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
+    } catch (e) {
+      return emit(state.copyWith(
+        status: UserStatus.failure,
+        errorMessage: e.toString(),
+        userId: state.userId,
+      ));
+    }
+  }
+
   Future<void> _savePostEvent(SavePostEvent event, Emitter<UserState> emit) async {
     try {
       emit(state.copyWith(status: UserStatus.refreshing));
@@ -351,7 +379,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (currentTrees.isNotEmpty) {
         // Optimistically update the comment
         for (CommentViewTree currentTree in currentTrees) {
-          currentTree.commentView = optimisticallyVoteComment(currentTree, event.score);
+          currentTree.commentView = optimisticallyVoteComment(currentTree.commentView!, event.score);
         }
 
         // Immediately set the status, and continue

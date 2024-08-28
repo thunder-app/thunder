@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,13 +19,17 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
+import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/notification/utils/local_notifications.dart';
+import 'package:thunder/settings/widgets/list_option.dart';
+import 'package:thunder/settings/widgets/toggle_option.dart';
 
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
+import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
@@ -38,10 +44,42 @@ class DebugSettingsPage extends StatefulWidget {
 }
 
 class _DebugSettingsPageState extends State<DebugSettingsPage> {
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
+
   NotificationType? inboxNotificationType = NotificationType.none;
   bool areNotificationsAllowed = false;
   String? unifiedPushDistributorApp;
   int unifiedPushDistributorAppCount = 0;
+  String? pushNotificationServer;
+  String? unifiedPushServer;
+  String? thunderNotificationServer;
+  String? thunderNotificationServerPing;
+  bool pingDone = false;
+
+  /// Enable experimental features in the app.
+  bool enableExperimentalFeatures = false;
+
+  /// The maximum amount of time in seconds to fetch the image dimensions.
+  int imageDimensionTimeout = 2;
+
+  /// The available timeout values for image dimensions in seconds.
+  List<int> imageDimensionTimeouts = List.generate(10, (index) => index + 1);
+
+  Future<void> setPreferences(attribute, value) async {
+    final prefs = (await UserPreferences.instance).sharedPreferences;
+
+    switch (attribute) {
+      case LocalSettings.enableExperimentalFeatures:
+        await prefs.setBool(LocalSettings.enableExperimentalFeatures.name, value);
+        setState(() => enableExperimentalFeatures = value);
+        break;
+      case LocalSettings.imageDimensionTimeout:
+        await prefs.setInt(LocalSettings.imageDimensionTimeout.name, value);
+        setState(() => imageDimensionTimeout = value);
+        break;
+    }
+  }
 
   @override
   void initState() {
@@ -55,10 +93,37 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
         AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
             FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
+        // Check if notifications are allowed
         areNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled() ?? false;
 
+        // Find the current and available UnifiedPush distributor apps
         unifiedPushDistributorApp = await UnifiedPush.getDistributor();
         unifiedPushDistributorAppCount = (await UnifiedPush.getDistributors()).length;
+
+        // Find the UnifiedPush server endpoint
+        Uri? unifiedPushEnpoint = Uri.tryParse(prefs.getString('unified_push_endpoint') ?? '');
+        if (unifiedPushEnpoint != null) {
+          unifiedPushServer = '${unifiedPushEnpoint.scheme}://${unifiedPushEnpoint.host}';
+        }
+
+        // Find the Thunder notification server
+        thunderNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name);
+
+        // Ping the Thunder notification server
+        Uri? thunderNotificationServerUri = Uri.tryParse(thunderNotificationServer ?? '');
+        if (thunderNotificationServerUri != null) {
+          Future.microtask(() async {
+            PingData pingData = await Ping(
+              thunderNotificationServerUri.host,
+              count: 1,
+              timeout: 5,
+            ).stream.first;
+            setState(() {
+              pingDone = true;
+              thunderNotificationServerPing = pingData.response?.time == null ? null : '${pingData.response?.time?.inMilliseconds}ms';
+            });
+          });
+        }
       } else if (!kIsWeb && Platform.isIOS) {
         IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
@@ -66,7 +131,33 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
         areNotificationsAllowed = (await iosFlutterLocalNotificationsPlugin?.checkPermissions())?.isEnabled ?? false;
       }
 
-      setState(() {});
+      pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+
+      setState(() {
+        enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
+        imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+      });
+
+      if (widget.settingToHighlight != null) {
+        setState(() => settingToHighlight = widget.settingToHighlight);
+
+        // Need some delay to finish building, even though we're in a post-frame callback.
+        Timer(const Duration(milliseconds: 500), () {
+          if (settingToHighlightKey.currentContext != null) {
+            // Ensure that the selected setting is visible on the screen
+            Scrollable.ensureVisible(
+              settingToHighlightKey.currentContext!,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          // Give time for the highlighting to appear, then turn it off
+          Timer(const Duration(seconds: 1), () {
+            setState(() => settingToHighlight = null);
+          });
+        });
+      }
     });
   }
 
@@ -132,6 +223,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   primaryButtonText: l10n.clearPreferences,
                 );
               },
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.debugDeleteLocalPreferences,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
@@ -166,6 +260,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   primaryButtonText: l10n.clearDatabase,
                 );
               },
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.debugDeleteLocalDatabase,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const ThunderDivider(sliver: true),
@@ -186,6 +283,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       if (context.mounted) showSnackbar(l10n.clearedCache);
                       setState(() {}); // Trigger a rebuild to refresh the cache size
                     },
+                    highlightKey: settingToHighlightKey,
+                    setting: LocalSettings.debugClearCache,
+                    highlightedSetting: settingToHighlight,
                   );
                 }
                 return Container();
@@ -269,6 +369,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               description: l10n.currentNotificationsMode(inboxNotificationType.toString()),
               widget: Container(),
               onTap: null,
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
@@ -278,9 +381,12 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               description: l10n.areNotificationsAllowedBySystem(areNotificationsAllowed ? l10n.yes : l10n.no),
               widget: Container(),
               onTap: null,
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
             ),
           ),
-          if (!kIsWeb && Platform.isAndroid && kDebugMode) ...[
+          if (!kIsWeb && Platform.isAndroid && enableExperimentalFeatures) ...[
             const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
             SliverToBoxAdapter(
               child: SettingsListTile(
@@ -288,6 +394,33 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 description: l10n.unifiedPushDistributorApp(unifiedPushDistributorApp ?? l10n.none, unifiedPushDistributorAppCount),
                 widget: Container(),
                 onTap: null,
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
+              ),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+            SliverToBoxAdapter(
+              child: SettingsListTile(
+                icon: Icons.info_rounded,
+                description: '${l10n.thunderNotificationServer(thunderNotificationServer ?? l10n.none)} ${pingDone ? '(${thunderNotificationServerPing ?? l10n.offline})' : ''}',
+                widget: Container(),
+                onTap: null,
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
+              ),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+            SliverToBoxAdapter(
+              child: SettingsListTile(
+                icon: Icons.info_rounded,
+                description: l10n.unifiedPushServer(unifiedPushServer ?? l10n.none),
+                widget: Container(),
+                onTap: null,
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
               ),
             ),
           ],
@@ -314,6 +447,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         showTestAndroidNotification();
                       }
                     : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.debugSendTestLocalNotification,
+                highlightedSetting: settingToHighlight,
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
@@ -354,9 +490,12 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         }
                       }
                     : null,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.debugSendBackgroundTestLocalNotification,
+                highlightedSetting: settingToHighlight,
               ),
             ),
-            if (kDebugMode) ...[
+            if (enableExperimentalFeatures) ...[
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
@@ -375,10 +514,17 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                     child: Icon(Icons.chevron_right_rounded),
                   ),
                   onTap: inboxNotificationType == NotificationType.unifiedPush
-                      ? () {
-                          // TODO: Need a new server endpoint
+                      ? () async {
+                          if (await requestTestNotification()) {
+                            showSnackbar(l10n.sentRequestForTestNotification);
+                          } else {
+                            showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(pushNotificationServer ?? ''));
+                          }
                         }
                       : null,
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.debugSendTestUnifiedPushNotification,
+                  highlightedSetting: settingToHighlight,
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
@@ -409,12 +555,19 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                           );
 
                           if (result) {
-                            // TODO: Need a new server endpoint
+                            if (await requestTestNotification()) {
+                              showSnackbar(l10n.sentRequestForTestNotification);
+                            } else {
+                              showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(pushNotificationServer ?? ''));
+                            }
 
                             SystemNavigator.pop();
                           }
                         }
                       : null,
+                  highlightKey: settingToHighlightKey,
+                  setting: LocalSettings.debugSendBackgroundTestUnifiedPushNotification,
+                  highlightedSetting: settingToHighlight,
                 ),
               ),
             ],
@@ -434,6 +587,59 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   LocalSettings.inboxNotificationType,
                 ]);
               },
+              highlightKey: settingToHighlightKey,
+              setting: null,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.experimentalFeatures, style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    l10n.experimentalFeaturesDescription,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.enableExperimentalFeatures,
+              value: enableExperimentalFeatures,
+              iconEnabled: Icons.construction_rounded,
+              iconDisabled: Icons.construction_outlined,
+              onToggle: (value) => setPreferences(LocalSettings.enableExperimentalFeatures, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.enableExperimentalFeatures,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              child: Text(l10n.feed, style: theme.textTheme.titleMedium),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+          SliverToBoxAdapter(
+            child: ListOption(
+              description: l10n.imageDimensionTimeout,
+              value: ListPickerItem(label: '${imageDimensionTimeout}s', icon: Icons.timelapse, payload: imageDimensionTimeout),
+              options: imageDimensionTimeouts.map((value) => ListPickerItem(icon: Icons.timelapse, label: '${value}s', payload: value)).toList(),
+              icon: Icons.timelapse,
+              onChanged: (value) async => setPreferences(LocalSettings.imageDimensionTimeout, value.payload),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.imageDimensionTimeout,
+              highlightedSetting: settingToHighlight,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 48)),

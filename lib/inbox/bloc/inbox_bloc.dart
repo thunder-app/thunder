@@ -3,12 +3,15 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'inbox_event.dart';
 part 'inbox_state.dart';
@@ -22,7 +25,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class InboxBloc extends Bloc<InboxEvent, InboxState> {
   /// Constructor allowing an initial set of replies to be set in the state.
-  InboxBloc.withReplies(List<CommentReplyView> replies) : super(InboxState(replies: replies)) {
+  InboxBloc.initWith({required List<CommentReplyView> replies, required bool showUnreadOnly}) : super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
     _init();
   }
 
@@ -32,51 +35,70 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   }
 
   void _init() {
-    on<GetInboxEvent>(
-      _getInboxEvent,
-      transformer: restartable(),
-    );
-    on<MarkReplyAsReadEvent>(
-      _markReplyAsReadEvent,
-      // Do not throttle mark as read because it's something
-      // a user might try to do in quick succession to multiple messages
-      // Do not use any transformer, because a throttleDroppable will only process the first request and restartable will only process the last.
-    );
-    on<MarkMentionAsReadEvent>(
-      _markMentionAsReadEvent,
-      // Do not throttle mark as read because it's something
-      // a user might try to do in quick succession to multiple messages
-      transformer: throttleDroppable(Duration.zero),
-    );
-    on<CreateInboxCommentReplyEvent>(
-      _createCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
-    on<MarkAllAsReadEvent>(
-      _markAllAsRead,
-      // Do not throttle mark as read because it's something
-      // a user might try to do in quick succession to multiple messages
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<GetInboxEvent>(_getInboxEvent, transformer: restartable());
+    on<InboxItemActionEvent>(_inboxItemActionEvent);
+    on<MarkAllAsReadEvent>(_markAllAsRead);
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
-    int attemptCount = 0;
     int limit = 20;
 
+    Account? account = await fetchActiveProfileAccount();
+    if (account?.jwt == null) {
+      return emit(state.copyWith(
+        status: InboxStatus.empty,
+        privateMessages: [],
+        mentions: [],
+        replies: [],
+        showUnreadOnly: !event.showAll,
+        inboxMentionPage: 1,
+        inboxReplyPage: 1,
+        inboxPrivateMessagePage: 1,
+        totalUnreadCount: 0,
+        repliesUnreadCount: 0,
+        mentionsUnreadCount: 0,
+        messagesUnreadCount: 0,
+        hasReachedInboxReplyEnd: true,
+        hasReachedInboxMentionEnd: true,
+        hasReachedInboxPrivateMessageEnd: true,
+      ));
+    }
+
     try {
-      Object? exception;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      Account? account = await fetchActiveProfileAccount();
+      PrivateMessagesResponse? privateMessagesResponse;
+      GetPersonMentionsResponse? getPersonMentionsResponse;
+      GetRepliesResponse? getRepliesResponse;
 
-      while (attemptCount < 2) {
-        try {
-          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      if (event.reset) {
+        emit(state.copyWith(status: InboxStatus.loading, errorMessage: ''));
 
-          if (event.reset) {
-            emit(state.copyWith(status: InboxStatus.loading, errorMessage: ''));
-            // Fetch all the things
-            PrivateMessagesResponse privateMessagesResponse = await lemmy.run(
+        switch (event.inboxType) {
+          case InboxType.replies:
+            getRepliesResponse = await lemmy.run(
+              GetReplies(
+                auth: account!.jwt!,
+                unreadOnly: !event.showAll,
+                limit: limit,
+                sort: event.commentSortType,
+                page: 1,
+              ),
+            );
+            break;
+          case InboxType.mentions:
+            getPersonMentionsResponse = await lemmy.run(
+              GetPersonMentions(
+                auth: account!.jwt!,
+                unreadOnly: !event.showAll,
+                sort: event.commentSortType,
+                limit: limit,
+                page: 1,
+              ),
+            );
+            break;
+          case InboxType.messages:
+            privateMessagesResponse = await lemmy.run(
               GetPrivateMessages(
                 auth: account!.jwt!,
                 unreadOnly: !event.showAll,
@@ -84,123 +106,128 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 page: 1,
               ),
             );
-
-            GetPersonMentionsResponse getPersonMentionsResponse = await lemmy.run(
+            break;
+          case InboxType.all:
+            getRepliesResponse = await lemmy.run(
+              GetReplies(
+                auth: account!.jwt!,
+                unreadOnly: !event.showAll,
+                limit: limit,
+                sort: event.commentSortType,
+                page: 1,
+              ),
+            );
+            getPersonMentionsResponse = await lemmy.run(
               GetPersonMentions(
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
-                sort: CommentSortType.new_,
+                sort: event.commentSortType,
                 limit: limit,
                 page: 1,
               ),
             );
-
-            GetRepliesResponse getRepliesResponse = await lemmy.run(
-              GetReplies(
+            privateMessagesResponse = await lemmy.run(
+              GetPrivateMessages(
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
-                sort: CommentSortType.new_,
                 page: 1,
               ),
             );
+            break;
+          default:
+            break;
+        }
 
-            GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(
-              GetUnreadCount(
-                auth: account.jwt!,
-              ),
-            );
+        GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(GetUnreadCount(auth: account!.jwt!));
+        int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
-            int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
+        return emit(
+          state.copyWith(
+            status: InboxStatus.success,
+            privateMessages: cleanDeletedMessages(privateMessagesResponse?.privateMessages ?? []),
+            mentions: cleanDeletedMentions(getPersonMentionsResponse?.mentions ?? []),
+            replies: getRepliesResponse?.replies.toList() ?? [], // Copy this list so that it is modifyable
+            showUnreadOnly: !event.showAll,
+            inboxMentionPage: 2,
+            inboxReplyPage: 2,
+            inboxPrivateMessagePage: 2,
+            totalUnreadCount: totalUnreadCount,
+            repliesUnreadCount: getUnreadCountResponse.replies,
+            mentionsUnreadCount: getUnreadCountResponse.mentions,
+            messagesUnreadCount: getUnreadCountResponse.privateMessages,
+            hasReachedInboxReplyEnd: getRepliesResponse?.replies.isEmpty == true || (getRepliesResponse?.replies.length ?? 0) < limit,
+            hasReachedInboxMentionEnd: getPersonMentionsResponse?.mentions.isEmpty == true || (getPersonMentionsResponse?.mentions.length ?? 0) < limit,
+            hasReachedInboxPrivateMessageEnd: privateMessagesResponse?.privateMessages.isEmpty == true || (privateMessagesResponse?.privateMessages.length ?? 0) < limit,
+          ),
+        );
+      }
 
-            return emit(
-              state.copyWith(
-                status: InboxStatus.success,
-                privateMessages: cleanDeletedMessages(privateMessagesResponse.privateMessages),
-                mentions: cleanDeletedMentions(getPersonMentionsResponse.mentions),
-                replies: getRepliesResponse.replies.toList(), // Copy this list so that it is modifyable
-                showUnreadOnly: !event.showAll,
-                inboxMentionPage: 2,
-                inboxReplyPage: 2,
-                inboxPrivateMessagePage: 2,
-                totalUnreadCount: totalUnreadCount,
-                repliesUnreadCount: getUnreadCountResponse.replies,
-                mentionsUnreadCount: getUnreadCountResponse.mentions,
-                messagesUnreadCount: getUnreadCountResponse.privateMessages,
-                hasReachedInboxReplyEnd: getRepliesResponse.replies.isEmpty || getRepliesResponse.replies.length < limit,
-                hasReachedInboxMentionEnd: getPersonMentionsResponse.mentions.isEmpty || getPersonMentionsResponse.mentions.length < limit,
-                hasReachedInboxPrivateMessageEnd: privateMessagesResponse.privateMessages.isEmpty || privateMessagesResponse.privateMessages.length < limit,
-              ),
-            );
-          }
+      // Prevent fetching if we're already fetching
+      if (state.status == InboxStatus.refreshing) return;
+      emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
 
-          // Prevent duplicate requests if we're done fetching
-          if (state.hasReachedInboxReplyEnd && state.hasReachedInboxMentionEnd && state.hasReachedInboxPrivateMessageEnd) return;
-          emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
+      switch (event.inboxType) {
+        case InboxType.replies:
+          if (state.hasReachedInboxReplyEnd) return;
 
-          // Fetch all the things
-          PrivateMessagesResponse privateMessagesResponse = await lemmy.run(
-            GetPrivateMessages(
+          getRepliesResponse = await lemmy.run(
+            GetReplies(
               auth: account!.jwt!,
-              unreadOnly: !event.showAll,
+              unreadOnly: state.showUnreadOnly,
               limit: limit,
-              page: state.inboxPrivateMessagePage,
+              sort: event.commentSortType,
+              page: state.inboxReplyPage,
             ),
           );
+          break;
+        case InboxType.mentions:
+          if (state.hasReachedInboxMentionEnd) return;
 
-          GetPersonMentionsResponse getPersonMentionsResponse = await lemmy.run(
+          getPersonMentionsResponse = await lemmy.run(
             GetPersonMentions(
-              auth: account.jwt!,
-              unreadOnly: !event.showAll,
-              sort: CommentSortType.new_,
+              auth: account!.jwt!,
+              unreadOnly: state.showUnreadOnly,
+              sort: event.commentSortType,
               limit: limit,
               page: state.inboxMentionPage,
             ),
           );
-
-          GetRepliesResponse getRepliesResponse = await lemmy.run(
-            GetReplies(
-              auth: account.jwt!,
-              unreadOnly: !event.showAll,
+          break;
+        case InboxType.messages:
+          if (state.hasReachedInboxPrivateMessageEnd) return;
+          privateMessagesResponse = await lemmy.run(
+            GetPrivateMessages(
+              auth: account!.jwt!,
+              unreadOnly: state.showUnreadOnly,
               limit: limit,
-              sort: CommentSortType.new_,
-              page: state.inboxReplyPage,
+              page: state.inboxPrivateMessagePage,
             ),
           );
-
-          List<CommentReplyView> replies = List.from(state.replies)..addAll(getRepliesResponse.replies);
-          List<PersonMentionView> mentions = List.from(state.mentions)..addAll(getPersonMentionsResponse.mentions);
-          List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessagesResponse.privateMessages);
-
-          return emit(
-            state.copyWith(
-              status: InboxStatus.success,
-              privateMessages: cleanDeletedMessages(privateMessages),
-              mentions: cleanDeletedMentions(mentions),
-              replies: replies,
-              showUnreadOnly: state.showUnreadOnly,
-              inboxMentionPage: state.inboxMentionPage + 1,
-              inboxReplyPage: state.inboxReplyPage + 1,
-              inboxPrivateMessagePage: state.inboxPrivateMessagePage + 1,
-              hasReachedInboxReplyEnd: getRepliesResponse.replies.isEmpty || getRepliesResponse.replies.length < limit,
-              hasReachedInboxMentionEnd: getPersonMentionsResponse.mentions.isEmpty || getPersonMentionsResponse.mentions.length < limit,
-              hasReachedInboxPrivateMessageEnd: privateMessagesResponse.privateMessages.isEmpty || privateMessagesResponse.privateMessages.length < limit,
-            ),
-          );
-        } catch (e) {
-          exception = e;
-          attemptCount++;
-        }
+          break;
+        default:
+          break;
       }
 
-      emit(state.copyWith(
-        status: InboxStatus.failure,
-        errorMessage: exception.toString(),
-        totalUnreadCount: 0,
-        repliesUnreadCount: 0,
-        mentionsUnreadCount: 0,
-        messagesUnreadCount: 0,
-      ));
+      List<CommentReplyView> replies = List.from(state.replies)..addAll(getRepliesResponse?.replies ?? []);
+      List<PersonMentionView> mentions = List.from(state.mentions)..addAll(getPersonMentionsResponse?.mentions ?? []);
+      List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessagesResponse?.privateMessages ?? []);
+
+      return emit(
+        state.copyWith(
+          status: InboxStatus.success,
+          privateMessages: cleanDeletedMessages(privateMessages),
+          mentions: cleanDeletedMentions(mentions),
+          replies: replies,
+          showUnreadOnly: state.showUnreadOnly,
+          inboxMentionPage: state.inboxMentionPage + 1,
+          inboxReplyPage: state.inboxReplyPage + 1,
+          inboxPrivateMessagePage: state.inboxPrivateMessagePage + 1,
+          hasReachedInboxReplyEnd: getRepliesResponse?.replies.isEmpty == true || (getRepliesResponse?.replies.length ?? 0) < limit,
+          hasReachedInboxMentionEnd: getPersonMentionsResponse?.mentions.isEmpty == true || (getPersonMentionsResponse?.mentions.length ?? 0) < limit,
+          hasReachedInboxPrivateMessageEnd: privateMessagesResponse?.privateMessages.isEmpty == true || (privateMessagesResponse?.privateMessages.length ?? 0) < limit,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(
         status: InboxStatus.failure,
@@ -213,142 +240,228 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
   }
 
-  Future<void> _markReplyAsReadEvent(MarkReplyAsReadEvent event, emit) async {
-    try {
-      emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
+  /// Handles comment related actions on a given item within the inbox
+  Future<void> _inboxItemActionEvent(InboxItemActionEvent event, Emitter<InboxState> emit) async {
+    assert(!(event.commentReplyId == null && event.personMentionId == null));
+    emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
 
-      bool matchMarkedComment(CommentReplyView commentView) => commentView.commentReply.id == event.commentReplyId;
+    int existingIndex = -1;
 
-      // Optimistically remove the reply from the list
-      // or change the status (depending on whether we're showing all)
-      final CommentReplyView commentReplyView = state.replies.firstWhere(matchMarkedComment);
-      int index = state.replies.indexOf(commentReplyView);
-      if (event.showAll) {
-        state.replies[index] = commentReplyView.copyWith(commentReply: commentReplyView.commentReply.copyWith(read: event.read));
-      } else if (event.read) {
-        state.replies.remove(commentReplyView);
-      }
+    CommentReplyView? existingCommentReplyView;
+    PersonMentionView? existingPersonMentionView;
 
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+    if (event.commentReplyId != null) {
+      existingIndex = state.replies.indexWhere((element) => element.commentReply.id == event.commentReplyId);
+      existingCommentReplyView = state.replies[existingIndex];
+    } else if (event.personMentionId != null) {
+      existingIndex = state.mentions.indexWhere((element) => element.personMention.id == event.personMentionId);
+      existingPersonMentionView = state.mentions[existingIndex];
+    }
 
-      if (account?.jwt == null) {
-        return emit(state.copyWith(status: InboxStatus.success));
-      }
+    if (existingCommentReplyView == null && existingPersonMentionView == null) return emit(state.copyWith(status: InboxStatus.failure));
 
-      CommentReplyResponse response = await lemmy.run(MarkCommentReplyAsRead(
-        auth: account!.jwt!,
-        commentReplyId: event.commentReplyId,
-        read: event.read,
-      ));
+    /// Convert the reply or mention to a comment
+    CommentView? commentView;
 
-      if (response.commentReplyView.commentReply.read != event.read) {
-        return emit(
-          state.copyWith(
-            status: InboxStatus.failure,
-            errorMessage: event.read ? AppLocalizations.of(GlobalContext.context)!.errorMarkingReplyRead : AppLocalizations.of(GlobalContext.context)!.errorMarkingReplyUnread,
-          ),
-        );
-      }
-
-      GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(
-        GetUnreadCount(
-          auth: account.jwt!,
-        ),
+    if (existingCommentReplyView != null) {
+      commentView = CommentView(
+        comment: existingCommentReplyView.comment,
+        creator: existingCommentReplyView.creator,
+        post: existingCommentReplyView.post,
+        community: existingCommentReplyView.community,
+        counts: existingCommentReplyView.counts,
+        creatorBannedFromCommunity: existingCommentReplyView.creatorBannedFromCommunity,
+        subscribed: existingCommentReplyView.subscribed,
+        saved: existingCommentReplyView.saved,
+        creatorBlocked: existingCommentReplyView.creatorBlocked,
+        myVote: existingCommentReplyView.myVote as int?,
       );
-
-      int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
-
-      return emit(state.copyWith(
-        status: InboxStatus.success,
-        replies: state.replies,
-        totalUnreadCount: totalUnreadCount,
-        repliesUnreadCount: getUnreadCountResponse.replies,
-        mentionsUnreadCount: getUnreadCountResponse.mentions,
-        messagesUnreadCount: getUnreadCountResponse.privateMessages,
-        inboxReplyMarkedAsRead: event.commentReplyId,
-      ));
-    } catch (e) {
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+    } else if (existingPersonMentionView != null) {
+      commentView = CommentView(
+        comment: existingPersonMentionView.comment,
+        creator: existingPersonMentionView.creator,
+        post: existingPersonMentionView.post,
+        community: existingPersonMentionView.community,
+        counts: existingPersonMentionView.counts,
+        creatorBannedFromCommunity: existingPersonMentionView.creatorBannedFromCommunity,
+        subscribed: existingPersonMentionView.subscribed,
+        saved: existingPersonMentionView.saved,
+        creatorBlocked: existingPersonMentionView.creatorBlocked,
+        myVote: existingPersonMentionView.myVote,
+      );
     }
-  }
 
-  Future<void> _markMentionAsReadEvent(MarkMentionAsReadEvent event, emit) async {
-    try {
-      emit(state.copyWith(
-        status: InboxStatus.loading,
-        privateMessages: state.privateMessages,
-        mentions: state.mentions,
-        replies: state.replies,
-        errorMessage: '',
-      ));
+    switch (event.action) {
+      case CommentAction.read:
+        try {
+          // Optimistically remove the reply from the list or change the status (depending on whether we're showing all)
+          if (existingCommentReplyView != null) {
+            if (!state.showUnreadOnly) {
+              state.replies[existingIndex] = existingCommentReplyView.copyWith(commentReply: existingCommentReplyView.commentReply.copyWith(read: event.value));
+            } else if (event.value == true) {
+              state.replies.remove(existingCommentReplyView);
+            }
+          } else if (existingPersonMentionView != null) {
+            if (!state.showUnreadOnly) {
+              state.mentions[existingIndex] = existingPersonMentionView.copyWith(personMention: existingPersonMentionView.personMention.copyWith(read: event.value));
+            } else if (event.value == true) {
+              state.mentions.remove(existingPersonMentionView);
+            }
+          }
 
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+          Account? account = await fetchActiveProfileAccount();
+          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      if (account?.jwt == null) {
-        return emit(state.copyWith(status: InboxStatus.success));
-      }
+          if (account?.jwt == null) return emit(state.copyWith(status: InboxStatus.success));
 
-      await lemmy.run(MarkPersonMentionAsRead(
-        auth: account!.jwt!,
-        personMentionId: event.personMentionId,
-        read: event.read,
-      ));
+          if (existingCommentReplyView != null) {
+            await lemmy.run(MarkCommentReplyAsRead(
+              auth: account!.jwt!,
+              commentReplyId: event.commentReplyId!,
+              read: event.value,
+            ));
+          } else if (existingPersonMentionView != null) {
+            await lemmy.run(MarkPersonMentionAsRead(
+              auth: account!.jwt!,
+              personMentionId: event.personMentionId!,
+              read: event.value,
+            ));
+          }
 
-      add(GetInboxEvent(showAll: !state.showUnreadOnly));
-    } catch (e) {
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
-    }
-  }
+          GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(GetUnreadCount(auth: account!.jwt!));
+          int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
-  Future<void> _createCommentEvent(CreateInboxCommentReplyEvent event, Emitter<InboxState> emit) async {
-    try {
-      emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
+          return emit(state.copyWith(
+            status: InboxStatus.success,
+            totalUnreadCount: totalUnreadCount,
+            repliesUnreadCount: getUnreadCountResponse.replies,
+            mentionsUnreadCount: getUnreadCountResponse.mentions,
+            messagesUnreadCount: getUnreadCountResponse.privateMessages,
+            inboxReplyMarkedAsRead: event.commentReplyId,
+          ));
+        } catch (e) {
+          return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+        }
+      case CommentAction.vote:
+        try {
+          CommentView updatedCommentView = optimisticallyVoteComment(commentView!, event.value);
 
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+          if (existingCommentReplyView != null) {
+            state.replies[existingIndex] = existingCommentReplyView.copyWith(counts: updatedCommentView.counts, myVote: updatedCommentView.myVote);
+          } else if (existingPersonMentionView != null) {
+            state.mentions[existingIndex] = existingPersonMentionView.copyWith(counts: updatedCommentView.counts, myVote: updatedCommentView.myVote);
+          }
 
-      if (account?.jwt == null) {
-        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'You are not logged in. Cannot create a comment'));
-      }
+          // Immediately set the status, and continue
+          emit(state.copyWith(status: InboxStatus.success));
+          emit(state.copyWith(status: InboxStatus.refreshing));
 
-      await lemmy.run(CreateComment(
-        auth: account!.jwt!,
-        content: event.content,
-        postId: event.postId,
-        parentId: event.parentCommentId,
-      ));
+          await voteComment(commentView.comment.id, event.value).timeout(timeout, onTimeout: () {
+            // Restore the original comment if vote fails
+            if (existingCommentReplyView != null) {
+              state.replies[existingIndex] = existingCommentReplyView;
+            } else if (existingPersonMentionView != null) {
+              state.mentions[existingIndex] = existingPersonMentionView;
+            }
 
-      add(GetInboxEvent(showAll: !state.showUnreadOnly));
-      return emit(state.copyWith(status: InboxStatus.success));
-    } catch (e) {
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutUpvoteComment);
+          });
+
+          return emit(state.copyWith(status: InboxStatus.success));
+        } catch (e) {
+          return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+        }
+      case CommentAction.save:
+        try {
+          CommentView updatedCommentView = optimisticallySaveComment(commentView!, event.value);
+
+          if (existingCommentReplyView != null) {
+            state.replies[existingIndex] = existingCommentReplyView.copyWith(saved: updatedCommentView.saved);
+          } else if (existingPersonMentionView != null) {
+            state.mentions[existingIndex] = existingPersonMentionView.copyWith(saved: updatedCommentView.saved);
+          }
+
+          // Immediately set the status, and continue
+          emit(state.copyWith(status: InboxStatus.success));
+          emit(state.copyWith(status: InboxStatus.refreshing));
+
+          await saveComment(commentView.comment.id, event.value).timeout(timeout, onTimeout: () {
+            // Restore the original comment if saving fails
+            if (existingCommentReplyView != null) {
+              state.replies[existingIndex] = existingCommentReplyView;
+            } else if (existingPersonMentionView != null) {
+              state.mentions[existingIndex] = existingPersonMentionView;
+            }
+
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutSaveComment);
+          });
+
+          return emit(state.copyWith(status: InboxStatus.success));
+        } catch (e) {
+          return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+        }
+      case CommentAction.delete:
+        try {
+          CommentView updatedCommentView = optimisticallyDeleteComment(commentView!, event.value);
+
+          if (existingCommentReplyView != null) {
+            state.replies[existingIndex] = existingCommentReplyView.copyWith(comment: updatedCommentView.comment);
+          } else if (existingPersonMentionView != null) {
+            state.mentions[existingIndex] = existingPersonMentionView.copyWith(comment: updatedCommentView.comment);
+          }
+
+          // Immediately set the status, and continue
+          emit(state.copyWith(status: InboxStatus.success));
+          emit(state.copyWith(status: InboxStatus.refreshing));
+
+          await deleteComment(commentView.comment.id, event.value).timeout(timeout, onTimeout: () {
+            // Restore the original comment if deleting fails
+            if (existingCommentReplyView != null) {
+              state.replies[existingIndex] = existingCommentReplyView;
+            } else if (existingPersonMentionView != null) {
+              state.mentions[existingIndex] = existingPersonMentionView;
+            }
+
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutErrorMessage);
+          });
+
+          return emit(state.copyWith(status: InboxStatus.success));
+        } catch (e) {
+          return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+        }
+      default:
+        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.unexpectedError));
     }
   }
 
   Future<void> _markAllAsRead(MarkAllAsReadEvent event, emit) async {
     try {
-      emit(state.copyWith(
-        status: InboxStatus.refreshing,
-        errorMessage: '',
-      ));
+      emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
+
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      if (account?.jwt == null) {
-        return emit(state.copyWith(status: InboxStatus.success));
-      }
-      await lemmy.run(MarkAllAsRead(
-        auth: account!.jwt!,
-      ));
+      if (account?.jwt == null) return emit(state.copyWith(status: InboxStatus.success));
+      await lemmy.run(MarkAllAsRead(auth: account!.jwt!));
 
-      add(GetInboxEvent(reset: true, showAll: !state.showUnreadOnly));
-    } catch (e) {
-      emit(state.copyWith(
-        status: InboxStatus.failure,
-        errorMessage: e.toString(),
+      // Update all the replies, mentions, and messages to be read locally
+      List<CommentReplyView> updatedReplies = state.replies.map((commentReplyView) => commentReplyView.copyWith(commentReply: commentReplyView.commentReply.copyWith(read: true))).toList();
+      List<PersonMentionView> updatedMentions = state.mentions.map((personMentionView) => personMentionView.copyWith(personMention: personMentionView.personMention.copyWith(read: true))).toList();
+      List<PrivateMessageView> updatedPrivateMessages =
+          state.privateMessages.map((privateMessageView) => privateMessageView.copyWith(privateMessage: privateMessageView.privateMessage.copyWith(read: true))).toList();
+
+      return emit(state.copyWith(
+        status: InboxStatus.success,
+        replies: updatedReplies,
+        mentions: updatedMentions,
+        privateMessages: updatedPrivateMessages,
+        totalUnreadCount: 0,
+        repliesUnreadCount: 0,
+        mentionsUnreadCount: 0,
+        messagesUnreadCount: 0,
       ));
+    } catch (e) {
+      emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
 

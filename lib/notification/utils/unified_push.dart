@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
+import 'package:thunder/notification/utils/notification_utils.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:markdown/markdown.dart';
 
@@ -37,6 +38,10 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
     onNewEndpoint: (String endpoint, String instance) async {
       debugPrint("Connected to new UnifiedPush endpoint: $instance @ $endpoint");
 
+      // Save the endpoint to preferences so we can retrieve it later for troubleshooting
+      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      prefs.setString('unified_push_endpoint', endpoint);
+
       List<Account> accounts = await Account.accounts();
 
       // We should remove any previously sent tokens, and send them again
@@ -52,12 +57,20 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
     onRegistrationFailed: (String instance) async {
       debugPrint("UnifiedPush registration failed for $instance");
 
+      // Clear the endpoint from preferences
+      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      prefs.remove('unified_push_endpoint');
+
       // We should remove any previously sent tokens, and send them again
       bool removed = await deleteAccountFromNotificationServer();
       if (!removed) debugPrint("Failed to delete previous device token from server.");
     },
     onUnregistered: (String instance) async {
       debugPrint("UnifiedPush unregistered from $instance");
+
+      // Clear the endpoint from preferences
+      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      prefs.remove('unified_push_endpoint');
 
       // We should remove any previously sent tokens, and send them again
       bool removed = await deleteAccountFromNotificationServer();
@@ -70,38 +83,79 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+      final bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+      final bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
 
-      Map<String, dynamic> data = jsonDecode(utf8.decode(message));
+      final String decodedMessage = utf8.decode(message);
+
+      if (decodedMessage == "test") {
+        // This means we successfully got a test notification from UnifiedPush.
+        showTestAndroidNotification();
+      }
+
+      Map<String, dynamic> data = jsonDecode(decodedMessage);
 
       // Notification for replies
       if (data.containsKey('reply')) {
-        CommentReplyView commentReplyView = CommentReplyView.fromJson(data['reply']);
+        SlimCommentReplyView commentReplyView = SlimCommentReplyView.fromJson(data['reply']);
 
-        final String commentContent = cleanCommentContent(commentReplyView.comment);
-        final String htmlComment = markdownToHtml(commentContent);
+        final String commentContent = cleanComment(commentReplyView.commentContent, commentReplyView.commentRemoved, commentReplyView.commentDeleted);
+        final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-          '${commentReplyView.post.name} · ${generateCommunityFullName(null, commentReplyView.community.name, fetchInstanceNameFromUrl(commentReplyView.community.actorId), communitySeparator: communitySeparator)}\n$htmlComment',
-          contentTitle: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
-          summaryText: generateUserFullName(null, commentReplyView.recipient.name, fetchInstanceNameFromUrl(commentReplyView.recipient.actorId), userSeparator: userSeparator),
+          '${commentReplyView.postName} · ${generateCommunityFullName(
+            null,
+            commentReplyView.communityName,
+            commentReplyView.communityName, // TODO: Add Community Title to Server
+            fetchInstanceNameFromUrl(commentReplyView.communityActorId),
+            communitySeparator: communitySeparator,
+            useDisplayName: useDisplayNamesForCommunities,
+          )}\n$htmlComment',
+          contentTitle: generateUserFullName(
+            null,
+            commentReplyView.creatorName,
+            commentReplyView.creatorName, // TODO: Add Creator Display Name to Server
+            fetchInstanceNameFromUrl(commentReplyView.creatorActorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
+          summaryText: generateUserFullName(
+            null,
+            commentReplyView.recipientName,
+            commentReplyView.recipientName, // TODO: Add Recipient Display Name to Server
+            fetchInstanceNameFromUrl(commentReplyView.recipientActorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
           htmlFormatBigText: true,
         );
 
         List<Account> accounts = await Account.accounts();
-        Account account = accounts.firstWhere((Account account) => account.username == commentReplyView.recipient.name);
+        Account account = accounts.firstWhere((Account account) => account.actorId == commentReplyView.recipientActorId);
+
+        // Create a notification group for the account
+        showNotificationGroups(accounts: [account], inboxTypes: [NotificationInboxType.reply], type: NotificationType.unifiedPush);
 
         showAndroidNotification(
-          id: commentReplyView.commentReply.id,
+          id: commentReplyView.commentReplyId,
           account: account,
           bigTextStyleInformation: bigTextStyleInformation,
-          title: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
+          title: generateUserFullName(
+            null,
+            commentReplyView.creatorName,
+            commentReplyView.creatorName, // TODO: Add Creator Display Name to Server
+            fetchInstanceNameFromUrl(commentReplyView.creatorActorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
           content: plaintextComment,
           payload: jsonEncode(NotificationPayload(
             type: NotificationType.unifiedPush,
             accountId: account.id,
             inboxType: NotificationInboxType.reply,
             group: false,
+            id: commentReplyView.commentReplyId,
           ).toJson()),
           inboxType: NotificationInboxType.reply,
         );
@@ -112,30 +166,59 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         PersonMentionView personMentionView = PersonMentionView.fromJson(data['mention']);
 
         final String commentContent = cleanCommentContent(personMentionView.comment);
-        final String htmlComment = markdownToHtml(commentContent);
+        final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-          '${personMentionView.post.name} · ${generateCommunityFullName(null, personMentionView.community.name, fetchInstanceNameFromUrl(personMentionView.community.actorId), communitySeparator: communitySeparator)}\n$htmlComment',
-          contentTitle: generateUserFullName(null, personMentionView.creator.name, fetchInstanceNameFromUrl(personMentionView.creator.actorId), userSeparator: userSeparator),
-          summaryText: generateUserFullName(null, personMentionView.recipient.name, fetchInstanceNameFromUrl(personMentionView.recipient.actorId), userSeparator: userSeparator),
+          '${personMentionView.post.name} · ${generateCommunityFullName(
+            null,
+            personMentionView.community.name,
+            personMentionView.community.title,
+            fetchInstanceNameFromUrl(personMentionView.community.actorId),
+            communitySeparator: communitySeparator,
+            useDisplayName: useDisplayNamesForCommunities,
+          )}\n$htmlComment',
+          contentTitle: generateUserFullName(
+            null,
+            personMentionView.creator.name,
+            personMentionView.creator.displayName,
+            fetchInstanceNameFromUrl(personMentionView.creator.actorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
+          summaryText: generateUserFullName(
+            null,
+            personMentionView.recipient.name,
+            personMentionView.recipient.displayName,
+            fetchInstanceNameFromUrl(personMentionView.recipient.actorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
           htmlFormatBigText: true,
         );
 
         List<Account> accounts = await Account.accounts();
-        Account account = accounts.firstWhere((Account account) => account.username == personMentionView.recipient.name);
+        Account account = accounts.firstWhere((Account account) => account.actorId == personMentionView.recipient.actorId);
 
         showAndroidNotification(
           id: personMentionView.comment.id,
           account: account,
           bigTextStyleInformation: bigTextStyleInformation,
-          title: generateUserFullName(null, personMentionView.creator.name, fetchInstanceNameFromUrl(personMentionView.creator.actorId), userSeparator: userSeparator),
+          title: generateUserFullName(
+            null,
+            personMentionView.creator.name,
+            personMentionView.creator.displayName,
+            fetchInstanceNameFromUrl(personMentionView.creator.actorId),
+            userSeparator: userSeparator,
+            useDisplayName: useDisplayNamesForUsers,
+          ),
           content: plaintextComment,
           payload: jsonEncode(NotificationPayload(
             type: NotificationType.unifiedPush,
             accountId: account.id,
             inboxType: NotificationInboxType.mention,
             group: false,
+            id: personMentionView.comment.id,
           ).toJson()),
           inboxType: NotificationInboxType.mention,
         );

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'package:thunder/community/bloc/community_bloc_old.dart';
@@ -32,6 +33,7 @@ class PostCardList extends StatefulWidget {
   final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onToggleReadAction;
+  final Function(int, bool) onHideAction;
 
   const PostCardList({
     super.key,
@@ -47,6 +49,7 @@ class PostCardList extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onToggleReadAction,
+    required this.onHideAction,
     this.sortType,
     this.blockedCommunity,
     this.tagline = '',
@@ -91,6 +94,7 @@ class _PostCardListState extends State<PostCardList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
 
@@ -139,7 +143,7 @@ class _PostCardListState extends State<PostCardList> {
                       color: theme.dividerColor.withOpacity(0.1),
                       padding: const EdgeInsets.symmetric(vertical: 32.0),
                       child: ScalableText(
-                        'Hmmm. It seems like you\'ve reached the bottom.',
+                        l10n.reachedTheBottom,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.titleSmall,
                         fontScale: state.metadataFontSizeScale,
@@ -168,6 +172,7 @@ class _PostCardListState extends State<PostCardList> {
                 onVoteAction: (int voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                 onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                 onReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
+                onHideAction: (bool hide) => widget.onHideAction(postViewMedia.postView.post.id, hide),
                 onUpAction: (double verticalDragDistance) {},
                 onDownAction: () {},
                 listingType: widget.listingType,

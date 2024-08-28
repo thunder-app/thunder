@@ -8,33 +8,35 @@ abstract class InboxEvent extends Equatable {
 }
 
 class GetInboxEvent extends InboxEvent {
+  /// The inbox type to fetch from. If null, it will not fetch anything. If [reset] is true, it will only fetch the total unread counts
+  final InboxType? inboxType;
+
+  /// If true, it will fetch read and unread messages
   final bool showAll;
+
+  /// If true, it will reset the inbox and re-fetch everything depending on [inboxType]
   final bool reset;
 
-  const GetInboxEvent({this.showAll = false, this.reset = false});
+  /// The comment sort type to use for replies/mentions
+  final CommentSortType commentSortType;
+
+  const GetInboxEvent({this.inboxType, this.showAll = false, this.reset = false, this.commentSortType = CommentSortType.new_});
 }
 
-class MarkReplyAsReadEvent extends InboxEvent {
-  final int commentReplyId;
-  final bool read;
-  final bool showAll;
+class InboxItemActionEvent extends InboxEvent {
+  /// The action to perform on the inbox item. This is generally a comment.
+  final CommentAction action;
 
-  const MarkReplyAsReadEvent({required this.commentReplyId, required this.read, required this.showAll});
-}
+  /// The id of the comment reply. Only one of [commentReplyId] or [personMentionId] should be set
+  final int? commentReplyId;
 
-class MarkMentionAsReadEvent extends InboxEvent {
-  final int personMentionId;
-  final bool read;
+  /// The id of the person mention reply. Only one of [commentReplyId] or [personMentionId] should be set
+  final int? personMentionId;
 
-  const MarkMentionAsReadEvent({required this.personMentionId, required this.read});
-}
+  /// The value to pass to the action
+  final dynamic value;
 
-class CreateInboxCommentReplyEvent extends InboxEvent {
-  final String content;
-  final int postId;
-  final int parentCommentId;
-
-  const CreateInboxCommentReplyEvent({required this.content, required this.postId, required this.parentCommentId});
+  const InboxItemActionEvent({required this.action, this.commentReplyId, this.personMentionId, this.value});
 }
 
 class MarkAllAsReadEvent extends InboxEvent {}

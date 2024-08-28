@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:thunder/feed/feed.dart';
 
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
@@ -30,6 +32,7 @@ class _UserHeaderState extends State<UserHeader> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final FeedBloc feedBloc = context.watch<FeedBloc>();
 
     return Material(
       elevation: widget.showUserSidebar ? 5.0 : 0,
@@ -110,11 +113,14 @@ class _UserHeaderState extends State<UserHeader> {
                                 UserFullNameWidget(
                                   context,
                                   widget.getPersonDetailsResponse.personView.person.name,
+                                  widget.getPersonDetailsResponse.personView.person.displayName,
                                   fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId),
                                   autoSize: true,
+                                  // Override because we're showing display name above
+                                  useDisplayName: false,
                                 ),
                                 const SizedBox(height: 8.0),
-                                Row(
+                                Wrap(
                                   children: [
                                     IconText(
                                       icon: const Icon(Icons.wysiwyg_rounded),
@@ -125,6 +131,13 @@ class _UserHeaderState extends State<UserHeader> {
                                       icon: const Icon(Icons.chat_rounded),
                                       text: formatNumberToK(widget.getPersonDetailsResponse.personView.counts.commentCount),
                                     ),
+                                    if (feedBloc.state.feedType == FeedType.user) ...[
+                                      const SizedBox(width: 8.0),
+                                      IconText(
+                                        icon: Icon(getSortIcon(feedBloc.state)),
+                                        text: getSortName(feedBloc.state),
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ],

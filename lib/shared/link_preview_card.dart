@@ -267,7 +267,6 @@ class LinkPreviewCard extends StatelessWidget {
         feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
       } catch (e) {}
     }
-
     if (originURL != null) {
       handleLink(context, url: originURL!);
     }

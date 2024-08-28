@@ -233,7 +233,7 @@
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Su comentario no ha podido ser enviado en este momento. Vuelva a intentarlo más tarde",
   "@couldntCreateReport": {},
-  "countSubscribers": "{count} suscriptores",
+  "countSubscribers": "{count} Subscriptores",
   "@countSubscribers": {},
   "countUsers": "{count} usuarios",
   "@countUsers": {
@@ -465,7 +465,7 @@
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "Es posible que no esté conectado a Internet o que tu instancia no esté disponible actualmente.",
   "@internetOrInstanceIssues": {},
-  "keywordFilterDescription": "Filtra los mensajes que contienen palabras clave en el título o en el cuerpo",
+  "keywordFilterDescription": "Filtra los mensajes que contienen palabras clave en el título, cuerpo o URL",
   "@keywordFilterDescription": {
     "description": "Description of keyword filter settings"
   },
@@ -1453,7 +1453,7 @@
   "@unpinFromCommunity": {
     "description": "Setting for unpinning a post from a community (moderator action)"
   },
-  "lockPost": "Bloquear tema",
+  "lockPost": "Bloquear Publicación",
   "@lockPost": {
     "description": "Action for locking a post (moderator action)"
   },
@@ -1561,7 +1561,7 @@
   "@markPostAsReadOnScroll": {
     "description": "Toggle to mark posts as read as you scroll past them in the feed."
   },
-  "moderator": "Moderador",
+  "moderator": "{count, plural, zero {Moderator} one {Moderator} other {Moderators}}",
   "@moderator": {
     "description": "Role name for moderator"
   },
@@ -1605,7 +1605,7 @@
   "@modLockPost": {
     "description": "Description for modlog filter for actions that lock posts"
   },
-  "modBan": "Bloquear/Desbloquear moderadores de instancia",
+  "modBan": "Bloquear/Desbloquear usuarios de la instancia",
   "@modBan": {
     "description": "Description for modlog filter for actions that ban instance moderators"
   },
@@ -2298,5 +2298,341 @@
   "confirmUnsubscription": "¿Estás seguro de que quieres darte de baja?",
   "@confirmUnsubscription": {
     "description": "Ask the user to confirm that they want to unsubscribe"
+  },
+  "sentRequestForTestNotification": "Solicitud enviada para notificación de prueba.",
+  "@sentRequestForTestNotification": {},
+  "always": "Siempre",
+  "@always": {},
+  "never": "Nunca",
+  "@never": {},
+  "onWifi": "En Wifi",
+  "@onWifi": {},
+  "thisAccount": "Esta cuenta",
+  "@thisAccount": {
+    "description": "Referring to the currently active account in account settings"
+  },
+  "video": "Vídeo",
+  "@video": {
+    "description": "String for video "
+  },
+  "videoAutoFullscreen": "Pantalla completa automática",
+  "@videoAutoFullscreen": {
+    "decription": "Option to always start the video players in landscape"
+  },
+  "videoAutoLoop": "Vídeo en bucle",
+  "@videoAutoLoop": {
+    "description": "Option to always loop a video"
+  },
+  "videoAutoMute": "Silenciar vídeos",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
+  },
+  "videoAutoPlay": "Reproducción automática del vídeo",
+  "@videoAutoPlay": {
+    "description": "Option to always autoplay videos"
+  },
+  "accountSwitchParentCommentNotFound": "El comentario seleccionado no se encontró en '{instance}'. Volver a la cuenta anterior.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "accountSwitchPostNotFound": "La publicación seleccionada no se encontró en '{instance}'. Volver a la cuenta anterior.",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "selectAccountToCommentAs": "Seleccione cuenta para comentar como",
+  "@selectAccountToCommentAs": {
+    "description": "Profile modal heading for commenting as other user"
+  },
+  "videoDefaultPlaybackSpeed": "Velocidad de reproducción predeterminada",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback Speed"
+  },
+  "failedToLoadVideo": "No se pudo cargar el video. ¿Abrir enlace en el navegador?",
+  "@failedToLoadVideo": {
+    "description": "Error message that displays when we fail to load a video"
+  },
+  "viewingAll": "Mostrando todo",
+  "@viewingAll": {
+    "description": "Chip for viewing all possible search results"
+  },
+  "experimentalFeatures": "Funciones experimentales",
+  "@experimentalFeatures": {
+    "description": "Name of setting for experimental features"
+  },
+  "enableExperimentalFeatures": "Activar funciones experimentales",
+  "@enableExperimentalFeatures": {
+    "description": "Setting to enable experimental features"
+  },
+  "experimentalFeaturesDescription": "Estas funciones aún están en desarrollo y pueden ser inestables. Usélos bajo su propio riesgo. Debes reiniciar Thunder para que surta efecto.",
+  "@experimentalFeaturesDescription": {
+    "description": "Description for experimental features setting"
+  },
+  "createdToday": "Creada hoy",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
+  "accountBirthday": "Cuenta creada el {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "xYearsOld": "{count, plural, zero {{x} año} one {{x} años} other {{x} años}}",
+  "@xYearsOld": {
+    "description": "An account descriptor representing how old an account is"
+  },
+  "shareImage": "Compartir imagen",
+  "@shareImage": {
+    "description": "Action for sharing an image"
+  },
+  "shareMediaLink": "Compartir enlace multimedia",
+  "@shareMediaLink": {
+    "description": "Action for sharing the link to the media associated with a post"
+  },
+  "shareThumbnail": "Compartir miniatura",
+  "@shareThumbnail": {
+    "description": "Action for sharing the thumbnail of a post"
+  },
+  "viewPostAsDifferentAccount": "Ver publicación como una cuenta diferente",
+  "@viewPostAsDifferentAccount": {
+    "description": "Action for viewing a post as a different account"
+  },
+  "shareOriginalLink": "Compartir enlace original",
+  "@shareOriginalLink": {
+    "description": "Action for sharing the original link associated with a post"
+  },
+  "shareThumbnailAsImage": "Compartir miniatura como imagen",
+  "@shareThumbnailAsImage": {
+    "description": "Action for sharing the thumbnail of a post as an image"
+  },
+  "offline": "sin conexión",
+  "@offline": {
+    "description": "Describes a service that is unavailable"
+  },
+  "thunderNotificationServer": "Servidor de notificaciones de Thunder: {server}",
+  "@thunderNotificationServer": {
+    "description": "Text for the user to know what the currently selected notification server is"
+  },
+  "unifiedPushServer": "Servidor UnifiedPush: {server}",
+  "@unifiedPushServer": {
+    "description": "Debug text that tells the user what UnifiedPush server is being used"
+  },
+  "changePassword": "Cambiar Contraseña",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "contentManagement": "Gestión de Contenido",
+  "@contentManagement": {
+    "description": "Setting for content management (languages/blocking)"
+  },
+  "countComments": "{count} Comentarios",
+  "@countComments": {
+    "description": "Number of comments"
+  },
+  "countPosts": "{count} Publicaciones",
+  "@countPosts": {
+    "description": "Number of posts"
+  },
+  "countUsersActiveMonth": "{count} usuarios/mes",
+  "@countUsersActiveMonth": {
+    "description": "Number of users active in the last month"
+  },
+  "countUsersActiveWeek": "{count} usuarios/semana",
+  "@countUsersActiveWeek": {
+    "description": "Number of users active in the last week"
+  },
+  "created": "Creado {date}",
+  "@created": {
+    "description": "The date that something was created"
+  },
+  "noMatrixUserSet": "Usuario Matrix no establecido",
+  "@noMatrixUserSet": {
+    "description": "Message for no matrix user set"
+  },
+  "importDatabase": "Importar Base de Datos",
+  "@importDatabase": {
+    "description": "Name of setting for importing the db"
+  },
+  "label": "Etiqueta",
+  "@label": {
+    "description": "Text field label for a user label"
+  },
+  "blockSettingLabel": "Bloqueo Usuario/Comunidad/Instancia",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "profileBio": "Biografía de Perfil",
+  "@profileBio": {
+    "description": "Setting for profile bio"
+  },
+  "settingOverrideLabel": "Estas configuraciones sobrescriben las configuraciones por defecto de Thunder.",
+  "@settingOverrideLabel": {
+    "description": "Message which indicates that the (instance) settings override the app settings"
+  },
+  "settingsImportedSuccessfully": "¡Las configuraciones fueron importadas exitosamente!",
+  "@settingsImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported successfully"
+  },
+  "blockManagement": "Bloquear Gestión",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "ago": "Hace {time}",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "countLocalSubscribers": "{count} Subscriptores Locales",
+  "@countLocalSubscribers": {
+    "description": "Number of local subscribers"
+  },
+  "changePasswordWarning": "Para cambiar tu contraseña, será redirigido al sitio de tu instancia. \n\n¿Está seguro de que deseas continuar?",
+  "@changePasswordWarning": {
+    "description": "Warning label for changing password"
+  },
+  "countUsersActiveDay": "{count} usuarios/dia",
+  "@countUsersActiveDay": {
+    "description": "Number of users active in the last day"
+  },
+  "countUsersActiveHalfYear": "{count} usuarios/6 meses",
+  "@countUsersActiveHalfYear": {
+    "description": "Number of users active in the last half year"
+  },
+  "importExportDatabase": "Importar/Exportar Base de Datos",
+  "@importExportDatabase": {
+    "description": "Overall name of setting for importing or exporting the db (for searching)"
+  },
+  "instances": "Instancias",
+  "@instances": {
+    "description": "Title for settings related to instances"
+  },
+  "localOnly": "Solo Local",
+  "@localOnly": {
+    "description": "Local community visibility"
+  },
+  "settingsExportedSuccessfully": "Las configuraciones fueron guardadas exitosamente en '{savedFilePath}'",
+  "@settingsExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported successfully"
+  },
+  "public": "Público",
+  "@public": {
+    "description": "Public community visibility"
+  },
+  "noProfileBioSet": "Biografía de perfíl no establecida",
+  "@noProfileBioSet": {
+    "description": "Message for no profile bio set"
+  },
+  "noDisplayNameSet": "Nombre para mostrar no establecido",
+  "@noDisplayNameSet": {
+    "description": "Message for no display name set"
+  },
+  "noEmailSet": "Correo electrónico no establecido",
+  "@noEmailSet": {
+    "description": "Message for no email set"
+  },
+  "settingsNotExportedSuccessfully": "Las configuraciones no fueron guardadas exitosamente, o la operación fue cancelada.",
+  "@settingsNotExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported unsuccessfully"
+  },
+  "databaseExportedSuccessfully": "La base de datos fue exportada exitosamente a '{savedFilePath}'",
+  "@databaseExportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully exported"
+  },
+  "databaseImportedSuccessfully": "¡La base de datos fue importada exitosamente!",
+  "@databaseImportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully imported"
+  },
+  "settingsNotImportedSuccessfully": "Las configuraciones no fueron importadas exitosamente o la operación fue cancelada.",
+  "@settingsNotImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported unsuccessfully"
+  },
+  "showNsfwContent": "Mostrar Contenido NSFW",
+  "@showNsfwContent": {
+    "description": "Toggle to show NSFW content."
+  },
+  "stats": "Stats",
+  "@stats": {
+    "description": "Community statistics"
+  },
+  "unblockCommunity": "Desbloquear Cominudad",
+  "@unblockCommunity": {
+    "description": "Action to unblock a community"
+  },
+  "visibility": "Visibilidad: {visibility}",
+  "@visibility": {
+    "description": "Visibility heading for community"
+  },
+  "accountSettingOverrideWarning": "Su configuración de cuenta sobreescribe las siguientes configuraciones",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "addUserLabel": "Agregar Etiqueta de Usuario",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
+  "databaseExportWarning": "La base de datos puede contener información sensible relacionada con su cuenta de Lemmy. Si es exportada, no debería compartirla con nadie. ¿Desea continuar?",
+  "@databaseExportWarning": {
+    "description": "Message shown to the user when exporting the db"
+  },
+  "userLabelHint": "Este es mi usuario favorito",
+  "@userLabelHint": {
+    "description": "Hint text for adding a new user label"
+  },
+  "databaseNotExportedSuccessfully": "La base de datos no fue exportada exitosamente o la operación fue cancelada.",
+  "@databaseNotExportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully exported"
+  },
+  "email": "Correo Electrónico",
+  "@email": {
+    "description": "Label for email input"
+  },
+  "exportSettingsSubtitle": "Las configuraciones incluyen todas las preferencias que ha configurado en Thunder.",
+  "@exportSettingsSubtitle": {
+    "description": "Subtitle of setting for exporting settings"
+  },
+  "guestModeFeedSettings": "Configuración de Feed Modo Invitado",
+  "@guestModeFeedSettings": {
+    "description": "Feed settings for guest accounts"
+  },
+  "hostInstance": "Instancia de Host",
+  "@hostInstance": {
+    "description": "The instance hosting a community"
+  },
+  "imageDimensionTimeout": "Tiempo de Espera de Dimensión de Imagen",
+  "@imageDimensionTimeout": {
+    "description": "Setting for how long to wait for the image dimensions to be fetched"
+  },
+  "matrixUser": "Usuario de Matrix",
+  "@matrixUser": {
+    "description": "Label for Matrix user id"
+  },
+  "databaseNotImportedSuccessfully": "La base de datos no fue importada exitosamente o la operación fue cancelada.",
+  "@databaseNotImportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully imported"
+  },
+  "exportDatabaseSubtitle": "La base de datos contiene información acerca de cuentas, favoritos, subscripciones anónimas y etiquetas de usuario.",
+  "@exportDatabaseSubtitle": {
+    "description": "Subtitle of setting for exporting the db"
+  },
+  "displayName": "Nombre para mostrar",
+  "@displayName": {
+    "description": "Label for display name"
+  },
+  "guestModeFeedSettingsLabel": "Las siguientes configuraciones aplican solo para cuentas de invitado. Para ajustar las configuraciones del feed de su cuenta, vaya a Configuración de Cuenta.",
+  "@guestModeFeedSettingsLabel": {
+    "description": "Description for guest mode feed settings"
+  },
+  "exportDatabase": "Exportar Base de Datos",
+  "@exportDatabase": {
+    "description": "Name of the setting for exporting the db"
+  },
+  "showCommunityDisplayNames": "Mostrar nombres para mostrar de la comunidad",
+  "@showCommunityDisplayNames": {
+    "description": "Setting for showing community display names"
+  },
+  "noMessages": "Sin mensajes",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
+  "noMentions": "Sin menciones",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
   }
 }

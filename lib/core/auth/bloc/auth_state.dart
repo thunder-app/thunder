@@ -1,6 +1,6 @@
 part of 'auth_bloc.dart';
 
-enum AuthStatus { initial, loading, success, failure, failureCheckingInstance }
+enum AuthStatus { initial, loading, success, failure, failureCheckingInstance, contentWarning }
 
 class AuthState extends Equatable {
   const AuthState({
@@ -11,6 +11,7 @@ class AuthState extends Equatable {
     this.downvotesEnabled = true,
     this.getSiteResponse,
     this.reload = true,
+    this.contentWarning,
   });
 
   final AuthStatus status;
@@ -20,6 +21,7 @@ class AuthState extends Equatable {
   final bool downvotesEnabled;
   final GetSiteResponse? getSiteResponse;
   final bool reload;
+  final String? contentWarning;
 
   AuthState copyWith({
     AuthStatus? status,
@@ -29,6 +31,7 @@ class AuthState extends Equatable {
     bool? downvotesEnabled,
     GetSiteResponse? getSiteResponse,
     bool? reload,
+    String? contentWarning,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -38,6 +41,7 @@ class AuthState extends Equatable {
       downvotesEnabled: downvotesEnabled ?? this.downvotesEnabled,
       getSiteResponse: getSiteResponse ?? this.getSiteResponse,
       reload: reload ?? this.reload,
+      contentWarning: contentWarning,
     );
   }
 

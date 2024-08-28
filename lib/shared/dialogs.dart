@@ -19,6 +19,8 @@ Future<T?> showThunderDialog<T>({
   // with any other widget of their choosing (e.g., Bloc-related things).
   Widget Function(Widget alertDialog)? customBuilder,
   bool? primaryButtonInitialEnabled,
+  String? tertiaryButtonText,
+  void Function(BuildContext dialogContext)? onTertiaryButtonPressed,
 }) {
   // Assert that we have text or widget, but not both
   assert((contentText != null || contentWidgetBuilder != null) && !(contentText != null && contentWidgetBuilder != null));
@@ -40,21 +42,35 @@ Future<T?> showThunderDialog<T>({
                 ),
         ),
         actions: [
-          if (secondaryButtonText != null)
-            TextButton(
-              onPressed: onSecondaryButtonPressed == null ? null : () => onSecondaryButtonPressed(context),
-              child: Text(secondaryButtonText),
-            ),
-          if (primaryButtonText != null)
-            FilledButton(
-              onPressed: !primaryButtonEnabled || onPrimaryButtonPressed == null
-                  ? null
-                  : () => onPrimaryButtonPressed(
-                        context,
-                        (enabled) => setState(() => primaryButtonEnabled = enabled),
-                      ),
-              child: Text(primaryButtonText),
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              if (tertiaryButtonText != null) ...[
+                TextButton(
+                  onPressed: onTertiaryButtonPressed == null ? null : () => onTertiaryButtonPressed(context),
+                  child: Text(tertiaryButtonText),
+                ),
+              ],
+              const Spacer(),
+              if (secondaryButtonText != null) ...[
+                TextButton(
+                  onPressed: onSecondaryButtonPressed == null ? null : () => onSecondaryButtonPressed(context),
+                  child: Text(secondaryButtonText),
+                ),
+                const SizedBox(width: 5),
+              ],
+              if (primaryButtonText != null)
+                FilledButton(
+                  onPressed: !primaryButtonEnabled || onPrimaryButtonPressed == null
+                      ? null
+                      : () => onPrimaryButtonPressed(
+                            context,
+                            (enabled) => setState(() => primaryButtonEnabled = enabled),
+                          ),
+                  child: Text(primaryButtonText),
+                ),
+            ],
+          ),
         ],
       ),
     );

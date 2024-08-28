@@ -16,6 +16,7 @@ class PostState extends Equatable {
     this.postId,
     this.postView,
     this.comments = const [],
+    this.commentNodes,
     this.commentResponseMap = const <int, CommentView>{},
     this.commentPage = 1,
     this.commentCount = 0,
@@ -51,6 +52,7 @@ class PostState extends Equatable {
 
   // Comment related data
   final List<CommentViewTree> comments;
+  final CommentNode? commentNodes;
   final Map<int, CommentView> commentResponseMap;
   final int commentPage;
   final int commentCount;
@@ -77,6 +79,7 @@ class PostState extends Equatable {
     int? postId,
     PostViewMedia? postView,
     List<CommentViewTree>? comments,
+    CommentNode? commentNodes,
     Map<int, CommentView>? commentResponseMap,
     int? commentPage,
     int? commentCount,
@@ -101,6 +104,7 @@ class PostState extends Equatable {
       postId: postId ?? this.postId,
       postView: postView ?? this.postView,
       comments: comments ?? this.comments,
+      commentNodes: commentNodes ?? this.commentNodes,
       commentResponseMap: commentResponseMap ?? this.commentResponseMap,
       commentPage: commentPage ?? this.commentPage,
       commentCount: commentCount ?? this.commentCount,
@@ -128,6 +132,7 @@ class PostState extends Equatable {
         postId,
         postView,
         comments,
+        commentNodes,
         commentPage,
         commentCount,
         communityId,

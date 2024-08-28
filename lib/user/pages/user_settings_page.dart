@@ -1,35 +1,39 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "dart:async";
 
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/models/account.dart';
-import 'package:thunder/account/widgets/account_placeholder.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/feed/feed.dart';
-import 'package:thunder/settings/widgets/discussion_language_selector.dart';
-import 'package:thunder/settings/widgets/settings_list_tile.dart';
-import 'package:thunder/settings/widgets/toggle_option.dart';
-import 'package:thunder/shared/avatars/community_avatar.dart';
-import 'package:thunder/shared/dialogs.dart';
-import 'package:thunder/shared/full_name_widgets.dart';
-import 'package:thunder/shared/input_dialogs.dart';
-import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/shared/avatars/user_avatar.dart';
-import 'package:thunder/thunder/thunder_icons.dart';
-import 'package:thunder/user/bloc/user_settings_bloc.dart';
-import 'package:thunder/user/utils/restore_user.dart';
-import 'package:thunder/user/widgets/user_selector.dart';
-import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/links.dart';
-import 'package:thunder/instance/utils/navigate_instance.dart';
+import "package:flutter/material.dart";
 
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:html/parser.dart";
+import "package:lemmy_api_client/v3.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:swipeable_page_route/swipeable_page_route.dart";
+import 'package:markdown/markdown.dart' hide Text;
+
+import "package:thunder/account/bloc/account_bloc.dart";
+import "package:thunder/account/widgets/account_placeholder.dart";
+import "package:thunder/core/auth/bloc/auth_bloc.dart";
+import "package:thunder/core/enums/local_settings.dart";
+import "package:thunder/core/singletons/lemmy_client.dart";
+import "package:thunder/settings/widgets/discussion_language_selector.dart";
+import "package:thunder/settings/widgets/list_option.dart";
+import "package:thunder/settings/widgets/settings_list_tile.dart";
+import "package:thunder/settings/widgets/toggle_option.dart";
+import "package:thunder/shared/dialogs.dart";
+import "package:thunder/shared/snackbar.dart";
+import "package:thunder/shared/sort_picker.dart";
+import "package:thunder/thunder/bloc/thunder_bloc.dart";
+import "package:thunder/thunder/thunder_icons.dart";
+import "package:thunder/user/bloc/user_settings_bloc.dart";
+import "package:thunder/user/pages/user_settings_block_page.dart";
+import "package:thunder/user/widgets/user_indicator.dart";
+import "package:thunder/utils/bottom_sheet_list_picker.dart";
+import "package:thunder/utils/links.dart";
+import "package:thunder/account/utils/profiles.dart";
+import "package:version/version.dart";
+
+/// A widget that displays the user's account settings. These settings are synchronized with the instance and should be preferred over the app settings.
 class UserSettingsPage extends StatefulWidget {
+  /// The setting to be highlighted when searching
   final LocalSettings? settingToHighlight;
 
   const UserSettingsPage({super.key, this.settingToHighlight});
@@ -39,486 +43,480 @@ class UserSettingsPage extends StatefulWidget {
 }
 
 class _UserSettingsPageState extends State<UserSettingsPage> {
-  Account? originalUser;
+  /// Text controller for the user's display name
+  TextEditingController displayNameTextController = TextEditingController();
+
+  /// Text controller for the profile bio
+  TextEditingController bioTextController = TextEditingController();
+
+  /// Text controller for the user's email
+  TextEditingController emailTextController = TextEditingController();
+
+  /// Text controller for the user's matrix id
+  TextEditingController matrixUserTextController = TextEditingController();
+
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+
+    if (widget.settingToHighlight != null) {
+      setState(() => settingToHighlight = widget.settingToHighlight);
+
+      // Need some delay to finish building, even though we're in a post-frame callback.
+      Timer(const Duration(milliseconds: 500), () {
+        if (settingToHighlightKey.currentContext != null) {
+          // Ensure that the selected setting is visible on the screen
+          Scrollable.ensureVisible(
+            settingToHighlightKey.currentContext!,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+          );
+        }
+
+        // Give time for the highlighting to appear, then turn it off
+        Timer(const Duration(seconds: 1), () {
+          setState(() => settingToHighlight = null);
+        });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    AuthState state = context.read<AuthBloc>().state;
-    originalUser ??= state.account;
 
-    return PopScope(
-      onPopInvoked: (_) {
-        if (context.mounted) {
-          restoreUser(context, originalUser);
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 70.0,
-          centerTitle: false,
-          title: AutoSizeText(l10n.accountSettings),
-          scrolledUnderElevation: 0.0,
-        ),
-        body: BlocProvider(
-          create: (context) => UserSettingsBloc()..add(const GetUserSettingsEvent()),
-          child: BlocListener<AccountBloc, AccountState>(
+    return Scaffold(
+      body: SafeArea(
+        top: false,
+        child: BlocListener<AccountBloc, AccountState>(
+          listener: (context, state) {
+            if (!context.mounted) return;
+            context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
+            context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+          },
+          child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
             listener: (context, state) {
-              context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
-              context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+              if (state.status == UserSettingsStatus.failure) {
+                showSnackbar(state.errorMessage ?? l10n.unexpectedError);
+              }
+
+              if (state.status == UserSettingsStatus.success) {
+                context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
+              }
             },
-            child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
-              listener: (context, state) {
-                if (state.status == UserSettingsStatus.success) {
-                  context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
-                }
+            builder: (context, state) {
+              GetSiteResponse? getSiteResponse = state.getSiteResponse;
 
-                if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) &&
-                    (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                  showSnackbar(state.status == UserSettingsStatus.failure
-                      ? l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage)
-                      : l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
-                } else if (state.status == UserSettingsStatus.failure) {
-                  showSnackbar(l10n.failedToLoadBlocks(state.errorMessage ?? l10n.missingErrorMessage));
-                }
+              MyUserInfo? myUserInfo = getSiteResponse?.myUser;
+              LocalUser? localUser = myUserInfo?.localUserView.localUser;
+              Person? person = myUserInfo?.localUserView.person;
 
-                if (state.status == UserSettingsStatus.successBlock && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                  showSnackbar(
-                    l10n.successfullyUnblocked,
-                    trailingIcon: Icons.undo_rounded,
-                    trailingAction: () {
-                      if (state.personBeingBlocked != 0) {
-                        context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBeingBlocked, unblock: false));
-                      } else if (state.communityBeingBlocked != 0) {
-                        context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: state.communityBeingBlocked, unblock: false));
-                      } else if (state.instanceBeingBlocked != 0) {
-                        context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: state.instanceBeingBlocked, unblock: false));
-                      }
-                    },
-                  );
-                }
-
-                if (state.status == UserSettingsStatus.revert && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
-                  showSnackbar(l10n.successfullyBlocked);
-                }
-              },
-              builder: (context, state) {
-                if (state.status == UserSettingsStatus.initial) {
-                  context.read<UserSettingsBloc>().add(const GetUserBlocksEvent());
-                }
-
-                if (state.status == UserSettingsStatus.notLoggedIn) {
-                  return const AccountPlaceholder();
-                }
-
-                GetSiteResponse? getSiteResponse = state.getSiteResponse;
-                MyUserInfo? myUserInfo = getSiteResponse?.myUser;
-
-                LocalUser? localUser = myUserInfo?.localUserView.localUser;
-                bool showReadPosts = localUser?.showReadPosts ?? true;
-                bool showBotAccounts = localUser?.showBotAccounts ?? true;
-                bool showScores = localUser?.showScores ?? true;
-
-                if (state.getSiteResponse == null || myUserInfo == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
-                        child: UserSelector(
-                          profileModalHeading: l10n.changeAccountSettingsFor,
-                        ),
+              return CustomScrollView(
+                physics: state.status == UserSettingsStatus.notLoggedIn ? const NeverScrollableScrollPhysics() : null,
+                slivers: [
+                  SliverAppBar(
+                    pinned: true,
+                    floating: true,
+                    centerTitle: false,
+                    toolbarHeight: 70.0,
+                    title: Text(l10n.accountSettings),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.people_alt_rounded),
+                        onPressed: () => showProfileModalSheet(context),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
-                        child: Text(
-                          l10n.userSettingDescription,
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: theme.colorScheme.onBackground.withOpacity(0.75),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Text(l10n.general, style: theme.textTheme.titleMedium),
-                      ),
-                      ToggleOption(
-                        description: l10n.showReadPosts,
-                        value: showReadPosts,
-                        iconEnabled: Icons.fact_check_rounded,
-                        iconDisabled: Icons.fact_check_outlined,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
-                      ),
-                      ToggleOption(
-                        description: l10n.showScores,
-                        value: showScores,
-                        iconEnabled: Icons.onetwothree_rounded,
-                        iconDisabled: Icons.onetwothree_rounded,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
-                      ),
-                      ToggleOption(
-                        description: l10n.showBotAccounts,
-                        value: showBotAccounts,
-                        iconEnabled: Thunder.robot,
-                        iconEnabledSize: 18.0,
-                        iconDisabled: Thunder.robot,
-                        iconDisabledSize: 18.0,
-                        iconSpacing: 14.0,
-                        onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
-                      ),
-                      DiscussionLanguageSelector(
-                        initialDiscussionLanguages: DiscussionLanguageSelector.getDiscussionLanguagesFromSiteResponse(state.getSiteResponse),
-                        settingToHighlight: widget.settingToHighlight,
-                      ),
-                      if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(l10n.blockedInstances, style: theme.textTheme.titleMedium),
-                              IconButton(
-                                visualDensity: VisualDensity.compact,
-                                icon: Icon(
-                                  Icons.add_rounded,
-                                  semanticLabel: l10n.add,
-                                ),
-                                onPressed: () => showInstanceInputDialog(
-                                  context,
-                                  title: l10n.blockInstance,
-                                  onInstanceSelected: (instance) {
-                                    context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id, unblock: false));
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        UserSettingBlockList(
-                          status: state.status,
-                          emptyText: l10n.noInstanceBlocks,
-                          items: getInstanceBlocks(context, state, state.instanceBlocks),
-                        ),
-                      ],
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(l10n.blockedUsers, style: theme.textTheme.titleMedium),
-                            IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: Icon(
-                                Icons.add_rounded,
-                                semanticLabel: l10n.add,
-                              ),
-                              onPressed: () => showUserInputDialog(
-                                context,
-                                title: l10n.blockUser,
-                                onUserSelected: (personViewSafe) {
-                                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personViewSafe.person.id, unblock: false));
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      UserSettingBlockList(
-                        status: state.status,
-                        emptyText: l10n.noUserBlocks,
-                        items: getPersonBlocks(context, state, state.personBlocks),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(l10n.blockedCommunities, style: theme.textTheme.titleMedium),
-                            IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: Icon(
-                                Icons.add_rounded,
-                                semanticLabel: l10n.add,
-                              ),
-                              onPressed: () => showCommunityInputDialog(
-                                context,
-                                title: l10n.blockCommunity,
-                                onCommunitySelected: (communityView) {
-                                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      UserSettingBlockList(
-                        status: state.status,
-                        emptyText: l10n.noCommunityBlocks,
-                        items: getCommunityBlocks(context, state, state.communityBlocks),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
-                      ),
-                      SettingsListTile(
-                        icon: Icons.delete_forever_rounded,
-                        description: l10n.deleteAccount,
-                        widget: const SizedBox(
-                          height: 42.0,
-                          child: Icon(Icons.chevron_right_rounded),
-                        ),
-                        onTap: () async {
-                          showThunderDialog<void>(
-                            context: context,
-                            title: l10n.deleteAccount,
-                            contentText: l10n.deleteAccountDescription,
-                            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                            secondaryButtonText: l10n.cancel,
-                            onPrimaryButtonPressed: (dialogContext, _) async {
-                              if (context.mounted) {
-                                Navigator.of(context).pop();
-                                handleLink(context, url: 'https://${LemmyClient.instance.lemmyApiV3.host}/settings');
-                              }
-                            },
-                            primaryButtonText: l10n.confirm,
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 100.0),
                     ],
                   ),
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<Widget> getInstanceBlocks(BuildContext context, UserSettingsState state, List<Instance> instances) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-
-    return instances.map((instance) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
-        child: Tooltip(
-          message: instance.domain,
-          preferBelow: false,
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(50),
-              onTap: () {
-                navigateToInstancePage(context, instanceHost: instance.domain, instanceId: instance.id);
-              },
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: theme.colorScheme.secondaryContainer,
-                  maxRadius: 16.0,
-                  child: Text(
-                    instance.domain[0].toUpperCase(),
-                    semanticsLabel: '',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
-                visualDensity: const VisualDensity(vertical: -2),
-                title: Text(
-                  instance.domain,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
-                trailing: state.status == UserSettingsStatus.blocking && state.instanceBeingBlocked == instance.id
-                    ? const Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: SizedBox(
-                          width: 25,
-                          height: 25,
-                          child: CircularProgressIndicator(),
+                  switch (state.status) {
+                    UserSettingsStatus.notLoggedIn => const SliverFillRemaining(hasScrollBody: false, child: AccountPlaceholder()),
+                    UserSettingsStatus.initial => const SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: SizedBox(
+                            width: 64.0,
+                            height: 64.0,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ),
+                    _ => SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const UserIndicator(),
+                                  IconButton(
+                                    icon: const Icon(Icons.logout_rounded),
+                                    onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                              child: Text(
+                                l10n.userSettingDescription,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.general, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                              icon: Icons.person_rounded,
+                              description: l10n.displayName,
+                              subtitle: person?.displayName?.isNotEmpty == true ? person?.displayName : l10n.noDisplayNameSet,
+                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              onTap: () {
+                                displayNameTextController.text = person?.displayName ?? "";
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.displayName,
+                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                    controller: displayNameTextController,
+                                    decoration: InputDecoration(hintText: l10n.displayName),
+                                  ),
+                                  primaryButtonText: l10n.save,
+                                  onPrimaryButtonPressed: (dialogContext, _) {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(displayName: displayNameTextController.text));
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDisplayName,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.note_rounded,
+                              description: l10n.profileBio,
+                              subtitle: person?.bio?.isNotEmpty == true ? parse(markdownToHtml(person?.bio ?? "")).documentElement?.text.trim() : l10n.noProfileBioSet,
+                              subtitleMaxLines: 1,
+                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              onTap: () {
+                                bioTextController.text = person?.bio ?? "";
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.profileBio,
+                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                    controller: bioTextController,
+                                    minLines: 8,
+                                    maxLines: 8,
+                                    keyboardType: TextInputType.multiline,
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(),
+                                      hintText: l10n.profileBio,
+                                    ),
+                                  ),
+                                  primaryButtonText: l10n.save,
+                                  onPrimaryButtonPressed: (dialogContext, _) {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(bio: bioTextController.text));
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountProfileBio,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.email_rounded,
+                              description: l10n.email,
+                              subtitle: localUser?.email?.isNotEmpty == true ? localUser?.email : l10n.noEmailSet,
+                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              onTap: () {
+                                emailTextController.text = localUser?.email ?? "";
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.email,
+                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                    controller: emailTextController,
+                                    decoration: InputDecoration(hintText: l10n.email),
+                                    keyboardType: TextInputType.emailAddress,
+                                  ),
+                                  primaryButtonText: l10n.save,
+                                  onPrimaryButtonPressed: (dialogContext, _) {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(email: emailTextController.text));
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountEmail,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.person_rounded,
+                              description: l10n.matrixUser,
+                              subtitle: person?.matrixUserId?.isNotEmpty == true ? person?.matrixUserId : l10n.noMatrixUserSet,
+                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              onTap: () {
+                                matrixUserTextController.text = person?.matrixUserId ?? "";
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.matrixUser,
+                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                    controller: matrixUserTextController,
+                                    decoration: const InputDecoration(hintText: "@user:instance"),
+                                  ),
+                                  primaryButtonText: l10n.save,
+                                  onPrimaryButtonPressed: (dialogContext, _) {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(matrixUserId: matrixUserTextController.text));
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountMatrixUser,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                              child: Text(
+                                l10n.settingOverrideLabel,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                ),
+                              ),
+                            ),
+                            ListOption(
+                              description: l10n.defaultFeedType,
+                              value: ListPickerItem(label: localUser!.defaultListingType.value, icon: Icons.feed, payload: localUser.defaultListingType),
+                              options: [
+                                ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
+                                ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
+                                ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
+                              ],
+                              icon: Icons.filter_alt_rounded,
+                              onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultListingType: value.payload)),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDefaultFeedType,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ListOption(
+                              description: l10n.defaultFeedSortType,
+                              value: ListPickerItem(label: localUser.defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: localUser.defaultSortType),
+                              options: [
+                                ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                                ...topSortTypeItems
+                              ],
+                              icon: Icons.sort_rounded,
+                              onChanged: (_) async {},
+                              isBottomModalScrollControlled: true,
+                              customListPicker: SortPicker(
+                                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
+                                title: l10n.defaultFeedSortType,
+                                onSelect: (value) async {
+                                  context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultSortType: value.payload));
+                                },
+                                previouslySelected: localUser.defaultSortType,
+                              ),
+                              valueDisplay: Row(
+                                children: [
+                                  Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).icon, size: 13),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).label,
+                                    style: theme.textTheme.titleSmall,
+                                  ),
+                                ],
+                              ),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDefaultFeedSortType,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.showNsfwContent,
+                              value: localUser.showNsfw,
+                              iconEnabled: Icons.no_adult_content,
+                              iconDisabled: Icons.no_adult_content,
+                              onToggle: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowNsfwContent,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.showScores,
+                              value: localUser.showScores,
+                              iconEnabled: Icons.onetwothree_rounded,
+                              iconDisabled: Icons.onetwothree_rounded,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowScores,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.showReadPosts,
+                              value: localUser.showReadPosts,
+                              iconEnabled: Icons.fact_check_rounded,
+                              iconDisabled: Icons.fact_check_outlined,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowReadPosts,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.bot,
+                              value: person?.botAccount,
+                              iconEnabled: Thunder.robot,
+                              iconDisabled: Thunder.robot,
+                              iconSpacing: 14.0,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountIsBot,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.showBotAccounts,
+                              value: localUser.showBotAccounts,
+                              iconEnabled: Thunder.robot,
+                              iconDisabled: Thunder.robot,
+                              iconSpacing: 14.0,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowBotAccounts,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.contentManagement, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                              icon: Icons.language_rounded,
+                              description: l10n.discussionLanguages,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () async {
+                                final state = context.read<ThunderBloc>().state;
+                                await Navigator.of(context).push(
+                                  SwipeablePageRoute(
+                                    transitionDuration: state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                    canOnlySwipeFromEdge: true,
+                                    backGestureDetectionWidth: 45,
+                                    builder: (navigatorContext) {
+                                      return MultiBlocProvider(
+                                        providers: [BlocProvider<UserSettingsBloc>.value(value: context.read<UserSettingsBloc>())],
+                                        child: const DiscussionLanguageSelector(),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.discussionLanguages,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.block_rounded,
+                              description: l10n.blockSettingLabel,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () async {
+                                final state = context.read<ThunderBloc>().state;
+                                await Navigator.of(context).push(
+                                  SwipeablePageRoute(
+                                    transitionDuration: state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                    canOnlySwipeFromEdge: true,
+                                    backGestureDetectionWidth: 45,
+                                    builder: (navigatorContext) {
+                                      return MultiBlocProvider(
+                                        providers: [BlocProvider<UserSettingsBloc>.value(value: context.read<UserSettingsBloc>())],
+                                        child: const UserSettingsBlockPage(),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountBlocks,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                              icon: Icons.password,
+                              description: l10n.changePassword,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () async {
+                                showThunderDialog<void>(
+                                  context: context,
+                                  title: l10n.changePassword,
+                                  contentText: l10n.changePasswordWarning,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  secondaryButtonText: l10n.cancel,
+                                  onPrimaryButtonPressed: (dialogContext, _) async {
+                                    if (context.mounted) {
+                                      Navigator.of(context).pop();
+                                      handleLink(context, url: "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
+                                    }
+                                  },
+                                  primaryButtonText: l10n.confirm,
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountChangePassword,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.delete_forever_rounded,
+                              description: l10n.deleteAccount,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () async {
+                                showThunderDialog<void>(
+                                  context: context,
+                                  title: l10n.deleteAccount,
+                                  contentText: l10n.deleteAccountDescription,
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  primaryButtonText: l10n.confirm,
+                                  onPrimaryButtonPressed: (dialogContext, _) async {
+                                    if (context.mounted) {
+                                      Navigator.of(context).pop();
+                                      handleLink(context, url: "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
+                                    }
+                                  },
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDeleteAccount,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            const SizedBox(height: 100.0),
+                          ],
                         ),
                       )
-                    : IconButton(
-                        icon: Icon(
-                          Icons.clear,
-                          semanticLabel: l10n.remove,
-                        ),
-                        onPressed: () {
-                          context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id));
-                        },
-                      ),
-              ),
-            ),
+                  }
+                ],
+              );
+            },
           ),
         ),
-      );
-    }).toList();
-  }
-
-  List<Widget> getCommunityBlocks(BuildContext context, UserSettingsState state, List<Community> communities) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return communities.map((community) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
-        child: Tooltip(
-          message: generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
-          preferBelow: false,
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(50),
-              onTap: () {
-                navigateToFeedPage(context, feedType: FeedType.community, communityName: '${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
-              },
-              child: ListTile(
-                leading: CommunityAvatar(community: community, radius: 16.0),
-                visualDensity: const VisualDensity(vertical: -2),
-                title: Text(
-                  community.title,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: CommunityFullNameWidget(
-                  context,
-                  community.name,
-                  fetchInstanceNameFromUrl(community.actorId) ?? '-',
-                ),
-                contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
-                trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
-                    ? const Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: SizedBox(
-                          width: 25,
-                          height: 25,
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : IconButton(
-                        icon: Icon(
-                          Icons.clear,
-                          semanticLabel: l10n.remove,
-                        ),
-                        onPressed: () {
-                          context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: community.id));
-                        },
-                      ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  List<Widget> getPersonBlocks(BuildContext context, UserSettingsState state, List<Person> persons) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return persons.map((person) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
-        child: Tooltip(
-          message: generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
-          preferBelow: false,
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(50),
-              onTap: () {
-                navigateToFeedPage(context, feedType: FeedType.user, username: '${person.name}@${fetchInstanceNameFromUrl(person.actorId)}');
-              },
-              child: ListTile(
-                leading: UserAvatar(person: person),
-                visualDensity: const VisualDensity(vertical: -2),
-                title: Text(
-                  person.displayName ?? person.name,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: UserFullNameWidget(
-                  context,
-                  person.name,
-                  fetchInstanceNameFromUrl(person.actorId) ?? '-',
-                ),
-                contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
-                trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id
-                    ? const Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: SizedBox(
-                          width: 25,
-                          height: 25,
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : IconButton(
-                        icon: Icon(
-                          Icons.clear,
-                          semanticLabel: l10n.remove,
-                        ),
-                        onPressed: () {
-                          context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: person.id));
-                        },
-                      ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-}
-
-/// This class creates a widget which displays a list of items. If no items are available, it displays a message.
-class UserSettingBlockList extends StatelessWidget {
-  const UserSettingBlockList({
-    super.key,
-    required this.status,
-    this.emptyText,
-    this.items = const [],
-  });
-
-  final UserSettingsStatus status;
-  final String? emptyText;
-  final List<Widget> items;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return AnimatedCrossFade(
-      crossFadeState: status == UserSettingsStatus.initial ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-      duration: const Duration(milliseconds: 200),
-      firstChild: Container(
-        margin: const EdgeInsets.all(10.0),
-        child: const Center(child: CircularProgressIndicator()),
-      ),
-      secondChild: Align(
-        alignment: Alignment.centerLeft,
-        child: items.isNotEmpty == true
-            ? ListView.builder(
-                padding: const EdgeInsets.only(bottom: 20),
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  return index == items.length ? Container() : items[index];
-                },
-              )
-            : Padding(
-                padding: const EdgeInsets.only(left: 28, right: 20, bottom: 20),
-                child: Text(
-                  emptyText ?? '',
-                  style: TextStyle(color: theme.hintColor),
-                ),
-              ),
       ),
     );
   }

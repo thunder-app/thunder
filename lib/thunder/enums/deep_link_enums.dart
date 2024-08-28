@@ -6,4 +6,5 @@ enum LinkType {
   unknown,
   community,
   modlog,
+  thunder,
 }

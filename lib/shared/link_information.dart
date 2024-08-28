@@ -54,7 +54,7 @@ class _LinkInformationState extends State<LinkInformation> {
     };
 
     return Semantics(
-      excludeSemantics: true,
+      link: true,
       child: InkWell(
         customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         onTap: () {

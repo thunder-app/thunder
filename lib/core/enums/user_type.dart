@@ -5,7 +5,8 @@ enum UserType {
   admin,
   self,
   bot,
-  op;
+  op,
+  birthday;
 
   get color {
     switch (this) {
@@ -19,6 +20,8 @@ enum UserType {
         return Colors.purple;
       case UserType.op:
         return Colors.blue;
+      case UserType.birthday:
+        return Colors.pink;
     }
   }
 }

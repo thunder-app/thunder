@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:  
+          submodules: 'recursive'
 
       - uses: subosito/flutter-action@v2
         with:
@@ -52,7 +54,7 @@ jobs:
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Formatting
-        run: dart format --set-exit-if-changed -l 200 .
+        run: dart format -o none --set-exit-if-changed -l 200 lib
 
       - name: Tests
         run: flutter test

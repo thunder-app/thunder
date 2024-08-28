@@ -27,7 +27,8 @@ class ThunderState extends Equatable {
     this.scrapeMissingPreviews = false,
     this.browserMode = BrowserMode.customTabs,
     this.openInReaderMode = false,
-    this.useDisplayNames = true,
+    this.useDisplayNamesForUsers = false,
+    this.useDisplayNamesForCommunities = false,
     this.markPostReadOnMediaView = false,
     this.markPostReadOnScroll = false,
     this.disableFeedFab = false,
@@ -48,6 +49,7 @@ class ThunderState extends Equatable {
     this.imageCachingMode = ImageCachingMode.relaxed,
     this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
+    this.showHiddenPosts = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -127,6 +129,7 @@ class ThunderState extends Equatable {
     this.saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple),
     this.markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal),
     this.replyColor = const ActionColor.fromString(colorRaw: ActionColor.green),
+    this.hideColor = const ActionColor.fromString(colorRaw: ActionColor.red),
 
     // Font Scale
     this.titleFontSizeScale = FontScale.base,
@@ -155,9 +158,15 @@ class ThunderState extends Equatable {
     this.enableCommentNavigation = true,
     this.combineNavAndFab = true,
 
+    /// ------------------ Video Player ------------------------
+    this.videoAutoFullscreen = false,
+    this.videoAutoLoop = false,
+    this.videoAutoMute = true,
+    this.videoAutoPlay = VideoAutoPlay.never,
+    this.videoDefaultPlaybackSpeed = VideoPlayBackSpeed.normal,
+
     /// -------------------------- Accessibility Related Settings --------------------------
     this.reduceAnimations = false,
-    this.anonymousInstances = const ['lemmy.ml'],
     this.currentAnonymousInstance = 'lemmy.ml',
 
     /// --------------------------------- UI Events ---------------------------------
@@ -189,7 +198,8 @@ class ThunderState extends Equatable {
   final bool scrapeMissingPreviews;
   final BrowserMode browserMode;
   final bool openInReaderMode;
-  final bool useDisplayNames;
+  final bool useDisplayNamesForUsers;
+  final bool useDisplayNamesForCommunities;
   final bool markPostReadOnMediaView;
   final bool markPostReadOnScroll;
   final bool disableFeedFab;
@@ -210,6 +220,7 @@ class ThunderState extends Equatable {
   final ImageCachingMode imageCachingMode;
   final bool showNavigationLabels;
   final bool hideTopBarOnScroll;
+  final bool showHiddenPosts;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -271,6 +282,7 @@ class ThunderState extends Equatable {
   final ActionColor saveColor;
   final ActionColor markReadColor;
   final ActionColor replyColor;
+  final ActionColor hideColor;
 
   // Font Scale
   final FontScale titleFontSizeScale;
@@ -327,8 +339,14 @@ class ThunderState extends Equatable {
   /// -------------------------- Accessibility Related Settings --------------------------
   final bool reduceAnimations;
 
-  final List<String> anonymousInstances;
-  final String currentAnonymousInstance;
+  final String? currentAnonymousInstance;
+
+  /// ------------------ Video Player ------------------------
+  final bool videoAutoFullscreen;
+  final bool videoAutoLoop;
+  final bool videoAutoMute;
+  final VideoAutoPlay videoAutoPlay;
+  final VideoPlayBackSpeed videoDefaultPlaybackSpeed;
 
   /// --------------------------------- UI Events ---------------------------------
   // Expand/Close FAB event
@@ -359,7 +377,8 @@ class ThunderState extends Equatable {
     bool? scrapeMissingPreviews,
     BrowserMode? browserMode,
     bool? openInReaderMode,
-    bool? useDisplayNames,
+    bool? useDisplayNamesForUsers,
+    bool? useDisplayNamesForCommunities,
     bool? markPostReadOnMediaView,
     bool? markPostReadOnScroll,
     bool? showInAppUpdateNotification,
@@ -379,6 +398,7 @@ class ThunderState extends Equatable {
     ImageCachingMode? imageCachingMode,
     bool? showNavigationLabels,
     bool? hideTopBarOnScroll,
+    bool? showHiddenPosts,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -440,6 +460,7 @@ class ThunderState extends Equatable {
     ActionColor? saveColor,
     ActionColor? markReadColor,
     ActionColor? replyColor,
+    ActionColor? hideColor,
 
     // Font Scale
     FontScale? titleFontSizeScale,
@@ -490,8 +511,14 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Accessibility Related Settings --------------------------
     bool? reduceAnimations,
-    List<String>? anonymousInstances,
     String? currentAnonymousInstance,
+
+    /// ------------------ Video Player ------------------------
+    bool? videoAutoFullscreen,
+    bool? videoAutoLoop,
+    bool? videoAutoMute,
+    VideoAutoPlay? videoAutoPlay,
+    VideoPlayBackSpeed? videoDefaultPlaybackSpeed,
 
     /// --------------------------------- UI Events ---------------------------------
     // Expand/Close FAB event
@@ -521,7 +548,8 @@ class ThunderState extends Equatable {
       scrapeMissingPreviews: scrapeMissingPreviews ?? this.scrapeMissingPreviews,
       browserMode: browserMode ?? this.browserMode,
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
-      useDisplayNames: useDisplayNames ?? this.useDisplayNames,
+      useDisplayNamesForUsers: useDisplayNamesForUsers ?? this.useDisplayNamesForUsers,
+      useDisplayNamesForCommunities: useDisplayNamesForCommunities ?? this.useDisplayNamesForCommunities,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       markPostReadOnScroll: markPostReadOnScroll ?? this.markPostReadOnScroll,
       disableFeedFab: disableFeedFab,
@@ -543,6 +571,7 @@ class ThunderState extends Equatable {
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
       showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
+      showHiddenPosts: showHiddenPosts ?? this.showHiddenPosts,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -604,6 +633,7 @@ class ThunderState extends Equatable {
       saveColor: saveColor ?? this.saveColor,
       markReadColor: markReadColor ?? this.markReadColor,
       replyColor: replyColor ?? this.replyColor,
+      hideColor: hideColor ?? this.hideColor,
 
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
@@ -658,8 +688,15 @@ class ThunderState extends Equatable {
       /// -------------------------- Accessibility Related Settings --------------------------
       reduceAnimations: reduceAnimations ?? this.reduceAnimations,
 
-      anonymousInstances: anonymousInstances ?? this.anonymousInstances,
-      currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
+      /// ------------------ Video Player ------------------------
+      videoAutoFullscreen: videoAutoFullscreen ?? this.videoAutoFullscreen,
+      videoAutoLoop: videoAutoLoop ?? this.videoAutoLoop,
+      videoAutoMute: videoAutoMute ?? this.videoAutoMute,
+      videoAutoPlay: videoAutoPlay ?? this.videoAutoPlay,
+      videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed ?? this.videoDefaultPlaybackSpeed,
+      currentAnonymousInstance: currentAnonymousInstance,
+
+      /// ------------------ Video Player ------------------------
 
       /// --------------------------------- UI Events ---------------------------------
       // Expand/Close FAB event
@@ -691,7 +728,8 @@ class ThunderState extends Equatable {
         // General Settings
         scrapeMissingPreviews,
         browserMode,
-        useDisplayNames,
+        useDisplayNamesForUsers,
+        useDisplayNamesForCommunities,
         markPostReadOnMediaView,
         markPostReadOnScroll,
         disableFeedFab,
@@ -773,6 +811,7 @@ class ThunderState extends Equatable {
         saveColor,
         markReadColor,
         replyColor,
+        hideColor,
 
         // Font Scale
         titleFontSizeScale,
@@ -822,10 +861,16 @@ class ThunderState extends Equatable {
         enableCommentNavigation,
         combineNavAndFab,
 
+        /// ------------------ Video Player ------------------------
+        videoAutoFullscreen,
+        videoAutoLoop,
+        videoAutoMute,
+        videoAutoPlay,
+        videoDefaultPlaybackSpeed,
+
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations,
 
-        anonymousInstances,
         currentAnonymousInstance,
 
         /// --------------------------------- UI Events ---------------------------------

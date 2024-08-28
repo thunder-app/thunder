@@ -35,6 +35,9 @@ final class FeedFetchedEvent extends FeedEvent {
   /// Boolean which indicates whether or not to reset the feed
   final bool reset;
 
+  /// Indicates whether to show hidden posts in the feed
+  final bool showHidden;
+
   const FeedFetchedEvent({
     this.feedType,
     this.feedTypeSubview = FeedTypeSubview.post,
@@ -45,6 +48,7 @@ final class FeedFetchedEvent extends FeedEvent {
     this.userId,
     this.username,
     this.reset = false,
+    this.showHidden = false,
   });
 }
 
@@ -94,6 +98,19 @@ final class FeedClearMessageEvent extends FeedEvent {}
 final class ScrollToTopEvent extends FeedEvent {}
 
 final class FeedDismissReadEvent extends FeedEvent {}
+
+final class FeedDismissBlockedEvent extends FeedEvent {
+  final int? communityId;
+  final int? userId;
+
+  const FeedDismissBlockedEvent({this.communityId, this.userId});
+}
+
+final class FeedDismissHiddenPostEvent extends FeedEvent {
+  final int postId;
+
+  const FeedDismissHiddenPostEvent({required this.postId});
+}
 
 final class FeedHidePostsFromViewEvent extends FeedEvent {
   final List<int> postIds;

@@ -52,7 +52,7 @@ class AdvancedShareSheetOptions {
       );
 }
 
-bool _hasImage(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty && postViewMedia.media.first.mediaUrl != null;
+bool _hasImage(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty && postViewMedia.media.first.thumbnailUrl != null;
 
 bool _hasText(PostViewMedia postViewMedia) => postViewMedia.postView.post.body?.isNotEmpty == true;
 
@@ -106,7 +106,7 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
             ],
             if (options.includeImage && _hasImage(postViewMedia))
               Image.network(
-                postViewMedia.media.first.mediaUrl!,
+                postViewMedia.media.first.thumbnailUrl!,
               ),
             if (options.includeText && postViewMedia.postView.post.body?.isNotEmpty == true) ...[
               if (_hasImage(postViewMedia)) const SizedBox(height: 10),
@@ -193,10 +193,11 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                           ),
                         if (!_isImageCustomized(options, postViewMedia) && options.includeImage && _hasImage(postViewMedia))
                           ImagePreview(
-                            url: postViewMedia.media.first.mediaUrl.toString(),
+                            url: postViewMedia.media.first.thumbnailUrl.toString(),
                             isExpandable: true,
                             isComment: true,
                             showFullHeightImages: true,
+                            altText: postViewMedia.media.first.altText,
                           ),
                         if (_isImageCustomized(options, postViewMedia))
                           snapshot.hasData && !isGeneratingImage
@@ -237,6 +238,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                             isGeneratingImage = true;
                             options.includeTitle = !options.includeTitle;
                           }),
+                          highlightKey: null,
+                          setting: null,
+                          highlightedSetting: null,
                         ),
                         if (_hasImage(postViewMedia))
                           ToggleOption(
@@ -248,6 +252,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                               isGeneratingImage = true;
                               options.includeImage = !options.includeImage;
                             }),
+                            highlightKey: null,
+                            setting: null,
+                            highlightedSetting: null,
                           ),
                         if (_hasText(postViewMedia))
                           ToggleOption(
@@ -259,6 +266,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                               isGeneratingImage = true;
                               options.includeText = !options.includeText;
                             }),
+                            highlightKey: null,
+                            setting: null,
+                            highlightedSetting: null,
                           ),
                         ToggleOption(
                           description: AppLocalizations.of(context)!.includeCommunity,
@@ -269,6 +279,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                             isGeneratingImage = true;
                             options.includeCommnity = !options.includeCommnity;
                           }),
+                          highlightKey: null,
+                          setting: null,
+                          highlightedSetting: null,
                         ),
                         const SizedBox(height: 20),
                         Align(
@@ -287,6 +300,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                           iconDisabled: Icons.link_rounded,
                           value: options.includePostLink,
                           onToggle: (_) => setState(() => options.includePostLink = !options.includePostLink),
+                          highlightKey: null,
+                          setting: null,
+                          highlightedSetting: null,
                         ),
                         if (_hasExternalLink(postViewMedia))
                           ToggleOption(
@@ -295,6 +311,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                             iconDisabled: Icons.link_rounded,
                             value: options.includeExternalLink,
                             onToggle: (_) => setState(() => options.includeExternalLink = !options.includeExternalLink),
+                            highlightKey: null,
+                            setting: null,
+                            highlightedSetting: null,
                           ),
                         const SizedBox(height: 12),
                         Row(
@@ -326,7 +345,7 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                                           Share.shareXFiles([XFile.fromData(snapshot.data!, mimeType: 'image/jpeg')], text: text);
                                         } else {
                                           setState(() => isDownloading = true);
-                                          final File file = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.mediaUrl!);
+                                          final File file = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.thumbnailUrl!);
                                           setState(() => isDownloading = false);
                                           Share.shareXFiles([XFile(file.path)], text: text);
                                         }

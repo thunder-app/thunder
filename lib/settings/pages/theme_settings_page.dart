@@ -59,6 +59,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   ActionColor saveColor = const ActionColor.fromString(colorRaw: ActionColor.purple);
   ActionColor markReadColor = const ActionColor.fromString(colorRaw: ActionColor.teal);
   ActionColor replyColor = const ActionColor.fromString(colorRaw: ActionColor.green);
+  ActionColor hideColor = const ActionColor.fromString(colorRaw: ActionColor.red);
 
   // Font Settings
   FontScale titleFontSizeScale = FontScale.base;
@@ -89,6 +90,12 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   NameColor communityFullNameCommunityNameColor = const NameColor.fromString(color: NameColor.defaultColor);
   NameThickness communityFullNameInstanceNameThickness = NameThickness.light;
   NameColor communityFullNameInstanceNameColor = const NameColor.fromString(color: NameColor.defaultColor);
+
+  /// When enabled, displays the user's display name instead of the username
+  bool useDisplayNamesForUsers = false;
+
+  /// When enabled, displays the community's display name instead of the community name
+  bool useDisplayNamesForCommunities = false;
 
   // Loading
   bool isLoading = true;
@@ -139,6 +146,10 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       case LocalSettings.replyColor:
         await prefs.setString(LocalSettings.replyColor.name, value);
         setState(() => replyColor = ActionColor.fromString(colorRaw: value));
+        break;
+      case LocalSettings.hideColor:
+        await prefs.setString(LocalSettings.hideColor.name, value);
+        setState(() => hideColor = ActionColor.fromString(colorRaw: value));
         break;
 
       // Font Settings
@@ -204,6 +215,14 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         await prefs.setString(LocalSettings.communityFullNameInstanceNameColor.name, value);
         setState(() => communityFullNameInstanceNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
+      case LocalSettings.useDisplayNamesForUsers:
+        await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
+        setState(() => useDisplayNamesForUsers = value);
+        break;
+      case LocalSettings.useDisplayNamesForCommunities:
+        await prefs.setBool(LocalSettings.useDisplayNamesForCommunities.name, value);
+        setState(() => useDisplayNamesForCommunities = value);
+        break;
     }
 
     if (context.mounted) {
@@ -227,6 +246,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
       markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
       replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
+      hideColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.hideColor.name) ?? ActionColor.red);
 
       // Font Settings
       titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
@@ -245,6 +265,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       communityFullNameCommunityNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameCommunityNameColor.name) ?? NameColor.defaultColor);
       communityFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
       communityFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
+      useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+      useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
 
       isLoading = false;
     });
@@ -337,7 +359,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: themeOptions,
                           icon: Icons.wallpaper_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.appTheme, value.payload.index),
-                          highlightKey: settingToHighlight == LocalSettings.appTheme ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.appTheme,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.themeAccentColor,
@@ -385,7 +409,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           icon: Icons.wallpaper_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
                           closeOnSelect: false,
-                          highlightKey: settingToHighlight == LocalSettings.appThemeAccentColor ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.appThemeAccentColor,
+                          highlightedSetting: settingToHighlight,
                         ),
                         if (!kIsWeb && Platform.isAndroid) ...[
                           ToggleOption(
@@ -395,7 +421,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             iconEnabled: Icons.color_lens_rounded,
                             iconDisabled: Icons.color_lens_rounded,
                             onToggle: (bool value) => setPreferences(LocalSettings.useMaterialYouTheme, value),
-                            highlightKey: settingToHighlight == LocalSettings.useMaterialYouTheme ? settingToHighlightKey : null,
+                            highlightKey: settingToHighlightKey,
+                            setting: LocalSettings.useMaterialYouTheme,
+                            highlightedSetting: settingToHighlight,
                           )
                         ],
                       ],
@@ -410,6 +438,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     saveColor: saveColor,
                     markReadColor: markReadColor,
                     replyColor: replyColor,
+                    hideColor: hideColor,
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
@@ -427,7 +456,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
-                          highlightKey: settingToHighlight == LocalSettings.titleFontSizeScale ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.titleFontSizeScale,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.postContentFontScale,
@@ -435,7 +466,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
-                          highlightKey: settingToHighlight == LocalSettings.contentFontSizeScale ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.contentFontSizeScale,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.commentFontScale,
@@ -443,7 +476,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
-                          highlightKey: settingToHighlight == LocalSettings.commentFontSizeScale ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.commentFontSizeScale,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           description: l10n.metadataFontScale,
@@ -451,7 +486,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) async => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
-                          highlightKey: settingToHighlight == LocalSettings.metadataFontSizeScale ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.metadataFontSizeScale,
+                          highlightedSetting: settingToHighlight,
                         ),
                       ],
                     ),
@@ -469,7 +506,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ListOption(
                           description: l10n.userFormat,
                           value: ListPickerItem(
-                            label: generateSampleUserFullName(userSeparator),
+                            label: generateSampleUserFullName(userSeparator, useDisplayNamesForUsers),
                             labelWidget: generateSampleUserFullNameWidget(
                               userSeparator,
                               userNameThickness: userFullNameUserNameThickness,
@@ -477,6 +514,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                               instanceNameThickness: userFullNameInstanceNameThickness,
                               instanceNameColor: userFullNameInstanceNameColor,
                               textStyle: theme.textTheme.bodyMedium,
+                              useDisplayName: useDisplayNamesForUsers,
                             ),
                             icon: Icons.person_rounded,
                             payload: userSeparator,
@@ -485,7 +523,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: [
                             ListPickerItem(
                               icon: const IconData(0x2022),
-                              label: generateSampleUserFullName(FullNameSeparator.dot),
+                              label: generateSampleUserFullName(FullNameSeparator.dot, useDisplayNamesForUsers),
                               labelWidget: generateSampleUserFullNameWidget(
                                 FullNameSeparator.dot,
                                 userNameThickness: userFullNameUserNameThickness,
@@ -493,13 +531,14 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 instanceNameThickness: userFullNameInstanceNameThickness,
                                 instanceNameColor: userFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
+                                useDisplayName: useDisplayNamesForUsers,
                               ),
                               payload: FullNameSeparator.dot,
                               capitalizeLabel: false,
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleUserFullName(FullNameSeparator.at),
+                              label: generateSampleUserFullName(FullNameSeparator.at, useDisplayNamesForUsers),
                               labelWidget: generateSampleUserFullNameWidget(
                                 FullNameSeparator.at,
                                 userNameThickness: userFullNameUserNameThickness,
@@ -507,13 +546,14 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 instanceNameThickness: userFullNameInstanceNameThickness,
                                 instanceNameColor: userFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
+                                useDisplayName: useDisplayNamesForUsers,
                               ),
                               payload: FullNameSeparator.at,
                               capitalizeLabel: false,
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleUserFullName(FullNameSeparator.lemmy),
+                              label: generateSampleUserFullName(FullNameSeparator.lemmy, useDisplayNamesForUsers),
                               labelWidget: generateSampleUserFullNameWidget(
                                 FullNameSeparator.lemmy,
                                 userNameThickness: userFullNameUserNameThickness,
@@ -521,6 +561,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 instanceNameThickness: userFullNameInstanceNameThickness,
                                 instanceNameColor: userFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
+                                useDisplayName: useDisplayNamesForUsers,
                               ),
                               payload: FullNameSeparator.lemmy,
                               capitalizeLabel: false,
@@ -528,14 +569,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ],
                           icon: Icons.person_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.userFormat, value.payload.name),
-                          highlightKey: settingToHighlight == LocalSettings.userFormat ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.userFormat,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           isBottomModalScrollControlled: true,
                           value: const ListPickerItem(payload: -1),
                           description: l10n.userStyle,
                           icon: Icons.person_rounded,
-                          highlightKey: settingToHighlight == LocalSettings.userStyle ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.userStyle,
+                          highlightedSetting: settingToHighlight,
                           customListPicker: StatefulBuilder(
                             builder: (context, setState) {
                               return BottomSheetListPicker(
@@ -547,6 +592,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                   instanceNameThickness: userFullNameInstanceNameThickness,
                                   instanceNameColor: userFullNameInstanceNameColor,
                                   textStyle: theme.textTheme.bodyMedium,
+                                  useDisplayName: useDisplayNamesForUsers,
                                 ),
                                 items: [
                                   ListPickerItem(
@@ -687,7 +733,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ListOption(
                           description: l10n.communityFormat,
                           value: ListPickerItem(
-                            label: generateSampleCommunityFullName(communitySeparator),
+                            label: generateSampleCommunityFullName(communitySeparator, useDisplayNamesForCommunities),
                             labelWidget: generateSampleCommunityFullNameWidget(
                               communitySeparator,
                               communityNameThickness: communityFullNameCommunityNameThickness,
@@ -695,6 +741,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                               instanceNameThickness: communityFullNameInstanceNameThickness,
                               instanceNameColor: communityFullNameInstanceNameColor,
                               textStyle: theme.textTheme.bodyMedium,
+                              useDisplayName: useDisplayNamesForCommunities,
                             ),
                             icon: Icons.people_rounded,
                             payload: communitySeparator,
@@ -703,7 +750,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: [
                             ListPickerItem(
                               icon: const IconData(0x2022),
-                              label: generateSampleCommunityFullName(FullNameSeparator.dot),
+                              label: generateSampleCommunityFullName(FullNameSeparator.dot, useDisplayNamesForCommunities),
                               labelWidget: generateSampleCommunityFullNameWidget(
                                 FullNameSeparator.dot,
                                 communityNameThickness: communityFullNameCommunityNameThickness,
@@ -711,13 +758,14 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 instanceNameThickness: communityFullNameInstanceNameThickness,
                                 instanceNameColor: communityFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
+                                useDisplayName: useDisplayNamesForCommunities,
                               ),
                               payload: FullNameSeparator.dot,
                               capitalizeLabel: false,
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleCommunityFullName(FullNameSeparator.at),
+                              label: generateSampleCommunityFullName(FullNameSeparator.at, useDisplayNamesForCommunities),
                               labelWidget: generateSampleCommunityFullNameWidget(
                                 FullNameSeparator.at,
                                 communityNameThickness: communityFullNameCommunityNameThickness,
@@ -725,13 +773,14 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 instanceNameThickness: communityFullNameInstanceNameThickness,
                                 instanceNameColor: communityFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
+                                useDisplayName: useDisplayNamesForCommunities,
                               ),
                               payload: FullNameSeparator.at,
                               capitalizeLabel: false,
                             ),
                             ListPickerItem(
                               icon: Icons.alternate_email_rounded,
-                              label: generateSampleCommunityFullName(FullNameSeparator.lemmy),
+                              label: generateSampleCommunityFullName(FullNameSeparator.lemmy, useDisplayNamesForCommunities),
                               labelWidget: generateSampleCommunityFullNameWidget(
                                 FullNameSeparator.lemmy,
                                 communityNameThickness: communityFullNameCommunityNameThickness,
@@ -739,6 +788,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 instanceNameThickness: communityFullNameInstanceNameThickness,
                                 instanceNameColor: communityFullNameInstanceNameColor,
                                 textStyle: theme.textTheme.bodyMedium,
+                                useDisplayName: useDisplayNamesForCommunities,
                               ),
                               payload: FullNameSeparator.lemmy,
                               capitalizeLabel: false,
@@ -746,14 +796,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ],
                           icon: Icons.people_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),
-                          highlightKey: settingToHighlight == LocalSettings.communityFormat ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.communityFormat,
+                          highlightedSetting: settingToHighlight,
                         ),
                         ListOption(
                           isBottomModalScrollControlled: true,
                           value: const ListPickerItem(payload: -1),
                           description: l10n.communityStyle,
                           icon: Icons.person_rounded,
-                          highlightKey: settingToHighlight == LocalSettings.communityStyle ? settingToHighlightKey : null,
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.communityStyle,
+                          highlightedSetting: settingToHighlight,
                           customListPicker: StatefulBuilder(
                             builder: (context, setState) {
                               return BottomSheetListPicker(
@@ -765,6 +819,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                   instanceNameThickness: communityFullNameInstanceNameThickness,
                                   instanceNameColor: communityFullNameInstanceNameColor,
                                   textStyle: theme.textTheme.bodyMedium,
+                                  useDisplayName: useDisplayNamesForCommunities,
                                 ),
                                 items: [
                                   ListPickerItem(
@@ -901,6 +956,26 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                               );
                             },
                           ),
+                        ),
+                        ToggleOption(
+                          description: l10n.showUserDisplayNames,
+                          value: useDisplayNamesForUsers,
+                          iconEnabled: Icons.person_rounded,
+                          iconDisabled: Icons.person_off_rounded,
+                          onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.useDisplayNamesForUsers,
+                          highlightedSetting: settingToHighlight,
+                        ),
+                        ToggleOption(
+                          description: l10n.showCommunityDisplayNames,
+                          value: useDisplayNamesForCommunities,
+                          iconEnabled: Icons.people_rounded,
+                          iconDisabled: Icons.people_outline_rounded,
+                          onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForCommunities, value),
+                          highlightKey: settingToHighlightKey,
+                          setting: LocalSettings.useDisplayNamesForCommunities,
+                          highlightedSetting: settingToHighlight,
                         ),
                       ],
                     ),

@@ -11,6 +11,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/settings_utils.dart';
 
 class SettingTopic {
   final String title;
@@ -39,9 +40,11 @@ class _SettingsPageState extends State<SettingsPage> {
       SettingTopic(title: l10n.filters, icon: Icons.filter_alt_rounded, path: SETTINGS_FILTERS_PAGE),
       SettingTopic(title: l10n.appearance, icon: Icons.color_lens_rounded, path: SETTINGS_APPEARANCE_PAGE),
       SettingTopic(title: l10n.gestures, icon: Icons.swipe, path: SETTINGS_GESTURES_PAGE),
+      SettingTopic(title: l10n.video, icon: Icons.video_settings, path: SETTINGS_VIDEO_PAGE),
       SettingTopic(title: l10n.floatingActionButton, icon: Icons.settings_applications_rounded, path: SETTINGS_FAB_PAGE),
       SettingTopic(title: l10n.accessibility, icon: Icons.accessibility, path: SETTINGS_ACCESSIBILITY_PAGE),
       SettingTopic(title: l10n.account(0), icon: Icons.person_rounded, path: SETTINGS_ACCOUNT_PAGE),
+      SettingTopic(title: l10n.userLabels, icon: Icons.label_rounded, path: SETTINGS_USER_LABELS_PAGE),
       SettingTopic(title: l10n.about, icon: Icons.info_rounded, path: SETTINGS_ABOUT_PAGE),
       SettingTopic(title: l10n.debug, icon: Icons.developer_mode_rounded, path: SETTINGS_DEBUG_PAGE),
     ];
@@ -87,37 +90,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         localSettings.length,
                         (index) => ListTile(
                               subtitle: Text(
-                                  "${l10n.getLocalSettingLocalization(localSettings[index].category!.toString())} > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}"),
+                                  "${l10n.getLocalSettingLocalization(localSettings[index].category!.toString())}${localSettings[index].subCategory == null ? '' : ' > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}'}"),
                               onTap: () {
-                                String pageToNav = {
-                                      LocalSettingsCategories.posts: SETTINGS_APPEARANCE_POSTS_PAGE,
-                                      LocalSettingsCategories.comments: SETTINGS_APPEARANCE_COMMENTS_PAGE,
-                                      LocalSettingsCategories.general: SETTINGS_GENERAL_PAGE,
-                                      LocalSettingsCategories.gestures: SETTINGS_GESTURES_PAGE,
-                                      LocalSettingsCategories.floatingActionButton: SETTINGS_FAB_PAGE,
-                                      LocalSettingsCategories.filters: SETTINGS_FILTERS_PAGE,
-                                      LocalSettingsCategories.accessibility: SETTINGS_ACCESSIBILITY_PAGE,
-                                      LocalSettingsCategories.account: SETTINGS_ACCOUNT_PAGE,
-                                      LocalSettingsCategories.theming: SETTINGS_APPEARANCE_THEMES_PAGE,
-                                      LocalSettingsCategories.debug: SETTINGS_DEBUG_PAGE,
-                                      LocalSettingsCategories.about: SETTINGS_ABOUT_PAGE,
-                                    }[localSettings[index].category] ??
-                                    SETTINGS_GENERAL_PAGE;
-
-                                GoRouter.of(context).push(
-                                  pageToNav,
-                                  extra: pageToNav == SETTINGS_ABOUT_PAGE
-                                      ? [
-                                          context.read<ThunderBloc>(),
-                                          context.read<AccountBloc>(),
-                                          context.read<AuthBloc>(),
-                                          localSettings[index],
-                                        ]
-                                      : [
-                                          context.read<ThunderBloc>(),
-                                          localSettings[index],
-                                        ],
-                                );
+                                navigateToSetting(context, localSettings[index]);
                                 controller.closeView(null);
                                 controller.clear();
                               },

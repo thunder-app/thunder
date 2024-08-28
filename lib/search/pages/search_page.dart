@@ -23,7 +23,7 @@ import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/view/feed_widget.dart';
+import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/instance/widgets/instance_list_entry.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -165,7 +165,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final String? accountInstance = context.read<AuthBloc>().state.account?.instance;
-    final String currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
+    final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     return BlocProvider(
       create: (context) => FeedBloc(lemmyClient: LemmyClient.instance),
@@ -273,6 +273,18 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         controller: _searchFiltersScrollController,
                         child: Row(
                           children: [
+                            if (state.viewingAll) ...[
+                              SearchActionChip(
+                                backgroundColor: theme.colorScheme.primaryContainer.withOpacity(0.25),
+                                children: [
+                                  Text(l10n.viewingAll),
+                                  const SizedBox(width: 5),
+                                  const Icon(Icons.close_rounded, size: 15),
+                                ],
+                                onPressed: () => context.read<SearchBloc>().add(ResetSearch()),
+                              ),
+                              const SizedBox(width: 10),
+                            ],
                             SearchActionChip(
                               children: [
                                 Text(_currentSearchType.name.capitalize),
@@ -404,7 +416,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                       showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
                                         setState(() {
                                           _currentCommunityFilter = communityView.community.id;
-                                          _currentCommunityFilterName = generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId));
+                                          _currentCommunityFilterName = generateCommunityFullName(
+                                            context,
+                                            communityView.community.name,
+                                            communityView.community.title,
+                                            fetchInstanceNameFromUrl(communityView.community.actorId),
+                                          );
                                         });
                                         _doSearch();
                                       });
@@ -433,7 +450,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                     showUserInputDialog(context, title: l10n.creator, onUserSelected: (personView) {
                                       setState(() {
                                         _currentCreatorFilter = personView.person.id;
-                                        _currentCreatorFilterName = generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId));
+                                        _currentCreatorFilterName = generateUserFullName(
+                                          context,
+                                          personView.person.name,
+                                          personView.person.displayName,
+                                          fetchInstanceNameFromUrl(personView.person.actorId),
+                                        );
                                       });
                                       _doSearch();
                                     });
@@ -459,7 +481,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  Widget _getSearchBody(BuildContext context, SearchState state, bool isUserLoggedIn, String? accountInstance, String currentAnonymousInstance) {
+  Widget _getSearchBody(BuildContext context, SearchState state, bool isUserLoggedIn, String? accountInstance, String? currentAnonymousInstance) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
@@ -494,7 +516,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   ),
                 ),
               ],
-              if (_currentSearchType == MetaSearchType.instances && _controller.text.isEmpty) ...[
+              if (_controller.text.isEmpty) ...[
                 const SizedBox(height: 30),
                 SearchActionChip(
                   children: [Text(l10n.viewAll)],
@@ -561,22 +583,21 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         },
                       ),
                       const SizedBox(height: 5),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: TextButton(
-                          style: TextButton.styleFrom(backgroundColor: theme.dividerColor.withOpacity(0.25)),
-                          child: Row(
-                            children: [
-                              Text(l10n.exploreInstance, style: theme.textTheme.titleMedium),
-                              const SizedBox(width: 10),
-                              Icon(Icons.arrow_forward_rounded, size: 20, color: theme.textTheme.titleMedium?.color),
-                            ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SearchActionChip(
+                            children: [Text(l10n.viewAll)],
+                            onPressed: () => _doSearch(force: true),
                           ),
-                          onPressed: () {
-                            navigateToInstancePage(context, instanceHost: (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? '', instanceId: null);
-                          },
-                        ),
+                          const SizedBox(width: 10),
+                          SearchActionChip(
+                            children: [Text(l10n.exploreInstance), const Icon(Icons.chevron_right_rounded, size: 21)],
+                            onPressed: () => navigateToInstancePage(context, instanceHost: (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? '', instanceId: null),
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 )
@@ -744,7 +765,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             child: CustomScrollView(
               controller: _scrollController,
               slivers: [
-                FeedPostList(postViewMedias: state.posts ?? [], tabletMode: tabletMode, markPostReadOnScroll: false),
+                FeedPostCardList(postViewMedias: state.posts ?? [], tabletMode: tabletMode, markPostReadOnScroll: false),
                 if (state.status == SearchStatus.refreshing)
                   const SliverToBoxAdapter(
                     child: Center(
@@ -879,17 +900,19 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   /// Performs a search with the current parameters.
   /// Does not search when the query field is empty, unless [force] is `true`.
   void _doSearch({bool force = false}) {
-    if (_controller.text.isNotEmpty || force) {
-      context.read<SearchBloc>().add(StartSearchEvent(
-            query: _controller.text,
-            sortType: sortType,
-            listingType: _currentFeedType,
-            searchType: _getSearchTypeToUse(),
-            communityId: widget.communityToSearch?.community.id ?? _currentCommunityFilter,
-            creatorId: _currentCreatorFilter,
-            favoriteCommunities: context.read<AccountBloc>().state.favorites,
-            force: force,
-          ));
+    final SearchBloc searchBloc = context.read<SearchBloc>();
+
+    if (_controller.text.isNotEmpty || force || searchBloc.state.viewingAll) {
+      searchBloc.add(StartSearchEvent(
+        query: _controller.text,
+        sortType: sortType,
+        listingType: _currentFeedType,
+        searchType: _getSearchTypeToUse(),
+        communityId: widget.communityToSearch?.community.id ?? _currentCommunityFilter,
+        creatorId: _currentCreatorFilter,
+        favoriteCommunities: context.read<AccountBloc>().state.favorites,
+        force: force || searchBloc.state.viewingAll,
+      ));
     } else {
       context.read<SearchBloc>().add(ResetSearch());
     }

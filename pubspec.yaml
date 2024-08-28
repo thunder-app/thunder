@@ -1,7 +1,7 @@
 name: thunder
 description: An open-source cross-platform Lemmy client for iOS and Android built with Flutter
 publish_to: "none"
-version: 0.4.0-2+53
+version: 0.5.1+66
 
 environment:
   sdk: "^3.0.0"
@@ -23,7 +23,7 @@ dependencies:
   markdown_editor:
     git:
       url: https://github.com/thunder-app/markdown-editor.git
-      ref: 3196471d8e1b26873aecaf04254043cf9817bbe3
+      ref: 514e3718a42d4398619d66b6ac1ccd53bafd9b3f
   lemmy_api_client:
     git:
       url: https://github.com/thunder-app/lemmy_api_client.git
@@ -39,7 +39,7 @@ dependencies:
   equatable: ^2.0.5
   cached_network_image: ^3.2.3
   url_launcher: ^6.1.11
-  flutter_markdown: ^0.6.15
+  flutter_markdown: ^0.7.3+1
   stream_transform: ^2.1.0
   bloc_concurrency: ^0.2.2
   dio: ^5.2.1+1
@@ -97,19 +97,20 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   background_fetch: ^1.2.1
   gal: ^2.2.0
+  youtube_player_iframe: ^4.0.4
+  youtube_player_flutter: ^8.1.2
   smooth_highlight: ^0.1.1
   visibility_detector: ^0.4.0+2
   push:
-    git:
-      url: https://github.com/hjiangsu/push.git
-      ref: 722c5e8541e1e5c91c56743b94d07f51f26fd2c5
-      path: push
+    path: packages/push/push
   unifiedpush: ^5.0.1
   flutter_sharing_intent: ^1.1.1
   drift: ^2.16.0
   sqlite3_flutter_libs: ^0.5.20
+  connectivity_plus: ^6.0.2
   super_sliver_list: ^0.4.1
   catcher_2: ^1.2.6
+  video_player: ^2.8.7
 
 dev_dependencies:
   build_runner: ^2.4.6
@@ -121,13 +122,6 @@ dev_dependencies:
       url: https://github.com/fluttercommunity/flutter_launcher_icons.git
       ref: master
   drift_dev: ^2.16.0
-
-dependency_overrides:
-  push_android:
-    git:
-      url: https://github.com/hjiangsu/push.git
-      ref: 70269bd08a06c4f34f6f192a2d46127ae48479a5
-      path: push_android
 
 # The following section is specific to Flutter packages.
 flutter:

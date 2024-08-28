@@ -19,7 +19,7 @@ class CreatePostState extends Equatable {
   const CreatePostState({
     this.status = CreatePostStatus.initial,
     this.postViewMedia,
-    this.imageUrl,
+    this.imageUrls,
     this.message,
   });
 
@@ -29,8 +29,8 @@ class CreatePostState extends Equatable {
   /// The result of the created or edited post
   final PostViewMedia? postViewMedia;
 
-  /// The url of the uploaded image
-  final String? imageUrl;
+  /// The urls of the uploaded images
+  final List<String>? imageUrls;
 
   /// The info or error message to be displayed as a snackbar
   final String? message;
@@ -38,17 +38,17 @@ class CreatePostState extends Equatable {
   CreatePostState copyWith({
     required CreatePostStatus status,
     PostViewMedia? postViewMedia,
-    String? imageUrl,
+    List<String>? imageUrls,
     String? message,
   }) {
     return CreatePostState(
       status: status,
       postViewMedia: postViewMedia ?? this.postViewMedia,
-      imageUrl: imageUrl ?? this.imageUrl,
+      imageUrls: imageUrls ?? this.imageUrls,
       message: message ?? this.message,
     );
   }
 
   @override
-  List<dynamic> get props => [status, postViewMedia, imageUrl, message];
+  List<dynamic> get props => [status, postViewMedia, imageUrls, message];
 }
