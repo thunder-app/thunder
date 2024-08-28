@@ -298,6 +298,50 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(l10n.crashReports, style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 8.0),
+                ],
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+          SliverToBoxAdapter(
+            child: SettingsListTile(
+              icon: Icons.bug_report,
+              subtitle: l10n.reportCrashLogsTooltip,
+              description: l10n.crashReportsView,
+              widget: Container(),
+              onTap: () async {
+                String filePath = join((await getApplicationDocumentsDirectory()).path, 'thunder_log.txt');
+                final file = File(filePath);
+
+                final contents = await file.readAsString();
+
+                if (context.mounted) {
+                  await showThunderDialog(
+                    context: context,
+                    title: l10n.crashReports,
+                    contentWidgetBuilder: (setPrimaryButtonEnabled) => SingleChildScrollView(child: Text(contents)),
+                    primaryButtonText: l10n.copy,
+                    primaryButtonInitialEnabled: true,
+                    onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
+                      await Clipboard.setData(ClipboardData(text: contents));
+                      if (context.mounted) dialogContext.pop();
+                    },
+                    secondaryButtonText: l10n.cancel,
+                    onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
+                  );
+                }
+              },
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(l10n.notifications(2), style: theme.textTheme.titleMedium),
                   const SizedBox(height: 8.0),
                   Text(
