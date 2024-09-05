@@ -7,7 +7,7 @@
   "@add": {},
   "addAccount": "Додати обліковий запис",
   "@addAccount": {},
-  "addAccountToSeeProfile": "Додайте обліковий запис, щоб побачити ваш профіль тут.",
+  "addAccountToSeeProfile": "Увійдіть, щоб побачити тут ваш профіль.",
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Додати сервер в анонімному режимі",
   "@addAnonymousInstance": {},
@@ -179,7 +179,7 @@
   "@anonymousInstances": {
     "description": "Heading for the anonymous instances section of the login page"
   },
-  "bannedUserFromCommunity": "Заблокований користувач із Спільноти",
+  "bannedUserFromCommunity": "Заблокований користувач із спільноти",
   "@bannedUserFromCommunity": {
     "description": "Short decription for moderator action to ban a user from a community"
   },
@@ -233,7 +233,7 @@
   },
   "always": "Завжди",
   "@always": {},
-  "account": "{count, plural, zero {Акаунтів} one {Акаунт} other {Акаунти} } ",
+  "account": "{count, plural, zero {Облікових записів} one {Обліковий запис} other {Обліковий запис} } ",
   "@account": {
     "description": "Describes the user account"
   },
@@ -241,7 +241,7 @@
   "@apply": {},
   "all": "Всі",
   "@all": {},
-  "admin": "Адмін",
+  "admin": "Адміністратор",
   "@admin": {
     "description": "Role name for admin"
   },
@@ -249,11 +249,11 @@
   "@allowOpenSupportedLinks": {
     "description": "Option to permit the app to open supported links."
   },
-  "accountSettingOverrideWarning": "Налаштування вашого акаунту замінюють наступні параметри",
+  "accountSettingOverrideWarning": "Налаштування вашого облікового запису замінять наступні параметри",
   "@accountSettingOverrideWarning": {
     "description": "Warning for account settings override"
   },
-  "accountSettings": "Налаштування Акаунту",
+  "accountSettings": "Налаштування облікового запису",
   "@accountSettings": {},
   "appLanguage": "Мова додатку",
   "@appLanguage": {
@@ -296,5 +296,13 @@
   "applePushNotificationService": "Сервіс push-сповіщень Apple",
   "@applePushNotificationService": {
     "description": "Describes the notification type for Apple Push Notification Service"
-  }
+  },
+  "inbox": "Повідомлення",
+  "@inbox": {},
+  "about": "Про програму",
+  "@about": {
+    "description": "About settings category."
+  },
+  "feed": "Стрічка",
+  "@feed": {}
 }
