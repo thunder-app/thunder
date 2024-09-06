@@ -56,64 +56,59 @@ class _UserSidebarState extends State<UserSidebar> {
             context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
           }
         },
-        child: Container(
-          alignment: Alignment.centerRight,
+        child: SingleChildScrollView(
           child: Dismissible(
             key: Key(personView.person.id.toString()),
             onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
             direction: DismissDirection.startToEnd,
-            child: FractionallySizedBox(
-              widthFactor: kSidebarWidthFactor,
-              alignment: FractionalOffset.centerRight,
-              child: Container(
-                color: theme.colorScheme.background,
-                alignment: Alignment.topRight,
-                child: Column(
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 150),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return SizeTransition(
-                          sizeFactor: animation,
-                          child: FadeTransition(opacity: animation, child: child),
-                        );
-                      },
-                      child: personView.person.id != currentUserId ? BlockUserButton(personView: personView, isUserLoggedIn: authState.isLoggedIn) : null,
+            child: Container(
+              color: theme.colorScheme.background,
+              alignment: Alignment.topRight,
+              child: Column(
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 150),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return SizeTransition(
+                        sizeFactor: animation,
+                        child: FadeTransition(opacity: animation, child: child),
+                      );
+                    },
+                    child: personView.person.id != currentUserId ? BlockUserButton(personView: personView, isUserLoggedIn: authState.isLoggedIn) : null,
+                  ),
+                  if (personView.person.id != currentUserId) const SizedBox(height: 10.0),
+                  if (personView.person.id != currentUserId) const Divider(height: 1, thickness: 2),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    height: MediaQuery.of(context).size.height - 200,
+                    child: ListView(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      shrinkWrap: true,
+                      children: [
+                        Material(
+                          child: CommonMarkdownBody(
+                            body: personView.person.bio ?? 'Nothing here. This user has not written a bio.',
+                            imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                          ),
+                        ),
+                        const SidebarSectionHeader(value: "Stats"),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: UserStatsList(personView: personView),
+                        ),
+                        const SidebarSectionHeader(value: "Activity"),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: UserActivityList(personView: personView),
+                        ),
+                        const SidebarSectionHeader(value: "Moderates"),
+                        UserModeratorList(getPersonDetailsResponse: widget.getPersonDetailsResponse!),
+                        const SizedBox(height: 256)
+                      ],
                     ),
-                    if (personView.person.id != currentUserId) const SizedBox(height: 10.0),
-                    if (personView.person.id != currentUserId) const Divider(height: 1, thickness: 2),
-                    Container(
-                      alignment: Alignment.topCenter,
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      height: MediaQuery.of(context).size.height - 200,
-                      child: ListView(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        shrinkWrap: true,
-                        children: [
-                          Material(
-                            child: CommonMarkdownBody(
-                              body: personView.person.bio ?? 'Nothing here. This user has not written a bio.',
-                              imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
-                            ),
-                          ),
-                          const SidebarSectionHeader(value: "Stats"),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: UserStatsList(personView: personView),
-                          ),
-                          const SidebarSectionHeader(value: "Activity"),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: UserActivityList(personView: personView),
-                          ),
-                          const SidebarSectionHeader(value: "Moderates"),
-                          UserModeratorList(getPersonDetailsResponse: widget.getPersonDetailsResponse!),
-                          const SizedBox(height: 256)
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
           ),
