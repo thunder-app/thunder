@@ -18,6 +18,7 @@ import 'package:thunder/account/utils/profiles.dart';
 
 // Project imports
 import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/comment/widgets/comments_card_list.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -371,18 +372,9 @@ class _UserPageNewState extends State<UserPageNew> with SingleTickerProviderStat
                       CommentsCardTab(
                         isAccountUser: widget.isAccountUser,
                         commentViewTrees: widget.commentViewTrees!,
+                        userId: widget.userId,
+                        hasReachedCommentsEnd: false,
                       ),
-                      // PostCardTab(
-                      //   isAccountUser: widget.isAccountUser,
-                      //   postViews: widget.savedPostViews,
-                      //   userId: widget.userId,
-                      //   hasReachedSavedPostEnd: widget.hasReachedSavedPostEnd,
-                      //   hasReachedPostEnd: widget.hasReachedPostEnd,
-                      // ),
-                      // CommentsCardTab(
-                      //   isAccountUser: widget.isAccountUser,
-                      //   commentViewTrees: widget.savedComments,
-                      // ),
                       UserSidebar(
                         getPersonDetailsResponse: widget.fullPersonView,
                         onDismiss: () {},
@@ -423,10 +415,18 @@ class PostCardTab extends StatelessWidget {
 }
 
 class CommentsCardTab extends StatefulWidget {
-  const CommentsCardTab({super.key, required this.isAccountUser, this.commentViewTrees});
+  const CommentsCardTab({
+    super.key,
+    required this.isAccountUser,
+    this.commentViewTrees,
+    required this.userId,
+    this.hasReachedCommentsEnd,
+  });
 
   final List<CommentViewTree>? commentViewTrees;
   final bool isAccountUser;
+  final int? userId;
+  final bool? hasReachedCommentsEnd;
 
   @override
   State<CommentsCardTab> createState() => _CommentsCardTabState();
@@ -458,50 +458,37 @@ class _CommentsCardTabState extends State<CommentsCardTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: widget.commentViewTrees?.length,
-        itemBuilder: (context, index) => Column(
-          children: [
-            Divider(
-              height: 1.0,
-              thickness: 1.0,
-              color: ElevationOverlay.applySurfaceTint(
-                Theme.of(context).colorScheme.surface,
-                Theme.of(context).colorScheme.surfaceTint,
-                10,
-              ),
-            ),
-            CommentReference(
-              comment: widget.commentViewTrees![index].commentView!,
-              onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-              onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-              onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-              onReportAction: (int commentId) {
-                if (widget.isAccountUser) {
-                  showSnackbar(AppLocalizations.of(context)!.cannotReportOwnComment);
-                } else {
-                  showReportCommentActionBottomSheet(
-                    context,
-                    commentId: commentId,
-                  );
-                }
-              },
-              onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
-                context,
-                commentView: isEdit ? commentView : null,
-                parentCommentView: isEdit ? null : commentView,
-                onCommentSuccess: (commentView, userChanged) {
-                  if (!userChanged) {
-                    // TODO: handle success for account page changes.
-                    // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
-                  }
-                },
-              ),
-              isOwnComment: widget.isAccountUser,
-            ),
-          ],
+      body: CommentsCardList(
+        commentViewTrees: widget.commentViewTrees!,
+        hasReachedEnd: widget.hasReachedCommentsEnd,
+        personId: widget.userId,
+        onScrollEndReached: () {},
+        onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+        onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+        onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+        onReportAction: (int commentId) {
+          if (widget.isAccountUser) {
+            showSnackbar(AppLocalizations.of(context)!.cannotReportOwnComment);
+          } else {
+            showReportCommentActionBottomSheet(
+              context,
+              commentId: commentId,
+            );
+          }
+        },
+        onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+          context,
+          commentView: isEdit ? commentView : null,
+          parentCommentView: isEdit ? null : commentView,
+          onCommentSuccess: (commentView, userChanged) {
+            if (!userChanged) {
+              // TODO: handle success for account page changes.
+              // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+            }
+          },
         ),
+        isOwnComment: widget.isAccountUser,
+        disableActions: true,
       ),
     );
   }
