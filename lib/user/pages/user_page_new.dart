@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
@@ -114,7 +115,7 @@ class _UserPageNewState extends State<UserPageNew> with SingleTickerProviderStat
           }
         },
         child: Scaffold(
-            endDrawer: const Drawer(
+            endDrawer: Drawer(
               child: SafeArea(
                 child: Column(
                   children: [
@@ -125,33 +126,34 @@ class _UserPageNewState extends State<UserPageNew> with SingleTickerProviderStat
                     // manage accounts
                     // logout
 
-                    ListTile(
+                    const ListTile(
                       leading: Icon(Icons.bookmarks_sharp),
                       title: Text('Manage Subscriptions'),
                     ),
                     ListTile(
-                      leading: Icon(Icons.bookmark),
-                      title: Text('Saved'),
+                      onTap: () => context.go('saved'),
+                      leading: const Icon(Icons.bookmark),
+                      title: const Text('Saved'),
                     ),
-                    ListTile(
+                    const ListTile(
                       leading: Icon(Icons.drafts_outlined),
                       title: Text('Drafts'),
                     ),
-                    ListTile(
+                    const ListTile(
                       leading: Icon(Icons.thumbs_up_down_outlined),
                       title: Text('Upvotes & Downvotes'),
                     ),
 
-                    ListTile(
+                    const ListTile(
                       leading: Icon(Icons.group_add),
                       title: Text('Create a Community'),
                     ),
-                    ListTile(
+                    const ListTile(
                       leading: Icon(Icons.manage_accounts_rounded),
                       title: Text('Manage Accounts'),
                     ),
-                    Divider(),
-                    ListTile(
+                    const Divider(),
+                    const ListTile(
                       leading: Icon(Icons.logout),
                       title: Text('Sign Out'),
                     ),

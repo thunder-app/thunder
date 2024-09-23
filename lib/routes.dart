@@ -22,6 +22,7 @@ import 'package:thunder/settings/pages/video_player_settings.dart';
 import 'package:thunder/settings/settings.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
+import 'package:thunder/user/pages/user_saved.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 
 PageController thunderPageController = PageController(initialPage: 0);
@@ -191,6 +192,11 @@ final GoRouter router = GoRouter(
           },
         ),
       ],
+    ),
+    GoRoute(
+      name: 'saved',
+      path: '/saved',
+      builder: (BuildContext context, GoRouterState state) => const UserSavedPage(),
     ),
   ],
 );

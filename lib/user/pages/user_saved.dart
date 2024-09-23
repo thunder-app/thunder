@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import 'package:thunder/user/bloc/user_bloc_old.dart';
+import 'package:thunder/user/pages/user_page_new.dart';
 
 class UserSavedPage extends StatefulWidget {
-  const UserSavedPage({super.key});
-
+  const UserSavedPage({super.key, this.userId, this.isAccountUser});
+  final int? userId;
+  final bool? isAccountUser;
   @override
   State<UserSavedPage> createState() => _UserSavedPageState();
 }
@@ -29,7 +31,11 @@ class _UserSavedPageState extends State<UserSavedPage> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, reset: true));
+    context.read<UserBloc>().add(GetUserSavedEvent(
+          userId: widget.userId,
+          isAccountUser: widget.isAccountUser ?? false,
+          reset: true,
+        ));
     final userState = context.read<UserBloc>().state;
     return Scaffold(
       body: NestedScrollView(
@@ -78,12 +84,12 @@ class _UserSavedPageState extends State<UserSavedPage> with SingleTickerProvider
             PostCardTab(
               postViews: userState.savedPosts,
               userId: userState.userId,
-              hasReachedSavedPostEnd: widget.hasReachedSavedPostEnd,
-              isAccountUser: widget.isAccountUser,
-              hasReachedPostEnd: widget.hasReachedPostEnd,
+              hasReachedSavedPostEnd: false,
+              isAccountUser: widget.isAccountUser!,
+              hasReachedPostEnd: false,
             ),
             CommentsCardTab(
-              isAccountUser: widget.isAccountUser,
+              isAccountUser: widget.isAccountUser!,
               commentViewTrees: userState.savedComments,
               userId: userState.userId,
               hasReachedCommentsEnd: false,
