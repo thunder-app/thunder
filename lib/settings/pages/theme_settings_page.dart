@@ -980,6 +980,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 128),
                 ],
               ),
             ),

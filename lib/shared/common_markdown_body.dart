@@ -165,7 +165,12 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
                           isExpandable: true,
                           isComment: widget.isComment,
                           showFullHeightImages: true,
+<<<<<<< HEAD
                           maxWidth: widget.imageMaxWidth,
+=======
+                          maxWidth: imageMaxWidth,
+                          altText: alt,
+>>>>>>> upstream/develop
                         )
                       : Container(
                           constraints: widget.isComment == true
