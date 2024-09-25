@@ -243,7 +243,7 @@ class _PostPageState extends State<PostPage> {
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: ScalableText(
-                              flattenedComments.isEmpty ? l10n.noComments : l10n.reachedTheBottom,
+                              flattenedComments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,
                               fontScale: thunderState.metadataFontSizeScale,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
