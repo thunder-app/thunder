@@ -868,7 +868,7 @@ packages:
     source: sdk
     version: "0.0.0"
   freezed_annotation:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: freezed_annotation
       sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
@@ -1119,8 +1119,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "5868132c9b6ed1406013251d3c8da670b7dae0a2"
-      resolved-ref: "5868132c9b6ed1406013251d3c8da670b7dae0a2"
+      ref: "8d1513a3574665b464822595ac97bb166a5ffa89"
+      resolved-ref: "8d1513a3574665b464822595ac97bb166a5ffa89"
       url: "https://github.com/thunder-app/lemmy_api_client.git"
     source: git
     version: "0.21.0"

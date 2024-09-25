@@ -2329,7 +2329,7 @@
   "@unableToLoadImage": {
     "description": "Bir ikili görüntüyü yükleyemediğimizde kullanılacak yer tutucu"
   },
-  "unableToLoadImageFrom": "{Domain} adresinden resim yüklenemiyor",
+  "unableToLoadImageFrom": "{domain} adresinden resim yüklenemiyor",
   "@unableToLoadImageFrom": {
     "description": "URL'den bir resim yükleyemediğimizde kullanılacak yer tutucu"
   },
