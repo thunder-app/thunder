@@ -47,6 +47,7 @@ const String SETTINGS_GESTURES_PAGE = '/settings/gestures';
 const String SETTINGS_FAB_PAGE = '/settings/fab';
 const String SETTINGS_ACCESSIBILITY_PAGE = '/settings/accessibility';
 const String SETTINGS_ACCOUNT_PAGE = '/settings/account';
+const String SETTINGS_USER_LABELS_PAGE = '/settings/user_labels';
 const String SETTINGS_ABOUT_PAGE = '/settings/about';
 const String SETTINGS_DEBUG_PAGE = '/settings/debug';
 const String SETTINGS_APPEARANCE_POSTS_PAGE = '/settings/appearance/posts';

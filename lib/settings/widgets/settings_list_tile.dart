@@ -11,6 +11,7 @@ class SettingsListTile extends StatelessWidget {
   final String description;
   final String? subtitle;
   final String? semanticLabel;
+  final int? subtitleMaxLines;
 
   // Callback
   final Function()? onTap;
@@ -32,6 +33,7 @@ class SettingsListTile extends StatelessWidget {
     required this.description,
     this.subtitle,
     this.semanticLabel,
+    this.subtitleMaxLines,
     required this.widget,
     this.icon,
     this.onTap,
@@ -87,7 +89,12 @@ class SettingsListTile extends StatelessWidget {
                                           ),
                                   ),
                                 ),
-                                if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+                                if (subtitle != null)
+                                  Text(
+                                    subtitle!,
+                                    maxLines: subtitleMaxLines,
+                                    style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8)),
+                                  ),
                               ],
                             ),
                           ),

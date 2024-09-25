@@ -19,8 +19,8 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/utils.dart';
-import 'package:thunder/feed/view/feed_comment_list.dart';
-import 'package:thunder/feed/view/feed_widget.dart';
+import 'package:thunder/feed/widgets/feed_comment_card_list.dart';
+import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
@@ -55,6 +55,7 @@ class FeedPage extends StatefulWidget {
     this.userId,
     this.username,
     this.scaffoldStateKey,
+    this.showHidden = false,
   });
 
   /// The type of feed to display.
@@ -87,6 +88,9 @@ class FeedPage extends StatefulWidget {
   /// The scaffold key which holds the drawer
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
 
+  /// Whether to show hidden posts in the feed
+  final bool showHidden;
+
   @override
   State<FeedPage> createState() => _FeedPageState();
 }
@@ -112,6 +116,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           userId: widget.userId,
           username: widget.username,
           reset: true,
+          showHidden: widget.showHidden,
         ));
       }
     } catch (e) {
@@ -145,6 +150,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           userId: widget.userId,
           username: widget.username,
           reset: true,
+          showHidden: widget.showHidden,
         )),
       child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
     );
@@ -240,6 +246,48 @@ class _FeedViewState extends State<FeedView> {
     }
   }
 
+  Future<void> dismissBlockedUsersAndCommunities(int? userId, int? communityId) async {
+    ThunderState state = context.read<ThunderBloc>().state;
+
+    FeedBloc feedBloc = context.read<FeedBloc>();
+    List<PostViewMedia> postViewMedias = feedBloc.state.postViewMedias;
+
+    if (postViewMedias.isNotEmpty) {
+      for (PostViewMedia postViewMedia in postViewMedias) {
+        if (postViewMedia.postView.creator.id == userId || postViewMedia.postView.community.id == communityId) {
+          setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
+          await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
+        }
+      }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      feedBloc.add(FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
+      setState(() => queuedForRemoval.clear());
+    }
+  }
+
+  Future<void> dismissHiddenPost(int postId) async {
+    ThunderState state = context.read<ThunderBloc>().state;
+
+    FeedBloc feedBloc = context.read<FeedBloc>();
+    List<PostViewMedia> postViewMedias = feedBloc.state.postViewMedias;
+
+    if (postViewMedias.isNotEmpty) {
+      for (PostViewMedia postViewMedia in postViewMedias) {
+        if (postViewMedia.postView.post.id == postId) {
+          setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
+          await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
+        }
+      }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      feedBloc.add(FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
+      setState(() => queuedForRemoval.clear());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
@@ -280,6 +328,8 @@ class _FeedViewState extends State<FeedView> {
               if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
               if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
               if (previous.dismissReadId != current.dismissReadId) dismissRead();
+              if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
+              if (current.dismissHiddenPostId != null && !thunderBloc.state.showHiddenPosts) dismissHiddenPost(current.dismissHiddenPostId!);
               return true;
             },
             listener: (context, state) {
@@ -403,13 +453,13 @@ class _FeedViewState extends State<FeedView> {
                             children: [
                               selectedUserOption[1]
                                   // Widget representing the list of user comments on the feed
-                                  ? FeedCommentList(
+                                  ? FeedCommentCardList(
                                       commentViews: commentViews,
                                       tabletMode: tabletMode,
                                     )
                                   :
                                   // Widget representing the list of posts on the feed
-                                  FeedPostList(
+                                  FeedPostCardList(
                                       postViewMedias: postViewMedias,
                                       tabletMode: tabletMode,
                                       markPostReadOnScroll: markPostReadOnScroll,
@@ -543,6 +593,7 @@ class _FeedViewState extends State<FeedView> {
       return true;
     }
 
+    AuthBloc authBloc = context.read<AuthBloc>();
     FeedBloc feedBloc = context.read<FeedBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -550,7 +601,7 @@ class _FeedViewState extends State<FeedView> {
     final canPop = Navigator.of(context).canPop();
 
     // Get the desired post listing so we can check against current
-    final desiredListingType = thunderBloc.state.defaultListingType;
+    final desiredListingType = authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBloc.state.defaultListingType;
     final currentListingType = feedBloc.state.postListingType;
 
     // See if we're in a community
@@ -564,11 +615,12 @@ class _FeedViewState extends State<FeedView> {
     if (!canPop && (desiredListingType != currentListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
-          sortType: thunderBloc.state.sortTypeForInstance,
+          sortType: authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
           reset: true,
           postListingType: desiredListingType,
           feedType: FeedType.general,
           communityId: null,
+          showHidden: thunderBloc.state.showHiddenPosts,
         ),
       );
 
@@ -740,6 +792,7 @@ class FeedReachedEnd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
@@ -750,7 +803,7 @@ class FeedReachedEnd extends StatelessWidget {
           color: theme.dividerColor.withOpacity(0.1),
           padding: const EdgeInsets.symmetric(vertical: 32.0),
           child: ScalableText(
-            'Hmmm. It seems like you\'ve reached the bottom.',
+            l10n.reachedTheBottom,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleSmall,
             fontScale: state.metadataFontSizeScale,

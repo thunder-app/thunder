@@ -24,8 +24,14 @@ class LoginAttempt extends AuthEvent {
   final String password;
   final String instance;
   final String totp;
+  final bool showContentWarning;
 
-  const LoginAttempt({required this.username, required this.password, required this.instance, this.totp = ""});
+  const LoginAttempt({required this.username, required this.password, required this.instance, this.totp = "", this.showContentWarning = true});
+}
+
+/// Cancels a login attempt by emitting the `failure` state.
+class CancelLoginAttempt extends AuthEvent {
+  const CancelLoginAttempt();
 }
 
 /// TODO: Consolidate logic to have adding accounts (for both authenticated and anonymous accounts) placed here

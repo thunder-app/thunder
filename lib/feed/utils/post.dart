@@ -22,6 +22,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   int? userId,
   String? username,
   FeedTypeSubview feedTypeSubview = FeedTypeSubview.post,
+  bool showHidden = false,
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -47,18 +48,20 @@ Future<Map<String, dynamic>> fetchFeedItems({
         type: postListingType,
         communityId: communityId,
         communityName: communityName,
+        showHidden: showHidden,
       ));
 
       // Remove deleted posts
       getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
 
-      // Remove posts that contain any of the keywords in the title or body
+      // Remove posts that contain any of the keywords in the title, body, or url
       getPostsResponse = getPostsResponse.copyWith(
         posts: getPostsResponse.posts.where((postView) {
           final title = postView.post.name.toLowerCase();
           final body = postView.post.body?.toLowerCase() ?? '';
+          final url = postView.post.url?.toLowerCase() ?? '';
 
-          return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()));
+          return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()) || url.contains(keyword.toLowerCase()));
         }).toList(),
       );
 
@@ -104,7 +107,16 @@ Future<Map<String, dynamic>> fetchFeedItems({
 }
 
 /// Logic to create a post
-Future<PostView> createPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited, int? languageId}) async {
+Future<PostView> createPost({
+  required int communityId,
+  required String name,
+  String? body,
+  String? url,
+  String? customThumbnail,
+  bool? nsfw,
+  int? postIdBeingEdited,
+  int? languageId,
+}) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -117,6 +129,7 @@ Future<PostView> createPost({required int communityId, required String name, Str
       name: name,
       body: body,
       url: url?.isEmpty == true ? null : url,
+      customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
       nsfw: nsfw,
       postId: postIdBeingEdited,
       languageId: languageId,
@@ -128,6 +141,7 @@ Future<PostView> createPost({required int communityId, required String name, Str
       name: name,
       body: body,
       url: url?.isEmpty == true ? null : url,
+      customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
       nsfw: nsfw,
       languageId: languageId,
     ));

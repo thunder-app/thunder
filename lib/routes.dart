@@ -17,9 +17,11 @@ import 'package:thunder/settings/pages/general_settings_page.dart';
 import 'package:thunder/settings/pages/gesture_settings_page.dart';
 import 'package:thunder/settings/pages/post_appearance_settings_page.dart';
 import 'package:thunder/settings/pages/theme_settings_page.dart';
+import 'package:thunder/settings/pages/user_labels_settings_page.dart';
 import 'package:thunder/settings/pages/video_player_settings.dart';
 import 'package:thunder/settings/settings.dart';
 import 'package:thunder/thunder/thunder.dart';
+import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 
 PageController thunderPageController = PageController(initialPage: 0);
@@ -144,9 +146,23 @@ final GoRouter router = GoRouter(
           name: 'account',
           path: 'account',
           builder: (context, state) {
+            UserSettingsBloc userSettingsBloc = UserSettingsBloc();
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: (state.extra! as List)[0] as ThunderBloc),
+                BlocProvider.value(value: userSettingsBloc),
+              ],
+              child: UserSettingsPage(settingToHighlight: (state.extra! as List).elementAtOrNull(1) as LocalSettings?),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'user_labels',
+          path: 'user_labels',
+          builder: (context, state) {
             return BlocProvider.value(
               value: (state.extra! as List)[0] as ThunderBloc,
-              child: UserSettingsPage(settingToHighlight: (state.extra! as List).elementAtOrNull(1) as LocalSettings?),
+              child: UserLabelSettingsPage(settingToHighlight: (state.extra! as List).elementAtOrNull(1) as LocalSettings?),
             );
           },
         ),

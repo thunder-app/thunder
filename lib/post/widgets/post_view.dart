@@ -47,7 +47,6 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostSubview extends StatefulWidget {
   final PostViewMedia postViewMedia;
-  final bool useDisplayNames;
   final int? selectedCommentId;
   final List<PostView>? crossPosts;
   final bool viewSource;
@@ -56,11 +55,11 @@ class PostSubview extends StatefulWidget {
   final bool showExpandableButton;
   final bool selectable;
   final bool showReplyEditorButtons;
+  final void Function(String? selection)? onSelectionChanged;
 
   const PostSubview({
     super.key,
     this.selectedCommentId,
-    required this.useDisplayNames,
     required this.postViewMedia,
     required this.crossPosts,
     required this.viewSource,
@@ -69,6 +68,7 @@ class PostSubview extends StatefulWidget {
     this.showExpandableButton = true,
     this.selectable = false,
     this.showReplyEditorButtons = false,
+    this.onSelectionChanged,
   });
 
   @override
@@ -124,6 +124,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     if (postView.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (postView.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
     if (postView.creator.id == authState.account?.userId) userGroups.add(UserType.self);
+    if (postView.creator.published.month == DateTime.now().month && postView.creator.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
 
     return ExpandableNotifier(
       controller: expandableController,
@@ -201,6 +202,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             anchors: selectableRegionState.contextMenuAnchors,
                           );
                         },
+                        onSelectionChanged: (value) => widget.onSelectionChanged?.call(value?.plainText),
                         child: child,
                       );
                     },
@@ -229,11 +231,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       UserChip(
-                        personId: postView.creator.id,
+                        person: postView.creator,
                         personAvatar: UserAvatar(person: postView.creator, radius: 10, thumbnailSize: 20, format: 'png'),
-                        personName: postView.creator.name,
-                        personDisplayName: postView.creator.displayName ?? postView.creator.name,
-                        personUrl: postView.creator.actorId,
                         userGroups: userGroups,
                         includeInstance: thunderState.postBodyShowCommunityInstance,
                       ),
@@ -248,6 +247,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         communityId: postView.community.id,
                         communityAvatar: CommunityAvatar(community: postView.community, radius: 10, thumbnailSize: 20, format: 'png'),
                         communityName: postView.community.name,
+                        communityTitle: postView.community.title,
                         communityUrl: postView.community.actorId,
                       ),
                     ],

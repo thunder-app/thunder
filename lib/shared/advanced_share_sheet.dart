@@ -197,6 +197,7 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                             isExpandable: true,
                             isComment: true,
                             showFullHeightImages: true,
+                            altText: postViewMedia.media.first.altText,
                           ),
                         if (_isImageCustomized(options, postViewMedia))
                           snapshot.hasData && !isGeneratingImage

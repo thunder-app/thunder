@@ -24,6 +24,7 @@ import 'package:thunder/main.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
+import 'package:thunder/notification/utils/notification_utils.dart';
 import 'package:thunder/utils/instance.dart';
 
 const String _lastPollTimeId = 'thunder_last_notifications_poll_time';
@@ -52,6 +53,8 @@ Future<void> pollRepliesAndShowNotifications() async {
   final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
   final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
   final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+  final bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
+  final bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
 
   // Ensure that the db is initialized before attempting to access below.
   await initializeDatabase();
@@ -62,7 +65,7 @@ Future<void> pollRepliesAndShowNotifications() async {
   Map<Account, List<CommentReplyView>> notifications = {};
 
   for (final Account account in accounts) {
-    LemmyClient client = LemmyClient()..changeBaseUrl(account.instance!);
+    LemmyClient client = LemmyClient()..changeBaseUrl(account.instance);
 
     // Iterate through inbox replies
     GetRepliesResponse getRepliesResponse = await client.lemmyApiV3.run(
@@ -97,13 +100,34 @@ Future<void> pollRepliesAndShowNotifications() async {
 
     for (CommentReplyView commentReplyView in replies) {
       final String commentContent = cleanCommentContent(commentReplyView.comment);
-      final String htmlComment = markdownToHtml(commentContent);
+      final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
       final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
       final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-        '${commentReplyView.post.name} · ${generateCommunityFullName(null, commentReplyView.community.name, fetchInstanceNameFromUrl(commentReplyView.community.actorId), communitySeparator: communitySeparator)}\n$htmlComment',
-        contentTitle: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
-        summaryText: generateUserFullName(null, commentReplyView.recipient.name, fetchInstanceNameFromUrl(commentReplyView.recipient.actorId), userSeparator: userSeparator),
+        '${commentReplyView.post.name} · ${generateCommunityFullName(
+          null,
+          commentReplyView.community.name,
+          commentReplyView.community.title,
+          fetchInstanceNameFromUrl(commentReplyView.community.actorId),
+          communitySeparator: communitySeparator,
+          useDisplayName: useDisplayNamesForCommunities,
+        )}\n$htmlComment',
+        contentTitle: generateUserFullName(
+          null,
+          commentReplyView.creator.name,
+          commentReplyView.creator.displayName,
+          fetchInstanceNameFromUrl(commentReplyView.creator.actorId),
+          userSeparator: userSeparator,
+          useDisplayName: useDisplayNamesForUsers,
+        ),
+        summaryText: generateUserFullName(
+          null,
+          commentReplyView.recipient.name,
+          commentReplyView.recipient.displayName,
+          fetchInstanceNameFromUrl(commentReplyView.recipient.actorId),
+          userSeparator: userSeparator,
+          useDisplayName: useDisplayNamesForUsers,
+        ),
         htmlFormatBigText: true,
       );
 
@@ -111,7 +135,14 @@ Future<void> pollRepliesAndShowNotifications() async {
         id: commentReplyView.commentReply.id,
         account: account,
         bigTextStyleInformation: bigTextStyleInformation,
-        title: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
+        title: generateUserFullName(
+          null,
+          commentReplyView.creator.name,
+          commentReplyView.creator.displayName,
+          fetchInstanceNameFromUrl(commentReplyView.creator.actorId),
+          userSeparator: userSeparator,
+          useDisplayName: useDisplayNamesForUsers,
+        ),
         content: plaintextComment,
         payload: jsonEncode(NotificationPayload(
           type: NotificationType.local,
@@ -178,11 +209,10 @@ Future<void> initBackgroundFetch() async {
 }
 
 /// Initializes BackgroundFetch to send a test notification
-/// It uses an interval of 1 and the alarm manager so the user doesn't have to wait too long.
 Future<void> initTestBackgroundFetch() async {
   await BackgroundFetch.configure(
     BackgroundFetchConfig(
-      minimumFetchInterval: 1,
+      minimumFetchInterval: 15,
       stopOnTerminate: false,
       startOnBoot: true,
       enableHeadless: true,
@@ -191,7 +221,6 @@ Future<void> initTestBackgroundFetch() async {
       requiresStorageNotLow: false,
       requiresCharging: false,
       requiresDeviceIdle: false,
-      forceAlarmManager: true,
     ),
     (String taskId) async {
       BackgroundFetch.finish(taskId);

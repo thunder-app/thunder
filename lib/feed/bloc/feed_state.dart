@@ -22,7 +22,11 @@ final class FeedState extends Equatable {
     this.message,
     this.scrollId = 0,
     this.dismissReadId = 0,
+    this.dismissBlockedUserId,
+    this.dismissBlockedCommunityId,
+    this.dismissHiddenPostId,
     this.insertedPostIds = const [],
+    this.showHidden = false,
   });
 
   /// The status of the feed
@@ -79,8 +83,20 @@ final class FeedState extends Equatable {
   /// This id is used for dismissing already read posts in the feed
   final int dismissReadId;
 
+  /// This id is used for dismissing posts from blocked users
+  final int? dismissBlockedUserId;
+
+  /// This id is used for dismissing posts from blocked communities
+  final int? dismissBlockedCommunityId;
+
+  /// This id is used for dismissing posts that have been hidden by the user
+  final int? dismissHiddenPostId;
+
   /// The inserted post ids. This is used to prevent duplicate posts
   final List<int> insertedPostIds;
+
+  /// Whether to show hidden posts in the fed
+  final bool showHidden;
 
   FeedState copyWith({
     FeedStatus? status,
@@ -101,7 +117,11 @@ final class FeedState extends Equatable {
     String? message,
     int? scrollId,
     int? dismissReadId,
+    int? dismissBlockedUserId,
+    int? dismissBlockedCommunityId,
+    int? dismissHiddenPostId,
     List<int>? insertedPostIds,
+    bool? showHidden,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -122,7 +142,11 @@ final class FeedState extends Equatable {
       message: message,
       scrollId: scrollId ?? this.scrollId,
       dismissReadId: dismissReadId ?? this.dismissReadId,
+      dismissBlockedUserId: dismissBlockedUserId,
+      dismissBlockedCommunityId: dismissBlockedCommunityId,
+      dismissHiddenPostId: dismissHiddenPostId,
       insertedPostIds: insertedPostIds ?? this.insertedPostIds,
+      showHidden: showHidden ?? this.showHidden,
     );
   }
 
@@ -151,6 +175,10 @@ final class FeedState extends Equatable {
         message,
         scrollId,
         dismissReadId,
-        insertedPostIds
+        dismissBlockedUserId,
+        dismissBlockedCommunityId,
+        dismissHiddenPostId,
+        insertedPostIds,
+        showHidden
       ];
 }

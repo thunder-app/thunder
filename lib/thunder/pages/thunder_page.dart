@@ -166,6 +166,7 @@ class _ThunderState extends State<Thunder> {
     showSnackbar(
       AppLocalizations.of(context)!.tapToExit,
       duration: const Duration(milliseconds: 3500),
+      closable: false,
     );
   }
 
@@ -502,9 +503,10 @@ class _ThunderState extends State<Thunder> {
                         context.read<FeedBloc>().add(
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
-                                postListingType: thunderBlocState.defaultListingType,
-                                sortType: thunderBlocState.sortTypeForInstance,
+                                postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
+                                sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
                                 reset: true,
+                                showHidden: thunderBlocState.showHiddenPosts,
                               ),
                             );
                       }
@@ -519,6 +521,7 @@ class _ThunderState extends State<Thunder> {
                               child: Container(),
                             ),
                           );
+                        case AuthStatus.contentWarning:
                         case AuthStatus.success:
                           Version? version = thunderBlocState.version;
                           bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
@@ -635,9 +638,10 @@ class _ThunderState extends State<Thunder> {
                               FeedPage(
                                 useGlobalFeedBloc: true,
                                 feedType: FeedType.general,
-                                postListingType: thunderBlocState.defaultListingType,
-                                sortType: thunderBlocState.sortTypeForInstance,
+                                postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
+                                sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
                                 scaffoldStateKey: scaffoldStateKey,
+                                showHidden: thunderBlocState.showHiddenPosts,
                               ),
                               const SearchPage(),
                               const AccountPage(),

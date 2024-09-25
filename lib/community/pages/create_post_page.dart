@@ -1,6 +1,5 @@
 // Dart imports
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 // Flutter imports
@@ -14,19 +13,18 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -47,7 +45,7 @@ class CreatePostPage extends StatefulWidget {
   final int? communityId;
   final CommunityView? communityView;
 
-  /// Whether or not to pre-populate the post with the [title], [text], [image] and/or [url]
+  /// Whether or not to pre-populate the post with the [title], [text], [image], [url], and/or [customThumbnail]
   final bool? prePopulated;
 
   /// Used to pre-populate the post title
@@ -61,6 +59,9 @@ class CreatePostPage extends StatefulWidget {
 
   /// Used to pre-populate the shared link for the post
   final String? url;
+
+  /// Used to pre-populate the custom thumbnail for the post
+  final String? customThumbnail;
 
   /// [postView] is passed in when editing an existing post
   final PostView? postView;
@@ -76,6 +77,7 @@ class CreatePostPage extends StatefulWidget {
     this.title,
     this.text,
     this.url,
+    this.customThumbnail,
     this.prePopulated = false,
     this.postView,
     this.onPostSuccess,
@@ -86,17 +88,22 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
-  /// Holds the draft id associated with the post. This id is determined by the input parameters passed in.
-  /// If [postView] is passed in, the id will be in the form 'drafts_cache-post-edit-{postView.post.id}'
-  /// If [communityId] is passed in, the id will be in the form 'drafts_cache-post-create-{communityId}'
-  /// If [communityView] is passed in, the id will be in the form 'drafts_cache-post-create-{communityView.community.id}'
-  /// If none of these are passed in, the id will be in the form 'drafts_cache-post-create-general'
-  String draftId = '';
+  /// Holds the draft type associated with the post. This type is determined by the input parameters passed in.
+  /// If [postView] is passed in, this will be a [DraftType.postEdit].
+  /// If [communityId] or [communityView] is passed in, this will be a [DraftType.postCreate].
+  /// Otherwise it will be a [DraftType.postCreateGeneral].
+  late DraftType draftType;
 
-  /// Holds the current draft for the post.
-  DraftPost draftPost = DraftPost();
+  /// The ID of the post we are editing, to find a corresponding draft, if any
+  int? draftExistingId;
 
-  /// Timer for saving the current draft to local storage
+  /// The ID of the community we're replying to, to find a corresponding draft, if any
+  int? draftReplyId;
+
+  /// Whether to save this post as a draft
+  bool saveDraft = true;
+
+  /// Timer for saving the current draft
   Timer? _draftTimer;
 
   /// Whether or not to show the preview for the post from the raw markdown
@@ -114,8 +121,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
   /// The shared link for the post. This is used to determine any cross posts
   String url = "";
 
+  /// The custom thumbnail for this post.
+  String? customThumbnail;
+
   /// The error message for the shared link if available
   String? urlError;
+
+  /// The error message for the custom thumbnail if available
+  String? customThumbnailError;
 
   /// The id of the community that the post will be created in
   int? communityId;
@@ -132,15 +145,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
+  final TextEditingController _customThumbnailTextController = TextEditingController();
 
   /// The focus node for the body. This is used to keep track of the position of the cursor when toggling preview
   final FocusNode _bodyFocusNode = FocusNode();
 
   /// The keyboard visibility controller used to determine if the keyboard is visible at a given time
   final keyboardVisibilityController = KeyboardVisibilityController();
-
-  /// Used for restoring and saving drafts
-  SharedPreferences? sharedPreferences;
 
   final imageBloc = ImageBloc();
 
@@ -156,20 +167,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     // Set up any text controller listeners
     _titleTextController.addListener(() {
-      draftPost.title = _titleTextController.text;
       _validateSubmission();
     });
 
     _urlTextController.addListener(() {
       url = _urlTextController.text;
-      draftPost.url = _urlTextController.text;
-
       _validateSubmission();
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
     });
 
-    _bodyTextController.addListener(() {
-      draftPost.text = _bodyTextController.text;
+    _customThumbnailTextController.addListener(() {
+      customThumbnail = _customThumbnailTextController.text;
+      _validateSubmission();
+      debounce(const Duration(milliseconds: 1000), _updatePreview, [customThumbnail]);
     });
 
     // Logic for pre-populating the post with the given fields
@@ -177,11 +187,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
       _titleTextController.text = widget.title ?? '';
       _bodyTextController.text = widget.text ?? '';
       _urlTextController.text = widget.url ?? '';
+      _customThumbnailTextController.text = widget.customThumbnail ?? '';
       _getDataFromLink(updateTitleField: _titleTextController.text.isEmpty);
 
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          if (context.mounted) context.read<CreatePostCubit>().uploadImage(widget.image!.path, isPostImage: true);
+          if (context.mounted) context.read<CreatePostCubit>().uploadImages([widget.image!.path], isPostImage: true);
         });
       }
 
@@ -192,11 +203,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
     if (widget.postView != null) {
       _titleTextController.text = widget.postView!.post.name;
       _urlTextController.text = widget.postView!.post.url ?? '';
+      _customThumbnailTextController.text = widget.postView!.post.thumbnailUrl ?? '';
       _bodyTextController.text = widget.postView!.post.body ?? '';
       isNSFW = widget.postView!.post.nsfw;
       languageId = widget.postView!.post.languageId;
-
-      return;
     }
 
     // Finally, if there is no pre-populated fields, then we retrieve the most recent draft
@@ -210,17 +220,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _bodyTextController.dispose();
     _titleTextController.dispose();
     _urlTextController.dispose();
+    _customThumbnailTextController.dispose();
     _bodyFocusNode.dispose();
 
     FocusManager.instance.primaryFocus?.unfocus();
 
     _draftTimer?.cancel();
 
-    if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
-      sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
+    Draft draft = _generateDraft();
+
+    if (draft.isPostNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
+      Draft.upsertDraft(draft);
       showSnackbar(l10n.postSavedAsDraft);
     } else {
-      sharedPreferences?.remove(draftId);
+      Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
     }
 
     super.dispose();
@@ -228,49 +241,77 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   /// Attempts to restore an existing draft of a post
   void _restoreExistingDraft() async {
-    sharedPreferences = (await UserPreferences.instance).sharedPreferences;
-
     if (widget.postView != null) {
-      draftId = '${LocalSettings.draftsCache.name}-post-edit-${widget.postView!.post.id}';
+      draftType = DraftType.postEdit;
+      draftExistingId = widget.postView?.post.id;
     } else if (widget.communityId != null) {
-      draftId = '${LocalSettings.draftsCache.name}-post-create-${widget.communityId}';
+      draftType = DraftType.postCreate;
+      draftReplyId = widget.communityId;
     } else if (widget.communityView != null) {
-      draftId = '${LocalSettings.draftsCache.name}-post-create-${widget.communityView!.community.id}';
+      draftType = DraftType.postCreate;
+      draftReplyId = widget.communityView!.community.id;
     } else {
-      draftId = '${LocalSettings.draftsCache.name}-post-create-general';
+      draftType = DraftType.postCreateGeneral;
     }
 
-    String? draftPostJson = sharedPreferences?.getString(draftId);
+    Draft? draft = await Draft.fetchDraft(draftType, draftExistingId, draftReplyId);
 
-    if (draftPostJson != null) {
-      draftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
-
-      _titleTextController.text = draftPost.title ?? '';
-      _urlTextController.text = draftPost.url ?? '';
-      _bodyTextController.text = draftPost.text ?? '';
+    if (draft != null) {
+      _titleTextController.text = draft.title ?? '';
+      _urlTextController.text = draft.url ?? '';
+      _customThumbnailTextController.text = draft.customThumbnail ?? '';
+      _bodyTextController.text = draft.body ?? '';
     }
 
     _draftTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-      if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
-        sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
+      Draft draft = _generateDraft();
+      if (draft.isPostNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
+        Draft.upsertDraft(draft);
       } else {
-        sharedPreferences?.remove(draftId);
+        Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
       }
     });
 
-    if (context.mounted && draftPost.isNotEmpty) {
+    if (context.mounted && draft?.isPostNotEmpty == true && _draftDiffersFromEdit(draft!)) {
       showSnackbar(
         AppLocalizations.of(context)!.restoredPostFromDraft,
         trailingIcon: Icons.delete_forever_rounded,
         trailingIconColor: Theme.of(context).colorScheme.errorContainer,
         trailingAction: () {
-          sharedPreferences?.remove(draftId);
-          _titleTextController.clear();
-          _urlTextController.clear();
-          _bodyTextController.clear();
+          Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
+          _titleTextController.text = widget.postView?.post.name ?? '';
+          _urlTextController.text = widget.postView?.post.url ?? '';
+          _customThumbnailTextController.text = widget.postView?.post.thumbnailUrl ?? '';
+          _bodyTextController.text = widget.postView?.post.body ?? '';
         },
       );
     }
+  }
+
+  Draft _generateDraft() {
+    return Draft(
+      id: '',
+      draftType: draftType,
+      existingId: draftExistingId,
+      replyId: draftReplyId,
+      title: _titleTextController.text,
+      url: _urlTextController.text,
+      customThumbnail: _customThumbnailTextController.text,
+      body: _bodyTextController.text,
+    );
+  }
+
+  /// Checks whether we are potentially saving a draft of an edit and, if so,
+  /// whether the draft contains different contents from the edit
+  bool _draftDiffersFromEdit(Draft draft) {
+    if (widget.postView == null) {
+      return true;
+    }
+
+    return draft.title != widget.postView!.post.name ||
+        draft.url != (widget.postView!.post.url ?? '') ||
+        draft.customThumbnail != (widget.postView!.post.thumbnailUrl ?? '') ||
+        draft.body != (widget.postView!.post.body ?? '');
   }
 
   /// Attempts to get the suggested title for a given link
@@ -316,10 +357,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
           switch (state.status) {
             case CreatePostStatus.imageUploadSuccess:
-              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+              String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
+              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
               break;
             case CreatePostStatus.postImageUploadSuccess:
-              _urlTextController.text = state.imageUrl ?? '';
+              _urlTextController.text = state.imageUrls?.first ?? '';
               break;
             case CreatePostStatus.imageUploadFailure:
             case CreatePostStatus.postImageUploadFailure:
@@ -329,43 +371,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
           }
         },
         builder: (context, state) {
-          return KeyboardDismissOnTap(
+          return GestureDetector(
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
             child: Scaffold(
               appBar: AppBar(
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
                 toolbarHeight: 70.0,
                 centerTitle: false,
-                actions: [
-                  state.status == CreatePostStatus.submitting
-                      ? const Padding(
-                          padding: EdgeInsets.only(right: 20.0),
-                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: IconButton(
-                            onPressed: isSubmitButtonDisabled
-                                ? null
-                                : () {
-                                    draftPost.saveAsDraft = false;
-
-                                    context.read<CreatePostCubit>().createOrEditPost(
-                                          communityId: communityId!,
-                                          name: _titleTextController.text,
-                                          body: _bodyTextController.text,
-                                          nsfw: isNSFW,
-                                          url: url,
-                                          postIdBeingEdited: widget.postView?.post.id,
-                                          languageId: languageId,
-                                        );
-                                  },
-                            icon: Icon(
-                              widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
-                              semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
-                            ),
-                          ),
-                        ),
-                ],
               ),
               body: SafeArea(
                 child: Column(
@@ -429,24 +443,33 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               builder: (context, controller, focusNode) => TextField(
                                 controller: controller,
                                 focusNode: focusNode,
-                                decoration: InputDecoration(hintText: l10n.postTitle),
+                                decoration: InputDecoration(
+                                  labelText: l10n.postTitle,
+                                  helperText: l10n.requiredField,
+                                  isDense: true,
+                                  border: const OutlineInputBorder(),
+                                  contentPadding: const EdgeInsets.all(13),
+                                ),
                               ),
                               hideOnEmpty: true,
                               hideOnLoading: true,
                               hideOnError: true,
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             TextFormField(
                               controller: _urlTextController,
                               decoration: InputDecoration(
-                                hintText: l10n.postURL,
+                                labelText: l10n.postURL,
                                 errorText: urlError,
+                                isDense: true,
+                                border: const OutlineInputBorder(),
+                                contentPadding: const EdgeInsets.all(13),
                                 suffixIcon: IconButton(
                                   onPressed: () async {
                                     if (state.status == CreatePostStatus.postImageUploadInProgress) return;
 
-                                    String imagePath = await selectImageToUpload();
-                                    if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: true);
+                                    List<String> imagesPath = await selectImagesToUpload();
+                                    if (context.mounted) context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
                                   },
                                   icon: state.status == CreatePostStatus.postImageUploadInProgress
                                       ? const SizedBox(
@@ -464,14 +487,31 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            if (LemmyClient.instance.supportsFeature(LemmyFeature.customThumbnail) && !isImageUrl(_urlTextController.text)) ...[
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: _customThumbnailTextController,
+                                decoration: InputDecoration(
+                                  labelText: l10n.thumbnailUrl,
+                                  errorText: customThumbnailError,
+                                  isDense: true,
+                                  border: const OutlineInputBorder(),
+                                  contentPadding: const EdgeInsets.all(13),
+                                ),
+                              ),
+                            ],
+                            SizedBox(height: url.isNotEmpty ? 10 : 5),
                             Visibility(
                               visible: url.isNotEmpty,
                               child: LinkPreviewCard(
                                 hideNsfw: false,
                                 scrapeMissingPreviews: false,
                                 originURL: url,
-                                mediaURL: isImageUrl(url) ? url : null,
+                                mediaURL: isImageUrl(url)
+                                    ? url
+                                    : customThumbnail?.isNotEmpty == true && isImageUrl(customThumbnail!)
+                                        ? customThumbnail
+                                        : null,
                                 mediaHeight: null,
                                 mediaWidth: null,
                                 showFullHeightImages: false,
@@ -535,6 +575,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 minLines: 8,
                                 maxLines: null,
                                 textStyle: theme.textTheme.bodyLarge,
+                                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                               ),
                               crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                               duration: const Duration(milliseconds: 120),
@@ -588,13 +629,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               customImageButtonAction: () async {
                                 if (state.status == CreatePostStatus.imageUploadInProgress) return;
 
-                                String imagePath = await selectImageToUpload();
-                                if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: false);
+                                List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
+                                if (context.mounted) context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
                               },
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
                             child: IconButton(
                               onPressed: () {
                                 if (!showPreview) {
@@ -606,12 +647,35 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
                               },
                               icon: Icon(
-                                showPreview ? Icons.visibility_outlined : Icons.visibility,
+                                showPreview ? Icons.visibility_off_rounded : Icons.visibility,
                                 color: theme.colorScheme.onSecondary,
                                 semanticLabel: l10n.postTogglePreview,
                               ),
-                              visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
-                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
+                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
+                            child: SizedBox(
+                              width: 60,
+                              child: IconButton(
+                                onPressed: isSubmitButtonDisabled || state.status == CreatePostStatus.submitting ? null : () => _onCreatePost(context),
+                                icon: state.status == CreatePostStatus.submitting
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : Icon(
+                                        widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                        color: theme.colorScheme.onSecondary,
+                                        semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                                      ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.secondary,
+                                  disabledBackgroundColor: getBackgroundColor(context),
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -628,8 +692,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   void _updatePreview(String text) async {
+    SearchResponse? searchResponse;
     if (url == text) {
-      SearchResponse? searchResponse;
       try {
         // Fetch cross-posts
         final Account? account = await fetchActiveProfileAccount();
@@ -641,34 +705,54 @@ class _CreatePostPageState extends State<CreatePostPage> {
           limit: 20,
           auth: account?.jwt,
         ));
-      } finally {
+      } catch (e) {
+        // Ignore
+      }
+    }
+
+    setState(() {
+      crossPosts = searchResponse?.posts ?? [];
+    });
+  }
+
+  void _validateSubmission() {
+    final Uri? parsedUrl = Uri.tryParse(_urlTextController.text);
+    final Uri? parsedCustomThumbnail = Uri.tryParse(_customThumbnailTextController.text);
+
+    if (isSubmitButtonDisabled) {
+      // It's disabled, check if we can enable it.
+      if (_titleTextController.text.isNotEmpty && parsedUrl != null && parsedCustomThumbnail != null && communityId != null) {
         setState(() {
-          crossPosts = searchResponse?.posts ?? [];
+          isSubmitButtonDisabled = false;
+          urlError = null;
+          customThumbnailError = null;
+        });
+      }
+    } else {
+      // It's enabled, check if we need to disable it.
+      if (_titleTextController.text.isEmpty || parsedUrl == null || parsedCustomThumbnail == null || communityId == null) {
+        setState(() {
+          isSubmitButtonDisabled = true;
+          urlError = parsedUrl == null ? AppLocalizations.of(context)!.notValidUrl : null;
+          customThumbnailError = parsedCustomThumbnail == null ? AppLocalizations.of(context)!.notValidUrl : null;
         });
       }
     }
   }
 
-  void _validateSubmission() {
-    final Uri? parsedUrl = Uri.tryParse(_urlTextController.text);
+  void _onCreatePost(BuildContext context) {
+    saveDraft = false;
 
-    if (isSubmitButtonDisabled) {
-      // It's disabled, check if we can enable it.
-      if (_titleTextController.text.isNotEmpty && parsedUrl != null && communityId != null) {
-        setState(() {
-          isSubmitButtonDisabled = false;
-          urlError = null;
-        });
-      }
-    } else {
-      // It's enabled, check if we need to disable it.
-      if (_titleTextController.text.isEmpty || parsedUrl == null || communityId == null) {
-        setState(() {
-          isSubmitButtonDisabled = true;
-          urlError = parsedUrl == null ? AppLocalizations.of(context)!.notValidUrl : null;
-        });
-      }
-    }
+    context.read<CreatePostCubit>().createOrEditPost(
+          communityId: communityId!,
+          name: _titleTextController.text,
+          body: _bodyTextController.text,
+          nsfw: isNSFW,
+          url: url,
+          customThumbnail: customThumbnail,
+          postIdBeingEdited: widget.postView?.post.id,
+          languageId: languageId,
+        );
   }
 }
 
@@ -731,7 +815,10 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                             CommunityFullNameWidget(
                               context,
                               widget.communityView?.community.name,
+                              widget.communityView?.community.title,
                               fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                              // Override, because we have the display name right above
+                              useDisplayName: false,
                             )
                           ],
                         )
@@ -759,6 +846,7 @@ class _CommunitySelectorState extends State<CommunitySelector> {
   }
 }
 
+@Deprecated('Use Draft model through database instead')
 class DraftPost {
   String? title;
   String? url;
