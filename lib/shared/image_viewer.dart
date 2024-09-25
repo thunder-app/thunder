@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,7 @@ class ImageViewer extends StatefulWidget {
   final Uint8List? bytes;
   final int? postId;
   final void Function()? navigateToPost;
+  final String? altText;
 
   const ImageViewer({
     super.key,
@@ -35,6 +37,7 @@ class ImageViewer extends StatefulWidget {
     this.bytes,
     this.postId,
     this.navigateToPost,
+    this.altText,
   }) : assert(url != null || bytes != null);
 
   get postViewMedia => null;
@@ -146,6 +149,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final ThunderState thunderState = context.read<ThunderBloc>().state;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140), vsync: this);
     Function() animationListener = () {};
@@ -414,7 +418,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       await Share.shareXFiles([XFile(mediaFile!.path)]);
                                     } catch (e) {
                                       // Tell the user that the download failed
-                                      showSnackbar(AppLocalizations.of(context)!.errorDownloadingMedia(e));
+                                      showSnackbar(l10n.errorDownloadingMedia(e));
                                     } finally {
                                       setState(() => isDownloadingMedia = false);
                                     }
@@ -522,7 +526,140 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
             ],
           ),
         ),
+        if (widget.altText?.isNotEmpty == true)
+          Positioned(
+            bottom: kBottomNavigationBarHeight + 25,
+            width: MediaQuery.sizeOf(context).width,
+            child: AnimatedOpacity(
+              opacity: fullscreen ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 200),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: ImageAltTextWrapper(altText: widget.altText!),
+              ),
+            ),
+          ),
       ],
+    );
+  }
+}
+
+class ImageAltTextWrapper extends StatefulWidget {
+  final String altText;
+
+  const ImageAltTextWrapper({super.key, required this.altText});
+
+  @override
+  State<ImageAltTextWrapper> createState() => _ImageAltTextWrapperState();
+}
+
+class _ImageAltTextWrapperState extends State<ImageAltTextWrapper> {
+  final GlobalKey textKey = GlobalKey();
+  bool altTextIsLong = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        altTextIsLong = (textKey.currentContext?.size?.height ?? 0) > 40;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    return AnimatedCrossFade(
+      crossFadeState: altTextIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+      duration: const Duration(milliseconds: 250),
+      firstChild: ImageAltText(key: textKey, altText: widget.altText),
+      secondChild: ExpandableNotifier(
+        child: Expandable(
+          expanded: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ImageAltText(altText: widget.altText),
+              ExpandableButton(
+                theme: const ExpandableThemeData(useInkWell: false),
+                child: Text(
+                  l10n.showLess,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withOpacity(0.5),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          collapsed: Stack(
+            children: [
+              LimitedBox(
+                maxHeight: 60,
+                child: ShaderMask(
+                  shaderCallback: (bounds) {
+                    return const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black,
+                        Colors.transparent,
+                        Colors.transparent,
+                      ],
+                      stops: [0.0, 0.8, 1.0],
+                    ).createShader(bounds);
+                  },
+                  blendMode: BlendMode.dstIn,
+                  child: ImageAltText(altText: widget.altText),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: ExpandableButton(
+                  theme: const ExpandableThemeData(useInkWell: false),
+                  child: Text(
+                    l10n.showMore,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withOpacity(0.5),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ImageAltText extends StatelessWidget {
+  final String altText;
+
+  const ImageAltText({
+    super.key,
+    required this.altText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    return Text(
+      key: key,
+      altText,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        color: Colors.white.withOpacity(0.90),
+        shadows: [
+          Shadow(
+            offset: const Offset(1, 1),
+            color: Colors.black.withOpacity(1),
+            blurRadius: 5.0,
+          )
+        ],
+      ),
     );
   }
 }

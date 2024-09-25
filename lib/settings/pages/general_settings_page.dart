@@ -427,6 +427,23 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   setting: LocalSettings.hideNsfwPosts,
                   highlightedSetting: settingToHighlight,
                 ),
+                SettingsListTile(
+                  icon: Icons.manage_accounts_rounded,
+                  description: l10n.lookingForAccountSpecificFeedSettings,
+                  widget: const SizedBox(
+                    height: 42.0,
+                    child: Icon(Icons.chevron_right_rounded),
+                  ),
+                  onTap: () {
+                    GoRouter.of(context).push(SETTINGS_ACCOUNT_PAGE, extra: [
+                      context.read<ThunderBloc>(),
+                      LocalSettings.accountDefaultFeedType,
+                    ]);
+                  },
+                  highlightKey: settingToHighlightKey,
+                  setting: null,
+                  highlightedSetting: settingToHighlight,
+                ),
                 const ThunderDivider(sliver: false),
               ],
             ),
