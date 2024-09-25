@@ -95,6 +95,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _reportCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<UpdateScrollPosition>(
+      _onUpdateScrollPosition,
+    );
+    on<UpdateCollapsedComment>(
+      _onUpdateCollapsedComment,
+    );
   }
 
   /// Fetches the post, along with the initial set of comments
@@ -788,5 +794,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
 
     return null;
+  }
+
+  void _onUpdateScrollPosition(UpdateScrollPosition event, Emitter<PostState> emit) {
+    return emit(state.copyWith(status: state.status, scrollPosition: event.scrollPosition, didScrollPositionChange: true));
+  }
+
+  void _onUpdateCollapsedComment(UpdateCollapsedComment event, Emitter<PostState> emit) {
+    List<int> collapsedComments = event.collapsed ? (state.collapsedComments.toList()..add(event.commentId)) : (state.collapsedComments.toList()..remove(event.commentId));
+
+    return emit(state.copyWith(status: state.status, collapsedComments: collapsedComments));
   }
 }

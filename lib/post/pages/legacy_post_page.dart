@@ -123,8 +123,15 @@ class _PostPageState extends State<PostPage> {
       _previousIsFabSummoned = isFabSummoned;
     }
 
-    return BlocProvider<PostBloc>(
-      create: (context) => PostBloc(),
+    late final PostBloc postBloc;
+    try {
+      postBloc = context.read<PostBloc>();
+    } catch (e) {
+      postBloc = PostBloc();
+    }
+
+    return BlocProvider<PostBloc>.value(
+      value: postBloc,
       child: BlocConsumer<PostBloc, PostState>(
         listenWhen: (previousState, currentState) {
           if (previousState.sortType != currentState.sortType) {
@@ -138,6 +145,9 @@ class _PostPageState extends State<PostPage> {
           return true;
         },
         listener: (context, state) {},
+        buildWhen: (previous, current) {
+          return !current.didScrollPositionChange;
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
@@ -419,6 +429,9 @@ class _PostPageState extends State<PostPage> {
                       if (state.status == PostStatus.success && widget.postView != null && state.postView != null) {
                         widget.onPostUpdated(state.postView!);
                       }
+                    },
+                    buildWhen: (previous, current) {
+                      return !current.didScrollPositionChange;
                     },
                     builder: (context, state) {
                       if (state.status == PostStatus.failure && resetFailureMessage == true) {

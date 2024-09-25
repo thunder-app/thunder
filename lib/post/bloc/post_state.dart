@@ -35,6 +35,9 @@ class PostState extends Equatable {
     this.navigateCommentIndex = 0,
     this.navigateCommentId = 0,
     this.commentMatches,
+    this.scrollPosition,
+    this.didScrollPositionChange = false,
+    this.collapsedComments = const [],
   });
 
   final PostStatus status;
@@ -74,6 +77,16 @@ class PostState extends Equatable {
   // even if the comment index doesn't change
   final int navigateCommentId;
 
+  /// Saves the position of the user's scrolling while viewing a post
+  final double? scrollPosition;
+
+  /// Whether the scroll position changed. If it did not, we don't want to rebuild.
+  /// This flag just makes it easier to check without having to access both the old and new [scrollPosition].
+  final bool didScrollPositionChange;
+
+  /// Keeps track of which comments should be collapsed. When a comment is collapsed, its child comments are hidden.
+  final List<int> collapsedComments;
+
   PostState copyWith({
     required PostStatus status,
     int? postId,
@@ -98,6 +111,9 @@ class PostState extends Equatable {
     int? navigateCommentIndex,
     int? navigateCommentId,
     List<Comment>? commentMatches,
+    double? scrollPosition,
+    bool? didScrollPositionChange,
+    List<int>? collapsedComments,
   }) {
     return PostState(
       status: status,
@@ -123,6 +139,9 @@ class PostState extends Equatable {
       navigateCommentIndex: navigateCommentIndex ?? 0,
       navigateCommentId: navigateCommentId ?? 0,
       commentMatches: commentMatches ?? this.commentMatches,
+      scrollPosition: scrollPosition ?? this.scrollPosition,
+      didScrollPositionChange: didScrollPositionChange ?? false,
+      collapsedComments: collapsedComments ?? this.collapsedComments,
     );
   }
 
@@ -150,5 +169,8 @@ class PostState extends Equatable {
         navigateCommentIndex,
         navigateCommentId,
         commentMatches,
+        scrollPosition,
+        didScrollPositionChange,
+        collapsedComments,
       ];
 }
