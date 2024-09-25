@@ -371,7 +371,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
           }
         },
         builder: (context, state) {
-          return KeyboardDismissOnTap(
+          return GestureDetector(
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
             child: Scaffold(
               appBar: AppBar(
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
@@ -441,7 +444,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 controller: controller,
                                 focusNode: focusNode,
                                 decoration: InputDecoration(
-                                  hintText: l10n.postTitle,
+                                  labelText: l10n.postTitle,
                                   helperText: l10n.requiredField,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
@@ -456,7 +459,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             TextFormField(
                               controller: _urlTextController,
                               decoration: InputDecoration(
-                                hintText: l10n.postURL,
+                                labelText: l10n.postURL,
                                 errorText: urlError,
                                 isDense: true,
                                 border: const OutlineInputBorder(),
@@ -489,7 +492,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               TextFormField(
                                 controller: _customThumbnailTextController,
                                 decoration: InputDecoration(
-                                  hintText: l10n.thumbnailUrl,
+                                  labelText: l10n.thumbnailUrl,
                                   errorText: customThumbnailError,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
@@ -665,6 +668,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                       )
                                     : Icon(
                                         widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                        color: theme.colorScheme.onSecondary,
                                         semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
                                       ),
                                 style: ElevatedButton.styleFrom(

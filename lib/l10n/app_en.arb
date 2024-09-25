@@ -263,6 +263,10 @@
   "@clearCache": {
     "description": "Label for action to clear cache in the dialog"
   },
+  "clearCacheLabel": "Clear Cache",
+  "@clearCacheLabel": {
+    "description": "Label for action to clear cache in the dialog"
+  },
   "clearDatabase": "Clear Database",
   "@clearDatabase": {
     "description": "Label for action to clear local database in the dialog"
@@ -791,6 +795,8 @@
   "@enablePostFab": {
     "description": "Enable the Floating Action Button for the post"
   },
+  "endOfComments": "End of comments",
+  "@endOfComments": {},
   "endSearch": "End Search",
   "@endSearch": {},
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
@@ -1225,6 +1231,10 @@
   "@loginToPerformAction": {},
   "loginToSeeInbox": "Log in to see your inbox",
   "@loginToSeeInbox": {},
+  "lookingForAccountSpecificFeedSettings": "Looking for account-specific feed settings?",
+  "@lookingForAccountSpecificFeedSettings": {
+    "description": "Helper setting which navigates to account page"
+  },
   "malformedUri": "The link you provided is in an unsupported format. Please make sure it's a valid link.",
   "@malformedUri": {
     "description": "Error related to unsupported link format."
@@ -1385,13 +1395,11 @@
   "@noAnonymousInstances": {
     "description": "Placeholder text when no anonymous instances have been added"
   },
-  "noComments": "Oh. There are no comments.",
-  "@noComments": {},
-  "noCommentsFound": "No comments found.",
+  "noCommentsFound": "No comments found",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No communities found.",
+  "noCommunitiesFound": "No communities found",
   "@noCommunitiesFound": {},
-  "noCommunityBlocks": "No blocked communities.",
+  "noCommunityBlocks": "No blocked communities",
   "@noCommunityBlocks": {},
   "noCompatibleAppFound": "No compatible app found",
   "@noCompatibleAppFound": {
@@ -1707,7 +1715,7 @@
   "@pushNotificationServerDescription": {
     "description": "Description of choosing push notification server setting"
   },
-  "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
+  "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
@@ -1797,6 +1805,10 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "reporter": "Reporter:",
+  "@reporter": {
+    "description": "Name of reporter that reported a post/comment"
+  },
   "requiredField": "*required",
   "@requiredField": {
     "description": "Helper text for a required form field"
@@ -2281,7 +2293,7 @@
   "@teal": {
     "description": "The color teal"
   },
-  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It may take a few minutes.)",
+  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It will take at least 15 minutes.)",
   "@testBackgroundNotificationDescription": {
     "description": "A message describing the background test notification"
   },

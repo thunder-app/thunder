@@ -20,10 +20,12 @@ import 'package:thunder/moderator/enums/report_action.dart';
 import 'package:thunder/moderator/widgets/report_page_filter_bottom_sheet.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/shared/comment_reference.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/utils/instance.dart';
 
 enum ReportFeedType { post, comment }
 
@@ -239,6 +241,27 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                              Wrap(
+                                                children: [
+                                                  Text(l10n.reporter, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                                                  InkWell(
+                                                    borderRadius: BorderRadius.circular(6),
+                                                    onTap: () {
+                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: state.postReports[index].creator.id);
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                      child: UserFullNameWidget(
+                                                        context,
+                                                        state.postReports[index].creator.name,
+                                                        state.postReports[index].creator.displayName,
+                                                        fetchInstanceNameFromUrl(state.postReports[index].creator.actorId),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 4.0),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,6 +342,27 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                              Wrap(
+                                                children: [
+                                                  Text(l10n.reporter, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                                                  InkWell(
+                                                    borderRadius: BorderRadius.circular(6),
+                                                    onTap: () {
+                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: state.commentReports[index].creator.id);
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                      child: UserFullNameWidget(
+                                                        context,
+                                                        state.commentReports[index].creator.name,
+                                                        state.commentReports[index].creator.displayName,
+                                                        fetchInstanceNameFromUrl(state.commentReports[index].creator.actorId),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 4.0),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 crossAxisAlignment: CrossAxisAlignment.start,

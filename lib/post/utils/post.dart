@@ -385,6 +385,8 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     media.height = size.height;
   }
 
+  media.altText = postView.post.altText;
+
   mediaList.add(media);
 
   return PostViewMedia(postView: postView, media: mediaList);
