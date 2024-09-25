@@ -11,11 +11,40 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/shared/avatars/community_avatar.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/swipe.dart';
+
+Widget getAppBarAvatar(FeedState state) {
+  if (state.status == FeedStatus.initial) {
+    return const SizedBox.shrink();
+  }
+
+  if ((state.communityId != null || state.communityName != null) && state.fullCommunityView!.communityView.community.icon?.isNotEmpty == true) {
+    return CommunityAvatar(
+      community: state.fullCommunityView!.communityView.community,
+      radius: 15,
+      showCommunityStatus: true,
+      showBorder: true,
+    );
+  }
+
+  if ((state.userId != null || state.username != null) && state.fullPersonView!.personView.person.avatar!.isNotEmpty == true) {
+    return UserAvatar(
+      person: state.fullPersonView!.personView.person,
+      radius: 15,
+      showBorder: true,
+    );
+  }
+
+  return const SizedBox.shrink();
+}
 
 String getAppBarTitle(FeedState state) {
   if (state.status == FeedStatus.initial) {
@@ -31,6 +60,36 @@ String getAppBarTitle(FeedState state) {
   }
 
   return (state.postListingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.postListingType).label) : '';
+}
+
+Widget getAppBarSubtitle(BuildContext context, FeedState state) {
+  if (state.status == FeedStatus.initial) {
+    return const SizedBox.shrink();
+  }
+
+  if (state.communityId != null || state.communityName != null) {
+    return CommunityFullNameWidget(
+      context,
+      state.fullCommunityView!.communityView.community.name,
+      state.fullCommunityView!.communityView.community.title,
+      fetchInstanceNameFromUrl(state.fullCommunityView!.communityView.community.actorId) ?? '',
+      // Override because we're showing right above
+      useDisplayName: false,
+    );
+  }
+
+  if (state.userId != null || state.username != null) {
+    return UserFullNameWidget(
+      context,
+      state.fullPersonView!.personView.person.name,
+      state.fullPersonView!.personView.person.displayName,
+      fetchInstanceNameFromUrl(state.fullPersonView!.personView.person.actorId) ?? '',
+      // Override because we're showing right above
+      useDisplayName: false,
+    );
+  }
+
+  return const SizedBox.shrink();
 }
 
 String getSortName(FeedState state) {

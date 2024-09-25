@@ -32,10 +32,11 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatefulWidget {
-  const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
+  const FeedPageAppBar({super.key, this.showSecondaryTitle = true, this.scaffoldStateKey});
 
-  /// Whether to show the app bar title
-  final bool showAppBarTitle;
+  /// Whether to show the alternative information in the app bar.
+  /// Usually implies that the user has scrolled up.
+  final bool showSecondaryTitle;
 
   /// The scaffold key of the parent scaffold holding the drawer.
   /// This is used to determine if we are in a pushed navigation stack.
@@ -56,6 +57,7 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
     final AccountState accountState = context.read<AccountBloc>().state;
 
     person = accountState.reload ? accountState.personView?.person : person;
+    bool showUserAvatar = widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn;
 
     return SliverAppBar(
       pinned: !thunderBloc.state.hideTopBarOnScroll,
@@ -63,9 +65,13 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
       centerTitle: false,
       toolbarHeight: 70.0,
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: FeedAppBarTitle(visible: widget.showAppBarTitle),
-      leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
-      leading: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
+      title: FeedAppBarTitle(
+        showSecondaryTitle: widget.showSecondaryTitle,
+        isUserAvatarShown: showUserAvatar,
+      ),
+      titleSpacing: 0,
+      leadingWidth: showUserAvatar ? 50 : null,
+      leading: showUserAvatar
           ? Padding(
               padding: const EdgeInsets.only(left: 16.0),
               child: Semantics(
@@ -120,35 +126,52 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
 
 /// The title of the app bar. This shows the title (feed type, community, user) and the sort type
 class FeedAppBarTitle extends StatelessWidget {
-  const FeedAppBarTitle({super.key, this.visible = true});
+  const FeedAppBarTitle({super.key, this.showSecondaryTitle = true, required this.isUserAvatarShown});
 
-  /// Whether to show the title. When the user scrolls down the title will be hidden
-  final bool visible;
+  /// Whether to show the alternative information in the app bar.
+  /// Usually implies that the user has scrolled up.
+  final bool showSecondaryTitle;
+
+  /// Whether the user avatar is being displayed in the app bar.
+  /// If so, we need to make some visual adjustments.
+  final bool isUserAvatarShown;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final FeedBloc feedBloc = context.watch<FeedBloc>();
 
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 200),
-      opacity: visible ? 1.0 : 0.0,
-      child: ListTile(
-        title: Text(
-          getAppBarTitle(feedBloc.state),
-          style: theme.textTheme.titleLarge,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Row(
+    return ListTile(
+      minLeadingWidth: 0,
+      leading: AnimatedSize(
+        duration: const Duration(milliseconds: 250),
+        alignment: Alignment.centerRight,
+        child: showSecondaryTitle
+            ? Padding(
+                padding: EdgeInsets.only(left: isUserAvatarShown ? 10 : 0),
+                child: getAppBarAvatar(feedBloc.state),
+              )
+            : const SizedBox(width: 0, height: 70),
+      ),
+      title: Text(
+        getAppBarTitle(feedBloc.state),
+        style: theme.textTheme.titleLarge,
+        softWrap: false,
+        overflow: TextOverflow.fade,
+      ),
+      subtitle: AnimatedCrossFade(
+        duration: const Duration(milliseconds: 250),
+        crossFadeState: showSecondaryTitle ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        firstChild: getAppBarSubtitle(context, feedBloc.state),
+        secondChild: Row(
           children: [
             Icon(getSortIcon(feedBloc.state), size: 13),
             const SizedBox(width: 4),
             Text(getSortName(feedBloc.state)),
           ],
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
     );
   }
 }

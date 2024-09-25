@@ -170,8 +170,9 @@ class FeedView extends StatefulWidget {
 class _FeedViewState extends State<FeedView> {
   final ScrollController _scrollController = ScrollController();
 
-  /// Boolean which indicates whether the title on the app bar should be shown
-  bool showAppBarTitle = false;
+  /// Boolean which indicates whether the page has been scrolled up
+  /// This is used to determine what to show on the app bar
+  bool isPageScrolled = false;
 
   /// Boolean which indicates whether the community sidebar should be shown
   bool showCommunitySidebar = false;
@@ -199,10 +200,10 @@ class _FeedViewState extends State<FeedView> {
 
     _scrollController.addListener(() {
       // Updates the [showAppBarTitle] value when the user has scrolled past a given threshold
-      if (_scrollController.position.pixels > 100.0 && showAppBarTitle == false) {
-        setState(() => showAppBarTitle = true);
-      } else if (_scrollController.position.pixels < 100.0 && showAppBarTitle == true) {
-        setState(() => showAppBarTitle = false);
+      if (_scrollController.position.pixels > 100.0 && isPageScrolled == false) {
+        setState(() => isPageScrolled = true);
+      } else if (_scrollController.position.pixels < 100.0 && isPageScrolled == true) {
+        setState(() => isPageScrolled = false);
       }
 
       // Fetches new posts when the user has scrolled past 70% list
@@ -325,7 +326,7 @@ class _FeedViewState extends State<FeedView> {
           top: hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
           child: BlocConsumer<FeedBloc, FeedState>(
             listenWhen: (previous, current) {
-              if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
+              if (current.status == FeedStatus.initial) setState(() => isPageScrolled = false);
               if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
               if (previous.dismissReadId != current.dismissReadId) dismissRead();
               if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
@@ -368,7 +369,7 @@ class _FeedViewState extends State<FeedView> {
                       controller: _scrollController,
                       slivers: <Widget>[
                         FeedPageAppBar(
-                          showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
+                          showSecondaryTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : isPageScrolled,
                           scaffoldStateKey: widget.scaffoldStateKey,
                         ),
                         // Display loading indicator until the feed is fetched

@@ -36,6 +36,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
       toolbarHeight: 70.0,
       surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
       title: ModlogFeedAppBarTitle(visible: showAppBarTitle, lemmyClient: lemmyClient),
+      titleSpacing: 0,
       leading: IconButton(
         icon: (!kIsWeb && Platform.isIOS
             ? Icon(
