@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jovial_svg/jovial_svg.dart';
@@ -18,7 +21,7 @@ import 'package:thunder/utils/markdown/extended_markdown.dart';
 
 enum CustomMarkdownType { superscript, subscript }
 
-class CommonMarkdownBody extends StatelessWidget {
+class CommonMarkdownBody extends StatefulWidget {
   /// The markdown content body
   final String body;
 
@@ -38,6 +41,14 @@ class CommonMarkdownBody extends StatelessWidget {
     this.isComment,
     this.imageMaxWidth,
   });
+
+  @override
+  State<CommonMarkdownBody> createState() => _CommonMarkdownBodyState();
+}
+
+class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
+  final Set<String> elementsBeingTapped = {};
+  ExtendedMarkdownBody? _extendedMarkdownBody;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +109,7 @@ class CommonMarkdownBody extends StatelessWidget {
       horizontalRuleDecoration: BoxDecoration(
         border: Border(top: BorderSide(width: theme.textTheme.bodyMedium!.fontSize!, color: Colors.transparent)),
       ),
-      textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
+      textScaleFactor: MediaQuery.of(context).textScaleFactor * (widget.isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
     );
 
     // Custom extension set
@@ -108,17 +119,37 @@ class CommonMarkdownBody extends StatelessWidget {
       List.from(customExtensionSet.inlineSyntaxes)..addAll([SuperscriptInlineSyntax(), SubscriptInlineSyntax()]),
     );
 
-    return ExtendedMarkdownBody(
-      data: body,
+    return _extendedMarkdownBody = ExtendedMarkdownBody(
+      data: widget.body,
       extensionSet: customExtensionSet,
       inlineSyntaxes: [LemmyLinkSyntax(), SubscriptInlineSyntax(), SuperscriptInlineSyntax()],
       builders: {
         'spoiler': SpoilerElementBuilder(),
         'sub': SubscriptElementBuilder(),
         'sup': SuperscriptElementBuilder(),
+        'a': LinkElementBuilder(
+          isComment: widget.isComment,
+          onTapLink: (text, url) => handleLinkTap(context, state, text, url),
+          onLongPressLink: (text, url) => handleLinkLongPress(context, state, text, url),
+          elementsBeingTapped: elementsBeingTapped,
+          onElementBeingTapped: (element) {
+            elementsBeingTapped.add(element);
+            _extendedMarkdownBody?.forceParseMarkdown?.call();
+            setState(() {});
+          },
+          onElementStoppedBeingTapped: (element) {
+            // Add a tiny delay before removing the element.
+            // This allows the visual indication to be displayed, even if the user taps very quickly
+            Future.delayed(const Duration(milliseconds: 50), () {
+              elementsBeingTapped.remove(element);
+              _extendedMarkdownBody?.forceParseMarkdown?.call();
+              setState(() {});
+            });
+          },
+        ),
       },
       imageBuilder: (uri, title, alt) {
-        if (hideContent) return Container();
+        if (widget.hideContent) return Container();
 
         return FutureBuilder(
           future: isImageUriSvg(uri),
@@ -132,19 +163,19 @@ class CommonMarkdownBody extends StatelessWidget {
                       ? ImagePreview(
                           url: uri.toString(),
                           isExpandable: true,
-                          isComment: isComment,
+                          isComment: widget.isComment,
                           showFullHeightImages: true,
-                          maxWidth: imageMaxWidth,
+                          maxWidth: widget.imageMaxWidth,
                           altText: alt,
                         )
                       : Container(
-                          constraints: isComment == true
+                          constraints: widget.isComment == true
                               ? BoxConstraints(
                                   maxHeight: MediaQuery.of(context).size.width * 0.55,
                                   maxWidth: MediaQuery.of(context).size.width * 0.60,
                                 )
                               : BoxConstraints(
-                                  maxWidth: imageMaxWidth ?? MediaQuery.of(context).size.width - 24,
+                                  maxWidth: widget.imageMaxWidth ?? MediaQuery.of(context).size.width - 24,
                                 ),
                           child: ScalableImageWidget.fromSISource(
                             fit: BoxFit.contain,
@@ -157,12 +188,10 @@ class CommonMarkdownBody extends StatelessWidget {
           },
         );
       },
-      onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
-      onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
-      styleSheet: hideContent
+      styleSheet: widget.hideContent
           ? spoilerMarkdownStyleSheet
           : MarkdownStyleSheet.fromTheme(theme).copyWith(
-              textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
+              textScaleFactor: MediaQuery.of(context).textScaleFactor * (widget.isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
               blockquoteDecoration: BoxDecoration(
                 color: getBackgroundColor(context),
                 border: Border(left: BorderSide(color: theme.colorScheme.primary.withOpacity(0.75), width: 4)),
@@ -517,6 +546,76 @@ class SuperscriptSubscriptWidget extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Creates a [MarkdownElementBuilder] that renders links with a visual touch indicator
+class LinkElementBuilder extends MarkdownElementBuilder {
+  final bool? isComment;
+  final void Function(String text, String? href)? onTapLink;
+  final void Function(String text, String? href)? onLongPressLink;
+  final Set<String> elementsBeingTapped;
+  final void Function(String key) onElementBeingTapped;
+  final void Function(String key) onElementStoppedBeingTapped;
+
+  LinkElementBuilder({
+    required this.isComment,
+    required this.onTapLink,
+    required this.onLongPressLink,
+    required this.elementsBeingTapped,
+    required this.onElementBeingTapped,
+    required this.onElementStoppedBeingTapped,
+  });
+
+  @override
+  Widget? visitElementAfterWithContext(BuildContext context, md.Element element, TextStyle? preferredStyle, TextStyle? parentStyle) {
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final String text = element.textContent;
+    final String? href = element.attributes['href'];
+
+    String key = element.attributes[elementKey] == null ? (element.attributes[elementKey] = UniqueKey().toString()) : element.attributes[elementKey]!;
+
+    Timer? timer;
+    final TapGestureRecognizer tapGestureRecognizer = TapGestureRecognizer();
+    tapGestureRecognizer
+      ..onTapCancel = () {
+        onElementStoppedBeingTapped(key);
+      }
+      ..onTapUp = (_) {
+        onElementStoppedBeingTapped(key);
+
+        if (timer != null && timer!.isActive) {
+          if (onTapLink != null) {
+            onTapLink!(text, href);
+          }
+          timer?.cancel();
+        }
+      }
+      ..onTapDown = (TapDownDetails details) {
+        onElementBeingTapped(key);
+
+        timer = Timer(const Duration(milliseconds: 350), () {
+          onElementStoppedBeingTapped(key);
+
+          tapGestureRecognizer.resolve(GestureDisposition.accepted);
+
+          if (onLongPressLink != null) {
+            onLongPressLink!(text, href);
+          }
+        });
+      };
+
+    // This hierarchy must remain as Text.rich -> TextSpan -> <text>
+    return Text.rich(
+      TextSpan(
+        style: preferredStyle?.copyWith(
+          backgroundColor: elementsBeingTapped.contains(key) ? Colors.blue.withOpacity(0.15) : null,
+        ),
+        text: element.textContent,
+        recognizer: tapGestureRecognizer,
+      ),
+      textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
     );
   }
 }

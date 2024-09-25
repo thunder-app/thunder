@@ -10,6 +10,9 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:markdown/markdown.dart' as md;
 
+/// Used as a dictionary key to index into an Element's attributes and assign a unique key
+const String elementKey = 'element_key';
+
 /// A non-scrolling widget that parses and displays Markdown. This is modified from [MarkdownBody]
 /// to allow it to extend from [ExtendedMarkdownWidget] rather than the original [MarkdownWidget].
 ///
@@ -21,7 +24,7 @@ import 'package:markdown/markdown.dart' as md;
 ///  * [ExtendedMarkdownBody], which is the modified version of [MarkdownBody] to support additional functionality.
 class ExtendedMarkdownBody extends ExtendedMarkdownWidget {
   /// Creates a non-scrolling widget that parses and displays Markdown.
-  const ExtendedMarkdownBody({
+  ExtendedMarkdownBody({
     super.key,
     required super.data,
     super.selectable,
@@ -43,13 +46,14 @@ class ExtendedMarkdownBody extends ExtendedMarkdownWidget {
     this.shrinkWrap = true,
     super.fitContent = true,
     super.softLineBreak,
-    super.onLongPressLink,
   });
 
   /// If [shrinkWrap] is `true`, [MarkdownBody] will take the minimum height
   /// that wraps its content. Otherwise, [MarkdownBody] will expand to the
   /// maximum allowed height.
   final bool shrinkWrap;
+
+  void Function()? forceParseMarkdown;
 
   @override
   Widget build(BuildContext context, List<Widget>? children) {
@@ -72,16 +76,6 @@ class ExtendedMarkdownBody extends ExtendedMarkdownWidget {
 /// * [MarkdownWidget], which is the original implementation of this widget.
 /// * [ExtendedMarkdownBody], which uses this widget to allow the additional functionality.
 abstract class ExtendedMarkdownWidget extends MarkdownWidget {
-  /// Called when the user long presses a link.
-  final MarkdownTapLinkCallback? onLongPressLink;
-
-  /// The duration threshold for a long press on a link. It defaults to 350ms which is typically shorter
-  /// than the default long press timeout of 500ms used by other widgets such as [InkWell].
-  ///
-  /// Having a shorter timeout allows the long-press action gesture to win over other long-press gestures. This reduces the
-  /// potential for other gestures to be trigged at the same time.
-  final Duration longPressLinkTimeout;
-
   const ExtendedMarkdownWidget({
     super.key,
     required super.data,
@@ -90,8 +84,6 @@ abstract class ExtendedMarkdownWidget extends MarkdownWidget {
     super.styleSheetTheme = MarkdownStyleSheetBaseTheme.material,
     super.syntaxHighlighter,
     super.onTapLink,
-    this.onLongPressLink,
-    this.longPressLinkTimeout = const Duration(milliseconds: 350),
     super.onTapText,
     super.imageDirectory,
     super.blockSyntaxes,
@@ -112,11 +104,8 @@ abstract class ExtendedMarkdownWidget extends MarkdownWidget {
 }
 
 class _MarkdownWidgetState extends State<ExtendedMarkdownWidget> implements MarkdownBuilderDelegate {
-  Timer? _timer;
-  late TapGestureRecognizer _tapGestureRecognizer;
-
   List<Widget>? _children;
-  final List<GestureRecognizer> _recognizers = <GestureRecognizer>[];
+  List<md.Node>? _astNodes;
 
   @override
   void didChangeDependencies() {
@@ -132,21 +121,9 @@ class _MarkdownWidgetState extends State<ExtendedMarkdownWidget> implements Mark
     }
   }
 
-  @override
-  void dispose() {
-    if (_timer != null) {
-      _timer?.cancel();
-      _timer = null;
-    }
-    _disposeRecognizers();
-    super.dispose();
-  }
-
   void _parseMarkdown() {
     final MarkdownStyleSheet fallbackStyleSheet = kFallbackStyle(context, widget.styleSheetTheme);
     final MarkdownStyleSheet styleSheet = fallbackStyleSheet.merge(widget.styleSheet);
-
-    _disposeRecognizers();
 
     final md.Document document = md.Document(
       blockSyntaxes: widget.blockSyntaxes,
@@ -177,50 +154,31 @@ class _MarkdownWidgetState extends State<ExtendedMarkdownWidget> implements Mark
       softLineBreak: widget.softLineBreak,
     );
 
-    _children = builder.build(astNodes);
+    // Recursively apply any custom attributes from the previously built set of ast nodes to the new one
+    _applyCustomAttributes(_astNodes, astNodes, elementKey);
+
+    _children = builder.build(_astNodes = astNodes);
   }
 
-  void _disposeRecognizers() {
-    if (_recognizers.isEmpty) {
-      return;
-    }
-    final List<GestureRecognizer> localRecognizers = List<GestureRecognizer>.from(_recognizers);
-    _recognizers.clear();
-    for (final GestureRecognizer recognizer in localRecognizers) {
-      recognizer.dispose();
-    }
-  }
+  void _applyCustomAttributes(List<md.Node>? previousAstNodes, List<md.Node>? newAstNodes, String customAttribute) {
+    if (previousAstNodes == null || newAstNodes == null) return;
 
-  /// Modified function that allows for tap and long press detection on links.
-  /// The long press detection is determined by a Timer with a given timeout of [longPressLinkTimeout].
-  ///
-  /// When tapped, the [onTapLink] callback is called. Similarly, when long pressed, the [onLongPressLink] callback is called.
-  /// To see the original implementation of this function, see [MarkdownWidget].
-  @override
-  GestureRecognizer createLink(String text, String? href, String title) {
-    _tapGestureRecognizer = TapGestureRecognizer();
+    int minLength = previousAstNodes.length < newAstNodes.length ? previousAstNodes.length : newAstNodes.length;
 
-    _tapGestureRecognizer.onTapUp = (_) {
-      if (_timer != null && _timer!.isActive) {
-        if (widget.onTapLink != null) {
-          widget.onTapLink!(text, href, title);
+    for (int i = 0; i < minLength; i++) {
+      if (previousAstNodes[i] is md.Element && newAstNodes[i] is md.Element) {
+        md.Element oldNode = previousAstNodes[i] as md.Element;
+        md.Element newNode = newAstNodes[i] as md.Element;
+
+        if (oldNode.attributes[customAttribute] != null) {
+          newNode.attributes[customAttribute] = oldNode.attributes[customAttribute]!;
         }
-        _timer?.cancel();
+
+        if (oldNode.children?.isNotEmpty == true && newNode.children?.isNotEmpty == true) {
+          _applyCustomAttributes(oldNode.children!, newNode.children!, customAttribute);
+        }
       }
-    };
-
-    _tapGestureRecognizer.onTapDown = (TapDownDetails details) {
-      _timer = Timer(widget.longPressLinkTimeout, () {
-        _tapGestureRecognizer.resolve(GestureDisposition.accepted);
-
-        if (widget.onLongPressLink != null) {
-          widget.onLongPressLink!(text, href, title);
-        }
-      });
-    };
-
-    _recognizers.add(_tapGestureRecognizer);
-    return _tapGestureRecognizer;
+    }
   }
 
   @override
@@ -233,7 +191,17 @@ class _MarkdownWidgetState extends State<ExtendedMarkdownWidget> implements Mark
   }
 
   @override
-  Widget build(BuildContext context) => widget.build(context, _children);
+  Widget build(BuildContext context) {
+    (widget as ExtendedMarkdownBody?)?.forceParseMarkdown = () => _parseMarkdown();
+    return widget.build(context, _children);
+  }
+
+  @override
+  GestureRecognizer createLink(String text, String? href, String title) {
+    // Note: We need this override to satisfy the base class,
+    // but this gesture recognizer is not actually used for links since we have a custom builder.
+    return TapGestureRecognizer();
+  }
 }
 
 /// A default style sheet generator.
