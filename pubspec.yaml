@@ -125,10 +125,7 @@ dev_dependencies:
       ref: master
   drift_dev: ^2.16.0
 
-dependency_overrides:
-  # Fixes mismatch between river_player and xayn_readability dependencies
-  # If/when we host xayn_readability ourselves, we can upgrade the dependency there and remove this.
-  flutter_widget_from_html_core: ^0.14.11 
+#dependency_overrides:
 
 # The following section is specific to Flutter packages.
 flutter:
