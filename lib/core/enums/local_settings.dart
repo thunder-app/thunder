@@ -48,7 +48,12 @@ enum LocalSettingsSubCategories {
   sidebar('Sidebar'),
   cardView('cardView'),
   navigation('navigation'),
-  videoPlayer('videoPlayer');
+  videoPlayer('videoPlayer'),
+  contentManagement('contentManagement'),
+  dangerZone('dangerZone'),
+  reset('reset'),
+  experimental('experimental'),
+  userLabels('userLabels');
 
   final String value;
 
@@ -65,7 +70,7 @@ enum LocalSettingsSubCategories {
 enum LocalSettings {
   /// -------------------------- Account Settings --------------------------
   // Discussion Languages
-  discussionLanguages(name: 'account_discussion_languages', key: 'discussionLanguages', category: LocalSettingsCategories.account),
+  discussionLanguages(name: 'account_discussion_languages', key: 'discussionLanguages', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.contentManagement),
 
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
@@ -198,12 +203,12 @@ enum LocalSettings {
   // Color settings
   // The first setting exists purely for searching
   actionColors(name: 'setting_action_colors', key: 'actionColors', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
-  upvoteColor(name: 'settings_theme_upvote_color', key: 'upvoteColor', searchable: false),
-  downvoteColor(name: 'settings_theme_downvote_color', key: 'downvoteColor', searchable: false),
-  saveColor(name: 'settings_theme_save_color', key: 'saveColor', searchable: false),
-  markReadColor(name: 'settings_theme_mark_read_color', key: 'markReadColor', searchable: false),
-  hideColor(name: 'settings_theme_hide_color', key: 'hideColor', searchable: false),
-  replyColor(name: 'settings_theme_reply_color', key: 'replyColor', searchable: false),
+  upvoteColor(name: 'settings_theme_upvote_color', key: 'upvoteColor', searchable: false, category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  downvoteColor(name: 'settings_theme_downvote_color', key: 'downvoteColor', searchable: false, category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  saveColor(name: 'settings_theme_save_color', key: 'saveColor', searchable: false, category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  markReadColor(name: 'settings_theme_mark_read_color', key: 'markReadColor', searchable: false, category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  hideColor(name: 'settings_theme_hide_color', key: 'hideColor', searchable: false, category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  replyColor(name: 'settings_theme_reply_color', key: 'replyColor', searchable: false, category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
 
   // Font Settings
   titleFontSizeScale(name: 'setting_theme_title_font_size_scale', key: 'postTitleFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
@@ -256,7 +261,7 @@ enum LocalSettings {
       subCategory: LocalSettingsSubCategories.names,
       searchable: false),
 
-  userLabels(name: 'setting_user_labels', key: 'userLabels', category: LocalSettingsCategories.userLabels),
+  userLabels(name: 'setting_user_labels', key: 'userLabels', category: LocalSettingsCategories.userLabels, subCategory: LocalSettingsSubCategories.userLabels),
 
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings
@@ -306,13 +311,14 @@ enum LocalSettings {
   enableCommentNavigation(name: 'setting_enable_comment_navigation', key: 'enableCommentNavigation', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
   combineNavAndFab(name: 'setting_combine_nav_and_fab', key: 'combineNavAndFab', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
 
-  enableExperimentalFeatures(name: 'setting_enable_experimental_features', key: 'enableExperimentalFeatures', category: LocalSettingsCategories.debug),
-  imageDimensionTimeout(name: 'setting_image_dimension_timeout', key: 'imageDimensionTimeout', category: LocalSettingsCategories.debug),
+  enableExperimentalFeatures(
+      name: 'setting_enable_experimental_features', key: 'enableExperimentalFeatures', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.experimental),
+  imageDimensionTimeout(name: 'setting_image_dimension_timeout', key: 'imageDimensionTimeout', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.feed),
 
-  currentAnonymousInstance(name: 'setting_current_anonymous_instance', key: ''),
+  currentAnonymousInstance(name: 'setting_current_anonymous_instance', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.general, searchable: false),
 
   // This setting exists purely to save/load the user's selected advanced share options
-  advancedShareOptions(name: 'advanced_share_options', key: ''),
+  advancedShareOptions(name: 'advanced_share_options', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.general, searchable: false),
   // import export settings
   importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
   importExportDatabase(name: 'import_export_database', key: 'importExportDatabase', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
@@ -321,12 +327,47 @@ enum LocalSettings {
   videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoAutoFullscreen(name: 'video_auto_fullscreen', key: 'videoAutoFullscreen', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoAutoLoop(name: 'video_auto_loop', key: '', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
-  videoAutoPlay(name: 'video_auto_play', key: '', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer);
+  videoAutoPlay(name: 'video_auto_play', key: '', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+
+  // Searchable settings
+  // The settings under this section do not correspond to settings that we persist in SharedPreferences.
+  // Rather these entries exist simply so that we can link/search these settings.
+  accountDisplayName(name: 'account_display_name', key: 'accountDisplayName', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.general),
+  accountProfileBio(name: 'account_profile_bio', key: 'accountProfileBio', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.general),
+  accountEmail(name: 'account_email', key: 'accountEmail', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.general),
+  accountMatrixUser(name: 'account_matrix_user', key: 'accountMatrixUser', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.general),
+  accountDefaultFeedType(name: 'account_default_feed_type', key: 'accountDefaultFeedType', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.feed),
+  accountDefaultFeedSortType(name: 'account_default_feed_sort_type', key: 'accountDefaultFeedSortType', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.feed),
+  accountShowNsfwContent(name: 'account_show_nsfw_content', key: 'accountShowNsfwContent', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.feed),
+  accountShowScores(name: 'account_show_scores', key: 'accountShowScores', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.feed),
+  accountShowReadPosts(name: 'account_show_read_posts', key: 'accountShowReadPosts', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.feed),
+  accountIsBot(name: 'account_is_bot', key: 'accountIsBot', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.feed),
+  accountShowBotAccounts(name: 'account_show_bot_accounts', key: 'accountShowBotAccounts', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.feed),
+  accountBlocks(name: 'account_blocks', key: 'accountBlocks', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.contentManagement),
+  accountChangePassword(name: 'account_change_password', key: 'accountChangePassword', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
+  accountDeleteAccount(name: 'account_delete_account', key: 'accountDeleteAccount', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
+  debugDeleteLocalPreferences(name: 'debug_delete_local_preferences', key: 'debugDeleteLocalPreferences', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
+  debugDeleteLocalDatabase(name: 'debug_delete_local_database', key: 'debugDeleteLocalDatabase', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
+  debugClearCache(name: 'debug_clear_cache', key: 'debugClearCache', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
+  debugSendTestLocalNotification(
+      name: 'debug_send_test_local_notification', key: 'debugSendTestLocalNotification', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.notifications),
+  debugSendBackgroundTestLocalNotification(
+      name: 'debug_send_background_test_local_notification',
+      key: 'debugSendBackgroundTestLocalNotification',
+      category: LocalSettingsCategories.debug,
+      subCategory: LocalSettingsSubCategories.notifications),
+  debugSendTestUnifiedPushNotification(
+      name: 'debug_send_test_unifiedpush_notification', key: 'debugSendTestUnifiedPushNotification', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.notifications),
+  debugSendBackgroundTestUnifiedPushNotification(
+      name: 'debug_send_background_test_unifiedpush_notification',
+      key: 'debugSendBackgroundTestUnifiedPushNotification',
+      category: LocalSettingsCategories.debug,
+      subCategory: LocalSettingsSubCategories.notifications);
 
   const LocalSettings({
     required this.name,
-    this.category,
-    this.subCategory,
+    required this.category,
+    required this.subCategory,
     required this.key,
     this.searchable = true,
   });
@@ -339,11 +380,11 @@ enum LocalSettings {
 
   /// Represents the category to which the settings belong and indicates
   /// where it appears in the settings interface.
-  final LocalSettingsCategories? category;
+  final LocalSettingsCategories category;
 
   /// Represents a key used to uniquely identify the settings subcategory.
   /// This key is essential for organizing and managing specific settings.
-  final LocalSettingsSubCategories? subCategory;
+  final LocalSettingsSubCategories subCategory;
 
   /// Whether this setting should appear as a search result
   final bool searchable;
@@ -478,6 +519,34 @@ extension LocalizationExt on AppLocalizations {
       'videoAutoPlay': videoAutoPlay,
       'videoDefaultPlaybackSpeed': videoDefaultPlaybackSpeed,
       'userLabels': userLabels,
+      'accountDisplayName': displayName,
+      'accountProfileBio': profileBio,
+      'accountEmail': email,
+      'accountMatrixUser': matrixUser,
+      'accountDefaultFeedType': defaultFeedType,
+      'accountDefaultFeedSortType': defaultFeedSortType,
+      'accountShowNsfwContent': showNsfwContent,
+      'accountShowScores': showScoreCounters,
+      'accountShowReadPosts': showReadPosts,
+      'accountIsBot': bot,
+      'accountShowBotAccounts': showBotAccounts,
+      'accountDiscussionLanguages': discussionLanguages,
+      'contentManagement': contentManagement,
+      'accountBlocks': blockSettingLabel,
+      'accountChangePassword': changePassword,
+      'dangerZone': dangerZone,
+      'accountDeleteAccount': deleteAccount,
+      'reset': resetPreferencesAndData,
+      'debugDeleteLocalPreferences': deleteLocalPreferences,
+      'debugDeleteLocalDatabase': deleteLocalDatabase,
+      'debugClearCache': clearCacheLabel,
+      'debugSendTestLocalNotification': sendTestLocalNotification,
+      'debugSendBackgroundTestLocalNotification': sendBackgroundTestLocalNotification,
+      'debugSendTestUnifiedPushNotification': sendTestUnifiedPushNotification,
+      'debugSendBackgroundTestUnifiedPushNotification': sendBackgroundTestUnifiedPushNotification,
+      'enableExperimentalFeatures': enableExperimentalFeatures,
+      'experimental': experimentalFeatures,
+      'imageDimensionTimeout': imageDimensionTimeout,
     };
 
     if (localizationMap.containsKey(key)) {

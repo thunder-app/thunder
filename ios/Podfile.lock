@@ -1,7 +1,6 @@
 PODS:
-  - background_fetch (1.3.2):
+  - background_fetch (1.3.7):
     - Flutter
-  - Cache (6.0.0)
   - connectivity_plus (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -14,13 +13,13 @@ PODS:
     - Flutter
   - flutter_icmp_ping (0.0.1):
     - Flutter
-  - flutter_inappwebview (0.0.1):
+  - flutter_inappwebview_ios (0.0.1):
     - Flutter
-    - flutter_inappwebview/Core (= 0.0.1)
-    - OrderedSet (~> 5.0)
-  - flutter_inappwebview/Core (0.0.1):
+    - flutter_inappwebview_ios/Core (= 0.0.1)
+    - OrderedSet (~> 6.0.3)
+  - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
-    - OrderedSet (~> 5.0)
+    - OrderedSet (~> 6.0.3)
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
   - flutter_local_notifications (0.0.1):
@@ -32,15 +31,9 @@ PODS:
   - gal (1.0.0):
     - Flutter
     - FlutterMacOS
-  - GCDWebServer (3.5.4):
-    - GCDWebServer/Core (= 3.5.4)
-  - GCDWebServer/Core (3.5.4)
-  - HLSCachingReverseProxyServer (0.1.0):
-    - GCDWebServer (~> 3.5)
-    - PINCache (>= 3.0.1-beta.3)
   - image_picker_ios (0.0.1):
     - Flutter
-  - OrderedSet (5.0.0)
+  - OrderedSet (6.0.3)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -48,24 +41,10 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
-  - PINCache (3.0.4):
-    - PINCache/Arc-exception-safe (= 3.0.4)
-    - PINCache/Core (= 3.0.4)
-  - PINCache/Arc-exception-safe (3.0.4):
-    - PINCache/Core
-  - PINCache/Core (3.0.4):
-    - PINOperation (~> 1.2.3)
-  - PINOperation (1.2.3)
   - pointer_interceptor_ios (0.0.1):
     - Flutter
   - push_ios (0.0.1):
     - Flutter
-  - river_player (0.0.1):
-    - Cache (~> 6.0.0)
-    - Flutter
-    - GCDWebServer
-    - HLSCachingReverseProxyServer
-    - PINCache
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -74,18 +53,21 @@ PODS:
   - sqflite (0.0.3):
     - Flutter
     - FlutterMacOS
-  - sqlite3 (3.45.1):
-    - sqlite3/common (= 3.45.1)
-  - sqlite3/common (3.45.1)
-  - sqlite3/fts5 (3.45.1):
+  - "sqlite3 (3.46.1+1)":
+    - "sqlite3/common (= 3.46.1+1)"
+  - "sqlite3/common (3.46.1+1)"
+  - "sqlite3/dbstatvtab (3.46.1+1)":
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.45.1):
+  - "sqlite3/fts5 (3.46.1+1)":
     - sqlite3/common
-  - sqlite3/rtree (3.45.1):
+  - "sqlite3/perf-threadsafe (3.46.1+1)":
+    - sqlite3/common
+  - "sqlite3/rtree (3.46.1+1)":
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.45.1)
+    - "sqlite3 (~> 3.46.0+1)"
+    - sqlite3/dbstatvtab
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
@@ -93,10 +75,12 @@ PODS:
     - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
-  - wakelock_plus (0.0.1):
+  - video_player_avfoundation (0.0.1):
     - Flutter
+    - FlutterMacOS
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
   - background_fetch (from `.symlinks/plugins/background_fetch/ios`)
@@ -106,7 +90,7 @@ DEPENDENCIES:
   - flutter_custom_tabs_ios (from `.symlinks/plugins/flutter_custom_tabs_ios/ios`)
   - flutter_file_dialog (from `.symlinks/plugins/flutter_file_dialog/ios`)
   - flutter_icmp_ping (from `.symlinks/plugins/flutter_icmp_ping/ios`)
-  - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
+  - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
@@ -118,24 +102,18 @@ DEPENDENCIES:
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - pointer_interceptor_ios (from `.symlinks/plugins/pointer_interceptor_ios/ios`)
   - push_ios (from `.symlinks/plugins/push_ios/ios`)
-  - river_player (from `.symlinks/plugins/river_player/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
-  - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
+  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
 SPEC REPOS:
   trunk:
-    - Cache
-    - GCDWebServer
-    - HLSCachingReverseProxyServer
     - OrderedSet
-    - PINCache
-    - PINOperation
     - sqlite3
 
 EXTERNAL SOURCES:
@@ -153,8 +131,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_file_dialog/ios"
   flutter_icmp_ping:
     :path: ".symlinks/plugins/flutter_icmp_ping/ios"
-  flutter_inappwebview:
-    :path: ".symlinks/plugins/flutter_inappwebview/ios"
+  flutter_inappwebview_ios:
+    :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
   flutter_keyboard_visibility:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_local_notifications:
@@ -177,8 +155,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/pointer_interceptor_ios/ios"
   push_ios:
     :path: ".symlinks/plugins/push_ios/ios"
-  river_player:
-    :path: ".symlinks/plugins/river_player/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
@@ -191,47 +167,41 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/uni_links/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
-  wakelock_plus:
-    :path: ".symlinks/plugins/wakelock_plus/ios"
+  video_player_avfoundation:
+    :path: ".symlinks/plugins/video_player_avfoundation/darwin"
   webview_flutter_wkwebview:
-    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
-  background_fetch: 2319bf7e18237b4b269430b7f14d177c0df09c5a
-  Cache: 4ca7e00363fca5455f26534e5607634c820ffc2d
+  background_fetch: 39f11371c0dce04b001c4bfd5e782bcccb0a85e2
   connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_custom_tabs_ios: 62439c843b2691aae516fd50119a01eb9755fff7
+  flutter_custom_tabs_ios: a651b18786388923b62de8c0537607de87c2eccf
   flutter_file_dialog: 4c014a45b105709a27391e266c277d7e588e9299
   flutter_icmp_ping: 2b159955eee0c487c766ad83fec224ae35e7c935
-  flutter_inappwebview: 3d32228f1304635e7c028b0d4252937730bbc6cf
+  flutter_inappwebview_ios: 6f63631e2c62a7c350263b13fa5427aedefe81d4
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
   flutter_sharing_intent: e35380d0e1501d7111dbb7e46d5ac6339da6da98
   gal: 61e868295d28fe67ffa297fae6dacebf56fd53e1
-  GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
-  HLSCachingReverseProxyServer: 59935e1e0244ad7f3375d75b5ef46e8eb26ab181
-  image_picker_ios: b545a5f16c0fa88e3ecbbce3ed4de45567a8ec18
-  OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
+  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
+  OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
   package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
-  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
-  PINCache: d9a87a0ff397acffe9e2f0db972ac14680441158
-  PINOperation: fb563bcc9c32c26d6c78aaff967d405aa2ee74a7
-  pointer_interceptor_ios: 9280618c0b2eeb80081a343924aa8ad756c21375
+  pointer_interceptor_ios: 508241697ff0947f853c061945a8b822463947c1
   push_ios: 2bd1b4d3f782209da1f571db1250af236957e807
-  river_player: ba880eae2d34deaff38fdf53a96b63edc654c9bf
   share_plus: 8875f4f2500512ea181eef553c3e27dba5135aad
-  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
-  sqlite3: 73b7fc691fdc43277614250e04d183740cb15078
-  sqlite3_flutter_libs: af0e8fe9bce48abddd1ffdbbf839db0302d72d80
+  sqlite3: 0bb0e6389d824e40296f531b858a2a0b71c0d2fb
+  sqlite3_flutter_libs: c00457ebd31e59fa6bb830380ddba24d44fbcd3b
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
-  url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
-  wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
-  webview_flutter_wkwebview: be0f0d33777f1bfd0c9fdcb594786704dbf65f36
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
+  video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
+  webview_flutter_wkwebview: 0982481e3d9c78fd5c6f62a002fcd24fc791f1e4
 
 PODFILE CHECKSUM: 8d23d5c4d896af3a5f2a08e0206462ca9882e556
 

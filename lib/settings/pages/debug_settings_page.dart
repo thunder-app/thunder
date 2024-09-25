@@ -224,7 +224,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 );
               },
               highlightKey: settingToHighlightKey,
-              setting: null,
+              setting: LocalSettings.debugDeleteLocalPreferences,
               highlightedSetting: settingToHighlight,
             ),
           ),
@@ -261,7 +261,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 );
               },
               highlightKey: settingToHighlightKey,
-              setting: null,
+              setting: LocalSettings.debugDeleteLocalDatabase,
               highlightedSetting: settingToHighlight,
             ),
           ),
@@ -284,7 +284,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       setState(() {}); // Trigger a rebuild to refresh the cache size
                     },
                     highlightKey: settingToHighlightKey,
-                    setting: null,
+                    setting: LocalSettings.debugClearCache,
                     highlightedSetting: settingToHighlight,
                   );
                 }
@@ -404,7 +404,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       }
                     : null,
                 highlightKey: settingToHighlightKey,
-                setting: null,
+                setting: LocalSettings.debugSendTestLocalNotification,
                 highlightedSetting: settingToHighlight,
               ),
             ),
@@ -447,7 +447,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       }
                     : null,
                 highlightKey: settingToHighlightKey,
-                setting: null,
+                setting: LocalSettings.debugSendBackgroundTestLocalNotification,
                 highlightedSetting: settingToHighlight,
               ),
             ),
@@ -479,7 +479,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         }
                       : null,
                   highlightKey: settingToHighlightKey,
-                  setting: null,
+                  setting: LocalSettings.debugSendTestUnifiedPushNotification,
                   highlightedSetting: settingToHighlight,
                 ),
               ),
@@ -522,7 +522,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         }
                       : null,
                   highlightKey: settingToHighlightKey,
-                  setting: null,
+                  setting: LocalSettings.debugSendBackgroundTestUnifiedPushNotification,
                   highlightedSetting: settingToHighlight,
                 ),
               ),
@@ -575,7 +575,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               iconDisabled: Icons.construction_outlined,
               onToggle: (value) => setPreferences(LocalSettings.enableExperimentalFeatures, value),
               highlightKey: settingToHighlightKey,
-              setting: null,
+              setting: LocalSettings.enableExperimentalFeatures,
               highlightedSetting: settingToHighlight,
             ),
           ),

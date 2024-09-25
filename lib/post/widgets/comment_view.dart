@@ -262,7 +262,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: ScalableText(
-                              widget.comments.isEmpty ? AppLocalizations.of(context)!.noComments : AppLocalizations.of(context)!.reachedTheBottom,
+                              widget.comments.isEmpty ? AppLocalizations.of(context)!.noCommentsFound : AppLocalizations.of(context)!.endOfComments,
                               fontScale: state.metadataFontSizeScale,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
