@@ -8,6 +8,7 @@ class Accounts extends Table {
   TextColumn get instance => text().nullable()();
   BoolColumn get anonymous => boolean().withDefault(const Constant(false))();
   IntColumn get userId => integer().nullable()();
+  IntColumn get listIndex => integer().withDefault(const Constant(-1))();
 }
 
 class Favorites extends Table {

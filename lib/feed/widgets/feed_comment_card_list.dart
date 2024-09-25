@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
-
 import 'package:thunder/shared/comment_reference.dart';
 
-class FeedCommentList extends StatelessWidget {
+/// Widget representing the list of comments on the feed. This is used when viewing a user's profile.
+class FeedCommentCardList extends StatelessWidget {
+  /// Whether or not the screen is in tablet mode. Determines the number of columns to display
   final bool tabletMode;
+
+  /// The list of comments to display
   final List<CommentView> commentViews;
 
-  const FeedCommentList({
+  const FeedCommentCardList({
     super.key,
     required this.commentViews,
     required this.tabletMode,
@@ -22,7 +26,6 @@ class FeedCommentList extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.read<AuthBloc>().state;
 
-    // Widget representing the list of comments on the feed (user)
     return SliverMasonryGrid.count(
       crossAxisCount: tabletMode ? 2 : 1,
       crossAxisSpacing: 40,

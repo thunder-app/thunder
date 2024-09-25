@@ -8,7 +8,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/view/feed_widget.dart';
+import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -38,7 +38,7 @@ class MediaManagementPage extends StatelessWidget {
 
         return Scaffold(
           body: Container(
-            color: theme.colorScheme.background,
+            color: theme.colorScheme.surface,
             child: SafeArea(
               top: false,
               child: CustomScrollView(
@@ -182,7 +182,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                     physics: const NeverScrollableScrollPhysics(),
                                                                     shrinkWrap: true,
                                                                     slivers: [
-                                                                      FeedPostList(
+                                                                      FeedPostCardList(
                                                                         postViewMedias: state.imageSearchPosts!,
                                                                         tabletMode: false,
                                                                         markPostReadOnScroll: false,
@@ -202,7 +202,7 @@ class MediaManagementPage extends StatelessWidget {
                                                             ],
                                                             if (state.status == UserSettingsStatus.succeededSearchingMedia &&
                                                                 state.imageSearchComments?.isNotEmpty != true &&
-                                                                state.imageSearchComments?.isNotEmpty != true)
+                                                                state.imageSearchPosts?.isNotEmpty != true)
                                                               SizedBox(
                                                                 width: double.infinity,
                                                                 child: Padding(
@@ -218,7 +218,10 @@ class MediaManagementPage extends StatelessWidget {
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              )
+                                                              ),
+                                                            if (state.status == UserSettingsStatus.succeededSearchingMedia &&
+                                                                (state.imageSearchComments?.isNotEmpty == true || state.imageSearchPosts?.isNotEmpty == true))
+                                                              const SizedBox(height: 50),
                                                           ],
                                                         ),
                                                       );

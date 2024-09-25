@@ -13,6 +13,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -46,8 +47,10 @@ enum PostCardAction {
   unsubscribeFromCommunity,
   blockCommunity,
   instanceActions,
-  visitInstance,
-  blockInstance,
+  visitCommunityInstance,
+  blockCommunityInstance,
+  visitUserInstance,
+  blockUserInstance,
   sharePost,
   sharePostLocal,
   shareImage,
@@ -160,18 +163,43 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.instanceActions,
     icon: Icons.language_rounded,
     label: l10n.instance(1),
-    getSubtitleLabel: (context, postViewMedia) => fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId) ?? '',
+    getSubtitleLabel: (context, postViewMedia) {
+      return areCommunityAndUserOnSameInstance(postViewMedia.postView)
+          ? fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)
+          : '${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)} • ${fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId)}';
+    },
     trailingIcon: Icons.chevron_right_rounded,
   ),
   ExtendedPostCardActions(
-    postCardAction: PostCardAction.visitInstance,
+    postCardAction: PostCardAction.visitCommunityInstance,
     icon: Icons.language,
-    label: l10n.visitInstance,
+    label: '',
+    getOverrideLabel: (context, postView) {
+      return areCommunityAndUserOnSameInstance(postView) ? l10n.visitInstance : l10n.visitCommunityInstance;
+    },
+    getSubtitleLabel: (context, postViewMedia) => fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId),
   ),
   ExtendedPostCardActions(
-    postCardAction: PostCardAction.blockInstance,
+    postCardAction: PostCardAction.blockCommunityInstance,
     icon: Icons.block_rounded,
-    label: l10n.blockInstance,
+    label: '',
+    getOverrideLabel: (context, postView) {
+      return areCommunityAndUserOnSameInstance(postView) ? l10n.blockInstance : l10n.blockCommunityInstance;
+    },
+    getSubtitleLabel: (context, postViewMedia) => fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId),
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.visitUserInstance,
+    icon: Icons.language,
+    label: l10n.visitUserInstance,
+    getSubtitleLabel: (context, postViewMedia) => fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId),
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.blockUserInstance,
+    icon: Icons.block_rounded,
+    label: l10n.blockUserInstance,
+    getSubtitleLabel: (context, postViewMedia) => fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId),
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
@@ -371,7 +399,10 @@ void showPostActionBottomModalSheet(
 
   // Remove the share link option if there is no link
   // Or if the media link is the same as the external link
-  if (postViewMedia.media.isEmpty || postViewMedia.media.first.originalUrl == postViewMedia.media.first.imageUrl || postViewMedia.media.first.originalUrl == postViewMedia.media.first.mediaUrl) {
+  if (postViewMedia.media.isEmpty ||
+      postViewMedia.media.first.mediaType == MediaType.text ||
+      postViewMedia.media.first.originalUrl == postViewMedia.media.first.imageUrl ||
+      postViewMedia.media.first.originalUrl == postViewMedia.media.first.mediaUrl) {
     sharePostCardActions.removeWhere((extendedAction) => extendedAction.postCardAction == PostCardAction.shareLink);
   }
 
@@ -415,14 +446,28 @@ void showPostActionBottomModalSheet(
   // Generate the list of instance actions
   final List<ExtendedPostCardActions> instanceActions = postCardActionItems
       .where((extendedAction) => [
-            PostCardAction.visitInstance,
-            PostCardAction.blockInstance,
+            PostCardAction.visitCommunityInstance,
+            PostCardAction.blockCommunityInstance,
+            PostCardAction.visitUserInstance,
+            PostCardAction.blockUserInstance,
           ].contains(extendedAction.postCardAction))
       .toList();
 
   // Remove block if unsupported
-  if (instanceActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
-    instanceActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockInstance);
+  if (instanceActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.blockCommunityInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
+    instanceActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockCommunityInstance);
+  }
+  if (instanceActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.blockUserInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
+    instanceActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockUserInstance);
+  }
+
+  // Hide user block if user's instance is the same as the community' sinstance
+  bool areSameInstance = areCommunityAndUserOnSameInstance(postViewMedia.postView);
+  if (instanceActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.visitUserInstance) && areSameInstance) {
+    instanceActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.visitUserInstance);
+  }
+  if (instanceActions.any((extendedAction) => extendedAction.postCardAction == PostCardAction.blockUserInstance) && areSameInstance) {
+    instanceActions.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockUserInstance);
   }
 
   showModalBottomSheet<void>(
@@ -569,12 +614,13 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
                 ),
               ),
               // Post metadata chips
-              Row(
-                children: [
-                  const SizedBox(width: 20),
-                  LanguagePostCardMetaData(languageId: widget.postViewMedia.postView.post.languageId),
-                ],
-              ),
+              if ((page ?? PostActionBottomSheetPage.general) == PostActionBottomSheetPage.general)
+                Row(
+                  children: [
+                    const SizedBox(width: 20),
+                    LanguagePostCardMetaData(languageId: widget.postViewMedia.postView.post.languageId),
+                  ],
+                ),
               if (widget.multiPostCardActions[page ?? widget.page]?.isNotEmpty == true)
                 MultiPickerItem(
                   pickerItems: [
@@ -632,9 +678,13 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
       case PostCardAction.visitProfile:
         action = () => navigateToFeedPage(widget.outerContext, feedType: FeedType.user, userId: widget.postViewMedia.postView.post.creatorId);
         break;
-      case PostCardAction.visitInstance:
+      case PostCardAction.visitCommunityInstance:
         action = () => navigateToInstancePage(widget.outerContext,
             instanceHost: fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId)!, instanceId: widget.postViewMedia.postView.community.instanceId);
+        break;
+      case PostCardAction.visitUserInstance:
+        action = () => navigateToInstancePage(widget.outerContext,
+            instanceHost: fetchInstanceNameFromUrl(widget.postViewMedia.postView.creator.actorId)!, instanceId: widget.postViewMedia.postView.creator.instanceId);
         break;
       case PostCardAction.sharePost:
         action = () => Share.share(widget.postViewMedia.postView.post.apId);
@@ -682,11 +732,19 @@ class _PostCardActionPickerState extends State<PostCardActionPicker> {
         action = () => setState(() => page = PostActionBottomSheetPage.instance);
         pop = false;
         break;
-      case PostCardAction.blockInstance:
+      case PostCardAction.blockCommunityInstance:
         action = () => widget.outerContext.read<InstanceBloc>().add(InstanceActionEvent(
               instanceAction: InstanceAction.block,
               instanceId: widget.postViewMedia.postView.community.instanceId,
               domain: fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId),
+              value: true,
+            ));
+        break;
+      case PostCardAction.blockUserInstance:
+        action = () => widget.outerContext.read<InstanceBloc>().add(InstanceActionEvent(
+              instanceAction: InstanceAction.block,
+              instanceId: widget.postViewMedia.postView.creator.instanceId,
+              domain: fetchInstanceNameFromUrl(widget.postViewMedia.postView.creator.actorId),
               value: true,
             ));
         break;
@@ -817,4 +875,10 @@ void showRemovePostReasonBottomSheet(BuildContext context, PostViewMedia postVie
       },
     ),
   );
+}
+
+bool areCommunityAndUserOnSameInstance(PostView postView) {
+  String? communityInstance = fetchInstanceNameFromUrl(postView.community.actorId);
+  String? userInstance = fetchInstanceNameFromUrl(postView.creator.actorId);
+  return communityInstance == userInstance;
 }

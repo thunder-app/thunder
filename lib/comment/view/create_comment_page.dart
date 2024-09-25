@@ -269,41 +269,15 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
             }
           },
           builder: (context, state) {
-            return KeyboardDismissOnTap(
+            return GestureDetector(
+              onTap: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
                   toolbarHeight: 70.0,
                   centerTitle: false,
-                  actions: [
-                    state.status == CreateCommentStatus.submitting
-                        ? const Padding(
-                            padding: EdgeInsets.only(right: 20.0),
-                            child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: IconButton(
-                              onPressed: isSubmitButtonDisabled
-                                  ? null
-                                  : () {
-                                      saveDraft = false;
-
-                                      context.read<CreateCommentCubit>().createOrEditComment(
-                                            postId: postId,
-                                            parentCommentId: parentCommentId,
-                                            content: _bodyTextController.text,
-                                            commentIdBeingEdited: widget.commentView?.comment.id,
-                                            languageId: languageId,
-                                          );
-                                    },
-                              icon: Icon(
-                                widget.commentView != null ? Icons.edit_rounded : Icons.send_rounded,
-                                semanticLabel: widget.commentView != null ? l10n.editComment : l10n.createComment,
-                              ),
-                            ),
-                          ),
-                  ],
                 ),
                 body: SafeArea(
                   child: Column(
@@ -480,7 +454,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
+                              padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
                               child: IconButton(
                                 onPressed: () {
                                   if (!showPreview) {
@@ -492,12 +466,35 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
                                 },
                                 icon: Icon(
-                                  showPreview ? Icons.visibility_outlined : Icons.visibility,
+                                  showPreview ? Icons.visibility_off_rounded : Icons.visibility,
                                   color: theme.colorScheme.onSecondary,
                                   semanticLabel: l10n.postTogglePreview,
                                 ),
-                                visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
-                                style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
+                                style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
+                              child: SizedBox(
+                                width: 60,
+                                child: IconButton(
+                                  onPressed: isSubmitButtonDisabled || state.status == CreateCommentStatus.submitting ? null : () => _onCreateComment(context),
+                                  icon: state.status == CreateCommentStatus.submitting
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(),
+                                        )
+                                      : Icon(
+                                          widget.commentView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                          color: theme.colorScheme.onSecondary,
+                                          semanticLabel: widget.commentView != null ? l10n.editComment : l10n.createComment,
+                                        ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: theme.colorScheme.secondary,
+                                    disabledBackgroundColor: getBackgroundColor(context),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -530,6 +527,18 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
         });
       }
     }
+  }
+
+  void _onCreateComment(BuildContext context) {
+    saveDraft = false;
+
+    context.read<CreateCommentCubit>().createOrEditComment(
+          postId: postId,
+          parentCommentId: parentCommentId,
+          content: _bodyTextController.text,
+          commentIdBeingEdited: widget.commentView?.comment.id,
+          languageId: languageId,
+        );
   }
 }
 

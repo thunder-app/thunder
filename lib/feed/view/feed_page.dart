@@ -19,8 +19,8 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/utils.dart';
-import 'package:thunder/feed/view/feed_comment_list.dart';
-import 'package:thunder/feed/view/feed_widget.dart';
+import 'package:thunder/feed/widgets/feed_comment_card_list.dart';
+import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
@@ -453,13 +453,13 @@ class _FeedViewState extends State<FeedView> {
                             children: [
                               selectedUserOption[1]
                                   // Widget representing the list of user comments on the feed
-                                  ? FeedCommentList(
+                                  ? FeedCommentCardList(
                                       commentViews: commentViews,
                                       tabletMode: tabletMode,
                                     )
                                   :
                                   // Widget representing the list of posts on the feed
-                                  FeedPostList(
+                                  FeedPostCardList(
                                       postViewMedias: postViewMedias,
                                       tabletMode: tabletMode,
                                       markPostReadOnScroll: markPostReadOnScroll,
@@ -792,6 +792,7 @@ class FeedReachedEnd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
@@ -802,7 +803,7 @@ class FeedReachedEnd extends StatelessWidget {
           color: theme.dividerColor.withOpacity(0.1),
           padding: const EdgeInsets.symmetric(vertical: 32.0),
           child: ScalableText(
-            'Hmmm. It seems like you\'ve reached the bottom.',
+            l10n.reachedTheBottom,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleSmall,
             fontScale: state.metadataFontSizeScale,

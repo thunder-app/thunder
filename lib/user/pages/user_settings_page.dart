@@ -1,3 +1,4 @@
+import "dart:async";
 import "dart:io";
 
 import "package:flutter/foundation.dart";
@@ -57,10 +58,34 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   /// Text controller for the user's matrix id
   TextEditingController matrixUserTextController = TextEditingController();
 
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
+
   @override
   void initState() {
     super.initState();
     context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+
+    if (widget.settingToHighlight != null) {
+      setState(() => settingToHighlight = widget.settingToHighlight);
+
+      // Need some delay to finish building, even though we're in a post-frame callback.
+      Timer(const Duration(milliseconds: 500), () {
+        if (settingToHighlightKey.currentContext != null) {
+          // Ensure that the selected setting is visible on the screen
+          Scrollable.ensureVisible(
+            settingToHighlightKey.currentContext!,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+          );
+        }
+
+        // Give time for the highlighting to appear, then turn it off
+        Timer(const Duration(seconds: 1), () {
+          setState(() => settingToHighlight = null);
+        });
+      });
+    }
   }
 
   @override
@@ -176,9 +201,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                                 );
                               },
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDisplayName,
+                              highlightedSetting: settingToHighlight,
                             ),
                             SettingsListTile(
                               icon: Icons.note_rounded,
@@ -210,9 +235,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                                 );
                               },
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountProfileBio,
+                              highlightedSetting: settingToHighlight,
                             ),
                             SettingsListTile(
                               icon: Icons.email_rounded,
@@ -238,9 +263,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                                 );
                               },
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountEmail,
+                              highlightedSetting: settingToHighlight,
                             ),
                             SettingsListTile(
                               icon: Icons.person_rounded,
@@ -265,9 +290,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                                 );
                               },
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountMatrixUser,
+                              highlightedSetting: settingToHighlight,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -293,6 +318,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               ],
                               icon: Icons.filter_alt_rounded,
                               onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultListingType: value.payload)),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDefaultFeedType,
+                              highlightedSetting: settingToHighlight,
                             ),
                             ListOption(
                               description: l10n.defaultFeedSortType,
@@ -322,9 +350,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   ),
                                 ],
                               ),
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDefaultFeedSortType,
+                              highlightedSetting: settingToHighlight,
                             ),
                             ToggleOption(
                               description: l10n.showNsfwContent,
@@ -332,9 +360,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               iconEnabled: Icons.no_adult_content,
                               iconDisabled: Icons.no_adult_content,
                               onToggle: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowNsfwContent,
+                              highlightedSetting: settingToHighlight,
                             ),
                             ToggleOption(
                               description: l10n.showScores,
@@ -342,9 +370,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               iconEnabled: Icons.onetwothree_rounded,
                               iconDisabled: Icons.onetwothree_rounded,
                               onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowScores,
+                              highlightedSetting: settingToHighlight,
                             ),
                             ToggleOption(
                               description: l10n.showReadPosts,
@@ -352,9 +380,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               iconEnabled: Icons.fact_check_rounded,
                               iconDisabled: Icons.fact_check_outlined,
                               onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowReadPosts,
+                              highlightedSetting: settingToHighlight,
                             ),
                             ToggleOption(
                               description: l10n.bot,
@@ -363,9 +391,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               iconDisabled: Thunder.robot,
                               iconSpacing: 14.0,
                               onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountIsBot,
+                              highlightedSetting: settingToHighlight,
                             ),
                             ToggleOption(
                               description: l10n.showBotAccounts,
@@ -374,9 +402,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               iconDisabled: Thunder.robot,
                               iconSpacing: 14.0,
                               onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowBotAccounts,
+                              highlightedSetting: settingToHighlight,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -402,9 +430,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   ),
                                 );
                               },
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.discussionLanguages,
+                              highlightedSetting: settingToHighlight,
                             ),
                             SettingsListTile(
                               icon: Icons.block_rounded,
@@ -426,9 +454,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   ),
                                 );
                               },
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountBlocks,
+                              highlightedSetting: settingToHighlight,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -454,9 +482,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   primaryButtonText: l10n.confirm,
                                 );
                               },
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountChangePassword,
+                              highlightedSetting: settingToHighlight,
                             ),
                             SettingsListTile(
                               icon: Icons.delete_forever_rounded,
@@ -478,9 +506,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   },
                                 );
                               },
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDeleteAccount,
+                              highlightedSetting: settingToHighlight,
                             ),
                             if (LemmyClient.instance.supportsFeature(LemmyFeature.listMedia))
                               SettingsListTile(
@@ -516,9 +544,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                     ),
                                   );
                                 },
-                                highlightKey: null,
-                                setting: null,
-                                highlightedSetting: null,
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountManageMedia,
+                                highlightedSetting: settingToHighlight,
                               ),
                             const SizedBox(height: 100.0),
                           ],

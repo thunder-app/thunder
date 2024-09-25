@@ -32,6 +32,7 @@ release/
 .pub-cache/
 .pub/
 /build/
+/debug/
 
 # Symbolication related
 app.*.symbols

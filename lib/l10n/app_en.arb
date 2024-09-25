@@ -109,6 +109,10 @@
   "@animations": {},
   "anonymous": "Anonymous",
   "@anonymous": {},
+  "anonymousInstances": "Anonymous Instances",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
   "appLanguage": "App Language",
   "@appLanguage": {
     "description": "Language selection in settings."
@@ -153,6 +157,10 @@
   },
   "blockCommunity": "Block Community",
   "@blockCommunity": {},
+  "blockCommunityInstance": "Block Community Instance",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
   "blockInstance": "Block Instance",
   "@blockInstance": {},
   "blockManagement": "Block Management",
@@ -165,6 +173,10 @@
   },
   "blockUser": "Block User",
   "@blockUser": {},
+  "blockUserInstance": "Block User Instance",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
   "blockedCommunities": "Blocked Communities",
   "@blockedCommunities": {},
   "blockedInstances": "Blocked Instances",
@@ -245,6 +257,10 @@
   "@changeSort": {},
   "clearCache": "Clear Cache ({cacheSize})",
   "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "clearCacheLabel": "Clear Cache",
+  "@clearCacheLabel": {
     "description": "Label for action to clear cache in the dialog"
   },
   "clearDatabase": "Clear Database",
@@ -783,6 +799,8 @@
   "@enablePostFab": {
     "description": "Enable the Floating Action Button for the post"
   },
+  "endOfComments": "End of comments",
+  "@endOfComments": {},
   "endSearch": "End Search",
   "@endSearch": {},
   "errorDeletingImage": "There was an error deleting the image: {error}",
@@ -870,6 +888,10 @@
   "failedToLoadVideo": "Failed to load video. Open link in browser?",
   "@failedToLoadVideo": {
     "description": "Error message that displays when we fail to load a video"
+  },
+  "failedToPerformAction": "Failed to perform action",
+  "@failedToPerformAction": {
+    "description": "Error message when we fail to perform an action"
   },
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
@@ -1221,6 +1243,10 @@
   "@loginToPerformAction": {},
   "loginToSeeInbox": "Log in to see your inbox",
   "@loginToSeeInbox": {},
+  "lookingForAccountSpecificFeedSettings": "Looking for account-specific feed settings?",
+  "@lookingForAccountSpecificFeedSettings": {
+    "description": "Helper setting which navigates to account page"
+  },
   "malformedUri": "The link you provided is in an unsupported format. Please make sure it's a valid link.",
   "@malformedUri": {
     "description": "Error related to unsupported link format."
@@ -1377,13 +1403,19 @@
   "@no": {
     "description": "A negative status"
   },
-  "noComments": "Oh. There are no comments.",
-  "@noComments": {},
-  "noCommentsFound": "No comments found.",
+  "noAccountsAdded": "No accounts have been added",
+  "@noAccountsAdded": {
+    "description": "Placeholder text when no accounts have been added"
+  },
+  "noAnonymousInstances": "No anonymous instances have been added",
+  "@noAnonymousInstances": {
+    "description": "Placeholder text when no anonymous instances have been added"
+  },
+  "noCommentsFound": "No comments found",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No communities found.",
+  "noCommunitiesFound": "No communities found",
   "@noCommunitiesFound": {},
-  "noCommunityBlocks": "No blocked communities.",
+  "noCommunityBlocks": "No blocked communities",
   "@noCommunityBlocks": {},
   "noCompatibleAppFound": "No compatible app found",
   "@noCompatibleAppFound": {
@@ -1707,7 +1739,7 @@
   "@pushNotificationServerDescription": {
     "description": "Description of choosing push notification server setting"
   },
-  "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
+  "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
   "readAll": "Read All",
   "@readAll": {},
@@ -1777,6 +1809,10 @@
   "@removedPost": {
     "description": "Short decription for moderator action to remove a post"
   },
+  "reorder": "Reorder",
+  "@reorder": {
+    "description": "Tooltip text for the list editor button"
+  },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
   "@reply": {},
   "replyColor": "Reply Color",
@@ -1793,6 +1829,14 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "reporter": "Reporter:",
+  "@reporter": {
+    "description": "Name of reporter that reported a post/comment"
+  },
+  "requiredField": "*required",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
+  },
   "reset": "Reset",
   "@reset": {
     "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
@@ -1907,7 +1951,7 @@
   "@selectAll": {
     "description": "Action for selecting all text"
   },
-  "selectCommunity": "Select a community",
+  "selectCommunity": "Select a community (required)",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
   "@selectFeedType": {},
@@ -2225,6 +2269,10 @@
   },
   "subscribed": "Subscribed",
   "@subscribed": {},
+  "subscriptionRequestSent": "Subscription request sent",
+  "@subscriptionRequestSent": {
+    "description": "Message for subscription request sent"
+  },
   "subscriptions": "Subscriptions",
   "@subscriptions": {},
   "successfullyBlocked": "Blocked.",
@@ -2269,7 +2317,7 @@
   "@teal": {
     "description": "The color teal"
   },
-  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It may take a few minutes.)",
+  "testBackgroundNotificationDescription": "Thunder will close itself and then attempt to generate a notification in the background. (It will take at least 15 minutes.)",
   "@testBackgroundNotificationDescription": {
     "description": "A message describing the background test notification"
   },
@@ -2715,8 +2763,16 @@
   },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
+  "visitCommunityInstance": "Visit Community Instance",
+  "@visitCommunityInstance": {
+    "description": "Action to visit the instance of a community"
+  },
   "visitInstance": "Visit Instance",
   "@visitInstance": {},
+  "visitUserInstance": "Visit User Instance",
+  "@visitUserInstance": {
+    "description": "Action to visit the instance of a user"
+  },
   "visitUserProfile": "Visit User Profile",
   "@visitUserProfile": {},
   "warning": "Warning",

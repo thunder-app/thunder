@@ -155,6 +155,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           jwt: loginResponse.jwt,
           instance: instance,
           userId: getSiteResponse.myUser?.localUserView.person.id,
+          index: -1,
         );
 
         account = await Account.insertAccount(account);

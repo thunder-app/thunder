@@ -371,44 +371,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
           }
         },
         builder: (context, state) {
-          return KeyboardDismissOnTap(
+          return GestureDetector(
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
             child: Scaffold(
               appBar: AppBar(
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
                 toolbarHeight: 70.0,
                 centerTitle: false,
-                actions: [
-                  state.status == CreatePostStatus.submitting
-                      ? const Padding(
-                          padding: EdgeInsets.only(right: 20.0),
-                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: IconButton(
-                            onPressed: isSubmitButtonDisabled
-                                ? null
-                                : () {
-                                    saveDraft = false;
-
-                                    context.read<CreatePostCubit>().createOrEditPost(
-                                          communityId: communityId!,
-                                          name: _titleTextController.text,
-                                          body: _bodyTextController.text,
-                                          nsfw: isNSFW,
-                                          url: url,
-                                          customThumbnail: customThumbnail,
-                                          postIdBeingEdited: widget.postView?.post.id,
-                                          languageId: languageId,
-                                        );
-                                  },
-                            icon: Icon(
-                              widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
-                              semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
-                            ),
-                          ),
-                        ),
-                ],
               ),
               body: SafeArea(
                 child: Column(
@@ -472,18 +443,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               builder: (context, controller, focusNode) => TextField(
                                 controller: controller,
                                 focusNode: focusNode,
-                                decoration: InputDecoration(hintText: l10n.postTitle),
+                                decoration: InputDecoration(
+                                  labelText: l10n.postTitle,
+                                  helperText: l10n.requiredField,
+                                  isDense: true,
+                                  border: const OutlineInputBorder(),
+                                  contentPadding: const EdgeInsets.all(13),
+                                ),
                               ),
                               hideOnEmpty: true,
                               hideOnLoading: true,
                               hideOnError: true,
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             TextFormField(
                               controller: _urlTextController,
                               decoration: InputDecoration(
-                                hintText: l10n.postURL,
+                                labelText: l10n.postURL,
                                 errorText: urlError,
+                                isDense: true,
+                                border: const OutlineInputBorder(),
+                                contentPadding: const EdgeInsets.all(13),
                                 suffixIcon: IconButton(
                                   onPressed: () async {
                                     if (state.status == CreatePostStatus.postImageUploadInProgress) return;
@@ -512,12 +492,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               TextFormField(
                                 controller: _customThumbnailTextController,
                                 decoration: InputDecoration(
-                                  hintText: l10n.thumbnailUrl,
+                                  labelText: l10n.thumbnailUrl,
                                   errorText: customThumbnailError,
+                                  isDense: true,
+                                  border: const OutlineInputBorder(),
+                                  contentPadding: const EdgeInsets.all(13),
                                 ),
                               ),
                             ],
-                            const SizedBox(height: 10),
+                            SizedBox(height: url.isNotEmpty ? 10 : 5),
                             Visibility(
                               visible: url.isNotEmpty,
                               child: LinkPreviewCard(
@@ -652,7 +635,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 8.0),
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
                             child: IconButton(
                               onPressed: () {
                                 if (!showPreview) {
@@ -664,12 +647,35 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
                               },
                               icon: Icon(
-                                showPreview ? Icons.visibility_outlined : Icons.visibility,
+                                showPreview ? Icons.visibility_off_rounded : Icons.visibility,
                                 color: theme.colorScheme.onSecondary,
                                 semanticLabel: l10n.postTogglePreview,
                               ),
-                              visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
-                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary),
+                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
+                            child: SizedBox(
+                              width: 60,
+                              child: IconButton(
+                                onPressed: isSubmitButtonDisabled || state.status == CreatePostStatus.submitting ? null : () => _onCreatePost(context),
+                                icon: state.status == CreatePostStatus.submitting
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : Icon(
+                                        widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                        color: theme.colorScheme.onSecondary,
+                                        semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                                      ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.secondary,
+                                  disabledBackgroundColor: getBackgroundColor(context),
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -732,6 +738,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
         });
       }
     }
+  }
+
+  void _onCreatePost(BuildContext context) {
+    saveDraft = false;
+
+    context.read<CreatePostCubit>().createOrEditPost(
+          communityId: communityId!,
+          name: _titleTextController.text,
+          body: _bodyTextController.text,
+          nsfw: isNSFW,
+          url: url,
+          customThumbnail: customThumbnail,
+          postIdBeingEdited: widget.postView?.post.id,
+          languageId: languageId,
+        );
   }
 }
 
