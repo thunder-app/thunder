@@ -2750,5 +2750,9 @@
   "reporter": "Reportero:",
   "@reporter": {
     "description": "Name of reporter that reported a post/comment"
+  },
+  "alternateSources": "Fuentes alternativas",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
   }
 }
