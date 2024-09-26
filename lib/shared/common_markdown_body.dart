@@ -158,7 +158,7 @@ class CommonMarkdownBody extends StatelessWidget {
         );
       },
       onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
-      onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
+      onLongPressLink: (text, url, title) => handleLinkLongPress(context, text, url),
       styleSheet: hideContent
           ? spoilerMarkdownStyleSheet
           : MarkdownStyleSheet.fromTheme(theme).copyWith(
