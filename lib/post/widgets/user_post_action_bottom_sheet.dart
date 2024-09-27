@@ -36,11 +36,11 @@ enum UserPostAction {
   String get name => switch (this) {
         UserPostAction.viewProfile => l10n.visitUserProfile,
         UserPostAction.blockUser => l10n.blockUser,
-        UserPostAction.unblockUser => "Unblock User",
-        UserPostAction.banUserFromCommunity => "Ban From Community",
-        UserPostAction.unbanUserFromCommunity => "Unban From Community",
-        UserPostAction.addUserAsCommunityModerator => "Add As Community Moderator",
-        UserPostAction.removeUserAsCommunityModerator => "Remove As Community Moderator",
+        UserPostAction.unblockUser => l10n.unblockUser,
+        UserPostAction.banUserFromCommunity => l10n.banFromCommunity,
+        UserPostAction.unbanUserFromCommunity => l10n.unbanFromCommunity,
+        UserPostAction.addUserAsCommunityModerator => l10n.addAsCommunityModerator,
+        UserPostAction.removeUserAsCommunityModerator => l10n.removeAsCommunityModerator,
         // UserPostAction.banUser => "Ban From Instance",
         // UserPostAction.unbanUser => "Unban User From Instance",
         // UserPostAction.purgeUser => "Purge User",
@@ -122,11 +122,12 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
 
     List<UserPostAction> userActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<UserPostAction> moderatorActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
-    List<UserPostAction> adminActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
+    // List<UserPostAction> adminActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
     final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final isModerator = authState.getSiteResponse?.myUser?.moderates.where((communityModeratorView) => communityModeratorView.moderator.actorId == account?.actorId).isNotEmpty ?? false;
-    final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
+    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
+    // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
     final blockedUsers = authState.getSiteResponse?.myUser?.personBlocks ?? [];
@@ -157,7 +158,7 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
         moderatorActions = moderatorActions.where((action) => action != UserPostAction.removeUserAsCommunityModerator).toList();
       }
 
-      if (!isUserBannedFromCommunity) {
+      if (isUserBannedFromCommunity) {
         moderatorActions = moderatorActions.where((action) => action != UserPostAction.banUserFromCommunity).toList();
       } else {
         moderatorActions = moderatorActions.where((action) => action != UserPostAction.unbanUserFromCommunity).toList();
@@ -215,26 +216,26 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
                 )
                 .toList() as List<Widget>,
           ],
-          if (isAdmin && adminActions.isNotEmpty) ...[
-            const ThunderDivider(sliver: false, padding: false),
-            ...adminActions
-                .map(
-                  (userPostAction) => BottomSheetAction(
-                    leading: Icon(userPostAction.icon),
-                    trailing: Padding(
-                      padding: const EdgeInsets.only(left: 1),
-                      child: Icon(
-                        Thunder.shield_crown,
-                        size: 20,
-                        color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
-                      ),
-                    ),
-                    title: userPostAction.name,
-                    onTap: () => performAction(userPostAction),
-                  ),
-                )
-                .toList() as List<Widget>,
-          ],
+          // if (isAdmin && adminActions.isNotEmpty) ...[
+          //   const ThunderDivider(sliver: false, padding: false),
+          //   ...adminActions
+          //       .map(
+          //         (userPostAction) => BottomSheetAction(
+          //           leading: Icon(userPostAction.icon),
+          //           trailing: Padding(
+          //             padding: const EdgeInsets.only(left: 1),
+          //             child: Icon(
+          //               Thunder.shield_crown,
+          //               size: 20,
+          //               color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
+          //             ),
+          //           ),
+          //           title: userPostAction.name,
+          //           onTap: () => performAction(userPostAction),
+          //         ),
+          //       )
+          //       .toList() as List<Widget>,
+          // ],
         ],
       ),
     );

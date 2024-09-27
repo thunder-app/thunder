@@ -189,25 +189,32 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
     final authState = context.read<AuthBloc>().state;
     final isLoggedIn = authState.isLoggedIn;
 
-    List<GeneralQuickPostAction> userActions = GeneralQuickPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
+    List<GeneralQuickPostAction> quickActions = GeneralQuickPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
 
     if (!isLoggedIn) {
-      userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
+      quickActions = quickActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
       // Hide hidden if instance does not support it
       if (!LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
-        userActions = userActions.where((action) => action != GeneralQuickPostAction.hide).toList();
+        quickActions = quickActions.where((action) => action != GeneralQuickPostAction.hide).toList();
       }
 
       // Hide downvoted if instance does not support it
       if (!authState.downvotesEnabled) {
-        userActions = userActions.where((action) => action != GeneralQuickPostAction.downvote).toList();
+        quickActions = quickActions.where((action) => action != GeneralQuickPostAction.downvote).toList();
       }
+    }
+
+    // Determine the available sub-menus to display
+    List<GeneralPostAction> submenus = GeneralPostAction.values.where((page) => page != GeneralPostAction.general).toList();
+
+    if (!isLoggedIn) {
+      submenus = submenus.where((action) => action != GeneralPostAction.post).toList();
     }
 
     return Column(
       children: [
-        if (userActions.isNotEmpty)
+        if (quickActions.isNotEmpty)
           MultiPickerItem(
             pickerItems: GeneralQuickPostAction.values
                 .map((generalQuickPostAction) => PickerItemData(
@@ -218,8 +225,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
                     ))
                 .toList(),
           ),
-        ...GeneralPostAction.values
-            .where((page) => page != GeneralPostAction.general)
+        ...submenus
             .map(
               (page) => BottomSheetAction(
                 leading: Icon(page.icon),

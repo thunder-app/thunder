@@ -53,6 +53,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
+  "addAsCommunityModerator": "Add as Community Moderator",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
   "addDiscussionLanguage": "Add Language",
   "@addDiscussionLanguage": {
     "description": "Hint for text field to add language"
@@ -146,6 +150,10 @@
   "backgroundCheckWarning": "Note that notification checks will consume additional battery",
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
+  },
+  "banFromCommunity": "Ban from Community",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
   },
   "bannedUser": "Banned User",
   "@bannedUser": {
@@ -1745,6 +1753,10 @@
   "@remove": {},
   "removeAccount": "Remove Account",
   "@removeAccount": {},
+  "removeAsCommunityModerator": "Remove as Community Moderator",
+  "@removeAsCommunityModerator": {
+    "description": "Moderator action to remove user as community moderator"
+  },
   "removeFromFavorites": "Remove from favorites",
   "@removeFromFavorites": {
     "description": "Action to remove a community in drawer from favorites"
@@ -2469,6 +2481,10 @@
   "@unableToRetrieveChangelog": {
     "description": "Error message for when we are unable to retrieve the changelog."
   },
+  "unbanFromCommunity": "Unban from Community",
+  "@unbanFromCommunity": {
+    "description": "Moderator action to unban a user from a community"
+  },
   "unbannedUser": "Unbanned User",
   "@unbannedUser": {
     "description": "Short decription for moderator action to unban a user"
@@ -2484,6 +2500,10 @@
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
+  },
+  "unblockUser": "Unblock User",
+  "@unblockUser": {
+    "description": "Action to unblock a user"
   },
   "understandEnable": "I Understand, Enable",
   "@understandEnable": {

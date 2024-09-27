@@ -243,7 +243,7 @@ Future<bool> removePost(int postId, bool remove, String reason) async {
   return postResponse.postView.post.removed == remove;
 }
 
-/// Logic to remove a post to a community (moderator action)
+/// Logic to report a given post
 Future<PostReportResponse> reportPost(int postId, String reason) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
   final account = await fetchActiveProfileAccount();
