@@ -11,8 +11,8 @@ import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
-import 'package:thunder/shared/divider.dart';
-import 'package:thunder/thunder/thunder_icons.dart';
+// import 'package:thunder/shared/divider.dart';
+// import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/utils/instance.dart';
 
 /// Defines the actions that can be taken on a community
@@ -28,10 +28,10 @@ enum InstancePostAction {
   String get name => switch (this) {
         InstancePostAction.visitCommunityInstance => l10n.visitCommunityInstance,
         InstancePostAction.blockCommunityInstance => l10n.blockCommunityInstance,
-        InstancePostAction.unblockCommunityInstance => "Unblock Community Instance",
+        InstancePostAction.unblockCommunityInstance => l10n.unblockCommunityInstance,
         InstancePostAction.visitUserInstance => l10n.visitUserInstance,
         InstancePostAction.blockUserInstance => l10n.blockUserInstance,
-        InstancePostAction.unblockUserInstance => "Unblock User Instance",
+        InstancePostAction.unblockUserInstance => l10n.unblockUserInstance,
       };
 
   /// The icon to use for the action
@@ -108,16 +108,16 @@ class _InstancePostActionBottomSheetState extends State<InstancePostActionBottom
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final authState = context.read<AuthBloc>().state;
 
     List<InstancePostAction> userActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
-    List<InstancePostAction> moderatorActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
-    List<InstancePostAction> adminActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
+    // List<InstancePostAction> moderatorActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
+    // List<InstancePostAction> adminActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
     final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final isModerator = authState.getSiteResponse?.myUser?.moderates.where((communityModeratorView) => communityModeratorView.moderator.actorId == account?.actorId).isNotEmpty ?? false;
-    final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
+    // final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
+    // final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
+    // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
     final blockedInstances = authState.getSiteResponse?.myUser?.instanceBlocks ?? [];
@@ -184,46 +184,46 @@ class _InstancePostActionBottomSheetState extends State<InstancePostActionBottom
                 ),
               )
               .toList() as List<Widget>,
-          if (isModerator && moderatorActions.isNotEmpty) ...[
-            const ThunderDivider(sliver: false, padding: false),
-            ...moderatorActions
-                .map(
-                  (instancePostAction) => BottomSheetAction(
-                    leading: Icon(instancePostAction.icon),
-                    trailing: Padding(
-                      padding: const EdgeInsets.only(left: 1),
-                      child: Icon(
-                        Thunder.shield,
-                        size: 20,
-                        color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.green),
-                      ),
-                    ),
-                    title: instancePostAction.name,
-                    onTap: () => performAction(instancePostAction),
-                  ),
-                )
-                .toList() as List<Widget>,
-          ],
-          if (isAdmin && adminActions.isNotEmpty) ...[
-            const ThunderDivider(sliver: false, padding: false),
-            ...adminActions
-                .map(
-                  (instancePostAction) => BottomSheetAction(
-                    leading: Icon(instancePostAction.icon),
-                    trailing: Padding(
-                      padding: const EdgeInsets.only(left: 1),
-                      child: Icon(
-                        Thunder.shield_crown,
-                        size: 20,
-                        color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
-                      ),
-                    ),
-                    title: instancePostAction.name,
-                    onTap: () => performAction(instancePostAction),
-                  ),
-                )
-                .toList() as List<Widget>,
-          ],
+          // if (isModerator && moderatorActions.isNotEmpty) ...[
+          //   const ThunderDivider(sliver: false, padding: false),
+          //   ...moderatorActions
+          //       .map(
+          //         (instancePostAction) => BottomSheetAction(
+          //           leading: Icon(instancePostAction.icon),
+          //           trailing: Padding(
+          //             padding: const EdgeInsets.only(left: 1),
+          //             child: Icon(
+          //               Thunder.shield,
+          //               size: 20,
+          //               color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.green),
+          //             ),
+          //           ),
+          //           title: instancePostAction.name,
+          //           onTap: () => performAction(instancePostAction),
+          //         ),
+          //       )
+          //       .toList() as List<Widget>,
+          // ],
+          // if (isAdmin && adminActions.isNotEmpty) ...[
+          //   const ThunderDivider(sliver: false, padding: false),
+          //   ...adminActions
+          //       .map(
+          //         (instancePostAction) => BottomSheetAction(
+          //           leading: Icon(instancePostAction.icon),
+          //           trailing: Padding(
+          //             padding: const EdgeInsets.only(left: 1),
+          //             child: Icon(
+          //               Thunder.shield_crown,
+          //               size: 20,
+          //               color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
+          //             ),
+          //           ),
+          //           title: instancePostAction.name,
+          //           onTap: () => performAction(instancePostAction),
+          //         ),
+          //       )
+          //       .toList() as List<Widget>,
+          // ],
         ],
       ),
     );

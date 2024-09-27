@@ -24,7 +24,7 @@ enum GeneralPostAction {
   share(icon: Icons.share);
 
   String get name => switch (this) {
-        GeneralPostAction.post => "Post",
+        GeneralPostAction.post => l10n.post,
         GeneralPostAction.user => l10n.user,
         GeneralPostAction.community => l10n.community,
         GeneralPostAction.instance => l10n.instance(1),
@@ -34,7 +34,7 @@ enum GeneralPostAction {
 
   /// The title to use for the action. This is shown when the given page is active
   String get title => switch (this) {
-        GeneralPostAction.post => "Post Actions",
+        GeneralPostAction.post => l10n.postActions,
         GeneralPostAction.user => l10n.userActions,
         GeneralPostAction.community => l10n.communityActions,
         GeneralPostAction.instance => l10n.instanceActions,
@@ -160,7 +160,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
       case GeneralQuickPostAction.save:
         return postViewMedia.postView.saved ? l10n.saved : l10n.save;
       case GeneralQuickPostAction.read:
-        return postViewMedia.postView.read ? "Read" : l10n.markAsRead;
+        return postViewMedia.postView.read ? l10n.read : l10n.markAsRead;
       case GeneralQuickPostAction.hide:
         return postViewMedia.postView.hidden == true ? l10n.hidden : l10n.hide;
     }

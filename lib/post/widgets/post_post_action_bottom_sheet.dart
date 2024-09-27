@@ -31,16 +31,16 @@ enum PostPostAction {
   ;
 
   String get name => switch (this) {
-        PostPostAction.reportPost => "Report Post",
+        PostPostAction.reportPost => l10n.reportPost,
         PostPostAction.editPost => l10n.editPost,
-        PostPostAction.deletePost => "Delete Post",
+        PostPostAction.deletePost => l10n.deletePost,
         PostPostAction.restorePost => l10n.restorePost,
         PostPostAction.lockPost => l10n.lockPost,
         PostPostAction.unlockPost => l10n.unlockPost,
         PostPostAction.removePost => l10n.removePost,
-        PostPostAction.restorePostAsModerator => "Restore Post",
-        PostPostAction.pinPostToCommunity => "Pin Post To Community",
-        PostPostAction.unpinPostFromCommunity => "Unpin Post From Community",
+        PostPostAction.restorePostAsModerator => l10n.restorePost,
+        PostPostAction.pinPostToCommunity => l10n.pinPostToCommunity,
+        PostPostAction.unpinPostFromCommunity => l10n.unpinPostFromCommunity,
         // PostPostAction.pinPostToInstance => "Pin Post To Instance",
         // PostPostAction.unpinPostFromInstance => "Unpin Post From Instance",
       };
@@ -133,8 +133,8 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
     showThunderDialog(
       context: widget.context,
-      title: "Report Post",
-      primaryButtonText: "Report",
+      title: l10n.reportPost,
+      primaryButtonText: l10n.report(1),
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
         widget.context.read<FeedBloc>().add(
               FeedItemActionedEvent(
@@ -203,17 +203,17 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
     List<PostPostAction> userActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<PostPostAction> moderatorActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
-    List<PostPostAction> adminActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
+    // List<PostPostAction> adminActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
     final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final isModerator =
-        authState.getSiteResponse?.myUser?.moderates.where((communityModeratorView) => communityModeratorView.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty ?? false;
-    final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
+    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
+    // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
     final isPostLocked = widget.postViewMedia.postView.post.locked;
     final isPostPinnedToCommunity = widget.postViewMedia.postView.post.featuredCommunity; // Pin to community
-    final isPostPinnedToInstance = widget.postViewMedia.postView.post.featuredLocal; // Pin to instance
+    // final isPostPinnedToInstance = widget.postViewMedia.postView.post.featuredLocal; // Pin to instance
     final isPostDeleted = widget.postViewMedia.postView.post.deleted; // Deleted by the user
     final isPostRemoved = widget.postViewMedia.postView.post.removed; // Removed by a moderator
 
@@ -289,26 +289,26 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
               )
               .toList() as List<Widget>,
         ],
-        if (isAdmin && adminActions.isNotEmpty) ...[
-          const ThunderDivider(sliver: false, padding: false),
-          ...adminActions
-              .map(
-                (postPostAction) => BottomSheetAction(
-                  leading: Icon(postPostAction.icon),
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(left: 1),
-                    child: Icon(
-                      Thunder.shield_crown,
-                      size: 20,
-                      color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
-                    ),
-                  ),
-                  title: postPostAction.name,
-                  onTap: () => performAction(postPostAction),
-                ),
-              )
-              .toList() as List<Widget>,
-        ],
+        // if (isAdmin && adminActions.isNotEmpty) ...[
+        //   const ThunderDivider(sliver: false, padding: false),
+        //   ...adminActions
+        //       .map(
+        //         (postPostAction) => BottomSheetAction(
+        //           leading: Icon(postPostAction.icon),
+        //           trailing: Padding(
+        //             padding: const EdgeInsets.only(left: 1),
+        //             child: Icon(
+        //               Thunder.shield_crown,
+        //               size: 20,
+        //               color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
+        //             ),
+        //           ),
+        //           title: postPostAction.name,
+        //           onTap: () => performAction(postPostAction),
+        //         ),
+        //       )
+        //       .toList() as List<Widget>,
+        // ],
       ],
     );
   }

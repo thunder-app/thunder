@@ -677,6 +677,10 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
+  "deletePost": "Delete Post",
+  "@deletePost": {
+    "description": "Action for deleting a post"
+  },
   "deleteUserLabelConfirmation": "Are you sure you want to delete the label?",
   "@deleteUserLabelConfirmation": {
     "description": "Confirmation message for deleting a label"
@@ -1581,6 +1585,10 @@
   "@permissionDeniedMessage": {
     "description": "Explanation for error when user denies OS permissions"
   },
+  "pinPostToCommunity": "Pin Post to Community",
+  "@pinPostToCommunity": {
+    "description": "Action for pinning a post to a community (moderator action)"
+  },
   "pinToCommunity": "Pin to Community",
   "@pinToCommunity": {
     "description": "Setting for pinning a post to a community (moderator action)"
@@ -1588,6 +1596,14 @@
   "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "@placeholderText": {
     "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "post": "Post",
+  "@post": {
+    "description": "Describes a single post"
+  },
+  "postActions": "Post Actions",
+  "@postActions": {
+    "description": "Describes a given set of actions that can be performed on a post"
   },
   "postBehaviourSettings": "Posts",
   "@postBehaviourSettings": {
@@ -1725,6 +1741,10 @@
   },
   "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
+  "read": "Read",
+  "@read": {
+    "description": "Indicates that a post has been read"
+  },
   "readAll": "Read All",
   "@readAll": {},
   "reason": "Reason",
@@ -1817,6 +1837,10 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "reportPost": "Report Post",
+  "@reportPost": {
+    "description": "Action to report a post (moderator action)"
+  },
   "reporter": "Reporter:",
   "@reporter": {
     "description": "Name of reporter that reported a post/comment"
@@ -2497,6 +2521,10 @@
   "@unblockCommunity": {
     "description": "Action to unblock a community"
   },
+  "unblockCommunityInstance": "Unblock Community Instance",
+  "@unblockCommunityInstance": {
+    "description": "Action to unblock the instance of a given community"
+  },
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
@@ -2504,6 +2532,10 @@
   "unblockUser": "Unblock User",
   "@unblockUser": {
     "description": "Action to unblock a user"
+  },
+  "unblockUserInstance": "Unblock User Instance",
+  "@unblockUserInstance": {
+    "description": "Action to unblock the instance of a given user"
   },
   "understandEnable": "I Understand, Enable",
   "@understandEnable": {
@@ -2550,6 +2582,10 @@
   "unpinFromCommunity": "Unpin from Community",
   "@unpinFromCommunity": {
     "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "unpinPostFromCommunity": "Unpin Post from Community",
+  "@unpinPostFromCommunity": {
+    "description": "Moderator action to unpin a post from a community"
   },
   "unreachable": "Unreachable",
   "@unreachable": {
