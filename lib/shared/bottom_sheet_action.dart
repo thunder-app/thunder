@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Defines a widget that can be used in a [BottomSheet]. Can provide optional [leading] and [trailing] widgets.
+///
+/// When tapped, will call the [onTap] callback.
 class BottomSheetAction extends StatelessWidget {
   const BottomSheetAction({super.key, required this.leading, this.trailing, required this.title, this.subtitle, required this.onTap});
 

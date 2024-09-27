@@ -46,6 +46,7 @@ Future<BanFromCommunityResponse> banUserFromCommunity(int userId, bool ban, {req
   return banFromCommunityResponse;
 }
 
+/// Logic to add or remove moderator for a given community (moderator action)
 Future<AddModToCommunityResponse> addModerator(int userId, bool added, {required int communityId}) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
   final account = await fetchActiveProfileAccount();

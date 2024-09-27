@@ -29,7 +29,7 @@ enum CommunityPostAction {
         CommunityPostAction.subscribeToCommunity => l10n.subscribeToCommunity,
         CommunityPostAction.unsubscribeFromCommunity => l10n.unsubscribeFromCommunity,
         CommunityPostAction.blockCommunity => l10n.blockCommunity,
-        CommunityPostAction.unblockCommunity => "Unblock Community",
+        CommunityPostAction.unblockCommunity => l10n.unblockCommunity,
       };
 
   /// The icon to use for the action
@@ -90,11 +90,12 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
 
     List<CommunityPostAction> userActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<CommunityPostAction> moderatorActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
-    List<CommunityPostAction> adminActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
+    // List<CommunityPostAction> adminActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final isModerator = authState.getSiteResponse?.myUser?.moderates.where((communityModeratorView) => communityModeratorView.moderator.actorId == account?.actorId).isNotEmpty ?? false;
-    final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
+    // final account = authState.getSiteResponse?.myUser?.localUserView.person;
+    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
+    // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
     final blockedCommunities = authState.getSiteResponse?.myUser?.communityBlocks ?? [];
@@ -158,26 +159,26 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
                 )
                 .toList() as List<Widget>,
           ],
-          if (isAdmin && adminActions.isNotEmpty) ...[
-            const ThunderDivider(sliver: false, padding: false),
-            ...adminActions
-                .map(
-                  (communityPostAction) => BottomSheetAction(
-                    leading: Icon(communityPostAction.icon),
-                    trailing: Padding(
-                      padding: const EdgeInsets.only(left: 1),
-                      child: Icon(
-                        Thunder.shield_crown,
-                        size: 20,
-                        color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
-                      ),
-                    ),
-                    title: communityPostAction.name,
-                    onTap: () => performAction(communityPostAction),
-                  ),
-                )
-                .toList() as List<Widget>,
-          ],
+          // if (isAdmin && adminActions.isNotEmpty) ...[
+          //   const ThunderDivider(sliver: false, padding: false),
+          //   ...adminActions
+          //       .map(
+          //         (communityPostAction) => BottomSheetAction(
+          //           leading: Icon(communityPostAction.icon),
+          //           trailing: Padding(
+          //             padding: const EdgeInsets.only(left: 1),
+          //             child: Icon(
+          //               Thunder.shield_crown,
+          //               size: 20,
+          //               color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
+          //             ),
+          //           ),
+          //           title: communityPostAction.name,
+          //           onTap: () => performAction(communityPostAction),
+          //         ),
+          //       )
+          //       .toList() as List<Widget>,
+          // ],
         ],
       ),
     );
