@@ -328,6 +328,7 @@ enum LocalSettings {
   videoAutoFullscreen(name: 'video_auto_fullscreen', key: 'videoAutoFullscreen', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoAutoLoop(name: 'video_auto_loop', key: '', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoAutoPlay(name: 'video_auto_play', key: '', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoPlayerMode(name: 'setting_video_player_mode', key: 'videoPlayerMode', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
 
   // Searchable settings
   // The settings under this section do not correspond to settings that we persist in SharedPreferences.
@@ -518,6 +519,7 @@ extension LocalizationExt on AppLocalizations {
       'videoAutoLoop': videoAutoLoop,
       'videoAutoPlay': videoAutoPlay,
       'videoDefaultPlaybackSpeed': videoDefaultPlaybackSpeed,
+      'videoPlayerMode': videoPlayerMode,
       'userLabels': userLabels,
       'accountDisplayName': displayName,
       'accountProfileBio': profileBio,

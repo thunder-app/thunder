@@ -110,7 +110,9 @@ dependencies:
   connectivity_plus: ^6.0.2
   super_sliver_list: ^0.4.1
   video_player: ^2.8.7
-
+  
+dependency_overrides:
+  pointer_interceptor: ^0.10.1+1
 
 dev_dependencies:
   build_runner: ^2.4.6

@@ -19,6 +19,7 @@ import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/core/enums/video_player_mode.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
@@ -261,6 +262,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? true;
       VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
       VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
+      VideoPlayerMode videoPlayerMode = VideoPlayerMode.values.byName(prefs.getString(LocalSettings.videoPlayerMode.name) ?? VideoPlayerMode.inApp.name);
 
       String currentAnonymousInstance = prefs.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
 
@@ -428,6 +430,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         videoAutoLoop: videoAutoLoop,
         videoAutoPlay: videoAutoPlay,
         videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed,
+        videoPlayerMode: videoPlayerMode,
 
         currentAnonymousInstance: currentAnonymousInstance,
       ));
