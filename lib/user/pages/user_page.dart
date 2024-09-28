@@ -14,6 +14,7 @@ import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
+import 'package:thunder/user/pages/user_page_new.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc_old.dart';
@@ -57,79 +58,79 @@ class _UserPageState extends State<UserPage> {
           }
         },
         child: Scaffold(
-          appBar: AppBar(
-            scrolledUnderElevation: 0,
-            leading: widget.isAccountUser
-                ? Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
-                    child: IconButton(
-                      onPressed: () => showProfileModalSheet(context),
-                      icon: Icon(
-                        Icons.people_alt_rounded,
-                        semanticLabel: AppLocalizations.of(context)!.profiles,
-                      ),
-                      tooltip: AppLocalizations.of(context)!.profiles,
-                    ),
-                  )
-                : null,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
-                child: IconButton(
-                  onPressed: () => userBloc?.add(ResetUserEvent()),
-                  icon: Icon(
-                    Icons.refresh_rounded,
-                    semanticLabel: AppLocalizations.of(context)!.refresh,
-                  ),
-                  tooltip: AppLocalizations.of(context)!.refresh,
-                ),
-              ),
-              if (!widget.isAccountUser && userActorId != null)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
-                  child: IconButton(
-                    onPressed: () => Share.share(userActorId!),
-                    icon: Icon(
-                      Icons.share_rounded,
-                      semanticLabel: AppLocalizations.of(context)!.share,
-                    ),
-                    tooltip: AppLocalizations.of(context)!.share,
-                  ),
-                ),
-              if (widget.userId != null && widget.isAccountUser)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0, 4.0),
-                  child: IconButton(
-                    onPressed: () {
-                      final AccountBloc accountBloc = context.read<AccountBloc>();
-                      final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                      final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
+          // appBar: AppBar(
+          //   scrolledUnderElevation: 0,
+          //   leading: widget.isAccountUser
+          //       ? Padding(
+          //           padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
+          //           child: IconButton(
+          //             onPressed: () => showProfileModalSheet(context),
+          //             icon: Icon(
+          //               Icons.people_alt_rounded,
+          //               semanticLabel: AppLocalizations.of(context)!.profiles,
+          //             ),
+          //             tooltip: AppLocalizations.of(context)!.profiles,
+          //           ),
+          //         )
+          //       : null,
+          //   actions: [
+          //     Padding(
+          //       padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+          //       child: IconButton(
+          //         onPressed: () => userBloc?.add(ResetUserEvent()),
+          //         icon: Icon(
+          //           Icons.refresh_rounded,
+          //           semanticLabel: AppLocalizations.of(context)!.refresh,
+          //         ),
+          //         tooltip: AppLocalizations.of(context)!.refresh,
+          //       ),
+          //     ),
+          //     if (!widget.isAccountUser && userActorId != null)
+          //       Padding(
+          //         padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+          //         child: IconButton(
+          //           onPressed: () => Share.share(userActorId!),
+          //           icon: Icon(
+          //             Icons.share_rounded,
+          //             semanticLabel: AppLocalizations.of(context)!.share,
+          //           ),
+          //           tooltip: AppLocalizations.of(context)!.share,
+          //         ),
+          //       ),
+          //     if (widget.userId != null && widget.isAccountUser)
+          //       Padding(
+          //         padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0, 4.0),
+          //         child: IconButton(
+          //           onPressed: () {
+          //             final AccountBloc accountBloc = context.read<AccountBloc>();
+          //             final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+          //             final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
 
-                      Navigator.of(context).push(
-                        SwipeablePageRoute(
-                          transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                          canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
-                          canOnlySwipeFromEdge: !state.enableFullScreenSwipeNavigationGesture,
-                          builder: (context) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider.value(value: accountBloc),
-                              BlocProvider.value(value: thunderBloc),
-                              BlocProvider.value(value: userSettingsBloc),
-                            ],
-                            child: const UserSettingsPage(),
-                          ),
-                        ),
-                      );
-                    },
-                    icon: Icon(
-                      Icons.settings_rounded,
-                      semanticLabel: AppLocalizations.of(context)!.accountSettings,
-                    ),
-                    tooltip: AppLocalizations.of(context)!.accountSettings,
-                  ),
-                ),
-            ],
-          ),
+          //             Navigator.of(context).push(
+          //               SwipeablePageRoute(
+          //                 transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+          //                 canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
+          //                 canOnlySwipeFromEdge: !state.enableFullScreenSwipeNavigationGesture,
+          //                 builder: (context) => MultiBlocProvider(
+          //                   providers: [
+          //                     BlocProvider.value(value: accountBloc),
+          //                     BlocProvider.value(value: thunderBloc),
+          //                     BlocProvider.value(value: userSettingsBloc),
+          //                   ],
+          //                   child: const UserSettingsPage(),
+          //                 ),
+          //               ),
+          //             );
+          //           },
+          //           icon: Icon(
+          //             Icons.settings_rounded,
+          //             semanticLabel: AppLocalizations.of(context)!.accountSettings,
+          //           ),
+          //           tooltip: AppLocalizations.of(context)!.accountSettings,
+          //         ),
+          //       ),
+          //   ],
+          // ),
           body: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
             userBloc = context.read<UserBloc>();
 
@@ -150,7 +151,7 @@ class _UserPageState extends State<UserPage> {
                 if (state.personView == null) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                return UserPageSuccess(
+                return UserPageNew(
                   userId: widget.userId,
                   isAccountUser: widget.isAccountUser,
                   personView: state.personView,
