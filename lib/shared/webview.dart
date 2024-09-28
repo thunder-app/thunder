@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
+import 'package:thunder/utils/links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
@@ -161,6 +162,19 @@ class NavigationControls extends StatelessWidget {
                   onTap: () => Share.share(url),
                   icon: Icons.share_rounded,
                   title: l10n.share,
+                ),
+                ThunderPopupMenuItem(
+                  onTap: () {
+                    handleLinkLongPress(
+                      context,
+                      url,
+                      url,
+                      initialPage: LinkBottomSheetPage.alternateLinks,
+                      customNavigation: (url) => webViewController.loadRequest(Uri.parse(url)),
+                    );
+                  },
+                  icon: Icons.link_rounded,
+                  title: l10n.alternateSources,
                 ),
               ],
             ),

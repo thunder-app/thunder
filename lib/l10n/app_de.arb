@@ -67,7 +67,7 @@
   "@apply": {},
   "back": "Zurück",
   "@back": {},
-  "backButton": "\"Zurück\"-Button",
+  "backButton": "Zurück-Schaltfläche",
   "@backButton": {},
   "backToTop": "Zurück nach oben",
   "@backToTop": {},
@@ -382,5 +382,67 @@
   "clearedCache": "Cache erfolgreich geleert.",
   "@clearedCache": {
     "description": "Message indicating that cache was cleared successfully"
+  },
+  "accept": "Annehmen",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "anonymousInstances": "Anonyme Instanzen",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "comfortable": "Komfortabel",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "color": "Farbe",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "colors": "Farben",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "accountBirthday": "Kontogeburtstag {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "actionColors": "Aktionsfarben",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "always": "Immer",
+  "@always": {},
+  "blue": "Blau",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "commentShowUserAvatar": "Benutzeravatar anzeigen",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
+  "collapse": "Einklappen",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "bold": "Fett",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "ago": "vor {time}",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "changePassword": "Passwort ändern",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "addDiscussionLanguage": "Sprache hinzufügen",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
   }
 }
