@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
