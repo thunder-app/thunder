@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -153,6 +154,10 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
                     ],
                   ),
                 ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                child: LanguagePostCardMetaData(languageId: widget.postViewMedia.postView.post.languageId),
               ),
               const SizedBox(height: 16.0),
               actions,
