@@ -54,7 +54,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
 
   // Load the notifications
   while (!doneFetching) {
-    final GetRepliesResponse getRepliesResponse = await (LemmyClient()..changeBaseUrl(account.instance!)).lemmyApiV3.run(GetReplies(
+    final GetRepliesResponse getRepliesResponse = await (LemmyClient()..changeBaseUrl(account.instance)).lemmyApiV3.run(GetReplies(
           sort: CommentSortType.new_,
           page: currentPage,
           limit: 50,

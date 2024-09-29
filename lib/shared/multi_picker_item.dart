@@ -49,7 +49,7 @@ class MultiPickerItem extends StatelessWidget {
                 ),
               ),
             )
-            .toList(),
+            ,
       ],
     );
   }
