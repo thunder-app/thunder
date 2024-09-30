@@ -149,9 +149,9 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
           progress: _expandAnimation,
           focus: isFabOpen && i == count - 1,
           centered: widget.centered,
-          child: widget.children[i],
           first: i == count - 1,
           last: i == 0,
+          child: widget.children[i],
         ),
       );
     }

@@ -50,7 +50,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
 
       // TODO: Select accounts to enable push notifications
       for (Account account in accounts) {
-        bool success = await sendAuthTokenToNotificationServer(type: NotificationType.unifiedPush, token: endpoint, jwt: account.jwt!, instance: account.instance!);
+        bool success = await sendAuthTokenToNotificationServer(type: NotificationType.unifiedPush, token: endpoint, jwt: account.jwt!, instance: account.instance);
         if (!success) debugPrint("Failed to send device token to server for account ${account.id}. Skipping.");
       }
     },

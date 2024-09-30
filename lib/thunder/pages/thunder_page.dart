@@ -31,7 +31,6 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -219,7 +218,7 @@ class _ThunderState extends State<Thunder> {
 
     if (activeAccount?.username != null && activeAccount?.jwt != null && activeAccount?.instance != null) {
       // Set lemmy client to use the instance
-      LemmyClient.instance.changeBaseUrl(activeAccount!.instance!.replaceAll('https://', ''));
+      LemmyClient.instance.changeBaseUrl(activeAccount!.instance.replaceAll('https://', ''));
     }
 
     // If the incoming link is a custom URL, replace it back with https://
