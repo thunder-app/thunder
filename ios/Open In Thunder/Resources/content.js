@@ -19,7 +19,6 @@ let instances = [
     "leminal.space",
     "lemm.ee",
     "lemmings.world",
-    "lemmy.blahaj.zone",
     "lemmy.ca",
     "lemmy.dbzer0.com",
     "lemmy.eco.br",
