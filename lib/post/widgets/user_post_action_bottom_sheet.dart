@@ -71,13 +71,15 @@ class UserPostActionBottomSheet extends StatefulWidget {
   final PostViewMedia postViewMedia;
 
   /// Called when an action is selected
-  final Function(PersonView? personView) onAction;
+  final Function(UserAction userAction, PersonView? personView) onAction;
 
   @override
   State<UserPostActionBottomSheet> createState() => _UserPostActionBottomSheetState();
 }
 
 class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
+  UserAction? _userAction;
+
   void performAction(UserPostAction action) {
     switch (action) {
       case UserPostAction.viewProfile:
@@ -86,15 +88,19 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
         break;
       case UserPostAction.blockUser:
         context.read<UserBloc>().add(UserActionEvent(userId: widget.postViewMedia.postView.creator.id, userAction: UserAction.block, value: true));
+        setState(() => _userAction = UserAction.block);
         break;
       case UserPostAction.unblockUser:
         context.read<UserBloc>().add(UserActionEvent(userId: widget.postViewMedia.postView.creator.id, userAction: UserAction.block, value: false));
+        setState(() => _userAction = UserAction.block);
         break;
       case UserPostAction.banUserFromCommunity:
         context.read<UserBloc>().add(UserActionEvent(userId: widget.postViewMedia.postView.creator.id, userAction: UserAction.banFromCommunity, value: true));
+        setState(() => _userAction = UserAction.banFromCommunity);
         break;
       case UserPostAction.unbanUserFromCommunity:
         context.read<UserBloc>().add(UserActionEvent(userId: widget.postViewMedia.postView.creator.id, userAction: UserAction.banFromCommunity, value: false));
+        setState(() => _userAction = UserAction.banFromCommunity);
         break;
       case UserPostAction.addUserAsCommunityModerator:
         context.read<UserBloc>().add(UserActionEvent(
@@ -103,6 +109,7 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
               value: true,
               metadata: {"communityId": widget.postViewMedia.postView.community.id},
             ));
+        setState(() => _userAction = UserAction.addModerator);
         break;
       case UserPostAction.removeUserAsCommunityModerator:
         context.read<UserBloc>().add(UserActionEvent(
@@ -111,6 +118,7 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
               value: false,
               metadata: {"communityId": widget.postViewMedia.postView.community.id},
             ));
+        setState(() => _userAction = UserAction.addModerator);
         break;
     }
   }
@@ -181,7 +189,8 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
       listener: (context, state) {
         if (state.status == UserStatus.success) {
           context.pop();
-          widget.onAction(state.personView);
+          if (_userAction != null) widget.onAction(_userAction!, state.personView);
+          setState(() => _userAction = null);
         }
       },
       child: Column(

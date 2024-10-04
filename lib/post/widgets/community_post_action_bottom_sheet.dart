@@ -55,13 +55,15 @@ class CommunityPostActionBottomSheet extends StatefulWidget {
   final PostViewMedia postViewMedia;
 
   /// Called when an action is selected
-  final Function(CommunityView? communityView) onAction;
+  final Function(CommunityAction communityAction, CommunityView? communityView) onAction;
 
   @override
   State<CommunityPostActionBottomSheet> createState() => _CommunityPostActionBottomSheetState();
 }
 
 class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBottomSheet> {
+  CommunityAction? _communityAction;
+
   void performAction(CommunityPostAction action) {
     switch (action) {
       case CommunityPostAction.viewCommunity:
@@ -70,12 +72,14 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
         break;
       case CommunityPostAction.subscribeToCommunity:
         context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.postViewMedia.postView.community.id, communityAction: CommunityAction.follow, value: true));
+        setState(() => _communityAction = CommunityAction.follow);
         break;
       case CommunityPostAction.unsubscribeFromCommunity:
         context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.postViewMedia.postView.community.id, communityAction: CommunityAction.follow, value: false));
         break;
       case CommunityPostAction.blockCommunity:
         context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.postViewMedia.postView.community.id, communityAction: CommunityAction.block, value: true));
+        setState(() => _communityAction = CommunityAction.block);
         break;
       case CommunityPostAction.unblockCommunity:
         context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.postViewMedia.postView.community.id, communityAction: CommunityAction.block, value: false));
@@ -124,7 +128,8 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
       listener: (context, state) {
         if (state.status == CommunityStatus.success) {
           context.pop();
-          widget.onAction(state.communityView);
+          if (_communityAction != null) widget.onAction(_communityAction!, state.communityView);
+          setState(() => _communityAction = null);
         }
       },
       child: Column(

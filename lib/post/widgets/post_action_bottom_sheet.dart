@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/community/widgets/post_card_metadata.dart';
 
+import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -16,6 +17,7 @@ import 'package:thunder/post/widgets/instance_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/post_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/share_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/user_post_action_bottom_sheet.dart';
+import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -26,18 +28,18 @@ void showPostActionBottomModalSheet(
   BuildContext context,
   PostViewMedia postViewMedia, {
   GeneralPostAction page = GeneralPostAction.general,
-  void Function({PostAction? action})? onAction,
+  void Function({PostAction? postAction, UserAction? userAction, CommunityAction? communityAction, required PostViewMedia postViewMedia})? onAction,
 }) {
   showModalBottomSheet(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (_) => PostActionBottomSheet(context: context, postViewMedia: postViewMedia),
+    builder: (_) => PostActionBottomSheet(context: context, postViewMedia: postViewMedia, onAction: onAction),
   );
 }
 
 class PostActionBottomSheet extends StatefulWidget {
-  const PostActionBottomSheet({super.key, required this.context, required this.postViewMedia, this.initialPage = GeneralPostAction.general});
+  const PostActionBottomSheet({super.key, required this.context, required this.postViewMedia, this.initialPage = GeneralPostAction.general, required this.onAction});
 
   /// The parent context
   final BuildContext context;
@@ -47,6 +49,9 @@ class PostActionBottomSheet extends StatefulWidget {
 
   /// The initial page of the bottom sheet
   final GeneralPostAction initialPage;
+
+  /// The callback that is called when an action is performed
+  final void Function({PostAction? postAction, UserAction? userAction, CommunityAction? communityAction, required PostViewMedia postViewMedia})? onAction;
 
   @override
   State<PostActionBottomSheet> createState() => _PostActionBottomSheetState();
@@ -100,23 +105,32 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
     final theme = Theme.of(context);
 
     Widget actions = switch (currentPage) {
-      GeneralPostAction.post => PostPostActionBottomSheet(
-          context: widget.context,
-          postViewMedia: widget.postViewMedia,
-          onAction: () {},
-        ),
       GeneralPostAction.general => GeneralPostActionBottomSheetPage(
           context: widget.context,
           postViewMedia: widget.postViewMedia,
           onSwitchActivePage: (page) => setState(() => currentPage = page),
+          onAction: (PostAction postAction, PostViewMedia? updatedPostViewMedia) {
+            widget.onAction?.call(postAction: postAction, postViewMedia: widget.postViewMedia);
+          },
+        ),
+      GeneralPostAction.post => PostPostActionBottomSheet(
+          context: widget.context,
+          postViewMedia: widget.postViewMedia,
+          onAction: (PostAction postAction, PostViewMedia? updatedPostViewMedia) {
+            widget.onAction?.call(postAction: postAction, postViewMedia: widget.postViewMedia);
+          },
         ),
       GeneralPostAction.user => UserPostActionBottomSheet(
           postViewMedia: widget.postViewMedia,
-          onAction: (PersonView? updatedPersonView) {},
+          onAction: (UserAction userAction, PersonView? updatedPersonView) {
+            widget.onAction?.call(userAction: userAction, postViewMedia: widget.postViewMedia);
+          },
         ),
       GeneralPostAction.community => CommunityPostActionBottomSheet(
           postViewMedia: widget.postViewMedia,
-          onAction: (CommunityView? updatedCommunityView) {},
+          onAction: (CommunityAction communityAction, CommunityView? updatedCommunityView) {
+            widget.onAction?.call(communityAction: communityAction, postViewMedia: widget.postViewMedia);
+          },
         ),
       GeneralPostAction.instance => InstancePostActionBottomSheet(
           postViewMedia: widget.postViewMedia,
@@ -155,10 +169,11 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                child: LanguagePostCardMetaData(languageId: widget.postViewMedia.postView.post.languageId),
-              ),
+              if (currentPage == GeneralPostAction.general)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                  child: LanguagePostCardMetaData(languageId: widget.postViewMedia.postView.post.languageId),
+                ),
               const SizedBox(height: 16.0),
               actions,
             ],

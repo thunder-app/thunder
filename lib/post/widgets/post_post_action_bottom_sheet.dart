@@ -71,7 +71,7 @@ class PostPostActionBottomSheet extends StatefulWidget {
   final PostViewMedia postViewMedia;
 
   /// Called when an action is selected
-  final Function() onAction;
+  final Function(PostAction postAction, PostViewMedia? postViewMedia) onAction;
 
   @override
   State<PostPostActionBottomSheet> createState() => _PostPostActionBottomSheetState();

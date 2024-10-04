@@ -74,7 +74,7 @@ enum GeneralQuickPostAction {
 /// Defines the general top-levelactions that can be taken on a post.
 /// Given a [postViewMedia] and a [onSwitchActivePage] callback, this widget will display a list of actions that can be taken on the post.
 class GeneralPostActionBottomSheetPage extends StatefulWidget {
-  const GeneralPostActionBottomSheetPage({super.key, required this.context, required this.postViewMedia, required this.onSwitchActivePage});
+  const GeneralPostActionBottomSheetPage({super.key, required this.context, required this.postViewMedia, required this.onSwitchActivePage, required this.onAction});
 
   /// The outer context
   final BuildContext context;
@@ -84,6 +84,9 @@ class GeneralPostActionBottomSheetPage extends StatefulWidget {
 
   /// Called when the active page is changed
   final Function(GeneralPostAction page) onSwitchActivePage;
+
+  /// Called when an action is selected
+  final Function(PostAction postAction, PostViewMedia? postViewMedia) onAction;
 
   @override
   State<GeneralPostActionBottomSheetPage> createState() => _GeneralPostActionBottomSheetPageState();
@@ -126,6 +129,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
         break;
       case GeneralQuickPostAction.hide:
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.hide, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.hidden == true ? false : true));
+        widget.onAction(PostAction.hide, postViewMedia);
         break;
     }
 

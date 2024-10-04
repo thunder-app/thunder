@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/utils/post_actions.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
@@ -18,6 +19,7 @@ import 'package:thunder/feed/widgets/widgets.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/user/enums/user_action.dart';
 
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
@@ -263,9 +265,33 @@ class _PostCardState extends State<PostCard> {
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
                 widget.postViewMedia,
-                // onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
-                // onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
-                // onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
+                onAction: ({postAction, userAction, communityAction, required postViewMedia}) async {
+                  if (postAction == null && userAction == null && communityAction == null) return;
+
+                  switch (postAction) {
+                    case PostAction.hide:
+                      context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postViewMedia.postView.post.id));
+                      break;
+                    default:
+                      break;
+                  }
+
+                  switch (userAction) {
+                    case UserAction.block:
+                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postViewMedia.postView.creator.id));
+                      break;
+                    default:
+                      break;
+                  }
+
+                  switch (communityAction) {
+                    case CommunityAction.block:
+                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postViewMedia.postView.community.id));
+                      break;
+                    default:
+                      break;
+                  }
+                },
               ),
               onTap: () async {
                 PostView postView = widget.postViewMedia.postView;
