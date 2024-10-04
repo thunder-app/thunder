@@ -32,7 +32,7 @@ android {
     namespace "com.hjiangsu.thunder"
     // Use variable for version requested by background_fetch and flutter_local_notifications
     compileSdkVersion rootProject.ext.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    ndkVersion = "25.1.8937393"
 
     compileOptions {
         // The following line is required by flutter_local_notifications
