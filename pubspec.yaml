@@ -109,7 +109,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.20
   connectivity_plus: ^6.0.2
   super_sliver_list: ^0.4.1
-  video_player: ^2.8.7
+  video_player: ^2.9.2
 
 
 dev_dependencies:
