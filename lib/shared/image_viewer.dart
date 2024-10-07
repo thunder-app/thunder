@@ -31,6 +31,10 @@ class ImageViewer extends StatefulWidget {
   final void Function()? navigateToPost;
   final String? altText;
 
+  /// Whether this image viewer is being shown within the context of a peek.
+  /// This would cause us to hide unnecsesary things like the buttons at the bottom.
+  final bool isPeek;
+
   const ImageViewer({
     super.key,
     this.url,
@@ -38,6 +42,7 @@ class ImageViewer extends StatefulWidget {
     this.postId,
     this.navigateToPost,
     this.altText,
+    this.isPeek = false,
   }) : assert(url != null || bytes != null);
 
   get postViewMedia => null;
@@ -386,143 +391,144 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                   ),
                 ),
               ),
-              AnimatedOpacity(
-                opacity: fullscreen ? 0.0 : 1.0,
-                duration: const Duration(milliseconds: 200),
-                child: Container(
-                  decoration: const BoxDecoration(color: Colors.transparent),
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      if (widget.url != null)
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: IconButton(
-                            onPressed: fullscreen
-                                ? null
-                                : () async {
-                                    try {
-                                      // Try to get the cached image first
-                                      var media = await DefaultCacheManager().getFileFromCache(widget.url!);
-                                      File? mediaFile = media?.file;
-
-                                      if (media == null) {
-                                        setState(() => isDownloadingMedia = true);
-
-                                        // Download
-                                        mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
-                                      }
-
-                                      // Share
-                                      await Share.shareXFiles([XFile(mediaFile!.path)]);
-                                    } catch (e) {
-                                      // Tell the user that the download failed
-                                      showSnackbar(l10n.errorDownloadingMedia(e));
-                                    } finally {
-                                      setState(() => isDownloadingMedia = false);
-                                    }
-                                  },
-                            icon: isDownloadingMedia
-                                ? SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white.withOpacity(0.90),
-                                    ),
-                                  )
-                                : Icon(
-                                    Icons.share_rounded,
-                                    semanticLabel: "Share",
-                                    color: Colors.white.withOpacity(0.90),
-                                    shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
-                                  ),
-                          ),
-                        ),
-                      if (widget.url != null)
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: IconButton(
-                            onPressed: (fullscreen || widget.url == null || kIsWeb)
-                                ? null
-                                : () async {
-                                    File file = await DefaultCacheManager().getSingleFile(widget.url!);
-                                    bool hasPermission = await _requestPermission();
-
-                                    if (!hasPermission) {
-                                      if (context.mounted) showPermissionDeniedDialog(context);
-                                      return;
-                                    }
-
-                                    setState(() => isSavingMedia = true);
-
-                                    try {
-                                      // Save image on Linux platform
-                                      if (Platform.isLinux) {
-                                        final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
-
-                                        File(filePath)
-                                          ..createSync(recursive: true)
-                                          ..writeAsBytesSync(file.readAsBytesSync());
-
-                                        return setState(() => downloaded = true);
-                                      }
-
-                                      // Save image on all other supported platforms (Android, iOS, macOS, Windows)
+              if (!widget.isPeek)
+                AnimatedOpacity(
+                  opacity: fullscreen ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Container(
+                    decoration: const BoxDecoration(color: Colors.transparent),
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        if (widget.url != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: fullscreen
+                                  ? null
+                                  : () async {
                                       try {
-                                        await Gal.putImage(file.path, album: "Thunder");
-                                        setState(() => downloaded = true);
-                                      } on GalException catch (e) {
-                                        if (context.mounted) showSnackbar(e.type.message);
-                                        setState(() => downloaded = false);
+                                        // Try to get the cached image first
+                                        var media = await DefaultCacheManager().getFileFromCache(widget.url!);
+                                        File? mediaFile = media?.file;
+
+                                        if (media == null) {
+                                          setState(() => isDownloadingMedia = true);
+
+                                          // Download
+                                          mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
+                                        }
+
+                                        // Share
+                                        await Share.shareXFiles([XFile(mediaFile!.path)]);
+                                      } catch (e) {
+                                        // Tell the user that the download failed
+                                        showSnackbar(l10n.errorDownloadingMedia(e));
+                                      } finally {
+                                        setState(() => isDownloadingMedia = false);
                                       }
-                                    } finally {
-                                      setState(() => isSavingMedia = false);
-                                    }
-                                  },
-                            icon: isSavingMedia
-                                ? SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white.withOpacity(0.90),
-                                    ),
-                                  )
-                                : downloaded
-                                    ? const Icon(
-                                        Icons.check_circle,
-                                        semanticLabel: 'Downloaded',
-                                        color: Colors.white,
-                                        shadows: <Shadow>[Shadow(color: Colors.black45, blurRadius: 50.0)],
-                                      )
-                                    : Icon(
-                                        Icons.download,
-                                        semanticLabel: "Download",
+                                    },
+                              icon: isDownloadingMedia
+                                  ? SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
                                         color: Colors.white.withOpacity(0.90),
-                                        shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
                                       ),
-                          ),
-                        ),
-                      if (widget.navigateToPost != null)
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              widget.navigateToPost!();
-                            },
-                            icon: Icon(
-                              Icons.chat_rounded,
-                              semanticLabel: "Comments",
-                              color: Colors.white.withOpacity(0.90),
-                              shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                    )
+                                  : Icon(
+                                      Icons.share_rounded,
+                                      semanticLabel: "Share",
+                                      color: Colors.white.withOpacity(0.90),
+                                      shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                    ),
                             ),
                           ),
-                        ),
-                    ],
+                        if (widget.url != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: (fullscreen || widget.url == null || kIsWeb)
+                                  ? null
+                                  : () async {
+                                      File file = await DefaultCacheManager().getSingleFile(widget.url!);
+                                      bool hasPermission = await _requestPermission();
+
+                                      if (!hasPermission) {
+                                        if (context.mounted) showPermissionDeniedDialog(context);
+                                        return;
+                                      }
+
+                                      setState(() => isSavingMedia = true);
+
+                                      try {
+                                        // Save image on Linux platform
+                                        if (Platform.isLinux) {
+                                          final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
+
+                                          File(filePath)
+                                            ..createSync(recursive: true)
+                                            ..writeAsBytesSync(file.readAsBytesSync());
+
+                                          return setState(() => downloaded = true);
+                                        }
+
+                                        // Save image on all other supported platforms (Android, iOS, macOS, Windows)
+                                        try {
+                                          await Gal.putImage(file.path, album: "Thunder");
+                                          setState(() => downloaded = true);
+                                        } on GalException catch (e) {
+                                          if (context.mounted) showSnackbar(e.type.message);
+                                          setState(() => downloaded = false);
+                                        }
+                                      } finally {
+                                        setState(() => isSavingMedia = false);
+                                      }
+                                    },
+                              icon: isSavingMedia
+                                  ? SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white.withOpacity(0.90),
+                                      ),
+                                    )
+                                  : downloaded
+                                      ? const Icon(
+                                          Icons.check_circle,
+                                          semanticLabel: 'Downloaded',
+                                          color: Colors.white,
+                                          shadows: <Shadow>[Shadow(color: Colors.black45, blurRadius: 50.0)],
+                                        )
+                                      : Icon(
+                                          Icons.download,
+                                          semanticLabel: "Download",
+                                          color: Colors.white.withOpacity(0.90),
+                                          shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                        ),
+                            ),
+                          ),
+                        if (widget.navigateToPost != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                widget.navigateToPost!();
+                              },
+                              icon: Icon(
+                                Icons.chat_rounded,
+                                semanticLabel: "Comments",
+                                color: Colors.white.withOpacity(0.90),
+                                shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
