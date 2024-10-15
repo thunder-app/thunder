@@ -23,6 +23,7 @@ class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final FeedType? feedType;
   final bool indicateRead;
+  final bool isLastTapped;
 
   final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
@@ -30,6 +31,7 @@ class PostCard extends StatefulWidget {
   final Function(bool) onHideAction;
   final Function(double) onUpAction;
   final Function() onDownAction;
+  final Function() onTap;
 
   final ListingType? listingType;
 
@@ -43,8 +45,10 @@ class PostCard extends StatefulWidget {
     required this.onHideAction,
     required this.onUpAction,
     required this.onDownAction,
+    required this.onTap,
     required this.listingType,
     required this.indicateRead,
+    required this.isLastTapped,
   });
 
   @override
@@ -237,6 +241,7 @@ class _PostCardState extends State<PostCard> {
                       navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead,
                       showMedia: !state.hideThumbnails,
+                      isLastTapped: widget.isLastTapped,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
@@ -259,6 +264,7 @@ class _PostCardState extends State<PostCard> {
                       listingType: widget.listingType,
                       navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead,
+                      isLastTapped: widget.isLastTapped,
                     ),
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
@@ -268,6 +274,7 @@ class _PostCardState extends State<PostCard> {
                 onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
               ),
               onTap: () async {
+                widget.onTap.call();
                 PostView postView = widget.postViewMedia.postView;
                 if (postView.read == false && isUserLoggedIn) context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postView.post.id, postAction: PostAction.read, value: true));
                 return await navigateToPost(context, postViewMedia: widget.postViewMedia);

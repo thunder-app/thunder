@@ -57,6 +57,9 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
   /// Timer for debouncing the read action
   Timer? debounceTimer;
 
+  /// The ID of the last post that the user tapped or navigated into
+  int? lastTappedPost;
+
   @override
   void dispose() {
     debounceTimer?.cancel();
@@ -155,8 +158,10 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
                         isScrollingDown = updatedIsScrollingDown;
                       }
                     },
+                    onTap: () => setState(() => lastTappedPost = widget.postViewMedias[index].postView.post.id),
                     listingType: state.postListingType,
                     indicateRead: dimReadPosts,
+                    isLastTapped: lastTappedPost == widget.postViewMedias[index].postView.post.id,
                   ))
               : null,
         );

@@ -231,6 +231,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                               feedType: FeedType.general,
                                               isUserLoggedIn: false,
                                               listingType: ListingType.all,
+                                              isLastTapped: false,
                                             ),
                                           ),
                                         ),

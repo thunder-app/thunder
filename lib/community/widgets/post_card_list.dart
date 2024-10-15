@@ -175,8 +175,10 @@ class _PostCardListState extends State<PostCardList> {
                 onHideAction: (bool hide) => widget.onHideAction(postViewMedia.postView.post.id, hide),
                 onUpAction: (double verticalDragDistance) {},
                 onDownAction: () {},
+                onTap: () {},
                 listingType: widget.listingType,
                 indicateRead: widget.indicateRead,
+                isLastTapped: false,
               );
             }
           },

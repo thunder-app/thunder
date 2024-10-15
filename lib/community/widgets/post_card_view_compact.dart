@@ -26,6 +26,7 @@ class PostCardViewCompact extends StatelessWidget {
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool? indicateRead;
   final bool showMedia;
+  final bool isLastTapped;
 
   const PostCardViewCompact({
     super.key,
@@ -36,6 +37,7 @@ class PostCardViewCompact extends StatelessWidget {
     this.navigateToPost,
     this.indicateRead,
     this.showMedia = true,
+    required this.isLastTapped,
   });
 
   @override
@@ -60,7 +62,11 @@ class PostCardViewCompact extends StatelessWidget {
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     return Container(
-      color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
+      color: isLastTapped
+          ? theme.colorScheme.primary.withOpacity(0.15)
+          : indicateRead && postViewMedia.postView.read
+              ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075)
+              : null,
       padding: showMedia ? const EdgeInsets.only(bottom: 8.0, top: 6) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
