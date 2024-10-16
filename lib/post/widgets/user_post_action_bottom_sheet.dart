@@ -5,12 +5,16 @@ import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
+import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
+import 'package:thunder/shared/chips/user_chip.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -65,7 +69,10 @@ enum UserPostAction {
 /// Given a [postViewMedia] and a [onAction] callback, this widget will display a list of actions that can be taken on the user.
 /// The [onAction] callback will be triggered when an action is performed. This is useful if the parent widget requires an updated [PersonView].
 class UserPostActionBottomSheet extends StatefulWidget {
-  const UserPostActionBottomSheet({super.key, required this.postViewMedia, required this.onAction});
+  const UserPostActionBottomSheet({super.key, required this.context, required this.postViewMedia, required this.onAction});
+
+  /// The outer context
+  final BuildContext context;
 
   /// The post information
   final PostViewMedia postViewMedia;
@@ -95,11 +102,19 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
         setState(() => _userAction = UserAction.block);
         break;
       case UserPostAction.banUserFromCommunity:
-        context.read<UserBloc>().add(UserActionEvent(userId: widget.postViewMedia.postView.creator.id, userAction: UserAction.banFromCommunity, value: true));
-        setState(() => _userAction = UserAction.banFromCommunity);
+        showBanUserDialog();
         break;
       case UserPostAction.unbanUserFromCommunity:
-        context.read<UserBloc>().add(UserActionEvent(userId: widget.postViewMedia.postView.creator.id, userAction: UserAction.banFromCommunity, value: false));
+        context.read<UserBloc>().add(
+              UserActionEvent(
+                userId: widget.postViewMedia.postView.creator.id,
+                userAction: UserAction.banFromCommunity,
+                value: false,
+                metadata: {
+                  "communityId": widget.postViewMedia.postView.community.id,
+                },
+              ),
+            );
         setState(() => _userAction = UserAction.banFromCommunity);
         break;
       case UserPostAction.addUserAsCommunityModerator:
@@ -121,6 +136,79 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
         setState(() => _userAction = UserAction.addModerator);
         break;
     }
+  }
+
+  void showBanUserDialog() {
+    /// The controller for the message
+    TextEditingController messageController = TextEditingController();
+
+    /// Whether or not the user data (posts and comments) should be removed from the community
+    bool removeData = false;
+
+    showThunderDialog(
+      context: widget.context,
+      title: l10n.banFromCommunity,
+      primaryButtonText: "Ban",
+      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+        widget.context.read<UserBloc>().add(
+              UserActionEvent(
+                userId: widget.postViewMedia.postView.creator.id,
+                userAction: UserAction.banFromCommunity,
+                value: true,
+                metadata: {
+                  "communityId": widget.postViewMedia.postView.community.id,
+                  "reason": messageController.text,
+                  "removeData": removeData,
+                },
+              ),
+            );
+        setState(() => _userAction = UserAction.banFromCommunity);
+        dialogContext.pop();
+      },
+      secondaryButtonText: l10n.cancel,
+      onSecondaryButtonPressed: (context) => context.pop(),
+      contentWidgetBuilder: (_) => StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              UserChip(
+                person: widget.postViewMedia.postView.creator,
+                personAvatar: UserAvatar(person: widget.postViewMedia.postView.creator),
+                userGroups: const [UserType.op],
+                includeInstance: true,
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                decoration: InputDecoration(
+                  isDense: true,
+                  border: const OutlineInputBorder(),
+                  labelText: l10n.message(0),
+                ),
+                autofocus: true,
+                controller: messageController,
+                maxLines: 2,
+              ),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Remove user data'),
+                  Switch(
+                    value: removeData,
+                    onChanged: (value) {
+                      setState(() => removeData = value);
+                    },
+                  ),
+                ],
+              )
+            ],
+          );
+        },
+      ),
+    );
   }
 
   @override

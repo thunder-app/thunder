@@ -103,10 +103,9 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
 
     final isLoggedIn = authState.isLoggedIn;
     final blockedCommunities = authState.getSiteResponse?.myUser?.communityBlocks ?? [];
-    final subscribedCommunities = authState.getSiteResponse?.myUser?.follows ?? [];
 
     final isCommunityBlocked = blockedCommunities.where((cbv) => cbv.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
-    final isSubscribedToCommunity = subscribedCommunities.where((cfv) => cfv.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
+    final isSubscribedToCommunity = widget.postViewMedia.postView.subscribed != SubscribedType.notSubscribed;
 
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();

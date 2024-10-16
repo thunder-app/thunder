@@ -74,6 +74,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           int? expires = event.metadata?['expires'];
           bool removeData = event.metadata?['removeData'] ?? false;
 
+          if (expires != null) {
+            // Convert from milliseconds to seconds
+            expires = expires ~/ 1000;
+          }
+
           BanFromCommunityResponse banFromCommunityResponse = await banUserFromCommunity(event.userId, event.value, communityId: communityId, reason: reason, expires: expires, removeData: removeData);
 
           emit(state.copyWith(
@@ -84,7 +89,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                 : l10n.successfullyUnbannedUser(banFromCommunityResponse.personView.person.name),
           ));
         } catch (e) {
-          return emit(state.copyWith(status: UserStatus.failure));
+          return emit(state.copyWith(status: UserStatus.failure, message: e.toString()));
         }
         break;
       case UserAction.addModerator:

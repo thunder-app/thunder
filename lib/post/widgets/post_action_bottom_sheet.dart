@@ -121,6 +121,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           },
         ),
       GeneralPostAction.user => UserPostActionBottomSheet(
+          context: widget.context,
           postViewMedia: widget.postViewMedia,
           onAction: (UserAction userAction, PersonView? updatedPersonView) {
             widget.onAction?.call(userAction: userAction, postViewMedia: widget.postViewMedia);
