@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -136,7 +136,7 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                     child: Text(
                       AppLocalizations.of(context)!.accessibilityProfilesDescription,
                       style: TextStyle(
-                        color: theme.colorScheme.onBackground.withOpacity(0.75),
+                        color: theme.colorScheme.onSurface.withOpacity(0.75),
                       ),
                     ),
                   ),
