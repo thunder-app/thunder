@@ -9,7 +9,6 @@ let instances = [
     "feddit.dk",
     "feddit.it",
     "feddit.nl",
-    "feddit.nu",
     "feddit.org",
     "feddit.uk",
     "hexbear.net",
@@ -47,8 +46,7 @@ let instances = [
     "startrek.website",
     "szmer.info",
     "thelemmy.club",
-    "ttrpg.network",
-    "yiffit.net"
+    "ttrpg.network"
 ];
 
 document.addEventListener('readystatechange', handleNavigation);
