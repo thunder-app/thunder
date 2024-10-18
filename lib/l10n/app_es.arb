@@ -2754,5 +2754,69 @@
   "alternateSources": "Fuentes alternativas",
   "@alternateSources": {
     "description": "Action for viewing a link from alternate sources"
+  },
+  "deletePost": "Eliminar mensaje",
+  "@deletePost": {
+    "description": "Action for deleting a post"
+  },
+  "postActions": "Acciones en los temas",
+  "@postActions": {
+    "description": "Describes a given set of actions that can be performed on a post"
+  },
+  "removeAsCommunityModerator": "Eliminar como Moderador de la Comunidad",
+  "@removeAsCommunityModerator": {
+    "description": "Moderator action to remove user as community moderator"
+  },
+  "addAsCommunityModerator": "Añadir como moderador de la comunidad",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
+  "banFromCommunity": "Bloquear de la comunidad",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
+  },
+  "pinPostToCommunity": "Fijar publicación a la Comunidad",
+  "@pinPostToCommunity": {
+    "description": "Action for pinning a post to a community (moderator action)"
+  },
+  "post": "Tema",
+  "@post": {
+    "description": "Describes a single post"
+  },
+  "read": "Leer",
+  "@read": {
+    "description": "Indicates that a post has been read"
+  },
+  "reportPost": "Reportar el tema",
+  "@reportPost": {
+    "description": "Action to report a post (moderator action)"
+  },
+  "successfullyBannedUser": "{username} Baneado",
+  "@successfullyBannedUser": {
+    "description": "Notification for successfully banning a user"
+  },
+  "successfullyUnbannedUser": "{username} desbaneado",
+  "@successfullyUnbannedUser": {
+    "description": "Notification for successfully unbanning a user"
+  },
+  "unbanFromCommunity": "Desbaneo de la comunidad",
+  "@unbanFromCommunity": {
+    "description": "Moderator action to unban a user from a community"
+  },
+  "unblockCommunityInstance": "Desbloquear instancia de la comunidad",
+  "@unblockCommunityInstance": {
+    "description": "Action to unblock the instance of a given community"
+  },
+  "unblockUser": "Desbloquear usuario",
+  "@unblockUser": {
+    "description": "Action to unblock a user"
+  },
+  "unblockUserInstance": "Desbloquear instancia de usuario",
+  "@unblockUserInstance": {
+    "description": "Action to unblock the instance of a given user"
+  },
+  "unpinPostFromCommunity": "Desvincular publicación de la comunidad",
+  "@unpinPostFromCommunity": {
+    "description": "Moderator action to unpin a post from a community"
   }
 }
