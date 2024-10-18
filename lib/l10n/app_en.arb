@@ -1747,6 +1747,10 @@
   },
   "readAll": "Read All",
   "@readAll": {},
+  "readerMode": "Reader mode",
+  "@readerMode": {
+    "description": "Menu item for toggling reader mode"
+  },
   "reason": "Reason",
   "@reason": {
     "description": "The reason for the moderation action (e.g., removing post)"

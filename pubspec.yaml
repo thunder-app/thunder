@@ -110,7 +110,9 @@ dependencies:
   connectivity_plus: ^6.0.2
   super_sliver_list: ^0.4.1
   video_player: ^2.9.2
-
+  xayn_readability: 
+    git:
+      url: https://github.com/xaynetwork/xayn_readability
 
 dev_dependencies:
   build_runner: ^2.4.6
@@ -122,6 +124,8 @@ dev_dependencies:
       url: https://github.com/fluttercommunity/flutter_launcher_icons.git
       ref: master
   drift_dev: ^2.16.0
+
+#dependency_overrides:
 
 # The following section is specific to Flutter packages.
 flutter:
