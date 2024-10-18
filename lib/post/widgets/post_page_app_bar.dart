@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -12,6 +13,7 @@ import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
+import 'package:thunder/utils/links.dart';
 
 /// Holds the app bar for the post page.
 class PostPageAppBar extends StatelessWidget {
@@ -201,6 +203,19 @@ class PostAppBarActions extends StatelessWidget {
               icon: Icons.people_alt_rounded,
               title: l10n.viewPostAsDifferentAccount,
             ),
+            if (state.postView?.media.first.mediaType == MediaType.link && state.postView!.media.first.originalUrl?.isNotEmpty == true)
+              ThunderPopupMenuItem(
+                onTap: () {
+                  handleLinkLongPress(
+                    context,
+                    state.postView!.media.first.originalUrl!,
+                    state.postView!.media.first.originalUrl!,
+                    initialPage: LinkBottomSheetPage.alternateLinks,
+                  );
+                },
+                icon: Icons.link_rounded,
+                title: l10n.alternateSources,
+              ),
           ],
         ),
       ],

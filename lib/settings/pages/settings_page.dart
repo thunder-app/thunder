@@ -90,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         localSettings.length,
                         (index) => ListTile(
                               subtitle: Text(
-                                  "${l10n.getLocalSettingLocalization(localSettings[index].category!.toString())}${localSettings[index].subCategory == null ? '' : ' > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}'}"),
+                                  "${l10n.getLocalSettingLocalization(localSettings[index].category.toString())}${localSettings[index].subCategory == null ? '' : ' > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}'}"),
                               onTap: () {
                                 navigateToSetting(context, localSettings[index]);
                                 controller.closeView(null);

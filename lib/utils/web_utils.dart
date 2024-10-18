@@ -10,6 +10,7 @@ abstract interface class IWebController {
   Future<void> reload();
   Future<String?> getTitle();
   Future<String?> currentUrl();
+  Future<void> loadRequest(Uri uri);
 }
 
 class CustomWebViewController implements IWebController {
@@ -37,6 +38,9 @@ class CustomWebViewController implements IWebController {
 
   @override
   Future<String?> currentUrl() => controller.currentUrl();
+
+  @override
+  Future<void> loadRequest(Uri uri) => controller.loadRequest(uri);
 }
 
 class CustomReaderModeController implements IWebController {
@@ -68,4 +72,7 @@ class CustomReaderModeController implements IWebController {
 
   @override
   Future<String?> currentUrl() => Future.value(controller.uri?.toString());
+
+  @override
+  Future<void> loadRequest(Uri uri) async => controller.loadUri(uri);
 }

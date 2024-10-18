@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/utils/logout_dialog.dart';
@@ -300,13 +302,29 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                   ),
                                 ],
                               ),
-                              title: Text(
-                                accounts![index].account.username ?? 'N/A',
-                                style: theme.textTheme.titleMedium?.copyWith(),
+                              title: Row(
+                                children: [
+                                  Text(
+                                    accounts![index].account.username ?? 'N/A',
+                                    style: theme.textTheme.titleMedium?.copyWith(),
+                                  ),
+                                  Row(
+                                    children: [
+                                      const SizedBox(width: 7),
+                                      AnimatedOpacity(
+                                        duration: const Duration(milliseconds: 250),
+                                        opacity: accounts![index].totalUnreadCount == null ? 0 : 1,
+                                        child: Badge(
+                                          label: Text(accounts![index].totalUnreadCount.toString()),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                               subtitle: Wrap(
                                 children: [
-                                  Text(accounts![index].account.instance.replaceAll('https://', '') ?? 'N/A'),
+                                  Text(accounts![index].account.instance.replaceAll('https://', '')),
                                   AnimatedSize(
                                     duration: const Duration(milliseconds: 250),
                                     child: accounts![index].version == null
@@ -713,6 +731,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
     // Intentionally don't await these here
     fetchInstanceInfo(accountsExtended);
     pingInstances(accountsExtended);
+    getUnreadCounts(accountsExtended);
 
     setState(() => this.accounts = accountsExtended);
   }
@@ -742,6 +761,19 @@ class _ProfileSelectState extends State<ProfileSelect> {
         setState(() => account.latency = pingData.response?.time);
       }
     });
+  }
+
+  Future<void> getUnreadCounts(List<AccountExtended> accountsExtended) async {
+    for (final AccountExtended account in accountsExtended) {
+      try {
+        final GetUnreadCountResponse getUnreadCountResponse = (await (LemmyClient()..changeBaseUrl(account.instance!)).lemmyApiV3.run(GetUnreadCount(auth: account.account.jwt)));
+        int? totalUnreadCount = getUnreadCountResponse.replies + getUnreadCountResponse.mentions + getUnreadCountResponse.privateMessages;
+        if (totalUnreadCount == 0) totalUnreadCount = null;
+        setState(() => account.totalUnreadCount = totalUnreadCount);
+      } catch (e) {
+        // If we can't do this, for any reason, it's not a big deal. Just move on to the next one
+      }
+    }
   }
 
   Future<void> fetchAnonymousInstances() async {
@@ -801,6 +833,7 @@ class AccountExtended {
   String? version;
   Duration? latency;
   bool? alive;
+  int? totalUnreadCount;
 
   AccountExtended({required this.account, this.instance, this.instanceIcon});
 }

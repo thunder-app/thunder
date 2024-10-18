@@ -7,7 +7,7 @@
   "@add": {},
   "addAccount": "Додати обліковий запис",
   "@addAccount": {},
-  "addAccountToSeeProfile": "Додайте обліковий запис, щоб побачити ваш профіль тут.",
+  "addAccountToSeeProfile": "Увійдіть, щоб побачити тут ваш профіль.",
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Додати сервер в анонімному режимі",
   "@addAnonymousInstance": {},
@@ -174,5 +174,135 @@
   "username": "Ім'я користувача",
   "@username": {},
   "users": "Користувачі",
-  "@users": {}
+  "@users": {},
+  "anonymousInstances": "Анонімні сервери",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "bannedUserFromCommunity": "Заблокований користувач із спільноти",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "accountBirthday": "Дата створення {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "addKeywordFilter": "Додати ключове слово",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "backgroundCheckWarning": "Зауважте, що перевірка сповіщень витрачає додатковий заряд акумулятора",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "bannedUser": "Заблокований користувач",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "blue": "Синій",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "addToFavorites": "Додати в обране",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "boldCommunityName": "Виділення жирним назву спільноти",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "bot": "Бот",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "areNotificationsAllowedBySystem": "Сповіщення дозволені системою: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "addDiscussionLanguage": "Додати мову",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "bold": "Жирний",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "ago": "{time} тому",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "always": "Завжди",
+  "@always": {},
+  "account": "{count, plural, zero {Облікових записів} one {Обліковий запис} other {Обліковий запис} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
+  "apply": "Застосувати",
+  "@apply": {},
+  "all": "Всі",
+  "@all": {},
+  "admin": "Адміністратор",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "allowOpenSupportedLinks": "Дозволити програмі відкривати підтримувані посилання.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "accountSettingOverrideWarning": "Налаштування вашого облікового запису замінять наступні параметри",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "accountSettings": "Налаштування облікового запису",
+  "@accountSettings": {},
+  "appLanguage": "Мова додатку",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "appearance": "Вигляд",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "backButton": "Кнопка назад",
+  "@backButton": {},
+  "boldUserName": "Виділення жирним ім'я користувача",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "alreadyPostedTo": "Вже опубліковано в",
+  "@alreadyPostedTo": {},
+  "accessibility": "Спеціальні можливості",
+  "@accessibility": {},
+  "animations": "Анімації",
+  "@animations": {},
+  "blockCommunityInstance": "Заблокувати сервер спільноти",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
+  "blockUserInstance": "Заблокувати сервер користувача",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
+  "boldInstanceName": "Виділення жирним назву сервера",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "applied": "Застосовано",
+  "@applied": {},
+  "back": "Назад",
+  "@back": {},
+  "backToTop": "Вгору",
+  "@backToTop": {},
+  "applePushNotificationService": "Сервіс push-сповіщень Apple",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
+  "inbox": "Повідомлення",
+  "@inbox": {},
+  "about": "Про програму",
+  "@about": {
+    "description": "About settings category."
+  },
+  "feed": "Стрічка",
+  "@feed": {}
 }

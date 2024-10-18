@@ -53,6 +53,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
+  "addAsCommunityModerator": "Add as Community Moderator",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
   "addDiscussionLanguage": "Add Language",
   "@addDiscussionLanguage": {
     "description": "Hint for text field to add language"
@@ -101,6 +105,10 @@
   },
   "alreadyPostedTo": "Already posted to",
   "@alreadyPostedTo": {},
+  "alternateSources": "Alternate Sources",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
+  },
   "always": "Always",
   "@always": {},
   "andXMore": "and {count} more",
@@ -142,6 +150,10 @@
   "backgroundCheckWarning": "Note that notification checks will consume additional battery",
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
+  },
+  "banFromCommunity": "Ban from Community",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
   },
   "bannedUser": "Banned User",
   "@bannedUser": {
@@ -664,6 +676,10 @@
   "deleteLocalPreferencesDescription": "This will clear all your user preferences and settings in Thunder.\n\nDo you want to continue?",
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
+  },
+  "deletePost": "Delete Post",
+  "@deletePost": {
+    "description": "Action for deleting a post"
   },
   "deleteUserLabelConfirmation": "Are you sure you want to delete the label?",
   "@deleteUserLabelConfirmation": {
@@ -1569,6 +1585,10 @@
   "@permissionDeniedMessage": {
     "description": "Explanation for error when user denies OS permissions"
   },
+  "pinPostToCommunity": "Pin Post to Community",
+  "@pinPostToCommunity": {
+    "description": "Action for pinning a post to a community (moderator action)"
+  },
   "pinToCommunity": "Pin to Community",
   "@pinToCommunity": {
     "description": "Setting for pinning a post to a community (moderator action)"
@@ -1576,6 +1596,14 @@
   "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "@placeholderText": {
     "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "post": "Post",
+  "@post": {
+    "description": "Describes a single post"
+  },
+  "postActions": "Post Actions",
+  "@postActions": {
+    "description": "Describes a given set of actions that can be performed on a post"
   },
   "postBehaviourSettings": "Posts",
   "@postBehaviourSettings": {
@@ -1713,6 +1741,10 @@
   },
   "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
+  "read": "Read",
+  "@read": {
+    "description": "Indicates that a post has been read"
+  },
   "readAll": "Read All",
   "@readAll": {},
   "readerMode": "Reader mode",
@@ -1745,6 +1777,10 @@
   "@remove": {},
   "removeAccount": "Remove Account",
   "@removeAccount": {},
+  "removeAsCommunityModerator": "Remove as Community Moderator",
+  "@removeAsCommunityModerator": {
+    "description": "Moderator action to remove user as community moderator"
+  },
   "removeFromFavorites": "Remove from favorites",
   "@removeFromFavorites": {
     "description": "Action to remove a community in drawer from favorites"
@@ -1805,6 +1841,10 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "reportPost": "Report Post",
+  "@reportPost": {
+    "description": "Action to report a post (moderator action)"
+  },
   "reporter": "Reporter:",
   "@reporter": {
     "description": "Name of reporter that reported a post/comment"
@@ -2251,6 +2291,10 @@
   },
   "subscriptions": "Subscriptions",
   "@subscriptions": {},
+  "successfullyBannedUser": "Banned {username}",
+  "@successfullyBannedUser": {
+    "description": "Notification for successfully banning a user"
+  },
   "successfullyBlocked": "Blocked.",
   "@successfullyBlocked": {},
   "successfullyBlockedCommunity": "Blocked {communityName}",
@@ -2258,6 +2302,10 @@
   "successfullyBlockedUser": "Blocked {username}",
   "@successfullyBlockedUser": {
     "description": "Notification for successfully blocking a user"
+  },
+  "successfullyUnbannedUser": "Unbanned {username}",
+  "@successfullyUnbannedUser": {
+    "description": "Notification for successfully unbanning a user"
   },
   "successfullyUnblocked": "Unblocked.",
   "@successfullyUnblocked": {},
@@ -2461,6 +2509,10 @@
   "@unableToRetrieveChangelog": {
     "description": "Error message for when we are unable to retrieve the changelog."
   },
+  "unbanFromCommunity": "Unban from Community",
+  "@unbanFromCommunity": {
+    "description": "Moderator action to unban a user from a community"
+  },
   "unbannedUser": "Unbanned User",
   "@unbannedUser": {
     "description": "Short decription for moderator action to unban a user"
@@ -2473,9 +2525,21 @@
   "@unblockCommunity": {
     "description": "Action to unblock a community"
   },
+  "unblockCommunityInstance": "Unblock Community Instance",
+  "@unblockCommunityInstance": {
+    "description": "Action to unblock the instance of a given community"
+  },
   "unblockInstance": "Unblock Instance",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
+  },
+  "unblockUser": "Unblock User",
+  "@unblockUser": {
+    "description": "Action to unblock a user"
+  },
+  "unblockUserInstance": "Unblock User Instance",
+  "@unblockUserInstance": {
+    "description": "Action to unblock the instance of a given user"
   },
   "understandEnable": "I Understand, Enable",
   "@understandEnable": {
@@ -2522,6 +2586,10 @@
   "unpinFromCommunity": "Unpin from Community",
   "@unpinFromCommunity": {
     "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "unpinPostFromCommunity": "Unpin Post from Community",
+  "@unpinPostFromCommunity": {
+    "description": "Moderator action to unpin a post from a community"
   },
   "unreachable": "Unreachable",
   "@unreachable": {

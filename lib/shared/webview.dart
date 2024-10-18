@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/web_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -203,6 +204,19 @@ class NavigationControls extends StatelessWidget {
                   onTap: () => Share.share(url),
                   icon: Icons.share_rounded,
                   title: l10n.share,
+                ),
+                ThunderPopupMenuItem(
+                  onTap: () {
+                    handleLinkLongPress(
+                      context,
+                      url,
+                      url,
+                      initialPage: LinkBottomSheetPage.alternateLinks,
+                      customNavigation: (url) => webViewController.loadRequest(Uri.parse(url)),
+                    );
+                  },
+                  icon: Icons.link_rounded,
+                  title: l10n.alternateSources,
                 ),
                 ThunderPopupMenuItem(
                   onTap: onReaderModeToggled,
