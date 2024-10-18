@@ -27,7 +27,6 @@
                 "*://feddit.dk/*",
                 "*://feddit.it/*",
                 "*://feddit.nl/*",
-                "*://feddit.nu/*",
                 "*://feddit.org/*",
                 "*://feddit.uk/*",
                 "*://hexbear.net/*",
@@ -65,8 +64,7 @@
                 "*://startrek.website/*",
                 "*://szmer.info/*",
                 "*://thelemmy.club/*",
-                "*://ttrpg.network/*",
-                "*://yiffit.net/*"
+                "*://ttrpg.network/*"
             ]
         }
     ],
