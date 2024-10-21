@@ -2818,5 +2818,9 @@
   "unpinPostFromCommunity": "Desvincular publicación de la comunidad",
   "@unpinPostFromCommunity": {
     "description": "Moderator action to unpin a post from a community"
+  },
+  "readerMode": "Modo lectura",
+  "@readerMode": {
+    "description": "Menu item for toggling reader mode"
   }
 }
