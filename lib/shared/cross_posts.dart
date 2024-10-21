@@ -1,9 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

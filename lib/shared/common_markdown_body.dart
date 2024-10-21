@@ -6,9 +6,9 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/utils/colors.dart';
-
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/shared/image_preview.dart';
@@ -120,6 +120,8 @@ class CommonMarkdownBody extends StatelessWidget {
       imageBuilder: (uri, title, alt) {
         if (hideContent) return Container();
 
+        String decodedUri = Uri.decodeFull(uri.toString());
+
         return FutureBuilder(
           future: isImageUriSvg(uri),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -130,7 +132,7 @@ class CommonMarkdownBody extends StatelessWidget {
                 children: [
                   snapshot.data != true
                       ? ImagePreview(
-                          url: uri.toString(),
+                          url: decodedUri,
                           isExpandable: true,
                           isComment: isComment,
                           showFullHeightImages: true,
@@ -158,7 +160,7 @@ class CommonMarkdownBody extends StatelessWidget {
         );
       },
       onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
-      onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
+      onLongPressLink: (text, url, title) => handleLinkLongPress(context, text, url),
       styleSheet: hideContent
           ? spoilerMarkdownStyleSheet
           : MarkdownStyleSheet.fromTheme(theme).copyWith(

@@ -8,7 +8,9 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -16,12 +18,11 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/enums/user_action.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
   final Function(int) onVoteAction;
@@ -104,7 +105,7 @@ class PostCardViewComfortable extends StatelessWidget {
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     return Container(
-      color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
+      color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onSurface.withOpacity(darkTheme ? 0.05 : 0.075) : null,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -350,10 +351,35 @@ class PostCardViewComfortable extends StatelessWidget {
                       showPostActionBottomModalSheet(
                         context,
                         postViewMedia,
-                        onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
-                        onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
-                        onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
+                        onAction: ({postAction, userAction, communityAction, required postViewMedia}) async {
+                          if (postAction == null && userAction == null && communityAction == null) return;
+
+                          switch (postAction) {
+                            case PostAction.hide:
+                              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postViewMedia.postView.post.id));
+                              break;
+                            default:
+                              break;
+                          }
+
+                          switch (userAction) {
+                            case UserAction.block:
+                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postViewMedia.postView.creator.id));
+                              break;
+                            default:
+                              break;
+                          }
+
+                          switch (communityAction) {
+                            case CommunityAction.block:
+                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postViewMedia.postView.community.id));
+                              break;
+                            default:
+                              break;
+                          }
+                        },
                       );
+
                       HapticFeedback.mediumImpact();
                     }),
                 if (isUserLoggedIn)

@@ -16,6 +16,7 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -31,6 +32,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/links.dart';
 
 @Deprecated('Use the new PostPage widget')
 class PostPage extends StatefulWidget {
@@ -231,6 +233,19 @@ class _PostPageState extends State<PostPage> {
                       icon: Icons.select_all_rounded,
                       title: l10n.selectText,
                     ),
+                    if (state.postView?.media.first.mediaType == MediaType.link && state.postView!.media.first.originalUrl?.isNotEmpty == true)
+                      ThunderPopupMenuItem(
+                        onTap: () {
+                          handleLinkLongPress(
+                            context,
+                            state.postView!.media.first.originalUrl!,
+                            state.postView!.media.first.originalUrl!,
+                            initialPage: LinkBottomSheetPage.alternateLinks,
+                          );
+                        },
+                        icon: Icons.link_rounded,
+                        title: l10n.alternateSources,
+                      ),
                   ],
                 ),
               ],

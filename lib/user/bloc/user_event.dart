@@ -18,7 +18,10 @@ final class UserActionEvent extends UserEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  const UserActionEvent({required this.userId, required this.userAction, this.value});
+  /// Additional metadata to attach to the action. This is used for actions such as banning a user
+  final Map<String, dynamic>? metadata;
+
+  const UserActionEvent({required this.userId, required this.userAction, this.value, this.metadata});
 }
 
 final class UserClearMessageEvent extends UserEvent {}

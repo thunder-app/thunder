@@ -10,5 +10,285 @@
   "account": "{count, plural, zero {Contas} one {Conta} other {Contas} } ",
   "@account": {
     "description": "Describes the user account"
+  },
+  "changePassword": "Mudar Palavra-passe",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "comfortable": "Confortável",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "importExportDatabase": "Importar/exportar base de dados",
+  "@importExportDatabase": {
+    "description": "Overall name of setting for importing or exporting the db (for searching)"
+  },
+  "ok": "OK",
+  "@ok": {},
+  "addAnonymousInstance": "Adicionar Instância Anônima",
+  "@addAnonymousInstance": {},
+  "collapseInformation": "Colapsar Informação",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "on": "ligado",
+  "@on": {},
+  "cannotReportOwnComment": "Não pode denunciar o seu próprio comentário.",
+  "@cannotReportOwnComment": {},
+  "cantBlockAdmin": "Não pode bloquear um administrador da instância.",
+  "@cantBlockAdmin": {},
+  "communityFormat": "Formato da Comunidade",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "communityStyle": "Estilo da Comunidade",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "actionColorsRedirect": "Quer customizar cores?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
+  "addAccountToSeeProfile": "Faça login para ver a sua conta.",
+  "@addAccountToSeeProfile": {},
+  "addKeywordFilter": "Adicionar Palavra-chave",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "Adicionar aos favoritos",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addedCommunityToSubscriptions": "Inscrito na comunidade",
+  "@addedCommunityToSubscriptions": {},
+  "accountBirthday": "Aniversário da conta {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "andXMore": "e {count} mais",
+  "@andXMore": {},
+  "anonymous": "Anônimo",
+  "@anonymous": {},
+  "apply": "Aplicar",
+  "@apply": {},
+  "colors": "Cores",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "backButton": "Botão de voltar",
+  "@backButton": {},
+  "bannedUser": "Utilizador banido",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "collapsePost": "Colapsar post",
+  "@collapsePost": {},
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "allowOpenSupportedLinks": "Permitir que a app abra ligações suportadas.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "alreadyPostedTo": "Já postado em",
+  "@alreadyPostedTo": {},
+  "appLanguage": "Idioma do app",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "backToTop": "Voltar ao topo",
+  "@backToTop": {},
+  "blockInstance": "Bloquear instância",
+  "@blockInstance": {},
+  "blockUser": "Bloquear utilizador",
+  "@blockUser": {},
+  "cantBlockYourself": "Não pode bloquear a si mesmo.",
+  "@cantBlockYourself": {},
+  "clearCache": "Limpar Cache ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "changeAccountSettingsFor": "Mudar configurações de conta para",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
+  "clearDatabase": "Limpar Banco de Dados",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "commentReported": "O comentário foi marcado para revisão.",
+  "@commentReported": {},
+  "commentPreview": "Mostrar prévia dos comentários com as configurações aplicadas",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "commentSavedAsDraft": "Comentário gravado como rascunho",
+  "@commentSavedAsDraft": {},
+  "accountSettings": "Configurações da conta",
+  "@accountSettings": {},
+  "actions": "Ações",
+  "@actions": {},
+  "active": "Ativo",
+  "@active": {},
+  "advanced": "Avançado",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "all": "Todos",
+  "@all": {},
+  "allPosts": "Todos os posts",
+  "@allPosts": {},
+  "appearance": "Aparência",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "applied": "Aplicado",
+  "@applied": {},
+  "blockedCommunities": "Comunidades bloqueadas",
+  "@blockedCommunities": {},
+  "blockedInstances": "Instâncias bloqueadas",
+  "@blockedInstances": {},
+  "clearPreferences": "Limpar Preferências",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "blockedUsers": "Utilizadores bloqueados",
+  "@blockedUsers": {},
+  "clearedCache": "Cache limpado com sucesso.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "changeNotificationSettings": "Mudar configurações de notificação.",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
+  "collapse": "Colapsar",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "collapseCommentPreview": "Colapsar Prévia de Comentário",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "off": "desligado",
+  "@off": {},
+  "addDiscussionLanguage": "Adicionar Idioma",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "addedModToCommunity": "Moderador Adicionado à Comunidade",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "bold": "Negrito",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "back": "Voltar",
+  "@back": {},
+  "browsingAnonymously": "Está a navegar {instance} anonimamente.",
+  "@browsingAnonymously": {},
+  "importDatabase": "Importar base de dados",
+  "@importDatabase": {
+    "description": "Name of setting for importing the db"
+  },
+  "clearSearch": "Limpar Pesquisa",
+  "@clearSearch": {},
+  "communities": "Comunidades",
+  "@communities": {},
+  "linkHandlingExternalShort": "Externo",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "linksBehaviourSettings": "Ligações",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "animations": "Animações",
+  "@animations": {},
+  "blockCommunity": "Bloquear comunidade",
+  "@blockCommunity": {},
+  "addUserLabel": "Adicionar Etiqueta de Utilizador",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
+  "always": "Sempre",
+  "@always": {},
+  "blue": "Azul",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "color": "Cor",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "close": "Fechar",
+  "@close": {},
+  "commentBehaviourSettings": "Comentários",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "comments": "Comentários",
+  "@comments": {},
+  "community": "Comunidade",
+  "@community": {},
+  "old": "Velho",
+  "@old": {},
+  "accountSettingOverrideWarning": "As suas configurações de conta sobrescrevem as configurações a seguir",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "add": "Adicionar",
+  "@add": {},
+  "addAccount": "Adicionar conta",
+  "@addAccount": {},
+  "status": "Estado",
+  "@status": {
+    "description": "Status of the action"
+  },
+  "communityActions": "Ações da Comunidade",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "Comunidade '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "open": "Abrir",
+  "@open": {},
+  "commentShowUserAvatar": "Mostrar Avatar do Utilizador",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
+  "compact": "Compactar",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "cancel": "Cancelar",
+  "@cancel": {},
+  "clearedDatabase": "O banco de dados local foi limpo. Reinicie o Thunder para que as mudanças sejam aplicadas.",
+  "@clearedDatabase": {},
+  "clearedUserPreferences": "As preferências de utilizadores foram limpas",
+  "@clearedUserPreferences": {},
+  "colorizeCommunityName": "Colorir Nome da Comunidade",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "colorizeInstanceName": "Colorir Nome da Instância",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "colorizeUserName": "Colorir Nome de Utilizador",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
+  "accept": "Aceitar",
+  "@accept": {
+    "description": "The ability to accept an option"
   }
 }

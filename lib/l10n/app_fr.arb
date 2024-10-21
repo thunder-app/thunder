@@ -533,8 +533,6 @@
   "@newComments": {},
   "new_": "Nouveau",
   "@new_": {},
-  "noComments": "Oh. Il n'y a pas de commentaires.",
-  "@noComments": {},
   "noCommentsFound": "Aucun commentaire trouvé",
   "@noCommentsFound": {},
   "noCommunitiesFound": "Aucune communauté trouvée",
@@ -1268,5 +1266,87 @@
   "collapseParentCommentBodyOnGesture": "Masque les commentaires parents lorsque réduit",
   "@collapseParentCommentBodyOnGesture": {
     "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "accountBirthday": "Compte crée le {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "accountSwitchPostNotFound": "La publication sélectionnée n'a pas été trouvé sur '{instance}'. Retour au compte précédent.",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "accountSwitchParentCommentNotFound": "Le commentaire sélectionné n'a pas été trouvé sur '{instance}'. Retour au compte précédent.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "anonymousInstances": "Instances anonymes",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "blockManagement": "Gestion de blocage",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "areNotificationsAllowedBySystem": "Les notifications sont autorisées par le système : {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "ago": "Il y a {time}",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "always": "Toujours",
+  "@always": {},
+  "backgroundCheckWarning": "Notez que les vérifications de notification consomment plus de batterie",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "bannedUser": "Utilisateur banni",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "addUserLabel": "Ajouter l'étiquette d'utilisateur",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
+  "accountSettingOverrideWarning": "Vos paramètres de compte outrepassent les réglages suivants",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "actionColorsRedirect": "Vous cherchez à personnaliser les couleurs ?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
+  "addDiscussionLanguage": "Ajouter la langue",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "addedInstanceMod": "Ajouter Instance Mod",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "applePushNotificationService": "Service de notification push d'Apple",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
+  "bannedUserFromCommunity": "Utilisateur banni de la Communauté",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "accept": "Accepter",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "actionColors": "Couleurs d'action",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
   }
 }

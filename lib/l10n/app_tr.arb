@@ -1323,8 +1323,6 @@
   "@no": {
     "description": "Olumsuz durum"
   },
-  "noComments": "Oh. Yorum yok.",
-  "@noComments": {},
   "noCommentsFound": "Yorum bulunamadı.",
   "@noCommentsFound": {},
   "noCommunitiesFound": "Hiçbir topluluk bulunamadı.",

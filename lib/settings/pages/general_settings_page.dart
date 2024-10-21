@@ -668,19 +668,19 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               highlightedSetting: settingToHighlight,
             ),
           ),
-          if (!kIsWeb && Platform.isIOS)
-            SliverToBoxAdapter(
-              child: ToggleOption(
-                description: l10n.openLinksInReaderMode,
-                value: openInReaderMode,
-                iconEnabled: Icons.menu_book_rounded,
-                iconDisabled: Icons.menu_book_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.openLinksInReaderMode, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.openLinksInReaderMode,
-                highlightedSetting: settingToHighlight,
-              ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              disabled: !((!kIsWeb && Platform.isIOS && browserMode == BrowserMode.customTabs) || (browserMode == BrowserMode.inApp)),
+              description: l10n.openLinksInReaderMode,
+              value: openInReaderMode,
+              iconEnabled: Icons.menu_book_rounded,
+              iconDisabled: Icons.menu_book_rounded,
+              onToggle: (bool value) => setPreferences(LocalSettings.openLinksInReaderMode, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.openLinksInReaderMode,
+              highlightedSetting: settingToHighlight,
             ),
+          ),
           // TODO:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
           if (!kIsWeb && Platform.isAndroid)
             SliverToBoxAdapter(

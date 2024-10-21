@@ -73,7 +73,7 @@ class _LinkInformationState extends State<LinkInformation> {
           }
 
           if (widget.mediaType == MediaType.link) {
-            handleLinkLongPress(context, state, widget.originURL!, widget.originURL);
+            handleLinkLongPress(context, widget.originURL!, widget.originURL);
           }
         },
         child: Container(

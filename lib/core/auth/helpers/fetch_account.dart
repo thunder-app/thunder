@@ -11,7 +11,7 @@ Future<Account?> fetchActiveProfileAccount() async {
 
   // Update the baseUrl if account was found
   if (account?.instance != null && account!.instance != LemmyClient.instance.lemmyApiV3.host) {
-    LemmyClient.instance.changeBaseUrl(account.instance!.replaceAll('https://', ''));
+    LemmyClient.instance.changeBaseUrl(account.instance.replaceAll('https://', ''));
   }
 
   return account;
