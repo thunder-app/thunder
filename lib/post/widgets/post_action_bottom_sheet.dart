@@ -34,7 +34,7 @@ void showPostActionBottomModalSheet(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (_) => PostActionBottomSheet(context: context, postViewMedia: postViewMedia, onAction: onAction),
+    builder: (_) => PostActionBottomSheet(context: context, initialPage: page, postViewMedia: postViewMedia, onAction: onAction),
   );
 }
 
