@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:thunder/account/models/account.dart';
 
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/comment/widgets/comment_card.dart';
@@ -117,53 +117,54 @@ class _PostPageState extends State<PostPage> {
     originalUser ??= context.read<AuthBloc>().state.account;
 
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (didPop, result) {
         if (context.mounted) {
           restoreUser(context, originalUser);
         }
       },
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 5),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: CommentNavigatorFab(
-                    initialIndex: 0,
-                    maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
-                    scrollController: scrollController,
-                    listController: listController,
+      child: BlocConsumer<PostBloc, PostState>(
+        listener: (context, state) {
+          if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia) {
+            if (!userChanged) {
+              widget.onPostUpdated?.call(state.postView!);
+            }
+            setState(() {});
+          }
+        },
+        builder: (context, state) {
+          if (state.status == PostStatus.initial) {
+            // This is required because listener does not get called on initial build
+            context.read<PostBloc>().add(GetPostEvent(postView: widget.initialPostViewMedia));
+          }
+
+          List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
+
+          return Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: CommentNavigatorFab(
+                        initialIndex: 0,
+                        maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
+                        scrollController: scrollController,
+                        listController: listController,
+                        comments: flattenedComments,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-        body: SafeArea(
-          top: thunderState.hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
-          bottom: false,
-          child: BlocConsumer<PostBloc, PostState>(
-            listener: (context, state) {
-              if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia) {
-                if (!userChanged) {
-                  widget.onPostUpdated?.call(state.postView!);
-                }
-                setState(() {});
-              }
-            },
-            builder: (context, state) {
-              if (state.status == PostStatus.initial) {
-                // This is required because listener does not get called on initial build
-                context.read<PostBloc>().add(GetPostEvent(postView: widget.initialPostViewMedia));
-              }
-
-              List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
-
-              return CustomScrollView(
+            body: SafeArea(
+              top: thunderState.hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+              bottom: false,
+              child: CustomScrollView(
                 controller: scrollController,
                 slivers: [
                   PostPageAppBar(
@@ -204,10 +205,16 @@ class _PostPageState extends State<PostPage> {
                     )
                   else
                     SuperSliverList.builder(
-                      itemCount: flattenedComments.length,
+                      itemCount: flattenedComments.length + 1,
                       listController: listController,
                       itemBuilder: (BuildContext context, int index) {
-                        CommentNode commentNode = flattenedComments[index];
+                        if (index == 0) {
+                          // This is a placeholder widget to allow the comment scroller to work properly for the first comment
+                          // Note: CommentNavigatorFab indexes will be shifted by 1 to account for the placeholder widget
+                          return const SizedBox(height: 1);
+                        }
+
+                        CommentNode commentNode = flattenedComments[index - 1];
                         CommentView commentView = commentNode.commentView!;
 
                         bool isCollapsed = collapsedComments.contains(commentView.comment.id);
@@ -261,10 +268,10 @@ class _PostPageState extends State<PostPage> {
                   ),
                   SliverToBoxAdapter(child: SizedBox(height: bottomSpacerHeight)),
                 ],
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
