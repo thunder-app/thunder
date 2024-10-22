@@ -86,8 +86,8 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(50),
-                      onTap: navigateUp,
-                      onLongPress: navigateToParent,
+                      onTap: navigateToParent,
+                      onLongPress: navigateUp,
                       child: Icon(
                         Icons.keyboard_arrow_up_rounded,
                         semanticLabel: AppLocalizations.of(context)!.navigateUp,
@@ -104,8 +104,8 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(50),
-                      onTap: navigateDown,
-                      onLongPress: navigateToNextParent,
+                      onTap: navigateToNextParent,
+                      onLongPress: navigateDown,
                       child: Icon(
                         Icons.keyboard_arrow_down_rounded,
                         semanticLabel: AppLocalizations.of(context)!.navigateDown,
@@ -140,6 +140,13 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
   }
 
   void navigateToParent() {
+    if (widget.comments == null) {
+      // This is a placeholder to allow the previous post page to function correctly.
+      // TODO: Remove this logic when we deprecate the legacy post page
+      navigateUp();
+      return;
+    }
+
     var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
 
     int previousIndex = (unobstructedVisibleRange?.$1 ?? 0) - 1;
@@ -189,6 +196,13 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
   }
 
   void navigateToNextParent() {
+    if (widget.comments == null) {
+      // This is a placeholder to allow the previous post page to function correctly.
+      // TODO: Remove this logic when we deprecate the legacy post page
+      navigateDown();
+      return;
+    }
+
     var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
 
     int nextIndex = (unobstructedVisibleRange?.$1 ?? 0) + 1;
