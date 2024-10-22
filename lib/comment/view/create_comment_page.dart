@@ -274,6 +274,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                 FocusManager.instance.primaryFocus?.unfocus();
               },
               child: Scaffold(
+                resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
                   toolbarHeight: 70.0,
@@ -405,6 +406,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                       const Divider(height: 1),
                       Container(
                         color: theme.cardColor,
+                        margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                         child: Row(
                           children: [
                             Expanded(

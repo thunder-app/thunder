@@ -376,6 +376,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               FocusManager.instance.primaryFocus?.unfocus();
             },
             child: Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
                 toolbarHeight: 70.0,
@@ -590,6 +591,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ),
                     Container(
                       color: theme.cardColor,
+                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: Row(
                         children: [
                           Expanded(
