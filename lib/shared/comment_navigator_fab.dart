@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/comment/models/comment_node.dart';
+
 class CommentNavigatorFab extends StatefulWidget {
   /// The [ScrollController] for the scrollable list
   final ScrollController scrollController;
 
   /// The [ListController] for the scrollable list. This is used to navigate up and down
   final ListController listController;
+
+  /// The list of comments. This is used to determine the current and next parent
+  final List<CommentNode>? comments;
 
   /// The initial index
   final int initialIndex;
@@ -22,6 +27,7 @@ class CommentNavigatorFab extends StatefulWidget {
     this.maxIndex = 0,
     required this.scrollController,
     required this.listController,
+    this.comments,
   });
 
   @override
@@ -80,7 +86,8 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(50),
-                      onTap: navigateUp,
+                      onTap: navigateToParent,
+                      onLongPress: navigateUp,
                       child: Icon(
                         Icons.keyboard_arrow_up_rounded,
                         semanticLabel: AppLocalizations.of(context)!.navigateUp,
@@ -97,7 +104,8 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(50),
-                      onTap: navigateDown,
+                      onTap: navigateToNextParent,
+                      onLongPress: navigateDown,
                       child: Icon(
                         Icons.keyboard_arrow_down_rounded,
                         semanticLabel: AppLocalizations.of(context)!.navigateDown,
@@ -116,31 +124,67 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
   void navigateUp() {
     var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
 
-    int nextIndex = currentIndex - 1;
-    if (unobstructedVisibleRange?.$1 != null && unobstructedVisibleRange!.$1 != currentIndex) {
-      nextIndex = unobstructedVisibleRange.$1;
-    } else if (currentIndex != 0) {
-      nextIndex = unobstructedVisibleRange!.$1 - 1;
-    }
+    int previousIndex = (unobstructedVisibleRange?.$1 ?? 0) - 1;
+    if (currentIndex == previousIndex) previousIndex--;
+    if (previousIndex < 0) previousIndex = 0;
+
+    setState(() => currentIndex = previousIndex);
 
     widget.listController.animateToItem(
-      index: nextIndex,
+      index: previousIndex,
       scrollController: widget.scrollController,
       alignment: 0,
       duration: (estimatedDistance) => const Duration(milliseconds: 450),
       curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
     );
+  }
 
-    setState(() {
-      currentIndex = nextIndex;
-    });
+  void navigateToParent() {
+    if (widget.comments == null) {
+      // This is a placeholder to allow the previous post page to function correctly.
+      // TODO: Remove this logic when we deprecate the legacy post page
+      navigateUp();
+      return;
+    }
+
+    var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
+
+    int previousIndex = (unobstructedVisibleRange?.$1 ?? 0) - 1;
+    if (currentIndex == previousIndex) previousIndex--;
+    if (previousIndex < 0) previousIndex = 0;
+
+    int parentCommentIndex = 0;
+
+    for (int i = previousIndex; i >= 0; i--) {
+      CommentNode currentComment = widget.comments![i - 1];
+
+      List<String> pathSegments = currentComment.commentView!.comment.path.split('.');
+      int depth = pathSegments.length > 2 ? pathSegments.length - 2 : 0;
+
+      if (depth == 0) {
+        parentCommentIndex = i;
+        break;
+      }
+    }
+
+    setState(() => currentIndex = parentCommentIndex);
+
+    widget.listController.animateToItem(
+      index: parentCommentIndex,
+      scrollController: widget.scrollController,
+      alignment: 0,
+      duration: (estimatedDistance) => const Duration(milliseconds: 450),
+      curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+    );
   }
 
   void navigateDown() {
     var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
 
-    int nextIndex = currentIndex + 1;
-    if (unobstructedVisibleRange?.$1 != null) nextIndex = unobstructedVisibleRange!.$1 + 1;
+    int nextIndex = (unobstructedVisibleRange?.$1 ?? 0) + 1;
+    if (currentIndex == nextIndex) nextIndex++;
+
+    setState(() => currentIndex = nextIndex);
 
     widget.listController.animateToItem(
       index: nextIndex,
@@ -149,9 +193,43 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
       duration: (estimatedDistance) => const Duration(milliseconds: 450),
       curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
     );
+  }
 
-    setState(() {
-      currentIndex = nextIndex;
-    });
+  void navigateToNextParent() {
+    if (widget.comments == null) {
+      // This is a placeholder to allow the previous post page to function correctly.
+      // TODO: Remove this logic when we deprecate the legacy post page
+      navigateDown();
+      return;
+    }
+
+    var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
+
+    int nextIndex = (unobstructedVisibleRange?.$1 ?? 0) + 1;
+    if (currentIndex == nextIndex) nextIndex++;
+
+    int parentCommentIndex = 0;
+
+    for (int i = nextIndex; i < widget.comments!.length; i++) {
+      CommentNode currentComment = widget.comments![i - 1];
+
+      List<String> pathSegments = currentComment.commentView!.comment.path.split('.');
+      int depth = pathSegments.length > 2 ? pathSegments.length - 2 : 0;
+
+      if (depth == 0) {
+        parentCommentIndex = i;
+        break;
+      }
+    }
+
+    setState(() => currentIndex = parentCommentIndex);
+
+    widget.listController.animateToItem(
+      index: parentCommentIndex,
+      scrollController: widget.scrollController,
+      alignment: 0,
+      duration: (estimatedDistance) => const Duration(milliseconds: 450),
+      curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+    );
   }
 }
