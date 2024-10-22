@@ -1,5 +1,4 @@
 ani.social
-aussie.zone
 awful.systems
 beehaw.org
 delraymisfitsboard.com
@@ -8,13 +7,11 @@ discuss.tchncs.de
 feddit.dk
 feddit.it
 feddit.nl
-feddit.nu
 feddit.org
 feddit.uk
 hexbear.net
 infosec.pub
 jlai.lu
-lemdro.id
 leminal.space
 lemm.ee
 lemmings.world
@@ -29,7 +26,6 @@ lemmy.one
 lemmy.sdf.org
 lemmy.today
 lemmy.world
-lemmy.wtf
 lemmy.zip
 lemmygrad.ml
 lemmynsfw.com
