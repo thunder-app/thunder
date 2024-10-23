@@ -27,12 +27,20 @@ class FeedPostCardList extends StatefulWidget {
   /// The list of posts to show on the feed
   final List<PostViewMedia> postViewMedias;
 
+  /// Whether to disable swiping of posts
+  final bool disableSwiping;
+
+  /// Overrides the system setting for whether to indicate read posts
+  final bool? indicateRead;
+
   const FeedPostCardList({
     super.key,
     required this.postViewMedias,
     required this.tabletMode,
     required this.markPostReadOnScroll,
     this.queuedForRemoval,
+    this.disableSwiping = false,
+    this.indicateRead,
   });
 
   @override
@@ -156,7 +164,8 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
                       }
                     },
                     listingType: state.postListingType,
-                    indicateRead: dimReadPosts,
+                    indicateRead: widget.indicateRead ?? dimReadPosts,
+                    disableSwiping: widget.disableSwiping,
                   ))
               : null,
         );

@@ -92,3 +92,20 @@ class UnblockPersonEvent extends UserSettingsEvent {
 
   const UnblockPersonEvent({required this.personId, this.unblock = true});
 }
+
+class ListMediaEvent extends UserSettingsEvent {
+  const ListMediaEvent();
+}
+
+class DeleteMediaEvent extends UserSettingsEvent {
+  final String deleteToken;
+  final String id;
+
+  const DeleteMediaEvent({required this.deleteToken, required this.id});
+}
+
+class FindMediaUsagesEvent extends UserSettingsEvent {
+  final String id;
+
+  const FindMediaUsagesEvent({required this.id});
+}
