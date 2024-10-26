@@ -12,7 +12,7 @@ import 'package:path/path.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+//import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -244,19 +244,19 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   contentText: l10n.deleteLocalDatabaseDescription,
                   onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                   secondaryButtonText: l10n.cancel,
-                  onPrimaryButtonPressed: (dialogContext, _) async {
-                    String path = join(await getDatabasesPath(), 'thunder.db');
+                  // onPrimaryButtonPressed: (dialogContext, _) async {
+                  //   String path = join(await getDatabasesPath(), 'thunder.db');
 
-                    final dbFolder = await getApplicationDocumentsDirectory();
-                    final file = File(join(dbFolder.path, 'thunder.sqlite'));
+                  //   final dbFolder = await getApplicationDocumentsDirectory();
+                  //   final file = File(join(dbFolder.path, 'thunder.sqlite'));
 
-                    await databaseFactory.deleteDatabase(file.path);
+                  //   await databaseFactory.deleteDatabase(file.path);
 
-                    if (context.mounted) {
-                      showSnackbar(AppLocalizations.of(context)!.clearedDatabase);
-                      Navigator.of(context).pop();
-                    }
-                  },
+                  //   if (context.mounted) {
+                  //     showSnackbar(AppLocalizations.of(context)!.clearedDatabase);
+                  //     Navigator.of(context).pop();
+                  //   }
+                  // },
                   primaryButtonText: l10n.clearDatabase,
                 );
               },
