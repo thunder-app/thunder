@@ -56,13 +56,16 @@ Future<void> initializeDatabase() async {
 
   debugPrint('Initializing drift db.');
 
-  File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
-
   database = constructDb();
+  // TODO: Integrate database migrations for web
 
-  if (!await dbFile.exists()) {
-    debugPrint('Migrating from SQLite db.');
-    await migrateToSQLite(database);
+  if (!kIsWeb) {
+    File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
+
+    if (!await dbFile.exists()) {
+      debugPrint('Migrating from SQLite db.');
+      await migrateToSQLite(database);
+    }
   }
 
   _isDatabaseInitialized = true;
