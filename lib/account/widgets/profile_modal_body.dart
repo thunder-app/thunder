@@ -185,7 +185,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
         ),
       ],
       child: Scaffold(
-        backgroundColor: theme.cardColor,
+        backgroundColor: Colors.transparent,
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -193,6 +193,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
               centerTitle: false,
               scrolledUnderElevation: 0,
               pinned: false,
+              forceMaterialTransparency: true,
               actions: !widget.quickSelectMode
                   ? [
                       if ((accounts?.length ?? 0) > 1)
@@ -429,7 +430,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
             if (accounts?.isNotEmpty != true)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 24.0),
+                  padding: const EdgeInsets.only(left: 24.0, bottom: 16.0),
                   child: Text(
                     l10n.noAccountsAdded,
                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -445,6 +446,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                 centerTitle: false,
                 scrolledUnderElevation: 0,
                 pinned: false,
+                forceMaterialTransparency: true,
                 actions: !widget.quickSelectMode
                     ? [
                         if ((anonymousInstances?.length ?? 0) > 1)
