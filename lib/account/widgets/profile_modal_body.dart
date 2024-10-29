@@ -185,7 +185,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
         ),
       ],
       child: Scaffold(
-        backgroundColor: theme.cardColor,
+        backgroundColor: Colors.transparent,
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -193,6 +193,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
               centerTitle: false,
               scrolledUnderElevation: 0,
               pinned: false,
+              forceMaterialTransparency: true,
               actions: !widget.quickSelectMode
                   ? [
                       if ((accounts?.length ?? 0) > 1)
@@ -241,7 +242,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Material(
-                        color: currentAccountId == accounts![index].account.id ? selectedColor : null,
+                        color: currentAccountId == accounts![index].account.id ? selectedColor : Colors.transparent,
                         borderRadius: BorderRadius.circular(50),
                         child: InkWell(
                           onTap: (currentAccountId == accounts![index].account.id)
@@ -429,7 +430,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
             if (accounts?.isNotEmpty != true)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 24.0),
+                  padding: const EdgeInsets.only(left: 24.0, bottom: 16.0),
                   child: Text(
                     l10n.noAccountsAdded,
                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -445,6 +446,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                 centerTitle: false,
                 scrolledUnderElevation: 0,
                 pinned: false,
+                forceMaterialTransparency: true,
                 actions: !widget.quickSelectMode
                     ? [
                         if ((anonymousInstances?.length ?? 0) > 1)
@@ -494,7 +496,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Material(
                           elevation: anonymousInstanceBeingReorderedIndex == index ? 3 : 0,
-                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : null,
+                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : Colors.transparent,
                           borderRadius: BorderRadius.circular(50),
                           child: InkWell(
                             onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)

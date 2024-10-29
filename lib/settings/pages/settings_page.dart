@@ -60,7 +60,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 18).copyWith(top: 16.0),
               child: FocusableActionDetector(
                 onFocusChange: (focused) {
                   if (focused) {
@@ -70,9 +70,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
                 child: SearchAnchor.bar(
                   searchController: _searchController,
-                  barBackgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.surfaceVariant),
-                  barElevation: MaterialStateProperty.all(0),
                   barHintText: l10n.search,
+                  barElevation: const WidgetStatePropertyAll(0.0),
                   suggestionsBuilder: (BuildContext context, SearchController controller) {
                     final List<LocalSettings> localSettings = LocalSettings.values
                         .where((item) =>
