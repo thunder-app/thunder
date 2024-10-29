@@ -754,6 +754,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                   value: Colors.transparent,
                                   child: CircleAvatar(radius: 16.0, child: Text('D')),
                                 ),
+                              )
+                              ..insert(
+                                0,
+                                const DropdownMenuItem<Color>(
+                                  alignment: Alignment.center,
+                                  value: Color.fromARGB(128, 0, 0, 0), // Custom color code for transparent
+                                  child: CircleAvatar(
+                                    radius: 16.0,
+                                    backgroundColor: Colors.transparent,
+                                    child: Text('T'),
+                                  ),
+                                ),
                               ),
                             onChanged: (Color? value) {
                               setPreferences(LocalSettings.feedCardDividerColor, value);

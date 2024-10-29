@@ -16,14 +16,20 @@ class FeedCardDivider extends StatelessWidget {
     final state = context.watch<ThunderBloc>().state;
 
     final feedCardDividerThickness = state.feedCardDividerThickness;
-    final feedCardDividerColor = state.feedCardDividerColor;
+    Color feedCardDividerColor = state.feedCardDividerColor;
+
+    if (feedCardDividerColor == Colors.transparent) {
+      feedCardDividerColor = ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10);
+    } else if (feedCardDividerColor.value == const Color.fromARGB(128, 0, 0, 0).value) {
+      feedCardDividerColor = Colors.transparent;
+    } else {
+      feedCardDividerColor = Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), feedCardDividerColor).withOpacity(0.2);
+    }
 
     return Divider(
       height: feedCardDividerThickness.value,
       thickness: feedCardDividerThickness.value,
-      color: feedCardDividerColor == Colors.transparent
-          ? ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10)
-          : Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), feedCardDividerColor).withOpacity(0.2),
+      color: feedCardDividerColor,
     );
   }
 }
