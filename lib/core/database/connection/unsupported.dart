@@ -7,7 +7,6 @@ Never _unsupported() {
 
 // Depending on the platform the app is compiled to, the following stubs will
 // be replaced with the methods in native.dart or web.dart
-
 AppDatabase constructDb() => throw UnimplementedError();
 
 Future<void> validateDatabaseSchema(GeneratedDatabase database) async {
