@@ -522,18 +522,18 @@ packages:
     dependency: "direct main"
     description:
       name: flex_color_scheme
-      sha256: "32914024a4f404d90ff449f58d279191675b28e7c08824046baf06826e99d984"
+      sha256: aab8db18233d4daf03336b2c22588820509a3a5261658c4042f029e8ed920c7d
       url: "https://pub.dev"
     source: hosted
-    version: "7.3.1"
+    version: "8.0.0-dev.2"
   flex_seed_scheme:
     dependency: transitive
     description:
       name: flex_seed_scheme
-      sha256: "4cee2f1d07259f77e8b36f4ec5f35499d19e74e17c7dce5b819554914082bc01"
+      sha256: "7639d2c86268eff84a909026eb169f008064af0fb3696a651b24b0fa24a40334"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.0"
+    version: "3.4.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -1118,8 +1118,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "5868132c9b6ed1406013251d3c8da670b7dae0a2"
-      resolved-ref: "5868132c9b6ed1406013251d3c8da670b7dae0a2"
+      ref: "16d14a1c13ac9522e85188ad9cf23d8912ec8fee"
+      resolved-ref: "16d14a1c13ac9522e85188ad9cf23d8912ec8fee"
       url: "https://github.com/thunder-app/lemmy_api_client.git"
     source: git
     version: "0.21.0"

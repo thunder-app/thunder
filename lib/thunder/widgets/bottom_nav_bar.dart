@@ -95,9 +95,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         onDoubleTap: state.bottomNavBarDoubleTapGestures == true ? () => _handleDoubleTap(context) : null,
         child: NavigationBar(
           selectedIndex: widget.selectedPageIndex,
-          backgroundColor: theme.colorScheme.surface,
           labelBehavior: state.showNavigationLabels ? NavigationDestinationLabelBehavior.alwaysShow : NavigationDestinationLabelBehavior.alwaysHide,
-          elevation: 1,
           destinations: [
             NavigationDestination(
               icon: const Icon(Icons.dashboard_outlined),
