@@ -57,8 +57,8 @@ Future<void> initializeDatabase() async {
   debugPrint('Initializing drift db.');
 
   database = constructDb();
-  // TODO: Integrate database migrations for web
 
+  // Bypass migrateToSQList for web.
   if (!kIsWeb) {
     File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
 

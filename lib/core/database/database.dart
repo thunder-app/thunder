@@ -10,14 +10,12 @@ import 'package:thunder/core/database/tables.dart';
 import 'package:thunder/core/database/type_converters.dart';
 import 'package:thunder/drafts/draft_type.dart';
 
-import 'package:flutter/services.dart' show rootBundle;
 import 'connection/connection.dart' as impl;
 
 part 'database.g.dart';
 
 @DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts])
 class AppDatabase extends _$AppDatabase {
-  //AppDatabase() : super(_openConnection());
   AppDatabase(super.e);
 
   @override
@@ -65,40 +63,6 @@ class AppDatabase extends _$AppDatabase {
         },
       );
 }
-
-/// Opens a connection to the database.
-///
-/// Returns a [LazyDatabase] instance representing the connection.
-// LazyDatabase _openConnection() {
-//   return LazyDatabase(() async {
-//     final dbFolder = await getApplicationDocumentsDirectory();
-//     final file = File(join(dbFolder.path, 'thunder.sqlite'));
-
-//     //if (Platform.isAndroid) {
-//     // Also work around limitations on old Android versions
-//     //  await applyWorkaroundToOpenSqlite3OnOldAndroidVersions();
-//     //}
-
-//     if (kIsWeb) {
-//       return DatabaseConnection.delayed(Future(() async {
-//         final result = await WasmDatabase.open(
-//           databaseName: 'my_app_db', // prefer to only use valid identifiers here
-//           sqlite3Uri: Uri.parse('sqlite3.wasm'),
-//           driftWorkerUri: Uri.parse('drift_worker.dart.js'),
-//           initializeDatabase: () async {
-//             final data = await rootBundle.load('my_database');
-//             return data.buffer.asUint8List();
-//           },
-//         );
-//         return result.resolvedExecutor;
-//       }));
-//     } else {
-//       final cachebase = (await getTemporaryDirectory()).path;
-//       //sqlite3.tempDirectory = cachebase;
-//       return NativeDatabase.createInBackground(file);
-//     }
-//   });
-// }
 
 Future<String?> exportDatabase() async {
   final Directory dbFolder = await getApplicationDocumentsDirectory();
