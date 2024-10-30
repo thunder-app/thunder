@@ -86,7 +86,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                   Icon(
                                     Icons.repeat_rounded,
                                     size: 14.0,
-                                    color: theme.colorScheme.onBackground.withOpacity(0.9),
+                                    color: theme.colorScheme.onSurface.withOpacity(0.9),
                                   ),
                                   Text(
                                     ' to ',

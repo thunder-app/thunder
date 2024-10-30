@@ -223,7 +223,9 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
         lemmyClient: lemmyClient,
       );
       return;
-    } catch (e) {}
+    } catch (e) {
+      // Ignore exception, if it's not a valid modlog link, we'll perform the next fallback
+    }
   }
 
   // Try opening it as an image

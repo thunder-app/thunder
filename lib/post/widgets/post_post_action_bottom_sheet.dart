@@ -5,18 +5,14 @@ import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
-import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';

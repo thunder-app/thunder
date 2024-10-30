@@ -324,7 +324,9 @@ class _ThunderState extends State<Thunder> {
         );
         return;
       }
-    } catch (e) {}
+    } catch (e) {
+      // Ignore exception, if it's not a valid modlog link, we'll perform the next fallback
+    }
 
     // Show an error for any issues processing the link
     if (context.mounted) {
@@ -716,7 +718,7 @@ class _ThunderState extends State<Thunder> {
             ),
             Icon(
               Icons.arrow_forward,
-              color: theme.colorScheme.onBackground,
+              color: theme.colorScheme.onSurface,
             ),
           ],
         ),

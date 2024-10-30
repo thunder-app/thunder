@@ -17,7 +17,7 @@ class LoadingPage extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        color: theme.colorScheme.background,
+        color: theme.colorScheme.surface,
         child: SafeArea(
           top: false,
           child: CustomScrollView(

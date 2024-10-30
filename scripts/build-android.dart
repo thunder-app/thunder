@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, file_names
 import 'dart:io';
 
 /// This script automatically generates the release files for the current version,

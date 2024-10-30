@@ -109,11 +109,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     Post post = postView.post;
 
     final bool isUserLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
-    final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
     final AuthState authState = context.watch<AuthBloc>().state;
-
-    final bool showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
 
     final bool scrapeMissingPreviews = thunderState.scrapeMissingPreviews;
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;

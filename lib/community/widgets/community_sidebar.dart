@@ -70,7 +70,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
               widthFactor: kSidebarWidthFactor,
               alignment: FractionalOffset.centerRight,
               child: Container(
-                color: theme.colorScheme.background,
+                color: theme.colorScheme.surface,
                 alignment: Alignment.topRight,
                 child: Column(
                   children: [
@@ -231,8 +231,6 @@ class CommunityModeratorList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Column(
       children: [
         for (CommunityModeratorView mods in getCommunityResponse.moderators)
@@ -467,7 +465,7 @@ class SidebarStat extends StatelessWidget {
           child: Icon(
             icon,
             size: 18,
-            color: theme.colorScheme.onBackground.withOpacity(0.65),
+            color: theme.colorScheme.onSurface.withOpacity(0.65),
           ),
         ),
         Text(
