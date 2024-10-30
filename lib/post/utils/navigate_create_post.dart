@@ -73,7 +73,9 @@ Future<void> navigateToCreatePostPage(
                   );
 
                   context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
-                } catch (e) {}
+                } catch (e) {
+                  if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
+                }
               }
             },
           ),

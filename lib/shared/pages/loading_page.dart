@@ -65,7 +65,7 @@ void showLoadingPage(BuildContext context) {
           BlocProvider.value(value: thunderBloc),
         ],
         child: PopScope(
-          onPopInvoked: (didPop) => isLoadingPageShown = !didPop,
+          onPopInvokedWithResult: (didPop, result) => isLoadingPageShown = !didPop,
           child: const LoadingPage(),
         ),
       ),

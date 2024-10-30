@@ -33,7 +33,9 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
     // Check whether this instance is blocked (we have to get our user from our current site first).
     final GetSiteResponse localSite = await LemmyClient.instance.lemmyApiV3.run(GetSite(auth: account?.jwt)).timeout(const Duration(seconds: 5));
     isBlocked = localSite.myUser?.instanceBlocks?.any((i) => i.instance.domain == instanceHost) == true;
-  } catch (e) {}
+  } catch (e) {
+    // Continue if we can't get the site
+  }
 
   if (context.mounted) {
     if (getSiteResponse?.siteView.site != null) {
