@@ -30,7 +30,9 @@ Future<void> navigateToModlogPage(
     AuthBloc authBloc = context.read<AuthBloc>();
     canSwipe = Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture;
     canOnlySwipeFromEdge = disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture;
-  } catch (e) {}
+  } catch (e) {
+    // Continue with default values
+  }
 
   await Navigator.of(context).push(
     SwipeablePageRoute(

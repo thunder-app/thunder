@@ -303,7 +303,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           child: Text(
                             l10n.postSwipeGesturesHint,
                             style: TextStyle(
-                              color: theme.colorScheme.onBackground.withOpacity(0.75),
+                              color: theme.colorScheme.onSurface.withOpacity(0.75),
                             ),
                           ),
                         ),
@@ -337,7 +337,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                         child: Text(
                                           AppLocalizations.of(context)!.customizeSwipeActions,
                                           style: TextStyle(
-                                            color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                            color: theme.colorScheme.onSurface.withOpacity(0.75),
                                           ),
                                         ),
                                       ),
@@ -410,7 +410,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           child: Text(
                             l10n.commentSwipeGesturesHint,
                             style: TextStyle(
-                              color: theme.colorScheme.onBackground.withOpacity(0.75),
+                              color: theme.colorScheme.onSurface.withOpacity(0.75),
                             ),
                           ),
                         ),
@@ -444,7 +444,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                         child: Text(
                                           AppLocalizations.of(context)!.customizeSwipeActions,
                                           style: TextStyle(
-                                            color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                            color: theme.colorScheme.onSurface.withOpacity(0.75),
                                           ),
                                         ),
                                       ),

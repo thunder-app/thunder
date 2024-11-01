@@ -1,11 +1,9 @@
 // Flutter imports
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/links.dart';
 
 /// A widget that displays information about a link, including the link's media type if applicable.
@@ -44,7 +42,6 @@ class _LinkInformationState extends State<LinkInformation> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
 
     final icon = switch (widget.mediaType) {
       MediaType.image => Icons.image_outlined,

@@ -224,7 +224,6 @@ class FeedDrawerItems extends StatelessWidget {
     final feedBloc = context.watch<FeedBloc>();
 
     FeedState feedState = feedBloc.state;
-    ThunderState thunderState = context.read<ThunderBloc>().state;
     AccountState accountState = context.watch<AccountBloc>().state;
 
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;

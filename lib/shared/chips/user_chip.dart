@@ -65,7 +65,7 @@ class UserChip extends StatelessWidget {
         )}${fetchUserGroupDescriptor(userGroups, person)}',
         preferBelow: false,
         child: Material(
-          color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onBackground : Colors.transparent,
+          color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onSurface : Colors.transparent,
           borderRadius: userGroups.isNotEmpty ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
           child: InkWell(
             borderRadius: BorderRadius.circular(5),
@@ -94,7 +94,7 @@ class UserChip extends StatelessWidget {
                       child: Icon(
                         Thunder.microphone_variant,
                         size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                        color: theme.colorScheme.onBackground,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   if (userGroups.contains(UserType.self))
@@ -103,7 +103,7 @@ class UserChip extends StatelessWidget {
                       child: Icon(
                         Icons.person,
                         size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                        color: theme.colorScheme.onBackground,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   if (userGroups.contains(UserType.admin))
@@ -112,7 +112,7 @@ class UserChip extends StatelessWidget {
                       child: Icon(
                         Thunder.shield_crown,
                         size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                        color: theme.colorScheme.onBackground,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   if (userGroups.contains(UserType.moderator))
@@ -121,7 +121,7 @@ class UserChip extends StatelessWidget {
                       child: Icon(
                         Thunder.shield,
                         size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                        color: theme.colorScheme.onBackground,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   if (userGroups.contains(UserType.bot))
@@ -130,7 +130,7 @@ class UserChip extends StatelessWidget {
                       child: Icon(
                         Thunder.robot,
                         size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
-                        color: theme.colorScheme.onBackground,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   if (userGroups.contains(UserType.birthday))
@@ -139,7 +139,7 @@ class UserChip extends StatelessWidget {
                       child: Icon(
                         Icons.cake_rounded,
                         size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
-                        color: theme.colorScheme.onBackground,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                 ],

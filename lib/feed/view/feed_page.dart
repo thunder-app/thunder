@@ -545,7 +545,7 @@ class _FeedViewState extends State<FeedView> {
                         children: [
                           IgnorePointer(
                               child: Container(
-                            color: theme.colorScheme.background.withOpacity(0.95),
+                            color: theme.colorScheme.surface.withOpacity(0.95),
                           )),
                           if (thunderBloc.state.isFabOpen)
                             ModalBarrier(

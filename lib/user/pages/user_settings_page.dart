@@ -167,7 +167,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 l10n.userSettingDescription,
                                 style: theme.textTheme.bodyMedium!.copyWith(
                                   fontWeight: FontWeight.w400,
-                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                  color: theme.colorScheme.onSurface.withOpacity(0.75),
                                 ),
                               ),
                             ),
@@ -301,7 +301,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 l10n.settingOverrideLabel,
                                 style: theme.textTheme.bodyMedium!.copyWith(
                                   fontWeight: FontWeight.w400,
-                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                  color: theme.colorScheme.onSurface.withOpacity(0.75),
                                 ),
                               ),
                             ),

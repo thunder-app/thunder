@@ -226,7 +226,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                                     child: Icon(
                                                       event.getModlogEventIcon(),
                                                       size: 16.0 * thunderState.metadataFontSizeScale.textScaleFactor,
-                                                      color: theme.colorScheme.onBackground,
+                                                      color: theme.colorScheme.onSurface,
                                                     ),
                                                   ),
                                                   ScalableText(

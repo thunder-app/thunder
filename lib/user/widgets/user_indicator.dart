@@ -29,7 +29,6 @@ class _UserIndicatorState extends State<UserIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return BlocListener<AccountBloc, AccountState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (listenerContext, state) {

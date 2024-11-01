@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -45,7 +46,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
-    final useDarkTheme = state.themeType == 'dark';
+    final useDarkTheme = state.themeType == ThemeType.dark || state.themeType == ThemeType.pureBlack;
 
     double? height = widget.viewMode == ViewMode.compact ? ViewMode.compact.height : (widget.showFullHeightImages ? widget.height : ViewMode.comfortable.height);
     double width = widget.viewMode == ViewMode.compact ? ViewMode.compact.height : MediaQuery.of(context).size.width - 24;
