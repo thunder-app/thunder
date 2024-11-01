@@ -54,18 +54,21 @@ bool _isDatabaseInitialized = false;
 Future<void> initializeDatabase() async {
   if (_isDatabaseInitialized) return;
 
-  debugPrint('Initializing drift db.');
+  if (kIsWeb) {
+    database = AppDatabase();
+    return;
+  }
 
-  database = constructDb();
+  // There is a specific ordering here.
+  // We're checking to see if the drift database exists. If it doesn't exist, we perform migration from the old SQLite database.
+  // The ordering matters here as  database = AppDatabase() will create the database if it doesn't exist.
+  File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
 
-  // Bypass migrateToSQList for web.
-  if (!kIsWeb) {
-    File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
+  database = AppDatabase();
 
-    if (!await dbFile.exists()) {
-      debugPrint('Migrating from SQLite db.');
-      await migrateToSQLite(database);
-    }
+  if (!await dbFile.exists()) {
+    debugPrint('Migrating from SQLite db.');
+    await migrateToSQLite(database);
   }
 
   _isDatabaseInitialized = true;

@@ -51,6 +51,24 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
+  - sqlite3 (3.47.0):
+    - sqlite3/common (= 3.47.0)
+  - sqlite3/common (3.47.0)
+  - sqlite3/dbstatvtab (3.47.0):
+    - sqlite3/common
+  - sqlite3/fts5 (3.47.0):
+    - sqlite3/common
+  - sqlite3/perf-threadsafe (3.47.0):
+    - sqlite3/common
+  - sqlite3/rtree (3.47.0):
+    - sqlite3/common
+  - sqlite3_flutter_libs (0.0.1):
+    - Flutter
+    - sqlite3 (~> 3.47.0)
+    - sqlite3/dbstatvtab
+    - sqlite3/fts5
+    - sqlite3/perf-threadsafe
+    - sqlite3/rtree
   - uni_links (0.0.1):
     - Flutter
   - url_launcher_ios (0.0.1):
@@ -84,6 +102,7 @@ DEPENDENCIES:
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
+  - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
@@ -92,6 +111,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - OrderedSet
+    - sqlite3
 
 EXTERNAL SOURCES:
   background_fetch:
@@ -136,6 +156,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
+  sqlite3_flutter_libs:
+    :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   uni_links:
     :path: ".symlinks/plugins/uni_links/ios"
   url_launcher_ios:
@@ -168,6 +190,8 @@ SPEC CHECKSUMS:
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite_darwin: a553b1fd6fe66f53bbb0fe5b4f5bab93f08d7a13
+  sqlite3: 0aa20658a9b238a3b1ff7175eb7bdd863b0ab4fd
+  sqlite3_flutter_libs: b55ef23cfafea5318ae5081e0bf3fbbce8417c94
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
@@ -175,4 +199,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 8d23d5c4d896af3a5f2a08e0206462ca9882e556
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.0

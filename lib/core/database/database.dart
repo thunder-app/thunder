@@ -1,10 +1,13 @@
 import 'dart:io';
 
-import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
+
+import 'package:drift/drift.dart';
+import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+
 import 'package:thunder/core/database/schema_versions.dart';
 import 'package:thunder/core/database/tables.dart';
 import 'package:thunder/core/database/type_converters.dart';
@@ -16,7 +19,21 @@ part 'database.g.dart';
 
 @DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase(super.e);
+  AppDatabase()
+      : super(
+          driftDatabase(
+            name: 'thunder',
+            web: DriftWebOptions(
+              sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+              driftWorker: Uri.parse('drift_worker.js'),
+              onResult: (result) {
+                if (result.missingFeatures.isNotEmpty) {
+                  debugPrint('Using ${result.chosenImplementation} due to unsupported browser features: ${result.missingFeatures}');
+                }
+              },
+            ),
+          ),
+        );
 
   @override
   int get schemaVersion => 5;

@@ -394,10 +394,18 @@ packages:
     dependency: "direct dev"
     description:
       name: drift_dev
-      sha256: "27bab15e7869b69259663590381180117873b9b273a1ea9ebb21bb73133d1233"
+      sha256: "623649abe932fc17bd32e578e7e05f7ac5e7dd0b33e6c8669a0634105d1389bf"
       url: "https://pub.dev"
     source: hosted
-    version: "2.21.0"
+    version: "2.21.2"
+  drift_flutter:
+    dependency: "direct main"
+    description:
+      name: drift_flutter
+      sha256: fec503e9d408f36bb345f9f6d24bc9d62b7b5f970db49760253d9e8d3acd48d5
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   dynamic_color:
     dependency: "direct main"
     description:
@@ -1648,7 +1656,7 @@ packages:
     source: hosted
     version: "7.0.0"
   sqflite:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: sqflite
       sha256: "79a297dc3cc137e758c6a4baf83342b039e5a6d2436fcdf3f96a00adaaf2ad62"
@@ -1671,6 +1679,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.4+5"
+  sqflite_common_ffi:
+    dependency: "direct dev"
+    description:
+      name: sqflite_common_ffi
+      sha256: d316908f1537725427ff2827a5c5f3b2c1bc311caed985fe3c9b10939c9e11ca
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.4"
   sqflite_darwin:
     dependency: transitive
     description:
@@ -1695,6 +1711,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.7"
+  sqlite3_flutter_libs:
+    dependency: transitive
+    description:
+      name: sqlite3_flutter_libs
+      sha256: "7ae52b23366e5295005022e62fa093f64bfe190810223ea0ebf733a4cd140bce"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.26"
   sqlparser:
     dependency: transitive
     description:
