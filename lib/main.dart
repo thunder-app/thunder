@@ -27,6 +27,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/database/connection/connection.dart';
 import 'package:thunder/core/database/database.dart';
 import 'package:thunder/core/database/migrations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -53,8 +54,14 @@ bool _isDatabaseInitialized = false;
 Future<void> initializeDatabase() async {
   if (_isDatabaseInitialized) return;
 
-  debugPrint('Initializing drift db.');
+  if (kIsWeb) {
+    database = AppDatabase();
+    return;
+  }
 
+  // There is a specific ordering here.
+  // We're checking to see if the drift database exists. If it doesn't exist, we perform migration from the old SQLite database.
+  // The ordering matters here as  database = AppDatabase() will create the database if it doesn't exist.
   File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
 
   database = AppDatabase();

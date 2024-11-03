@@ -110,7 +110,7 @@ class _ThunderState extends State<Thunder> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handleSharedFilesAndText();
-      if (Platform.isAndroid || Platform.isIOS) {
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
         BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
         BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
         BlocProvider.of<NotificationsCubit>(context).handleNotifications();
