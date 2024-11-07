@@ -46,7 +46,7 @@ dependencies:
   expandable: "^5.0.1"
   extended_image: "^8.2.0"
   fading_edge_scrollview: "^4.1.1"
-  flex_color_scheme: "^8.0.0-dev.2"
+  flex_color_scheme: "^8.0.0"
   flutter_bloc: "^8.1.3"
   flutter_cache_manager: "^3.3.0"
   flutter_custom_tabs: "^2.0.0-beta.1"
