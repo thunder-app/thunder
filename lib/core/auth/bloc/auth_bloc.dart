@@ -52,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account.jwt));
-      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
+      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
 
       return emit(state.copyWith(
         status: AuthStatus.success,
@@ -109,7 +109,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         try {
           getSiteResponse = await lemmy.run(GetSite(auth: activeAccount.jwt)).timeout(const Duration(seconds: 15));
 
-          downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
+          downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
         } catch (e) {
           return emit(state.copyWith(status: AuthStatus.failureCheckingInstance, errorMessage: getExceptionErrorMessage(e)));
         }
@@ -168,7 +168,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
         prefs.setString('active_profile_id', account.id);
 
-        bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
+        bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
 
         return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
       } on LemmyApiException catch (e) {
@@ -211,7 +211,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       Account? account = (activeProfileId != null) ? await Account.fetchAccount(activeProfileId) : null;
 
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
-      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
+      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
 
       return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
     });

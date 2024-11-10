@@ -13,9 +13,10 @@ dependencies:
   push:
     path: packages/push/push
   lemmy_api_client:
-    git:
-      url: "https://github.com/thunder-app/lemmy_api_client.git"
-      ref: 874005c9013de53f526562f882fe8231eb0ce5ae
+    path: ../lemmy_api_client
+    #git:
+    #  url: "https://github.com/thunder-app/lemmy_api_client.git"
+    #  ref: 16d14a1c13ac9522e85188ad9cf23d8912ec8fee
   link_preview_generator:
     git:
       url: "https://github.com/thunder-app/link_preview_generator.git"

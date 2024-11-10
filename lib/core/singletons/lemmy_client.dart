@@ -11,7 +11,7 @@ class LemmyClient {
   LemmyClient._initialize();
 
   void changeBaseUrl(String baseUrl) {
-    lemmyApiV3 = LemmyApiV3(baseUrl);
+    lemmyApiV3 = LemmyApiV3(baseUrl, tls: false, debug: true);
     _populateSiteInfo(); // Do NOT await this. Let it populate in the background.
   }
 

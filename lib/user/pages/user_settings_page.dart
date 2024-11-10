@@ -324,7 +324,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             ),
                             ListOption(
                               description: l10n.defaultFeedSortType,
-                              value: ListPickerItem(label: localUser.defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: localUser.defaultSortType),
+                              value: ListPickerItem(label: localUser.defaultSortType!.value, icon: Icons.local_fire_department_rounded, payload: localUser.defaultSortType),
                               options: [
                                 ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
                                 ...topSortTypeItems
