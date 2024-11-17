@@ -94,6 +94,7 @@ dependencies:
   webview_flutter_wkwebview: "^3.5.0"
   youtube_player_flutter: "^9.1.0"
   youtube_player_iframe: "^5.2.0"
+  oauth2_client: ^3.3.0
 
 dev_dependencies:
   flutter_test:
