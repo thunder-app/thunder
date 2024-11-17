@@ -20,6 +20,15 @@ import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:oauth2_client/oauth2_client.dart';
+
+class PrivacyPortalOAuth2Client extends OAuth2Client {
+  PrivacyPortalOAuth2Client({required super.redirectUri, required super.customUriScheme})
+      : super(
+            authorizeUrl: 'https://app.privacyportal.org/oauth/authorize', //Your service's authorization url
+            tokenUrl: 'https://api.privacyportal.org/oauth/token');
+}
+
 class LoginPage extends StatefulWidget {
   final VoidCallback popRegister;
   final bool anonymous;
@@ -435,6 +444,22 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                   ),
                   const SizedBox(height: 12.0),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(60),
+                      backgroundColor: theme.colorScheme.primary,
+                      textStyle: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    ),
+                    onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
+                        ? _handleOAuthLogin
+                        : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
+                            ? () => _addAnonymousInstance(context)
+                            : null,
+                    child: Text("Privacy Portal", style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
+                  ),
+                  const SizedBox(height: 12.0),
                   TextButton(
                     style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
                     onPressed: !isLoading ? () => widget.popRegister() : null,
@@ -462,6 +487,17 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             showContentWarning: showContentWarning,
           ),
         );
+  }
+
+  void _handleOAuthLogin({bool showContentWarning = true}) {
+    TextInput.finishAutofillContext();
+
+    // Perform login authentication
+    OAuth2Client privacyPortalClient = PrivacyPortalOAuth2Client(redirectUri: 'thunder:/oauth_redirect', customUriScheme: 'thunder');
+
+//Then, instantiate the helper passing the previously instantiated client
+    OAuth2Helper oauth2Helper =
+        OAuth2Helper(client, grantType: OAuth2Helper.authorizationCode, clientId: 'your_client_id', clientSecret: 'your_client_secret', scopes: ['https://www.googleapis.com/auth/drive.readonly']);
   }
 
   void _addAnonymousInstance(BuildContext context) async {
