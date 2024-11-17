@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -147,6 +148,98 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
           return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
         }
+
+        // Create a new account in the database
+        Account? account = Account(
+          id: '',
+          username: getSiteResponse.myUser?.localUserView.person.name,
+          jwt: loginResponse.jwt,
+          instance: instance,
+          userId: getSiteResponse.myUser?.localUserView.person.id,
+          index: -1,
+        );
+
+        account = await Account.insertAccount(account);
+
+        if (account == null) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
+        }
+
+        // Set this account as the active account
+        SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+        prefs.setString('active_profile_id', account.id);
+
+        bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
+
+        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
+      } on LemmyApiException catch (e) {
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
+      } catch (e) {
+        try {
+          // Restore the original baseUrl
+          lemmyClient.changeBaseUrl(originalBaseUrl);
+        } catch (e, s) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString()));
+        }
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
+      }
+    });
+
+    /// This event should be triggered when the user logs in with a username/password
+    on<OAuthLoginAttempt>((event, emit) async {
+      LemmyClient lemmyClient = LemmyClient.instance;
+      String originalBaseUrl = lemmyClient.lemmyApiV3.host;
+      String clientId = '9d16fb35-090f-4426-a456-368d9412861f';
+      String callbackUrlScheme = 'thunder';
+
+      try {
+        emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
+
+        String instance = event.instance;
+        if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
+        if (instance.startsWith('http://')) instance = instance.replaceAll('http://', '');
+
+        lemmyClient.changeBaseUrl(instance);
+        LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+        // https://app.privacyportal.org/oauth/authorize
+        final url = Uri.https('app.privacyportal.org', 'oauth/authorize', {
+          'response_type': 'code',
+          'client_id': clientId,
+          'redirect_uri': "thunder",
+          'scope': 'email',
+          'state': 'hellohello',
+        });
+
+        // Present the dialog to the user.
+        final result = await FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: callbackUrlScheme);
+
+        // TODO: Do we need to check that state matches here?
+        // Example: if (uri != null && uri.toString().startsWith("myapp")) {}
+
+        // Extract the code.
+        String code = Uri.parse(result).queryParameters['code'] ?? "failed";
+        // Fail to authenticate if code is null.
+
+        // TODO: Put this somewhere.
+        //    // Get the access token from the response
+        // final accessToken = jsonDecode(response.body)['access_token'] as String;
+
+        LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(
+          code: code,
+          oauth_provider_id: "privacy_portal",
+          redirect_uri: 'thunder:/',
+        ));
+
+        if (loginResponse.jwt == null) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
+        }
+
+        GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: loginResponse.jwt));
+
+        //if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
+        //  return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
+        //}
 
         // Create a new account in the database
         Account? account = Account(

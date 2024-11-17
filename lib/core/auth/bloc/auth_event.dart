@@ -29,6 +29,14 @@ class LoginAttempt extends AuthEvent {
   const LoginAttempt({required this.username, required this.password, required this.instance, this.totp = "", this.showContentWarning = true});
 }
 
+/// The [LoginAttempt] event should be triggered whenever the user attempts to log in for the first time.
+/// This event is responsible for login authentication and handling related errors.
+class OAuthLoginAttempt extends AuthEvent {
+  final String instance;
+
+  const OAuthLoginAttempt({required this.instance});
+}
+
 /// Cancels a login attempt by emitting the `failure` state.
 class CancelLoginAttempt extends AuthEvent {
   const CancelLoginAttempt();

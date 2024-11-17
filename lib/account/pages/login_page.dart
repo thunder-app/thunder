@@ -21,14 +21,9 @@ import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:oauth2_client/oauth2_client.dart';
-
-class PrivacyPortalOAuth2Client extends OAuth2Client {
-  PrivacyPortalOAuth2Client({required super.redirectUri, required super.customUriScheme})
-      : super(
-            authorizeUrl: 'https://app.privacyportal.org/oauth/authorize', //Your service's authorization url
-            tokenUrl: 'https://api.privacyportal.org/oauth/token');
-}
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'dart:convert' show jsonDecode;
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   final VoidCallback popRegister;
@@ -497,13 +492,12 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   void _handleOAuthLogin({bool showContentWarning = true}) {
     TextInput.finishAutofillContext();
-
     // Perform login authentication
-    OAuth2Client privacyPortalClient = PrivacyPortalOAuth2Client(redirectUri: 'thunder:/oauth_redirect', customUriScheme: 'thunder');
-
-//Then, instantiate the helper passing the previously instantiated client
-    OAuth2Helper oauth2Helper =
-        OAuth2Helper(client, grantType: OAuth2Helper.authorizationCode, clientId: 'your_client_id', clientSecret: 'your_client_secret', scopes: ['https://www.googleapis.com/auth/drive.readonly']);
+    context.read<AuthBloc>().add(
+          OAuthLoginAttempt(
+            instance: _instanceTextEditingController.text.trim(),
+          ),
+        );
   }
 
   void _addAnonymousInstance(BuildContext context) async {
