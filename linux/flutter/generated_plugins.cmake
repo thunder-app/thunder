@@ -3,9 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  desktop_webview_window
   dynamic_color
   file_selector_linux
-  flutter_secure_storage_linux
   sqlite3_flutter_libs
   url_launcher_linux
   window_to_front
