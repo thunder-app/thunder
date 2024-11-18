@@ -27,7 +27,6 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/database/connection/connection.dart';
 import 'package:thunder/core/database/database.dart';
 import 'package:thunder/core/database/migrations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -198,20 +197,31 @@ class _ThunderAppState extends State<ThunderApp> {
 
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
-              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name));
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name), darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
+              FlexScheme scheme = FlexScheme.values.byName(state.selectedTheme.name);
+
+              Color? darkThemeSurfaceColor = state.themeType == ThemeType.pureBlack ? null : Colors.black.lighten(8);
+
+              ThemeData theme = FlexThemeData.light(scheme: scheme);
+              ThemeData darkTheme = FlexThemeData.dark(
+                scheme: scheme,
+                darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
+                surface: darkThemeSurfaceColor,
+                scaffoldBackground: darkThemeSurfaceColor,
+                appBarBackground: darkThemeSurfaceColor,
+              );
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
                 theme = ThemeData(
                   colorScheme: lightColorScheme,
-                  useMaterial3: true,
                 );
 
                 darkTheme = FlexThemeData.dark(
-                  useMaterial3: true,
                   colorScheme: darkColorScheme,
                   darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
+                  surface: darkThemeSurfaceColor?.blend(darkColorScheme!.primary, 4),
+                  scaffoldBackground: darkThemeSurfaceColor?.blend(darkColorScheme!.primary, 4),
+                  appBarBackground: darkThemeSurfaceColor?.blend(darkColorScheme!.primary, 4),
                 );
               }
 
@@ -221,12 +231,8 @@ class _ThunderAppState extends State<ThunderApp> {
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               });
 
-              theme = theme.copyWith(
-                pageTransitionsTheme: pageTransitionsTheme,
-              );
-              darkTheme = darkTheme.copyWith(
-                pageTransitionsTheme: pageTransitionsTheme,
-              );
+              theme = theme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
+              darkTheme = darkTheme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
 
               // Set navigation bar color on Android to be transparent
               SystemChrome.setSystemUIOverlayStyle(
