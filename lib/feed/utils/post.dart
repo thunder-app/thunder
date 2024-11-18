@@ -51,6 +51,9 @@ Future<Map<String, dynamic>> fetchFeedItems({
         showHidden: showHidden,
       ));
 
+      // Keep the length of the original response to see if there are any additional posts to fetch
+      int postResponseLength = getPostsResponse.posts.length;
+
       // Remove deleted posts
       getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
 
@@ -69,7 +72,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
       List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
       postViewMedias.addAll(formattedPosts);
 
-      if (getPostsResponse.posts.isEmpty) hasReachedPostsEnd = true;
+      if (postResponseLength < limit) hasReachedPostsEnd = true;
       currentPage++;
     } while (!hasReachedPostsEnd && postViewMedias.length < limit);
   }
