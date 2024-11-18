@@ -21,6 +21,7 @@ let instances = [
     "lemmings.world",
     "lemmy.blahaj.zone",
     "lemmy.ca",
+    "lemmy.cafe",
     "lemmy.dbzer0.com",
     "lemmy.eco.br",
     "lemmy.kya.moe",
@@ -47,8 +48,7 @@ let instances = [
     "startrek.website",
     "szmer.info",
     "thelemmy.club",
-    "ttrpg.network",
-    "yiffit.net"
+    "ttrpg.network"
 ];
 
 document.addEventListener('readystatechange', handleNavigation);

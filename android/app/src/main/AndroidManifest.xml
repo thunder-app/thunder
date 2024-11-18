@@ -94,6 +94,7 @@
               <data android:host="lemmings.world" />
               <data android:host="lemmy.blahaj.zone" />
               <data android:host="lemmy.ca" />
+              <data android:host="lemmy.cafe" />
               <data android:host="lemmy.dbzer0.com" />
               <data android:host="lemmy.eco.br" />
               <data android:host="lemmy.kya.moe" />
@@ -121,7 +122,6 @@
               <data android:host="szmer.info" />
               <data android:host="thelemmy.club" />
               <data android:host="ttrpg.network" />
-              <data android:host="yiffit.net" />
               <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity>
