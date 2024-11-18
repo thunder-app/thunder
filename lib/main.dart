@@ -219,9 +219,9 @@ class _ThunderAppState extends State<ThunderApp> {
                 darkTheme = FlexThemeData.dark(
                   colorScheme: darkColorScheme,
                   darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
-                  surface: darkThemeSurfaceColor,
-                  scaffoldBackground: darkThemeSurfaceColor,
-                  appBarBackground: darkThemeSurfaceColor,
+                  surface: darkThemeSurfaceColor?.blend(darkColorScheme!.primary, 4),
+                  scaffoldBackground: darkThemeSurfaceColor?.blend(darkColorScheme!.primary, 4),
+                  appBarBackground: darkThemeSurfaceColor?.blend(darkColorScheme!.primary, 4),
                 );
               }
 
