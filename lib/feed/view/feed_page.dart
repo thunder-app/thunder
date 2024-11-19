@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:thunder/account/widgets/account_page_app_bar.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
@@ -34,7 +35,7 @@ import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/global_context.dart';
 
-enum FeedType { community, user, general }
+enum FeedType { community, user, general, account }
 
 /// Creates a [FeedPage] which holds a list of posts for a given user, community, or custom feed.
 ///
@@ -43,6 +44,7 @@ enum FeedType { community, user, general }
 /// If [FeedType.community] is provided, one of [communityId] or [communityName] must be provided. If both are provided, [communityId] will take precedence.
 /// If [FeedType.user] is provided, one of [userId] or [username] must be provided. If both are provided, [userId] will take precedence.
 /// If [FeedType.general] is provided, [postListingType] must be provided.
+/// If [FeedType.account] is provided, then it should show the currently logged in user's posts/comments.
 class FeedPage extends StatefulWidget {
   const FeedPage({
     super.key,
@@ -135,7 +137,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
 
       return BlocProvider.value(
         value: bloc,
-        child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
+        child: FeedView(scaffoldStateKey: widget.scaffoldStateKey, feedType: widget.feedType),
       );
     }
 
@@ -152,16 +154,19 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           reset: true,
           showHidden: widget.showHidden,
         )),
-      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
+      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey, feedType: widget.feedType),
     );
   }
 }
 
 class FeedView extends StatefulWidget {
-  const FeedView({super.key, this.scaffoldStateKey});
+  const FeedView({super.key, this.scaffoldStateKey, this.feedType});
 
   /// The scaffold key which holds the drawer
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
+
+  /// The type of feed to display
+  final FeedType? feedType;
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -367,12 +372,33 @@ class _FeedViewState extends State<FeedView> {
                       physics: (showCommunitySidebar || showUserSidebar) ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community/user sidebar is open
                       controller: _scrollController,
                       slivers: <Widget>[
-                        FeedPageAppBar(
-                          showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
-                          scaffoldStateKey: widget.scaffoldStateKey,
-                        ),
+                        widget.feedType == FeedType.account
+                            ? AccountPageAppBar(
+                                showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
+                                showSaved: state.showSaved,
+                                onToggleSaved: (showSaved) {
+                                  context.read<FeedBloc>().add(
+                                        FeedFetchedEvent(
+                                          feedType: FeedType.account,
+                                          postListingType: state.postListingType,
+                                          sortType: state.sortType,
+                                          communityId: state.communityId,
+                                          communityName: state.communityName,
+                                          userId: state.userId,
+                                          username: state.username,
+                                          reset: true,
+                                          showHidden: state.showHidden,
+                                          showSaved: showSaved,
+                                        ),
+                                      );
+                                },
+                              )
+                            : FeedPageAppBar(
+                                showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
+                                scaffoldStateKey: widget.scaffoldStateKey,
+                              ),
                         // Display loading indicator until the feed is fetched
-                        if (state.status == FeedStatus.initial)
+                        if (state.status == FeedStatus.initial && state.feedType != FeedType.account)
                           const SliverFillRemaining(
                             hasScrollBody: false,
                             child: Center(child: CircularProgressIndicator()),
@@ -407,7 +433,7 @@ class _FeedViewState extends State<FeedView> {
                           if (state.fullPersonView != null)
                             SliverToBoxAdapter(
                               child: Visibility(
-                                visible: state.feedType == FeedType.user,
+                                visible: state.feedType == FeedType.user || state.feedType == FeedType.account,
                                 child: Column(
                                   children: [
                                     UserHeader(
@@ -464,6 +490,7 @@ class _FeedViewState extends State<FeedView> {
                                       tabletMode: tabletMode,
                                       markPostReadOnScroll: markPostReadOnScroll,
                                       queuedForRemoval: queuedForRemoval,
+                                      dimReadPosts: state.feedType == FeedType.account ? false : null,
                                     ),
                               // Widgets to display on the feed when feedType == FeedType.community or feedType == FeedType.user
                               SliverToBoxAdapter(

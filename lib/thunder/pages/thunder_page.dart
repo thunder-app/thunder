@@ -110,6 +110,7 @@ class _ThunderState extends State<Thunder> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handleSharedFilesAndText();
+
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
         BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
         BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
@@ -398,6 +399,7 @@ class _ThunderState extends State<Thunder> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => InboxBloc()),
