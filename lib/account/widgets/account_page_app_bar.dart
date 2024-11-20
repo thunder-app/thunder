@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -45,35 +44,47 @@ class AccountPageAppBar extends StatefulWidget {
 }
 
 class _AccountPageAppBarState extends State<AccountPageAppBar> {
-  /// The current person
-  Person? person;
+  /// Whether or not to show saved posts. We store a local variable here so that the icon can be optimistically updated
+  bool showSaved = false;
 
-  Widget getLeadingWidget(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+  @override
+  void didUpdateWidget(covariant AccountPageAppBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    return IconButton(
-      onPressed: () => showProfileModalSheet(context),
-      icon: Icon(Icons.people_alt_rounded, semanticLabel: l10n.profiles),
-      tooltip: l10n.profiles,
-    );
+    if (showSaved != widget.showSaved && context.read<FeedBloc>().state.status == FeedStatus.success) {
+      setState(() => showSaved = widget.showSaved);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final thunderBloc = context.read<ThunderBloc>();
-    final accountState = context.read<AccountBloc>().state;
-
-    person = accountState.reload ? accountState.personView?.person : person;
+    final l10n = AppLocalizations.of(context)!;
+    final state = context.read<ThunderBloc>().state;
 
     return SliverAppBar(
       pinned: true,
       centerTitle: false,
       titleSpacing: 0.0,
       toolbarHeight: 70.0,
-      surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
+      surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
       title: AccountAppBarTitle(visible: widget.showAppBarTitle),
-      leading: getLeadingWidget(context),
-      actions: [AccountAppBarUserActions(showSaved: widget.showSaved, onToggleSaved: widget.onToggleSaved)],
+      leading: IconButton(
+        onPressed: () {
+          HapticFeedback.mediumImpact();
+          showProfileModalSheet(context);
+        },
+        icon: Icon(Icons.people_alt_rounded, semanticLabel: l10n.profiles),
+        tooltip: l10n.profiles,
+      ),
+      actions: [
+        AccountAppBarUserActions(
+          showSaved: showSaved,
+          onToggleSaved: (showSaved) {
+            setState(() => this.showSaved = showSaved);
+            widget.onToggleSaved?.call(showSaved);
+          },
+        )
+      ],
     );
   }
 }
@@ -89,20 +100,20 @@ class AccountAppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final feedBloc = context.watch<FeedBloc>();
-    final user = feedBloc.state.fullPersonView;
+    final person = feedBloc.state.fullPersonView?.personView.person;
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
       opacity: visible ? 1.0 : 0.0,
       child: ListTile(
         title: Text(
-          user?.personView.person.displayName ?? user?.personView.person.name ?? '',
+          person?.displayName ?? person?.name ?? '',
           style: theme.textTheme.titleLarge,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
-          generateUserFullName(context, user?.personView.person.name, user?.personView.person.displayName, fetchInstanceNameFromUrl(user?.personView.person.actorId)),
+          generateUserFullName(context, person?.name, person?.displayName, fetchInstanceNameFromUrl(person?.actorId)),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -116,8 +127,10 @@ class AccountAppBarTitle extends StatelessWidget {
 class AccountAppBarUserActions extends StatelessWidget {
   const AccountAppBarUserActions({super.key, this.showSaved = false, this.onToggleSaved});
 
+  /// Whether to show saved posts/comments
   final bool showSaved;
 
+  /// Callback when the saved icon is tapped
   final void Function(bool showSaved)? onToggleSaved;
 
   @override
@@ -128,14 +141,18 @@ class AccountAppBarUserActions extends StatelessWidget {
     return Row(
       children: [
         IconButton(
+          icon: Icon(showSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded, semanticLabel: l10n.saved),
           onPressed: () {
             HapticFeedback.mediumImpact();
             onToggleSaved?.call(!showSaved);
           },
-          icon: Icon(showSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded, semanticLabel: l10n.saved),
         ),
         IconButton(
+          icon: Icon(Icons.settings_rounded, semanticLabel: l10n.accountSettings),
+          tooltip: l10n.accountSettings,
           onPressed: () {
+            HapticFeedback.mediumImpact();
+
             final AccountBloc accountBloc = context.read<AccountBloc>();
             final ThunderBloc thunderBloc = context.read<ThunderBloc>();
             final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
@@ -156,41 +173,36 @@ class AccountAppBarUserActions extends StatelessWidget {
               ),
             );
           },
-          icon: Icon(
-            Icons.settings_rounded,
-            semanticLabel: AppLocalizations.of(context)!.accountSettings,
-          ),
-          tooltip: AppLocalizations.of(context)!.accountSettings,
         ),
         PopupMenuButton(
+          onOpened: () => HapticFeedback.mediumImpact(),
           itemBuilder: (context) => [
             ThunderPopupMenuItem(
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-
-                  showModalBottomSheet<void>(
-                    showDragHandle: true,
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (builderContext) => SortPicker(
-                      title: l10n.sortOptions,
-                      onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                      previouslySelected: feedBloc.state.sortType,
-                      minimumVersion: LemmyClient.instance.version,
-                    ),
-                  );
-                },
-                icon: Icons.sort,
-                title: l10n.sortBy),
-            ThunderPopupMenuItem(
-              onTap: () => triggerRefresh(context),
-              icon: Icons.refresh_rounded,
-              title: l10n.refresh,
+              icon: Icons.sort,
+              title: l10n.sortBy,
+              onTap: () {
+                showModalBottomSheet<void>(
+                  showDragHandle: true,
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (builderContext) => SortPicker(
+                    title: l10n.sortOptions,
+                    onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                    previouslySelected: feedBloc.state.sortType,
+                    minimumVersion: LemmyClient.instance.version,
+                  ),
+                );
+              },
             ),
             ThunderPopupMenuItem(
-              onTap: () => showUserShareSheet(context, feedBloc.state.fullPersonView!.personView),
+              icon: Icons.refresh_rounded,
+              title: l10n.refresh,
+              onTap: () => triggerRefresh(context),
+            ),
+            ThunderPopupMenuItem(
               icon: Icons.share_rounded,
               title: l10n.share,
+              onTap: () => showUserShareSheet(context, feedBloc.state.fullPersonView!.personView),
             ),
           ],
         ),

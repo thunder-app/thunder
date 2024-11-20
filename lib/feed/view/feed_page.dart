@@ -9,8 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-import 'package:thunder/account/widgets/account_page_app_bar.dart';
 
+import 'package:thunder/account/widgets/account_page_app_bar.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
@@ -374,7 +374,7 @@ class _FeedViewState extends State<FeedView> {
                       slivers: <Widget>[
                         widget.feedType == FeedType.account
                             ? AccountPageAppBar(
-                                showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
+                                showAppBarTitle: showAppBarTitle,
                                 showSaved: state.showSaved,
                                 onToggleSaved: (showSaved) {
                                   context.read<FeedBloc>().add(
@@ -398,7 +398,7 @@ class _FeedViewState extends State<FeedView> {
                                 scaffoldStateKey: widget.scaffoldStateKey,
                               ),
                         // Display loading indicator until the feed is fetched
-                        if (state.status == FeedStatus.initial && state.feedType != FeedType.account)
+                        if (state.status == FeedStatus.initial)
                           const SliverFillRemaining(
                             hasScrollBody: false,
                             child: Center(child: CircularProgressIndicator()),
