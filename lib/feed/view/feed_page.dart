@@ -627,6 +627,10 @@ class _FeedViewState extends State<FeedView> {
     // See if we're at the top level of navigation
     final canPop = Navigator.of(context).canPop();
 
+    if (widget.feedType == FeedType.account) {
+      return false;
+    }
+
     // Get the desired post listing so we can check against current
     final desiredListingType = authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBloc.state.defaultListingType;
     final currentListingType = feedBloc.state.postListingType;
