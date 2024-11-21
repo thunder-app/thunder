@@ -142,6 +142,7 @@ class AccountAppBarUserActions extends StatelessWidget {
       children: [
         IconButton(
           icon: Icon(showSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded, semanticLabel: l10n.saved),
+          tooltip: showSaved ? l10n.showOwnContent : l10n.showSavedContent,
           onPressed: () {
             HapticFeedback.mediumImpact();
             onToggleSaved?.call(!showSaved);
