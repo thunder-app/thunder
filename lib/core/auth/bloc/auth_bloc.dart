@@ -189,7 +189,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<OAuthLoginAttempt>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
-      String clientId = '9d16fb35-090f-4426-a456-368d9412861f';
+      String clientId = '014d0e00-e6c2-4a69-a175-9e67934359a5'; // TODO: Is this client_id different than the lemmy client_id? ( I think it is )
       String callbackUrlScheme = 'thunder';
 
       try {
@@ -206,8 +206,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final url = Uri.https('app.privacyportal.org', 'oauth/authorize', {
           'response_type': 'code',
           'client_id': clientId,
-          'redirect_uri': "thunder",
-          'scope': 'email',
+          'redirect_uri': "http://localhost:40000/callback",
+          'scope': 'openid email',
           'state': 'hellohello',
         });
 
