@@ -13,11 +13,15 @@ import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+/// A custom bottom navigation bar that enables tap/swipe gestures
 class CustomBottomNavigationBar extends StatefulWidget {
   const CustomBottomNavigationBar({super.key, required this.selectedPageIndex, required this.onPageChange});
 
+  /// The index of the currently selected page
   final int selectedPageIndex;
-  final Function(int) onPageChange;
+
+  /// Callback function that is triggered when a page is changed
+  final Function(int index) onPageChange;
 
   @override
   State<CustomBottomNavigationBar> createState() => _CustomBottomNavigationBarState();
@@ -78,89 +82,82 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
-    final ThunderState state = context.watch<ThunderBloc>().state;
-    final InboxState inboxState = context.watch<InboxBloc>().state;
+    final state = context.watch<ThunderBloc>().state;
+    final inboxState = context.watch<InboxBloc>().state;
 
-    return Theme(
-      data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-      ),
-      child: GestureDetector(
-        onHorizontalDragStart: _handleDragStart,
-        onHorizontalDragUpdate: _handleDragUpdate,
-        onHorizontalDragEnd: (DragEndDetails dragEndDetails) => _handleDragEnd(dragEndDetails, context),
-        onDoubleTap: state.bottomNavBarDoubleTapGestures == true ? () => _handleDoubleTap(context) : null,
-        child: NavigationBar(
-          selectedIndex: widget.selectedPageIndex,
-          labelBehavior: state.showNavigationLabels ? NavigationDestinationLabelBehavior.alwaysShow : NavigationDestinationLabelBehavior.alwaysHide,
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.dashboard_outlined),
-              selectedIcon: const Icon(Icons.dashboard_rounded),
-              label: l10n.feed,
+    return GestureDetector(
+      onHorizontalDragStart: _handleDragStart,
+      onHorizontalDragUpdate: _handleDragUpdate,
+      onHorizontalDragEnd: (DragEndDetails dragEndDetails) => _handleDragEnd(dragEndDetails, context),
+      onDoubleTap: state.bottomNavBarDoubleTapGestures == true ? () => _handleDoubleTap(context) : null,
+      child: NavigationBar(
+        selectedIndex: widget.selectedPageIndex,
+        labelBehavior: state.showNavigationLabels ? NavigationDestinationLabelBehavior.alwaysShow : NavigationDestinationLabelBehavior.alwaysHide,
+        destinations: [
+          NavigationDestination(
+            icon: const Icon(Icons.dashboard_outlined),
+            selectedIcon: const Icon(Icons.dashboard_rounded),
+            label: l10n.feed,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.search_outlined),
+            selectedIcon: const Icon(Icons.search_rounded),
+            label: l10n.search,
+          ),
+          GestureDetector(
+            onLongPress: () {
+              HapticFeedback.mediumImpact();
+              showProfileModalSheet(context);
+            },
+            child: NavigationDestination(
+              icon: const Icon(Icons.person_outline_rounded),
+              selectedIcon: const Icon(Icons.person_rounded),
+              label: l10n.account(1),
+              tooltip: '', // Disable tooltip so that gesture detector triggers properly
             ),
-            NavigationDestination(
-              icon: const Icon(Icons.search_outlined),
-              selectedIcon: const Icon(Icons.search_rounded),
-              label: l10n.search,
+          ),
+          NavigationDestination(
+            icon: Badge(
+              isLabelVisible: inboxState.totalUnreadCount != 0,
+              label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
+              child: const Icon(Icons.inbox_outlined),
             ),
-            GestureDetector(
-              onLongPress: () {
-                HapticFeedback.mediumImpact();
-                showProfileModalSheet(context);
-              },
-              child: NavigationDestination(
-                icon: const Icon(Icons.person_outline_rounded),
-                selectedIcon: const Icon(Icons.person_rounded),
-                label: l10n.account(1),
-                tooltip: '', // Disable tooltip so that gesture detector triggers properly
-              ),
+            selectedIcon: Badge(
+              isLabelVisible: inboxState.totalUnreadCount != 0,
+              label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
+              child: const Icon(Icons.inbox_rounded),
             ),
-            NavigationDestination(
-              icon: Badge(
-                isLabelVisible: inboxState.totalUnreadCount != 0,
-                label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
-                child: const Icon(Icons.inbox_outlined),
-              ),
-              selectedIcon: Badge(
-                isLabelVisible: inboxState.totalUnreadCount != 0,
-                label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
-                child: const Icon(Icons.inbox_rounded),
-              ),
-              label: l10n.inbox,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.settings_outlined),
-              selectedIcon: const Icon(Icons.settings_rounded),
-              label: l10n.settings,
-            ),
-          ],
-          onDestinationSelected: (index) {
-            if (context.read<ThunderBloc>().state.isFabOpen) {
-              context.read<ThunderBloc>().add(const OnFabToggle(false));
-            }
+            label: l10n.inbox,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.settings_outlined),
+            selectedIcon: const Icon(Icons.settings_rounded),
+            label: l10n.settings,
+          ),
+        ],
+        onDestinationSelected: (index) {
+          if (state.isFabOpen) {
+            context.read<ThunderBloc>().add(const OnFabToggle(false));
+          }
 
-            if (widget.selectedPageIndex == 0 && index == 0) {
-              context.read<FeedBloc>().add(ScrollToTopEvent());
-            }
+          if (widget.selectedPageIndex == 0 && index == 0) {
+            context.read<FeedBloc>().add(ScrollToTopEvent());
+          }
 
-            if (widget.selectedPageIndex == 1 && index == 1) {
-              context.read<SearchBloc>().add(FocusSearchEvent());
-            }
+          if (widget.selectedPageIndex == 1 && index == 1) {
+            context.read<SearchBloc>().add(FocusSearchEvent());
+          }
 
-            if (widget.selectedPageIndex != index) {
-              widget.onPageChange(index);
-            }
+          if (widget.selectedPageIndex != index) {
+            widget.onPageChange(index);
+          }
 
-            // TODO: Change this from integer to enum or some other type
-            if (index == 3) {
-              context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
-            }
-          },
-        ),
+          // TODO: Change this from integer to enum or some other type
+          if (index == 3) {
+            context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
+          }
+        },
       ),
     );
   }

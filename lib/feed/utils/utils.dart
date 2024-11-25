@@ -151,6 +151,7 @@ Future<void> triggerRefresh(BuildContext context) async {
           username: state.username,
           reset: true,
           showHidden: state.showHidden,
+          showSaved: state.showSaved,
         ),
       );
 }

@@ -27,12 +27,16 @@ class FeedPostCardList extends StatefulWidget {
   /// The list of posts to show on the feed
   final List<PostViewMedia> postViewMedias;
 
+  /// Whether or not to dim read posts. This value overrides [dimReadPosts] in [ThunderBloc]
+  final bool? dimReadPosts;
+
   const FeedPostCardList({
     super.key,
     required this.postViewMedias,
     required this.tabletMode,
     required this.markPostReadOnScroll,
     this.queuedForRemoval,
+    this.dimReadPosts,
   });
 
   @override
@@ -68,7 +72,8 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     final state = context.read<FeedBloc>().state;
 
     final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    final dimReadPosts = isUserLoggedIn && context.read<ThunderBloc>().state.dimReadPosts;
+    bool dimReadPosts = isUserLoggedIn && context.read<ThunderBloc>().state.dimReadPosts;
+    if (widget.dimReadPosts != null) dimReadPosts = widget.dimReadPosts!;
 
     return SliverMasonryGrid.count(
       crossAxisCount: widget.tabletMode ? 2 : 1,

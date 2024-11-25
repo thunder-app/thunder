@@ -23,6 +23,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   String? username,
   FeedTypeSubview feedTypeSubview = FeedTypeSubview.post,
   bool showHidden = false,
+  bool showSaved = false,
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -49,6 +50,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
         communityId: communityId,
         communityName: communityName,
         showHidden: showHidden,
+        savedOnly: showSaved,
       ));
 
       // Keep the length of the original response to see if there are any additional posts to fetch
@@ -86,6 +88,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
         username: username,
         page: currentPage,
         sort: sortType,
+        savedOnly: showSaved,
       ));
 
       // Remove deleted posts and comments

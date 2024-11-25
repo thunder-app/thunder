@@ -2167,6 +2167,10 @@
   "@showNsfwContent": {
     "description": "Toggle to show NSFW content."
   },
+  "showOwnContent": "Show own content",
+  "@showOwnContent": {
+    "description": "Toggle to show your own posts/comments."
+  },
   "showPassword": "Show Password",
   "@showPassword": {},
   "showPostAuthor": "Show Post Author",
@@ -2200,6 +2204,10 @@
   "showReadPosts": "Show Read Posts",
   "@showReadPosts": {
     "description": "Setting to show read posts in feed."
+  },
+  "showSavedContent": "Show saved content",
+  "@showSavedContent": {
+    "description": "Toggle to show saved posts/comments."
   },
   "showScoreCounters": "Display User Scores",
   "@showScoreCounters": {
