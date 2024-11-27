@@ -61,8 +61,8 @@ void showVideoPlayer(BuildContext context, {String? url, int? postId}) {
       );
       break;
     case VideoPlayerMode.externalPlayer:
-      openLinkInBrowser(context, url: url);
+      handleVideoLink(context, url: url);
     case VideoPlayerMode.customTabs:
-      openLinkInBrowser(context, url: url);
+      handleVideoLink(context, url: url);
   }
 }

@@ -98,12 +98,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
         await prefs.setString(LocalSettings.videoAutoPlay.name, value);
         setState(() => videoAutoPlay = VideoAutoPlay.values.byName(value ?? VideoAutoPlay.never));
         break;
-
       case LocalSettings.videoDefaultPlaybackSpeed:
         await prefs.setString(LocalSettings.videoDefaultPlaybackSpeed.name, value);
-        setState(() => videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(
-              value ?? VideoPlayBackSpeed.normal,
-            ));
+        setState(() => videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(value ?? VideoPlayBackSpeed.normal));
         break;
       case LocalSettings.videoPlayerMode:
         await prefs.setString(LocalSettings.videoPlayerMode.name, value);
@@ -124,9 +121,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
       videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
       videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
       videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
-      videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(
-        prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name,
-      );
+      videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
       videoPlayerMode = VideoPlayerMode.values.byName(prefs.getString(LocalSettings.videoPlayerMode.name) ?? VideoPlayerMode.inApp.name);
       isLoading = false;
     });

@@ -76,14 +76,29 @@ Future<LinkInfo> getLinkInfo(String url) async {
 
 void _openLink(BuildContext context, {required String url, bool isVideo = false}) async {
   ThunderState state = context.read<ThunderBloc>().state;
-  if ((isVideo && state.videoPlayerMode == VideoPlayerMode.externalPlayer) || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
+
+  bool launchInExternalApp = false;
+  bool launchInCustomTab = false;
+
+  if (isVideo && state.videoPlayerMode == VideoPlayerMode.externalPlayer) {
+    launchInExternalApp = true;
+  } else if (!isVideo && state.browserMode == BrowserMode.external) {
+    launchInExternalApp = true;
+  }
+
+  if (isVideo && state.videoPlayerMode == VideoPlayerMode.customTabs) {
+    launchInCustomTab = true;
+  } else if (!isVideo && state.browserMode == BrowserMode.customTabs) {
+    launchInCustomTab = true;
+  }
+
+  if (launchInExternalApp || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
     hideLoadingPage(context, delay: true);
     url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
-  } else if ((state.browserMode == BrowserMode.external && !isVideo) || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
+  } else if (launchInCustomTab) {
+    // Launches the link within a custom tab
     hideLoadingPage(context, delay: true);
-    url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
-  } else if ((isVideo && state.videoPlayerMode == VideoPlayerMode.customTabs) || (state.browserMode == BrowserMode.customTabs)) {
-    hideLoadingPage(context, delay: true);
+
     launchUrl(
       Uri.parse(url),
       customTabsOptions: CustomTabsOptions(
@@ -108,8 +123,10 @@ void _openLink(BuildContext context, {required String url, bool isVideo = false}
       ),
     );
   } else if (state.browserMode == BrowserMode.inApp) {
+    // Launches the link within the in-app browser if possible
     // Check if the scheme is not https, in which case the in-app browser can't handle it
     Uri? uri = Uri.tryParse(url);
+
     if (uri != null && uri.scheme != 'https') {
       // Although a non-https scheme is an indication that this link is intended for another app,
       // we actually have to change it back to https in order for the intent to be properly passed to another app.
@@ -257,10 +274,8 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
   }
 }
 
-/// A universal way of handling links by opening them in the browser
-/// (either Custom Tabs or system browser, as specified by the user).
-
-void openLinkInBrowser(BuildContext context, {required String url}) async {
+/// A universal way of handling video links by opening them in the browser/external player
+void handleVideoLink(BuildContext context, {required String url}) async {
   _openLink(context, url: url, isVideo: isVideoUrl(url));
 }
 
