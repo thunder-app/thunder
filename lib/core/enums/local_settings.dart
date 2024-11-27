@@ -465,6 +465,7 @@ extension LocalizationExt on AppLocalizations {
       'nestedCommentIndicatorColor': nestedCommentIndicatorColor,
       'reduceAnimations': reduceAnimations,
       'theme': theme,
+      'systemThemePureBlack': systemDarkMode,
       'themeAccentColor': themeAccentColor,
       'useMaterialYouTheme': useMaterialYouTheme,
       'actionColors': actionColors,
