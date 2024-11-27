@@ -714,7 +714,7 @@ class _TagLineState extends State<TagLine> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        taglineIsLong = (taglineBodyKey.currentContext?.size?.height ?? 0) > 40;
+        taglineIsLong = (taglineBodyKey.currentContext?.size?.height ?? 0) > 80;
       });
     });
   }
