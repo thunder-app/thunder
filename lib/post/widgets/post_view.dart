@@ -155,7 +155,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         ),
                         if (postViewMedia.media.first.mediaType == MediaType.link && thunderState.postBodyViewType == PostBodyViewType.condensed)
                           Text(
-                            Uri.tryParse(post.url ?? '')?.host ?? '',
+                            Uri.tryParse(post.url ?? '')?.host.replaceFirst('www.', '') ?? '',
                             style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.6)),
                           )
                       ],
