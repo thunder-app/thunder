@@ -244,25 +244,30 @@ class _ThunderAppState extends State<ThunderApp> {
               Locale? locale = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == thunderBloc.state.appLanguageCode).firstOrNull;
 
               return OverlaySupport.global(
-                child: MaterialApp.router(
-                  title: 'Thunder',
-                  locale: locale,
-                  localizationsDelegates: const [
-                    ...AppLocalizations.localizationsDelegates,
-                    MaterialLocalizationsEo.delegate,
-                    CupertinoLocalizationsEo.delegate,
-                  ],
-                  supportedLocales: const [
-                    ...AppLocalizations.supportedLocales,
-                    Locale('eo'), // Additional locale which is not officially supported: Esperanto
-                  ],
-                  routerConfig: router,
-                  themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
-                  theme: theme,
-                  darkTheme: darkTheme,
-                  debugShowCheckedModeBanner: false,
-                  scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
-                  scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: SystemUiOverlayStyle(
+                    systemNavigationBarColor: Colors.black.withOpacity(0.0001),
+                  ),
+                  child: MaterialApp.router(
+                    title: 'Thunder',
+                    locale: locale,
+                    localizationsDelegates: const [
+                      ...AppLocalizations.localizationsDelegates,
+                      MaterialLocalizationsEo.delegate,
+                      CupertinoLocalizationsEo.delegate,
+                    ],
+                    supportedLocales: const [
+                      ...AppLocalizations.supportedLocales,
+                      Locale('eo'), // Additional locale which is not officially supported: Esperanto
+                    ],
+                    routerConfig: router,
+                    themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                    theme: theme,
+                    darkTheme: darkTheme,
+                    debugShowCheckedModeBanner: false,
+                    scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                    scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                  ),
                 ),
               );
             },
