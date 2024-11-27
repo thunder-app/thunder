@@ -238,8 +238,15 @@ class _ThunderAppState extends State<ThunderApp> {
 
               return OverlaySupport.global(
                 child: AnnotatedRegion<SystemUiOverlayStyle>(
-                  // Set navigation bar color on Android to be transparent
-                  value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
+                  // For Android, set the navigation bar to be transparent and the status bar to match the app surface color
+                  value: SystemUiOverlayStyle(
+                    systemNavigationBarColor: Colors.transparent,
+                    statusBarColor: state.themeType == ThemeType.system
+                        ? WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark
+                            ? darkTheme.colorScheme.surface
+                            : theme.colorScheme.surface
+                        : (state.themeType == ThemeType.dark ? darkTheme.colorScheme.surface : theme.colorScheme.surface),
+                  ),
                   child: MaterialApp.router(
                     title: 'Thunder',
                     locale: locale,
