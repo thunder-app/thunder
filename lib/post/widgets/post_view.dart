@@ -143,10 +143,22 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
                   Expanded(
-                    child: ScalableText(
-                      HtmlUnescape().convert(post.name),
-                      fontScale: thunderState.titleFontSizeScale,
-                      style: theme.textTheme.titleMedium,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ScalableText(
+                          HtmlUnescape().convert(post.name),
+                          fontScale: thunderState.titleFontSizeScale,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        if (postViewMedia.media.first.mediaType == MediaType.link && thunderState.postBodyViewType == PostBodyViewType.condensed)
+                          Text(
+                            Uri.tryParse(post.url ?? '')?.host.replaceFirst('www.', '') ?? '',
+                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.6)),
+                          )
+                      ],
                     ),
                   ),
                   if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
