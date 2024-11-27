@@ -234,20 +234,12 @@ class _ThunderAppState extends State<ThunderApp> {
               theme = theme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
               darkTheme = darkTheme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
 
-              // Set navigation bar color on Android to be transparent
-              SystemChrome.setSystemUIOverlayStyle(
-                SystemUiOverlayStyle(
-                  systemNavigationBarColor: Colors.black.withOpacity(0.0001),
-                ),
-              );
-
               Locale? locale = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == thunderBloc.state.appLanguageCode).firstOrNull;
 
               return OverlaySupport.global(
                 child: AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: SystemUiOverlayStyle(
-                    systemNavigationBarColor: Colors.black.withOpacity(0.0001),
-                  ),
+                  // Set navigation bar color on Android to be transparent
+                  value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
                   child: MaterialApp.router(
                     title: 'Thunder',
                     locale: locale,
