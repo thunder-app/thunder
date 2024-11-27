@@ -12,6 +12,7 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
+import 'package:thunder/core/enums/video_player_mode.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/modlog/utils/navigate_modlog.dart';
@@ -73,13 +74,15 @@ Future<LinkInfo> getLinkInfo(String url) async {
   }
 }
 
-void _openLink(BuildContext context, {required String url}) async {
+void _openLink(BuildContext context, {required String url, bool isVideo = false}) async {
   ThunderState state = context.read<ThunderBloc>().state;
-
-  if (state.browserMode == BrowserMode.external || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
+  if ((isVideo && state.videoPlayerMode == VideoPlayerMode.externalPlayer) || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
     hideLoadingPage(context, delay: true);
     url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
-  } else if (state.browserMode == BrowserMode.customTabs) {
+  } else if ((state.browserMode == BrowserMode.external && !isVideo) || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
+    hideLoadingPage(context, delay: true);
+    url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
+  } else if ((isVideo && state.videoPlayerMode == VideoPlayerMode.customTabs) || (state.browserMode == BrowserMode.customTabs)) {
     hideLoadingPage(context, delay: true);
     launchUrl(
       Uri.parse(url),
@@ -252,6 +255,13 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
   if (context.mounted) {
     _openLink(context, url: url);
   }
+}
+
+/// A universal way of handling links by opening them in the browser
+/// (either Custom Tabs or system browser, as specified by the user).
+
+void openLinkInBrowser(BuildContext context, {required String url}) async {
+  _openLink(context, url: url, isVideo: isVideoUrl(url));
 }
 
 /// This is a helper method which helps [handleLink] determine whether a link refers to a valid Lemmy community.

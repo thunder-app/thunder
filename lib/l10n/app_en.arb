@@ -2787,6 +2787,18 @@
   "@videoDefaultPlaybackSpeed": {
     "description": "Option to select the default video playback Speed"
   },
+  "videoLinkHandlingExternal": "Play video with an external app",
+  "@videoLinkHandlingExternal": {
+    "description": "Description to Open video with an external application"
+  },
+  "videoPlayerInApp": "Use Thunder built-in player",
+  "@videoPlayerInApp": {
+    "description": "Description for using in-app video player"
+  },
+  "videoPlayerMode": "Player Mode",
+  "@videoPlayerMode": {
+    "description": "Option to select video player mode (in-app or external)  "
+  },
   "viewAll": "View all",
   "@viewAll": {
     "description": "A title for viewing all of something (e.g., instances)"

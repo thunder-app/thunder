@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/video_auto_play.dart';
 import 'package:thunder/core/enums/video_playback_speed.dart';
+import 'package:thunder/core/enums/video_player_mode.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -44,6 +45,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
 
   /// Option as to how fast the video playback speed should be (.25,.5 ... 2)
   VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.normal;
+
+  /// Option to select video player mode (in-app or external)
+  VideoPlayerMode videoPlayerMode = VideoPlayerMode.inApp;
 
   @override
   void initState() {
@@ -99,6 +103,10 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
         await prefs.setString(LocalSettings.videoDefaultPlaybackSpeed.name, value);
         setState(() => videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(value ?? VideoPlayBackSpeed.normal));
         break;
+      case LocalSettings.videoPlayerMode:
+        await prefs.setString(LocalSettings.videoPlayerMode.name, value);
+        setState(() => videoPlayerMode = VideoPlayerMode.values.byName(value ?? VideoPlayerMode.inApp));
+        break;
       default:
     }
 
@@ -115,6 +123,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
       videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
       videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
       videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
+      videoPlayerMode = VideoPlayerMode.values.byName(prefs.getString(LocalSettings.videoPlayerMode.name) ?? VideoPlayerMode.inApp.name);
       isLoading = false;
     });
   }
@@ -200,6 +209,28 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     onChanged: (value) async => setPreferences(LocalSettings.videoDefaultPlaybackSpeed, value.payload.name),
                     highlightKey: settingToHighlightKey,
                     setting: LocalSettings.videoDefaultPlaybackSpeed,
+                    highlightedSetting: settingToHighlight,
+                  ),
+                  ListOption(
+                    description: l10n.videoPlayerMode,
+                    value: ListPickerItem(
+                      label: switch (videoPlayerMode) {
+                        VideoPlayerMode.inApp => l10n.linkHandlingInAppShort,
+                        VideoPlayerMode.customTabs => l10n.linkHandlingCustomTabsShort,
+                        VideoPlayerMode.externalPlayer => l10n.linkHandlingExternalShort,
+                      },
+                      payload: videoPlayerMode,
+                      capitalizeLabel: false,
+                    ),
+                    options: [
+                      ListPickerItem(label: l10n.videoPlayerInApp, icon: Icons.play_circle_fill, payload: VideoPlayerMode.inApp),
+                      ListPickerItem(label: l10n.linkHandlingCustomTabs, icon: Icons.language_rounded, payload: VideoPlayerMode.customTabs),
+                      ListPickerItem(label: l10n.videoLinkHandlingExternal, icon: Icons.open_in_browser_rounded, payload: VideoPlayerMode.externalPlayer),
+                    ],
+                    icon: Icons.video_label_outlined,
+                    onChanged: (value) => setPreferences(LocalSettings.videoPlayerMode, value.payload.name),
+                    highlightKey: settingToHighlightKey,
+                    setting: LocalSettings.videoPlayerMode,
                     highlightedSetting: settingToHighlight,
                   ),
                 ],
