@@ -115,6 +115,7 @@ enum LocalSettings {
       name: 'setting_use_profile_picture_for_drawer', key: 'useProfilePictureForDrawer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
   inboxNotificationType(name: 'setting_inbox_notification_type', key: 'inboxNotificationType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   pushNotificationServer(name: 'setting_push_notification_server', key: 'pushNotificationServer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
+  showExpandedTaglines(name: 'setting_feed_show_expanded_taglines', key: 'showExpandedTaglines', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
@@ -418,6 +419,7 @@ extension LocalizationExt on AppLocalizations {
       'showUpdateChangelogs': showUpdateChangelogs,
       'inboxNotificationType': enableInboxNotifications,
       'pushNotificationServer': pushNotificationServer,
+      'showExpandedTaglines': showExpandedTaglines,
       'showScoreCounters': showScoreCounters,
       'appLanguage': appLanguage,
       'compactView': compactView,

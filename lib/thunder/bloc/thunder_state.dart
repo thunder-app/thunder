@@ -50,6 +50,7 @@ class ThunderState extends Equatable {
     this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
     this.showHiddenPosts = false,
+    this.showExpandedTaglines = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -221,6 +222,7 @@ class ThunderState extends Equatable {
   final bool showNavigationLabels;
   final bool hideTopBarOnScroll;
   final bool showHiddenPosts;
+  final bool showExpandedTaglines;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -399,6 +401,7 @@ class ThunderState extends Equatable {
     bool? showNavigationLabels,
     bool? hideTopBarOnScroll,
     bool? showHiddenPosts,
+    bool? showExpandedTaglines,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -572,6 +575,7 @@ class ThunderState extends Equatable {
       showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
       showHiddenPosts: showHiddenPosts ?? this.showHiddenPosts,
+      showExpandedTaglines: showExpandedTaglines ?? this.showExpandedTaglines,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -748,6 +752,7 @@ class ThunderState extends Equatable {
         communityFullNameInstanceNameColor,
         imageCachingMode,
         showNavigationLabels,
+        showExpandedTaglines,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings

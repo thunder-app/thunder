@@ -92,6 +92,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, hidden posts will still be displayed in the feed
   bool showHiddenPosts = false;
 
+  /// When enabled, taglines will be expanded automatically
+  bool showExpandedTaglines = false;
+
   /// When enabled, an app update notification will be shown when an update is available
   bool showInAppUpdateNotification = false;
 
@@ -201,6 +204,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showHiddenPosts.name, value);
         setState(() => showHiddenPosts = value);
         break;
+      case LocalSettings.showExpandedTaglines:
+        await prefs.setBool(LocalSettings.showExpandedTaglines.name, value);
+        setState(() => showExpandedTaglines = value);
+        break;
       case LocalSettings.collapseParentCommentBodyOnGesture:
         await prefs.setBool(LocalSettings.collapseParentCommentBodyOnGesture.name, value);
         setState(() => collapseParentCommentOnGesture = value);
@@ -286,6 +293,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
       hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
       showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
+      showExpandedTaglines = prefs.getBool(LocalSettings.showExpandedTaglines.name) ?? false;
 
       collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
@@ -559,6 +567,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               onToggle: (bool value) => setPreferences(LocalSettings.showHiddenPosts, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.showHiddenPosts,
+              highlightedSetting: settingToHighlight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ToggleOption(
+              description: l10n.showExpandedTaglines,
+              value: showExpandedTaglines,
+              iconEnabled: Icons.note_rounded,
+              iconDisabled: Icons.note_outlined,
+              onToggle: (bool value) => setPreferences(LocalSettings.showExpandedTaglines, value),
+              highlightKey: settingToHighlightKey,
+              setting: LocalSettings.showExpandedTaglines,
               highlightedSetting: settingToHighlight,
             ),
           ),
