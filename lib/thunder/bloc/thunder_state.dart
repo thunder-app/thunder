@@ -165,6 +165,7 @@ class ThunderState extends Equatable {
     this.videoAutoMute = true,
     this.videoAutoPlay = VideoAutoPlay.never,
     this.videoDefaultPlaybackSpeed = VideoPlayBackSpeed.normal,
+    this.videoPlayerMode = VideoPlayerMode.inApp,
 
     /// -------------------------- Accessibility Related Settings --------------------------
     this.reduceAnimations = false,
@@ -349,6 +350,7 @@ class ThunderState extends Equatable {
   final bool videoAutoMute;
   final VideoAutoPlay videoAutoPlay;
   final VideoPlayBackSpeed videoDefaultPlaybackSpeed;
+  final VideoPlayerMode videoPlayerMode;
 
   /// --------------------------------- UI Events ---------------------------------
   // Expand/Close FAB event
@@ -522,6 +524,7 @@ class ThunderState extends Equatable {
     bool? videoAutoMute,
     VideoAutoPlay? videoAutoPlay,
     VideoPlayBackSpeed? videoDefaultPlaybackSpeed,
+    VideoPlayerMode? videoPlayerMode,
 
     /// --------------------------------- UI Events ---------------------------------
     // Expand/Close FAB event
@@ -698,6 +701,7 @@ class ThunderState extends Equatable {
       videoAutoMute: videoAutoMute ?? this.videoAutoMute,
       videoAutoPlay: videoAutoPlay ?? this.videoAutoPlay,
       videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed ?? this.videoDefaultPlaybackSpeed,
+      videoPlayerMode: videoPlayerMode ?? this.videoPlayerMode,
       currentAnonymousInstance: currentAnonymousInstance,
 
       /// ------------------ Video Player ------------------------
@@ -872,6 +876,7 @@ class ThunderState extends Equatable {
         videoAutoMute,
         videoAutoPlay,
         videoDefaultPlaybackSpeed,
+        videoPlayerMode,
 
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations,

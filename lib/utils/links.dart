@@ -12,6 +12,7 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
+import 'package:thunder/core/enums/video_player_mode.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/modlog/utils/navigate_modlog.dart';
@@ -73,14 +74,31 @@ Future<LinkInfo> getLinkInfo(String url) async {
   }
 }
 
-void _openLink(BuildContext context, {required String url}) async {
+void _openLink(BuildContext context, {required String url, bool isVideo = false}) async {
   ThunderState state = context.read<ThunderBloc>().state;
 
-  if (state.browserMode == BrowserMode.external || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
+  bool launchInExternalApp = false;
+  bool launchInCustomTab = false;
+
+  if (isVideo && state.videoPlayerMode == VideoPlayerMode.externalPlayer) {
+    launchInExternalApp = true;
+  } else if (!isVideo && state.browserMode == BrowserMode.external) {
+    launchInExternalApp = true;
+  }
+
+  if (isVideo && state.videoPlayerMode == VideoPlayerMode.customTabs) {
+    launchInCustomTab = true;
+  } else if (!isVideo && state.browserMode == BrowserMode.customTabs) {
+    launchInCustomTab = true;
+  }
+
+  if (launchInExternalApp || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
     hideLoadingPage(context, delay: true);
     url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
-  } else if (state.browserMode == BrowserMode.customTabs) {
+  } else if (launchInCustomTab) {
+    // Launches the link within a custom tab
     hideLoadingPage(context, delay: true);
+
     launchUrl(
       Uri.parse(url),
       customTabsOptions: CustomTabsOptions(
@@ -105,8 +123,10 @@ void _openLink(BuildContext context, {required String url}) async {
       ),
     );
   } else if (state.browserMode == BrowserMode.inApp) {
+    // Launches the link within the in-app browser if possible
     // Check if the scheme is not https, in which case the in-app browser can't handle it
     Uri? uri = Uri.tryParse(url);
+
     if (uri != null && uri.scheme != 'https') {
       // Although a non-https scheme is an indication that this link is intended for another app,
       // we actually have to change it back to https in order for the intent to be properly passed to another app.
@@ -252,6 +272,11 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
   if (context.mounted) {
     _openLink(context, url: url);
   }
+}
+
+/// A universal way of handling video links by opening them in the browser/external player
+void handleVideoLink(BuildContext context, {required String url}) async {
+  _openLink(context, url: url, isVideo: isVideoUrl(url));
 }
 
 /// This is a helper method which helps [handleLink] determine whether a link refers to a valid Lemmy community.
