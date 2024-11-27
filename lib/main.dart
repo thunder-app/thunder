@@ -38,7 +38,6 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/notification/notifications.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
-import 'package:thunder/routes.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -114,6 +113,8 @@ class ThunderApp extends StatefulWidget {
 class _ThunderAppState extends State<ThunderApp> {
   /// Allows the top-level notification handlers to trigger actions farther down
   final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
+
+  PageController thunderPageController = PageController(initialPage: 0);
 
   @override
   void initState() {
@@ -255,7 +256,7 @@ class _ThunderAppState extends State<ThunderApp> {
                 child: AnnotatedRegion<SystemUiOverlayStyle>(
                   // Set navigation bar color on Android to be transparent
                   value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
-                  child: MaterialApp.router(
+                  child: MaterialApp(
                     title: 'Thunder',
                     locale: locale,
                     localizationsDelegates: const [
@@ -267,13 +268,13 @@ class _ThunderAppState extends State<ThunderApp> {
                       ...AppLocalizations.supportedLocales,
                       Locale('eo'), // Additional locale which is not officially supported: Esperanto
                     ],
-                    routerConfig: router,
                     themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
                     theme: theme,
                     darkTheme: darkTheme,
                     debugShowCheckedModeBanner: false,
                     scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
                     scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                    home: Thunder(pageController: thunderPageController),
                   ),
                 ),
               );

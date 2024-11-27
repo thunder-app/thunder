@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -67,7 +66,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
   void performAction(CommunityPostAction action) {
     switch (action) {
       case CommunityPostAction.viewCommunity:
-        context.pop();
+        Navigator.of(context).pop();
         navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.postViewMedia.postView.community.id);
         break;
       case CommunityPostAction.subscribeToCommunity:
@@ -126,7 +125,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
     return BlocListener<CommunityBloc, CommunityState>(
       listener: (context, state) {
         if (state.status == CommunityStatus.success) {
-          context.pop();
+          Navigator.of(context).pop();
           if (_communityAction != null) widget.onAction(_communityAction!, state.communityView);
           setState(() => _communityAction = null);
         }

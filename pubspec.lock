@@ -898,14 +898,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  go_router:
-    dependency: "direct main"
-    description:
-      name: go_router
-      sha256: "6f1b756f6e863259a99135ff3c95026c3cdca17d10ebef2bba2261a25ddc8bbc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "14.3.0"
   graphs:
     dependency: transitive
     description:

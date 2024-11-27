@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/models/account.dart';
 
@@ -150,8 +149,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
               showSnackbar(AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
             } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
-              context.pop();
-
+              Navigator.of(context).pop();
               showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
             } else if (state.status == AuthStatus.contentWarning) {
               bool acceptedContentWarning = false;
