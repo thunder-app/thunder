@@ -734,12 +734,13 @@ class _TagLineState extends State<TagLine> {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: AnimatedCrossFade(
-            crossFadeState: (taglineIsLong && !state.showExpandedTaglines) ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            crossFadeState: taglineIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 250),
             sizeCurve: Curves.easeInOutCubicEmphasized,
             // TODO: Eventually pass in textScalingFactor
             firstChild: CommonMarkdownBody(key: taglineBodyKey, body: widget.tagline),
             secondChild: ExpandableNotifier(
+              initialExpanded: state.showExpandedTaglines,
               child: Column(
                 children: [
                   Expandable(
