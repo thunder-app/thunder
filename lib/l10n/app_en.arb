@@ -2131,6 +2131,10 @@
   "@showEdgeToEdgeImages": {
     "description": "Toggle to view edge to edge images."
   },
+  "showExpandedTaglines": "Show expanded taglines",
+  "@showExpandedTaglines": {
+    "description": "Toggle that shows the full expanded tagline in the feed page"
+  },
   "showFullDate": "Show Full Date",
   "@showFullDate": {
     "description": "Toggle to show full date on posts"

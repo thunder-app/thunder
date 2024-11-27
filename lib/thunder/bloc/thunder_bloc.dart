@@ -131,6 +131,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
       bool showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
+      bool showExpandedTaglines = prefs.getBool(LocalSettings.showExpandedTaglines.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
 
@@ -305,6 +306,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,
         showHiddenPosts: showHiddenPosts,
+        showExpandedTaglines: showExpandedTaglines,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings

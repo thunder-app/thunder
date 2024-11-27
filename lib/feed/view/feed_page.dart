@@ -706,7 +706,7 @@ class TagLine extends StatefulWidget {
 
 class _TagLineState extends State<TagLine> {
   final GlobalKey taglineBodyKey = GlobalKey();
-  bool taglineIsLong = false;
+  bool taglineIsLong = true;
 
   @override
   void initState() {
@@ -722,6 +722,7 @@ class _TagLineState extends State<TagLine> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final state = context.watch<ThunderBloc>().state;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
@@ -733,8 +734,9 @@ class _TagLineState extends State<TagLine> {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: AnimatedCrossFade(
-            crossFadeState: taglineIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            crossFadeState: (taglineIsLong && !state.showExpandedTaglines) ? CrossFadeState.showSecond : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 250),
+            sizeCurve: Curves.easeInOutCubicEmphasized,
             // TODO: Eventually pass in textScalingFactor
             firstChild: CommonMarkdownBody(key: taglineBodyKey, body: widget.tagline),
             secondChild: ExpandableNotifier(
