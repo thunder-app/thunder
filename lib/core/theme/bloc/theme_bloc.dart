@@ -38,6 +38,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       ThemeType themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
       CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
 
+      bool useSystemThemePureBlack = prefs.getBool(LocalSettings.systemThemePureBlack.name) ?? false;
       bool useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
 
       // Fetch reduce animations preferences to remove overscrolling effects
@@ -46,8 +47,13 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       // Check what the system theme is (light/dark)
       Brightness brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
       bool useDarkTheme = themeType != ThemeType.light;
+
       if (themeType == ThemeType.system) {
         useDarkTheme = brightness == Brightness.dark;
+      }
+
+      if (themeType == ThemeType.system && useSystemThemePureBlack && useDarkTheme) {
+        themeType = ThemeType.pureBlack;
       }
 
       return emit(

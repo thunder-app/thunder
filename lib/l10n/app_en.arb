@@ -2335,6 +2335,14 @@
   "@system": {
     "description": "Describes using the system settings for theme"
   },
+  "systemDarkMode": "System Dark Mode",
+  "@systemDarkMode": {
+    "description": "Setting which toggles the dark theme type when the system theme is selected"
+  },
+  "systemDarkModeDescription": "Enable pure black theme in system dark mode",
+  "@systemDarkModeDescription": {
+    "description": "Toggle which enables the pure black theme when using system theme, and is using the dark mode version"
+  },
   "tabletMode": "Tablet Mode (2-column view)",
   "@tabletMode": {
     "description": "Toggle to enable 2-column tablet mode."
