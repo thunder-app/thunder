@@ -18,7 +18,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/view_mode.dart';
@@ -338,7 +338,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     originalUser ??= context.read<AuthBloc>().state.account;
 
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (didPop, result) {
         if (context.mounted) {
           restoreUser(context, originalUser);
         }
@@ -376,6 +376,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               FocusManager.instance.primaryFocus?.unfocus();
             },
             child: Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
                 toolbarHeight: 70.0,
@@ -590,6 +591,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ),
                     Container(
                       color: theme.cardColor,
+                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: Row(
                         children: [
                           Expanded(

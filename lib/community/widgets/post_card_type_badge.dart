@@ -57,7 +57,7 @@ class TypeBadge extends StatelessWidget {
         borderRadius: borderRadius,
         // This is the thin sliver between the badge and the preview.
         // It should be made to match the read background color in the compact file.
-        color: dim ? Color.alphaBlend(theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075), theme.colorScheme.background) : theme.colorScheme.background,
+        color: dim ? Color.alphaBlend(theme.colorScheme.onSurface.withOpacity(darkTheme ? 0.05 : 0.075), theme.colorScheme.surface) : theme.colorScheme.surface,
         child: Padding(
           padding: const EdgeInsets.only(left: 2.5, top: 2.5),
           child: switch (mediaType) {
@@ -65,7 +65,6 @@ class TypeBadge extends StatelessWidget {
             MediaType.link => typeBadgeItem(context, mediaTypeItems[MediaType.link]!),
             MediaType.image => typeBadgeItem(context, mediaTypeItems[MediaType.image]!),
             MediaType.video => typeBadgeItem(context, mediaTypeItems[MediaType.video]!),
-            _ => typeBadgeItem(context, mediaTypeItems[MediaType.text]!),
           },
         ),
       ),

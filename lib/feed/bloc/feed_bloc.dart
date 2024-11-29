@@ -333,7 +333,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.report:
-      // TODO: Handle this case.
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+
+        try {
+          await reportPost(postViewMedia.postView.post.id, event.value);
+          return emit(state.copyWith(status: FeedStatus.success));
+        } catch (e) {
+          return emit(state.copyWith(status: FeedStatus.failure));
+        }
       case PostAction.lock:
         // Optimistically lock the post
         int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
@@ -449,6 +457,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Resets the FeedState to its initial state
   Future<void> _onResetFeed(ResetFeedEvent event, Emitter<FeedState> emit) async {
+    if (event.softReset && state.feedType == FeedType.account) {
+      // This is only used when FeedType is set to account
+      emit(FeedState(
+        status: FeedStatus.fetching,
+        feedType: FeedType.account,
+        postViewMedias: const <PostViewMedia>[],
+        commentViews: const <CommentView>[],
+        hasReachedPostsEnd: false,
+        hasReachedCommentsEnd: false,
+        currentPage: 1,
+        userId: state.userId,
+        username: state.username,
+        fullPersonView: state.fullPersonView,
+      ));
+
+      return;
+    }
+
     emit(const FeedState(
       status: FeedStatus.initial,
       postViewMedias: <PostViewMedia>[],
@@ -493,7 +519,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     // Handle the initial fetch or reload of a feed
     if (event.reset) {
-      if (state.status != FeedStatus.initial) add(ResetFeedEvent());
+      if (state.status != FeedStatus.initial) add(ResetFeedEvent(softReset: event.feedType == FeedType.account));
 
       GetCommunityResponse? fullCommunityView;
       GetPersonDetailsResponse? fullPersonView;
@@ -513,6 +539,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           }
           break;
         case FeedType.user:
+        case FeedType.account:
           // Fetch user information
           try {
             Account? account = await fetchActiveProfileAccount();
@@ -548,6 +575,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         username: event.username,
         feedTypeSubview: event.feedTypeSubview,
         showHidden: event.showHidden,
+        showSaved: event.showSaved,
       );
 
       // Extract information from the response
@@ -574,6 +602,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         username: event.username,
         currentPage: currentPage,
         showHidden: event.showHidden,
+        showSaved: event.showSaved,
       ));
     }
 
@@ -595,7 +624,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       userId: state.userId,
       username: state.username,
       feedTypeSubview: event.feedTypeSubview,
-      showHidden: event.showHidden,
+      showHidden: state.showHidden,
+      showSaved: state.showSaved,
     );
 
     // Extract information from the response

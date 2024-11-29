@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -244,6 +243,23 @@ Future<bool> removePost(int postId, bool remove, String reason) async {
   return postResponse.postView.post.removed == remove;
 }
 
+/// Logic to report a given post
+Future<PostReportResponse> reportPost(int postId, String reason) async {
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  final lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception(l10n.userNotLoggedIn);
+
+  PostReportResponse postReportResponse = await lemmy.run(CreatePostReport(
+    auth: account!.jwt!,
+    postId: postId,
+    reason: reason,
+  ));
+
+  return postReportResponse;
+}
+
 /// Logic to vote on a post
 Future<PostView> votePost(int postId, int score) async {
   Account? account = await fetchActiveProfileAccount();
@@ -366,27 +382,34 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     media.mediaUrl = videoUrl;
   }
 
-  // Finally, check to see if we need to fetch the image dimensions for the thumbnail url
   if (fetchImageDimensions && media.thumbnailUrl != null) {
     Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
 
-    try {
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      int imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+    bool useImageMetadata = LemmyClient.instance.supportsFeature(LemmyFeature.imageDimension);
 
-      result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
-    } catch (e) {
-      debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
+    // Finally, check to see if we need to fetch the image dimensions for the thumbnail url
+    if (useImageMetadata && postView.imageDetails != null) {
+      debugPrint('Using image metadata for ${media.thumbnailUrl ?? media.mediaUrl}');
+      result = Size(postView.imageDetails!.width.toDouble(), postView.imageDetails!.height.toDouble());
+    } else {
+      // If the instance does not contain image metadata, we'll do some additional checks
+      try {
+        SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+        int imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+
+        result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
+      } catch (e) {
+        debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
+      }
     }
 
-    Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+    Size scaledSize = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
 
-    media.width = size.width;
-    media.height = size.height;
+    media.width = scaledSize.width;
+    media.height = scaledSize.height;
   }
 
   media.altText = postView.post.altText;
-
   mediaList.add(media);
 
   return PostViewMedia(postView: postView, media: mediaList);

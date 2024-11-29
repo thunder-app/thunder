@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/utils/post_actions.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -18,11 +19,13 @@ import 'package:thunder/feed/widgets/widgets.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/user/enums/user_action.dart';
 
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final FeedType? feedType;
   final bool indicateRead;
+  final bool isLastTapped;
 
   final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
@@ -30,6 +33,7 @@ class PostCard extends StatefulWidget {
   final Function(bool) onHideAction;
   final Function(double) onUpAction;
   final Function() onDownAction;
+  final Function() onTap;
 
   final ListingType? listingType;
 
@@ -43,8 +47,10 @@ class PostCard extends StatefulWidget {
     required this.onHideAction,
     required this.onUpAction,
     required this.onDownAction,
+    required this.onTap,
     required this.listingType,
     required this.indicateRead,
+    required this.isLastTapped,
   });
 
   @override
@@ -237,6 +243,7 @@ class _PostCardState extends State<PostCard> {
                       navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead,
                       showMedia: !state.hideThumbnails,
+                      isLastTapped: widget.isLastTapped,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
@@ -259,15 +266,41 @@ class _PostCardState extends State<PostCard> {
                       listingType: widget.listingType,
                       navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead,
+                      isLastTapped: widget.isLastTapped,
                     ),
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
                 widget.postViewMedia,
-                onBlockedUser: (userId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: userId)),
-                onBlockedCommunity: (communityId) => context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: communityId)),
-                onPostHidden: (postId) => context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postId)),
+                onAction: ({postAction, userAction, communityAction, required postViewMedia}) async {
+                  if (postAction == null && userAction == null && communityAction == null) return;
+
+                  switch (postAction) {
+                    case PostAction.hide:
+                      context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postViewMedia.postView.post.id));
+                      break;
+                    default:
+                      break;
+                  }
+
+                  switch (userAction) {
+                    case UserAction.block:
+                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postViewMedia.postView.creator.id));
+                      break;
+                    default:
+                      break;
+                  }
+
+                  switch (communityAction) {
+                    case CommunityAction.block:
+                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postViewMedia.postView.community.id));
+                      break;
+                    default:
+                      break;
+                  }
+                },
               ),
               onTap: () async {
+                widget.onTap.call();
                 PostView postView = widget.postViewMedia.postView;
                 if (postView.read == false && isUserLoggedIn) context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postView.post.id, postAction: PostAction.read, value: true));
                 return await navigateToPost(context, postViewMedia: widget.postViewMedia);

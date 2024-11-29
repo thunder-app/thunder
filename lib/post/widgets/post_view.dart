@@ -17,8 +17,12 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/widgets/general_post_action_bottom_sheet.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -44,6 +48,7 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/enums/user_action.dart';
 
 class PostSubview extends StatefulWidget {
   final PostViewMedia postViewMedia;
@@ -104,11 +109,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     Post post = postView.post;
 
     final bool isUserLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
-    final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
     final AuthState authState = context.watch<AuthBloc>().state;
-
-    final bool showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
 
     final bool scrapeMissingPreviews = thunderState.scrapeMissingPreviews;
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
@@ -141,10 +143,22 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
                   Expanded(
-                    child: ScalableText(
-                      HtmlUnescape().convert(post.name),
-                      fontScale: thunderState.titleFontSizeScale,
-                      style: theme.textTheme.titleMedium,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ScalableText(
+                          HtmlUnescape().convert(post.name),
+                          fontScale: thunderState.titleFontSizeScale,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        if (postViewMedia.media.first.mediaType == MediaType.link && thunderState.postBodyViewType == PostBodyViewType.condensed)
+                          Text(
+                            Uri.tryParse(post.url ?? '')?.host.replaceFirst('www.', '') ?? '',
+                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.6)),
+                          )
+                      ],
                     ),
                   ),
                   if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
@@ -297,8 +311,35 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 onShare: () {
                   showPostActionBottomModalSheet(
                     context,
-                    widget.postViewMedia,
-                    page: PostActionBottomSheetPage.share,
+                    postViewMedia,
+                    page: GeneralPostAction.share,
+                    onAction: ({postAction, userAction, communityAction, required postViewMedia}) async {
+                      if (postAction == null && userAction == null && communityAction == null) return;
+
+                      switch (postAction) {
+                        case PostAction.hide:
+                          context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postViewMedia.postView.post.id));
+                          break;
+                        default:
+                          break;
+                      }
+
+                      switch (userAction) {
+                        case UserAction.block:
+                          context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postViewMedia.postView.creator.id));
+                          break;
+                        default:
+                          break;
+                      }
+
+                      switch (communityAction) {
+                        case CommunityAction.block:
+                          context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postViewMedia.postView.community.id));
+                          break;
+                        default:
+                          break;
+                      }
+                    },
                   );
                 },
                 onEdit: () async {

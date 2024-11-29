@@ -23,7 +23,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     Account? account = await fetchActiveProfileAccount();
     if (account == null) return;
 
-    PictrsApi pictrs = PictrsApi(account.instance!);
+    PictrsApi pictrs = PictrsApi(account.instance);
     List<String> urls = [];
 
     isPostImage ? emit(state.copyWith(status: CreatePostStatus.postImageUploadInProgress)) : emit(state.copyWith(status: CreatePostStatus.imageUploadInProgress));
@@ -31,7 +31,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     try {
       for (String imageFile in imageFiles) {
         PictrsUpload result = await pictrs.upload(filePath: imageFile, auth: account.jwt);
-        String url = "https://${account.instance!}/pictrs/image/${result.files[0].file}";
+        String url = "https://${account.instance}/pictrs/image/${result.files[0].file}";
 
         urls.add(url);
 

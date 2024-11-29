@@ -27,12 +27,16 @@ class FeedPostCardList extends StatefulWidget {
   /// The list of posts to show on the feed
   final List<PostViewMedia> postViewMedias;
 
+  /// Whether or not to dim read posts. This value overrides [dimReadPosts] in [ThunderBloc]
+  final bool? dimReadPosts;
+
   const FeedPostCardList({
     super.key,
     required this.postViewMedias,
     required this.tabletMode,
     required this.markPostReadOnScroll,
     this.queuedForRemoval,
+    this.dimReadPosts,
   });
 
   @override
@@ -57,6 +61,9 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
   /// Timer for debouncing the read action
   Timer? debounceTimer;
 
+  /// The ID of the last post that the user tapped or navigated into
+  int? lastTappedPost;
+
   @override
   void dispose() {
     debounceTimer?.cancel();
@@ -68,7 +75,8 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     final state = context.read<FeedBloc>().state;
 
     final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    final dimReadPosts = isUserLoggedIn && context.read<ThunderBloc>().state.dimReadPosts;
+    bool dimReadPosts = isUserLoggedIn && context.read<ThunderBloc>().state.dimReadPosts;
+    if (widget.dimReadPosts != null) dimReadPosts = widget.dimReadPosts!;
 
     return SliverMasonryGrid.count(
       crossAxisCount: widget.tabletMode ? 2 : 1,
@@ -155,8 +163,10 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
                         isScrollingDown = updatedIsScrollingDown;
                       }
                     },
+                    onTap: () => setState(() => lastTappedPost = widget.postViewMedias[index].postView.post.id),
                     listingType: state.postListingType,
                     indicateRead: dimReadPosts,
+                    isLastTapped: lastTappedPost == widget.postViewMedias[index].postView.post.id,
                   ))
               : null,
         );

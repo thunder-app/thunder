@@ -14,7 +14,7 @@ class PersistentHeader extends SliverPersistentHeaderDelegate {
     return Column(
       children: [
         Container(
-          color: theme.colorScheme.background,
+          color: theme.colorScheme.surface,
           width: double.infinity,
           height: 56.0,
           child: child,

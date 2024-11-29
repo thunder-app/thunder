@@ -38,6 +38,9 @@ final class FeedFetchedEvent extends FeedEvent {
   /// Indicates whether to show hidden posts in the feed
   final bool showHidden;
 
+  /// Indicates whether to show saved posts/comments in the feed
+  final bool showSaved;
+
   const FeedFetchedEvent({
     this.feedType,
     this.feedTypeSubview = FeedTypeSubview.post,
@@ -49,6 +52,7 @@ final class FeedFetchedEvent extends FeedEvent {
     this.username,
     this.reset = false,
     this.showHidden = false,
+    this.showSaved = false,
   });
 }
 
@@ -58,7 +62,12 @@ final class FeedChangeSortTypeEvent extends FeedEvent {
   const FeedChangeSortTypeEvent(this.sortType);
 }
 
-final class ResetFeedEvent extends FeedEvent {}
+final class ResetFeedEvent extends FeedEvent {
+  /// Whether or not to soft reset the feed. A soft reset will only reset the feed, but not the user/community information or the feed status
+  final bool softReset;
+
+  const ResetFeedEvent({this.softReset = false});
+}
 
 final class FeedItemUpdatedEvent extends FeedEvent {
   final PostViewMedia postViewMedia;

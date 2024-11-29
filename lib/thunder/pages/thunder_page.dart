@@ -31,7 +31,6 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -111,7 +110,8 @@ class _ThunderState extends State<Thunder> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handleSharedFilesAndText();
-      if (Platform.isAndroid || Platform.isIOS) {
+
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
         BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
         BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
         BlocProvider.of<NotificationsCubit>(context).handleNotifications();
@@ -219,7 +219,7 @@ class _ThunderState extends State<Thunder> {
 
     if (activeAccount?.username != null && activeAccount?.jwt != null && activeAccount?.instance != null) {
       // Set lemmy client to use the instance
-      LemmyClient.instance.changeBaseUrl(activeAccount!.instance!.replaceAll('https://', ''));
+      LemmyClient.instance.changeBaseUrl(activeAccount!.instance.replaceAll('https://', ''));
     }
 
     // If the incoming link is a custom URL, replace it back with https://
@@ -325,7 +325,9 @@ class _ThunderState extends State<Thunder> {
         );
         return;
       }
-    } catch (e) {}
+    } catch (e) {
+      // Ignore exception, if it's not a valid modlog link, we'll perform the next fallback
+    }
 
     // Show an error for any issues processing the link
     if (context.mounted) {
@@ -397,6 +399,7 @@ class _ThunderState extends State<Thunder> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => InboxBloc()),
@@ -717,7 +720,7 @@ class _ThunderState extends State<Thunder> {
             ),
             Icon(
               Icons.arrow_forward,
-              color: theme.colorScheme.onBackground,
+              color: theme.colorScheme.onSurface,
             ),
           ],
         ),

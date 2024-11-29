@@ -127,7 +127,7 @@ Future<void> temporarilySwitchAccount(
       if (communityActorId?.isNotEmpty == true && onCommunityChanged != null) {
         CommunityView? resolvedCommunity;
         try {
-          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: communityActorId!));
+          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: communityActorId!));
           resolvedCommunity = resolveObjectResponse.community;
         } catch (e) {
           // We'll just return null if we can't find it.
@@ -139,7 +139,7 @@ Future<void> temporarilySwitchAccount(
       if (postActorId?.isNotEmpty == true && onPostChanged != null) {
         PostView? resolvedPost;
         try {
-          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: postActorId!));
+          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: postActorId!));
           resolvedPost = resolveObjectResponse.post;
           if (resolvedPost != null) {
             onPostChanged((await parsePostViews([resolvedPost])).first);
@@ -149,7 +149,7 @@ Future<void> temporarilySwitchAccount(
         }
         if (resolvedPost == null) {
           // This is not allowed, so we must block the account switch.
-          showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance!));
+          showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance));
           if (context.mounted) context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
         }
       }
@@ -158,7 +158,7 @@ Future<void> temporarilySwitchAccount(
       if (parentCommentActorId?.isNotEmpty == true && onParentCommentChanged != null) {
         CommentView? resolvedComment;
         try {
-          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance!).run(ResolveObject(q: parentCommentActorId!));
+          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: parentCommentActorId!));
           resolvedComment = resolveObjectResponse.comment;
           if (resolvedComment != null) {
             onParentCommentChanged(resolvedComment);
@@ -168,7 +168,7 @@ Future<void> temporarilySwitchAccount(
         }
         if (resolvedComment == null) {
           // This is not allowed, so we must block the accout switch.
-          showSnackbar(l10n.accountSwitchParentCommentNotFound(newUser.instance!));
+          showSnackbar(l10n.accountSwitchParentCommentNotFound(newUser.instance));
           if (context.mounted) context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
         }
       }

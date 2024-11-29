@@ -15,7 +15,7 @@ import 'package:thunder/account/models/draft.dart';
 
 // Project imports
 import 'package:thunder/comment/cubit/create_comment_cubit.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/drafts/draft_type.dart';
@@ -238,7 +238,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     originalUser ??= context.read<AuthBloc>().state.account;
 
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (didPop, result) {
         if (context.mounted) {
           restoreUser(context, originalUser);
         }
@@ -274,6 +274,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                 FocusManager.instance.primaryFocus?.unfocus();
               },
               child: Scaffold(
+                resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
                   toolbarHeight: 70.0,
@@ -405,6 +406,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                       const Divider(height: 1),
                       Container(
                         color: theme.cardColor,
+                        margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                         child: Row(
                           children: [
                             Expanded(

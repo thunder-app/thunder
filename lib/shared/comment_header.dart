@@ -106,7 +106,7 @@ class CommentHeader extends StatelessWidget {
                     width: hasBeenEdited ? 32.0 : 8,
                     child: Icon(
                       hasBeenEdited ? Icons.create_rounded : null,
-                      color: theme.colorScheme.onBackground.withOpacity(0.75),
+                      color: theme.colorScheme.onSurface.withOpacity(0.75),
                       size: 16.0,
                     ),
                   ),
@@ -139,7 +139,7 @@ class CommentHeader extends StatelessWidget {
                               formatTimeToString(dateTime: (comment.comment.updated ?? comment.comment.published).toIso8601String()),
                               fontScale: state.metadataFontSizeScale,
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onBackground,
+                                color: theme.colorScheme.onSurface,
                               ),
                             ),
                         ],
@@ -218,7 +218,7 @@ class CommentHeaderScore extends StatelessWidget {
         Icon(
           Icons.north_rounded,
           size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-          color: myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.colorScheme.onBackground,
+          color: myVote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.colorScheme.onSurface,
         ),
         const SizedBox(width: 2.0),
         ScalableText(
@@ -228,14 +228,14 @@ class CommentHeaderScore extends StatelessWidget {
           style: theme.textTheme.bodyMedium?.copyWith(
             color: myVote == 1
                 ? context.read<ThunderBloc>().state.upvoteColor.color
-                : (myVote == -1 && combineCommentScores ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground),
+                : (myVote == -1 && combineCommentScores ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onSurface),
           ),
         ),
         SizedBox(width: combineCommentScores ? 2.0 : 10.0),
         Icon(
           Icons.south_rounded,
           size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-          color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground) : Colors.transparent,
+          color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onSurface) : Colors.transparent,
         ),
         if (!combineCommentScores) ...[
           const SizedBox(width: 2.0),
@@ -245,7 +245,7 @@ class CommentHeaderScore extends StatelessWidget {
               fontScale: state.metadataFontSizeScale,
               semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: downvotes != 0 ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onBackground) : Colors.transparent,
+                color: downvotes != 0 ? (myVote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.colorScheme.onSurface) : Colors.transparent,
               ),
             ),
         ],

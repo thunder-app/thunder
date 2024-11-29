@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:ui';
+
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -57,3 +59,6 @@ const String SETTINGS_APPEARANCE_THEMES_PAGE = '/settings/appearance/themes';
 const String SETTINGS_VIDEO_PAGE = '/settings/video';
 
 const String THUNDER_SERVER_URL = 'https://thunderapp.dev';
+
+const Color DARK_THEME_BACKGROUND_COLOR = Color.fromARGB(255, 50, 50, 50);
+const Color LIGHT_THEME_BACKGROUND_COLOR = Color.fromARGB(255, 242, 242, 242);

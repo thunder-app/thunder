@@ -53,8 +53,14 @@ bool _isDatabaseInitialized = false;
 Future<void> initializeDatabase() async {
   if (_isDatabaseInitialized) return;
 
-  debugPrint('Initializing drift db.');
+  if (kIsWeb) {
+    database = AppDatabase();
+    return;
+  }
 
+  // There is a specific ordering here.
+  // We're checking to see if the drift database exists. If it doesn't exist, we perform migration from the old SQLite database.
+  // The ordering matters here as  database = AppDatabase() will create the database if it doesn't exist.
   File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
 
   database = AppDatabase();
@@ -191,20 +197,31 @@ class _ThunderAppState extends State<ThunderApp> {
 
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
-              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name));
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name), darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
+              FlexScheme scheme = FlexScheme.values.byName(state.selectedTheme.name);
+
+              Color? darkThemeSurfaceColor = state.themeType == ThemeType.pureBlack ? null : Colors.black.lighten(8);
+
+              ThemeData theme = FlexThemeData.light(scheme: scheme);
+              ThemeData darkTheme = FlexThemeData.dark(
+                scheme: scheme,
+                darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
+                surface: darkThemeSurfaceColor,
+                scaffoldBackground: darkThemeSurfaceColor,
+                appBarBackground: darkThemeSurfaceColor,
+              );
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
                 theme = ThemeData(
                   colorScheme: lightColorScheme,
-                  useMaterial3: true,
                 );
 
                 darkTheme = FlexThemeData.dark(
-                  useMaterial3: true,
                   colorScheme: darkColorScheme,
                   darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
+                  surface: darkThemeSurfaceColor?.blend(darkColorScheme!.primary, 4),
+                  scaffoldBackground: darkThemeSurfaceColor?.blend(darkColorScheme!.primary, 4),
+                  appBarBackground: darkThemeSurfaceColor?.blend(darkColorScheme!.primary, 4),
                 );
               }
 
@@ -214,42 +231,35 @@ class _ThunderAppState extends State<ThunderApp> {
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               });
 
-              theme = theme.copyWith(
-                pageTransitionsTheme: pageTransitionsTheme,
-              );
-              darkTheme = darkTheme.copyWith(
-                pageTransitionsTheme: pageTransitionsTheme,
-              );
-
-              // Set navigation bar color on Android to be transparent
-              SystemChrome.setSystemUIOverlayStyle(
-                SystemUiOverlayStyle(
-                  systemNavigationBarColor: Colors.black.withOpacity(0.0001),
-                ),
-              );
+              theme = theme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
+              darkTheme = darkTheme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
 
               Locale? locale = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == thunderBloc.state.appLanguageCode).firstOrNull;
 
               return OverlaySupport.global(
-                child: MaterialApp.router(
-                  title: 'Thunder',
-                  locale: locale,
-                  localizationsDelegates: const [
-                    ...AppLocalizations.localizationsDelegates,
-                    MaterialLocalizationsEo.delegate,
-                    CupertinoLocalizationsEo.delegate,
-                  ],
-                  supportedLocales: const [
-                    ...AppLocalizations.supportedLocales,
-                    Locale('eo'), // Additional locale which is not officially supported: Esperanto
-                  ],
-                  routerConfig: router,
-                  themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
-                  theme: theme,
-                  darkTheme: darkTheme,
-                  debugShowCheckedModeBanner: false,
-                  scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
-                  scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  // Set navigation bar color on Android to be transparent
+                  value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
+                  child: MaterialApp.router(
+                    title: 'Thunder',
+                    locale: locale,
+                    localizationsDelegates: const [
+                      ...AppLocalizations.localizationsDelegates,
+                      MaterialLocalizationsEo.delegate,
+                      CupertinoLocalizationsEo.delegate,
+                    ],
+                    supportedLocales: const [
+                      ...AppLocalizations.supportedLocales,
+                      Locale('eo'), // Additional locale which is not officially supported: Esperanto
+                    ],
+                    routerConfig: router,
+                    themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                    theme: theme,
+                    darkTheme: darkTheme,
+                    debugShowCheckedModeBanner: false,
+                    scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                    scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                  ),
                 ),
               );
             },

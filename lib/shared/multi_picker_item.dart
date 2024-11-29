@@ -28,28 +28,26 @@ class MultiPickerItem extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        ...pickerItems
-            .map(
-              (p) => Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: Tooltip(
-                    message: p.label,
-                    child: TextButton(
-                      onPressed: p.onSelected,
-                      style: TextButton.styleFrom(foregroundColor: p.backgroundColor),
-                      child: Icon(
-                        p.icon,
-                        semanticLabel: p.label,
-                        color: p.onSelected == null ? null : p.foregroundColor ?? theme.textTheme.bodyMedium?.color,
-                      ),
-                    ),
+        ...pickerItems.map(
+          (p) => Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Tooltip(
+                message: p.label,
+                child: TextButton(
+                  onPressed: p.onSelected,
+                  style: TextButton.styleFrom(foregroundColor: p.backgroundColor),
+                  child: Icon(
+                    p.icon,
+                    semanticLabel: p.label,
+                    color: p.onSelected == null ? null : p.foregroundColor ?? theme.textTheme.bodyMedium?.color,
                   ),
                 ),
               ),
-            )
-            .toList(),
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -115,6 +115,7 @@ enum LocalSettings {
       name: 'setting_use_profile_picture_for_drawer', key: 'useProfilePictureForDrawer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
   inboxNotificationType(name: 'setting_inbox_notification_type', key: 'inboxNotificationType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   pushNotificationServer(name: 'setting_push_notification_server', key: 'pushNotificationServer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
+  showExpandedTaglines(name: 'setting_feed_show_expanded_taglines', key: 'showExpandedTaglines', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
@@ -197,6 +198,7 @@ enum LocalSettings {
   /// -------------------------- Theme Related Settings --------------------------
   // Theme Settings
   appTheme(name: 'setting_theme_app_theme', key: 'theme', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  systemThemePureBlack(name: 'setting_theme_system_pure_black', key: 'systemThemePureBlack', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   appThemeAccentColor(name: 'setting_theme_custom_app_theme', key: 'themeAccentColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   useMaterialYouTheme(name: 'setting_theme_use_material_you', key: 'useMaterialYouTheme', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
 
@@ -328,6 +330,7 @@ enum LocalSettings {
   videoAutoFullscreen(name: 'video_auto_fullscreen', key: 'videoAutoFullscreen', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoAutoLoop(name: 'video_auto_loop', key: '', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoAutoPlay(name: 'video_auto_play', key: '', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
+  videoPlayerMode(name: 'setting_video_player_mode', key: 'videoPlayerMode', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
 
   // Searchable settings
   // The settings under this section do not correspond to settings that we persist in SharedPreferences.
@@ -417,6 +420,7 @@ extension LocalizationExt on AppLocalizations {
       'showUpdateChangelogs': showUpdateChangelogs,
       'inboxNotificationType': enableInboxNotifications,
       'pushNotificationServer': pushNotificationServer,
+      'showExpandedTaglines': showExpandedTaglines,
       'showScoreCounters': showScoreCounters,
       'appLanguage': appLanguage,
       'compactView': compactView,
@@ -464,6 +468,7 @@ extension LocalizationExt on AppLocalizations {
       'nestedCommentIndicatorColor': nestedCommentIndicatorColor,
       'reduceAnimations': reduceAnimations,
       'theme': theme,
+      'systemThemePureBlack': systemDarkMode,
       'themeAccentColor': themeAccentColor,
       'useMaterialYouTheme': useMaterialYouTheme,
       'actionColors': actionColors,
@@ -518,6 +523,7 @@ extension LocalizationExt on AppLocalizations {
       'videoAutoLoop': videoAutoLoop,
       'videoAutoPlay': videoAutoPlay,
       'videoDefaultPlaybackSpeed': videoDefaultPlaybackSpeed,
+      'videoPlayerMode': videoPlayerMode,
       'userLabels': userLabels,
       'accountDisplayName': displayName,
       'accountProfileBio': profileBio,
