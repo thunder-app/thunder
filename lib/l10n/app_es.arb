@@ -2822,5 +2822,37 @@
   "readerMode": "Modo lectura",
   "@readerMode": {
     "description": "Menu item for toggling reader mode"
+  },
+  "showExpandedTaglines": "Mostrar lemas ampliados",
+  "@showExpandedTaglines": {
+    "description": "Toggle that shows the full expanded tagline in the feed page"
+  },
+  "showSavedContent": "Mostrar contenido guardado",
+  "@showSavedContent": {
+    "description": "Toggle to show saved posts/comments."
+  },
+  "systemDarkMode": "Modo oscuro del sistema",
+  "@systemDarkMode": {
+    "description": "Setting which toggles the dark theme type when the system theme is selected"
+  },
+  "systemDarkModeDescription": "Activar el tema negro puro en el modo oscuro del sistema",
+  "@systemDarkModeDescription": {
+    "description": "Toggle which enables the pure black theme when using system theme, and is using the dark mode version"
+  },
+  "videoLinkHandlingExternal": "Reproducir vídeo con una aplicación externa",
+  "@videoLinkHandlingExternal": {
+    "description": "Description to Open video with an external application"
+  },
+  "videoPlayerMode": "Modo de reproducción",
+  "@videoPlayerMode": {
+    "description": "Option to select video player mode (in-app or external)  "
+  },
+  "videoPlayerInApp": "Utilizar el reproductor integrado Thunder",
+  "@videoPlayerInApp": {
+    "description": "Description for using in-app video player"
+  },
+  "showOwnContent": "Mostrar el contenido propio",
+  "@showOwnContent": {
+    "description": "Toggle to show your own posts/comments."
   }
 }
