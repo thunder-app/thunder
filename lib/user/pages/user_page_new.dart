@@ -1,5 +1,4 @@
 // Flutter imports
-import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,14 +12,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
 
 // Project imports
 import 'package:thunder/comment/utils/navigate_comment.dart';
-import 'package:thunder/comment/widgets/comments_card_list.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -37,9 +34,6 @@ import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc_old.dart';
-import 'package:thunder/user/bloc/user_settings_bloc.dart';
-import 'package:thunder/user/pages/user_settings_page.dart';
-import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
@@ -345,12 +339,6 @@ class _UserPageNewState extends State<UserPageNew> with SingleTickerProviderStat
                                   Tab(
                                     child: Text(AppLocalizations.of(GlobalContext.context)!.comments),
                                   ),
-                                  // Tab(
-                                  //   child: Text(AppLocalizations.of(GlobalContext.context)!.savedPosts),
-                                  // ),
-                                  // Tab(
-                                  //   child: Text(AppLocalizations.of(GlobalContext.context)!.savedComments),
-                                  // ),
                                   Tab(
                                     child: Text(AppLocalizations.of(GlobalContext.context)!.about),
                                   ),
@@ -375,7 +363,7 @@ class _UserPageNewState extends State<UserPageNew> with SingleTickerProviderStat
                         isAccountUser: widget.isAccountUser,
                         commentViewTrees: widget.commentViewTrees!,
                         userId: widget.userId,
-                        hasReachedCommentsEnd: false,
+                        hasReachedCommentsEnd: widget.hasReachedPostEnd,
                       ),
                       UserSidebar(
                         getPersonDetailsResponse: widget.fullPersonView,
@@ -416,7 +404,7 @@ class PostCardTab extends StatelessWidget {
   }
 }
 
-class CommentsCardTab extends StatefulWidget {
+class CommentsCardTab extends StatelessWidget {
   const CommentsCardTab({
     super.key,
     required this.isAccountUser,
@@ -431,67 +419,72 @@ class CommentsCardTab extends StatefulWidget {
   final bool? hasReachedCommentsEnd;
 
   @override
-  State<CommentsCardTab> createState() => _CommentsCardTabState();
-}
-
-class _CommentsCardTabState extends State<CommentsCardTab> {
-  final _scrollController = ScrollController(initialScrollOffset: 0);
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    _scrollController.addListener(_onScroll);
-
-    super.initState();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
-      context.read<UserBloc>().add(const GetUserEvent());
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final int? currentUserId = context.read<AuthBloc>().state.account?.userId;
+
     return Scaffold(
-      body: CommentsCardList(
-        commentViewTrees: widget.commentViewTrees!,
-        hasReachedEnd: widget.hasReachedCommentsEnd,
-        personId: widget.userId,
-        onScrollEndReached: () {},
-        onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-        onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-        onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-        onReportAction: (int commentId) {
-          if (widget.isAccountUser) {
-            showSnackbar(AppLocalizations.of(context)!.cannotReportOwnComment);
-          } else {
-            showReportCommentActionBottomSheet(
-              context,
-              commentId: commentId,
-            );
-          }
-        },
-        onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
-          context,
-          commentView: isEdit ? commentView : null,
-          parentCommentView: isEdit ? null : commentView,
-          onCommentSuccess: (commentView, userChanged) {
-            if (!userChanged) {
-              // TODO: handle success for account page changes.
-              // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
-            }
-          },
-        ),
-        isOwnComment: widget.isAccountUser,
-        disableActions: true,
-      ),
-    );
+        body: ListView.builder(
+            //controller: _scrollController,
+            itemCount: commentViewTrees?.length,
+            itemBuilder: (context, index) {
+              return CommentReference(
+                  comment: commentViewTrees![index].commentView!,
+                  isOwnComment: isAccountUser && commentViewTrees![index].commentView!.creator.id == currentUserId,
+                  disableActions: true,
+                  onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                  onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                  onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                  onReportAction: (int commentId) {
+                    if (isAccountUser) {
+                      showSnackbar(AppLocalizations.of(context)!.cannotReportOwnComment);
+                    } else {
+                      showReportCommentActionBottomSheet(
+                        context,
+                        commentId: commentId,
+                      );
+                    }
+                  },
+                  onReplyEditAction: (CommentView commentView, bool isEdit) async =>
+                      navigateToCreateCommentPage(context, commentView: isEdit ? commentView : null, parentCommentView: isEdit ? null : commentView, onCommentSuccess: (commentView, userChanged) {
+                        if (!userChanged) {
+                          // TODO: handle success for account page changes.
+                          // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                        }
+                      })
+
+                  // CommentsCardList(
+                  //   commentViewTrees: widget.commentViewTrees!,
+                  //   hasReachedEnd: widget.hasReachedCommentsEnd,
+                  //   personId: widget.userId,
+                  //   onScrollEndReached: () {},
+                  //   onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                  //   onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                  //   onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                  //   onReportAction: (int commentId) {
+                  //     if (widget.isAccountUser) {
+                  //       showSnackbar(AppLocalizations.of(context)!.cannotReportOwnComment);
+                  //     } else {
+                  //       showReportCommentActionBottomSheet(
+                  //         context,
+                  //         commentId: commentId,
+                  //       );
+                  //     }
+                  //   },
+                  //   onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
+                  //     context,
+                  //     commentView: isEdit ? commentView : null,
+                  //     parentCommentView: isEdit ? null : commentView,
+                  //     onCommentSuccess: (commentView, userChanged) {
+                  //       if (!userChanged) {
+                  //         // TODO: handle success for account page changes.
+                  //         // context.read<UserBloc>().add(UpdateCommentEvent(commentView: commentView, isEdit: isEdit)),
+                  //       }
+                  //     },
+                  //   ),
+                  //   isOwnComment: widget.isAccountUser,
+                  //   disableActions: true,
+                  // ),
+                  );
+            }));
   }
 }

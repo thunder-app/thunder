@@ -15,27 +15,32 @@ class UserSavedPage extends StatefulWidget {
 class _UserSavedPageState extends State<UserSavedPage> with SingleTickerProviderStateMixin {
   /// The controller for the tab bar used for switching between inbox types.
   late TabController tabController;
+  final _scrollController = ScrollController(initialScrollOffset: 0);
+  bool hasScrolledToBottom = true;
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+      context.read<UserBloc>().add(const GetUserEvent());
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(vsync: this, length: 2);
+    context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, isAccountUser: widget.isAccountUser ?? false, reset: true));
   }
 
   @override
   void dispose() {
     tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    context.read<UserBloc>().add(GetUserSavedEvent(
-          userId: widget.userId,
-          isAccountUser: widget.isAccountUser ?? false,
-          reset: true,
-        ));
+
     final userState = context.read<UserBloc>().state;
     return Scaffold(
       body: NestedScrollView(

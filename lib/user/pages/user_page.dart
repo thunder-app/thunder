@@ -141,7 +141,6 @@ class _UserPageState extends State<UserPage> {
             switch (state.status) {
               case UserStatus.initial:
                 context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, username: widget.username, reset: true));
-                context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, reset: true));
                 return const Center(child: CircularProgressIndicator());
               case UserStatus.loading:
                 return const Center(child: CircularProgressIndicator());
