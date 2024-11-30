@@ -245,7 +245,7 @@ class _ThunderAppState extends State<ThunderApp> {
                         ? WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark
                             ? darkTheme.colorScheme.surface
                             : theme.colorScheme.surface
-                        : (state.themeType == ThemeType.dark ? darkTheme.colorScheme.surface : theme.colorScheme.surface),
+                        : (state.themeType == ThemeType.dark || state.themeType == ThemeType.pureBlack ? darkTheme.colorScheme.surface : theme.colorScheme.surface),
                   ),
                   child: MaterialApp.router(
                     title: 'Thunder',
