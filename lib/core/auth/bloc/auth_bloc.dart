@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
@@ -206,29 +209,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final url = Uri.https('app.privacyportal.org', 'oauth/authorize', {
           'response_type': 'code',
           'client_id': clientId,
-          'redirect_uri': "http://localhost:40000/callback",
+          'redirect_uri': "http://localhost:40000",
           'scope': 'openid email',
           'state': 'hellohello',
         });
 
+        HttpServer server = await HttpServer.bind("localhost", 40000);
+
         // Present the dialog to the user.
-        final result = await FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: callbackUrlScheme);
+        final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: callbackUrlScheme);
+
+        final httpResult = await server.first;
+        //await req.response.close();
+        await server.close();
 
         // TODO: Do we need to check that state matches here?
         // Example: if (uri != null && uri.toString().startsWith("myapp")) {}
 
+        debugPrint(httpResult.uri.toString());
         // Extract the code.
-        String code = Uri.parse(result).queryParameters['code'] ?? "failed";
+        String code = Uri.parse(httpResult.uri.toString()).queryParameters['code'] ?? "failed";
         // Fail to authenticate if code is null.
 
         // TODO: Put this somewhere.
         //    // Get the access token from the response
         // final accessToken = jsonDecode(response.body)['access_token'] as String;
+        debugPrint("CODE");
+        debugPrint(code);
 
         LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(
           code: code,
           oauth_provider_id: "privacy_portal",
-          redirect_uri: 'thunder:/',
+          redirect_uri: 'http://localhost:40000',
         ));
 
         if (loginResponse.jwt == null) {
