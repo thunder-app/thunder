@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -16,6 +17,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:http/http.dart' as http;
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -192,7 +194,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<OAuthLoginAttempt>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
-      String clientId = '014d0e00-e6c2-4a69-a175-9e67934359a5'; // TODO: Is this client_id different than the lemmy client_id? ( I think it is )
+      String clientId = '9d16fb35-090f-4426-a456-368d9412861f';
       String callbackUrlScheme = 'thunder';
 
       try {
@@ -237,17 +239,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         debugPrint("CODE");
         debugPrint(code);
 
-        LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(
-          code: code,
-          oauth_provider_id: "privacy_portal",
-          redirect_uri: 'http://localhost:40000',
-        ));
+        //GetSiteResponse getSiteResponse2 = await lemmy.run(const GetSite());
+        //debugPrint("SITE");
 
-        if (loginResponse.jwt == null) {
-          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
-        }
+        //LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(
+        //  code: code,
+        //  oauth_provider_id: 1,
+        //  redirect_uri: 'http://localhost:40000',
+        //));
 
-        GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: loginResponse.jwt));
+        // Use this code to get an access token
+        final response = await http.post(Uri.parse('http://localhost/api/v3/oauth/authenticate'),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: json.encode({
+              'code': code,
+              'oauth_provider_id': 1,
+              'redirect_uri': 'http://localhost:40000',
+            }),
+            encoding: Encoding.getByName('utf-8'));
+
+        // Get the access token from the response
+        String respString = response.toString();
+        final accessToken = jsonDecode(response.toString())['access_token'] as String;
+
+        debugPrint("JWT");
+        debugPrint(accessToken);
+
+        GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: accessToken));
 
         //if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
         //  return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
@@ -257,7 +277,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         Account? account = Account(
           id: '',
           username: getSiteResponse.myUser?.localUserView.person.name,
-          jwt: loginResponse.jwt,
+          jwt: accessToken,
           instance: instance,
           userId: getSiteResponse.myUser?.localUserView.person.id,
           index: -1,
