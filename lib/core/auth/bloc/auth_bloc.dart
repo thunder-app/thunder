@@ -211,7 +211,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final url = Uri.https('app.privacyportal.org', 'oauth/authorize', {
           'response_type': 'code',
           'client_id': clientId,
-          'redirect_uri': "http://localhost:40000",
+          'redirect_uri': "http://localhost:40000/oauth/callback",
           'scope': 'openid email',
           'state': 'hellohello',
         });
@@ -256,13 +256,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             body: json.encode({
               'code': code,
               'oauth_provider_id': 1,
-              'redirect_uri': 'http://localhost:40000',
+              'redirect_uri': 'http://localhost:40000/oauth/callback',
             }),
             encoding: Encoding.getByName('utf-8'));
 
+        debugPrint("RESPONSE");
         // Get the access token from the response
-        String respString = response.toString();
-        final accessToken = jsonDecode(response.toString())['access_token'] as String;
+        //String respString = response.toString();
+        final accessToken = jsonDecode(response.body)['jwt'] as String;
 
         debugPrint("JWT");
         debugPrint(accessToken);
