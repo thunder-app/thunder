@@ -234,6 +234,22 @@ class _ThunderAppState extends State<ThunderApp> {
               theme = theme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
               darkTheme = darkTheme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
 
+              // Set some additional styling on the themes
+              theme = theme.copyWith(
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: TextStyle(
+                    color: lightColorScheme?.onSurface.withOpacity(0.6),
+                  ),
+                ),
+              );
+              darkTheme = darkTheme.copyWith(
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: TextStyle(
+                    color: darkColorScheme?.onSurface.withOpacity(0.6),
+                  ),
+                ),
+              );
+
               Locale? locale = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == thunderBloc.state.appLanguageCode).firstOrNull;
 
               return OverlaySupport.global(
