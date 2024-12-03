@@ -327,7 +327,7 @@ class _FeedViewState extends State<FeedView> {
       ],
       child: Scaffold(
         body: SafeArea(
-          top: hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+          top: false,
           child: BlocConsumer<FeedBloc, FeedState>(
             listenWhen: (previous, current) {
               if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
@@ -595,6 +595,13 @@ class _FeedViewState extends State<FeedView> {
                           child: FeedFAB(heroTag: state.communityName ?? state.username),
                         ),
                       ),
+                    if (hideTopBarOnScroll)
+                      Positioned(
+                        child: Container(
+                          height: MediaQuery.of(context).padding.top,
+                          color: theme.colorScheme.surface,
+                        ),
+                      )
                   ],
                 ),
               );
