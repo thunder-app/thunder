@@ -11,7 +11,6 @@ import 'package:thunder/user/pages/old_user_page.dart';
 
 import 'package:thunder/feed/feed.dart';
 
-
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 

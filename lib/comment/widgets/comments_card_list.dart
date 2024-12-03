@@ -8,7 +8,7 @@ import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/bloc/user_bloc_old.dart';
+//import 'package:thunder/user/bloc/user_bloc_old.dart';
 
 class CommentsCardList extends StatefulWidget {
   final List<CommentViewTree>? commentViewTrees;
@@ -83,7 +83,7 @@ class _CommentsCardListState extends State<CommentsCardList> {
         onRefresh: () async {
           HapticFeedback.mediumImpact();
           if (widget.personId != null) {
-            context.read<UserBloc>().add(GetUserEvent(userId: widget.personId, reset: true));
+            //context.read<UserBloc>().add(GetUserEvent(userId: widget.personId, reset: true));
           } else {
             // context.read<CommunityBloc>().add(GetCommunityPostsEvent(
             //       reset: true,
