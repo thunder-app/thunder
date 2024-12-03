@@ -190,12 +190,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    /// This event should be triggered when the user logs in with a username/password
+    /// This event should be triggered when the user logs in with oauth.
     on<OAuthLoginAttempt>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
+
+      // lemmy client_id, can be found be found on the lemmy OAuth Configuration page.
       String clientId = '9d16fb35-090f-4426-a456-368d9412861f';
-      String callbackUrlScheme = 'thunder';
 
       try {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
@@ -207,62 +208,55 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         lemmyClient.changeBaseUrl(instance);
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-        // https://app.privacyportal.org/oauth/authorize
+        String redirectUri = "http://localhost:40000/oauth/callback"; // This must end in /oauth/callback.
+
+        // TODO: Lookup available auth providers in the lemmy site response @ /api/v3/site.
+        // For now it is hard coded for PrivacyPortal.
+        // TODO: Make `state` a random string.
         final url = Uri.https('app.privacyportal.org', 'oauth/authorize', {
           'response_type': 'code',
           'client_id': clientId,
-          'redirect_uri': "http://localhost:40000/oauth/callback",
+          'redirect_uri': redirectUri,
           'scope': 'openid email',
           'state': 'hellohello',
         });
 
+        // Start http server to receive callback.
+        // TODO: Figure out how to do this in a better cross-platform way. Maybe, https://pub.dev/packages/app_links
         HttpServer server = await HttpServer.bind("localhost", 40000);
 
         // Present the dialog to the user.
-        final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: callbackUrlScheme);
+        final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "thunder");
 
-        final httpResult = await server.first;
-        //await req.response.close();
+        // Wait for response.
+        final providerResponse = await server.first;
+
         await server.close();
 
-        // TODO: Do we need to check that state matches here?
+        // TODO: Check that `state` matches the `state` that was sent to the provider.
         // Example: if (uri != null && uri.toString().startsWith("myapp")) {}
 
-        debugPrint(httpResult.uri.toString());
-        // Extract the code.
-        String code = Uri.parse(httpResult.uri.toString()).queryParameters['code'] ?? "failed";
-        // Fail to authenticate if code is null.
-
-        // TODO: Put this somewhere.
-        //    // Get the access token from the response
-        // final accessToken = jsonDecode(response.body)['access_token'] as String;
+        // Extract the code from the response.
+        String code = Uri.parse(providerResponse.uri.toString()).queryParameters['code'] ?? "failed";
         debugPrint("CODE");
         debugPrint(code);
 
-        //GetSiteResponse getSiteResponse2 = await lemmy.run(const GetSite());
-        //debugPrint("SITE");
+        // TODO: Fail to authenticate if code is null.
 
-        //LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(
-        //  code: code,
-        //  oauth_provider_id: 1,
-        //  redirect_uri: 'http://localhost:40000',
-        //));
-
-        // Use this code to get an access token
+        // TODO: This should use lemmy_api_client.
+        // Authenthicate to lemmy and get a jwt.
+        // Durring this step lemmy with connect to the Provider to get the user info.
         final response = await http.post(Uri.parse('http://localhost/api/v3/oauth/authenticate'),
             headers: {
               'Content-Type': 'application/json',
             },
             body: json.encode({
               'code': code,
-              'oauth_provider_id': 1,
-              'redirect_uri': 'http://localhost:40000/oauth/callback',
+              'oauth_provider_id': 1, // This id can be found in the site reponse.
+              'redirect_uri': redirectUri,
             }),
             encoding: Encoding.getByName('utf-8'));
 
-        debugPrint("RESPONSE");
-        // Get the access token from the response
-        //String respString = response.toString();
         final accessToken = jsonDecode(response.body)['jwt'] as String;
 
         debugPrint("JWT");
