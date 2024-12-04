@@ -231,8 +231,23 @@ class _ThunderAppState extends State<ThunderApp> {
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               });
 
-              theme = theme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
-              darkTheme = darkTheme.copyWith(pageTransitionsTheme: pageTransitionsTheme);
+              // Customize our themes with the aforementinoed page transitions, as well as some custom styling
+              theme = theme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: TextStyle(
+                    color: lightColorScheme?.onSurface.withOpacity(0.6),
+                  ),
+                ),
+              );
+              darkTheme = darkTheme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: TextStyle(
+                    color: darkColorScheme?.onSurface.withOpacity(0.6),
+                  ),
+                ),
+              );
 
               Locale? locale = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == thunderBloc.state.appLanguageCode).firstOrNull;
 
