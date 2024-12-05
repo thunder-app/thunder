@@ -1021,7 +1021,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               autocorrect: false,
                               controller: controller,
                               decoration: InputDecoration(
-                                isDense: true,
                                 border: const OutlineInputBorder(),
                                 labelText: l10n.url,
                                 hintText: THUNDER_SERVER_URL,

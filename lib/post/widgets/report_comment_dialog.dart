@@ -53,7 +53,6 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
               ),
               TextFormField(
                 decoration: InputDecoration(
-                  isDense: true,
                   border: const OutlineInputBorder(),
                   labelText: AppLocalizations.of(context)!.message(0),
                 ),

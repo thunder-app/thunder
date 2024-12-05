@@ -319,7 +319,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       focusNode: focusNode,
                       inputFormatters: [LowerCaseTextFormatter()],
                       decoration: InputDecoration(
-                        isDense: true,
                         border: const OutlineInputBorder(),
                         labelText: AppLocalizations.of(context)!.instance(1),
                         errorText: instanceValidated ? null : instanceError,
@@ -364,7 +363,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             focusNode: _usernameFieldFocusNode,
                             autofillHints: const [AutofillHints.username],
                             decoration: InputDecoration(
-                              isDense: true,
                               border: const OutlineInputBorder(),
                               labelText: AppLocalizations.of(context)!.username,
                             ),
@@ -385,7 +383,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             maxLength: 60, // This is what lemmy retricts password length to
                             autofillHints: const [AutofillHints.password],
                             decoration: InputDecoration(
-                              isDense: true,
                               border: const OutlineInputBorder(),
                               labelText: AppLocalizations.of(context)!.password,
                               suffixIcon: Padding(
@@ -415,7 +412,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
-                        isDense: true,
                         border: const OutlineInputBorder(),
                         labelText: AppLocalizations.of(context)!.totp,
                         hintText: '000000',
