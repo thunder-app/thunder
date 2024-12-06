@@ -28,6 +28,7 @@ dependencies:
     git:
       url: https://github.com/xaynetwork/xayn_readability
   android_intent_plus: "^5.0.1"
+  app_links: "^6.3.2"
   auto_size_text: "^3.0.0"
   back_button_interceptor: "^7.0.0"
   background_fetch: "^1.2.1"
@@ -80,7 +81,6 @@ dependencies:
   stream_transform: "^2.1.0"
   super_sliver_list: "^0.4.1"
   swipeable_page_route: "^0.4.0"
-  uni_links: "^0.5.1"
   unifiedpush: "^5.0.1"
   url_launcher: "^6.1.11"
   # There is an intentional space between the packge name and colon below. Do not remove!

@@ -1,19 +1,22 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:app_links/app_links.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'deep_links_state.dart';
 
 /// A Cubit for handling deep links and determining their types.
 class DeepLinksCubit extends Cubit<DeepLinksState> {
   DeepLinksCubit() : super(const DeepLinksState());
-  StreamSubscription? _uniLinksStreamSubscription;
+  StreamSubscription? _appLinksStreamSubscription;
+
+  AppLinks appLinks = AppLinks();
 
   /// Analyzes a given link to determine its type and updates the state accordingly.
   ///
@@ -85,17 +88,12 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
     }
   }
 
-  /// Handle incoming links - the ones that the app will recieve from the OS
-  /// while already started.
+  /// Handles deep link navigation.
+  Future<void> initialize() async {
+    emit(state.copyWith(deepLinkStatus: DeepLinkStatus.loading));
 
-  Future<void> handleIncomingLinks() async {
-    emit(state.copyWith(
-      deepLinkStatus: DeepLinkStatus.loading,
-    ));
-    _uniLinksStreamSubscription = uriLinkStream.listen((Uri? uri) {
-      emit(state.copyWith(
-        deepLinkStatus: DeepLinkStatus.loading,
-      ));
+    _appLinksStreamSubscription = appLinks.uriLinkStream.listen((Uri? uri) {
+      emit(state.copyWith(deepLinkStatus: DeepLinkStatus.loading));
       getLinkType(uri.toString());
     }, onError: (Object err) {
       if (err is FormatException) {
@@ -114,30 +112,7 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
     });
   }
 
-  /// Handle the initial Uri - the one the app was started with
-  Future<void> handleInitialURI() async {
-    try {
-      emit(state.copyWith(
-        deepLinkStatus: DeepLinkStatus.loading,
-      ));
-      final uri = await getInitialUri();
-      if (uri == null) {
-        state.copyWith(
-          deepLinkStatus: DeepLinkStatus.empty,
-          error: AppLocalizations.of(GlobalContext.context)!.emptyUri,
-        );
-      } else {
-        getLinkType(uri.toString());
-      }
-    } catch (e) {
-      state.copyWith(
-        deepLinkStatus: DeepLinkStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
   void dispose() {
-    _uniLinksStreamSubscription?.cancel();
+    _appLinksStreamSubscription?.cancel();
   }
 }
