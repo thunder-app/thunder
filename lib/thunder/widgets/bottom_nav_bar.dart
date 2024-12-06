@@ -149,6 +149,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             context.read<SearchBloc>().add(FocusSearchEvent());
           }
 
+          if (widget.selectedPageIndex == 3 && index == 3) {
+            return;
+          }
+
           if (widget.selectedPageIndex != index) {
             widget.onPageChange(index);
           }
