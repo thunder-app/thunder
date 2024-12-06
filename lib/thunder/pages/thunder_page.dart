@@ -112,8 +112,7 @@ class _ThunderState extends State<Thunder> {
       handleSharedFilesAndText();
 
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-        BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
-        BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
+        BlocProvider.of<DeepLinksCubit>(context).initialize();
         BlocProvider.of<NotificationsCubit>(context).handleNotifications();
       }
     });
