@@ -576,6 +576,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         feedTypeSubview: event.feedTypeSubview,
         showHidden: event.showHidden,
         showSaved: event.showSaved,
+        notifyExcessiveApiCalls: () => emit(state.copyWith(excessivesApiCalls: true)),
       );
 
       // Extract information from the response

@@ -825,6 +825,10 @@
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
   },
+  "excessiveApiCallsWarning": "Your feed may be taking a while to load due to keyword filters.",
+  "@excessiveApiCallsWarning": {
+    "description": "A message shown to the user when the feed is taking a long time to load, possibly because many posts are being filtered out due to their keyword filters"
+  },
   "expand": "Expand",
   "@expand": {
     "description": "Action to expand something"

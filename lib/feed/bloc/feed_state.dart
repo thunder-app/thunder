@@ -28,6 +28,7 @@ final class FeedState extends Equatable {
     this.insertedPostIds = const [],
     this.showHidden = false,
     this.showSaved = false,
+    this.excessiveApiCalls = false,
   });
 
   /// The status of the feed
@@ -102,6 +103,9 @@ final class FeedState extends Equatable {
   /// Whether to show saved posts/comments in the feed
   final bool showSaved;
 
+  /// Whether the feed loading is making more API calls than we might expect, possibly due to filters
+  final bool excessiveApiCalls;
+
   FeedState copyWith({
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
@@ -127,6 +131,7 @@ final class FeedState extends Equatable {
     List<int>? insertedPostIds,
     bool? showHidden,
     bool? showSaved,
+    bool? excessivesApiCalls,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -153,6 +158,7 @@ final class FeedState extends Equatable {
       insertedPostIds: insertedPostIds ?? this.insertedPostIds,
       showHidden: showHidden ?? this.showHidden,
       showSaved: showSaved ?? this.showSaved,
+      excessiveApiCalls: excessivesApiCalls ?? false,
     );
   }
 
@@ -187,5 +193,6 @@ final class FeedState extends Equatable {
         insertedPostIds,
         showHidden,
         showSaved,
+        excessiveApiCalls,
       ];
 }

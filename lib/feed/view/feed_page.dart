@@ -6,6 +6,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -15,6 +16,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -33,6 +35,7 @@ import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/colors.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/global_context.dart';
 
 enum FeedType { community, user, general, account }
@@ -296,6 +299,7 @@ class _FeedViewState extends State<FeedView> {
   @override
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     bool tabletMode = thunderBloc.state.tabletMode;
     bool markPostReadOnScroll = thunderBloc.state.markPostReadOnScroll;
@@ -335,6 +339,21 @@ class _FeedViewState extends State<FeedView> {
               if (previous.dismissReadId != current.dismissReadId) dismissRead();
               if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
               if (current.dismissHiddenPostId != null && !thunderBloc.state.showHiddenPosts) dismissHiddenPost(current.dismissHiddenPostId!);
+              if (current.excessiveApiCalls) {
+                showSnackbar(
+                  l10n.excessiveApiCallsWarning,
+                  trailingIcon: Icons.settings_rounded,
+                  trailingAction: () {
+                    GoRouter.of(context).push(
+                      SETTINGS_FILTERS_PAGE,
+                      extra: [
+                        context.read<ThunderBloc>(),
+                        LocalSettings.keywordFilters,
+                      ],
+                    );
+                  },
+                );
+              }
               return true;
             },
             listener: (context, state) {
