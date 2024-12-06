@@ -15,7 +15,7 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
-import 'package:thunder/settings/pages/appearance_settings_page.dart';
+import 'package:thunder/settings/pages/theme_settings_page.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -422,7 +422,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                     canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
                     builder: (context) => MultiBlocProvider(
                       providers: [BlocProvider.value(value: thunderBloc)],
-                      child: const AppearanceSettingsPage(settingToHighlight: LocalSettings.userStyle),
+                      child: const ThemeSettingsPage(settingToHighlight: LocalSettings.userStyle),
                     ),
                   ),
                 );

@@ -12,6 +12,7 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/video_player_mode.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instances.dart';
@@ -21,6 +22,7 @@ import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
+import 'package:thunder/utils/settings_utils.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -266,6 +268,18 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
     }
   } catch (e) {
     debugPrint(e.toString());
+  }
+
+  // Try to see if it's an internal link
+  if (url.startsWith('thunder://')) {
+    String link = url;
+    link = link.replaceFirst('thunder://', '');
+
+    if (link.startsWith('setting-')) {
+      String setting = link.replaceFirst('setting-', '');
+      navigateToSetting(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
+      return;
+    }
   }
 
   // Fallback: open link in browser

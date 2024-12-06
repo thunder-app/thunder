@@ -100,20 +100,21 @@ class _SettingsPageState extends State<SettingsPage> {
                     localSettings.sortBy((setting) => setting.key);
 
                     return List<ListTile>.generate(
-                        localSettings.length,
-                        (index) => ListTile(
-                              subtitle: Text(
-                                  "${l10n.getLocalSettingLocalization(localSettings[index].category.toString())}${' > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}'}"),
-                              onTap: () {
-                                navigateToSetting(context, localSettings[index]);
-                                controller.closeView(null);
-                                controller.clear();
-                              },
-                              title: Text(
-                                l10n.getLocalSettingLocalization(localSettings[index].key),
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                              ),
-                            ));
+                      localSettings.length,
+                      (index) => ListTile(
+                        subtitle: Text(
+                            "${l10n.getLocalSettingLocalization(localSettings[index].category.toString())}${' > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}'}"),
+                        onTap: () {
+                          controller.closeView(null);
+                          controller.clear();
+                          navigateToSetting(context, localSettings[index]);
+                        },
+                        title: Text(
+                          l10n.getLocalSettingLocalization(localSettings[index].key),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),

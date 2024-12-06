@@ -7,7 +7,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/settings/pages/appearance_settings_page.dart';
+import 'package:thunder/settings/pages/theme_settings_page.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/swipe_picker.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -515,7 +515,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                 canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
                                 builder: (context) => MultiBlocProvider(
                                   providers: [BlocProvider.value(value: thunderBloc)],
-                                  child: const AppearanceSettingsPage(settingToHighlight: LocalSettings.actionColors),
+                                  child: const ThemeSettingsPage(settingToHighlight: LocalSettings.actionColors),
                                 ),
                               ),
                             );

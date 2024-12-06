@@ -18,6 +18,7 @@ import 'package:thunder/settings/pages/theme_settings_page.dart';
 import 'package:thunder/settings/pages/video_player_settings.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -62,6 +63,7 @@ void navigateToSetting(BuildContext context, LocalSettings setting) {
     );
   } else {
     final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
 
     Navigator.of(context).push(
       SwipeablePageRoute(
@@ -69,7 +71,10 @@ void navigateToSetting(BuildContext context, LocalSettings setting) {
         canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
         canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
         builder: (context) => MultiBlocProvider(
-          providers: [BlocProvider.value(value: thunderBloc)],
+          providers: [
+            BlocProvider.value(value: thunderBloc),
+            BlocProvider.value(value: userSettingsBloc),
+          ],
           child: switch (pageToNav) {
             SETTINGS_GENERAL_PAGE => GeneralSettingsPage(settingToHighlight: setting),
             SETTINGS_APPEARANCE_POSTS_PAGE => PostAppearanceSettingsPage(settingToHighlight: setting),
@@ -87,21 +92,6 @@ void navigateToSetting(BuildContext context, LocalSettings setting) {
       ),
     );
   }
-
-  // GoRouter.of(context).push(
-  //   pageToNav,
-  //   extra: pageToNav == SETTINGS_ABOUT_PAGE
-  //       ? [
-  //           context.read<ThunderBloc>(),
-  //           context.read<AccountBloc>(),
-  //           context.read<AuthBloc>(),
-  //           setting,
-  //         ]
-  //       : [
-  //           context.read<ThunderBloc>(),
-  //           setting,
-  //         ],
-  // );
 }
 
 void shareSetting(BuildContext context, LocalSettings? setting, String description) {
