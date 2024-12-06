@@ -500,7 +500,6 @@ void showInputDialog<T>({
                 },
                 autofocus: true,
                 decoration: InputDecoration(
-                  isDense: true,
                   border: const OutlineInputBorder(),
                   labelText: inputLabel,
                   errorText: contentWidgetError,

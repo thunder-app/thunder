@@ -202,7 +202,6 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       onSecondaryButtonPressed: (context) => context.pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
-          isDense: true,
           border: const OutlineInputBorder(),
           labelText: l10n.message(0),
         ),
@@ -238,7 +237,6 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       onSecondaryButtonPressed: (context) => context.pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
-          isDense: true,
           border: const OutlineInputBorder(),
           labelText: l10n.message(0),
         ),

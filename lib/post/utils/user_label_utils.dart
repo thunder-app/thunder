@@ -33,7 +33,6 @@ Future<({UserLabel? userLabel, bool deleted})> showUserLabelEditorDialog(BuildCo
             keyboardType: TextInputType.text,
             controller: controller,
             decoration: InputDecoration(
-              isDense: true,
               border: const OutlineInputBorder(),
               labelText: l10n.label,
               hintText: l10n.userLabelHint,

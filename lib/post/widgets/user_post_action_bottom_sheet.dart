@@ -182,7 +182,6 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
               const SizedBox(height: 16.0),
               TextFormField(
                 decoration: InputDecoration(
-                  isDense: true,
                   border: const OutlineInputBorder(),
                   labelText: l10n.message(0),
                 ),
