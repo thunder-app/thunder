@@ -258,6 +258,7 @@ class _ThunderState extends State<Thunder> {
     } catch (e) {
       if (context.mounted) {
         _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+        Navigator.of(context).pop();
       }
     }
   }
@@ -286,6 +287,7 @@ class _ThunderState extends State<Thunder> {
     // show a snackbar with option to open link
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      Navigator.of(context).pop();
     }
   }
 
@@ -304,6 +306,7 @@ class _ThunderState extends State<Thunder> {
     // show a snackbar with option to open link
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      Navigator.of(context).pop();
     }
   }
 
@@ -358,6 +361,7 @@ class _ThunderState extends State<Thunder> {
     // show a snackbar with option to open link
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      Navigator.of(context).pop();
     }
   }
 
@@ -374,6 +378,7 @@ class _ThunderState extends State<Thunder> {
 
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      Navigator.of(context).pop();
     }
   }
 
