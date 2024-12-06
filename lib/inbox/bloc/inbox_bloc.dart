@@ -452,9 +452,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       return emit(state.copyWith(
         status: InboxStatus.success,
-        replies: updatedReplies,
-        mentions: updatedMentions,
-        privateMessages: updatedPrivateMessages,
+        replies: state.showUnreadOnly ? [] : updatedReplies,
+        mentions: state.showUnreadOnly ? [] : updatedMentions,
+        privateMessages: state.showUnreadOnly ? [] : updatedPrivateMessages,
         totalUnreadCount: 0,
         repliesUnreadCount: 0,
         mentionsUnreadCount: 0,
