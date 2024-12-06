@@ -1919,6 +1919,14 @@
   },
   "saved": "Saved",
   "@saved": {},
+  "savedComments": "Saved Comments",
+  "@savedComments": {
+    "description": "Comments a user has saved for future reference or review."
+  },
+  "savedPosts": "Saved Posts",
+  "@savedPosts": {
+    "description": "Posts a user has saved for future reference or review."
+  },
   "scaled": "Scaled",
   "@scaled": {},
   "scrapeMissingLinkPreviews": "Scrape Missing Link Previews",

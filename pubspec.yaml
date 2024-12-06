@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   push:
-    path: packages/push/push
+    # path: packages/push/push
   lemmy_api_client:
     git:
       url: "https://github.com/thunder-app/lemmy_api_client.git"
