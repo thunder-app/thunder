@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -92,7 +91,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         showReportPostDialog();
         return;
       case PostPostAction.editPost:
-        context.pop();
+        Navigator.of(context).pop();
 
         ThunderBloc thunderBloc = context.read<ThunderBloc>();
         AccountBloc accountBloc = context.read<AccountBloc>();
@@ -142,19 +141,19 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
         return;
       case PostPostAction.deletePost:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: postViewMedia.postView.post.id, value: true));
         break;
       case PostPostAction.restorePost:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: postViewMedia.postView.post.id, value: false));
         break;
       case PostPostAction.lockPost:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: postViewMedia.postView.post.id, value: true));
         break;
       case PostPostAction.unlockPost:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: postViewMedia.postView.post.id, value: false));
         break;
       case PostPostAction.removePost:
@@ -164,24 +163,24 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         showRemovePostReasonDialog();
         break;
       case PostPostAction.pinPostToCommunity:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: postViewMedia.postView.post.id, value: true));
         break;
       case PostPostAction.unpinPostFromCommunity:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: postViewMedia.postView.post.id, value: false));
         break;
       // case PostPostAction.pinPostToInstance:
-      //   context.pop();
+      //   Navigator.of(context).pop();
       //   return;
       // case PostPostAction.unpinPostFromInstance:
-      //   context.pop();
+      //   Navigator.of(context).pop();
       //   return;
     }
   }
 
   void showReportPostDialog() {
-    context.pop();
+    Navigator.of(context).pop();
     final TextEditingController messageController = TextEditingController();
 
     showThunderDialog(
@@ -196,10 +195,10 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
                 value: messageController.text,
               ),
             );
-        dialogContext.pop();
+        Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: l10n.cancel,
-      onSecondaryButtonPressed: (context) => context.pop(),
+      onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
@@ -213,7 +212,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
   }
 
   void showRemovePostReasonDialog() {
-    context.pop();
+    Navigator.of(context).pop();
     final TextEditingController messageController = TextEditingController();
 
     showThunderDialog(
@@ -231,10 +230,10 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
                 },
               ),
             );
-        dialogContext.pop();
+        Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: l10n.cancel,
-      onSecondaryButtonPressed: (context) => context.pop(),
+      onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
           border: const OutlineInputBorder(),

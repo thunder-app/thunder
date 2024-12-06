@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -19,13 +20,18 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
   /// [link] is the URL to be analyzed.
   Future<void> getLinkType(String link) async {
     try {
-      if (link.startsWith('thunder://')) {
-        emit(state.copyWith(
+      // First, check to see if this is an internal Thunder link
+      List<String> internalLinks = ['thunder://setting-'];
+
+      if (internalLinks.where((internalLink) => link.startsWith(internalLink)).isNotEmpty) {
+        return emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,
           link: link,
           linkType: LinkType.thunder,
         ));
-      } else if (link.contains("/u/")) {
+      }
+
+      if (link.contains("/u/")) {
         emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,
           link: link,

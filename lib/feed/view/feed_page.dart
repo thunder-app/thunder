@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
@@ -6,10 +7,10 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/widgets/account_page_app_bar.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -27,6 +28,7 @@ import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/settings/pages/filter_settings_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -35,7 +37,6 @@ import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/colors.dart';
-import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/global_context.dart';
 
 enum FeedType { community, user, general, account }
@@ -344,12 +345,18 @@ class _FeedViewState extends State<FeedView> {
                   l10n.excessiveApiCallsWarning,
                   trailingIcon: Icons.settings_rounded,
                   trailingAction: () {
-                    GoRouter.of(context).push(
-                      SETTINGS_FILTERS_PAGE,
-                      extra: [
-                        context.read<ThunderBloc>(),
-                        LocalSettings.keywordFilters,
-                      ],
+                    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                    Navigator.of(context).push(
+                      SwipeablePageRoute(
+                        transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                        canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        builder: (context) => MultiBlocProvider(
+                          providers: [BlocProvider.value(value: thunderBloc)],
+                          child: const FilterSettingsPage(settingToHighlight: LocalSettings.keywordFilters),
+                        ),
+                      ),
                     );
                   },
                 );

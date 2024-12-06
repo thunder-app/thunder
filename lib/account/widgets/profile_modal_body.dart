@@ -4,7 +4,6 @@ import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
@@ -249,7 +248,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                               ? null
                               : () {
                                   context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id, reload: widget.reloadOnSave));
-                                  context.pop();
+                                  Navigator.of(context).pop();
                                 },
                           borderRadius: BorderRadius.circular(50),
                           child: AnimatedSize(
@@ -505,7 +504,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                     context.read<AuthBloc>().add(const LogOutOfAllAccounts());
                                     context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![index].anonymousInstance.instance));
                                     context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![index].anonymousInstance.instance));
-                                    context.pop();
+                                    Navigator.of(context).pop();
                                   },
                             borderRadius: BorderRadius.circular(50),
                             child: AnimatedSize(

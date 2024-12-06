@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +11,8 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/database/database.dart' hide Account;
 import 'package:thunder/core/enums/browser_mode.dart';
@@ -22,6 +23,7 @@ import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/utils/notification_settings.dart';
+import 'package:thunder/settings/pages/debug_settings_page.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -32,6 +34,8 @@ import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_settings_bloc.dart';
+import 'package:thunder/user/pages/user_settings_page.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -443,10 +447,25 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     child: Icon(Icons.chevron_right_rounded),
                   ),
                   onTap: () {
-                    GoRouter.of(context).push(SETTINGS_ACCOUNT_PAGE, extra: [
-                      context.read<ThunderBloc>(),
-                      LocalSettings.accountDefaultFeedType,
-                    ]);
+                    final AccountBloc accountBloc = context.read<AccountBloc>();
+                    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                    final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
+
+                    Navigator.of(context).push(
+                      SwipeablePageRoute(
+                        transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                        canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider.value(value: thunderBloc),
+                            BlocProvider.value(value: accountBloc),
+                            BlocProvider.value(value: userSettingsBloc),
+                          ],
+                          child: const UserSettingsPage(),
+                        ),
+                      ),
+                    );
                   },
                   highlightKey: settingToHighlightKey,
                   setting: null,
@@ -1053,9 +1072,19 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   child: Icon(Icons.chevron_right_rounded),
                 ),
                 onTap: () {
-                  GoRouter.of(context).push(SETTINGS_DEBUG_PAGE, extra: [
-                    context.read<ThunderBloc>(),
-                  ]);
+                  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                  Navigator.of(context).push(
+                    SwipeablePageRoute(
+                      transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                      canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                      canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                      builder: (context) => MultiBlocProvider(
+                        providers: [BlocProvider.value(value: thunderBloc)],
+                        child: const DebugSettingsPage(),
+                      ),
+                    ),
+                  );
                 },
                 highlightKey: settingToHighlightKey,
                 setting: null,
