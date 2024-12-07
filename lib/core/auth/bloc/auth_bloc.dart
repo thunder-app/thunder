@@ -18,6 +18,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -208,17 +209,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         lemmyClient.changeBaseUrl(instance);
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-        String redirectUri = "http://localhost:40000/oauth/callback"; // This must end in /oauth/callback.
-
         // TODO: Lookup available auth providers in the lemmy site response @ /api/v3/site.
         // For now it is hard coded for PrivacyPortal.
-        // TODO: Make `state` a random string.
+
+        // Build oauth provider url.
+        String redirectUri = "http://localhost:40000/oauth/callback"; // This must end in /oauth/callback.
+        String oauthClientState = const Uuid().v4();
         final url = Uri.https('app.privacyportal.org', 'oauth/authorize', {
           'response_type': 'code',
           'client_id': clientId,
           'redirect_uri': redirectUri,
           'scope': 'openid email',
-          'state': 'hellohello',
+          'state': oauthClientState,
         });
 
         // Start http server to receive callback.
@@ -228,13 +230,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Present the dialog to the user.
         final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "thunder");
 
-        // Wait for response.
+        // Wait for response from Provider.
         final providerResponse = await server.first;
 
         await server.close();
 
-        // TODO: Check that `state` matches the `state` that was sent to the provider.
-        // Example: if (uri != null && uri.toString().startsWith("myapp")) {}
+        // oauthProviderState must match oauthClientState to ensure the response came from the Provider.
+        String oauthProviderState = Uri.parse(providerResponse.uri.toString()).queryParameters['state'] ?? "failed";
+        if (oauthClientState != oauthProviderState) {
+          throw Exception("OAuth state check failed: oauthProviderState must match oauthClientState to ensure the response came from the Provider.");
+        }
 
         // Extract the code from the response.
         String code = Uri.parse(providerResponse.uri.toString()).queryParameters['code'] ?? "failed";
