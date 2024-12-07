@@ -237,8 +237,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // oauthProviderState must match oauthClientState to ensure the response came from the Provider.
         String oauthProviderState = Uri.parse(providerResponse.uri.toString()).queryParameters['state'] ?? "failed";
-        if (oauthClientState != oauthProviderState) {
-          throw Exception("OAuth state check failed: oauthProviderState must match oauthClientState to ensure the response came from the Provider.");
+        if (oauthProviderState == "failed" || oauthClientState != oauthProviderState) {
+          throw Exception("OAuth state-check failed: oauthProviderState $oauthClientState must match oauthClientState $oauthClientState to ensure the response came from the Provider.");
         }
 
         // Extract the code from the response.
@@ -246,7 +246,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         debugPrint("CODE");
         debugPrint(code);
 
-        // TODO: Fail to authenticate if code is null.
+        if (code == "failed") {
+          throw Exception("OAuth login failed: no code received from provider.");
+        }
 
         // TODO: This should use lemmy_api_client.
         // Authenthicate to lemmy and get a jwt.
