@@ -95,6 +95,7 @@ dependencies:
   youtube_player_flutter: "^9.1.0"
   youtube_player_iframe: "^5.2.0"
   flutter_web_auth_2: ^4.0.1
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
