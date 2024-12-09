@@ -15,6 +15,7 @@ Future<Map<String, dynamic>> fetchModlogEvents({
   int? communityId,
   int? userId,
   int? moderatorId,
+  int? commentId,
   required LemmyClient lemmyClient,
 }) async {
   Account? account = await fetchActiveProfileAccount();
@@ -34,6 +35,7 @@ Future<Map<String, dynamic>> fetchModlogEvents({
       communityId: communityId,
       otherPersonId: userId,
       modPersonId: moderatorId,
+      commentId: commentId,
     ));
 
     List<ModlogEventItem> items = [];
@@ -42,7 +44,10 @@ Future<Map<String, dynamic>> fetchModlogEvents({
     List<ModlogEventItem> removedPosts = getModlogResponse.removedPosts.map((ModRemovePostView e) => parseModlogEvent(ModlogActionType.modRemovePost, e)).toList();
     List<ModlogEventItem> lockedPosts = getModlogResponse.lockedPosts.map((ModLockPostView e) => parseModlogEvent(ModlogActionType.modLockPost, e)).toList();
     List<ModlogEventItem> featuredPosts = getModlogResponse.featuredPosts.map((ModFeaturePostView e) => parseModlogEvent(ModlogActionType.modFeaturePost, e)).toList();
-    List<ModlogEventItem> removedComments = getModlogResponse.removedComments.map((ModRemoveCommentView e) => parseModlogEvent(ModlogActionType.modRemoveComment, e)).toList();
+    List<ModlogEventItem> removedComments = getModlogResponse.removedComments
+        .where((ModRemoveCommentView e) => commentId == null ? true : e.comment.id == commentId)
+        .map((ModRemoveCommentView e) => parseModlogEvent(ModlogActionType.modRemoveComment, e))
+        .toList();
     List<ModlogEventItem> removedCommunities = getModlogResponse.removedCommunities.map((ModRemoveCommunityView e) => parseModlogEvent(ModlogActionType.modRemoveCommunity, e)).toList();
     List<ModlogEventItem> bannedFromCommunity = getModlogResponse.bannedFromCommunity.map((ModBanFromCommunityView e) => parseModlogEvent(ModlogActionType.modBanFromCommunity, e)).toList();
     List<ModlogEventItem> banned = getModlogResponse.banned.map((ModBanView e) => parseModlogEvent(ModlogActionType.modBan, e)).toList();
