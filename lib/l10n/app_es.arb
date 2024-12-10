@@ -2854,5 +2854,9 @@
   "showOwnContent": "Mostrar el contenido propio",
   "@showOwnContent": {
     "description": "Toggle to show your own posts/comments."
+  },
+  "excessiveApiCallsWarning": "Es posible que tu feed tarde en cargarse debido a los filtros de palabras clave.",
+  "@excessiveApiCallsWarning": {
+    "description": "A message shown to the user when the feed is taking a long time to load, possibly because many posts are being filtered out due to their keyword filters"
   }
 }
