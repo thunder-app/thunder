@@ -33,8 +33,9 @@ class LoginAttempt extends AuthEvent {
 /// This event is responsible for login authentication and handling related errors.
 class OAuthLoginAttempt extends AuthEvent {
   final String instance;
+  final bool showContentWarning;
 
-  const OAuthLoginAttempt({required this.instance});
+  const OAuthLoginAttempt({required this.instance, this.showContentWarning = true});
 }
 
 /// Cancels a login attempt by emitting the `failure` state.
