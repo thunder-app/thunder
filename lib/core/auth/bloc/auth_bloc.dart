@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -197,7 +198,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
 
       // lemmy client_id, can be found be found on the lemmy OAuth Configuration page.
-      String clientId = '9d16fb35-090f-4426-a456-368d9412861f';
+      //String clientId = '9d16fb35-090f-4426-a456-368d9412861f';
 
       try {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
@@ -209,17 +210,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         lemmyClient.changeBaseUrl(instance);
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-        // TODO: Lookup available auth providers in the lemmy site response @ /api/v3/site.
-        // For now it is hard coded for PrivacyPortal.
+        // TODO: Select from a list of Providers, for now it is hard coded to provider0.
+        GetSiteResponse siteResponse = await lemmy.run(const GetSite());
+        ProviderView provider = siteResponse.oauthProviders!.elementAt(0);
+        debugPrint(provider.toString());
+        var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
 
         // Build oauth provider url.
         String redirectUri = "http://localhost:40000/oauth/callback"; // This must end in /oauth/callback.
         String oauthClientState = const Uuid().v4();
-        final url = Uri.https('app.privacyportal.org', 'oauth/authorize', {
+        final url = Uri.https(authorizationEndpoint.host, authorizationEndpoint.path, {
           'response_type': 'code',
-          'client_id': clientId,
+          'client_id': provider.clientId,
           'redirect_uri': redirectUri,
-          'scope': 'openid email',
+          'scope': provider.scopes,
           'state': oauthClientState,
         });
 
@@ -271,6 +275,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: accessToken));
 
+        // TODO: Login fails when this is uncommented.
         //if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
         //  return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
         //}
