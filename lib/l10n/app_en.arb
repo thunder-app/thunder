@@ -26,9 +26,13 @@
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "accountSettingsExportedSuccessfully": "Lemmy account settings exported successfully to {savedFilePath}!",
-  "@accountSettingsExportedSuccessfully": {},
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
   "accountSettingsImportedSuccessfully": "Lemmy account settings imported successfully!",
-  "@accountSettingsImportedSuccessfully": {},
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
   "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
   "@accountSwitchParentCommentNotFound": {
     "description": "Error message for when we couldn't resolve comment to reply to"
@@ -818,9 +822,13 @@
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
   "errorImportingAccountSettings": "There was an error importing the settings. The file might not be in the right format.",
-  "@errorImportingAccountSettings": {},
+  "@errorImportingAccountSettings": {
+    "description": "Message shown to user when account there was an error importing the settings"
+  },
   "errorLoadingAccountSettings": "There was an error loading the settings file or the operation was canceled.",
-  "@errorLoadingAccountSettings": {},
+  "@errorLoadingAccountSettings": {
+    "description": "Message shown to user when there was an error loading the settings file"
+  },
   "errorMarkingReplyRead": "There was an error marking the reply as read.",
   "@errorMarkingReplyRead": {
     "description": "Error message for marking a reply read"
@@ -830,9 +838,13 @@
     "description": "Error message for marking a reply unread"
   },
   "errorParsingJson": "There was an error parsing the selected file. It may not be valid JSON.",
-  "@errorParsingJson": {},
+  "@errorParsingJson": {
+    "description": "Message shown to user when there was an error parsing the selected file"
+  },
   "errorSavingAccountSettings": "There was an error saving the settings file or the operation was canceled.",
-  "@errorSavingAccountSettings": {},
+  "@errorSavingAccountSettings": {
+    "description": "Message shown to user when there was an error saving the settings file"
+  },
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
@@ -1772,7 +1784,9 @@
     "description": "Description of choosing push notification server setting"
   },
   "rateLimitErrorMessage": "You have hit the rate limit for this request. Please wait and try again later.",
-  "@rateLimitErrorMessage": {},
+  "@rateLimitErrorMessage": {
+    "description": "Error message for the rate-limit Lemmy exception"
+  },
   "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
   "read": "Read",
@@ -2906,5 +2920,7 @@
     "description": "A positive status"
   },
   "youMustSelectAJsonFile": "You must select a .json file.",
-  "@youMustSelectAJsonFile": {}
+  "@youMustSelectAJsonFile": {
+    "description": "Error message shown to user when they attempt to import a JSON file that doesn't have the right extension"
+  }
 }
