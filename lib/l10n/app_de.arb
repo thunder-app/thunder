@@ -39,7 +39,7 @@
   },
   "all": "Alle",
   "@all": {},
-  "allPosts": "Alle Beiträge",
+  "allPosts": "Alle Posts",
   "@allPosts": {},
   "allowOpenSupportedLinks": "Erlaube Thunder, unterstütze Links zu öffnen.",
   "@allowOpenSupportedLinks": {
@@ -131,9 +131,9 @@
   "@collapseInformation": {
     "description": "Describes the action to collapse information - used in FAB settings"
   },
-  "collapsePost": "Beitrag einklappen",
+  "collapsePost": "Post einklappen",
   "@collapsePost": {},
-  "collapsePostPreview": "Beitragsvorschau einklappen",
+  "collapsePostPreview": "Postvorschau einklappen",
   "@collapsePostPreview": {
     "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
   },
@@ -207,7 +207,7 @@
   "@confirmResetCommentPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
   },
-  "confirmResetPostPreferences": "Dies wird alle Beitrags-Einstellungen zurücksetzen. Bist du sicher, dass du fortfahren möchtest?",
+  "confirmResetPostPreferences": "Dies wird alle Post Einstellungen zurücksetzen. Bist du sicher, dass du fortfahren möchtest?",
   "@confirmResetPostPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
   },
@@ -219,9 +219,9 @@
   "@copy": {},
   "copyText": "Text kopieren",
   "@copyText": {},
-  "couldNotDetermineCommentDelete": "Fehler: Konnte Kommentar nicht löschen (Beitrag nicht bestimmbar)",
+  "couldNotDetermineCommentDelete": "Fehler: Konnte Kommentar nicht löschen (Post nicht bestimmbar)",
   "@couldNotDetermineCommentDelete": {},
-  "couldNotDeterminePostComment": "Fehler: Kommentar nicht gespeichert (Beitrag nicht bestimmbar).",
+  "couldNotDeterminePostComment": "Fehler: Kommentar nicht gespeichert (Post nicht bestimmbar).",
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Deine Meldung konnte nicht abgesendet werden. Bitte versuche es später wieder",
   "@couldntCreateReport": {},
@@ -233,7 +233,7 @@
   "@createComment": {},
   "createNewCrossPost": "Neuen Crosspost erstellen",
   "@createNewCrossPost": {},
-  "createPost": "Beitrag erstellen",
+  "createPost": "Post erstellen",
   "@createPost": {},
   "creator": "Autor",
   "@creator": {
@@ -273,7 +273,7 @@
   "@deleteLocalPreferencesDescription": {
     "description": "Description for confirmation action to delete local preferences"
   },
-  "dimReadPosts": "Gelesene Beiträge werden ausgegraut",
+  "dimReadPosts": "Gelesene Posts werden ausgegraut",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
   },
@@ -293,7 +293,7 @@
   "@edit": {},
   "editComment": "Kommentar bearbeiten",
   "@editComment": {},
-  "editPost": "Beiträge bearbeiten",
+  "editPost": "Post bearbeiten",
   "@editPost": {
     "description": "Title when editing a post."
   },
@@ -309,7 +309,7 @@
   "@enableFeedFab": {
     "description": "Enable the Floating Action Button for the feed"
   },
-  "enablePostFab": "Schwebenden Button auf Beiträgen aktivieren",
+  "enablePostFab": "Schwebenden Button auf Posts aktivieren",
   "@enablePostFab": {
     "description": "Enable the Floating Action Button for the post"
   },
@@ -331,9 +331,9 @@
   },
   "expandOptions": "Optionen erweitern",
   "@expandOptions": {},
-  "expandPost": "Beitrag erweitern",
+  "expandPost": "Post erweitern",
   "@expandPost": {},
-  "expandPostPreview": "Beitrags-Vorschau erweitern",
+  "expandPostPreview": "Postvorschau erweitern",
   "@expandPostPreview": {
     "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
   },
@@ -463,7 +463,7 @@
   "@commentFontScale": {
     "description": "Setting for comment font scale"
   },
-  "countPosts": "{count} Beiträge",
+  "countPosts": "{count} Posts",
   "@countPosts": {
     "description": "Number of posts"
   },
@@ -471,7 +471,7 @@
   "@currentNotificationsMode": {
     "description": "A status indicator for the current notifications mode"
   },
-  "debugNotificationsDescription": "Verwenden Sie die folgenden Optionen, um Probleme im Zusammenhang mit Benachrichtigungen zu beheben.",
+  "debugNotificationsDescription": "Verwende die folgenden Optionen, um Probleme im Zusammenhang mit Benachrichtigungen zu beheben.",
   "@debugNotificationsDescription": {
     "description": "A description for the notification debugging section"
   },
@@ -483,11 +483,11 @@
   "@discussionLanguages": {
     "description": "Only load posts and communities in your language(s)"
   },
-  "featuredPost": "Besonderer Beitrag",
+  "featuredPost": "Besonderer Post",
   "@featuredPost": {
     "description": "Short decription for moderator action to feature a post"
   },
-  "fullScreenNavigationSwipeDescription": "Wischen Sie irgendwo hin, um zurückzugehen, wenn die Links-nach-Rechts-Gesten deaktiviert sind",
+  "fullScreenNavigationSwipeDescription": "Wische irgendwohin, um zurückzugehen, wenn die Links-nach-Rechts-Gesten deaktiviert sind",
   "@fullScreenNavigationSwipeDescription": {},
   "in_": "von",
   "@in_": {
@@ -513,7 +513,7 @@
   "@instance": {
     "description": "Heading for an instance"
   },
-  "languageNotAllowed": "Die Community, in der Sie den Beitrag verfassen, erlaubt keine Beiträge in der von Ihnen gewählten Sprache. Versuchen Sie eine andere Sprache.",
+  "languageNotAllowed": "Die Community, in der du den Post verfasst, erlaubt keine Posts in der von dir gewählten Sprache. Versuche eine andere Sprache.",
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
   },
@@ -523,7 +523,7 @@
   "@localOnly": {
     "description": "Local community visibility"
   },
-  "lockPost": "Lock Beitrag",
+  "lockPost": "Sperre Post",
   "@lockPost": {
     "description": "Action for locking a post (moderator action)"
   },
@@ -555,7 +555,7 @@
   "@blockSettingLabel": {
     "description": "Setting for user, community, and instance block settings"
   },
-  "experimentalFeaturesDescription": "Diese Funktionen befinden sich noch in der Entwicklung und können instabil sein. Die Verwendung erfolgt auf eigene Gefahr. Sie müssen Thunder neu starten, damit sie wirksam werden.",
+  "experimentalFeaturesDescription": "Diese Funktionen befinden sich noch in der Entwicklung und können instabil sein. Die Verwendung erfolgt auf eigene Gefahr. Du musst Thunder neu starten, damit sie wirksam werden.",
   "@experimentalFeaturesDescription": {
     "description": "Description for experimental features setting"
   },
@@ -593,7 +593,7 @@
   "@enableFloatingButtonOnFeeds": {
     "description": "Setting for enable floating button on feeds"
   },
-  "internetOrInstanceIssues": "Möglicherweise sind Sie nicht mit dem Internet verbunden, oder Ihre Instanz ist derzeit nicht verfügbar.",
+  "internetOrInstanceIssues": "Möglicherweise bist du nicht mit dem Internet verbunden, oder deine Instanz ist derzeit nicht verfügbar.",
   "@internetOrInstanceIssues": {},
   "addAsCommunityModerator": "Hinzufügen als Community Moderator",
   "@addAsCommunityModerator": {
@@ -651,7 +651,7 @@
   "@countLocalSubscribers": {
     "description": "Number of local subscribers"
   },
-  "couldntFindPost": "Der angeforderte Beitrag kann nicht geladen werden. Er wurde möglicherweise gelöscht oder entfernt.",
+  "couldntFindPost": "Der angeforderte Post kann nicht geladen werden. Er wurde möglicherweise gelöscht oder entfernt.",
   "@couldntFindPost": {
     "description": "Error message for when we can't load a post."
   },
@@ -675,11 +675,11 @@
   "@deleteAccount": {
     "description": "Label for action to delete account"
   },
-  "deletePost": "Lösche Beitrag",
+  "deletePost": "Lösche Post",
   "@deletePost": {
     "description": "Action for deleting a post"
   },
-  "deleteUserLabelConfirmation": "Sind Sie sicher, dass Sie das Label löschen wollen?",
+  "deleteUserLabelConfirmation": "Bist du sicher, dass du die Bezeichnung löschen möchtest?",
   "@deleteUserLabelConfirmation": {
     "description": "Confirmation message for deleting a label"
   },
@@ -737,7 +737,7 @@
   "@green": {
     "description": "The color green"
   },
-  "hideNsfwPostsFromFeed": "Verstecke NSFW Beiträge im Feed",
+  "hideNsfwPostsFromFeed": "Verstecke NSFW Posts im Feed",
   "@hideNsfwPostsFromFeed": {
     "description": "Toggle to hide NSFW posts from the feed."
   },
@@ -745,13 +745,13 @@
   "@information": {
     "description": "Information heading - used in the FAB settings page"
   },
-  "languageFilters": "Sie suchen nach Sprachfiltern?",
+  "languageFilters": "Du suchst nach Sprachfiltern?",
   "@languageFilters": {},
   "accountSwitchParentCommentNotFound": "Der ausgewählte Kommentar wurde nicht auf '{instance}'gefunden. Wechsle zu vorherigem Konto.",
   "@accountSwitchParentCommentNotFound": {
     "description": "Error message for when we couldn't resolve comment to reply to"
   },
-  "accountSwitchPostNotFound": "Der gewählte Beitrag wurde nicht auf '{instance}'gefunden. Wechsle zurück auf vorheriges Konto.",
+  "accountSwitchPostNotFound": "Der gewählte Post wurde nicht auf '{instance}'gefunden. Wechsle zurück auf vorheriges Konto.",
   "@accountSwitchPostNotFound": {
     "description": "Error message for when we couldn't resolve post to reply to"
   },
@@ -781,7 +781,7 @@
   "@instances": {
     "description": "Title for settings related to instances"
   },
-  "floatingActionButtonInformation": "Thunder bietet ein vollständig anpassbares FAB- Element, das ein paar Gesten unterstützt.\n- Wischen Sie nach oben, um zusätzliche FAB-Aktionen anzuzeigen\n- Wischen Sie nach unten/oben, um den FAB ein- oder auszublenden\n\nUm die Haupt- und Nebenaktionen für den FAB anzupassen, drücken Sie lange auf eine der Aktionen unten.",
+  "floatingActionButtonInformation": "Thunder bietet ein vollständig anpassbares FAB- Element, das ein paar Gesten unterstützt.\n- Wische nach oben, um zusätzliche FAB-Aktionen anzuzeigen\n- Wische nach unten/oben, um den FAB ein- oder auszublenden\n\nUm die Haupt- und Nebenaktionen für den FAB anzupassen, drücke lange auf eine der Aktionen.",
   "@floatingActionButtonInformation": {
     "description": "Description of the FAB in the settings page"
   },
@@ -849,9 +849,9 @@
   "@instanceActions": {
     "description": "Heading for instance actions page"
   },
-  "localPosts": "Lokale Beiträge",
+  "localPosts": "Lokale Posts",
   "@localPosts": {},
-  "lockedPost": "Gesperrter Beitrag",
+  "lockedPost": "Gesperrter Post",
   "@lockedPost": {
     "description": "Short decription for moderator action to lock a post"
   },
@@ -959,7 +959,7 @@
   "@includeTitle": {},
   "instanceHasAlreadyBenAdded": "{instance} wurde bereits hinzugefügt.",
   "@instanceHasAlreadyBenAdded": {},
-  "keywordFilterDescription": "Filtert Beiträge, die Schlüsselwörter im Titel, im Text oder in der URL enthalten",
+  "keywordFilterDescription": "Filtert Posts, die Schlüsselwörter im Titel, im Text oder in der URL enthalten",
   "@keywordFilterDescription": {
     "description": "Description of keyword filter settings"
   },
@@ -999,7 +999,7 @@
   "@databaseExportedSuccessfully": {
     "description": "Message shown to the user when the db was successfully exported"
   },
-  "exportSettingsSubtitle": "Die Einstellungen enthalten alle Präferenzen, die Sie in Thunder konfiguriert haben.",
+  "exportSettingsSubtitle": "Die Einstellungen enthalten alle Präferenzen, die du konfiguriert hast.",
   "@exportSettingsSubtitle": {
     "description": "Subtitle of setting for exporting settings"
   },
@@ -1031,7 +1031,7 @@
   "@connectedToUnifiedPushDistributorApp": {
     "description": "Tell the user which UnifiedPush app we're connected to"
   },
-  "databaseExportWarning": "Die Datenbank kann sensible Informationen über Ihr Lemmy-Konto enthalten. Wenn Sie sie exportieren, sollten Sie sie nicht an Dritte weitergeben. Möchten Sie fortfahren?",
+  "databaseExportWarning": "Die Datenbank kann sensible Informationen über dein Lemmy-Konto enthalten. Wenn du sie exportierst, solltest du sie nicht an Dritte weitergeben. Möchtest du fortfahren?",
   "@databaseExportWarning": {
     "description": "Message shown to the user when exporting the db"
   },
@@ -1039,11 +1039,11 @@
   "@dangerZone": {
     "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
   },
-  "deleteAccountDescription": "Um Ihr Konto endgültig zu löschen, werden Sie zu Ihrer Instanzseite weitergeleitet. \n\nSind Sie sicher, dass Sie fortfahren möchten?",
+  "deleteAccountDescription": "Um dein Konto endgültig zu löschen, wirst du zu deiner Instanzseite weitergeleitet. \n\nBist du sicher, dass du fortfahren möchtest?",
   "@deleteAccountDescription": {
     "description": "Description for confirmation action to delete account"
   },
-  "deselectUndeterminedWarning": "Wenn Sie die Option Undetermined deaktivieren, werden Sie die meisten Inhalte nicht sehen.",
+  "deselectUndeterminedWarning": "Wenn du die Option Undetermined deaktivierst, wirst du viele Inhalte nicht sehen.",
   "@deselectUndeterminedWarning": {},
   "expand": "Erweitern",
   "@expand": {
@@ -1061,7 +1061,7 @@
   "@foundUnifiedPushDistribtorApp": {
     "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
   },
-  "havingIssuesWithNotifications": "Haben Sie Probleme mit Benachrichtigungen?",
+  "havingIssuesWithNotifications": "Hast du Probleme mit Benachrichtigungen?",
   "@havingIssuesWithNotifications": {
     "description": "A shortcut to navigate to the notification debugging section"
   },
@@ -1077,7 +1077,7 @@
   "@leftLongSwipe": {
     "description": "Setting for left long swipe"
   },
-  "linkHandlingInApp": "Verwenden Sie den integrierten Browser von Thunder",
+  "linkHandlingInApp": "Verwende den integrierten Browser von Thunder",
   "@linkHandlingInApp": {
     "description": "Description for in-app link handling"
   },
@@ -1093,7 +1093,7 @@
   "@communityActions": {
     "description": "Heading for community actions page"
   },
-  "enableFloatingButtonOnPosts": "Aktiviere schwebenden Button auf Beiträgen",
+  "enableFloatingButtonOnPosts": "Aktiviere schwebenden Button auf Posts",
   "@enableFloatingButtonOnPosts": {
     "description": "Setting for enable floating button on posts"
   },
@@ -1147,7 +1147,7 @@
   "@guestModeFeedSettings": {
     "description": "Feed settings for guest accounts"
   },
-  "guestModeFeedSettingsLabel": "Die folgenden Einstellungen gelten nur für Gastkonten. Um die Feed-Einstellungen für Ihr Konto anzupassen, gehen Sie zu Kontoeinstellungen.",
+  "guestModeFeedSettingsLabel": "Die folgenden Einstellungen gelten nur für Gastkonten. Um die Feed-Einstellungen für dein Konto anzupassen, gehen zu Kontoeinstellungen.",
   "@guestModeFeedSettingsLabel": {
     "description": "Description for guest mode feed settings"
   },
@@ -1175,7 +1175,7 @@
   "@importExportDatabase": {
     "description": "Overall name of setting for importing or exporting the db (for searching)"
   },
-  "includePostLink": "Beitrags-Link einschließen",
+  "includePostLink": "Post-Link einschließen",
   "@includePostLink": {},
   "imageDimensionTimeout": "Zeitüberschreitung Bild Abmessungen",
   "@imageDimensionTimeout": {
@@ -1212,5 +1212,941 @@
   "exportDatabase": "Exportiere Datenbank",
   "@exportDatabase": {
     "description": "Name of the setting for exporting the db"
+  },
+  "me": "Ich",
+  "@me": {
+    "description": "Label for the current user."
+  },
+  "missingErrorMessage": "Keine Fehlermeldung vorhanden",
+  "@missingErrorMessage": {},
+  "navigateDown": "Nächster Kommentar",
+  "@navigateDown": {},
+  "noCommunityBlocks": "Keine gesperrten Communities",
+  "@noCommunityBlocks": {},
+  "never": "Niemals",
+  "@never": {},
+  "notificationsNotAllowed": "Benachrichtigungen sind für Thunder in den Systemeinstellungen nicht erlaubt",
+  "@notificationsNotAllowed": {
+    "description": "Description for when notifications are now allowed for app"
+  },
+  "notifications": "{count, plural, zero {Benachrichtigung} one {Benachrichtigung} other {Benachrichtigungen}}",
+  "@notifications": {
+    "description": "Message formatting for notifications count."
+  },
+  "onWifi": "Mit WLAN",
+  "@onWifi": {},
+  "saveSettings": "Einstellungen speichern",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "shareLink": "Externen Link teilen",
+  "@shareLink": {},
+  "showExpandedTaglines": "Erweiterte Schlagworte anzeigen",
+  "@showExpandedTaglines": {
+    "description": "Toggle that shows the full expanded tagline in the feed page"
+  },
+  "modAdd": "Hinzufügen/Entfernen von Instanz-Moderatoren",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modlog": "Modlog",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "modRemovePost": "Posts entfernen/wiederherstellen",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "modTransferCommunity": "Communities übertragen",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
+  "noCommunitiesFound": "Keine Communities gefunden",
+  "@noCommunitiesFound": {},
+  "noCompatibleAppFound": "Keine kompatible App gefunden",
+  "@noCompatibleAppFound": {
+    "description": "Tell the user we didn't find a compatible UnifiedPush app"
+  },
+  "noDisplayNameSet": "Kein Anzeigename festgelegt",
+  "@noDisplayNameSet": {
+    "description": "Message for no display name set"
+  },
+  "noKeywordFilters": "Keine Stichwortfilter hinzugefügt",
+  "@noKeywordFilters": {
+    "description": "Message for no keyword filters added"
+  },
+  "noInstanceBlocks": "Keine blockierten Instanzen.",
+  "@noInstanceBlocks": {},
+  "noMatrixUserSet": "Kein Matrix-Benutzer eingestellt",
+  "@noMatrixUserSet": {
+    "description": "Message for no matrix user set"
+  },
+  "noItems": "Keine Einträge",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "noProfileBioSet": "Keine Profilbeschreibung eingestellt",
+  "@noProfileBioSet": {
+    "description": "Message for no profile bio set"
+  },
+  "noMentions": "Keine Erwähnungen",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
+  },
+  "noMessages": "Keine Nachrichten",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
+  "nothingToShare": "Es gibt nichts zu teilen",
+  "@nothingToShare": {},
+  "notValidLemmyInstance": "{instance} scheint keine gültige Lemmy-Instanz zu sein",
+  "@notValidLemmyInstance": {},
+  "notificationsBehaviourSettings": "Benachrichtigungen",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "postUploadImageError": "Bild kann nicht hochgeladen werden",
+  "@postUploadImageError": {},
+  "purgedPost": "Gelöschter Post",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
+  "purgedComment": "Gelöschter Kommentar",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "removedCommunity": "Gelöschte Community",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
+  "replyingTo": "Antworte auf {author}",
+  "@replyingTo": {},
+  "reset": "Zurücksetzen",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetCommentPreferences": "Kommentar-Einstellungen zurücksetzen",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "report": "{count, plural, zero {Melden} one {Melden} other {Melden} } ",
+  "@report": {},
+  "resetPreferencesAndData": "Einstellungen und Daten zurücksetzen",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
+  "restoredCommentFromDraft": "Wiederhergestellter Kommentar vom Entwurf",
+  "@restoredCommentFromDraft": {},
+  "restoredCommunity": "Wiederhergestellte Community",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "restoredPost": "Wiederhergestellter Post",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
+  "selectAccountToPostAs": "Wähle das Konto, mit dem geposted werden soll",
+  "@selectAccountToPostAs": {
+    "description": "Heading for account selector when posting"
+  },
+  "selectLanguage": "Sprache auswählen",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "sendBackgroundTestUnifiedPushNotification": "Senden einer UnifiedPush-Benachrichtigung im Hintergrund",
+  "@sendBackgroundTestUnifiedPushNotification": {
+    "description": "The option to send a background UnifiedPUsh notification for testing"
+  },
+  "shareCommunity": "Community teilen",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "shareMediaLink": "Medien-Link teilen",
+  "@shareMediaLink": {
+    "description": "Action for sharing the link to the media associated with a post"
+  },
+  "showAll": "Alle anzeigen",
+  "@showAll": {},
+  "showCommunityDisplayNames": "Namen der Community anzeigen",
+  "@showCommunityDisplayNames": {
+    "description": "Setting for showing community display names"
+  },
+  "showFullHeightImages": "Bilder mit voller Höhe anzeigen",
+  "@showFullHeightImages": {
+    "description": "Toggle to view full height images."
+  },
+  "showFullDate": "Vollständiges Datum anzeigen",
+  "@showFullDate": {
+    "description": "Toggle to show full date on posts"
+  },
+  "manageAccounts": "Konten verwalten",
+  "@manageAccounts": {},
+  "nestedCommentIndicatorColor": "Farbe für verschachtelte Kommentare",
+  "@nestedCommentIndicatorColor": {
+    "description": "Setting for nested comment indicator color"
+  },
+  "postBehaviourSettings": "Posts",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "pushNotification": "Push-Benachrichtigungen",
+  "@pushNotification": {
+    "description": "Setting for push notifications"
+  },
+  "pushNotificationDescription": "Wenn aktiviert, sendet Thunder deine(n) JWT-Token an den Server, um neue Benachrichtigungen abzufragen. \n\n **Hinweis:** Dies wird erst beim nächsten Start der App wirksam.",
+  "@pushNotificationDescription": {
+    "description": "Description of push notification setting"
+  },
+  "restoredPostFromDraft": "Post aus Entwurf wiederhergestellt",
+  "@restoredPostFromDraft": {},
+  "rightLongSwipe": "Langes Wischen nach rechts",
+  "@rightLongSwipe": {
+    "description": "Setting for right long swipe"
+  },
+  "screenReaderProfile": "Screen Reader Profil",
+  "@screenReaderProfile": {},
+  "searchComments": "Kommentare suchen",
+  "@searchComments": {},
+  "selectCommunity": "Wählen Sie eine Community (erforderlich)",
+  "@selectCommunity": {},
+  "settings": "Einstellungen",
+  "@settings": {},
+  "open": "Offen",
+  "@open": {},
+  "removalReason": "Entfernungsgrund",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
+  "red": "Rot",
+  "@red": {
+    "description": "The color red"
+  },
+  "search": "Suche",
+  "@search": {},
+  "postTitleFontScale": "Posttitel Schriftgröße",
+  "@postTitleFontScale": {
+    "description": "Setting for post title font scale"
+  },
+  "selectAll": "Alle auswählen",
+  "@selectAll": {
+    "description": "Action for selecting all text"
+  },
+  "showCommentActionButtons": "Kommentar-Aktionsschaltflächen anzeigen",
+  "@showCommentActionButtons": {
+    "description": "Toggle to show comment action buttons."
+  },
+  "refresh": "Aktualisieren",
+  "@refresh": {},
+  "modBan": "Instanz-Benutzer sperren/entsperren",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance users"
+  },
+  "none": "Keine",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
+  "permissionDeniedMessage": "Thunder benötigt einige Berechtigungen, um dieses Bild zu speichern, die verweigert wurden.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "removeKeyword": "Entferne \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword filter"
+  },
+  "retry": "Wiederholen",
+  "@retry": {},
+  "saved": "Gespeichert",
+  "@saved": {},
+  "shareImage": "Bild teilen",
+  "@shareImage": {
+    "description": "Action for sharing an image"
+  },
+  "shareThumbnail": "Vorschaubild teilen",
+  "@shareThumbnail": {
+    "description": "Action for sharing the thumbnail of a post"
+  },
+  "matrixUser": "Matrix Benutzer",
+  "@matrixUser": {
+    "description": "Label for Matrix user id"
+  },
+  "modBanFromCommunity": "Benutzer von Communities sperren/entsperren",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "newPost": "Neuer Post",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "noAccountsAdded": "Es wurden keine Konten hinzugefügt",
+  "@noAccountsAdded": {
+    "description": "Placeholder text when no accounts have been added"
+  },
+  "navigation": "Navigation",
+  "@navigation": {},
+  "noUserLabels": "Sie haben noch keine Benutzerkennzeichnungen erstellt",
+  "@noUserLabels": {
+    "description": "Placeholder message for empty list of labels"
+  },
+  "noSubscriptions": "Keine Abonnements",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "noUserBlocks": "Keine gesperrten Benutzer.",
+  "@noUserBlocks": {},
+  "on": "an",
+  "@on": {},
+  "pinPostToCommunity": "Post an Community anheften",
+  "@pinPostToCommunity": {
+    "description": "Action for pinning a post to a community (moderator action)"
+  },
+  "permissionDenied": "Thunder hat nicht die Berechtigung, Benachrichtigungen anzuzeigen. Bitte aktiviere dies in den Systemeinstellungen.",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "post": "Post",
+  "@post": {
+    "description": "Describes a single post"
+  },
+  "postLocked": "Post gesperrt. Keine Antworten erlaubt.",
+  "@postLocked": {},
+  "postActions": "Post Aktionen",
+  "@postActions": {
+    "description": "Describes a given set of actions that can be performed on a post"
+  },
+  "postViewType": "Post-Ansicht Typ",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
+  "profileAppliedSuccessfully": "{profile} erfolgreich angewandt!",
+  "@profileAppliedSuccessfully": {},
+  "readAll": "Alles gelesen",
+  "@readAll": {},
+  "removedCommunityFromSubscriptions": "Von der Community abgemeldet",
+  "@removedCommunityFromSubscriptions": {},
+  "requiredField": "*benötigt",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
+  },
+  "setLongPress": "Als Langdruckaktion einstellen",
+  "@setLongPress": {},
+  "settingsFeedCards": "Diese Einstellungen gelten für die Karten im Haupt-Feed, Aktionen sind immer verfügbar, wenn Beiträge geöffnet werden.",
+  "@settingsFeedCards": {
+    "description": "Settings for controlling the display of cards in the main feed."
+  },
+  "shareCommentLocal": "Kommentar-Link teilen (Meine Instanz)",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "showCrossPosts": "Cross Posts anzeigen",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "openInBrowser": "Im Browser öffnen",
+  "@openInBrowser": {},
+  "openLinksInExternalBrowser": "Links in externem Browser öffnen",
+  "@openLinksInExternalBrowser": {
+    "description": "Toggle to open links in an external browser."
+  },
+  "purple": "Lila",
+  "@purple": {
+    "description": "The color purple"
+  },
+  "purgedCommunity": "Gelöschte Community",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "searchPostsFederatedWith": "Suche nach Posts, die mit {instance} föderiert sind",
+  "@searchPostsFederatedWith": {},
+  "searchUsersFederatedWith": "Suche nach Benutzern, die mit {instance} föderiert sind",
+  "@searchUsersFederatedWith": {},
+  "sensitiveContentWarning": "Kann sensible Inhalte enthalten. Zum Anzeigen antippen.",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
+  "sentRequestForTestNotification": "Anfrage für Testbenachrichtigung gesendet.",
+  "@sentRequestForTestNotification": {},
+  "openByDefault": "Standardmäßig geöffnet",
+  "@openByDefault": {
+    "description": "Indicating the default behavior of opening links."
+  },
+  "postTogglePreview": "Umschalten der Vorschau",
+  "@postTogglePreview": {},
+  "preview": "Vorschau",
+  "@preview": {},
+  "showBotAccounts": "Bot-Konten anzeigen",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "searchByUrl": "Suche nach URL",
+  "@searchByUrl": {},
+  "postURL": "URL",
+  "@postURL": {},
+  "loginToSeeInbox": "Anmelden, um den Posteingang zu sehen",
+  "@loginToSeeInbox": {},
+  "openSettings": "Einstellungen öffnen",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "replyNotSupported": "Das Antworten aus dieser Ansicht wird derzeit noch nicht unterstützt",
+  "@replyNotSupported": {},
+  "restore": "Wiederherstellen",
+  "@restore": {},
+  "pinToCommunity": "Pin an Community",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
+  "postSavedAsDraft": "Post als Entwurf gespeichert",
+  "@postSavedAsDraft": {},
+  "posts": "Posts",
+  "@posts": {},
+  "scaled": "Skaliert",
+  "@scaled": {},
+  "shareUserLinkLocal": "Benutzer-Link teilen (Meine Instanz)",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
+  "shareUserLink": "Benutzer-Link teilen",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "linksBehaviourSettings": "Links",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "markAsRead": "Als gelesen markieren",
+  "@markAsRead": {
+    "description": "Label for the action to mark a message as read"
+  },
+  "postBodyShowCommunityAvatar": "Community-Avatar anzeigen",
+  "@postBodyShowCommunityAvatar": {
+    "description": "Whether to show the community avatar for post bodies"
+  },
+  "postSwipeGesturesHint": "Möchtest du stattdessen Schaltflächen verwenden? Ändere in den allgemeinen Einstellungen, welche Schaltflächen auf den Karten erscheinen.",
+  "@postSwipeGesturesHint": {},
+  "removeAccount": "Konto löschen",
+  "@removeAccount": {},
+  "searchCommentsFederatedWith": "Suche nach Kommentaren, die mit {instance} föderiert sind",
+  "@searchCommentsFederatedWith": {},
+  "sendTestLocalNotification": "Lokale Testbenachrichtigung senden",
+  "@sendTestLocalNotification": {
+    "description": "The option to send a notification for testing"
+  },
+  "sendTestUnifiedPushNotification": "Test UnifiedPush-Benachrichtigung senden",
+  "@sendTestUnifiedPushNotification": {
+    "description": "The option to send a UnifiedPush notification for testing"
+  },
+  "settingTypeNotSupported": "Einstellungen vom Typ {settingType} werden noch nicht unterstützt.",
+  "@settingTypeNotSupported": {},
+  "showFullDateDescription": "Volles Datum bei Posts anzeigen",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
+  },
+  "searchCommunitiesFederatedWith": "Suche nach Communities, die mit {instance} föderiert sind",
+  "@searchCommunitiesFederatedWith": {},
+  "showEdgeToEdgeImages": "Bilder von Rand zu Rand anzeigen",
+  "@showEdgeToEdgeImages": {
+    "description": "Toggle to view edge to edge images."
+  },
+  "readerMode": "Lesemodus",
+  "@readerMode": {
+    "description": "Menu item for toggling reader mode"
+  },
+  "removedPost": "Entfernter Post",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
+  "removedComment": "Gelöschter Kommentar",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "replyToPost": "Antwort auf Post",
+  "@replyToPost": {},
+  "restoredComment": "Wiederhergestellter Kommentar",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
+  "shareComment": "Kommentar-Link teilen",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "reducesAnimations": "Verringert die in Thunder verwendeten Animationen",
+  "@reducesAnimations": {},
+  "removeAsCommunityModerator": "Als Community-Moderator entfernen",
+  "@removeAsCommunityModerator": {
+    "description": "Moderator action to remove user as community moderator"
+  },
+  "settingOverrideLabel": "Diese Einstellungen setzen die Standardeinstellungen von Thunder außer Kraft.",
+  "@settingOverrideLabel": {
+    "description": "Message which indicates that the (instance) settings override the app settings"
+  },
+  "label": "Bezeichnung",
+  "@label": {
+    "description": "Text field label for a user label"
+  },
+  "removePost": "Post löschen",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "remove": "Entfernen",
+  "@remove": {},
+  "markPostAsReadOnScroll": "Beim Scrollen als gelesen markieren",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "postSwipeActions": "Post-Swipe-Aktionen",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
+  "postPreview": "Eine Vorschau des Posts mit den angegebenen Einstellungen anzeigen",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
+  "purgedPerson": "Gelöschte Person",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "pushNotificationServerDescription": "Konfiguriere den Push-Benachrichtigungsserver. Der Server muss richtig konfiguriert sein, um Push-Benachrichtigungen an dein Gerät zu senden.\n\n **Gib nur einen Server ein, dem du mit deinen Anmeldedaten vertraust.**",
+  "@pushNotificationServerDescription": {
+    "description": "Description of choosing push notification server setting"
+  },
+  "screenReaderProfileDescription": "Optimiert Thunder für Screen Reader, indem es die Gesamtelemente reduziert und potenziell widersprüchliche Gesten entfernt.",
+  "@screenReaderProfileDescription": {},
+  "reduceAnimations": "Animationen verringern",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "selectAccountToCommentAs": "Wähle das Konto, unter dem du kommentieren willst",
+  "@selectAccountToCommentAs": {
+    "description": "Profile modal heading for commenting as other user"
+  },
+  "saveColor": "Farbe speichern",
+  "@saveColor": {
+    "description": "Name of save color setting"
+  },
+  "modAddCommunity": "Hinzufügen/Entfernen von Moderatoren zu Communities",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "noFavoritedCommunities": "Keine bevorzugten Communities",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
+  "postBodyShowCommunityInstance": "Community-Instanz anzeigen",
+  "@postBodyShowCommunityInstance": {
+    "description": "Whether to show the community instance for post bodies"
+  },
+  "postBodyShowUserInstance": "Benutzer-Instanz anzeigen",
+  "@postBodyShowUserInstance": {
+    "description": "Whether to show the user instance for post bodies"
+  },
+  "selectSearchType": "Suchart auswählen",
+  "@selectSearchType": {},
+  "settingsExportedSuccessfully": "Einstellungen wurden erfolgreich in '{savedFilePath}' gespeichert",
+  "@settingsExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported successfully"
+  },
+  "settingsNotExportedSuccessfully": "Die Einstellungen wurden nicht gespeichert, oder der Vorgang wurde abgebrochen.",
+  "@settingsNotExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported unsuccessfully"
+  },
+  "overview": "Übersicht",
+  "@overview": {},
+  "sendBackgroundTestLocalNotification": "Lokale Benachrichtigung für Hintergrundtests senden",
+  "@sendBackgroundTestLocalNotification": {
+    "description": "The option to send a background notification for testing"
+  },
+  "no": "Nein",
+  "@no": {
+    "description": "A negative status"
+  },
+  "malformedUri": "Der von dir angegebene Link hat ein nicht unterstütztes Format. Bitte stelle sicher, dass es sich um ein gültigen Link handelt.",
+  "@malformedUri": {
+    "description": "Error related to unsupported link format."
+  },
+  "noUsersFound": "Keine Benutzer gefunden.",
+  "@noUsersFound": {},
+  "notValidUrl": "Ungültiger URL",
+  "@notValidUrl": {},
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
+  },
+  "password": "Passwort",
+  "@password": {},
+  "pending": "Ausstehend",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "removeKeywordFilter": "Stichwort entfernen",
+  "@removeKeywordFilter": {
+    "description": "Title for dialog to remove keyword filter"
+  },
+  "resetPreferences": "Einstellungen zurücksetzen",
+  "@resetPreferences": {},
+  "shareMedia": "Medien teilen",
+  "@shareMedia": {},
+  "postBodySettings": "Post Body Einstellungen",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "navigateUp": "Vorheriger Kommentar",
+  "@navigateUp": {},
+  "mostComments": "Meiste Kommentare",
+  "@mostComments": {},
+  "markPostAsReadOnMediaView": "Nach dem Betrachten von Medien als gelesen markieren",
+  "@markPostAsReadOnMediaView": {
+    "description": "Toggle to mark posts as read after viewing media."
+  },
+  "lookingForAccountSpecificFeedSettings": "Suchst du nach kontospezifischen Feed-Einstellungen?",
+  "@lookingForAccountSpecificFeedSettings": {
+    "description": "Helper setting which navigates to account page"
+  },
+  "settingsNotImportedSuccessfully": "Die Einstellungen wurden nicht importiert oder der Vorgang wurde abgebrochen.",
+  "@settingsNotImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported unsuccessfully"
+  },
+  "shareThumbnailAsImage": "Vorschaubild als Bild teilen",
+  "@shareThumbnailAsImage": {
+    "description": "Action for sharing the thumbnail of a post as an image"
+  },
+  "shareUser": "Benutzer teilen",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "showHiddenPosts": "Versteckte Posts anzeigen",
+  "@showHiddenPosts": {
+    "description": "The name of the setting for showing hidden posts"
+  },
+  "showInAppUpdateNotifications": "Über neue GitHub-Releases benachrichtigen lassen",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
+  "mustBeLoggedInComment": "Du musst eingeloggt sein, um zu kommentieren",
+  "@mustBeLoggedInComment": {},
+  "mustBeLoggedIn": "Du musst eingeloggt sein",
+  "@mustBeLoggedIn": {},
+  "postTitle": "Titel",
+  "@postTitle": {},
+  "scrapeMissingPreviews": "Die Aktivierung wird sich auf die Leistung auswirken.",
+  "@scrapeMissingPreviews": {
+    "description": "Notice regarding potential performance impact when enabling link scrapping."
+  },
+  "searchByText": "Suche nach Text",
+  "@searchByText": {},
+  "modFeaturePost": "Hervorheben/Anpassen Posts",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modLockPost": "Sperre/Entsperre Posts",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "moderator": "{count, plural, zero {Moderator} one {Moderator} other {Moderatoren}}",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
+  "off": "aus",
+  "@off": {},
+  "ok": "OK",
+  "@ok": {},
+  "refreshContent": "Inhalt aktualisieren",
+  "@refreshContent": {},
+  "removeInstance": "Instanz entfernen",
+  "@removeInstance": {},
+  "removedInstanceMod": "Entfernte Instanz-Mod",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "removedModFromCommunity": "Mod aus der Community entfernt",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "markAllAsRead": "Alles als gelesen markieren",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "moderatedCommunities": "Moderierte Communities",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "navbarDoubleTapGestures": "Navbar-Doppeltippgesten",
+  "@navbarDoubleTapGestures": {
+    "description": "Setting for navbar double tap gestures"
+  },
+  "navbarSwipeGestures": "Navbar-Wischgesten",
+  "@navbarSwipeGestures": {
+    "description": "Setting for navbar swipe gestures"
+  },
+  "noResultsFound": "Keine Ergebnisse gefunden.",
+  "@noResultsFound": {},
+  "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
+  "@link": {},
+  "linkHandlingInAppShort": "In-App",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "names": "Namen",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
+  "openInstance": "Instanz öffnen",
+  "@openInstance": {},
+  "orange": "Orange",
+  "@orange": {
+    "description": "The color orange"
+  },
+  "openLinksInReaderMode": "Links im Lesemodus öffnen",
+  "@openLinksInReaderMode": {
+    "description": "Toggle to open links in reader mode when available."
+  },
+  "searchInstancesFederatedWith": "Suche nach Instanzen, die mit {instance} föderiert sind",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
+  "searchPostSearchType": "Post-Suchtyp wählen",
+  "@searchPostSearchType": {},
+  "searchTerm": "Suchbegriff",
+  "@searchTerm": {},
+  "share": "Teilen",
+  "@share": {},
+  "reporter": "Melder:",
+  "@reporter": {
+    "description": "Name of reporter that reported a post/comment"
+  },
+  "scrapeMissingLinkPreviews": "Hole Fehlende Link-Vorschauen",
+  "@scrapeMissingLinkPreviews": {
+    "description": "Toggle to scrape missing external link previews."
+  },
+  "searchInstance": "Suche {instance}",
+  "@searchInstance": {},
+  "reportComment": "Melde Kommentar",
+  "@reportComment": {},
+  "instanceNameThickness": "Instanz Name Stärke",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
+  "loginSucceeded": "Eingeloggt.",
+  "@loginSucceeded": {},
+  "loginToPerformAction": "Um diese Aktion ausführen zu können, musst du eingeloggt sein.",
+  "@loginToPerformAction": {},
+  "markReadColor": "Gelesen/Ungelesen Farbe",
+  "@markReadColor": {
+    "description": "Name of mark read/unread color setting"
+  },
+  "mention": "{count, plural, zero {Erwähnung} one {Erwähnung} other {Erwähnungen} }",
+  "@mention": {},
+  "message": "{count, plural, zero {Nachricht} one {Nachricht} other {Nachrichten} }",
+  "@message": {},
+  "metadataFontScale": "Metadaten Schriftgröße",
+  "@metadataFontScale": {
+    "description": "Setting for metadata font scale"
+  },
+  "modRemoveComment": "Kommentare entfernen/wiederherstellen",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Communities entfernen/wiederherstellen",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "moderatorActions": "Moderator Aktionen",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "nestedCommentIndicatorStyle": "Verschachtelter Kommentar Indikatorstil",
+  "@nestedCommentIndicatorStyle": {
+    "description": "Setting for nested comment indicator style"
+  },
+  "newComments": "Neue Kommentare",
+  "@newComments": {},
+  "new_": "Neu",
+  "@new_": {},
+  "noAnonymousInstances": "Es wurden keine anonymen Instanzen hinzugefügt",
+  "@noAnonymousInstances": {
+    "description": "Placeholder text when no anonymous instances have been added"
+  },
+  "noCommentsFound": "Keine Kommentare gefunden",
+  "@noCommentsFound": {},
+  "noDiscussionLanguages": "Kein Inhalt wurde versteckt, basierend auf der Sprache",
+  "@noDiscussionLanguages": {
+    "description": "Message for no discussion languages added"
+  },
+  "noEmailSet": "Keine E-Mail eingerichtet",
+  "@noEmailSet": {
+    "description": "Message for no email set"
+  },
+  "noLanguage": "Keine Sprache",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
+  "noReplies": "Keine Antworten",
+  "@noReplies": {
+    "description": "Label for when there are no replies in the list"
+  },
+  "originalPoster": "Original Poster",
+  "@originalPoster": {
+    "description": "Label for the original poster."
+  },
+  "postShowUserInstance": "Benutzer-Instanz anzeigen",
+  "@postShowUserInstance": {
+    "description": "Whether to show the user instance for post listings"
+  },
+  "profileBio": "Profil Beschreibung",
+  "@profileBio": {
+    "description": "Setting for profile bio"
+  },
+  "profiles": "Profile",
+  "@profiles": {},
+  "public": "Öffentlich",
+  "@public": {
+    "description": "Public community visibility"
+  },
+  "pureBlack": "Reines Schwarz",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "pushNotificationServer": "Server für Push-Benachrichtigungen",
+  "@pushNotificationServer": {
+    "description": "Setting for choosing push notification server"
+  },
+  "reachedTheBottom": "Es sind keine weiteren Artikel zu laden",
+  "@reachedTheBottom": {},
+  "read": "Gelesen",
+  "@read": {
+    "description": "Indicates that a post has been read"
+  },
+  "reason": "Grund",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "removeFromFavorites": "Aus Favoriten entfernen",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "reorder": "Neusortieren",
+  "@reorder": {
+    "description": "Tooltip text for the list editor button"
+  },
+  "reply": "{count, plural, zero {Antwort} one {Antwort} other {Antworten} }",
+  "@reply": {},
+  "replyColor": "Antwort Farbe",
+  "@replyColor": {
+    "description": "Name of reply color setting"
+  },
+  "reportPost": "Post melden",
+  "@reportPost": {
+    "description": "Action to report a post (moderator action)"
+  },
+  "save": "Speichern",
+  "@save": {},
+  "selectText": "Text auswählen",
+  "@selectText": {
+    "description": "Post and comment action for selecting text"
+  },
+  "serverErrorComments": "Beim Abrufen weiterer Kommentare ist ein Serverfehler aufgetreten: {message}",
+  "@serverErrorComments": {},
+  "setAction": "Aktion einstellen",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "settingsImportedSuccessfully": "Die Einstellungen wurden erfolgreich importiert!",
+  "@settingsImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported successfully"
+  },
+  "shareOriginalLink": "Original-Link teilen",
+  "@shareOriginalLink": {
+    "description": "Action for sharing the original link associated with a post"
+  },
+  "sharePost": "Post-Link teilen",
+  "@sharePost": {},
+  "sharePostLocal": "Post-Link teilen (Meine Instanz)",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "medium": "Mittel",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "old": "Alt",
+  "@old": {},
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
+  "setShortPress": "Als Kurzdruckaktion einstellen",
+  "@setShortPress": {},
+  "selectFeedType": "Feed-Typ auswählen",
+  "@selectFeedType": {},
+  "loginFailed": "Konnte nicht eingeloggt werden. Bitte versuche es erneut. (Fehler: {errorMessage})",
+  "@loginFailed": {
+    "description": "Message shown to user when their login attempt failed"
+  },
+  "nsfwWarning": "NSFW - Zum Anzeigen antippen",
+  "@nsfwWarning": {
+    "description": "Warning for NSFW posts"
+  },
+  "offline": "offline",
+  "@offline": {
+    "description": "Describes a service that is unavailable"
+  },
+  "notificationsWarningDialog": "Benachrichtigungen sind eine **experimentelle Funktion**, die möglicherweise nicht auf allen Geräten korrekt funktioniert.\n\n - Die Überprüfungen erfolgen alle ~15 Minuten und verbrauchen zusätzlichen Akku.\n\n - Deaktivieren Sie die Akku-Optimierung, um eine höhere Wahrscheinlichkeit für erfolgreiche Benachrichtigungen zu erreichen.\n\n Weitere Informationen finden Sie auf der folgenden Seite.",
+  "@notificationsWarningDialog": {
+    "description": "The content of the warning dialog for the notifications feature"
+  },
+  "onlyModsCanPostInCommunity": "Nur Moderatoren dürfen in dieser Community Post verfassen",
+  "@onlyModsCanPostInCommunity": {},
+  "openAccountSwitcher": "Kontowechsler öffnen",
+  "@openAccountSwitcher": {},
+  "postBody": "Post Body",
+  "@postBody": {},
+  "postBodyViewType": "Post Body Ansicht Typ",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
+  },
+  "postContentFontScale": "Post-Inhalt Schriftgröße",
+  "@postContentFontScale": {
+    "description": "Setting for post content font scale"
+  },
+  "postCreatedSuccessfully": "Post erfolgreich erstellt!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
+  },
+  "postBodySettingsDescription": "Diese Einstellungen wirken sich auf die Anzeige des Post Texts aus",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
+  "postNSFW": "Als NSFW markieren",
+  "@postNSFW": {},
+  "postMetadataInstructions": "Du kannst die Metadaten durch Ziehen und Ablegen der gewünschten Informationen anpassen",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
+  "resetPostPreferences": "Post-Einstellungen zurücksetzen",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "restorePost": "Post wiederherstellen",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "mustBeLoggedInPost": "Du musst eingeloggt sein, um einen Beitrag zu erstellen",
+  "@mustBeLoggedInPost": {},
+  "noPostsFound": "Keine Posts gefunden.",
+  "@noPostsFound": {},
+  "shareCommunityLink": "Community-Link teilen",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "shareCommunityLinkLocal": "Community-Link teilen (Meine Instanz)",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "shareLemmyLink": "Lemmy-Link teilen",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
   }
 }
