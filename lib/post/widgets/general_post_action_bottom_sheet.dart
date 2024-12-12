@@ -169,6 +169,23 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
     }
   }
 
+  Color? getBackgroundColor(GeneralQuickPostAction action) {
+    final state = context.read<ThunderBloc>().state;
+
+    switch (action) {
+      case GeneralQuickPostAction.upvote:
+        return state.upvoteColor.color;
+      case GeneralQuickPostAction.downvote:
+        return state.downvoteColor.color;
+      case GeneralQuickPostAction.save:
+        return state.saveColor.color;
+      case GeneralQuickPostAction.read:
+        return state.markReadColor.color;
+      case GeneralQuickPostAction.hide:
+        return state.hideColor.color;
+    }
+  }
+
   Color? getForegroundColor(GeneralQuickPostAction action) {
     final state = context.read<ThunderBloc>().state;
     final postViewMedia = widget.postViewMedia;
@@ -224,6 +241,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
                       icon: getIcon(generalQuickPostAction),
                       label: getLabel(generalQuickPostAction),
                       foregroundColor: getForegroundColor(generalQuickPostAction),
+                      backgroundColor: getBackgroundColor(generalQuickPostAction),
                       onSelected: isLoggedIn ? () => performAction(generalQuickPostAction) : null,
                     ))
                 .toList(),
