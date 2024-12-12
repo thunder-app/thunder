@@ -514,7 +514,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 description: l10n.importLemmyAccountSettingsDescription,
                                 widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
                                 onTap: () async {
-                                  dynamic importSettings;
+                                  String importSettings;
 
                                   try {
                                     final filePath = await FlutterFileDialog.pickFile(
@@ -524,9 +524,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                     );
 
                                     if (filePath != null) {
-                                      final String fileData = await File(filePath).readAsString();
-                                      importSettings = jsonDecode(fileData);
-                                      // fix this
+                                      importSettings = await File(filePath).readAsString();
                                     } else {
                                       showSnackbar(l10n.errorLoadingAccountSettings);
                                       return;
@@ -548,7 +546,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
                                     if (response.success) {
                                       showSnackbar(l10n.accountSettingsImportedSuccessfully);
-                                      // TODO: Maybe need to emit an event here to update the subscriptions in the UI?
+
+                                      // Reload the current page we're on to reflect changes to account settings
+                                      context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
+                                      context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
                                     } else {
                                       showSnackbar(l10n.errorImportingAccountSettings);
                                     }
