@@ -6,23 +6,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/modlog/bloc/modlog_bloc.dart';
 import 'package:thunder/modlog/widgets/modlog_filter_picker.dart';
-import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/instance.dart';
 
 /// The app bar for the modlog feed page
 class ModlogFeedPageAppBar extends StatelessWidget {
-  const ModlogFeedPageAppBar({super.key, required this.showAppBarTitle, required this.lemmyClient});
+  const ModlogFeedPageAppBar({super.key, required this.showAppBarTitle, required this.subtitle});
 
   /// Boolean which indicates whether the title on the app bar should be shown
   final bool showAppBarTitle;
 
-  /// The current Lemmy client
-  final LemmyClient lemmyClient;
+  /// The subtitle to display below "Modlog" on the app bar
+  final Widget? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +31,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
       centerTitle: false,
       toolbarHeight: 70.0,
       surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: ModlogFeedAppBarTitle(visible: showAppBarTitle, lemmyClient: lemmyClient),
+      title: ModlogFeedAppBarTitle(visible: showAppBarTitle, subtitle: subtitle),
       leading: IconButton(
         icon: (!kIsWeb && Platform.isIOS
             ? Icon(
@@ -75,20 +71,22 @@ class ModlogFeedPageAppBar extends StatelessWidget {
 }
 
 class ModlogFeedAppBarTitle extends StatelessWidget {
-  const ModlogFeedAppBarTitle({super.key, this.visible = true, required this.lemmyClient});
+  const ModlogFeedAppBarTitle({
+    super.key,
+    this.visible = true,
+    required this.subtitle,
+  });
 
   /// Boolean which indicates whether the title on the app bar should be shown
   final bool visible;
 
-  /// The current Lemmy client
-  final LemmyClient lemmyClient;
+  /// The subtitle to display below "Modlog" on the app bar
+  final Widget? subtitle;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-
-    final feedState = context.read<FeedBloc>().state;
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
@@ -100,14 +98,7 @@ class ModlogFeedAppBarTitle extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: feedState.fullCommunityView != null
-            ? CommunityFullNameWidget(
-                context,
-                feedState.fullCommunityView!.communityView.community.name,
-                feedState.fullCommunityView!.communityView.community.title,
-                fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId),
-              )
-            : Text(lemmyClient.lemmyApiV3.host),
+        subtitle: subtitle,
         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       ),
     );

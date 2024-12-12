@@ -15,6 +15,7 @@ import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
+import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/user_label_utils.dart';
 import 'package:thunder/post/widgets/report_comment_dialog.dart';
@@ -46,6 +47,7 @@ enum CommentCardAction {
   selectText,
   copyText,
   viewSource,
+  viewModlog,
   report,
   userActions,
   visitProfile,
@@ -154,6 +156,11 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     icon: Icons.edit_document,
     label: l10n.viewCommentSource,
     getOverrideLabel: (context, commentView, viewSource) => viewSource ? l10n.viewOriginal : l10n.viewCommentSource,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.viewModlog,
+    icon: Icons.shield_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.viewModlog,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.report,
@@ -300,6 +307,7 @@ void showCommentActionBottomModalSheet(
             CommentCardAction.selectText,
             CommentCardAction.copyText,
             CommentCardAction.viewSource,
+            if (commentView.comment.removed && LemmyClient.instance.supportsFeature(LemmyFeature.commentModLog)) CommentCardAction.viewModlog,
           ].contains(extendedAction.commentCardAction))
       .toList();
 
@@ -545,6 +553,16 @@ class _CommentActionPickerState extends State<CommentActionPicker> {
         break;
       case CommentCardAction.viewSource:
         action = widget.onViewSourceToggled;
+        break;
+      case CommentCardAction.viewModlog:
+        action = () async {
+          await navigateToModlogPage(
+            context,
+            subtitle: Text(l10n.removedComment),
+            modlogActionType: ModlogActionType.modRemoveComment,
+            commentId: widget.commentView.comment.id,
+          );
+        };
         break;
 
       case CommentCardAction.report:

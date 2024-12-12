@@ -75,6 +75,7 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
       communityId: state.communityId,
       userId: state.userId,
       moderatorId: state.moderatorId,
+      commentId: state.commentId,
       reset: true,
     ));
   }
@@ -91,6 +92,7 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
         communityId: event.communityId,
         userId: event.userId,
         moderatorId: event.moderatorId,
+        commentId: event.commentId,
         lemmyClient: lemmyClient,
       );
 
@@ -130,6 +132,7 @@ class ModlogBloc extends Bloc<ModlogEvent, ModlogState> {
       communityId: state.communityId,
       userId: state.userId,
       moderatorId: state.moderatorId,
+      commentId: event.commentId,
       lemmyClient: lemmyClient,
     );
 

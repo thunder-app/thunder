@@ -15,6 +15,7 @@ Future<Map<String, dynamic>> fetchModlogEvents({
   int? communityId,
   int? userId,
   int? moderatorId,
+  int? commentId,
   required LemmyClient lemmyClient,
 }) async {
   Account? account = await fetchActiveProfileAccount();
@@ -34,6 +35,7 @@ Future<Map<String, dynamic>> fetchModlogEvents({
       communityId: communityId,
       otherPersonId: userId,
       modPersonId: moderatorId,
+      commentId: commentId,
     ));
 
     List<ModlogEventItem> items = [];

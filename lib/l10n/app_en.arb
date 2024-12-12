@@ -2813,6 +2813,10 @@
   "@viewCommentSource": {
     "description": "Menu item for viewing a comment's source"
   },
+  "viewModlog": "View Modlog",
+  "@viewModlog": {
+    "description": "Action which allows the user to navigate to the modlog for a particular entity"
+  },
   "viewOriginal": "View original",
   "@viewOriginal": {
     "description": "Action for viewing original text (as opposed to raw markdown)"

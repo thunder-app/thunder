@@ -24,6 +24,9 @@ final class ModlogFeedFetchedEvent extends ModlogEvent {
   /// The id of the moderator to display posts for.
   final int? moderatorId;
 
+  /// The id of a specific comment to show in the modlog (optional)
+  final int? commentId;
+
   /// Boolean which indicates whether or not to reset the feed
   final bool reset;
 
@@ -32,6 +35,7 @@ final class ModlogFeedFetchedEvent extends ModlogEvent {
     this.communityId,
     this.userId,
     this.moderatorId,
+    this.commentId,
     this.reset = false,
   });
 }
