@@ -32,6 +32,7 @@ String? getErrorMessage(BuildContext context, String lemmyApiErrorCode, {String?
     "couldnt_find_community" => additionalInfo != null ? l10n.unableToFindCommunityName(additionalInfo) : l10n.unableToFindCommunity,
     "couldnt_find_person" => additionalInfo != null ? l10n.unableToFindUserName(additionalInfo) : l10n.unableToFindUser,
     "couldnt_find_post" => l10n.couldntFindPost,
+    "rate_limit_error" => l10n.rateLimitErrorMessage,
     _ => lemmyApiErrorCode,
   };
 }

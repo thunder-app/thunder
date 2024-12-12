@@ -37,7 +37,7 @@ enum LocalSettingsSubCategories {
   advanced('advanced'),
   names('names'),
   notifications('notifications'),
-  importExportSettings('importExportSettings'),
+  importExportThunderSettings('importExportThunderSettings'),
   filters('filters'),
   themes('theme'),
   fonts('fonts'),
@@ -50,6 +50,7 @@ enum LocalSettingsSubCategories {
   navigation('navigation'),
   videoPlayer('videoPlayer'),
   contentManagement('contentManagement'),
+  importExportLemmyAccountSettings('importExportLemmyAccountSettings'),
   dangerZone('dangerZone'),
   reset('reset'),
   experimental('experimental'),
@@ -322,8 +323,8 @@ enum LocalSettings {
   // This setting exists purely to save/load the user's selected advanced share options
   advancedShareOptions(name: 'advanced_share_options', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.general, searchable: false),
   // import export settings
-  importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
-  importExportDatabase(name: 'import_export_database', key: 'importExportDatabase', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
+  importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportThunderSettings),
+  importExportDatabase(name: 'import_export_database', key: 'importExportDatabase', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportThunderSettings),
   // video player
   videoAutoMute(name: 'auto_mute_videos', key: 'videoAutoMute', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
@@ -348,6 +349,10 @@ enum LocalSettings {
   accountShowBotAccounts(name: 'account_show_bot_accounts', key: 'accountShowBotAccounts', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.feed),
   accountBlocks(name: 'account_blocks', key: 'accountBlocks', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.contentManagement),
   accountChangePassword(name: 'account_change_password', key: 'accountChangePassword', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
+  accountImportSettings(
+      name: 'account_import_settings', key: 'accountImportSettings', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.importExportLemmyAccountSettings),
+  accountExportSettings(
+      name: 'account_export_settings', key: 'accountExportSettings', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.importExportLemmyAccountSettings),
   accountDeleteAccount(name: 'account_delete_account', key: 'accountDeleteAccount', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
   debugDeleteLocalPreferences(name: 'debug_delete_local_preferences', key: 'debugDeleteLocalPreferences', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
   debugDeleteLocalDatabase(name: 'debug_delete_local_database', key: 'debugDeleteLocalDatabase', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
@@ -503,7 +508,7 @@ extension LocalizationExt on AppLocalizations {
       'posts': posts,
       'comments': comments,
       'linksBehaviourSettings': linksBehaviourSettings,
-      'importExportSettings': importExportSettings,
+      'importExportSettings': importExportThunderSettings,
       'importExportDatabase': importExportDatabase,
       'advanced': advanced,
       'names': names,
@@ -540,6 +545,7 @@ extension LocalizationExt on AppLocalizations {
       'contentManagement': contentManagement,
       'accountBlocks': blockSettingLabel,
       'accountChangePassword': changePassword,
+      'importExportLemmyAccountSettings': importExportLemmyAccountSettings,
       'dangerZone': dangerZone,
       'accountDeleteAccount': deleteAccount,
       'reset': resetPreferencesAndData,
@@ -553,6 +559,8 @@ extension LocalizationExt on AppLocalizations {
       'enableExperimentalFeatures': enableExperimentalFeatures,
       'experimental': experimentalFeatures,
       'imageDimensionTimeout': imageDimensionTimeout,
+      'accountImportSettings': importLemmyAccountSettingsDescription,
+      'accountExportSettings': exportLemmyAccountSettingsDescription,
     };
 
     if (localizationMap.containsKey(key)) {

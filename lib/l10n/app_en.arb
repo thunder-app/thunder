@@ -25,6 +25,10 @@
   },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
+  "accountSettingsExportedSuccessfully": "Lemmy account settings exported successfully to {savedFilePath}!",
+  "@accountSettingsExportedSuccessfully": {},
+  "accountSettingsImportedSuccessfully": "Lemmy account settings imported successfully!",
+  "@accountSettingsImportedSuccessfully": {},
   "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
   "@accountSwitchParentCommentNotFound": {
     "description": "Error message for when we couldn't resolve comment to reply to"
@@ -813,6 +817,10 @@
   "@endSearch": {},
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
+  "errorImportingAccountSettings": "There was an error importing the settings. The file might not be in the right format.",
+  "@errorImportingAccountSettings": {},
+  "errorLoadingAccountSettings": "There was an error loading the settings file or the operation was canceled.",
+  "@errorLoadingAccountSettings": {},
   "errorMarkingReplyRead": "There was an error marking the reply as read.",
   "@errorMarkingReplyRead": {
     "description": "Error message for marking a reply read"
@@ -821,6 +829,10 @@
   "@errorMarkingReplyUnread": {
     "description": "Error message for marking a reply unread"
   },
+  "errorParsingJson": "There was an error parsing the selected file. It may not be valid JSON.",
+  "@errorParsingJson": {},
+  "errorSavingAccountSettings": "There was an error saving the settings file or the operation was canceled.",
+  "@errorSavingAccountSettings": {},
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
@@ -876,6 +888,10 @@
   "exportDatabaseSubtitle": "The database contains info about accounts, favorites, anonymous subscriptions, and user labels.",
   "@exportDatabaseSubtitle": {
     "description": "Subtitle of setting for exporting the db"
+  },
+  "exportLemmyAccountSettingsDescription": "Export your Lemmy account settings as JSON",
+  "@exportLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings export"
   },
   "exportSettingsSubtitle": "The settings includes all of the preferences that you have configured in Thunder.",
   "@exportSettingsSubtitle": {
@@ -1071,13 +1087,25 @@
   "@importDatabase": {
     "description": "Name of setting for importing the db"
   },
-  "importExportDatabase": "Import/Export Database",
+  "importExportDatabase": "Import/Export Thunder Database",
   "@importExportDatabase": {
     "description": "Overall name of setting for importing or exporting the db (for searching)"
+  },
+  "importExportLemmyAccountSettings": "Import/Export Lemmy Account Settings",
+  "@importExportLemmyAccountSettings": {
+    "description": "This is specifically used in search results to distinguish from Thunder import/export"
   },
   "importExportSettings": "Import/Export Settings",
   "@importExportSettings": {
     "description": "Category for settings related to import and export."
+  },
+  "importExportThunderSettings": "Import/Export Thunder Settings",
+  "@importExportThunderSettings": {
+    "description": "This is specifically used in search results to distinguish from Lemmy import/export"
+  },
+  "importLemmyAccountSettingsDescription": "Import your Lemmy account settings from JSON",
+  "@importLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings import"
   },
   "importSettings": "Import Settings",
   "@importSettings": {
@@ -1743,6 +1771,8 @@
   "@pushNotificationServerDescription": {
     "description": "Description of choosing push notification server setting"
   },
+  "rateLimitErrorMessage": "You have hit the rate limit for this request. Please wait and try again later.",
+  "@rateLimitErrorMessage": {},
   "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
   "read": "Read",
@@ -2874,5 +2904,7 @@
   "yes": "Yes",
   "@yes": {
     "description": "A positive status"
-  }
+  },
+  "youMustSelectAJsonFile": "You must select a .json file.",
+  "@youMustSelectAJsonFile": {}
 }

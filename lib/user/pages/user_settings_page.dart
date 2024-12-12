@@ -1,17 +1,24 @@
 import "dart:async";
+import "dart:convert";
+import "dart:io";
 
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_file_dialog/flutter_file_dialog.dart";
 import "package:html/parser.dart";
 import "package:lemmy_api_client/v3.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:path_provider/path_provider.dart";
 import "package:swipeable_page_route/swipeable_page_route.dart";
 import 'package:markdown/markdown.dart' hide Text;
 
 import "package:thunder/account/bloc/account_bloc.dart";
+import "package:thunder/account/models/account.dart";
 import "package:thunder/account/widgets/account_placeholder.dart";
 import "package:thunder/core/auth/bloc/auth_bloc.dart";
+import "package:thunder/core/auth/helpers/fetch_account.dart";
 import "package:thunder/core/enums/local_settings.dart";
 import "package:thunder/core/singletons/lemmy_client.dart";
 import "package:thunder/settings/widgets/discussion_language_selector.dart";
@@ -27,6 +34,7 @@ import "package:thunder/user/bloc/user_settings_bloc.dart";
 import "package:thunder/user/pages/user_settings_block_page.dart";
 import "package:thunder/user/widgets/user_indicator.dart";
 import "package:thunder/utils/bottom_sheet_list_picker.dart";
+import "package:thunder/utils/error_messages.dart";
 import "package:thunder/utils/links.dart";
 import "package:thunder/account/utils/profiles.dart";
 import "package:version/version.dart";
@@ -137,11 +145,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     UserSettingsStatus.initial => const SliverFillRemaining(
                         hasScrollBody: false,
                         child: Center(
-                          child: SizedBox(
-                            width: 64.0,
-                            height: 64.0,
-                            child: CircularProgressIndicator(),
-                          ),
+                          child: CircularProgressIndicator(),
                         ),
                       ),
                     _ => SliverList(
@@ -455,6 +459,108 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               setting: LocalSettings.accountBlocks,
                               highlightedSetting: settingToHighlight,
                             ),
+                            if (LemmyClient.instance.supportsFeature(LemmyFeature.importExportSettings)) ...[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                child: Text(l10n.importExportSettings, style: theme.textTheme.titleMedium),
+                              ),
+                              SettingsListTile(
+                                icon: Icons.file_download_rounded,
+                                description: l10n.exportLemmyAccountSettingsDescription,
+                                widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                onTap: () async {
+                                  dynamic exportSettings;
+                                  try {
+                                    Account? account = await fetchActiveProfileAccount();
+                                    exportSettings = await LemmyClient.instance.lemmyApiV3.run(ExportSettings(auth: account?.jwt));
+                                  } catch (e) {
+                                    // Catch rate-limit errors
+                                    showSnackbar(getExceptionErrorMessage(e));
+                                    return;
+                                  }
+
+                                  try {
+                                    final String initialFilePath = (await getApplicationDocumentsDirectory()).path;
+                                    // Use the same naming convention as the web UI
+                                    String initialFileName = 'lemmy_user_settings_${DateTime.now().toUtc().toIso8601String().replaceAll(":", "").replaceAll("-", "")}.json';
+                                    final filePath = '$initialFilePath/$initialFileName';
+
+                                    final File file = File(filePath);
+                                    await file.writeAsString(jsonEncode(exportSettings));
+
+                                    final String? savedFilePath = await FlutterFileDialog.saveFile(
+                                      params: SaveFileDialogParams(
+                                        mimeTypesFilter: ['application/json'],
+                                        sourceFilePath: filePath,
+                                        fileName: initialFileName,
+                                      ),
+                                    );
+
+                                    if (savedFilePath?.isNotEmpty == true) {
+                                      showSnackbar(l10n.accountSettingsExportedSuccessfully(savedFilePath!));
+                                    } else {
+                                      showSnackbar(l10n.errorSavingAccountSettings);
+                                    }
+                                  } catch (e) {
+                                    showSnackbar('${l10n.errorSavingAccountSettings} $e');
+                                  }
+                                },
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountExportSettings,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              SettingsListTile(
+                                icon: Icons.file_upload_rounded,
+                                description: l10n.importLemmyAccountSettingsDescription,
+                                widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                onTap: () async {
+                                  dynamic importSettings;
+
+                                  try {
+                                    final filePath = await FlutterFileDialog.pickFile(
+                                      params: const OpenFileDialogParams(
+                                        fileExtensionsFilter: ['json'],
+                                      ),
+                                    );
+
+                                    if (filePath != null) {
+                                      final String fileData = await File(filePath).readAsString();
+                                      importSettings = jsonDecode(fileData);
+                                      // fix this
+                                    } else {
+                                      showSnackbar(l10n.errorLoadingAccountSettings);
+                                      return;
+                                    }
+                                  } catch (e) {
+                                    if (e is FormatException) {
+                                      showSnackbar(l10n.errorParsingJson);
+                                    } else if ((e as PlatformException?)?.code == "invalid_file_extension") {
+                                      showSnackbar(l10n.youMustSelectAJsonFile);
+                                    } else {
+                                      showSnackbar('${l10n.errorLoadingAccountSettings} $e');
+                                    }
+                                    return;
+                                  }
+
+                                  try {
+                                    Account? account = await fetchActiveProfileAccount();
+                                    SuccessResponse response = await LemmyClient.instance.lemmyApiV3.run(ImportSettings(auth: account?.jwt, data: importSettings));
+
+                                    if (response.success) {
+                                      showSnackbar(l10n.accountSettingsImportedSuccessfully);
+                                      // TODO: Maybe need to emit an event here to update the subscriptions in the UI?
+                                    } else {
+                                      showSnackbar(l10n.errorImportingAccountSettings);
+                                    }
+                                  } catch (e) {
+                                    showSnackbar(getExceptionErrorMessage(e));
+                                  }
+                                },
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountImportSettings,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                            ],
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
