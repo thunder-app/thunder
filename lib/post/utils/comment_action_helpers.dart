@@ -307,7 +307,7 @@ void showCommentActionBottomModalSheet(
             CommentCardAction.selectText,
             CommentCardAction.copyText,
             CommentCardAction.viewSource,
-            if (commentView.comment.removed) CommentCardAction.viewModlog,
+            if (commentView.comment.removed && LemmyClient.instance.supportsFeature(LemmyFeature.commentModLog)) CommentCardAction.viewModlog,
           ].contains(extendedAction.commentCardAction))
       .toList();
 
