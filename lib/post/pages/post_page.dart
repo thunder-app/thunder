@@ -113,6 +113,7 @@ class _PostPageState extends State<PostPage> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final thunderState = context.read<ThunderBloc>().state;
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
 
     originalUser ??= context.read<AuthBloc>().state.account;
 
@@ -155,6 +156,7 @@ class _PostPageState extends State<PostPage> {
                         scrollController: scrollController,
                         listController: listController,
                         comments: flattenedComments,
+                        statusBarHeight: thunderState.hideTopBarOnScroll ? statusBarHeight : 0,
                       ),
                     ),
                   ),
