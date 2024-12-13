@@ -67,7 +67,7 @@
   "@apply": {},
   "back": "Zurück",
   "@back": {},
-  "backButton": "Zurück-Schaltfläche",
+  "backButton": "Zurück-Button",
   "@backButton": {},
   "backToTop": "Zurück nach oben",
   "@backToTop": {},
@@ -141,7 +141,7 @@
   "@combineCommentScoresLabel": {
     "description": "Label for setting to combine comment scores"
   },
-  "combineNavAndFab": "Der schwebende Action Button wird zwischen den Navigationsbuttons angezeigt werden.",
+  "combineNavAndFab": "Kombinieren Sie FAB und Navigationsschaltflächen",
   "@combineNavAndFab": {},
   "comment": "Kommentieren",
   "@comment": {},
@@ -219,13 +219,13 @@
   "@copy": {},
   "copyText": "Text kopieren",
   "@copyText": {},
-  "couldNotDetermineCommentDelete": "Fehler: Konnte Kommentar nicht löschen (Post nicht bestimmbar)",
+  "couldNotDetermineCommentDelete": "Fehler: Konnte Kommentar nicht löschen (Post nicht bestimmbar).",
   "@couldNotDetermineCommentDelete": {},
   "couldNotDeterminePostComment": "Fehler: Kommentar nicht gespeichert (Post nicht bestimmbar).",
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Deine Meldung konnte nicht abgesendet werden. Bitte versuche es später wieder",
   "@couldntCreateReport": {},
-  "countSubscribers": "{count} Abonennten",
+  "countSubscribers": "{count} Abonnenten",
   "@countSubscribers": {},
   "createAccount": "Konto erstellen",
   "@createAccount": {},
@@ -589,7 +589,7 @@
   "@detailedReason": {
     "description": "The reason for the moderation action"
   },
-  "enableFloatingButtonOnFeeds": "Schwebende Schaltfläche auf Feeds aktivieren",
+  "enableFloatingButtonOnFeeds": "Schwebenden Button auf Feeds aktivieren",
   "@enableFloatingButtonOnFeeds": {
     "description": "Setting for enable floating button on feeds"
   },
@@ -1109,7 +1109,7 @@
   "@hideColor": {
     "description": "Name of the hide color setting"
   },
-  "hideNsfwPreviews": "Verwische NSFW Vorschauen",
+  "hideNsfwPreviews": "Verwische NSFW Vorschau",
   "@hideNsfwPreviews": {
     "description": "Toggle to blur NSFW previews."
   },
@@ -1139,7 +1139,7 @@
   "@general": {
     "description": "General settings category."
   },
-  "hideThumbnails": "Miniaturbilder ausblenden",
+  "hideThumbnails": "Thumbnails ausblenden",
   "@hideThumbnails": {
     "description": "Option to hide thumbnails in feed"
   },
@@ -1431,7 +1431,7 @@
   "@selectAll": {
     "description": "Action for selecting all text"
   },
-  "showCommentActionButtons": "Kommentar-Aktionsschaltflächen anzeigen",
+  "showCommentActionButtons": "Kommentar-Buttons anzeigen",
   "@showCommentActionButtons": {
     "description": "Toggle to show comment action buttons."
   },
@@ -1461,7 +1461,7 @@
   "@shareImage": {
     "description": "Action for sharing an image"
   },
-  "shareThumbnail": "Vorschaubild teilen",
+  "shareThumbnail": "Thumbnail teilen",
   "@shareThumbnail": {
     "description": "Action for sharing the thumbnail of a post"
   },
@@ -1625,7 +1625,7 @@
   "@postBodyShowCommunityAvatar": {
     "description": "Whether to show the community avatar for post bodies"
   },
-  "postSwipeGesturesHint": "Möchtest du stattdessen Schaltflächen verwenden? Ändere in den allgemeinen Einstellungen, welche Schaltflächen auf den Karten erscheinen.",
+  "postSwipeGesturesHint": "Möchtest du stattdessen Buttons verwenden? Ändere in den allgemeinen Einstellungen, welche Buttons auf den Karten erscheinen.",
   "@postSwipeGesturesHint": {},
   "removeAccount": "Konto löschen",
   "@removeAccount": {},
@@ -1809,7 +1809,7 @@
   "@settingsNotImportedSuccessfully": {
     "description": "Message shown to the user when the settings were imported unsuccessfully"
   },
-  "shareThumbnailAsImage": "Vorschaubild als Bild teilen",
+  "shareThumbnailAsImage": "Thumbnail als Bild teilen",
   "@shareThumbnailAsImage": {
     "description": "Action for sharing the thumbnail of a post as an image"
   },
@@ -1987,7 +1987,7 @@
   "@noReplies": {
     "description": "Label for when there are no replies in the list"
   },
-  "originalPoster": "Original Poster",
+  "originalPoster": "Original Ersteller",
   "@originalPoster": {
     "description": "Label for the original poster."
   },
@@ -2133,7 +2133,7 @@
   "@restorePost": {
     "description": "Action to restore a post (moderator action)"
   },
-  "mustBeLoggedInPost": "Du musst eingeloggt sein, um einen Beitrag zu erstellen",
+  "mustBeLoggedInPost": "Du musst eingeloggt sein, um einen Post zu erstellen",
   "@mustBeLoggedInPost": {},
   "noPostsFound": "Keine Posts gefunden.",
   "@noPostsFound": {},
@@ -2148,5 +2148,725 @@
   "shareLemmyLink": "Lemmy-Link teilen",
   "@shareLemmyLink": {
     "description": "Menu item for sharing a Lemmy link"
-  }
+  },
+  "toggelRead": "Lesen umschalten",
+  "@toggelRead": {},
+  "useUnifiedPushNotifications": "UnifiedPush-Benachrichtigungen verwenden",
+  "@useUnifiedPushNotifications": {
+    "description": "Toggle to use UnifiedPush Notifications"
+  },
+  "userEntry": "Benutzer '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
+  },
+  "showPostAuthorSubtitle": "Der Autor eines Posts wird immer in den Community Feeds angezeigt",
+  "@showPostAuthorSubtitle": {
+    "description": "Subtitle for the Show Post Author setting"
+  },
+  "showPostCommunityIcons": "Community-Symbole anzeigen",
+  "@showPostCommunityIcons": {
+    "description": "Toggle to show community icons."
+  },
+  "showSavedContent": "Gespeicherte Inhalte anzeigen",
+  "@showSavedContent": {
+    "description": "Toggle to show saved posts/comments."
+  },
+  "showUpdateChangelogsSubtitle": "Anzeige der Liste der Änderungen nach einer Aktualisierung",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Subtitle for setting for showing changelogs after updates"
+  },
+  "successfullyBlocked": "Blockiert.",
+  "@successfullyBlocked": {},
+  "unableToLoadInstance": "Kann {instance} nicht laden",
+  "@unableToLoadInstance": {},
+  "thunderNotificationServer": "Thunder Benachrichtigungs Server: {server}",
+  "@thunderNotificationServer": {
+    "description": "Text for the user to know what the currently selected notification server is"
+  },
+  "unableToLoadPostsFrominstance": "Posts von {instance} konnten nicht geladen werden",
+  "@unableToLoadPostsFrominstance": {},
+  "unbanFromCommunity": "Community-Sperre aufheben",
+  "@unbanFromCommunity": {
+    "description": "Moderator action to unban a user from a community"
+  },
+  "useProfilePictureForDrawerSubtitle": "Zeigt bei der Anmeldung das Profilbild des Benutzers, anstelle des Symboles an",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Setting subtitle for using the profile picture for the drawer"
+  },
+  "userActions": "Benutzer Aktionen",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "versionNumber": "Version {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
+  },
+  "video": "Video",
+  "@video": {
+    "description": "String for video "
+  },
+  "warning": "Warnung",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "showPostVoteActions": "Abstimmungsbuttons zeigen",
+  "@showPostVoteActions": {
+    "description": "Toggle to show vote buttons."
+  },
+  "showReadPosts": "Gelesene Posts anzeigen",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "showTextPostIndicator": "Text-Post-Indikator anzeigen",
+  "@showTextPostIndicator": {
+    "description": "Toggle to show text post indicator."
+  },
+  "subscribeToCommunity": "Community abonnieren",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
+  "subscriptionRequestSent": "Abonnement-Anfrage gesendet",
+  "@subscriptionRequestSent": {
+    "description": "Message for subscription request sent"
+  },
+  "suggestedTitle": "Vorgeschlagener Titel",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "thumbnailUrl": "Thumbnail URL",
+  "@thumbnailUrl": {
+    "description": "Post field for adding a custom thumbnail to the post"
+  },
+  "unableToFindPost": "Post kann nicht gefunden werden",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
+  "unableToFindLanguage": "Sprache nicht gefunden",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
+  "unableToLoadImage": "Bild konnte nicht geladen werden",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "unreachable": "Unerreichbar",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "upvoted": "Hochgestuft",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
+  "uriNotSupported": "Diese Art der Link wird zur Zeit nicht unterstützt.",
+  "@uriNotSupported": {
+    "description": "Unsupported link type at the present time."
+  },
+  "userLabels": "Benutzer Bezeichnungen",
+  "@userLabels": {
+    "description": "Heading for user labels settings"
+  },
+  "useUnifiedPushNotificationsDescription": "Benötigt eine kompatible App",
+  "@useUnifiedPushNotificationsDescription": {
+    "description": "Subtitle of the setting for using UnifiedPush Notifications"
+  },
+  "userFormat": "Benutzerformat",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "userProfiles": "Benutzerprofile",
+  "@userProfiles": {
+    "description": "Settings related to user profiles."
+  },
+  "userNameThickness": "Nutzername Stärke",
+  "@userNameThickness": {
+    "description": "Setting for user name thickness"
+  },
+  "userSettingDescription": "Diese Einstellungen werden mit deinem Lemmy-Konto synchronisiert und gelten nur für das jeweilige Konto.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
+  "users": "Benutzer",
+  "@users": {},
+  "videoAutoMute": "Videos stummschalten",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
+  },
+  "videoAutoPlay": "Video automatisch abspielen",
+  "@videoAutoPlay": {
+    "description": "Option to always autoplay videos"
+  },
+  "xDownvotes": "{x} Herabstufungen",
+  "@xDownvotes": {},
+  "showLess": "Weniger anzeigen",
+  "@showLess": {},
+  "subscribed": "Abonniert",
+  "@subscribed": {},
+  "topHour": "Top in der vergangenen Stunde",
+  "@topHour": {},
+  "updateReleased": "Update veröffentlicht: {version}",
+  "@updateReleased": {},
+  "upvote": "Aufwerten",
+  "@upvote": {
+    "description": "Action for upvoting a post/comment"
+  },
+  "useAdvancedShareSheet": "Erweitertes Freigabeformular verwenden",
+  "@useAdvancedShareSheet": {
+    "description": "Toggle to use advanced share sheet."
+  },
+  "xScore": "{x} Wertung",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "timeoutVotingPost": "Fehler: Zeitüberschreitung beim Versuch, einen Beitrag zu bewerten.",
+  "@timeoutVotingPost": {},
+  "topMonth": "Top Monat",
+  "@topMonth": {},
+  "unhidCommunity": "Unversteckte Community",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
+  "username": "Benutzername",
+  "@username": {},
+  "useMaterialYouTheme": "Verwende Material You Thema",
+  "@useMaterialYouTheme": {
+    "description": "Toggle to use Material You theme."
+  },
+  "subscribe": "Abonnieren",
+  "@subscribe": {},
+  "showPostTextContentPreview": "Textvorschau anzeigen",
+  "@showPostTextContentPreview": {
+    "description": "Toggle to show text previews."
+  },
+  "showPostTitleFirst": "Titel zuerst anzeigen",
+  "@showPostTitleFirst": {
+    "description": "Toggle to show post title first."
+  },
+  "showScoreCounters": "Nutzerbewertungen anzeigen",
+  "@showScoreCounters": {
+    "description": "Toggle to display user scores."
+  },
+  "showNsfwContent": "NSFW Inhalte anzeigen",
+  "@showNsfwContent": {
+    "description": "Toggle to show NSFW content."
+  },
+  "showScores": "Post/Kommentar-Bewertungen anzeigen",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "sidebar": "Seitenleiste",
+  "@sidebar": {},
+  "successfullyBlockedCommunity": "Blockiert {communityName}",
+  "@successfullyBlockedCommunity": {},
+  "timeoutErrorMessage": "Es gab eine Unterbrechung beim Warten auf eine Rückmeldung.",
+  "@timeoutErrorMessage": {},
+  "timeoutSaveComment": "Fehler: Zeitüberschreitung beim Versuch, einen Kommentar zu speichern",
+  "@timeoutSaveComment": {},
+  "unblockCommunityInstance": "Community-Instanz entsperren",
+  "@unblockCommunityInstance": {
+    "description": "Action to unblock the instance of a given community"
+  },
+  "unhide": "Einblenden",
+  "@unhide": {
+    "description": "The action to unhide a post"
+  },
+  "unlockedPost": "Entsperrter Post",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
+  },
+  "rightShortSwipe": "Kurzer Swipe Rechts",
+  "@rightShortSwipe": {
+    "description": "Setting for right short swipe"
+  },
+  "showPassword": "Passwort anzeigen",
+  "@showPassword": {},
+  "status": "Status",
+  "@status": {
+    "description": "Status of the action"
+  },
+  "unableToFindCommunityOnInstance": "Die gewählte Community kann auf der Instanz des Benutzers nicht gefunden werden.",
+  "@unableToFindCommunityOnInstance": {
+    "description": "An error message for when we can't find a community on an instance"
+  },
+  "useLocalNotifications": "Lokale Benachrichtigungen verwenden (experimentell)",
+  "@useLocalNotifications": {
+    "description": "Toggle to use local notifications."
+  },
+  "system": "System",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "viewAllComments": "Alle Kommentare anzeigen",
+  "@viewAllComments": {},
+  "themeSecondary": "Sekundäre Farbe",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "userStyle": "Benutzer-Stil",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  },
+  "usernameFormattingRedirect": "Suchst du nach der Formatierung des Benutzernamens?",
+  "@usernameFormattingRedirect": {
+    "description": "Setting title for sending the user to the new formatting options"
+  },
+  "showOwnContent": "Eigene Inhalte anzeigen",
+  "@showOwnContent": {
+    "description": "Toggle to show your own posts/comments."
+  },
+  "subscriptions": "Abonnements",
+  "@subscriptions": {},
+  "successfullyUnblocked": "Entsperrt.",
+  "@successfullyUnblocked": {},
+  "theming": "Thema",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "topDay": "Top Heute",
+  "@topDay": {},
+  "topYear": "Top Jahr",
+  "@topYear": {},
+  "unableToFindCommunity": "Community nicht gefunden",
+  "@unableToFindCommunity": {},
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
+  },
+  "userNotLoggedIn": "Benutzer nicht angemeldet",
+  "@userNotLoggedIn": {},
+  "videoAutoLoop": "Video wiederholen",
+  "@videoAutoLoop": {
+    "description": "Option to always loop a video"
+  },
+  "viewPostSource": "Quelle für Post anzeigen",
+  "@viewPostSource": {
+    "description": "Menu item for viewing a post's source"
+  },
+  "visitUserInstance": "Benutzerinstanz besuchen",
+  "@visitUserInstance": {
+    "description": "Action to visit the instance of a user"
+  },
+  "textActions": "Text Aktionen",
+  "@textActions": {
+    "description": "Option for text actions"
+  },
+  "showUserAvatar": "Benutzer-Avatar anzeigen",
+  "@showUserAvatar": {
+    "description": "Toggle to show user avatar."
+  },
+  "successfullyBlockedUser": "Blockiert {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "unableToFindInstance": "Instanz nicht auffindbar",
+  "@unableToFindInstance": {},
+  "unifiedPushNotifications": "UnifiedPush Benachrichtigungen",
+  "@unifiedPushNotifications": {
+    "description": "Describes the notification type for UnifiedPush Notifications"
+  },
+  "url": "URL",
+  "@url": {},
+  "showUpdateChangelogs": "Changelogs für Updates anzeigen",
+  "@showUpdateChangelogs": {
+    "description": "Setting for showing changelogs after updates"
+  },
+  "showThumbnailPreviewOnRight": "Thumbnails rechts anzeigen",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Toggle to show thumbnails on the right side."
+  },
+  "sidebarBottomNavSwipeDescription": "Durch Wischen über die untere Navigationsleiste wird die Seitenleiste geöffnet",
+  "@sidebarBottomNavSwipeDescription": {},
+  "somethingWentWrong": "Ups, da ist etwas schiefgegangen!",
+  "@somethingWentWrong": {},
+  "sortBy": "Sortieren nach",
+  "@sortBy": {},
+  "small": "Klein",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "sortByTop": "Nach Top sortieren",
+  "@sortByTop": {},
+  "sortOptions": "Sortier-Optionen",
+  "@sortOptions": {},
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "tabletMode": "Tablet-Modus (2-Spalten-Ansicht)",
+  "@tabletMode": {
+    "description": "Toggle to enable 2-column tablet mode."
+  },
+  "theme": "Thema",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "themeAccentColor": "Akzent Farben",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "themeTertiary": "Dritte Farbe",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
+  },
+  "transferredModToCommunity": "Übertragene Community",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
+  "unblockUser": "Benutzer entsperren",
+  "@unblockUser": {
+    "description": "Action to unblock a user"
+  },
+  "useSuggestedTitle": "Vorgeschlagenen Titel verwenden: {title}",
+  "@useSuggestedTitle": {},
+  "unblockUserInstance": "Benutzerinstanz entsperren",
+  "@unblockUserInstance": {
+    "description": "Action to unblock the instance of a given user"
+  },
+  "videoDefaultPlaybackSpeed": "Standard Wiedergabegeschwindigkeit",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback Speed"
+  },
+  "visitInstance": "Instanz besuchen",
+  "@visitInstance": {},
+  "standard": "Standard",
+  "@standard": {
+    "description": "Describes a standard visual density"
+  },
+  "systemDarkModeDescription": "Schwarzes Thema im dunklen Modus des Systems aktivieren",
+  "@systemDarkModeDescription": {
+    "description": "Toggle which enables the pure black theme when using system theme, and is using the dark mode version"
+  },
+  "testBackgroundNotificationDescription": "Thunder beendet sich selbst und versucht dann, im Hintergrund eine Benachrichtigung zu erstellen. (Dies dauert mindestens 15 Minuten.)",
+  "@testBackgroundNotificationDescription": {
+    "description": "A message describing the background test notification"
+  },
+  "unableToFindCommunityName": "Community '{communityName}' wurde nicht gefunden",
+  "@unableToFindCommunityName": {
+    "description": "Error message for when we are unable to find a community, including the name"
+  },
+  "unbannedUserFromCommunity": "Entsperrter Benutzer aus der Community",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
+  "topSixHour": "Top der letzten 6 Stunden",
+  "@topSixHour": {},
+  "topAll": "Top aller Zeiten",
+  "@topAll": {},
+  "timeoutSavingPost": "Fehler: Zeitüberschreitung beim Versuch, den Beitrag zu speichern.",
+  "@timeoutSavingPost": {},
+  "visitCommunity": "Community besuchen",
+  "@visitCommunity": {},
+  "unableToFindUserName": "Benutzer '{username}' nicht gefunden",
+  "@unableToFindUserName": {},
+  "unfeaturedPost": "Einfacher Post",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "suchAs": "wie z.B.",
+  "@suchAs": {
+    "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
+  },
+  "themePrimary": "Primäre Farbe",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "thickness": "Dicke",
+  "@thickness": {
+    "description": "Describes a thickness (e.g., divider)"
+  },
+  "understandEnable": "Verstehe, Aktivieren",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
+  },
+  "useLocalNotificationsDescription": "Prüft regelmäßig im Hintergrund auf Benachrichtigungen",
+  "@useLocalNotificationsDescription": {
+    "description": "Subtitle of the setting for using local notifications"
+  },
+  "showUnreadOnly": "Nur ungelesene anzeigen",
+  "@showUnreadOnly": {
+    "description": "Show unread replies/mentions/messages only"
+  },
+  "showUserInstance": "Benutzer-Instanz anzeigen",
+  "@showUserInstance": {
+    "description": "Toggle to show user instance."
+  },
+  "thunderHasBeenUpdated": "Thunder auf {version} aktualisiert!",
+  "@thunderHasBeenUpdated": {
+    "description": "Heading for changelog when Thunder has been updated"
+  },
+  "translationsMayNotBeComplete": "Bitte beachte, dass Übersetzungen möglicherweise nicht vollständig sind",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "trySearchingFor": "Versuche die Suche nach...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
+  "unableToFindUser": "Benutzer nicht gefunden",
+  "@unableToFindUser": {},
+  "useCompactView": "Für kleine Posts einschalten, für große deaktivieren.",
+  "@useCompactView": {
+    "description": "Option to enable or disable compact view for small posts."
+  },
+  "useApplePushNotificationsDescription": "Verwendet Apples Push-Benachrichtigungsdienst",
+  "@useApplePushNotificationsDescription": {
+    "description": "Subtitle of the setting for using APNs"
+  },
+  "viewCommentSource": "Kommentarquelle anzeigen",
+  "@viewCommentSource": {
+    "description": "Menu item for viewing a comment's source"
+  },
+  "viewOriginal": "Original anzeigen",
+  "@viewOriginal": {
+    "description": "Action for viewing original text (as opposed to raw markdown)"
+  },
+  "viewAll": "Alle ansehen",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
+  "xUpvotes": "{x} Hochstufungen",
+  "@xUpvotes": {},
+  "videoLinkHandlingExternal": "Videos mit externer App abspielen",
+  "@videoLinkHandlingExternal": {
+    "description": "Description to Open video with an external application"
+  },
+  "viewingAll": "Alle anzeigen",
+  "@viewingAll": {
+    "description": "Chip for viewing all possible search results"
+  },
+  "userLabelsSettingsPageDescription": "Du kannst mit Benutzern verknüpfte Kennzeichnungen hinzufügen, ändern oder entfernen.",
+  "@userLabelsSettingsPageDescription": {
+    "description": "Description text for user labels settings page"
+  },
+  "videoAutoFullscreen": "Auto-Vollbild",
+  "@videoAutoFullscreen": {
+    "decription": "Option to always start the video players in landscape"
+  },
+  "viewSource": "Quelle anzeigen",
+  "@viewSource": {
+    "description": "Action for viewing source (raw markdown)"
+  },
+  "viewModlog": "Modlog anzeigen",
+  "@viewModlog": {
+    "description": "Action which allows the user to navigate to the modlog for a particular entity"
+  },
+  "showNavigationLabels": "Navigationsbeschriftung anzeigen",
+  "@showNavigationLabels": {
+    "description": "Setting for showing navigation labels"
+  },
+  "unpinFromCommunity": "Aus der Community lösen",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "topThreeMonths": "Top der letzten 3 Monate",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "successfullyUnblockedUser": "Entsperrt {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "showNavigationLabelsDescription": "Legt fest, ob Beschriftungen unter den unteren Buttons angezeigt werden sollen",
+  "@showNavigationLabelsDescription": {
+    "description": "Description for setting for showing navigation labels"
+  },
+  "unableToLoadImageFrom": "Bild konnte nicht von {domain} geladen werden",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "unableToLoadReplies": "Kann keine weiteren Antworten laden.",
+  "@unableToLoadReplies": {},
+  "unableToResolveReport": "Meldung kann nicht gelöst werden",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
+  },
+  "unableToRetrieveChangelog": "Changelog für Version {version} kann nicht geladen werden.",
+  "@unableToRetrieveChangelog": {
+    "description": "Error message for when we are unable to retrieve the changelog."
+  },
+  "unbannedUser": "Entsperrter Benutzer",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "unblockCommunity": "Community entsperren",
+  "@unblockCommunity": {
+    "description": "Action to unblock a community"
+  },
+  "unblockInstance": "Instanz entsperren",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "unexpectedError": "Unerwarteter Fehler",
+  "@unexpectedError": {},
+  "unsubscribePending": "Abbestellen (Abonnement ausstehend)",
+  "@unsubscribePending": {},
+  "upvoteColor": "Hochstufen Farbe",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
+  },
+  "unsubscribe": "Abbestellen",
+  "@unsubscribe": {},
+  "unsubscribeFromCommunity": "Community abbestellen",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
+  "unsubscribed": "Abbestellt",
+  "@unsubscribed": {},
+  "useApplePushNotifications": "APNs Benachrichtigungen verwenden",
+  "@useApplePushNotifications": {
+    "description": "Toggle to use APNs."
+  },
+  "visibility": "Sichtbarkeit: {visibility}",
+  "@visibility": {
+    "description": "Visibility heading for community"
+  },
+  "submit": "Senden",
+  "@submit": {},
+  "thisAccount": "Dieses Konto",
+  "@thisAccount": {
+    "description": "Referring to the currently active account in account settings"
+  },
+  "topTwelveHour": "Top der letzten 12 Stunden",
+  "@topTwelveHour": {},
+  "timeoutUpvoteComment": "Fehler: Zeitüberschreitung beim Versuch, für einen Kommentar abzustimmen",
+  "@timeoutUpvoteComment": {},
+  "topNineMonths": "Top der letzten 9 Monate",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "userNameColor": "Benutzername Farbe",
+  "@userNameColor": {
+    "description": "Setting for username color"
+  },
+  "text": "Text",
+  "@text": {},
+  "user": "Benutzer",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "useMaterialYouThemeDescription": "Setzt das benutzerdefinierte Thema außer Kraft",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
+  },
+  "useProfilePictureForDrawer": "Profilbild für Drawer verwenden",
+  "@useProfilePictureForDrawer": {
+    "description": "Setting name for using the profile picture for the drawer"
+  },
+  "unableToNavigateToInstance": "Es ist nicht möglich, zu {instanceHost} zu wechseln. Es handelt sich möglicherweise nicht um eine gültige Lemmy-Instanz.",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "stats": "Statistiken",
+  "@stats": {
+    "description": "Community statistics"
+  },
+  "topSixMonths": "Top der letzten 6 Monate",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "visitUserProfile": "Benutzerprofil besuchen",
+  "@visitUserProfile": {},
+  "successfullyUnblockedCommunity": "Entsperrt {communityName}",
+  "@successfullyUnblockedCommunity": {},
+  "top": "Top",
+  "@top": {},
+  "showMore": "Mehr anzeigen",
+  "@showMore": {},
+  "showUserDisplayNames": "Anzeige der Benutzernamen",
+  "@showUserDisplayNames": {
+    "description": "Toggle to show user display names."
+  },
+  "successfullyBannedUser": "Gesperrt {username}",
+  "@successfullyBannedUser": {
+    "description": "Notification for successfully banning a user"
+  },
+  "successfullyUnbannedUser": "Entsperrt {username}",
+  "@successfullyUnbannedUser": {
+    "description": "Notification for successfully unbanning a user"
+  },
+  "systemDarkMode": "System Dark Mode",
+  "@systemDarkMode": {
+    "description": "Setting which toggles the dark theme type when the system theme is selected"
+  },
+  "tapToExit": "Zum Beenden erneut auf Zurück drücken",
+  "@tapToExit": {},
+  "tappableAuthorCommunity": "Antippbare Autoren & Communitys",
+  "@tappableAuthorCommunity": {
+    "description": "Toggle to make authors and communities tappable."
+  },
+  "teal": "Türkisblau",
+  "@teal": {
+    "description": "The color teal"
+  },
+  "testBackgroundUnifiedPushNotificationDescription": "Thunder fragt den Benachrichtigungs-Server, eine verzögerte Benachrichtigung zu senden und beendet sich dann selbst. (Das kann einige Minuten dauern.)",
+  "@testBackgroundUnifiedPushNotificationDescription": {
+    "description": "A message describing the UnifiedPush background test notification"
+  },
+  "timeoutComments": "Fehler: Zeitüberschreitung beim Versuch, Kommentare abzurufen",
+  "@timeoutComments": {},
+  "topWeek": "Top Woche",
+  "@topWeek": {},
+  "totp": "TOTP (optional)",
+  "@totp": {},
+  "trendingCommunities": "Trending Communities",
+  "@trendingCommunities": {},
+  "unifiedPushServer": "UnifiedPush Server: {server}",
+  "@unifiedPushServer": {
+    "description": "Debug text that tells the user what UnifiedPush server is being used"
+  },
+  "unifiedPushDistributorApp": "UnifiedPush Verteileranwendung: {app} ({count} verfügbar)",
+  "@unifiedPushDistributorApp": {
+    "description": "A status indicator telling the current state of the UnifiedPush distributor app"
+  },
+  "unlockPost": "Post entsperren",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unpinPostFromCommunity": "Post aus der Community lösen",
+  "@unpinPostFromCommunity": {
+    "description": "Moderator action to unpin a post from a community"
+  },
+  "unresolved": "Ungeklärt",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
+  },
+  "videoPlayerInApp": "Integrierten Thunder Player verwenden",
+  "@videoPlayerInApp": {
+    "description": "Description for using in-app video player"
+  },
+  "videoPlayerMode": "Player Modus",
+  "@videoPlayerMode": {
+    "description": "Option to select video player mode (in-app or external)  "
+  },
+  "viewPostAsDifferentAccount": "Post unter anderem Konto anzeigen",
+  "@viewPostAsDifferentAccount": {
+    "description": "Action for viewing a post as a different account"
+  },
+  "visitCommunityInstance": "Community-Instanz besuchen",
+  "@visitCommunityInstance": {
+    "description": "Action to visit the instance of a community"
+  },
+  "uploadImage": "Bild hochladen",
+  "@uploadImage": {},
+  "showPostAuthor": "Autor des Posts anzeigen",
+  "@showPostAuthor": {
+    "description": "Toggle to show post author."
+  },
+  "showPostSaveAction": "Speichern- Button anzeigen",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "userLabelHint": "Dies ist mein bevorzugter Benutzer",
+  "@userLabelHint": {
+    "description": "Hint text for adding a new user label"
+  },
+  "xYearsOld": "{count, plural, zero {{x} Jahr alt} one {{x} Jahr alt} other {{x} Jahre alt}}",
+  "@xYearsOld": {
+    "description": "An account descriptor representing how old an account is"
+  },
+  "yes": "Ja",
+  "@yes": {
+    "description": "A positive status"
+  },
+  "sidebarBottomNavDoubleTapDescription": "Doppeltipp auf die untere Navigationsleiste zum Öffnen der Seitenleiste",
+  "@sidebarBottomNavDoubleTapDescription": {}
 }
