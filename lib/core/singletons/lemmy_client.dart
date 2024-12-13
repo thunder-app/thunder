@@ -95,6 +95,7 @@ enum LemmyFeature {
   multiRead(0, 19, 0, preRelease: ["rc", "1"]),
   hidePosts(0, 19, 4),
   customThumbnail(0, 19, 4),
+  altText(0, 19, 4),
   commentModLog(0, 19, 4),
   imageDimension(0, 19, 6),
   ;

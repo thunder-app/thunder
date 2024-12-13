@@ -56,7 +56,7 @@ class Account {
               instance: Value(account.instance),
               anonymous: Value(account.anonymous),
               userId: Value(account.userId),
-              listIndex: newIndex,
+              listIndex: Value(newIndex),
             ),
           );
 
@@ -85,7 +85,7 @@ class Account {
               instance: Value(anonymousInstance.instance),
               anonymous: Value(anonymousInstance.anonymous),
               userId: Value(anonymousInstance.userId),
-              listIndex: newIndex,
+              listIndex: Value(newIndex),
             ),
           );
 

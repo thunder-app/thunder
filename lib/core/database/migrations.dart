@@ -49,7 +49,7 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool d
               jwt: Value(record['jwt']),
               instance: Value(record['instance']),
               userId: Value(record['userId']),
-              listIndex: -1,
+              listIndex: Value(-1),
             ));
 
         String? activeProfileId = prefs?.getString('active_profile_id');

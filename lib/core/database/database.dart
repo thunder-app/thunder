@@ -36,7 +36,7 @@ class AppDatabase extends _$AppDatabase {
         );
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -66,6 +66,10 @@ class AppDatabase extends _$AppDatabase {
                 // Add the list_index column to the Accounts table and use id as the default value
                 await m.addColumn(schema.accounts, schema.accounts.listIndex);
                 await customStatement('UPDATE accounts SET list_index = id');
+              },
+              from5To6: (m, schema) async {
+                // Create the alt_text column on the drafts table
+                await m.addColumn(schema.drafts, schema.drafts.altText);
               },
             ),
           );

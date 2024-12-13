@@ -105,6 +105,10 @@
   },
   "alreadyPostedTo": "Already posted to",
   "@alreadyPostedTo": {},
+  "altText": "Alt Text",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
   "alternateSources": "Alternate Sources",
   "@alternateSources": {
     "description": "Action for viewing a link from alternate sources"
