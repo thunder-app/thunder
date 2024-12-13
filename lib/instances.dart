@@ -38,7 +38,6 @@ const List<String> instances = [
   'lemy.lol',
   'mander.xyz',
   'midwest.social',
-  'monero.town',
   'pawb.social',
   'programming.dev',
   'reddthat.com',
