@@ -451,8 +451,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           color: theme.colorScheme.onPrimary,
                         ),
                       ),
-                      onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
-                          ? _handleOAuthLogin
+                      onPressed: (!isLoading && _instanceTextEditingController.text.isNotEmpty)
+                          ? () {
+                              _handleOAuthLogin(provider: provider);
+                            }
                           : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
                               ? () => _addAnonymousInstance(context)
                               : null,
@@ -488,12 +490,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         );
   }
 
-  void _handleOAuthLogin({bool showContentWarning = true}) {
+  // TODO: Set showContentWarning default value to true.  Need to relogin after.
+  void _handleOAuthLogin({required ProviderView provider, bool showContentWarning = false}) {
     TextInput.finishAutofillContext();
     // Perform login authentication
     context.read<AuthBloc>().add(
           OAuthLoginAttempt(
             instance: _instanceTextEditingController.text.trim(),
+            provider: provider,
           ),
         );
   }

@@ -205,14 +205,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         String instance = event.instance;
         if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
-        if (instance.startsWith('http://')) instance = instance.replaceAll('http://', '');
 
         lemmyClient.changeBaseUrl(instance);
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-        // TODO: Select from a list of Providers, for now it is hard coded to provider0.
-        GetSiteResponse siteResponse = await lemmy.run(const GetSite());
-        ProviderView provider = siteResponse.oauthProviders!.elementAt(0);
+        ProviderView provider = event.provider;
         debugPrint(provider.toString());
         var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
 
