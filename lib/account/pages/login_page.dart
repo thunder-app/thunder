@@ -51,6 +51,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   bool instanceValidated = true;
   bool instanceAwaitingValidation = true;
   String? instanceError;
+  List<ProviderView> oauthProviders = [];
 
   bool isLoading = false;
 
@@ -81,6 +82,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     _instanceTextEditingController.addListener(() async {
       if (currentInstance != _instanceTextEditingController.text) {
         setState(() => instanceIcon = null);
+        setState(() => oauthProviders = []);
         currentInstance = _instanceTextEditingController.text;
       }
 
@@ -98,6 +100,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         await getInstanceInfo(_instanceTextEditingController.text).then((value) {
           // Make sure the icon we looked up still matches the text
           if (currentInstance == _instanceTextEditingController.text) {
+            setState(() => oauthProviders = value.oauthProviders ?? []);
             setState(() => instanceIcon = value.icon);
           }
         });
@@ -445,21 +448,22 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                   ),
                   const SizedBox(height: 12.0),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(60),
-                      backgroundColor: theme.colorScheme.primary,
-                      textStyle: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.onPrimary,
+                  for (final provider in oauthProviders)
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(60),
+                        backgroundColor: theme.colorScheme.primary,
+                        textStyle: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                        ),
                       ),
+                      onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
+                          ? _handleOAuthLogin
+                          : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
+                              ? () => _addAnonymousInstance(context)
+                              : null,
+                      child: Text(provider.displayName, style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                     ),
-                    onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
-                        ? _handleOAuthLogin
-                        : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
-                            ? () => _addAnonymousInstance(context)
-                            : null,
-                    child: Text("Privacy Portal", style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
-                  ),
                   const SizedBox(height: 12.0),
                   TextButton(
                     style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
