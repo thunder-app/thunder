@@ -179,6 +179,7 @@ class GetInstanceInfoResponse {
   final String? domain;
   final int? users;
   final int? id;
+  final List<ProviderView>? oauthProviders;
 
   const GetInstanceInfoResponse({
     required this.success,
@@ -188,6 +189,7 @@ class GetInstanceInfoResponse {
     this.domain,
     this.users,
     this.id,
+    this.oauthProviders,
   });
 
   bool isMetadataPopulated() => icon != null || version != null || name != null || users != null;
@@ -199,7 +201,8 @@ Future<GetInstanceInfoResponse> getInstanceInfo(String? url, {int? id, Duration?
   }
 
   try {
-    final site = await LemmyApiV3(url!).run(const GetSite()).timeout(timeout ?? const Duration(seconds: 5));
+    // TODO: need to remove tls and debug args, this is just for testing.
+    final site = await LemmyApiV3(url!, tls: false, debug: true).run(const GetSite()).timeout(timeout ?? const Duration(seconds: 5));
     return GetInstanceInfoResponse(
       success: true,
       icon: site.siteView.site.icon,
@@ -208,6 +211,7 @@ Future<GetInstanceInfoResponse> getInstanceInfo(String? url, {int? id, Duration?
       domain: fetchInstanceNameFromUrl(site.siteView.site.actorId),
       users: site.siteView.counts.users,
       id: id,
+      oauthProviders: site.oauthProviders,
     );
   } catch (e) {
     // Bad instances will throw an exception, so no icon
