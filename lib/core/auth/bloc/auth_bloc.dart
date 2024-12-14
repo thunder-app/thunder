@@ -197,9 +197,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
 
-      // lemmy client_id, can be found be found on the lemmy OAuth Configuration page.
-      //String clientId = '9d16fb35-090f-4426-a456-368d9412861f';
-
       try {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
 

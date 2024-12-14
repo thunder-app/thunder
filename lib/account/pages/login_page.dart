@@ -458,7 +458,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
                               ? () => _addAnonymousInstance(context)
                               : null,
-                      child: Text(provider.displayName, style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
+                      child: Text(provider.displayName,
+                          style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && _instanceTextEditingController.text.isNotEmpty ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                     ),
                   const SizedBox(height: 12.0),
                   TextButton(
