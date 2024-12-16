@@ -2858,5 +2858,9 @@
   "excessiveApiCallsWarning": "Es posible que tu feed tarde en cargarse debido a los filtros de palabras clave.",
   "@excessiveApiCallsWarning": {
     "description": "A message shown to the user when the feed is taking a long time to load, possibly because many posts are being filtered out due to their keyword filters"
+  },
+  "viewModlog": "Ver registro de modificaciones",
+  "@viewModlog": {
+    "description": "Action which allows the user to navigate to the modlog for a particular entity"
   }
 }
