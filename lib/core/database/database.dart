@@ -82,7 +82,32 @@ class AppDatabase extends _$AppDatabase {
           await impl.validateDatabaseSchema(this);
           await customStatement('PRAGMA foreign_keys = ON;');
         },
+        beforeOpen: (details) async {
+          if (details.versionBefore != null && details.versionBefore! > details.versionNow) {
+            await _onDowngrade(this, details.versionBefore!, details.versionNow);
+          }
+        },
       );
+}
+
+Future<void> _onDowngrade(AppDatabase database, int fromVersion, int toVersion) async {
+  await database.customStatement('PRAGMA foreign_keys = OFF');
+
+  int current = fromVersion;
+  while (current > toVersion) {
+    int target = current - 1;
+    await _onDownGradeOneStep(database, current, target);
+    current = target;
+  }
+
+  await database.customStatement('PRAGMA foreign_keys=ON;');
+}
+
+Future<void> _onDownGradeOneStep(AppDatabase database, int fromVersion, int toVersion) async {
+  if (fromVersion == 6 && toVersion == 5) {
+    // Drop the alt_text column on the drafts table
+    await database.customStatement('ALTER TABLE drafts DROP COLUMN alt_text');
+  }
 }
 
 Future<String?> exportDatabase() async {
