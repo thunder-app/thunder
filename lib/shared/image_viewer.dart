@@ -195,28 +195,28 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
             // Start doubletap zoom if conditions are met
             onVerticalDragStart: maybeSlideZooming
                 ? (details) {
-              setState(() {
-                slideZooming = true;
-              });
-            }
+                    setState(() {
+                      slideZooming = true;
+                    });
+                  }
                 : null,
             // Zoom image in an out based on movement in vertical axis if conditions are met
             onVerticalDragUpdate: maybeSlideZooming || slideZooming
                 ? (details) {
-              // Need to catch the drag during "maybe" phase or it wont activate fast enough
-              if (slideZooming) {
-                double newScale = max(gestureKey.currentState!.gestureDetails!.totalScale! * (1 + (details.delta.dy / 150)), 1);
-                gestureKey.currentState?.handleDoubleTap(scale: newScale, doubleTapPosition: gestureKey.currentState!.pointerDownPosition);
-              }
-            }
+                    // Need to catch the drag during "maybe" phase or it wont activate fast enough
+                    if (slideZooming) {
+                      double newScale = max(gestureKey.currentState!.gestureDetails!.totalScale! * (1 + (details.delta.dy / 150)), 1);
+                      gestureKey.currentState?.handleDoubleTap(scale: newScale, doubleTapPosition: gestureKey.currentState!.pointerDownPosition);
+                    }
+                  }
                 : null,
             // End doubletap zoom
             onVerticalDragEnd: slideZooming
                 ? (details) {
-              setState(() {
-                slideZooming = false;
-              });
-            }
+                    setState(() {
+                      slideZooming = false;
+                    });
+                  }
                 : null,
             child: Listener(
               // Start watching for double tap zoom
@@ -251,11 +251,11 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                   }
                 },
                 slideEndHandler: (
-                    // Decrease slide to dismiss threshold so it can be done easier
-                    Offset offset, {
-                      ExtendedImageSlidePageState? state,
-                      ScaleEndDetails? details,
-                    }) {
+                  // Decrease slide to dismiss threshold so it can be done easier
+                  Offset offset, {
+                  ExtendedImageSlidePageState? state,
+                  ScaleEndDetails? details,
+                }) {
                   if (state != null) {
                     var offset = state.offset;
                     var pageSize = state.pageSize;
@@ -265,125 +265,125 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                 },
                 child: widget.url != null
                     ? ExtendedImage.network(
-                  widget.url!,
-                  color: Colors.white.withOpacity(imageTransparency),
-                  colorBlendMode: BlendMode.dstIn,
-                  enableSlideOutPage: true,
-                  mode: ExtendedImageMode.gesture,
-                  extendedImageGestureKey: gestureKey,
-                  cache: true,
-                  clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
-                  layoutInsets: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 50, top: MediaQuery.of(context).padding.top + 50),
-                  initGestureConfigHandler: (ExtendedImageState state) {
-                    return GestureConfig(
-                      minScale: 0.8,
-                      animationMinScale: 0.8,
-                      maxScale: maxZoomLevel.toDouble(),
-                      animationMaxScale: maxZoomLevel.toDouble(),
-                      speed: 1.0,
-                      inertialSpeed: 250.0,
-                      initialScale: 1.0,
-                      inPageView: false,
-                      initialAlignment: InitialAlignment.center,
-                      reverseMousePointerScrollDirection: true,
-                      gestureDetailsIsChanged: (GestureDetails? details) {},
-                    );
-                  },
-                  onDoubleTap: (ExtendedImageGestureState state) {
-                    var pointerDownPosition = state.pointerDownPosition;
-                    double begin = state.gestureDetails!.totalScale!;
-                    double end;
+                        widget.url!,
+                        color: Colors.white.withOpacity(imageTransparency),
+                        colorBlendMode: BlendMode.dstIn,
+                        enableSlideOutPage: true,
+                        mode: ExtendedImageMode.gesture,
+                        extendedImageGestureKey: gestureKey,
+                        cache: true,
+                        clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
+                        layoutInsets: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 50, top: MediaQuery.of(context).padding.top + 50),
+                        initGestureConfigHandler: (ExtendedImageState state) {
+                          return GestureConfig(
+                            minScale: 0.8,
+                            animationMinScale: 0.8,
+                            maxScale: maxZoomLevel.toDouble(),
+                            animationMaxScale: maxZoomLevel.toDouble(),
+                            speed: 1.0,
+                            inertialSpeed: 250.0,
+                            initialScale: 1.0,
+                            inPageView: false,
+                            initialAlignment: InitialAlignment.center,
+                            reverseMousePointerScrollDirection: true,
+                            gestureDetailsIsChanged: (GestureDetails? details) {},
+                          );
+                        },
+                        onDoubleTap: (ExtendedImageGestureState state) {
+                          var pointerDownPosition = state.pointerDownPosition;
+                          double begin = state.gestureDetails!.totalScale!;
+                          double end;
 
-                    animation?.removeListener(animationListener);
-                    animationController.stop();
-                    animationController.reset();
+                          animation?.removeListener(animationListener);
+                          animationController.stop();
+                          animationController.reset();
 
-                    if (begin == 1) {
-                      end = 2;
-                    } else if (begin > 1.99 && begin < 2.01) {
-                      end = 4;
-                    } else {
-                      end = 1;
-                    }
-                    animationListener = () {
-                      state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
-                    };
-                    animation = animationController.drive(Tween<double>(begin: begin, end: end));
+                          if (begin == 1) {
+                            end = 2;
+                          } else if (begin > 1.99 && begin < 2.01) {
+                            end = 4;
+                          } else {
+                            end = 1;
+                          }
+                          animationListener = () {
+                            state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                          };
+                          animation = animationController.drive(Tween<double>(begin: begin, end: end));
 
-                    animation!.addListener(animationListener);
+                          animation!.addListener(animationListener);
 
-                    animationController.forward();
-                  },
-                  loadStateChanged: (state) {
-                    if (state.extendedImageLoadState == LoadState.loading) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white.withOpacity(0.90),
-                        ),
-                      );
-                    }
-                    return null;
-                  },
-                )
+                          animationController.forward();
+                        },
+                        loadStateChanged: (state) {
+                          if (state.extendedImageLoadState == LoadState.loading) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white.withOpacity(0.90),
+                              ),
+                            );
+                          }
+                          return null;
+                        },
+                      )
                     : ExtendedImage.memory(
-                  widget.bytes!,
-                  color: Colors.white.withOpacity(imageTransparency),
-                  colorBlendMode: BlendMode.dstIn,
-                  enableSlideOutPage: true,
-                  mode: ExtendedImageMode.gesture,
-                  extendedImageGestureKey: gestureKey,
-                  clearMemoryCacheWhenDispose: true,
-                  initGestureConfigHandler: (ExtendedImageState state) {
-                    return GestureConfig(
-                      minScale: 0.8,
-                      animationMinScale: 0.8,
-                      maxScale: 4.0,
-                      animationMaxScale: 4.0,
-                      speed: 1.0,
-                      inertialSpeed: 250.0,
-                      initialScale: 1.0,
-                      inPageView: false,
-                      initialAlignment: InitialAlignment.center,
-                      reverseMousePointerScrollDirection: true,
-                      gestureDetailsIsChanged: (GestureDetails? details) {},
-                    );
-                  },
-                  onDoubleTap: (ExtendedImageGestureState state) {
-                    var pointerDownPosition = state.pointerDownPosition;
-                    double begin = state.gestureDetails!.totalScale!;
-                    double end;
+                        widget.bytes!,
+                        color: Colors.white.withOpacity(imageTransparency),
+                        colorBlendMode: BlendMode.dstIn,
+                        enableSlideOutPage: true,
+                        mode: ExtendedImageMode.gesture,
+                        extendedImageGestureKey: gestureKey,
+                        clearMemoryCacheWhenDispose: true,
+                        initGestureConfigHandler: (ExtendedImageState state) {
+                          return GestureConfig(
+                            minScale: 0.8,
+                            animationMinScale: 0.8,
+                            maxScale: 4.0,
+                            animationMaxScale: 4.0,
+                            speed: 1.0,
+                            inertialSpeed: 250.0,
+                            initialScale: 1.0,
+                            inPageView: false,
+                            initialAlignment: InitialAlignment.center,
+                            reverseMousePointerScrollDirection: true,
+                            gestureDetailsIsChanged: (GestureDetails? details) {},
+                          );
+                        },
+                        onDoubleTap: (ExtendedImageGestureState state) {
+                          var pointerDownPosition = state.pointerDownPosition;
+                          double begin = state.gestureDetails!.totalScale!;
+                          double end;
 
-                    animation?.removeListener(animationListener);
-                    animationController.stop();
-                    animationController.reset();
+                          animation?.removeListener(animationListener);
+                          animationController.stop();
+                          animationController.reset();
 
-                    if (begin == 1) {
-                      end = 2;
-                    } else if (begin > 1.99 && begin < 2.01) {
-                      end = 4;
-                    } else {
-                      end = 1;
-                    }
-                    animationListener = () {
-                      state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
-                    };
-                    animation = animationController.drive(Tween<double>(begin: begin, end: end));
+                          if (begin == 1) {
+                            end = 2;
+                          } else if (begin > 1.99 && begin < 2.01) {
+                            end = 4;
+                          } else {
+                            end = 1;
+                          }
+                          animationListener = () {
+                            state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                          };
+                          animation = animationController.drive(Tween<double>(begin: begin, end: end));
 
-                    animation!.addListener(animationListener);
+                          animation!.addListener(animationListener);
 
-                    animationController.forward();
-                  },
-                  loadStateChanged: (state) {
-                    if (state.extendedImageLoadState == LoadState.loading) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white.withOpacity(0.90),
-                        ),
-                      );
-                    }
-                    return null;
-                  },
-                ),
+                          animationController.forward();
+                        },
+                        loadStateChanged: (state) {
+                          if (state.extendedImageLoadState == LoadState.loading) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white.withOpacity(0.90),
+                              ),
+                            );
+                          }
+                          return null;
+                        },
+                      ),
               ),
             ),
           ),
@@ -457,40 +457,40 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             onPressed: fullscreen
                                 ? null
                                 : () async {
-                              try {
-                                // Try to get the cached image first
-                                var media = await DefaultCacheManager().getFileFromCache(widget.url!);
-                                File? mediaFile = media?.file;
+                                    try {
+                                      // Try to get the cached image first
+                                      var media = await DefaultCacheManager().getFileFromCache(widget.url!);
+                                      File? mediaFile = media?.file;
 
-                                if (media == null) {
-                                  setState(() => isDownloadingMedia = true);
+                                      if (media == null) {
+                                        setState(() => isDownloadingMedia = true);
 
-                                  // Download
-                                  mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
-                                }
+                                        // Download
+                                        mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
+                                      }
 
-                                // Share
-                                await Share.shareXFiles([XFile(mediaFile!.path)]);
-                              } catch (e) {
-                                // Tell the user that the download failed
-                                showSnackbar(l10n.errorDownloadingMedia(e));
-                              } finally {
-                                setState(() => isDownloadingMedia = false);
-                              }
-                            },
+                                      // Share
+                                      await Share.shareXFiles([XFile(mediaFile!.path)]);
+                                    } catch (e) {
+                                      // Tell the user that the download failed
+                                      showSnackbar(l10n.errorDownloadingMedia(e));
+                                    } finally {
+                                      setState(() => isDownloadingMedia = false);
+                                    }
+                                  },
                             icon: isDownloadingMedia
                                 ? SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white.withOpacity(0.90),
-                              ),
-                            )
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white.withOpacity(0.90),
+                                    ),
+                                  )
                                 : Icon(
-                              Icons.share_rounded,
-                              semanticLabel: "Share",
-                              color: Colors.white.withOpacity(0.90),
-                            ),
+                                    Icons.share_rounded,
+                                    semanticLabel: "Share",
+                                    color: Colors.white.withOpacity(0.90),
+                                  ),
                           ),
                         ),
                       if (widget.url != null)
@@ -500,59 +500,59 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             onPressed: (downloaded || isSavingMedia || fullscreen || widget.url == null || kIsWeb)
                                 ? null
                                 : () async {
-                              File file = await DefaultCacheManager().getSingleFile(widget.url!);
-                              bool hasPermission = await _requestPermission();
+                                    File file = await DefaultCacheManager().getSingleFile(widget.url!);
+                                    bool hasPermission = await _requestPermission();
 
-                              if (!hasPermission) {
-                                if (context.mounted) showPermissionDeniedDialog(context);
-                                return;
-                              }
+                                    if (!hasPermission) {
+                                      if (context.mounted) showPermissionDeniedDialog(context);
+                                      return;
+                                    }
 
-                              setState(() => isSavingMedia = true);
+                                    setState(() => isSavingMedia = true);
 
-                              try {
-                                // Save image on Linux platform
-                                if (Platform.isLinux) {
-                                  final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
+                                    try {
+                                      // Save image on Linux platform
+                                      if (Platform.isLinux) {
+                                        final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
 
-                                  File(filePath)
-                                    ..createSync(recursive: true)
-                                    ..writeAsBytesSync(file.readAsBytesSync());
+                                        File(filePath)
+                                          ..createSync(recursive: true)
+                                          ..writeAsBytesSync(file.readAsBytesSync());
 
-                                  return setState(() => downloaded = true);
-                                }
+                                        return setState(() => downloaded = true);
+                                      }
 
-                                // Save image on all other supported platforms (Android, iOS, macOS, Windows)
-                                try {
-                                  await Gal.putImage(file.path, album: "Thunder");
-                                  setState(() => downloaded = true);
-                                } on GalException catch (e) {
-                                  if (context.mounted) showSnackbar(e.type.message);
-                                  setState(() => downloaded = false);
-                                }
-                              } finally {
-                                setState(() => isSavingMedia = false);
-                              }
-                            },
+                                      // Save image on all other supported platforms (Android, iOS, macOS, Windows)
+                                      try {
+                                        await Gal.putImage(file.path, album: "Thunder");
+                                        setState(() => downloaded = true);
+                                      } on GalException catch (e) {
+                                        if (context.mounted) showSnackbar(e.type.message);
+                                        setState(() => downloaded = false);
+                                      }
+                                    } finally {
+                                      setState(() => isSavingMedia = false);
+                                    }
+                                  },
                             icon: isSavingMedia
                                 ? SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white.withOpacity(0.90),
-                              ),
-                            )
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white.withOpacity(0.90),
+                                    ),
+                                  )
                                 : downloaded
-                                ? Icon(
-                              Icons.check_circle,
-                              semanticLabel: 'Downloaded',
-                              color: Colors.white.withOpacity(0.90),
-                            )
-                                : Icon(
-                              Icons.download,
-                              semanticLabel: "Download",
-                              color: Colors.white.withOpacity(0.90),
-                            ),
+                                    ? Icon(
+                                        Icons.check_circle,
+                                        semanticLabel: 'Downloaded',
+                                        color: Colors.white.withOpacity(0.90),
+                                      )
+                                    : Icon(
+                                        Icons.download,
+                                        semanticLabel: "Download",
+                                        color: Colors.white.withOpacity(0.90),
+                                      ),
                           ),
                         ),
                       if (widget.navigateToPost != null)
@@ -713,4 +713,3 @@ class ImageAltText extends StatelessWidget {
     );
   }
 }
-
