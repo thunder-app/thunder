@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gal/gal.dart';
 import 'package:share_plus/share_plus.dart';
@@ -84,6 +83,24 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
         });
       }
     });
+  }
+
+  void enterFullScreen() {
+    setState(() {
+      fullscreen = true;
+    });
+    Timer(const Duration(milliseconds: 400), () {
+      if (fullscreen) {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+      }
+    });
+  }
+
+  void exitFullScreen() {
+    setState(() {
+      fullscreen = false;
+    });
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: SystemUiOverlay.values);
   }
 
   Future<bool> _requestPermission() async {
@@ -178,18 +195,18 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
           child: GestureDetector(
             onLongPress: () {
               HapticFeedback.lightImpact();
-              setState(() {
-                fullscreen = !fullscreen;
-              });
+              if (fullscreen) {
+                exitFullScreen();
+              } else {
+                enterFullScreen();
+              }
             },
             onTap: () {
               if (!fullscreen) {
                 slidePagekey.currentState!.popPage();
                 Navigator.pop(context);
               } else {
-                setState(() {
-                  fullscreen = false;
-                });
+                exitFullScreen();
               }
             },
             // Start doubletap zoom if conditions are met
@@ -227,6 +244,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                 delta = (downCoord - details.position).distance;
                 if (!slideZooming && delta < 0.5) {
                   _maybeSlide(context);
+                }
+              },
+              onPointerMove: (details) {
+                if (gestureKey.currentState!.gestureDetails!.totalScale! > 1.2) {
+                  enterFullScreen();
+                } else {
+                  exitFullScreen();
                 }
               },
               child: ExtendedImageSlidePage(
@@ -300,10 +324,12 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
                           if (begin == 1) {
                             end = 2;
+                            enterFullScreen();
                           } else if (begin > 1.99 && begin < 2.01) {
                             end = 4;
                           } else {
                             end = 1;
+                            exitFullScreen();
                           }
                           animationListener = () {
                             state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
@@ -359,10 +385,12 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
                           if (begin == 1) {
                             end = 2;
+                            enterFullScreen();
                           } else if (begin > 1.99 && begin < 2.01) {
                             end = 4;
                           } else {
                             end = 1;
+                            exitFullScreen();
                           }
                           animationListener = () {
                             state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
