@@ -109,9 +109,11 @@ class _ThunderState extends State<Thunder> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      handleSharedFilesAndText();
-
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+        handleSharedFilesAndText();
+      }
+
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
         BlocProvider.of<DeepLinksCubit>(context).initialize();
         BlocProvider.of<NotificationsCubit>(context).handleNotifications();
       }
@@ -141,7 +143,7 @@ class _ThunderState extends State<Thunder> {
         handleSharedItems(sharedFiles.first);
       });
     } catch (e) {
-      if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
+      if (context.mounted) showSnackbar("${AppLocalizations.of(context)!.unexpectedError}: $e");
     }
   }
 
