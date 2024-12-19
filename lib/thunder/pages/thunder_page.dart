@@ -143,7 +143,7 @@ class _ThunderState extends State<Thunder> {
         handleSharedItems(sharedFiles.first);
       });
     } catch (e) {
-      if (context.mounted) showSnackbar("${AppLocalizations.of(context)!.unexpectedError}: $e");
+      if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
     }
   }
 
