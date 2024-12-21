@@ -137,12 +137,12 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   app_links: 10e0a0ab602ffaf34d142cd4862f29d34b303b2a
   connectivity_plus: 4c41c08fc6d7c91f63bc7aec70ffe3730b04f563
+  desktop_webview_window: d4365e71bcd4e1aa0c14cf0377aa24db0c16a7e2
   device_info_plus: 1b14eed9bf95428983aed283a8d51cce3d8c4215
   dynamic_color: 2eaa27267de1ca20d879fbd6e01259773fb1670f
   file_selector_macos: cc3858c981fe6889f364731200d6232dac1d812d
   flutter_inappwebview_macos: bdf207b8f4ebd58e86ae06cd96b147de99a67c9b
   flutter_local_notifications: 7062189aabf7f50938a7b8b6614ffa97656eb0bf
-  flutter_secure_storage_macos: 59459653abe1adb92abbc8ea747d79f8d19866c9
   flutter_web_auth_2: 2e1dc2d2139973e4723c5286ce247dd590390d70
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   gal: 61e868295d28fe67ffa297fae6dacebf56fd53e1

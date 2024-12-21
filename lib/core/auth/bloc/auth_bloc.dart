@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
@@ -12,6 +13,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path/path.dart' as path;
 
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/account/models/account.dart';
@@ -211,7 +213,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
 
         // Build oauth provider url.
-        String redirectUri = "http://localhost:40000/oauth/callback"; // This must end in /oauth/callback.
+        String redirectUri = "https://localhost:40000/oauth/callback"; // This must end in /oauth/callback.
         String oauthClientState = const Uuid().v4();
         final url = Uri.https(authorizationEndpoint.host, authorizationEndpoint.path, {
           'response_type': 'code',
@@ -223,7 +225,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // Start http server to receive callback.
         // TODO: Figure out how to do this in a better cross-platform way. Maybe, https://pub.dev/packages/app_links
-        HttpServer server = await HttpServer.bind("localhost", 40000);
+        //Directory.current = path.dirname(Platform.script.toFilePath());
+
+        var chain = utf8.encode(await rootBundle.loadString('assets/localhost.crt'));
+        var key = utf8.encode(await rootBundle.loadString('assets/localhost.key'));
+        var serverContext = SecurityContext();
+        serverContext.useCertificateChainBytes(chain);
+        serverContext.usePrivateKeyBytes(key);
+
+        var server = await HttpServer.bindSecure("localhost", 40000, serverContext);
+        // await server.forEach((HttpRequest request) {
+        //   request.response.write('Hello, world!');
+        //   request.response.close();
+        // });
+
+        //HttpServer server = await HttpServer.bind("localhost", 40000);
 
         // Present the dialog to the user.
         final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "thunder");
@@ -251,7 +267,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // TODO: This should use lemmy_api_client.
         // Authenthicate to lemmy and get a jwt.
         // Durring this step lemmy with connect to the Provider to get the user info.
-        final response = await http.post(Uri.parse('http://localhost/api/v3/oauth/authenticate'),
+        final response = await http.post(Uri.parse('https://hopandzip.com/api/v3/oauth/authenticate'),
             headers: {
               'Content-Type': 'application/json',
             },
