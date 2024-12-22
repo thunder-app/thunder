@@ -250,8 +250,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // Extract the code from the response.
         String code = Uri.parse(providerResponse.uri.toString()).queryParameters['code'] ?? "failed";
-        debugPrint("CODE");
-        debugPrint(code);
+        debugPrint("CODE $code");
 
         if (code == "failed") {
           throw Exception("OAuth login failed: no code received from provider.");
@@ -259,7 +258,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // TODO: This should use lemmy_api_client.
         // Authenthicate to lemmy and get a jwt.
-        // Durring this step lemmy with connect to the Provider to get the user info.
+        // Durring this step lemmy connects to the Provider to get the user info.
         final response = await http.post(Uri.parse('https://$instance/api/v3/oauth/authenticate'),
             headers: {
               'Content-Type': 'application/json',
@@ -271,10 +270,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             }),
             encoding: Encoding.getByName('utf-8'));
 
+        // TODO: Need to add a step to set the account username.
+
         final accessToken = jsonDecode(response.body)['jwt'] as String;
 
-        debugPrint("JWT");
-        debugPrint(accessToken);
+        debugPrint("JWT $accessToken");
 
         GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: accessToken));
 
