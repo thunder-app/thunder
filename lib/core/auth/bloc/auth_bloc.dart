@@ -198,6 +198,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<OAuthLoginAttempt>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
+      HttpServer? server;
 
       try {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
@@ -223,23 +224,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           'state': oauthClientState,
         });
 
-        // Start http server to receive callback.
-        // TODO: Figure out how to do this in a better cross-platform way. Maybe, https://pub.dev/packages/app_links
-        //Directory.current = path.dirname(Platform.script.toFilePath());
-
+        // Start https server to receive callback.  This is just for development.
+        // TODO: Figure out how to do this in a better way for mobile.
         var chain = utf8.encode(await rootBundle.loadString('assets/localhost.crt'));
         var key = utf8.encode(await rootBundle.loadString('assets/localhost.key'));
         var serverContext = SecurityContext();
         serverContext.useCertificateChainBytes(chain);
         serverContext.usePrivateKeyBytes(key);
-
-        var server = await HttpServer.bindSecure("localhost", 40000, serverContext);
-        // await server.forEach((HttpRequest request) {
-        //   request.response.write('Hello, world!');
-        //   request.response.close();
-        // });
-
-        //HttpServer server = await HttpServer.bind("localhost", 40000);
+        server = await HttpServer.bindSecure("localhost", 40000, serverContext);
+        //server = await HttpServer.bind("localhost", 40000);
 
         // Present the dialog to the user.
         final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "thunder");
@@ -267,7 +260,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // TODO: This should use lemmy_api_client.
         // Authenthicate to lemmy and get a jwt.
         // Durring this step lemmy with connect to the Provider to get the user info.
-        final response = await http.post(Uri.parse('https://hopandzip.com/api/v3/oauth/authenticate'),
+        final response = await http.post(Uri.parse('https://$instance/api/v3/oauth/authenticate'),
             headers: {
               'Content-Type': 'application/json',
             },
@@ -285,7 +278,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: accessToken));
 
-        // TODO: Login fails when this is uncommented.
+        // TODO: Login fails when this is uncommented. Have to get this working.
         //if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
         //  return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
         //}
@@ -317,6 +310,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       } catch (e) {
         try {
+          await server!.close();
           // Restore the original baseUrl
           lemmyClient.changeBaseUrl(originalBaseUrl);
         } catch (e, s) {
