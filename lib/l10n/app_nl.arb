@@ -1,1 +1,92 @@
-{}
+{
+  "about": "Over",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accessibility": "Toegankelĳk­heid",
+  "@accessibility": {},
+  "actions": "Acties",
+  "@actions": {},
+  "admin": "Administrator",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "all": "Alles",
+  "@all": {},
+  "always": "Altĳd",
+  "@always": {},
+  "animations": "Animaties",
+  "@animations": {},
+  "anonymous": "Anoniem",
+  "@anonymous": {},
+  "applied": "Toegepast",
+  "@applied": {},
+  "apply": "Toepassen",
+  "@apply": {},
+  "back": "Terug",
+  "@back": {},
+  "base": "Basis",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "blue": "Blauw",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "close": "Sluiten",
+  "@close": {},
+  "collapse": "Inklappen",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "color": "Kleur",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "colors": "Kleuren",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "comfortable": "Comfortabel",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "comment": "Opmerking",
+  "@comment": {},
+  "commentBehaviourSettings": "Opmerkingen",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "comments": "Opmerkingen",
+  "@comments": {},
+  "communities": "Gemeen­schappen",
+  "@communities": {},
+  "community": "Gemeen­schap",
+  "@community": {},
+  "advanced": "Geavanceerd",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "accept": "Accepteren",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "active": "Actief",
+  "@active": {},
+  "add": "Toe­voegen",
+  "@add": {},
+  "bold": "Vetgedrukt",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "cancel": "Annuleren",
+  "@cancel": {},
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "compact": "Compact",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  }
+}
