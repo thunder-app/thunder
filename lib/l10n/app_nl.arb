@@ -3,7 +3,7 @@
   "@about": {
     "description": "About settings category."
   },
-  "accessibility": "Toegankelĳk­heid",
+  "accessibility": "Toegankelĳkheid",
   "@accessibility": {},
   "actions": "Acties",
   "@actions": {},
@@ -88,5 +88,53 @@
   "compact": "Compact",
   "@compact": {
     "description": "Describes a compact visual density"
+  },
+  "account": "{count, plural, one {Account} other {Accounts} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
+  "accountBirthday": "Account­verjaardag {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "accountSettings": "Account­instellingen",
+  "@accountSettings": {},
+  "actionColors": "Actie­kleuren",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "addUserLabel": "Gebruikers­label toevoegen",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
+  "addedCommunityToSubscriptions": "Geabonneerd op gemeenschap",
+  "@addedCommunityToSubscriptions": {},
+  "allPosts": "Alle berichten",
+  "@allPosts": {},
+  "appLanguage": "App-taal",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "backButton": "Terug­knop",
+  "@backButton": {},
+  "backToTop": "Terug naar boven",
+  "@backToTop": {},
+  "blockInstance": "Instantie blokkeren",
+  "@blockInstance": {},
+  "changePassword": "Wachtwoord wĳzigen",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "addToFavorites": "Toevoegen aan favorieten",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addKeywordFilter": "Sleutel­woord toevoegen",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "cardView": "Kaart­weergave",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
   }
 }
