@@ -240,7 +240,10 @@ class _PostCardState extends State<PostCard> {
                       feedType: widget.feedType,
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
-                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
+                      navigateToPost: ({PostViewMedia? postViewMedia}) async {
+                        widget.onTap.call();
+                        await navigateToPost(context, postViewMedia: widget.postViewMedia);
+                      },
                       indicateRead: widget.indicateRead,
                       showMedia: !state.hideThumbnails,
                       isLastTapped: widget.isLastTapped,
@@ -264,7 +267,10 @@ class _PostCardState extends State<PostCard> {
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
                       listingType: widget.listingType,
-                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
+                      navigateToPost: ({PostViewMedia? postViewMedia}) async {
+                        widget.onTap.call();
+                        await navigateToPost(context, postViewMedia: widget.postViewMedia);
+                      },
                       indicateRead: widget.indicateRead,
                       isLastTapped: widget.isLastTapped,
                     ),
