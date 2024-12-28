@@ -576,5 +576,41 @@
     "description": "Hint for text field to add language"
   },
   "remove": "Verwĳderen",
-  "@remove": {}
+  "@remove": {},
+  "upvote": "Upvoten",
+  "@upvote": {
+    "description": "Action for upvoting a post/comment"
+  },
+  "upvoted": "Geüpvotet",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
+  "bannedUser": "Verbannen gebruiker",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "condensed": "Beknopt",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "downvote": "Downvoten",
+  "@downvote": {
+    "description": "Action for downvoting a post/comment"
+  },
+  "downvoted": "Gedownvotet",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
+  "reporter": "Rapporteerder:",
+  "@reporter": {
+    "description": "Name of reporter that reported a post/comment"
+  },
+  "unhide": "Verbergen herstellen",
+  "@unhide": {
+    "description": "The action to unhide a post"
+  },
+  "unresolved": "Onopgelost",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
+  }
 }
