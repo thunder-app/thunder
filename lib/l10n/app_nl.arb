@@ -612,5 +612,189 @@
   "unresolved": "Onopgelost",
   "@unresolved": {
     "description": "Description for unresolved status (e.g., unresolved reports)"
+  },
+  "collapseInformation": "Informatie samen­vouwen",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "collapsePost": "Bericht samen­vouwen",
+  "@collapsePost": {},
+  "collapseSpoiler": "Spoiler samen­vouwen",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "communityActions": "Gemeenschaps­acties",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "Gemeenschap ‘{community}’",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "communityFormat": "Gemeenschaps­formaat",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "communityStyle": "Gemeenschaps­stĳl",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "compactView": "Compacte weergave",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "confirmLogOutTitle": "Uit­loggen?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "contentManagement": "Inhouds­beheer",
+  "@contentManagement": {
+    "description": "Setting for content management (languages/blocking)"
+  },
+  "contentWarning": "Inhouds­waarschuwing",
+  "@contentWarning": {
+    "description": "Heading for content warning dialog"
+  },
+  "copyComment": "Opmerking kopiëren",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
+  "copySelected": "Geselecteerde tekst kopiëren",
+  "@copySelected": {
+    "description": "Action for copying selected text"
+  },
+  "copyText": "Tekst kopiëren",
+  "@copyText": {},
+  "countComments": "{count} opmerkingen",
+  "@countComments": {
+    "description": "Number of comments"
+  },
+  "countUsersActiveWeek": "{count} gebruikers/week",
+  "@countUsersActiveWeek": {
+    "description": "Number of users active in the last week"
+  },
+  "countUsersActiveMonth": "{count} gebruikers/maand",
+  "@countUsersActiveMonth": {
+    "description": "Number of users active in the last month"
+  },
+  "createComment": "Opmerking plaatsen",
+  "@createComment": {},
+  "createPost": "Bericht plaatsen",
+  "@createPost": {},
+  "crossPostedTo": "Gekruisplaatst naar",
+  "@crossPostedTo": {},
+  "dangerZone": "Gevaren­zone",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "dateFormat": "Datum­formaat",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
+  "deleteAccount": "Account verwĳderen",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "deletePost": "Bericht verwĳderen",
+  "@deletePost": {
+    "description": "Action for deleting a post"
+  },
+  "detailedReason": "Reden: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "discussionLanguages": "Discussie­talen",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "dismissRead": "Gelezen items afwĳzen",
+  "@dismissRead": {},
+  "dividerAppearance": "Verdeler­weergave",
+  "@dividerAppearance": {
+    "description": "Divider appearance category"
+  },
+  "downvoteColor": "Downvote-kleur",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
+  },
+  "editComment": "Opmerking bewerken",
+  "@editComment": {},
+  "emptyInbox": "Postvak IN legen",
+  "@emptyInbox": {},
+  "endSearch": "Stoppen met zoeken",
+  "@endSearch": {},
+  "expandOptions": "Opties uitvouwen",
+  "@expandOptions": {},
+  "experimentalFeatures": "Experimentele functies",
+  "@experimentalFeatures": {
+    "description": "Name of setting for experimental features"
+  },
+  "exploreInstance": "Instantie verkennen",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
+  "exportDatabase": "Database exporteren",
+  "@exportDatabase": {
+    "description": "Name of the setting for exporting the db"
+  },
+  "extraLarge": "Extra groot",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "featuredPost": "Uitgelicht bericht",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
+  },
+  "feedSettings": "Feed-instellingen",
+  "@feedSettings": {
+    "description": "Feed settings category."
+  },
+  "generalSettings": "Algemene instellingen",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
+  "countPosts": "{count} berichten",
+  "@countPosts": {
+    "description": "Number of posts"
+  },
+  "createAccount": "Account aan­maken",
+  "@createAccount": {},
+  "displayName": "Weergave­naam",
+  "@displayName": {
+    "description": "Label for display name"
+  },
+  "expandInformation": "Informatie uitvouwen",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "createdToday": "Vandaag geplaatst",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
+  "countSubscribers": "{count} abonnees",
+  "@countSubscribers": {
+    "description": "Number of subscribers"
+  },
+  "countUsers": "{count} gebruikers",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "countUsersActiveDay": "{count} gebruikers/dag",
+  "@countUsersActiveDay": {
+    "description": "Number of users active in the last day"
+  },
+  "created": "Geplaatst op {date}",
+  "@created": {
+    "description": "The date that something was created"
+  },
+  "editPost": "Bericht bewerken",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "expandPost": "Bericht uitvouwen",
+  "@expandPost": {},
+  "expandSpoiler": "Spoiler uitvouwen",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
   }
 }
