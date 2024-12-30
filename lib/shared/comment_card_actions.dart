@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 
+import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class CommentCardActions extends StatelessWidget {
@@ -59,13 +59,13 @@ class CommentCardActions extends StatelessWidget {
                     showCommentActionBottomModalSheet(
                       context,
                       commentView,
-                      onSaveAction,
-                      onDeleteAction,
-                      onVoteAction,
-                      onReplyEditAction,
-                      onReportAction,
-                      onViewSourceToggled,
-                      viewSource,
+                      // onSaveAction,
+                      // onDeleteAction,
+                      // onVoteAction,
+                      // onReplyEditAction,
+                      // onReportAction,
+                      // onViewSourceToggled,
+                      // viewSource,
                     );
                     HapticFeedback.mediumImpact();
                   }),

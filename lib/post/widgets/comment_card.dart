@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/enums/comment_action.dart';
 
+import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -13,8 +16,6 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import '../../shared/comment_content.dart';
-import '../utils/comment_action_helpers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentCard extends StatefulWidget {
   final Function(int, int) onVoteAction;
@@ -353,13 +354,46 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 showCommentActionBottomModalSheet(
                                   context,
                                   widget.commentViewTree.commentView!,
-                                  widget.onSaveAction,
-                                  widget.onDeleteAction,
-                                  widget.onVoteAction,
-                                  widget.onReplyEditAction,
-                                  widget.onReportAction,
-                                  () => setState(() => viewSource = !viewSource),
-                                  viewSource,
+                                  onAction: ({commentAction, required commentView, communityAction, userAction, value}) {
+                                    if (commentAction != null) {
+                                      switch (commentAction) {
+                                        case CommentAction.reply:
+                                          widget.onReplyEditAction(commentView, false);
+                                          break;
+                                        case CommentAction.edit:
+                                          widget.onReplyEditAction(commentView, true);
+                                          break;
+                                        case CommentAction.save:
+                                          widget.onSaveAction(commentView.comment.id, value);
+                                          break;
+                                        case CommentAction.vote:
+                                          widget.onVoteAction(commentView.comment.id, value);
+                                          break;
+                                        case CommentAction.delete:
+                                          widget.onDeleteAction(commentView.comment.id, value);
+                                          break;
+                                        case CommentAction.report:
+                                          widget.onReportAction(commentView.comment.id);
+                                          break;
+                                        // case CommentAction.viewSource:
+                                        //   setState(() => viewSource = !viewSource);
+                                        //   break;
+                                        default:
+                                          break;
+                                      }
+                                    } else if (communityAction != null) {
+                                      // @todo - implement community actions
+                                    } else if (userAction != null) {
+                                      // @todo - implement user actions
+                                    }
+                                  },
+                                  // widget.onSaveAction,
+                                  // widget.onDeleteAction,
+                                  // widget.onVoteAction,
+                                  // widget.onReplyEditAction,
+                                  // widget.onReportAction,
+                                  // () => setState(() => viewSource = !viewSource),
+                                  // viewSource,
                                 );
                               },
                               onTap: () {
