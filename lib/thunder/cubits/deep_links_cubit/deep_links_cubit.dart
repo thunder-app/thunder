@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:app_links/app_links.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
@@ -25,6 +26,7 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
     try {
       // First, check to see if this is an internal Thunder link
       List<String> internalLinks = ['thunder://setting-'];
+      debugPrint("APP LINK $link");
 
       if (internalLinks.where((internalLink) => link.startsWith(internalLink)).isNotEmpty) {
         return emit(state.copyWith(
@@ -33,8 +35,13 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
           linkType: LinkType.thunder,
         ));
       }
-
-      if (link.contains("/u/")) {
+      if (link.contains("/oauth/callback")) {
+        emit(state.copyWith(
+          deepLinkStatus: DeepLinkStatus.success,
+          link: link,
+          linkType: LinkType.oauth,
+        ));
+      } else if (link.contains("/u/")) {
         emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,
           link: link,

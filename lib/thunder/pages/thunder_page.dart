@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 // Flutter
@@ -59,6 +60,7 @@ import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/notification/utils/navigate_notification.dart';
 import 'package:thunder/utils/settings_utils.dart';
+import 'package:http/http.dart' as http;
 
 String? currentIntent;
 
@@ -242,10 +244,90 @@ class _ThunderState extends State<Thunder> {
         if (context.mounted) await _navigateToInstance(link);
       case LinkType.thunder:
         if (context.mounted) await _navigateToInternal(link);
+      case LinkType.oauth:
+        if (context.mounted) await _oauthCallback(link);
       case LinkType.unknown:
         if (context.mounted) {
           _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link);
         }
+    }
+  }
+
+  Future<void> _oauthCallback(String link) async {
+    // TODO: Need to know state, and instance.
+
+    try {
+      String redirectUri = "https://thunderapp.dev/oauth/callback";
+      debugPrint("_oauthCallback $link");
+      // oauthProviderState must match oauthClientState to ensure the response came from the Provider.
+      String oauthProviderState = Uri.parse(link).queryParameters['state'] ?? "failed";
+      if (oauthProviderState == "failed" || oauthClientState != oauthProviderState) {
+        throw Exception("OAuth state-check failed: oauthProviderState $oauthClientState must match oauthClientState $oauthClientState to ensure the response came from the Provider.");
+      }
+
+      // Extract the code from the response.
+      String code = Uri.parse(link).queryParameters['code'] ?? "failed";
+
+      debugPrint("CODE $code");
+
+      if (code == "failed") {
+        throw Exception("OAuth login failed: no code received from provider.");
+      }
+
+      // TODO: This should use lemmy_api_client.
+      // Authenthicate to lemmy and get a jwt.
+      // Durring this step lemmy connects to the Provider to get the user info.
+      final response = await http.post(Uri.parse('https://$instance/api/v3/oauth/authenticate'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: json.encode({
+            'code': code,
+            'oauth_provider_id': 1, // This id can be found in the site reponse.
+            'redirect_uri': redirectUri,
+          }),
+          encoding: Encoding.getByName('utf-8'));
+
+      // TODO: Need to add a step to set the account username.
+
+      final accessToken = jsonDecode(response.body)['jwt'] as String;
+
+      debugPrint("JWT $accessToken");
+
+      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: accessToken));
+
+      // TODO: Login fails when this is uncommented. Have to get this working.
+      //if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
+      //  return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
+      //}
+
+      // Create a new account in the database
+      Account? account = Account(
+        id: '',
+        username: getSiteResponse.myUser?.localUserView.person.name,
+        jwt: accessToken,
+        instance: instance,
+        userId: getSiteResponse.myUser?.localUserView.person.id,
+        index: -1,
+      );
+
+      account = await Account.insertAccount(account);
+
+      if (account == null) {
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
+      }
+
+      // Set this account as the active account
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      prefs.setString('active_profile_id', account.id);
+
+      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
+
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
+    } catch (e) {
+      if (context.mounted) {
+        _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      }
     }
   }
 

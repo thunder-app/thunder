@@ -199,6 +199,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
       HttpServer? server;
+      bool dev = false;
 
       try {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
@@ -214,7 +215,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
 
         // Build oauth provider url.
-        String redirectUri = "https://localhost:40000/oauth/callback"; // This must end in /oauth/callback.
+        String redirectUri = dev ? "https://localhost:40000/oauth/callback" : "https://thunderapp.dev/oauth/callback"; // This must end in /oauth/callback.
         String oauthClientState = const Uuid().v4();
         final url = Uri.https(authorizationEndpoint.host, authorizationEndpoint.path, {
           'response_type': 'code',
@@ -224,32 +225,45 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           'state': oauthClientState,
         });
 
-        // Start https server to receive callback.  This is just for development.
-        // TODO: Figure out how to do this in a better way for mobile.
-        var chain = utf8.encode(await rootBundle.loadString('assets/localhost.crt'));
-        var key = utf8.encode(await rootBundle.loadString('assets/localhost.key'));
-        var serverContext = SecurityContext();
-        serverContext.useCertificateChainBytes(chain);
-        serverContext.usePrivateKeyBytes(key);
-        server = await HttpServer.bindSecure("localhost", 40000, serverContext);
-        //server = await HttpServer.bind("localhost", 40000);
+        debugPrint("URL $url");
+
+        // Start a localhost https server to receive callback.  This is just for development.
+        // ignore: dead_code
+        if (dev) {
+          var chain = utf8.encode(await rootBundle.loadString('assets/localhost.crt'));
+          var key = utf8.encode(await rootBundle.loadString('assets/localhost.key'));
+          var serverContext = SecurityContext();
+          serverContext.useCertificateChainBytes(chain);
+          serverContext.usePrivateKeyBytes(key);
+          server = await HttpServer.bindSecure("localhost", 40000, serverContext);
+        }
 
         // Present the dialog to the user.
-        final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "thunder");
+        // TODO: Probably remove FlutterWebAuth2 its just being used to open the provider page.
+        debugPrint("REDIRECT");
+
+        final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "https");
+        debugPrint("REDIRECT DONE");
+        if (!dev) {
+          return;
+        }
 
         // Wait for response from Provider.
-        final providerResponse = await server.first;
-
+        // ignore: dead_code
+        var providerResponse = await server!.first;
         await server.close();
+        String providerResponseString = providerResponse.uri.toString();
+
+        debugPrint("RESULT $providerResponseString");
 
         // oauthProviderState must match oauthClientState to ensure the response came from the Provider.
-        String oauthProviderState = Uri.parse(providerResponse.uri.toString()).queryParameters['state'] ?? "failed";
+        String oauthProviderState = Uri.parse(providerResponseString).queryParameters['state'] ?? "failed";
         if (oauthProviderState == "failed" || oauthClientState != oauthProviderState) {
           throw Exception("OAuth state-check failed: oauthProviderState $oauthClientState must match oauthClientState $oauthClientState to ensure the response came from the Provider.");
         }
 
         // Extract the code from the response.
-        String code = Uri.parse(providerResponse.uri.toString()).queryParameters['code'] ?? "failed";
+        String code = Uri.parse(providerResponseString).queryParameters['code'] ?? "failed";
         debugPrint("CODE $code");
 
         if (code == "failed") {
