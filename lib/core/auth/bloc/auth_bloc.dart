@@ -247,7 +247,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "https");
         debugPrint("REDIRECT DONE");
 
-        return emit(state.copyWith(oauthState: oauthState, oauthInstance: instance));
+        emit(state.copyWith(oauthState: oauthState, oauthInstance: instance));
         /*
         // Wait for response from Provider.
         // ignore: dead_code
@@ -335,6 +335,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       }
     });
+
+    @override
+    void onChange(Change<AuthState> change) {
+      super.onChange(change);
+      debugPrint("CHANGE $change");
+    }
 
     on<OAuthLoginAttemptPart2>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;

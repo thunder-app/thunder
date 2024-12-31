@@ -54,5 +54,5 @@ class AuthState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, isLoggedIn, errorMessage, account, downvotesEnabled, getSiteResponse, reload];
+  List<Object?> get props => [status, isLoggedIn, errorMessage, account, downvotesEnabled, getSiteResponse, reload, contentWarning, oauthInstance, oauthState];
 }
