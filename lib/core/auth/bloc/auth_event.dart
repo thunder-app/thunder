@@ -31,12 +31,20 @@ class LoginAttempt extends AuthEvent {
 
 /// The [OAuthLoginAttempt] event should be triggered whenever the user attempts to log in with OAuth.
 /// This event is responsible for login authentication and handling related errors.
-class OAuthLoginAttempt extends AuthEvent {
+class OAuthLoginAttemptPart1 extends AuthEvent {
   final String instance;
   final ProviderView provider;
   final bool showContentWarning;
 
-  const OAuthLoginAttempt({required this.instance, required this.provider, this.showContentWarning = true});
+  const OAuthLoginAttemptPart1({required this.instance, required this.provider, this.showContentWarning = true});
+}
+
+/// The [OAuthLoginAttempt] event should be triggered whenever the user attempts to log in with OAuth.
+/// This event is responsible for login authentication and handling related errors.
+class OAuthLoginAttemptPart2 extends AuthEvent {
+  final String link;
+
+  const OAuthLoginAttemptPart2({required this.link});
 }
 
 /// Cancels a login attempt by emitting the `failure` state.

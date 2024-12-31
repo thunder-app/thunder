@@ -256,6 +256,7 @@ class _ThunderState extends State<Thunder> {
   Future<void> _oauthCallback(String link) async {
     try {
       debugPrint("_oauthCallback $link");
+      context.read<AuthBloc>().add(OAuthLoginAttemptPart2(link: link));
     } catch (e) {
       if (context.mounted) {
         _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);

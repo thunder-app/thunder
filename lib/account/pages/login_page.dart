@@ -496,7 +496,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     TextInput.finishAutofillContext();
     // Perform login authentication
     context.read<AuthBloc>().add(
-          OAuthLoginAttempt(
+          OAuthLoginAttemptPart1(
             instance: _instanceTextEditingController.text.trim(),
             provider: provider,
           ),

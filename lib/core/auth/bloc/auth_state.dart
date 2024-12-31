@@ -12,6 +12,8 @@ class AuthState extends Equatable {
     this.getSiteResponse,
     this.reload = true,
     this.contentWarning,
+    this.oauthInstance,
+    this.oauthState,
   });
 
   final AuthStatus status;
@@ -22,6 +24,8 @@ class AuthState extends Equatable {
   final GetSiteResponse? getSiteResponse;
   final bool reload;
   final String? contentWarning;
+  final String? oauthInstance;
+  final String? oauthState;
 
   AuthState copyWith({
     AuthStatus? status,
@@ -32,6 +36,8 @@ class AuthState extends Equatable {
     GetSiteResponse? getSiteResponse,
     bool? reload,
     String? contentWarning,
+    String? oauthInstance,
+    String? oauthState,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -42,6 +48,8 @@ class AuthState extends Equatable {
       getSiteResponse: getSiteResponse ?? this.getSiteResponse,
       reload: reload ?? this.reload,
       contentWarning: contentWarning,
+      oauthInstance: oauthInstance ?? this.oauthInstance,
+      oauthState: oauthState ?? this.oauthInstance,
     );
   }
 
