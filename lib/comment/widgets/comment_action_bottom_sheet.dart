@@ -11,6 +11,7 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/user/widgets/user_action_bottom_sheet.dart';
 import 'package:thunder/utils/instance.dart';
 
 /// Programatically show the comment action bottom sheet
@@ -101,6 +102,16 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
             widget.onAction?.call(commentAction: commentAction, commentView: widget.commentView, value: value);
           },
         ),
+      GeneralCommentAction.user => UserActionBottomSheet(
+          context: widget.context,
+          user: widget.commentView.creator,
+          communityId: widget.commentView.community.id,
+          isUserCommunityModerator: widget.commentView.creatorIsModerator,
+          isUserBannedFromCommunity: widget.commentView.creatorBannedFromCommunity,
+          onAction: (UserAction userAction, PersonView? updatedPersonView) {
+            widget.onAction?.call(userAction: userAction, commentView: widget.commentView);
+          },
+        ),
       _ => SizedBox(),
 
       // GeneralCommentAction.post => PostPostActionBottomSheet(
@@ -110,13 +121,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
       //       widget.onAction?.call(postAction: postAction, postViewMedia: widget.commentView);
       //     },
       //   ),
-      // GeneralCommentAction.user => UserPostActionBottomSheet(
-      //     context: widget.context,
-      //     postViewMedia: widget.commentView,
-      //     onAction: (UserAction userAction, PersonView? updatedPersonView) {
-      //       widget.onAction?.call(userAction: userAction, postViewMedia: widget.commentView);
-      //     },
-      //   ),
+
       // GeneralCommentAction.instance => InstancePostActionBottomSheet(
       //     postViewMedia: widget.commentView,
       //     onAction: () {},

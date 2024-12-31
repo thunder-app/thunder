@@ -111,16 +111,21 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
     switch (action) {
       case GeneralQuickCommentAction.upvote:
         widget.onAction(CommentAction.vote, commentView, commentView.myVote == 1 ? 0 : 1);
-        // widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == 1 ? 0 : 1));
         break;
       case GeneralQuickCommentAction.downvote:
+        widget.onAction(CommentAction.vote, commentView, commentView.myVote == -1 ? 0 : -1);
         break;
       case GeneralQuickCommentAction.save:
+        widget.onAction(CommentAction.save, commentView, !commentView.saved);
         break;
       case GeneralQuickCommentAction.reply:
-        break;
+        Navigator.of(context).pop();
+        widget.onAction(CommentAction.reply, commentView, null);
+        return;
       case GeneralQuickCommentAction.edit:
-        break;
+        Navigator.of(context).pop();
+        widget.onAction(CommentAction.edit, commentView, null);
+        return;
     }
 
     Navigator.of(context).pop();

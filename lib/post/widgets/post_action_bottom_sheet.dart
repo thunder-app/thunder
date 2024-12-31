@@ -16,7 +16,7 @@ import 'package:thunder/post/widgets/general_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/instance_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/post_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/share_post_action_bottom_sheet.dart';
-import 'package:thunder/post/widgets/user_post_action_bottom_sheet.dart';
+import 'package:thunder/user/widgets/user_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -120,9 +120,12 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
             widget.onAction?.call(postAction: postAction, postViewMedia: widget.postViewMedia);
           },
         ),
-      GeneralPostAction.user => UserPostActionBottomSheet(
+      GeneralPostAction.user => UserActionBottomSheet(
           context: widget.context,
-          postViewMedia: widget.postViewMedia,
+          user: widget.postViewMedia.postView.creator,
+          communityId: widget.postViewMedia.postView.community.id,
+          isUserCommunityModerator: widget.postViewMedia.postView.creatorIsModerator,
+          isUserBannedFromCommunity: widget.postViewMedia.postView.creatorBannedFromCommunity,
           onAction: (UserAction userAction, PersonView? updatedPersonView) {
             widget.onAction?.call(userAction: userAction, postViewMedia: widget.postViewMedia);
           },

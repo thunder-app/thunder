@@ -357,17 +357,17 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   onAction: ({commentAction, required commentView, communityAction, userAction, value}) {
                                     if (commentAction != null) {
                                       switch (commentAction) {
+                                        case CommentAction.vote:
+                                          widget.onVoteAction(commentView.comment.id, value);
+                                          break;
+                                        case CommentAction.save:
+                                          widget.onSaveAction(commentView.comment.id, value);
+                                          break;
                                         case CommentAction.reply:
                                           widget.onReplyEditAction(commentView, false);
                                           break;
                                         case CommentAction.edit:
                                           widget.onReplyEditAction(commentView, true);
-                                          break;
-                                        case CommentAction.save:
-                                          widget.onSaveAction(commentView.comment.id, value);
-                                          break;
-                                        case CommentAction.vote:
-                                          widget.onVoteAction(commentView.comment.id, value);
                                           break;
                                         case CommentAction.delete:
                                           widget.onDeleteAction(commentView.comment.id, value);

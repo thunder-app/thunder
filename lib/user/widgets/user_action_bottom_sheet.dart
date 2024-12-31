@@ -5,11 +5,11 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/user_type.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
+import 'package:thunder/post/utils/user_label_utils.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
@@ -19,12 +19,15 @@ import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 
+import '../../account/models/user_label.dart';
+
 /// Defines the actions that can be taken on a user
 /// TODO: Implement admin-level actions
-enum UserPostAction {
+enum UserBottomSheetAction {
   viewProfile(icon: Icons.person_search_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
   blockUser(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
   unblockUser(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  addUserLabel(icon: Icons.label_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
   banUserFromCommunity(icon: Icons.block, permissionType: PermissionType.moderator, requiresAuthentication: true),
   unbanUserFromCommunity(icon: Icons.block, permissionType: PermissionType.moderator, requiresAuthentication: true),
   addUserAsCommunityModerator(icon: Icons.person_add_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
@@ -37,13 +40,14 @@ enum UserPostAction {
   ;
 
   String get name => switch (this) {
-        UserPostAction.viewProfile => l10n.visitUserProfile,
-        UserPostAction.blockUser => l10n.blockUser,
-        UserPostAction.unblockUser => l10n.unblockUser,
-        UserPostAction.banUserFromCommunity => l10n.banFromCommunity,
-        UserPostAction.unbanUserFromCommunity => l10n.unbanFromCommunity,
-        UserPostAction.addUserAsCommunityModerator => l10n.addAsCommunityModerator,
-        UserPostAction.removeUserAsCommunityModerator => l10n.removeAsCommunityModerator,
+        UserBottomSheetAction.viewProfile => l10n.visitUserProfile,
+        UserBottomSheetAction.blockUser => l10n.blockUser,
+        UserBottomSheetAction.unblockUser => l10n.unblockUser,
+        UserBottomSheetAction.addUserLabel => l10n.addUserLabel,
+        UserBottomSheetAction.banUserFromCommunity => l10n.banFromCommunity,
+        UserBottomSheetAction.unbanUserFromCommunity => l10n.unbanFromCommunity,
+        UserBottomSheetAction.addUserAsCommunityModerator => l10n.addAsCommunityModerator,
+        UserBottomSheetAction.removeUserAsCommunityModerator => l10n.removeAsCommunityModerator,
         // UserPostAction.banUser => "Ban From Instance",
         // UserPostAction.unbanUser => "Unban User From Instance",
         // UserPostAction.purgeUser => "Purge User",
@@ -60,77 +64,91 @@ enum UserPostAction {
   /// Whether or not the action requires user authentication
   final bool requiresAuthentication;
 
-  const UserPostAction({required this.icon, required this.permissionType, required this.requiresAuthentication});
+  const UserBottomSheetAction({required this.icon, required this.permissionType, required this.requiresAuthentication});
 }
 
-/// A bottom sheet that allows the user to perform actions on a user.
+/// A bottom sheet that allows the current user to perform actions on another user.
 ///
-/// Given a [postViewMedia] and a [onAction] callback, this widget will display a list of actions that can be taken on the user.
+/// Given an [onAction] callback, this widget will display a list of actions that can be taken on the user.
 /// The [onAction] callback will be triggered when an action is performed. This is useful if the parent widget requires an updated [PersonView].
-class UserPostActionBottomSheet extends StatefulWidget {
-  const UserPostActionBottomSheet({super.key, required this.context, required this.postViewMedia, required this.onAction});
+class UserActionBottomSheet extends StatefulWidget {
+  const UserActionBottomSheet({super.key, required this.context, required this.user, this.communityId, this.isUserCommunityModerator, this.isUserBannedFromCommunity, required this.onAction});
 
   /// The outer context
   final BuildContext context;
 
-  /// The post information
-  final PostViewMedia postViewMedia;
+  /// The user that we are interacting with
+  final Person user;
+
+  /// The community that the user has interacted with
+  /// This is useful for community-specific actions such as banning/unbanning the user from a community, or adding/removing them as a moderator of a community
+  final int? communityId;
+
+  /// Whether or not the user is a moderator of the community. This is only applicable if [communityId] is not null
+  final bool? isUserCommunityModerator;
+
+  /// Whether or not the user is banned from the community. This is only applicable if [communityId] is not null
+  final bool? isUserBannedFromCommunity;
 
   /// Called when an action is selected
   final Function(UserAction userAction, PersonView? personView) onAction;
 
   @override
-  State<UserPostActionBottomSheet> createState() => _UserPostActionBottomSheetState();
+  State<UserActionBottomSheet> createState() => _UserActionBottomSheetState();
 }
 
-class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
+class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
   UserAction? _userAction;
 
-  void performAction(UserPostAction action) {
+  void performAction(UserBottomSheetAction action) async {
     switch (action) {
-      case UserPostAction.viewProfile:
+      case UserBottomSheetAction.viewProfile:
         Navigator.of(context).pop();
-        navigateToFeedPage(context, feedType: FeedType.user, userId: widget.postViewMedia.postView.creator.id);
+        navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user.id);
         break;
-      case UserPostAction.blockUser:
-        context.read<UserBloc>().add(UserActionEvent(userId: widget.postViewMedia.postView.creator.id, userAction: UserAction.block, value: true));
+      case UserBottomSheetAction.blockUser:
+        context.read<UserBloc>().add(UserActionEvent(userId: widget.user.id, userAction: UserAction.block, value: true));
         setState(() => _userAction = UserAction.block);
         break;
-      case UserPostAction.unblockUser:
-        context.read<UserBloc>().add(UserActionEvent(userId: widget.postViewMedia.postView.creator.id, userAction: UserAction.block, value: false));
+      case UserBottomSheetAction.unblockUser:
+        context.read<UserBloc>().add(UserActionEvent(userId: widget.user.id, userAction: UserAction.block, value: false));
         setState(() => _userAction = UserAction.block);
         break;
-      case UserPostAction.banUserFromCommunity:
+      case UserBottomSheetAction.addUserLabel:
+        await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.user.name, widget.user.actorId));
+        Navigator.of(context).pop();
+        break;
+      case UserBottomSheetAction.banUserFromCommunity:
         showBanUserDialog();
         break;
-      case UserPostAction.unbanUserFromCommunity:
+      case UserBottomSheetAction.unbanUserFromCommunity:
         context.read<UserBloc>().add(
               UserActionEvent(
-                userId: widget.postViewMedia.postView.creator.id,
+                userId: widget.user.id,
                 userAction: UserAction.banFromCommunity,
                 value: false,
                 metadata: {
-                  "communityId": widget.postViewMedia.postView.community.id,
+                  "communityId": widget.communityId,
                 },
               ),
             );
         setState(() => _userAction = UserAction.banFromCommunity);
         break;
-      case UserPostAction.addUserAsCommunityModerator:
+      case UserBottomSheetAction.addUserAsCommunityModerator:
         context.read<UserBloc>().add(UserActionEvent(
-              userId: widget.postViewMedia.postView.creator.id,
+              userId: widget.user.id,
               userAction: UserAction.addModerator,
               value: true,
-              metadata: {"communityId": widget.postViewMedia.postView.community.id},
+              metadata: {"communityId": widget.communityId},
             ));
         setState(() => _userAction = UserAction.addModerator);
         break;
-      case UserPostAction.removeUserAsCommunityModerator:
+      case UserBottomSheetAction.removeUserAsCommunityModerator:
         context.read<UserBloc>().add(UserActionEvent(
-              userId: widget.postViewMedia.postView.creator.id,
+              userId: widget.user.id,
               userAction: UserAction.addModerator,
               value: false,
-              metadata: {"communityId": widget.postViewMedia.postView.community.id},
+              metadata: {"communityId": widget.communityId},
             ));
         setState(() => _userAction = UserAction.addModerator);
         break;
@@ -151,11 +169,11 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
         widget.context.read<UserBloc>().add(
               UserActionEvent(
-                userId: widget.postViewMedia.postView.creator.id,
+                userId: widget.user.id,
                 userAction: UserAction.banFromCommunity,
                 value: true,
                 metadata: {
-                  "communityId": widget.postViewMedia.postView.community.id,
+                  "communityId": widget.communityId,
                   "reason": messageController.text,
                   "removeData": removeData,
                 },
@@ -173,8 +191,8 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               UserChip(
-                person: widget.postViewMedia.postView.creator,
-                personAvatar: UserAvatar(person: widget.postViewMedia.postView.creator),
+                person: widget.user,
+                personAvatar: UserAvatar(person: widget.user),
                 userGroups: const [UserType.op],
                 includeInstance: true,
               ),
@@ -214,48 +232,48 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
     final theme = Theme.of(context);
     final authState = context.read<AuthBloc>().state;
 
-    List<UserPostAction> userActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
-    List<UserPostAction> moderatorActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
+    List<UserBottomSheetAction> userActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
+    List<UserBottomSheetAction> moderatorActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
     // List<UserPostAction> adminActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
     final account = authState.getSiteResponse?.myUser?.localUserView.person;
     final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.id == widget.communityId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
     final blockedUsers = authState.getSiteResponse?.myUser?.personBlocks ?? [];
 
-    final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.postViewMedia.postView.creator.actorId).isNotEmpty;
-    final isUserCommunityModerator = widget.postViewMedia.postView.creatorIsModerator ?? false;
-    final isUserBannedFromCommunity = widget.postViewMedia.postView.creatorBannedFromCommunity;
+    final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.user.actorId).isNotEmpty;
+    final isUserCommunityModerator = widget.isUserCommunityModerator ?? false;
+    final isUserBannedFromCommunity = widget.isUserBannedFromCommunity ?? false;
     // final isUserBannedFromInstance = widget.postViewMedia.postView.creator.banned;
     // final isUserAdmin = widget.postViewMedia.postView.creatorIsAdmin ?? false;
 
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.postViewMedia.postView.creator.actorId) {
-        userActions = userActions.where((action) => action != UserPostAction.blockUser && action != UserPostAction.unblockUser).toList();
+      if (account?.actorId == widget.user.actorId) {
+        userActions = userActions.where((action) => action != UserBottomSheetAction.blockUser && action != UserBottomSheetAction.unblockUser).toList();
       }
 
       if (isUserBlocked) {
-        userActions = userActions.where((action) => action != UserPostAction.blockUser).toList();
+        userActions = userActions.where((action) => action != UserBottomSheetAction.blockUser).toList();
       } else {
-        userActions = userActions.where((action) => action != UserPostAction.unblockUser).toList();
+        userActions = userActions.where((action) => action != UserBottomSheetAction.unblockUser).toList();
       }
 
       if (isUserCommunityModerator) {
-        moderatorActions = moderatorActions.where((action) => action != UserPostAction.addUserAsCommunityModerator).toList();
-        moderatorActions = moderatorActions.where((action) => action != UserPostAction.banUserFromCommunity && action != UserPostAction.unbanUserFromCommunity).toList();
+        moderatorActions = moderatorActions.where((action) => action != UserBottomSheetAction.addUserAsCommunityModerator).toList();
+        moderatorActions = moderatorActions.where((action) => action != UserBottomSheetAction.banUserFromCommunity && action != UserBottomSheetAction.unbanUserFromCommunity).toList();
       } else {
-        moderatorActions = moderatorActions.where((action) => action != UserPostAction.removeUserAsCommunityModerator).toList();
+        moderatorActions = moderatorActions.where((action) => action != UserBottomSheetAction.removeUserAsCommunityModerator).toList();
       }
 
       if (isUserBannedFromCommunity) {
-        moderatorActions = moderatorActions.where((action) => action != UserPostAction.banUserFromCommunity).toList();
+        moderatorActions = moderatorActions.where((action) => action != UserBottomSheetAction.banUserFromCommunity).toList();
       } else {
-        moderatorActions = moderatorActions.where((action) => action != UserPostAction.unbanUserFromCommunity).toList();
+        moderatorActions = moderatorActions.where((action) => action != UserBottomSheetAction.unbanUserFromCommunity).toList();
       }
 
       // if (isUserBannedFromInstance) {
