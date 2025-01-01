@@ -11,6 +11,7 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/instance/widgets/instance_action_bottom_sheet.dart';
+import 'package:thunder/shared/share/share_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/user/widgets/user_action_bottom_sheet.dart';
 import 'package:thunder/utils/instance.dart';
@@ -103,6 +104,13 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
             widget.onAction?.call(commentAction: commentAction, commentView: widget.commentView, value: value);
           },
         ),
+      // GeneralCommentAction.post => PostPostActionBottomSheet(
+      //     context: widget.context,
+      //     postViewMedia: widget.commentView,
+      //     onAction: (PostAction postAction, PostViewMedia? updatedPostViewMedia) {
+      //       widget.onAction?.call(postAction: postAction, postViewMedia: widget.commentView);
+      //     },
+      //   ),
       GeneralCommentAction.user => UserActionBottomSheet(
           context: widget.context,
           user: widget.commentView.creator,
@@ -118,21 +126,12 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           userInstanceUrl: widget.commentView.creator.actorId,
           onAction: () {},
         ),
+      GeneralCommentAction.share => ShareActionBottomSheet(
+          context: widget.context,
+          commentView: widget.commentView,
+          onAction: () {},
+        ),
       _ => SizedBox(),
-
-      // GeneralCommentAction.post => PostPostActionBottomSheet(
-      //     context: widget.context,
-      //     postViewMedia: widget.commentView,
-      //     onAction: (PostAction postAction, PostViewMedia? updatedPostViewMedia) {
-      //       widget.onAction?.call(postAction: postAction, postViewMedia: widget.commentView);
-      //     },
-      //   ),
-
-      // GeneralCommentAction.share => SharePostActionBottomSheet(
-      //     context: widget.context,
-      //     postViewMedia: widget.commentView,
-      //     onAction: () {},
-      //   ),
     };
 
     return SafeArea(

@@ -15,7 +15,7 @@ import 'package:thunder/post/widgets/community_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/general_post_action_bottom_sheet.dart';
 import 'package:thunder/instance/widgets/instance_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/post_post_action_bottom_sheet.dart';
-import 'package:thunder/post/widgets/share_post_action_bottom_sheet.dart';
+import 'package:thunder/shared/share/share_action_bottom_sheet.dart';
 import 'package:thunder/user/widgets/user_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
@@ -143,7 +143,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           communityInstanceUrl: widget.postViewMedia.postView.community.actorId,
           onAction: () {},
         ),
-      GeneralPostAction.share => SharePostActionBottomSheet(
+      GeneralPostAction.share => ShareActionBottomSheet(
           context: widget.context,
           postViewMedia: widget.postViewMedia,
           onAction: () {},
