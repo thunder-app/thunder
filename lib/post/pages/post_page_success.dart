@@ -89,12 +89,6 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
             onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-            onReportAction: (int commentId) {
-              showReportCommentActionBottomSheet(
-                context,
-                commentId: commentId,
-              );
-            },
             onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
               context,
               commentView: isEdit ? commentView : null,

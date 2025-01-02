@@ -9,6 +9,7 @@ import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
@@ -93,8 +94,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
         );
         return;
       case CommentBottomSheetAction.reportComment:
-        Navigator.of(context).pop();
-        widget.onAction(CommentAction.report, commentView, null);
+        showReportCommentDialog();
         return;
       case CommentBottomSheetAction.editComment:
         Navigator.of(context).pop();
@@ -117,37 +117,31 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
     Navigator.of(context).pop();
   }
 
-  // void showReportPostDialog() {
-  //   Navigator.of(context).pop();
-  //   final TextEditingController messageController = TextEditingController();
+  void showReportCommentDialog() {
+    Navigator.of(context).pop();
+    final TextEditingController messageController = TextEditingController();
 
-  //   showThunderDialog(
-  //     context: widget.context,
-  //     title: l10n.reportPost,
-  //     primaryButtonText: l10n.report(1),
-  //     onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-  //       widget.context.read<FeedBloc>().add(
-  //             FeedItemActionedEvent(
-  //               postAction: PostAction.report,
-  //               postId: widget.postViewMedia.postView.post.id,
-  //               value: messageController.text,
-  //             ),
-  //           );
-  //       Navigator.of(dialogContext).pop();
-  //     },
-  //     secondaryButtonText: l10n.cancel,
-  //     onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
-  //     contentWidgetBuilder: (_) => TextFormField(
-  //       decoration: InputDecoration(
-  //         border: const OutlineInputBorder(),
-  //         labelText: l10n.message(0),
-  //       ),
-  //       autofocus: true,
-  //       controller: messageController,
-  //       maxLines: 4,
-  //     ),
-  //   );
-  // }
+    showThunderDialog(
+      context: widget.context,
+      title: l10n.reportComment,
+      primaryButtonText: l10n.report(1),
+      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+        widget.onAction(CommentAction.report, widget.commentView, messageController.text);
+        Navigator.of(dialogContext).pop();
+      },
+      secondaryButtonText: l10n.cancel,
+      onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
+      contentWidgetBuilder: (_) => TextFormField(
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: l10n.message(0),
+        ),
+        autofocus: true,
+        controller: messageController,
+        maxLines: 4,
+      ),
+    );
+  }
 
   // void showRemovePostReasonDialog() {
   //   Navigator.of(context).pop();

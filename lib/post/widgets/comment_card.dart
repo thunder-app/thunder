@@ -23,7 +23,6 @@ class CommentCard extends StatefulWidget {
   final Function(int, bool) onCollapseCommentChange;
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
-  final Function(int) onReportAction;
 
   final Set collapsedCommentSet;
   final int? selectCommentId;
@@ -40,7 +39,6 @@ class CommentCard extends StatefulWidget {
     required this.onSaveAction,
     required this.onCollapseCommentChange,
     required this.onReplyEditAction,
-    required this.onReportAction,
     this.collapsedCommentSet = const {},
     this.selectCommentId,
     this.selectedCommentPath,
@@ -373,7 +371,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                           widget.onDeleteAction(commentView.comment.id, value);
                                           break;
                                         case CommentAction.report:
-                                          widget.onReportAction(commentView.comment.id);
+                                          context.read<PostBloc>().add(ReportCommentEvent(commentId: commentView.comment.id, message: value));
                                           break;
                                         case CommentAction.viewSource:
                                           setState(() => viewSource = !viewSource);
@@ -387,13 +385,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                       // @todo - implement user actions
                                     }
                                   },
-                                  // widget.onSaveAction,
-                                  // widget.onDeleteAction,
-                                  // widget.onVoteAction,
-                                  // widget.onReplyEditAction,
-                                  // widget.onReportAction,
-                                  // () => setState(() => viewSource = !viewSource),
-                                  // viewSource,
                                 );
                               },
                               onTap: () {
@@ -406,7 +397,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
                                 onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
                                 onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
-                                onReportAction: (int commentId) => widget.onReportAction(commentId),
                                 onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,
@@ -505,7 +495,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].commentView!.comment.id),
                               level: widget.level + 1,
                               onVoteAction: widget.onVoteAction,
-                              onReportAction: widget.onReportAction,
                               onSaveAction: widget.onSaveAction,
                               onCollapseCommentChange: widget.onCollapseCommentChange,
                               onDeleteAction: widget.onDeleteAction,

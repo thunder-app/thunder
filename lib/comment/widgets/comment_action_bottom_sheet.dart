@@ -132,7 +132,6 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           commentView: widget.commentView,
           onAction: () {},
         ),
-      _ => SizedBox(),
     };
 
     return SafeArea(

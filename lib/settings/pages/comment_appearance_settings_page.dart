@@ -304,7 +304,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                                   onVoteAction: (int commentId, int voteType) => {},
                                   onCollapseCommentChange: (int commentId, bool collapsed) => {},
                                   onDeleteAction: (int commentId, bool deleted) => {},
-                                  onReportAction: (int commentId) => {},
                                   onReplyEditAction: (CommentView commentView, bool isEdit) => {},
                                 ),
                               ],

@@ -234,7 +234,6 @@ class _PostPageState extends State<PostPage> {
                               onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
                               onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
                               onReplyEditAction: (CommentView commentView, bool isEdit) async => context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView)),
-                              onReportAction: (int commentId) => showReportCommentActionBottomSheet(context, commentId: commentId),
                               onCollapseCommentChange: (int commentId, bool collapsed) {
                                 if (collapsed) {
                                   collapsedComments.add(commentId);

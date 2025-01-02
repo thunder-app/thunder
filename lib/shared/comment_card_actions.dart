@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class CommentCardActions extends StatelessWidget {
@@ -17,7 +19,6 @@ class CommentCardActions extends StatelessWidget {
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
-  final Function(int) onReportAction;
   final void Function() onViewSourceToggled;
   final bool viewSource;
 
@@ -29,7 +30,6 @@ class CommentCardActions extends StatelessWidget {
     required this.onSaveAction,
     required this.onDeleteAction,
     required this.onReplyEditAction,
-    required this.onReportAction,
     required this.onViewSourceToggled,
     required this.viewSource,
   });
@@ -59,13 +59,39 @@ class CommentCardActions extends StatelessWidget {
                     showCommentActionBottomModalSheet(
                       context,
                       commentView,
-                      // onSaveAction,
-                      // onDeleteAction,
-                      // onVoteAction,
-                      // onReplyEditAction,
-                      // onReportAction,
-                      // onViewSourceToggled,
-                      // viewSource,
+                      onAction: ({commentAction, required commentView, communityAction, userAction, value}) {
+                        if (commentAction != null) {
+                          switch (commentAction) {
+                            case CommentAction.vote:
+                              onVoteAction(commentView.comment.id, value);
+                              break;
+                            case CommentAction.save:
+                              onSaveAction(commentView.comment.id, value);
+                              break;
+                            case CommentAction.reply:
+                              onReplyEditAction(commentView, false);
+                              break;
+                            case CommentAction.edit:
+                              onReplyEditAction(commentView, true);
+                              break;
+                            case CommentAction.delete:
+                              onDeleteAction(commentView.comment.id, value);
+                              break;
+                            case CommentAction.report:
+                              context.read<PostBloc>().add(ReportCommentEvent(commentId: commentView.comment.id, message: value));
+                              break;
+                            case CommentAction.viewSource:
+                              onViewSourceToggled();
+                              break;
+                            default:
+                              break;
+                          }
+                        } else if (communityAction != null) {
+                          // TODO - implement community actions
+                        } else if (userAction != null) {
+                          // TODO - implement user actions
+                        }
+                      },
                     );
                     HapticFeedback.mediumImpact();
                   }),

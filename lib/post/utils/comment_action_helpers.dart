@@ -615,28 +615,7 @@
 //   }
 // }
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/widgets/report_comment_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 
 final l10n = AppLocalizations.of(GlobalContext.context)!;
-
-void showReportCommentActionBottomSheet(
-  BuildContext context, {
-  required int commentId,
-}) {
-  showModalBottomSheet(
-    context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
-    builder: (_) => BlocProvider.value(
-      value: context.read<PostBloc>(),
-      child: ReportCommentDialog(
-        commentId: commentId,
-      ),
-    ),
-  );
-}
