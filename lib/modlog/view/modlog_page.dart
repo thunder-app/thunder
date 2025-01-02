@@ -166,7 +166,8 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
 
     return Scaffold(
       body: SafeArea(
-        top: thunderState.hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+        top: false,
+        bottom: false,
         child: BlocConsumer<ModlogBloc, ModlogState>(
           listenWhen: (previous, current) {
             if (current.status == ModlogStatus.initial) {
@@ -339,6 +340,13 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                       ),
                     ],
                   ),
+                  if (thunderState.hideTopBarOnScroll)
+                    Positioned(
+                      child: Container(
+                        height: MediaQuery.of(context).padding.top,
+                        color: theme.colorScheme.surface,
+                      ),
+                    )
                 ],
               ),
             );

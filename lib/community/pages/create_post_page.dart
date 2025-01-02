@@ -383,6 +383,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 centerTitle: false,
               ),
               body: SafeArea(
+                bottom: false,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -682,6 +683,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ),
                         ],
                       ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).padding.bottom,
+                      color: theme.cardColor,
                     ),
                   ],
                 ),

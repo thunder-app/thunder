@@ -281,6 +281,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                   centerTitle: false,
                 ),
                 body: SafeArea(
+                  bottom: false,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -501,6 +502,10 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                             ),
                           ],
                         ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).padding.bottom,
+                        color: theme.cardColor,
                       ),
                     ],
                   ),

@@ -21,6 +21,9 @@ class CommentNavigatorFab extends StatefulWidget {
   /// The maximum index that can be scrolled to
   final int maxIndex;
 
+  /// The height of the OS status bar, needed to calculate an offset for scrolling comments to the top
+  final double statusBarHeight;
+
   const CommentNavigatorFab({
     super.key,
     this.initialIndex = 0,
@@ -28,6 +31,7 @@ class CommentNavigatorFab extends StatefulWidget {
     required this.scrollController,
     required this.listController,
     this.comments,
+    required this.statusBarHeight,
   });
 
   @override
@@ -130,10 +134,14 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
 
     setState(() => currentIndex = previousIndex);
 
+    // Calculate alignment
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double alignmentOffset = widget.statusBarHeight / screenHeight;
+
     widget.listController.animateToItem(
       index: previousIndex,
       scrollController: widget.scrollController,
-      alignment: 0,
+      alignment: alignmentOffset,
       duration: (estimatedDistance) => const Duration(milliseconds: 450),
       curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
     );
@@ -169,10 +177,14 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
 
     setState(() => currentIndex = parentCommentIndex);
 
+    // Calculate alignment
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double alignmentOffset = widget.statusBarHeight / screenHeight;
+
     widget.listController.animateToItem(
       index: parentCommentIndex,
       scrollController: widget.scrollController,
-      alignment: 0,
+      alignment: alignmentOffset,
       duration: (estimatedDistance) => const Duration(milliseconds: 450),
       curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
     );
@@ -186,10 +198,14 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
 
     setState(() => currentIndex = nextIndex);
 
+    // Calculate alignment
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double alignmentOffset = widget.statusBarHeight / screenHeight;
+
     widget.listController.animateToItem(
       index: nextIndex,
       scrollController: widget.scrollController,
-      alignment: 0,
+      alignment: alignmentOffset,
       duration: (estimatedDistance) => const Duration(milliseconds: 450),
       curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
     );
@@ -224,10 +240,14 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
 
     setState(() => currentIndex = parentCommentIndex);
 
+    // Calculate alignment
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double alignmentOffset = widget.statusBarHeight / screenHeight;
+
     widget.listController.animateToItem(
       index: parentCommentIndex,
       scrollController: widget.scrollController,
-      alignment: 0,
+      alignment: alignmentOffset,
       duration: (estimatedDistance) => const Duration(milliseconds: 450),
       curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
     );

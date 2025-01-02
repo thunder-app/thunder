@@ -41,10 +41,18 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
           linkType: LinkType.user,
         ));
       } else if (link.contains("/post/")) {
+        LinkType linkType = LinkType.post;
+
+        // See if this is actually a comment link
+        Uri? uri = Uri.tryParse(link);
+        if (uri != null && uri.pathSegments.length >= 3 && int.tryParse(uri.pathSegments[2]) != null) {
+          linkType = LinkType.comment;
+        }
+
         emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,
           link: link,
-          linkType: LinkType.post,
+          linkType: linkType,
         ));
       } else if (link.contains("/comment/")) {
         emit(state.copyWith(

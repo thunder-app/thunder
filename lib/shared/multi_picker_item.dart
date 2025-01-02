@@ -40,6 +40,7 @@ class MultiPickerItem extends StatelessWidget {
                   style: TextButton.styleFrom(foregroundColor: p.backgroundColor),
                   child: Icon(
                     p.icon,
+                    size: 24,
                     semanticLabel: p.label,
                     color: p.onSelected == null ? null : p.foregroundColor ?? theme.textTheme.bodyMedium?.color,
                   ),

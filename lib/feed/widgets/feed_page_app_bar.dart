@@ -65,41 +65,43 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
       title: FeedAppBarTitle(visible: widget.showAppBarTitle),
       leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
-      leading: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
-          ? Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Semantics(
-                label: MaterialLocalizations.of(context).openAppDrawerTooltip,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: UserAvatar(
-                        person: person,
-                      ),
+      leading: feedBloc.state.status == FeedStatus.initial
+          ? null
+          : widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Semantics(
+                    label: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: UserAvatar(
+                            person: person,
+                          ),
+                        ),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            customBorder: const CircleBorder(),
+                            onTap: () => _openDrawerOrGoBack(context, feedBloc),
+                          ),
+                        ),
+                      ],
                     ),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
-                        onTap: () => _openDrawerOrGoBack(context, feedBloc),
-                      ),
-                    ),
-                  ],
+                  ),
+                )
+              : IconButton(
+                  icon: widget.scaffoldStateKey == null
+                      ? (!kIsWeb && Platform.isIOS
+                          ? Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                            )
+                          : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
+                      : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
+                  onPressed: () => _openDrawerOrGoBack(context, feedBloc),
                 ),
-              ),
-            )
-          : IconButton(
-              icon: widget.scaffoldStateKey == null
-                  ? (!kIsWeb && Platform.isIOS
-                      ? Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                        )
-                      : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
-                  : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
-              onPressed: () => _openDrawerOrGoBack(context, feedBloc),
-            ),
       actions: (feedBloc.state.status != FeedStatus.initial && feedBloc.state.status != FeedStatus.failureLoadingCommunity && feedBloc.state.status != FeedStatus.failureLoadingUser)
           ? [
               if (feedBloc.state.feedType == FeedType.general) const FeedAppBarGeneralActions(),

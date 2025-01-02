@@ -128,27 +128,42 @@ Future<int?> getLemmyPostId(BuildContext context, String text) async {
 }
 
 final RegExp _comment = RegExp(r'^(https?:\/\/)(.*)\/comment\/([0-9]*).*$');
+final RegExp _commentAlternate = RegExp(r'^(https?:\/\/)(.*)\/post\/([0-9]*)\/([0-9]*).*$');
 Future<int?> getLemmyCommentId(BuildContext context, String text) async {
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  final RegExpMatch? commentMatch = _comment.firstMatch(text);
-  if (commentMatch != null) {
-    final String? instance = commentMatch.group(2);
-    final int? commentId = int.tryParse(commentMatch.group(3)!);
-    if (commentId != null) {
-      if (instance == lemmy.host) {
-        return commentId;
-      } else {
-        // This is a comment on another instance. Try to resolve it
-        try {
-          // Show the loading page while we resolve the post
-          showLoadingPage(context);
+  String? instance;
+  int? commentId;
 
-          final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
-          return resolveObjectResponse.comment?.comment.id;
-        } catch (e) {
-          return null;
-        }
+  // Try legacy comment link format
+  RegExpMatch? commentMatch = _comment.firstMatch(text);
+  if (commentMatch != null) {
+    // It's a match!
+    instance = commentMatch.group(2);
+    commentId = int.tryParse(commentMatch.group(3)!);
+  } else {
+    // Otherwise, try the new format
+    commentMatch = _commentAlternate.firstMatch(text);
+    if (commentMatch != null) {
+      // It's a match!
+      instance = commentMatch.group(2);
+      commentId = int.tryParse(commentMatch.group(4)!);
+    }
+  }
+
+  if (commentId != null) {
+    if (instance == lemmy.host) {
+      return commentId;
+    } else {
+      // This is a comment on another instance. Try to resolve it
+      try {
+        // Show the loading page while we resolve the post
+        showLoadingPage(context);
+
+        final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
+        return resolveObjectResponse.comment?.comment.id;
+      } catch (e) {
+        return null;
       }
     }
   }
