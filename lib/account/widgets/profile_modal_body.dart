@@ -4,7 +4,6 @@ import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
@@ -185,7 +184,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
         ),
       ],
       child: Scaffold(
-        backgroundColor: theme.cardColor,
+        backgroundColor: Colors.transparent,
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -193,6 +192,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
               centerTitle: false,
               scrolledUnderElevation: 0,
               pinned: false,
+              forceMaterialTransparency: true,
               actions: !widget.quickSelectMode
                   ? [
                       if ((accounts?.length ?? 0) > 1)
@@ -241,14 +241,14 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Material(
-                        color: currentAccountId == accounts![index].account.id ? selectedColor : null,
+                        color: currentAccountId == accounts![index].account.id ? selectedColor : Colors.transparent,
                         borderRadius: BorderRadius.circular(50),
                         child: InkWell(
                           onTap: (currentAccountId == accounts![index].account.id)
                               ? null
                               : () {
                                   context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id, reload: widget.reloadOnSave));
-                                  context.pop();
+                                  Navigator.of(context).pop();
                                 },
                           borderRadius: BorderRadius.circular(50),
                           child: AnimatedSize(
@@ -429,7 +429,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
             if (accounts?.isNotEmpty != true)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 24.0),
+                  padding: const EdgeInsets.only(left: 24.0, bottom: 16.0),
                   child: Text(
                     l10n.noAccountsAdded,
                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -445,6 +445,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                 centerTitle: false,
                 scrolledUnderElevation: 0,
                 pinned: false,
+                forceMaterialTransparency: true,
                 actions: !widget.quickSelectMode
                     ? [
                         if ((anonymousInstances?.length ?? 0) > 1)
@@ -494,7 +495,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Material(
                           elevation: anonymousInstanceBeingReorderedIndex == index ? 3 : 0,
-                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : null,
+                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : Colors.transparent,
                           borderRadius: BorderRadius.circular(50),
                           child: InkWell(
                             onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
@@ -503,7 +504,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                     context.read<AuthBloc>().add(const LogOutOfAllAccounts());
                                     context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![index].anonymousInstance.instance));
                                     context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![index].anonymousInstance.instance));
-                                    context.pop();
+                                    Navigator.of(context).pop();
                                   },
                             borderRadius: BorderRadius.circular(50),
                             child: AnimatedSize(

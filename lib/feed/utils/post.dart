@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,7 +14,6 @@ import 'package:thunder/post/utils/post.dart';
 /// Helper function which handles the logic of fetching items for the feed from the API
 /// This includes posts and user information (posts/comments)
 Future<Map<String, dynamic>> fetchFeedItems({
-  int limit = 20,
   int page = 1,
   ListingType? postListingType,
   SortType? sortType,
@@ -23,6 +23,8 @@ Future<Map<String, dynamic>> fetchFeedItems({
   String? username,
   FeedTypeSubview feedTypeSubview = FeedTypeSubview.post,
   bool showHidden = false,
+  bool showSaved = false,
+  void Function()? notifyExcessiveApiCalls,
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -30,13 +32,14 @@ Future<Map<String, dynamic>> fetchFeedItems({
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
   List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
+  int desiredPosts = 20;
   bool hasReachedPostsEnd = false;
   bool hasReachedCommentsEnd = false;
 
   List<PostViewMedia> postViewMedias = [];
   List<CommentView> commentViews = [];
 
-  int currentPage = page;
+  int startingPage = page, currentPage = page;
 
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
   if (communityId != null || communityName != null || postListingType != null) {
@@ -49,7 +52,11 @@ Future<Map<String, dynamic>> fetchFeedItems({
         communityId: communityId,
         communityName: communityName,
         showHidden: showHidden,
+        savedOnly: showSaved,
       ));
+
+      // Keep the length of the original response to see if there are any additional posts to fetch
+      int postResponseLength = getPostsResponse.posts.length;
 
       // Remove deleted posts
       getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
@@ -69,9 +76,23 @@ Future<Map<String, dynamic>> fetchFeedItems({
       List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
       postViewMedias.addAll(formattedPosts);
 
-      if (getPostsResponse.posts.isEmpty) hasReachedPostsEnd = true;
+      if (keywordFilters.isNotEmpty) {
+        // Add some debugging logging so we can see what's going on when we're loading a feed with filters.
+        debugPrint('postViewMedias.length is ${postViewMedias.length} and postResponseLength is $postResponseLength and currentPage is $currentPage');
+      }
+
+      if (postResponseLength == 0) hasReachedPostsEnd = true;
       currentPage++;
-    } while (!hasReachedPostsEnd && postViewMedias.length < limit);
+
+      // If we've been searching for enough posts to satisfy the desired number
+      // and we've already made 20 API requests,
+      // and the user has some filters defined,
+      // then tell the user the feed is loading slowly due to their filters
+      if (keywordFilters.isNotEmpty && currentPage - startingPage > 20) {
+        notifyExcessiveApiCalls?.call();
+        notifyExcessiveApiCalls = null;
+      }
+    } while (!hasReachedPostsEnd && postViewMedias.length < desiredPosts);
   }
 
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
@@ -83,6 +104,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
         username: username,
         page: currentPage,
         sort: sortType,
+        savedOnly: showSaved,
       ));
 
       // Remove deleted posts and comments
@@ -100,7 +122,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
       if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
       if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;
       currentPage++;
-    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && postViewMedias.length < limit) : (!hasReachedCommentsEnd && commentViews.length < limit));
+    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && postViewMedias.length < desiredPosts) : (!hasReachedCommentsEnd && commentViews.length < desiredPosts));
   }
 
   return {'postViewMedias': postViewMedias, 'commentViews': commentViews, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'currentPage': currentPage};

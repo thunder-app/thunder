@@ -14,12 +14,14 @@ import 'package:thunder/utils/swipe.dart';
 
 Future<void> navigateToModlogPage(
   BuildContext context, {
-  required FeedBloc feedBloc,
+  FeedBloc? feedBloc,
   ModlogActionType? modlogActionType,
   int? communityId,
   int? userId,
   int? moderatorId,
+  int? commentId,
   LemmyClient? lemmyClient,
+  Widget? subtitle,
 }) async {
   final ThunderBloc thunderBloc = context.read<ThunderBloc>();
   final bool reduceAnimations = thunderBloc.state.reduceAnimations;
@@ -30,7 +32,9 @@ Future<void> navigateToModlogPage(
     AuthBloc authBloc = context.read<AuthBloc>();
     canSwipe = Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture;
     canOnlySwipeFromEdge = disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: false) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture;
-  } catch (e) {}
+  } catch (e) {
+    // Continue with default values
+  }
 
   await Navigator.of(context).push(
     SwipeablePageRoute(
@@ -40,7 +44,7 @@ Future<void> navigateToModlogPage(
       canOnlySwipeFromEdge: canOnlySwipeFromEdge,
       builder: (context) => MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: feedBloc),
+          if (feedBloc != null) BlocProvider.value(value: feedBloc),
           BlocProvider.value(value: thunderBloc),
         ],
         child: ModlogFeedPage(
@@ -48,7 +52,9 @@ Future<void> navigateToModlogPage(
           communityId: communityId,
           userId: userId,
           moderatorId: moderatorId,
+          commentId: commentId,
           lemmyClient: lemmyClient,
+          subtitle: subtitle,
         ),
       ),
     ),

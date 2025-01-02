@@ -26,12 +26,12 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:resizeableActivity="true">
+            android:resizeableActivity="true"
             android:windowSoftInputMode="adjustResize">
             <!--Allowing support for multi windows (split-screen mode) & picture-in-picture mode -->
-            <meta-data
-            android:name="android.allow_multiple_resumed_activities"
-             android:value="true" />
+            <meta-data android:name="android.allow_multiple_resumed_activities" android:value="true" />
+            <!--Disable Flutter's built-in deep linking -->
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
             <!-- support sharing images -->
              <intent-filter
                  android:label="@string/create_post">
@@ -60,6 +60,14 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- App Link --> 
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="thunderapp.dev" />
+            </intent-filter>
+            <!-- Custom Scheme -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -94,6 +102,7 @@
               <data android:host="lemmings.world" />
               <data android:host="lemmy.blahaj.zone" />
               <data android:host="lemmy.ca" />
+              <data android:host="lemmy.cafe" />
               <data android:host="lemmy.dbzer0.com" />
               <data android:host="lemmy.eco.br" />
               <data android:host="lemmy.kya.moe" />
@@ -121,7 +130,6 @@
               <data android:host="szmer.info" />
               <data android:host="thelemmy.club" />
               <data android:host="ttrpg.network" />
-              <data android:host="yiffit.net" />
               <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity>

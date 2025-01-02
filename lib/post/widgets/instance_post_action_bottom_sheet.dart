@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -160,7 +159,7 @@ class _InstancePostActionBottomSheetState extends State<InstancePostActionBottom
     return BlocListener<InstanceBloc, InstanceState>(
       listener: (context, state) {
         if (state.status == InstanceStatus.success) {
-          context.pop();
+          Navigator.of(context).pop();
           widget.onAction();
         }
       },

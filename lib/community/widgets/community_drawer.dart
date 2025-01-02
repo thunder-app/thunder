@@ -153,66 +153,61 @@ class UserDrawerItem extends StatelessWidget {
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
     String? anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
-    return Material(
-      color: theme.colorScheme.surface,
-      elevation: 1.0,
-      surfaceTintColor: theme.colorScheme.surfaceTint,
-      shadowColor: Colors.transparent,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(13.0, 16.0, 4.0, 0),
-        child: TextButton(
-          style: TextButton.styleFrom(
-            alignment: Alignment.centerLeft,
-            minimumSize: const Size.fromHeight(50),
-          ),
-          onPressed: () => navigateToAccount?.call(),
-          child: Row(
-            children: [
-              UserAvatar(
-                person: isLoggedIn ? accountState.personView?.person : null,
-                radius: 16.0,
-              ),
-              const SizedBox(width: 16.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      if (!isLoggedIn) ...[
-                        Icon(
-                          Icons.person_off_rounded,
-                          color: theme.textTheme.bodyMedium?.color,
-                          size: 15,
-                        ),
-                        const SizedBox(width: 5),
-                      ],
-                      Text(
-                        isLoggedIn ? accountState.personView?.person.name ?? '' : l10n.anonymous,
-                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+    return Container(
+      color: theme.colorScheme.surfaceContainerLow,
+      padding: const EdgeInsets.fromLTRB(13.0, 16.0, 4.0, 0),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          alignment: Alignment.centerLeft,
+          minimumSize: const Size.fromHeight(50),
+        ),
+        onPressed: () => navigateToAccount?.call(),
+        child: Row(
+          children: [
+            UserAvatar(
+              person: isLoggedIn ? accountState.personView?.person : null,
+              radius: 16.0,
+            ),
+            const SizedBox(width: 16.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    if (!isLoggedIn) ...[
+                      Icon(
+                        Icons.person_off_rounded,
+                        color: theme.textTheme.bodyMedium?.color,
+                        size: 15,
                       ),
+                      const SizedBox(width: 5),
                     ],
-                  ),
-                  Text(
-                    isLoggedIn ? authState.account?.instance ?? '' : anonymousInstance ?? '',
-                    style: theme.textTheme.bodyMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-              const Expanded(child: SizedBox()),
-              IconButton(
-                icon: Icon(
-                  Icons.more_vert_outlined,
-                  color: theme.textTheme.bodyMedium?.color,
-                  semanticLabel: l10n.openAccountSwitcher,
+                    Text(
+                      isLoggedIn ? accountState.personView?.person.name ?? '' : l10n.anonymous,
+                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                onPressed: () => showProfileModalSheet(context),
+                Text(
+                  isLoggedIn ? authState.account?.instance ?? '' : anonymousInstance ?? '',
+                  style: theme.textTheme.bodyMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+            const Expanded(child: SizedBox()),
+            IconButton(
+              icon: Icon(
+                Icons.more_vert_outlined,
+                color: theme.textTheme.bodyMedium?.color,
+                semanticLabel: l10n.openAccountSwitcher,
               ),
-            ],
-          ),
+              onPressed: () => showProfileModalSheet(context),
+            ),
+          ],
         ),
       ),
     );
@@ -229,7 +224,6 @@ class FeedDrawerItems extends StatelessWidget {
     final feedBloc = context.watch<FeedBloc>();
 
     FeedState feedState = feedBloc.state;
-    ThunderState thunderState = context.read<ThunderBloc>().state;
     AccountState accountState = context.watch<AccountBloc>().state;
 
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
@@ -543,6 +537,7 @@ class CommunityItem extends StatelessWidget {
                 onPressed: () async => await toggleFavoriteCommunity(context, community, isFavorite),
                 icon: Icon(
                   isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
+                  size: 24,
                   semanticLabel: isFavorite ? l10n.removeFromFavorites : l10n.addToFavorites,
                 ),
               )

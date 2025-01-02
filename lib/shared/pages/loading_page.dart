@@ -17,7 +17,7 @@ class LoadingPage extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        color: theme.colorScheme.background,
+        color: theme.colorScheme.surface,
         child: SafeArea(
           top: false,
           child: CustomScrollView(
@@ -65,7 +65,7 @@ void showLoadingPage(BuildContext context) {
           BlocProvider.value(value: thunderBloc),
         ],
         child: PopScope(
-          onPopInvoked: (didPop) => isLoadingPageShown = !didPop,
+          onPopInvokedWithResult: (didPop, result) => isLoadingPageShown = !didPop,
           child: const LoadingPage(),
         ),
       ),

@@ -18,6 +18,7 @@ import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/core/enums/video_player_mode.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
@@ -115,7 +116,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       bool showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
-      NotificationType inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name) ?? NotificationType.none;
+      NotificationType inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       NameThickness userFullNameUserNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameUserNameThickness.name) ?? NameThickness.normal.name);
@@ -131,6 +132,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
       bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
       bool showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
+      bool showExpandedTaglines = prefs.getBool(LocalSettings.showExpandedTaglines.name) ?? false;
 
       BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
 
@@ -260,6 +262,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? true;
       VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
       VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
+      VideoPlayerMode videoPlayerMode = VideoPlayerMode.values.byName(prefs.getString(LocalSettings.videoPlayerMode.name) ?? VideoPlayerMode.inApp.name);
 
       String currentAnonymousInstance = prefs.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
 
@@ -305,6 +308,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,
         showHiddenPosts: showHiddenPosts,
+        showExpandedTaglines: showExpandedTaglines,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings
@@ -427,6 +431,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         videoAutoLoop: videoAutoLoop,
         videoAutoPlay: videoAutoPlay,
         videoDefaultPlaybackSpeed: videoDefaultPlaybackSpeed,
+        videoPlayerMode: videoPlayerMode,
 
         currentAnonymousInstance: currentAnonymousInstance,
       ));

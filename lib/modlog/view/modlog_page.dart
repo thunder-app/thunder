@@ -10,9 +10,11 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/modlog/modlog.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 
 /// Creates a [ModlogPage] which holds a list of modlog events.
 class ModlogFeedPage extends StatefulWidget {
@@ -23,6 +25,8 @@ class ModlogFeedPage extends StatefulWidget {
     this.userId,
     this.moderatorId,
     this.lemmyClient,
+    this.subtitle,
+    this.commentId,
   });
 
   /// The filtering to be applied to the feed.
@@ -37,8 +41,15 @@ class ModlogFeedPage extends StatefulWidget {
   /// The id of the moderator to display modlog events for.
   final int? moderatorId;
 
+  /// The id of a specific comment to show in the modlog (optional)
+  final int? commentId;
+
   /// An optional lemmy client to use a different instance and override the singleton
   final LemmyClient? lemmyClient;
+
+  /// An optional widget to display as the subtitle on the app bar.
+  /// If not specified, this will be the instance or community name.
+  final Widget? subtitle;
 
   @override
   State<ModlogFeedPage> createState() => _ModlogFeedPageState();
@@ -54,9 +65,10 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
           communityId: widget.communityId,
           userId: widget.userId,
           moderatorId: widget.moderatorId,
+          commentId: widget.commentId,
           reset: true,
         )),
-      child: ModlogFeedView(lemmyClient: widget.lemmyClient ?? LemmyClient.instance),
+      child: ModlogFeedView(lemmyClient: widget.lemmyClient ?? LemmyClient.instance, subtitle: widget.subtitle),
     );
   }
 }
@@ -65,7 +77,10 @@ class ModlogFeedView extends StatefulWidget {
   /// The current Lemmy client
   final LemmyClient lemmyClient;
 
-  const ModlogFeedView({super.key, required this.lemmyClient});
+  /// Subtitle to display on app bar
+  final Widget? subtitle;
+
+  const ModlogFeedView({super.key, required this.lemmyClient, required this.subtitle});
 
   @override
   State<ModlogFeedView> createState() => _ModlogFeedViewState();
@@ -130,9 +145,29 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
     final thunderState = context.watch<ThunderBloc>().state;
     final l10n = AppLocalizations.of(context)!;
 
+    Widget? subtitle = widget.subtitle;
+
+    if (subtitle == null) {
+      try {
+        FeedState feedState = context.read<FeedBloc>().state;
+
+        subtitle = feedState.fullCommunityView != null
+            ? CommunityFullNameWidget(
+                context,
+                feedState.fullCommunityView!.communityView.community.name,
+                feedState.fullCommunityView!.communityView.community.title,
+                fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId),
+              )
+            : Text(widget.lemmyClient.lemmyApiV3.host);
+      } catch (e) {
+        // Ignore if we can't get the FeedBloc from this context
+      }
+    }
+
     return Scaffold(
       body: SafeArea(
-        top: thunderState.hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+        top: false,
+        bottom: false,
         child: BlocConsumer<ModlogBloc, ModlogState>(
           listenWhen: (previous, current) {
             if (current.status == ModlogStatus.initial) {
@@ -163,9 +198,14 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
             return RefreshIndicator(
               onRefresh: () async {
                 HapticFeedback.mediumImpact();
-                context
-                    .read<ModlogBloc>()
-                    .add(ModlogFeedFetchedEvent(modlogActionType: state.modlogActionType, communityId: state.communityId, userId: state.userId, moderatorId: state.moderatorId, reset: true));
+                context.read<ModlogBloc>().add(ModlogFeedFetchedEvent(
+                      modlogActionType: state.modlogActionType,
+                      communityId: state.communityId,
+                      userId: state.userId,
+                      moderatorId: state.moderatorId,
+                      commentId: state.commentId,
+                      reset: true,
+                    ));
               },
               edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
               child: Stack(
@@ -175,7 +215,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                     slivers: <Widget>[
                       ModlogFeedPageAppBar(
                         showAppBarTitle: state.status != ModlogStatus.initial ? true : showAppBarTitle,
-                        lemmyClient: widget.lemmyClient,
+                        subtitle: subtitle,
                       ),
                       // Display loading indicator until the feed is fetched
                       if (state.status == ModlogStatus.initial)
@@ -226,7 +266,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                                     child: Icon(
                                                       event.getModlogEventIcon(),
                                                       size: 16.0 * thunderState.metadataFontSizeScale.textScaleFactor,
-                                                      color: theme.colorScheme.onBackground,
+                                                      color: theme.colorScheme.onSurface,
                                                     ),
                                                   ),
                                                   ScalableText(
@@ -300,6 +340,13 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                       ),
                     ],
                   ),
+                  if (thunderState.hideTopBarOnScroll)
+                    Positioned(
+                      child: Container(
+                        height: MediaQuery.of(context).padding.top,
+                        color: theme.colorScheme.surface,
+                      ),
+                    )
                 ],
               ),
             );

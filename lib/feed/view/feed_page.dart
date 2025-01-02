@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
@@ -9,11 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
+import 'package:thunder/account/widgets/account_page_app_bar.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -24,6 +28,7 @@ import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/settings/pages/filter_settings_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -34,7 +39,7 @@ import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/global_context.dart';
 
-enum FeedType { community, user, general }
+enum FeedType { community, user, general, account }
 
 /// Creates a [FeedPage] which holds a list of posts for a given user, community, or custom feed.
 ///
@@ -43,6 +48,7 @@ enum FeedType { community, user, general }
 /// If [FeedType.community] is provided, one of [communityId] or [communityName] must be provided. If both are provided, [communityId] will take precedence.
 /// If [FeedType.user] is provided, one of [userId] or [username] must be provided. If both are provided, [userId] will take precedence.
 /// If [FeedType.general] is provided, [postListingType] must be provided.
+/// If [FeedType.account] is provided, then it should show the currently logged in user's posts/comments.
 class FeedPage extends StatefulWidget {
   const FeedPage({
     super.key,
@@ -135,7 +141,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
 
       return BlocProvider.value(
         value: bloc,
-        child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
+        child: FeedView(scaffoldStateKey: widget.scaffoldStateKey, feedType: widget.feedType),
       );
     }
 
@@ -152,16 +158,19 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           reset: true,
           showHidden: widget.showHidden,
         )),
-      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
+      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey, feedType: widget.feedType),
     );
   }
 }
 
 class FeedView extends StatefulWidget {
-  const FeedView({super.key, this.scaffoldStateKey});
+  const FeedView({super.key, this.scaffoldStateKey, this.feedType});
 
   /// The scaffold key which holds the drawer
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
+
+  /// The type of feed to display
+  final FeedType? feedType;
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -291,6 +300,7 @@ class _FeedViewState extends State<FeedView> {
   @override
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     bool tabletMode = thunderBloc.state.tabletMode;
     bool markPostReadOnScroll = thunderBloc.state.markPostReadOnScroll;
@@ -322,7 +332,7 @@ class _FeedViewState extends State<FeedView> {
       ],
       child: Scaffold(
         body: SafeArea(
-          top: hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
+          top: false,
           child: BlocConsumer<FeedBloc, FeedState>(
             listenWhen: (previous, current) {
               if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
@@ -330,6 +340,27 @@ class _FeedViewState extends State<FeedView> {
               if (previous.dismissReadId != current.dismissReadId) dismissRead();
               if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
               if (current.dismissHiddenPostId != null && !thunderBloc.state.showHiddenPosts) dismissHiddenPost(current.dismissHiddenPostId!);
+              if (current.excessiveApiCalls) {
+                showSnackbar(
+                  l10n.excessiveApiCallsWarning,
+                  trailingIcon: Icons.settings_rounded,
+                  trailingAction: () {
+                    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                    Navigator.of(context).push(
+                      SwipeablePageRoute(
+                        transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                        canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        builder: (context) => MultiBlocProvider(
+                          providers: [BlocProvider.value(value: thunderBloc)],
+                          child: const FilterSettingsPage(settingToHighlight: LocalSettings.keywordFilters),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }
               return true;
             },
             listener: (context, state) {
@@ -367,10 +398,31 @@ class _FeedViewState extends State<FeedView> {
                       physics: (showCommunitySidebar || showUserSidebar) ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community/user sidebar is open
                       controller: _scrollController,
                       slivers: <Widget>[
-                        FeedPageAppBar(
-                          showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
-                          scaffoldStateKey: widget.scaffoldStateKey,
-                        ),
+                        widget.feedType == FeedType.account
+                            ? AccountPageAppBar(
+                                showAppBarTitle: showAppBarTitle,
+                                showSaved: state.showSaved,
+                                onToggleSaved: (showSaved) {
+                                  context.read<FeedBloc>().add(
+                                        FeedFetchedEvent(
+                                          feedType: FeedType.account,
+                                          postListingType: state.postListingType,
+                                          sortType: state.sortType,
+                                          communityId: state.communityId,
+                                          communityName: state.communityName,
+                                          userId: state.userId,
+                                          username: state.username,
+                                          reset: true,
+                                          showHidden: state.showHidden,
+                                          showSaved: showSaved,
+                                        ),
+                                      );
+                                },
+                              )
+                            : FeedPageAppBar(
+                                showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
+                                scaffoldStateKey: widget.scaffoldStateKey,
+                              ),
                         // Display loading indicator until the feed is fetched
                         if (state.status == FeedStatus.initial)
                           const SliverFillRemaining(
@@ -407,7 +459,7 @@ class _FeedViewState extends State<FeedView> {
                           if (state.fullPersonView != null)
                             SliverToBoxAdapter(
                               child: Visibility(
-                                visible: state.feedType == FeedType.user,
+                                visible: state.feedType == FeedType.user || state.feedType == FeedType.account,
                                 child: Column(
                                   children: [
                                     UserHeader(
@@ -464,6 +516,7 @@ class _FeedViewState extends State<FeedView> {
                                       tabletMode: tabletMode,
                                       markPostReadOnScroll: markPostReadOnScroll,
                                       queuedForRemoval: queuedForRemoval,
+                                      dimReadPosts: state.feedType == FeedType.account ? false : null,
                                     ),
                               // Widgets to display on the feed when feedType == FeedType.community or feedType == FeedType.user
                               SliverToBoxAdapter(
@@ -545,7 +598,7 @@ class _FeedViewState extends State<FeedView> {
                         children: [
                           IgnorePointer(
                               child: Container(
-                            color: theme.colorScheme.background.withOpacity(0.95),
+                            color: theme.colorScheme.surface.withOpacity(0.95),
                           )),
                           if (thunderBloc.state.isFabOpen)
                             ModalBarrier(
@@ -568,6 +621,13 @@ class _FeedViewState extends State<FeedView> {
                           child: FeedFAB(heroTag: state.communityName ?? state.username),
                         ),
                       ),
+                    if (hideTopBarOnScroll)
+                      Positioned(
+                        child: Container(
+                          height: MediaQuery.of(context).padding.top,
+                          color: theme.colorScheme.surface,
+                        ),
+                      )
                   ],
                 ),
               );
@@ -599,6 +659,10 @@ class _FeedViewState extends State<FeedView> {
 
     // See if we're at the top level of navigation
     final canPop = Navigator.of(context).canPop();
+
+    if (widget.feedType == FeedType.account) {
+      return false;
+    }
 
     // Get the desired post listing so we can check against current
     final desiredListingType = authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBloc.state.defaultListingType;
@@ -675,7 +739,7 @@ class TagLine extends StatefulWidget {
 
 class _TagLineState extends State<TagLine> {
   final GlobalKey taglineBodyKey = GlobalKey();
-  bool taglineIsLong = false;
+  bool taglineIsLong = true;
 
   @override
   void initState() {
@@ -683,7 +747,7 @@ class _TagLineState extends State<TagLine> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        taglineIsLong = (taglineBodyKey.currentContext?.size?.height ?? 0) > 40;
+        taglineIsLong = (taglineBodyKey.currentContext?.size?.height ?? 0) > 80;
       });
     });
   }
@@ -691,6 +755,7 @@ class _TagLineState extends State<TagLine> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final state = context.watch<ThunderBloc>().state;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
@@ -704,9 +769,11 @@ class _TagLineState extends State<TagLine> {
           child: AnimatedCrossFade(
             crossFadeState: taglineIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 250),
+            sizeCurve: Curves.easeInOutCubicEmphasized,
             // TODO: Eventually pass in textScalingFactor
             firstChild: CommonMarkdownBody(key: taglineBodyKey, body: widget.tagline),
             secondChild: ExpandableNotifier(
+              initialExpanded: state.showExpandedTaglines,
               child: Column(
                 children: [
                   Expandable(

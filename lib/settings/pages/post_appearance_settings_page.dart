@@ -513,6 +513,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                           isUserLoggedIn: true,
                                           listingType: ListingType.all,
                                           indicateRead: dimReadPosts,
+                                          isLastTapped: false,
                                         ),
                                       )
                                     : IgnorePointer(
@@ -536,6 +537,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                           showTextContent: showTextContent,
                                           onVoteAction: (voteType) {},
                                           onSaveAction: (saved) {},
+                                          isLastTapped: false,
                                         ),
                                       ),
                                 const FeedCardDivider(),
@@ -1365,7 +1367,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
                 ),
           onLeave: (data) => HapticFeedback.mediumImpact(),
           onWillAcceptWithDetails: (data) {
-            if (!containedPostCardMetadataItems.contains(data)) {
+            if (!containedPostCardMetadataItems.contains(data.data)) {
               return true;
             }
             return false;

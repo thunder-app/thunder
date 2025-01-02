@@ -1,41 +1,58 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:app_links/app_links.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'deep_links_state.dart';
 
 /// A Cubit for handling deep links and determining their types.
 class DeepLinksCubit extends Cubit<DeepLinksState> {
   DeepLinksCubit() : super(const DeepLinksState());
-  StreamSubscription? _uniLinksStreamSubscription;
+  StreamSubscription? _appLinksStreamSubscription;
+
+  AppLinks appLinks = AppLinks();
 
   /// Analyzes a given link to determine its type and updates the state accordingly.
   ///
   /// [link] is the URL to be analyzed.
   Future<void> getLinkType(String link) async {
     try {
-      if (link.startsWith('thunder://')) {
-        emit(state.copyWith(
+      // First, check to see if this is an internal Thunder link
+      List<String> internalLinks = ['thunder://setting-'];
+
+      if (internalLinks.where((internalLink) => link.startsWith(internalLink)).isNotEmpty) {
+        return emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,
           link: link,
           linkType: LinkType.thunder,
         ));
-      } else if (link.contains("/u/")) {
+      }
+
+      if (link.contains("/u/")) {
         emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,
           link: link,
           linkType: LinkType.user,
         ));
       } else if (link.contains("/post/")) {
+        LinkType linkType = LinkType.post;
+
+        // See if this is actually a comment link
+        Uri? uri = Uri.tryParse(link);
+        if (uri != null && uri.pathSegments.length >= 3 && int.tryParse(uri.pathSegments[2]) != null) {
+          linkType = LinkType.comment;
+        }
+
         emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,
           link: link,
-          linkType: LinkType.post,
+          linkType: linkType,
         ));
       } else if (link.contains("/comment/")) {
         emit(state.copyWith(
@@ -79,17 +96,12 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
     }
   }
 
-  /// Handle incoming links - the ones that the app will recieve from the OS
-  /// while already started.
+  /// Handles deep link navigation.
+  Future<void> initialize() async {
+    emit(state.copyWith(deepLinkStatus: DeepLinkStatus.loading));
 
-  Future<void> handleIncomingLinks() async {
-    emit(state.copyWith(
-      deepLinkStatus: DeepLinkStatus.loading,
-    ));
-    _uniLinksStreamSubscription = uriLinkStream.listen((Uri? uri) {
-      emit(state.copyWith(
-        deepLinkStatus: DeepLinkStatus.loading,
-      ));
+    _appLinksStreamSubscription = appLinks.uriLinkStream.listen((Uri? uri) {
+      emit(state.copyWith(deepLinkStatus: DeepLinkStatus.loading));
       getLinkType(uri.toString());
     }, onError: (Object err) {
       if (err is FormatException) {
@@ -108,30 +120,7 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
     });
   }
 
-  /// Handle the initial Uri - the one the app was started with
-  Future<void> handleInitialURI() async {
-    try {
-      emit(state.copyWith(
-        deepLinkStatus: DeepLinkStatus.loading,
-      ));
-      final uri = await getInitialUri();
-      if (uri == null) {
-        state.copyWith(
-          deepLinkStatus: DeepLinkStatus.empty,
-          error: AppLocalizations.of(GlobalContext.context)!.emptyUri,
-        );
-      } else {
-        getLinkType(uri.toString());
-      }
-    } catch (e) {
-      state.copyWith(
-        deepLinkStatus: DeepLinkStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
   void dispose() {
-    _uniLinksStreamSubscription?.cancel();
+    _appLinksStreamSubscription?.cancel();
   }
 }

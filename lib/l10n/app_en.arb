@@ -837,6 +837,10 @@
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
   },
+  "excessiveApiCallsWarning": "Your feed may be taking a while to load due to keyword filters.",
+  "@excessiveApiCallsWarning": {
+    "description": "A message shown to the user when the feed is taking a long time to load, possibly because many posts are being filtered out due to their keyword filters"
+  },
   "expand": "Expand",
   "@expand": {
     "description": "Action to expand something"
@@ -2159,6 +2163,10 @@
   "@showEdgeToEdgeImages": {
     "description": "Toggle to view edge to edge images."
   },
+  "showExpandedTaglines": "Show expanded taglines",
+  "@showExpandedTaglines": {
+    "description": "Toggle that shows the full expanded tagline in the feed page"
+  },
   "showFullDate": "Show Full Date",
   "@showFullDate": {
     "description": "Toggle to show full date on posts"
@@ -2195,6 +2203,10 @@
   "@showNsfwContent": {
     "description": "Toggle to show NSFW content."
   },
+  "showOwnContent": "Show own content",
+  "@showOwnContent": {
+    "description": "Toggle to show your own posts/comments."
+  },
   "showPassword": "Show Password",
   "@showPassword": {},
   "showPostAuthor": "Show Post Author",
@@ -2228,6 +2240,10 @@
   "showReadPosts": "Show Read Posts",
   "@showReadPosts": {
     "description": "Setting to show read posts in feed."
+  },
+  "showSavedContent": "Show saved content",
+  "@showSavedContent": {
+    "description": "Toggle to show saved posts/comments."
   },
   "showScoreCounters": "Display User Scores",
   "@showScoreCounters": {
@@ -2354,6 +2370,14 @@
   "system": "System",
   "@system": {
     "description": "Describes using the system settings for theme"
+  },
+  "systemDarkMode": "System Dark Mode",
+  "@systemDarkMode": {
+    "description": "Setting which toggles the dark theme type when the system theme is selected"
+  },
+  "systemDarkModeDescription": "Enable pure black theme in system dark mode",
+  "@systemDarkModeDescription": {
+    "description": "Toggle which enables the pure black theme when using system theme, and is using the dark mode version"
   },
   "tabletMode": "Tablet Mode (2-column view)",
   "@tabletMode": {
@@ -2799,6 +2823,18 @@
   "@videoDefaultPlaybackSpeed": {
     "description": "Option to select the default video playback Speed"
   },
+  "videoLinkHandlingExternal": "Play video with an external app",
+  "@videoLinkHandlingExternal": {
+    "description": "Description to Open video with an external application"
+  },
+  "videoPlayerInApp": "Use Thunder built-in player",
+  "@videoPlayerInApp": {
+    "description": "Description for using in-app video player"
+  },
+  "videoPlayerMode": "Player Mode",
+  "@videoPlayerMode": {
+    "description": "Option to select video player mode (in-app or external)  "
+  },
   "viewAll": "View all",
   "@viewAll": {
     "description": "A title for viewing all of something (e.g., instances)"
@@ -2808,6 +2844,10 @@
   "viewCommentSource": "View Comment Source",
   "@viewCommentSource": {
     "description": "Menu item for viewing a comment's source"
+  },
+  "viewModlog": "View Modlog",
+  "@viewModlog": {
+    "description": "Action which allows the user to navigate to the modlog for a particular entity"
   },
   "viewOriginal": "View original",
   "@viewOriginal": {

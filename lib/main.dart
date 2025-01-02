@@ -38,7 +38,6 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/notification/notifications.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
-import 'package:thunder/routes.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -53,8 +52,14 @@ bool _isDatabaseInitialized = false;
 Future<void> initializeDatabase() async {
   if (_isDatabaseInitialized) return;
 
-  debugPrint('Initializing drift db.');
+  if (kIsWeb) {
+    database = AppDatabase();
+    return;
+  }
 
+  // There is a specific ordering here.
+  // We're checking to see if the drift database exists. If it doesn't exist, we perform migration from the old SQLite database.
+  // The ordering matters here as  database = AppDatabase() will create the database if it doesn't exist.
   File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
 
   database = AppDatabase();
@@ -108,6 +113,8 @@ class ThunderApp extends StatefulWidget {
 class _ThunderAppState extends State<ThunderApp> {
   /// Allows the top-level notification handlers to trigger actions farther down
   final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
+
+  PageController thunderPageController = PageController(initialPage: 0);
 
   @override
   void initState() {
@@ -191,18 +198,26 @@ class _ThunderAppState extends State<ThunderApp> {
 
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
-              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name));
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name), darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
+              FlexScheme scheme = FlexScheme.values.byName(state.selectedTheme.name);
+
+              Color? darkThemeSurfaceColor = state.themeType == ThemeType.pureBlack ? null : Colors.black.lighten(8);
+
+              ThemeData theme = FlexThemeData.light(scheme: scheme);
+              ThemeData darkTheme = FlexThemeData.dark(
+                scheme: scheme,
+                darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
+                surface: darkThemeSurfaceColor,
+                scaffoldBackground: darkThemeSurfaceColor,
+                appBarBackground: darkThemeSurfaceColor,
+              );
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
                 theme = ThemeData(
                   colorScheme: lightColorScheme,
-                  useMaterial3: true,
                 );
 
                 darkTheme = FlexThemeData.dark(
-                  useMaterial3: true,
                   colorScheme: darkColorScheme,
                   darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
                 );
@@ -214,42 +229,50 @@ class _ThunderAppState extends State<ThunderApp> {
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               });
 
+              // Customize our themes with the aforementinoed page transitions, as well as some custom styling
               theme = theme.copyWith(
                 pageTransitionsTheme: pageTransitionsTheme,
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: TextStyle(
+                    color: lightColorScheme?.onSurface.withOpacity(0.6),
+                  ),
+                ),
               );
               darkTheme = darkTheme.copyWith(
                 pageTransitionsTheme: pageTransitionsTheme,
-              );
-
-              // Set navigation bar color on Android to be transparent
-              SystemChrome.setSystemUIOverlayStyle(
-                SystemUiOverlayStyle(
-                  systemNavigationBarColor: Colors.black.withOpacity(0.0001),
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: TextStyle(
+                    color: darkColorScheme?.onSurface.withOpacity(0.6),
+                  ),
                 ),
               );
 
               Locale? locale = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == thunderBloc.state.appLanguageCode).firstOrNull;
 
               return OverlaySupport.global(
-                child: MaterialApp.router(
-                  title: 'Thunder',
-                  locale: locale,
-                  localizationsDelegates: const [
-                    ...AppLocalizations.localizationsDelegates,
-                    MaterialLocalizationsEo.delegate,
-                    CupertinoLocalizationsEo.delegate,
-                  ],
-                  supportedLocales: const [
-                    ...AppLocalizations.supportedLocales,
-                    Locale('eo'), // Additional locale which is not officially supported: Esperanto
-                  ],
-                  routerConfig: router,
-                  themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
-                  theme: theme,
-                  darkTheme: darkTheme,
-                  debugShowCheckedModeBanner: false,
-                  scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
-                  scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  // Set navigation bar color on Android to be transparent
+                  value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
+                  child: MaterialApp(
+                    title: 'Thunder',
+                    locale: locale,
+                    localizationsDelegates: const [
+                      ...AppLocalizations.localizationsDelegates,
+                      MaterialLocalizationsEo.delegate,
+                      CupertinoLocalizationsEo.delegate,
+                    ],
+                    supportedLocales: const [
+                      ...AppLocalizations.supportedLocales,
+                      Locale('eo'), // Additional locale which is not officially supported: Esperanto
+                    ],
+                    themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                    theme: theme,
+                    darkTheme: darkTheme,
+                    debugShowCheckedModeBanner: false,
+                    scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                    scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                    home: Thunder(pageController: thunderPageController),
+                  ),
                 ),
               );
             },

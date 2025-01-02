@@ -338,7 +338,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     originalUser ??= context.read<AuthBloc>().state.account;
 
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (didPop, result) {
         if (context.mounted) {
           restoreUser(context, originalUser);
         }
@@ -376,12 +376,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
               FocusManager.instance.primaryFocus?.unfocus();
             },
             child: Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
                 toolbarHeight: 70.0,
                 centerTitle: false,
               ),
               body: SafeArea(
+                bottom: false,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -590,6 +592,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ),
                     Container(
                       color: theme.cardColor,
+                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: Row(
                         children: [
                           Expanded(
@@ -680,6 +683,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ),
                         ],
                       ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).padding.bottom,
+                      color: theme.cardColor,
                     ),
                   ],
                 ),

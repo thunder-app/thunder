@@ -46,6 +46,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool? indicateRead;
+  final bool isLastTapped;
 
   const PostCardViewComfortable({
     super.key,
@@ -68,6 +69,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.markPostReadOnMediaView,
     required this.listingType,
     this.indicateRead,
+    required this.isLastTapped,
     this.navigateToPost,
   });
 
@@ -105,7 +107,11 @@ class PostCardViewComfortable extends StatelessWidget {
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     return Container(
-      color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onSurface.withOpacity(darkTheme ? 0.05 : 0.075) : null,
+      color: isLastTapped
+          ? theme.colorScheme.primary.withOpacity(0.15)
+          : indicateRead && postViewMedia.postView.read
+              ? theme.colorScheme.onSurface.withOpacity(darkTheme ? 0.05 : 0.075)
+              : null,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

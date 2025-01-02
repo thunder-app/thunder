@@ -131,7 +131,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                       plainTextComment!,
                       style: TextStyle(
                         fontSize: min(20, max(4.5, (20 * (1 / log(widget.postViewMedia.postView.post.body!.length))))),
-                        color: widget.read == true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
+                        color: widget.read == true ? theme.colorScheme.onSurface.withOpacity(0.55) : theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
                     ),
                   ),
@@ -157,7 +157,9 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         // Mark post as read when on the feed page
         int postId = widget.postViewMedia.postView.post.id;
         context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
-      } catch (e) {}
+      } catch (e) {
+        // Do nothing otherwise
+      }
     }
     Navigator.of(context).push(
       PageRouteBuilder(

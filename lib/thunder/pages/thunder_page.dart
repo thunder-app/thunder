@@ -109,10 +109,12 @@ class _ThunderState extends State<Thunder> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      handleSharedFilesAndText();
-      if (Platform.isAndroid || Platform.isIOS) {
-        BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
-        BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+        handleSharedFilesAndText();
+      }
+
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
+        BlocProvider.of<DeepLinksCubit>(context).initialize();
         BlocProvider.of<NotificationsCubit>(context).handleNotifications();
       }
     });
@@ -258,6 +260,7 @@ class _ThunderState extends State<Thunder> {
     } catch (e) {
       if (context.mounted) {
         _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+        Navigator.of(context).pop();
       }
     }
   }
@@ -286,6 +289,7 @@ class _ThunderState extends State<Thunder> {
     // show a snackbar with option to open link
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      Navigator.of(context).pop();
     }
   }
 
@@ -304,6 +308,7 @@ class _ThunderState extends State<Thunder> {
     // show a snackbar with option to open link
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      Navigator.of(context).pop();
     }
   }
 
@@ -324,7 +329,9 @@ class _ThunderState extends State<Thunder> {
         );
         return;
       }
-    } catch (e) {}
+    } catch (e) {
+      // Ignore exception, if it's not a valid modlog link, we'll perform the next fallback
+    }
 
     // Show an error for any issues processing the link
     if (context.mounted) {
@@ -356,6 +363,7 @@ class _ThunderState extends State<Thunder> {
     // show a snackbar with option to open link
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      Navigator.of(context).pop();
     }
   }
 
@@ -372,6 +380,7 @@ class _ThunderState extends State<Thunder> {
 
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      Navigator.of(context).pop();
     }
   }
 
@@ -396,6 +405,7 @@ class _ThunderState extends State<Thunder> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => InboxBloc()),
@@ -716,7 +726,7 @@ class _ThunderState extends State<Thunder> {
             ),
             Icon(
               Icons.arrow_forward,
-              color: theme.colorScheme.onBackground,
+              color: theme.colorScheme.onSurface,
             ),
           ],
         ),

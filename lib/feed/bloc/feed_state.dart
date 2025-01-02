@@ -27,6 +27,8 @@ final class FeedState extends Equatable {
     this.dismissHiddenPostId,
     this.insertedPostIds = const [],
     this.showHidden = false,
+    this.showSaved = false,
+    this.excessiveApiCalls = false,
   });
 
   /// The status of the feed
@@ -95,8 +97,14 @@ final class FeedState extends Equatable {
   /// The inserted post ids. This is used to prevent duplicate posts
   final List<int> insertedPostIds;
 
-  /// Whether to show hidden posts in the fed
+  /// Whether to show hidden posts in the feed
   final bool showHidden;
+
+  /// Whether to show saved posts/comments in the feed
+  final bool showSaved;
+
+  /// Whether the feed loading is making more API calls than we might expect, possibly due to filters
+  final bool excessiveApiCalls;
 
   FeedState copyWith({
     FeedStatus? status,
@@ -122,6 +130,8 @@ final class FeedState extends Equatable {
     int? dismissHiddenPostId,
     List<int>? insertedPostIds,
     bool? showHidden,
+    bool? showSaved,
+    bool? excessivesApiCalls,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -147,6 +157,8 @@ final class FeedState extends Equatable {
       dismissHiddenPostId: dismissHiddenPostId,
       insertedPostIds: insertedPostIds ?? this.insertedPostIds,
       showHidden: showHidden ?? this.showHidden,
+      showSaved: showSaved ?? this.showSaved,
+      excessiveApiCalls: excessivesApiCalls ?? false,
     );
   }
 
@@ -179,6 +191,8 @@ final class FeedState extends Equatable {
         dismissBlockedCommunityId,
         dismissHiddenPostId,
         insertedPostIds,
-        showHidden
+        showHidden,
+        showSaved,
+        excessiveApiCalls,
       ];
 }

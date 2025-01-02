@@ -112,7 +112,7 @@ class _InstancePageState extends State<InstancePage> {
             buildContext = context;
             return Scaffold(
               body: Container(
-                color: theme.colorScheme.background,
+                color: theme.colorScheme.surface,
                 child: SafeArea(
                   top: false,
                   child: CustomScrollView(

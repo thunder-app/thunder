@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/core/enums/media_type.dart';
@@ -163,7 +162,7 @@ class _SharePostActionBottomSheetState extends State<SharePostActionBottomSheet>
     return BlocListener<InstanceBloc, InstanceState>(
       listener: (context, state) {
         if (state.status == InstanceStatus.success) {
-          context.pop();
+          Navigator.of(context).pop();
           widget.onAction();
         }
       },

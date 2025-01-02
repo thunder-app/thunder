@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
-import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
@@ -96,7 +91,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         showReportPostDialog();
         return;
       case PostPostAction.editPost:
-        context.pop();
+        Navigator.of(context).pop();
 
         ThunderBloc thunderBloc = context.read<ThunderBloc>();
         AccountBloc accountBloc = context.read<AccountBloc>();
@@ -146,19 +141,19 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
         return;
       case PostPostAction.deletePost:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: postViewMedia.postView.post.id, value: true));
         break;
       case PostPostAction.restorePost:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: postViewMedia.postView.post.id, value: false));
         break;
       case PostPostAction.lockPost:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: postViewMedia.postView.post.id, value: true));
         break;
       case PostPostAction.unlockPost:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: postViewMedia.postView.post.id, value: false));
         break;
       case PostPostAction.removePost:
@@ -168,24 +163,24 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         showRemovePostReasonDialog();
         break;
       case PostPostAction.pinPostToCommunity:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: postViewMedia.postView.post.id, value: true));
         break;
       case PostPostAction.unpinPostFromCommunity:
-        context.pop();
+        Navigator.of(context).pop();
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: postViewMedia.postView.post.id, value: false));
         break;
       // case PostPostAction.pinPostToInstance:
-      //   context.pop();
+      //   Navigator.of(context).pop();
       //   return;
       // case PostPostAction.unpinPostFromInstance:
-      //   context.pop();
+      //   Navigator.of(context).pop();
       //   return;
     }
   }
 
   void showReportPostDialog() {
-    context.pop();
+    Navigator.of(context).pop();
     final TextEditingController messageController = TextEditingController();
 
     showThunderDialog(
@@ -200,13 +195,12 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
                 value: messageController.text,
               ),
             );
-        dialogContext.pop();
+        Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: l10n.cancel,
-      onSecondaryButtonPressed: (context) => context.pop(),
+      onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
-          isDense: true,
           border: const OutlineInputBorder(),
           labelText: l10n.message(0),
         ),
@@ -218,7 +212,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
   }
 
   void showRemovePostReasonDialog() {
-    context.pop();
+    Navigator.of(context).pop();
     final TextEditingController messageController = TextEditingController();
 
     showThunderDialog(
@@ -236,13 +230,12 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
                 },
               ),
             );
-        dialogContext.pop();
+        Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: l10n.cancel,
-      onSecondaryButtonPressed: (context) => context.pop(),
+      onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
-          isDense: true,
           border: const OutlineInputBorder(),
           labelText: l10n.message(0),
         ),

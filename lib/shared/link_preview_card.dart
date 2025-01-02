@@ -11,7 +11,6 @@ import 'package:thunder/shared/link_information.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/shared/image_preview.dart';
 
 class LinkPreviewCard extends StatelessWidget {
@@ -57,7 +56,6 @@ class LinkPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     if ((mediaURL != null || originURL != null) && viewMode == ViewMode.comfortable) {
       return Semantics(
@@ -265,7 +263,9 @@ class LinkPreviewCard extends StatelessWidget {
       try {
         FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
         feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
-      } catch (e) {}
+      } catch (e) {
+        // Ignore exception
+      }
     }
     if (originURL != null) {
       handleLink(context, url: originURL!);

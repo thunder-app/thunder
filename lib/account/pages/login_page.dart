@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/models/account.dart';
 
@@ -150,8 +149,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
               showSnackbar(AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
             } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
-              context.pop();
-
+              Navigator.of(context).pop();
               showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
             } else if (state.status == AuthStatus.contentWarning) {
               bool acceptedContentWarning = false;
@@ -319,7 +317,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       focusNode: focusNode,
                       inputFormatters: [LowerCaseTextFormatter()],
                       decoration: InputDecoration(
-                        isDense: true,
                         border: const OutlineInputBorder(),
                         labelText: AppLocalizations.of(context)!.instance(1),
                         errorText: instanceValidated ? null : instanceError,
@@ -364,7 +361,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             focusNode: _usernameFieldFocusNode,
                             autofillHints: const [AutofillHints.username],
                             decoration: InputDecoration(
-                              isDense: true,
                               border: const OutlineInputBorder(),
                               labelText: AppLocalizations.of(context)!.username,
                             ),
@@ -385,7 +381,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             maxLength: 60, // This is what lemmy retricts password length to
                             autofillHints: const [AutofillHints.password],
                             decoration: InputDecoration(
-                              isDense: true,
                               border: const OutlineInputBorder(),
                               labelText: AppLocalizations.of(context)!.password,
                               suffixIcon: Padding(
@@ -415,7 +410,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
-                        isDense: true,
                         border: const OutlineInputBorder(),
                         labelText: AppLocalizations.of(context)!.totp,
                         hintText: '000000',

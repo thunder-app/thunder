@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:go_router/go_router.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 
@@ -86,10 +85,10 @@ Future<bool> updateNotificationSettings(
       primaryButtonText: l10n.understandEnable,
       onPrimaryButtonPressed: (dialogContext, _) {
         acceptedWarning = true;
-        dialogContext.pop();
+        Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: l10n.cancel,
-      onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
+      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
     );
 
     if (!acceptedWarning) return true;

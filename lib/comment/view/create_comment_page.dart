@@ -238,7 +238,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     originalUser ??= context.read<AuthBloc>().state.account;
 
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (didPop, result) {
         if (context.mounted) {
           restoreUser(context, originalUser);
         }
@@ -274,12 +274,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                 FocusManager.instance.primaryFocus?.unfocus();
               },
               child: Scaffold(
+                resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
                   toolbarHeight: 70.0,
                   centerTitle: false,
                 ),
                 body: SafeArea(
+                  bottom: false,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -405,6 +407,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                       const Divider(height: 1),
                       Container(
                         color: theme.cardColor,
+                        margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                         child: Row(
                           children: [
                             Expanded(
@@ -499,6 +502,10 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                             ),
                           ],
                         ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).padding.bottom,
+                        color: theme.cardColor,
                       ),
                     ],
                   ),

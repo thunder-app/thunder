@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
-import 'package:thunder/account/models/account.dart';
 
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/comment/widgets/comment_card.dart';
@@ -113,158 +113,178 @@ class _PostPageState extends State<PostPage> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final thunderState = context.read<ThunderBloc>().state;
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
 
     originalUser ??= context.read<AuthBloc>().state.account;
 
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (didPop, result) {
         if (context.mounted) {
           restoreUser(context, originalUser);
         }
       },
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 5),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: CommentNavigatorFab(
-                    initialIndex: 0,
-                    maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
-                    scrollController: scrollController,
-                    listController: listController,
+      child: BlocConsumer<PostBloc, PostState>(
+        listener: (context, state) {
+          if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia) {
+            if (!userChanged) {
+              widget.onPostUpdated?.call(state.postView!);
+            }
+            setState(() {});
+          }
+        },
+        builder: (context, state) {
+          if (state.status == PostStatus.initial) {
+            // This is required because listener does not get called on initial build
+            context.read<PostBloc>().add(GetPostEvent(postView: widget.initialPostViewMedia));
+          }
+
+          List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
+
+          return Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: CommentNavigatorFab(
+                        initialIndex: 0,
+                        maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
+                        scrollController: scrollController,
+                        listController: listController,
+                        comments: flattenedComments,
+                        statusBarHeight: thunderState.hideTopBarOnScroll ? statusBarHeight : 0,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-        body: SafeArea(
-          top: thunderState.hideTopBarOnScroll, // Don't apply to top of screen to allow for the status bar colour to extend
-          bottom: false,
-          child: BlocConsumer<PostBloc, PostState>(
-            listener: (context, state) {
-              if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia) {
-                if (!userChanged) {
-                  widget.onPostUpdated?.call(state.postView!);
-                }
-                setState(() {});
-              }
-            },
-            builder: (context, state) {
-              if (state.status == PostStatus.initial) {
-                // This is required because listener does not get called on initial build
-                context.read<PostBloc>().add(GetPostEvent(postView: widget.initialPostViewMedia));
-              }
-
-              List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
-
-              return CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  PostPageAppBar(
-                    key: appBarKey,
-                    viewSource: viewSource,
-                    onViewSource: (value) => setState(() => viewSource = value),
-                    onReset: () async => await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized),
-                    onCreateCrossPost: () {
-                      createCrossPost(
-                        context,
-                        title: state.postView?.postView.post.name ?? '',
-                        url: state.postView?.postView.post.url,
-                        text: state.postView?.postView.post.body,
-                        postUrl: state.postView?.postView.post.apId,
-                      );
-                    },
-                    onSelectText: () {
-                      showSelectableTextModal(
-                        context,
-                        title: state.postView?.postView.post.name ?? '',
-                        text: state.postView?.postView.post.body ?? '',
-                      );
-                    },
-                    onUserChanged: () => userChanged = true,
-                    onPostChanged: (newPostViewMedia) => context.read<PostBloc>().add(GetPostEvent(postView: newPostViewMedia)),
-                  ),
-                  SliverToBoxAdapter(
-                    child: PostSubview(
-                      postViewMedia: state.postView ?? widget.initialPostViewMedia,
-                      crossPosts: state.crossPosts,
-                      viewSource: viewSource,
-                    ),
-                  ),
-                  if (state.status == PostStatus.loading)
-                    const SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  else
-                    SuperSliverList.builder(
-                      itemCount: flattenedComments.length,
-                      listController: listController,
-                      itemBuilder: (BuildContext context, int index) {
-                        CommentNode commentNode = flattenedComments[index];
-                        CommentView commentView = commentNode.commentView!;
-
-                        bool isCollapsed = collapsedComments.contains(commentView.comment.id);
-                        bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
-
-                        return CommentCard(
-                          commentView: commentView,
-                          replyCount: commentNode.replies.length,
-                          level: commentNode.depth,
-                          collapsed: isCollapsed,
-                          hidden: isHidden,
-                          onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
-                          onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
-                          onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
-                          onReplyEditAction: (CommentView commentView, bool isEdit) async => context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView)),
-                          onReportAction: (int commentId) => showReportCommentActionBottomSheet(context, commentId: commentId),
-                          onCollapseCommentChange: (int commentId, bool collapsed) {
-                            if (collapsed) {
-                              collapsedComments.add(commentId);
-                            } else {
-                              collapsedComments.remove(commentId);
+            body: SafeArea(
+              top: false,
+              bottom: false,
+              child: Stack(
+                children: [
+                  CustomScrollView(
+                    controller: scrollController,
+                    slivers: [
+                      PostPageAppBar(
+                        key: appBarKey,
+                        viewSource: viewSource,
+                        onViewSource: (value) => setState(() => viewSource = value),
+                        onReset: () async => await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized),
+                        onCreateCrossPost: () {
+                          createCrossPost(
+                            context,
+                            title: state.postView?.postView.post.name ?? '',
+                            url: state.postView?.postView.post.url,
+                            text: state.postView?.postView.post.body,
+                            postUrl: state.postView?.postView.post.apId,
+                          );
+                        },
+                        onSelectText: () {
+                          showSelectableTextModal(
+                            context,
+                            title: state.postView?.postView.post.name ?? '',
+                            text: state.postView?.postView.post.body ?? '',
+                          );
+                        },
+                        onUserChanged: () => userChanged = true,
+                        onPostChanged: (newPostViewMedia) => context.read<PostBloc>().add(GetPostEvent(postView: newPostViewMedia)),
+                      ),
+                      SliverToBoxAdapter(
+                        child: PostSubview(
+                          postViewMedia: state.postView ?? widget.initialPostViewMedia,
+                          crossPosts: state.crossPosts,
+                          viewSource: viewSource,
+                        ),
+                      ),
+                      if (state.status == PostStatus.loading)
+                        const SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else
+                        SuperSliverList.builder(
+                          itemCount: flattenedComments.length + 1,
+                          listController: listController,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index == 0) {
+                              // This is a placeholder widget to allow the comment scroller to work properly for the first comment
+                              // Note: CommentNavigatorFab indexes will be shifted by 1 to account for the placeholder widget
+                              return const SizedBox(height: 1);
                             }
 
-                            setState(() {});
+                            CommentNode commentNode = flattenedComments[index - 1];
+                            CommentView commentView = commentNode.commentView!;
+
+                            bool isCollapsed = collapsedComments.contains(commentView.comment.id);
+                            bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
+
+                            return CommentCard(
+                              commentView: commentView,
+                              replyCount: commentNode.replies.length,
+                              level: commentNode.depth,
+                              collapsed: isCollapsed,
+                              hidden: isHidden,
+                              onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
+                              onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
+                              onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
+                              onReplyEditAction: (CommentView commentView, bool isEdit) async => context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView)),
+                              onReportAction: (int commentId) => showReportCommentActionBottomSheet(context, commentId: commentId),
+                              onCollapseCommentChange: (int commentId, bool collapsed) {
+                                if (collapsed) {
+                                  collapsedComments.add(commentId);
+                                } else {
+                                  collapsedComments.remove(commentId);
+                                }
+
+                                setState(() {});
+                              },
+                            );
                           },
-                        );
-                      },
-                    ),
-                  SliverToBoxAdapter(
-                    child: state.hasReachedCommentEnd == true
-                        ? Container(
-                            key: reachedEndKey,
-                            color: theme.dividerColor.withOpacity(0.1),
-                            padding: const EdgeInsets.symmetric(vertical: 32.0),
-                            child: ScalableText(
-                              flattenedComments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,
-                              fontScale: thunderState.metadataFontSizeScale,
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.titleSmall,
-                            ),
-                          )
-                        : Visibility(
-                            visible: state.status == PostStatus.success,
-                            child: Container(
-                              height: 100.0,
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.symmetric(vertical: 16.0),
-                              child: const CircularProgressIndicator(),
-                            ),
-                          ),
+                        ),
+                      SliverToBoxAdapter(
+                        child: state.hasReachedCommentEnd == true
+                            ? Container(
+                                key: reachedEndKey,
+                                color: theme.dividerColor.withOpacity(0.1),
+                                padding: const EdgeInsets.symmetric(vertical: 32.0),
+                                child: ScalableText(
+                                  flattenedComments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,
+                                  fontScale: thunderState.metadataFontSizeScale,
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.titleSmall,
+                                ),
+                              )
+                            : Visibility(
+                                visible: state.status == PostStatus.success,
+                                child: Container(
+                                  height: 100.0,
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                  child: const CircularProgressIndicator(),
+                                ),
+                              ),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: bottomSpacerHeight)),
+                    ],
                   ),
-                  SliverToBoxAdapter(child: SizedBox(height: bottomSpacerHeight)),
+                  if (thunderState.hideTopBarOnScroll)
+                    Positioned(
+                      child: Container(
+                        height: MediaQuery.of(context).padding.top,
+                        color: theme.colorScheme.surface,
+                      ),
+                    )
                 ],
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

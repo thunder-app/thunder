@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/settings/pages/comment_appearance_settings_page.dart';
+import 'package:thunder/settings/pages/post_appearance_settings_page.dart';
+import 'package:thunder/settings/pages/theme_settings_page.dart';
 import 'package:thunder/shared/divider.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/constants.dart';
 
 class AppearanceSettingsPage extends StatelessWidget {
   final LocalSettings? settingToHighlight;
@@ -16,7 +20,6 @@ class AppearanceSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -36,10 +39,21 @@ class AppearanceSettingsPage extends StatelessWidget {
                   title: Text(l10n.theming),
                   leading: const Icon(Icons.text_fields),
                   trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => GoRouter.of(context).push(
-                    SETTINGS_APPEARANCE_THEMES_PAGE,
-                    extra: [context.read<ThunderBloc>()],
-                  ),
+                  onTap: () {
+                    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                    Navigator.of(context).push(
+                      SwipeablePageRoute(
+                        transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                        canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        builder: (context) => MultiBlocProvider(
+                          providers: [BlocProvider.value(value: thunderBloc)],
+                          child: const ThemeSettingsPage(),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -52,19 +66,41 @@ class AppearanceSettingsPage extends StatelessWidget {
                   title: Text(l10n.posts),
                   leading: const Icon(Icons.splitscreen_rounded),
                   trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => GoRouter.of(context).push(
-                    SETTINGS_APPEARANCE_POSTS_PAGE,
-                    extra: [context.read<ThunderBloc>()],
-                  ),
+                  onTap: () {
+                    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                    Navigator.of(context).push(
+                      SwipeablePageRoute(
+                        transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                        canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        builder: (context) => MultiBlocProvider(
+                          providers: [BlocProvider.value(value: thunderBloc)],
+                          child: const PostAppearanceSettingsPage(),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 ListTile(
                   title: Text(l10n.comments),
                   leading: const Icon(Icons.comment_rounded),
                   trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => GoRouter.of(context).push(
-                    SETTINGS_APPEARANCE_COMMENTS_PAGE,
-                    extra: [context.read<ThunderBloc>()],
-                  ),
+                  onTap: () {
+                    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                    Navigator.of(context).push(
+                      SwipeablePageRoute(
+                        transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                        canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                        builder: (context) => MultiBlocProvider(
+                          providers: [BlocProvider.value(value: thunderBloc)],
+                          child: const CommentAppearanceSettingsPage(),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

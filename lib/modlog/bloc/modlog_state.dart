@@ -9,6 +9,7 @@ final class ModlogState extends Equatable {
     this.communityId,
     this.userId,
     this.moderatorId,
+    this.commentId,
     this.modlogEventItems = const <ModlogEventItem>[],
     this.hasReachedEnd = false,
     this.currentPage = 1,
@@ -30,6 +31,9 @@ final class ModlogState extends Equatable {
   /// The id of the moderator to display modlog events for.
   final int? moderatorId;
 
+  /// The id of a specific comment to show in the modlog (optional)
+  final int? commentId;
+
   /// The list of modlog events
   final List<ModlogEventItem> modlogEventItems;
 
@@ -48,6 +52,7 @@ final class ModlogState extends Equatable {
     int? communityId,
     int? userId,
     int? moderatorId,
+    int? commentId,
     List<ModlogEventItem>? modlogEventItems,
     bool? hasReachedEnd,
     int? currentPage,
@@ -59,6 +64,7 @@ final class ModlogState extends Equatable {
       communityId: communityId ?? this.communityId,
       userId: userId ?? this.userId,
       moderatorId: moderatorId ?? this.moderatorId,
+      commentId: commentId ?? this.commentId,
       modlogEventItems: modlogEventItems ?? this.modlogEventItems,
       hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       currentPage: currentPage ?? this.currentPage,
@@ -68,9 +74,9 @@ final class ModlogState extends Equatable {
 
   @override
   String toString() {
-    return '''ModlogState { status: $status, modlogActionType: $modlogActionType, communityId: $communityId, userId: $userId, moderatorId: $moderatorId, modlogEventItems: ${modlogEventItems.length}, hasReachedEnd: $hasReachedEnd }''';
+    return '''ModlogState { status: $status, modlogActionType: $modlogActionType, communityId: $communityId, userId: $userId, moderatorId: $moderatorId, commentId: $commentId, modlogEventItems: ${modlogEventItems.length}, hasReachedEnd: $hasReachedEnd }''';
   }
 
   @override
-  List<dynamic> get props => [status, modlogActionType, communityId, userId, moderatorId, modlogEventItems, hasReachedEnd, currentPage, message];
+  List<dynamic> get props => [status, modlogActionType, communityId, userId, moderatorId, commentId, modlogEventItems, hasReachedEnd, currentPage, message];
 }

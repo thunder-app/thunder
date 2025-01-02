@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name.dart';
@@ -133,7 +132,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
         break;
     }
 
-    context.pop();
+    Navigator.of(context).pop();
   }
 
   IconData getIcon(GeneralQuickPostAction action) {
@@ -167,6 +166,23 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
         return postViewMedia.postView.read ? l10n.read : l10n.markAsRead;
       case GeneralQuickPostAction.hide:
         return postViewMedia.postView.hidden == true ? l10n.hidden : l10n.hide;
+    }
+  }
+
+  Color? getBackgroundColor(GeneralQuickPostAction action) {
+    final state = context.read<ThunderBloc>().state;
+
+    switch (action) {
+      case GeneralQuickPostAction.upvote:
+        return state.upvoteColor.color;
+      case GeneralQuickPostAction.downvote:
+        return state.downvoteColor.color;
+      case GeneralQuickPostAction.save:
+        return state.saveColor.color;
+      case GeneralQuickPostAction.read:
+        return state.markReadColor.color;
+      case GeneralQuickPostAction.hide:
+        return state.hideColor.color;
     }
   }
 
@@ -225,6 +241,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
                       icon: getIcon(generalQuickPostAction),
                       label: getLabel(generalQuickPostAction),
                       foregroundColor: getForegroundColor(generalQuickPostAction),
+                      backgroundColor: getBackgroundColor(generalQuickPostAction),
                       onSelected: isLoggedIn ? () => performAction(generalQuickPostAction) : null,
                     ))
                 .toList(),

@@ -47,7 +47,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
         },
         child: Stack(
           children: [
-            if (widget.getCommunityResponse.communityView.community.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.background)),
+            if (widget.getCommunityResponse.communityView.community.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.surface)),
             if (widget.getCommunityResponse.communityView.community.banner != null)
               Positioned.fill(
                 child: Row(
@@ -75,11 +75,11 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [
-                        theme.colorScheme.background,
-                        theme.colorScheme.background,
-                        theme.colorScheme.background.withOpacity(0.9),
-                        theme.colorScheme.background.withOpacity(0.6),
-                        theme.colorScheme.background.withOpacity(0.3),
+                        theme.colorScheme.surface,
+                        theme.colorScheme.surface,
+                        theme.colorScheme.surface.withOpacity(0.9),
+                        theme.colorScheme.surface.withOpacity(0.6),
+                        theme.colorScheme.surface.withOpacity(0.3),
                       ],
                     ),
                   ),
@@ -145,7 +145,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                             child: Icon(
                               Icons.info_outline_rounded,
                               size: 25,
-                              shadows: <Shadow>[Shadow(color: theme.colorScheme.background, blurRadius: 10.0), Shadow(color: theme.colorScheme.background, blurRadius: 20.0)],
+                              shadows: <Shadow>[Shadow(color: theme.colorScheme.surface, blurRadius: 10.0), Shadow(color: theme.colorScheme.surface, blurRadius: 20.0)],
                             ),
                           ),
                         ],

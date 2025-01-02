@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -90,7 +89,7 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
   void performAction(UserPostAction action) {
     switch (action) {
       case UserPostAction.viewProfile:
-        context.pop();
+        Navigator.of(context).pop();
         navigateToFeedPage(context, feedType: FeedType.user, userId: widget.postViewMedia.postView.creator.id);
         break;
       case UserPostAction.blockUser:
@@ -163,10 +162,10 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
               ),
             );
         setState(() => _userAction = UserAction.banFromCommunity);
-        dialogContext.pop();
+        Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: l10n.cancel,
-      onSecondaryButtonPressed: (context) => context.pop(),
+      onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => StatefulBuilder(
         builder: (context, setState) {
           return Column(
@@ -182,7 +181,6 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
               const SizedBox(height: 16.0),
               TextFormField(
                 decoration: InputDecoration(
-                  isDense: true,
                   border: const OutlineInputBorder(),
                   labelText: l10n.message(0),
                 ),
@@ -276,7 +274,7 @@ class _UserPostActionBottomSheetState extends State<UserPostActionBottomSheet> {
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
         if (state.status == UserStatus.success) {
-          context.pop();
+          Navigator.of(context).pop();
           if (_userAction != null) widget.onAction(_userAction!, state.personView);
           setState(() => _userAction = null);
         }
