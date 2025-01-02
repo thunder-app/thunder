@@ -1,4 +1,4 @@
-enum PermissionType { user, moderator, admin }
+enum PermissionType { all, user, moderator, admin }
 
 enum PostAction {
   /// User level post actions

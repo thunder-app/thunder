@@ -375,9 +375,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                         case CommentAction.report:
                                           widget.onReportAction(commentView.comment.id);
                                           break;
-                                        // case CommentAction.viewSource:
-                                        //   setState(() => viewSource = !viewSource);
-                                        //   break;
+                                        case CommentAction.viewSource:
+                                          setState(() => viewSource = !viewSource);
+                                          break;
                                         default:
                                           break;
                                       }

@@ -1,6 +1,8 @@
 import 'package:thunder/post/enums/post_action.dart';
 
 enum CommentAction {
+  viewSource(permissionType: PermissionType.all),
+
   /// User level comment actions
   vote(permissionType: PermissionType.user),
   save(permissionType: PermissionType.user),

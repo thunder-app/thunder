@@ -6,6 +6,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/comment/widgets/comment_comment_action_bottom_sheet.dart';
 import 'package:thunder/comment/widgets/general_comment_action_bottom_sheet.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -104,13 +105,13 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
             widget.onAction?.call(commentAction: commentAction, commentView: widget.commentView, value: value);
           },
         ),
-      // GeneralCommentAction.post => PostPostActionBottomSheet(
-      //     context: widget.context,
-      //     postViewMedia: widget.commentView,
-      //     onAction: (PostAction postAction, PostViewMedia? updatedPostViewMedia) {
-      //       widget.onAction?.call(postAction: postAction, postViewMedia: widget.commentView);
-      //     },
-      //   ),
+      GeneralCommentAction.comment => CommentCommentActionBottomSheet(
+          context: widget.context,
+          commentView: widget.commentView,
+          onAction: (CommentAction commentAction, CommentView? updatedCommentView, dynamic value) {
+            widget.onAction?.call(commentAction: commentAction, commentView: widget.commentView, value: value);
+          },
+        ),
       GeneralCommentAction.user => UserActionBottomSheet(
           context: widget.context,
           user: widget.commentView.creator,
