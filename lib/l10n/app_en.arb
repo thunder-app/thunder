@@ -669,6 +669,14 @@
   "@deleteAccountDescription": {
     "description": "Description for confirmation action to delete account"
   },
+  "deleteImageConfirmMessage": "Are you sure you want to delete this image?",
+  "@deleteImageConfirmMessage": {
+    "description": "Confirmation messages for deleting an image"
+  },
+  "deleteImageConfirmTitle": "Delete?",
+  "@deleteImageConfirmTitle": {
+    "description": "Confirmation title message for deleting an image"
+  },
   "deleteLocalDatabase": "Delete Local Database",
   "@deleteLocalDatabase": {
     "description": "Label for action to delete local database"
@@ -819,6 +827,10 @@
   "@endOfComments": {},
   "endSearch": "End Search",
   "@endSearch": {},
+  "errorDeletingImage": "There was an error deleting the image: {error}",
+  "@errorDeletingImage": {
+    "description": "Error message for deleting an image"
+  },
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
   "errorImportingAccountSettings": "There was an error importing the settings. The file might not be in the right format.",
@@ -1253,6 +1265,10 @@
   "@loadMorePlural": {},
   "loadMoreSingular": "Load {count} more reply…",
   "@loadMoreSingular": {},
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Placeholder text for loading"
+  },
   "local": "Local",
   "@local": {},
   "localNotifications": "Local Notifications",
@@ -1301,6 +1317,10 @@
   },
   "manageAccounts": "Manage Accounts",
   "@manageAccounts": {},
+  "manageMedia": "Manage Media",
+  "@manageMedia": {
+    "description": "Setting name and page title for media management"
+  },
   "markAllAsRead": "Mark all as read",
   "@markAllAsRead": {
     "description": "The mark all as read action"
@@ -1481,6 +1501,10 @@
   "@noFavoritedCommunities": {
     "description": "Message for no favorited communities on the drawer"
   },
+  "noImages": "It looks like you have not uploaded any images.",
+  "@noImages": {
+    "description": "Message for no uploaded images"
+  },
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
   "noItems": "No items",
@@ -1512,6 +1536,10 @@
   "noProfileBioSet": "No profile bio set",
   "@noProfileBioSet": {
     "description": "Message for no profile bio set"
+  },
+  "noReferencesToImage": "No posts or comments were found containing this image. However, it may be used elsewhere on the internet.",
+  "@noReferencesToImage": {
+    "description": "Message indicating media was not found on Lemmy"
   },
   "noReplies": "No replies",
   "@noReplies": {
@@ -2685,6 +2713,10 @@
   "@updateReleased": {},
   "uploadImage": "Upload image",
   "@uploadImage": {},
+  "uploadedDate": "Uploaded: {date}",
+  "@uploadedDate": {
+    "description": "Metadata for image uploads"
+  },
   "upvote": "Upvote",
   "@upvote": {
     "description": "Action for upvoting a post/comment"

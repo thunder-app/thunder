@@ -354,6 +354,7 @@ enum LocalSettings {
   accountExportSettings(
       name: 'account_export_settings', key: 'accountExportSettings', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.importExportLemmyAccountSettings),
   accountDeleteAccount(name: 'account_delete_account', key: 'accountDeleteAccount', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
+  accountManageMedia(name: 'account_manage_media', key: 'accountManageMedia', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
   debugDeleteLocalPreferences(name: 'debug_delete_local_preferences', key: 'debugDeleteLocalPreferences', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
   debugDeleteLocalDatabase(name: 'debug_delete_local_database', key: 'debugDeleteLocalDatabase', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
   debugClearCache(name: 'debug_clear_cache', key: 'debugClearCache', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
@@ -548,6 +549,7 @@ extension LocalizationExt on AppLocalizations {
       'importExportLemmyAccountSettings': importExportLemmyAccountSettings,
       'dangerZone': dangerZone,
       'accountDeleteAccount': deleteAccount,
+      'accountManageMedia': manageMedia,
       'reset': resetPreferencesAndData,
       'debugDeleteLocalPreferences': deleteLocalPreferences,
       'debugDeleteLocalDatabase': deleteLocalDatabase,
