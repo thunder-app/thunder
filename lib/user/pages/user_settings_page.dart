@@ -462,7 +462,13 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                             if (LemmyClient.instance.supportsFeature(LemmyFeature.importExportSettings)) ...[
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                child: Text(l10n.importExportSettings, style: theme.textTheme.titleMedium),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(l10n.importExportSettings, style: theme.textTheme.titleMedium),
+                                    Text(l10n.importExportLemmyAccountSettingsSubtitle),
+                                  ],
+                                ),
                               ),
                               SettingsListTile(
                                 icon: Icons.file_download_rounded,

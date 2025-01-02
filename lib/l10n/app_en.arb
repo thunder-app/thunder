@@ -901,7 +901,7 @@
   "@exportDatabaseSubtitle": {
     "description": "Subtitle of setting for exporting the db"
   },
-  "exportLemmyAccountSettingsDescription": "Export your Lemmy account settings as JSON",
+  "exportLemmyAccountSettingsDescription": "Export Lemmy account settings",
   "@exportLemmyAccountSettingsDescription": {
     "description": "Description for setting related to Lemmy account settings export"
   },
@@ -1107,6 +1107,10 @@
   "@importExportLemmyAccountSettings": {
     "description": "This is specifically used in search results to distinguish from Thunder import/export"
   },
+  "importExportLemmyAccountSettingsSubtitle": "Includes subscribed communities, blocklists, and account preferences",
+  "@importExportLemmyAccountSettingsSubtitle": {
+    "description": "Subtitle for Lemmy account settings import/export section"
+  },
   "importExportSettings": "Import/Export Settings",
   "@importExportSettings": {
     "description": "Category for settings related to import and export."
@@ -1115,7 +1119,7 @@
   "@importExportThunderSettings": {
     "description": "This is specifically used in search results to distinguish from Lemmy import/export"
   },
-  "importLemmyAccountSettingsDescription": "Import your Lemmy account settings from JSON",
+  "importLemmyAccountSettingsDescription": "Import Lemmy account settings",
   "@importLemmyAccountSettingsDescription": {
     "description": "Description for setting related to Lemmy account settings import"
   },
