@@ -1,5 +1,7 @@
 import "dart:async";
+import "dart:io";
 
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -24,6 +26,7 @@ import "package:thunder/shared/sort_picker.dart";
 import "package:thunder/thunder/bloc/thunder_bloc.dart";
 import "package:thunder/thunder/thunder_icons.dart";
 import "package:thunder/user/bloc/user_settings_bloc.dart";
+import "package:thunder/user/pages/media_management_page.dart";
 import "package:thunder/user/pages/user_settings_block_page.dart";
 import "package:thunder/user/widgets/user_indicator.dart";
 import "package:thunder/utils/bottom_sheet_list_picker.dart";
@@ -507,6 +510,44 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               setting: LocalSettings.accountDeleteAccount,
                               highlightedSetting: settingToHighlight,
                             ),
+                            if (LemmyClient.instance.supportsFeature(LemmyFeature.listMedia))
+                              SettingsListTile(
+                                icon: Icons.hide_image_rounded,
+                                description: l10n.manageMedia,
+                                widget: const SizedBox(
+                                  height: 42.0,
+                                  child: Icon(Icons.chevron_right_rounded),
+                                ),
+                                onTap: () async {
+                                  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                                  final UserSettingsBloc userSettingsBloc = context.read<UserSettingsBloc>();
+                                  final AuthBloc authBloc = context.read<AuthBloc>();
+
+                                  userSettingsBloc.add(const ListMediaEvent());
+
+                                  await Navigator.of(context).push(
+                                    SwipeablePageRoute(
+                                      transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                      backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
+                                      backGestureDetectionWidth: 45,
+                                      canOnlySwipeFromEdge: true,
+                                      builder: (otherContext) {
+                                        return MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider.value(value: userSettingsBloc),
+                                            BlocProvider.value(value: thunderBloc),
+                                            BlocProvider.value(value: authBloc),
+                                          ],
+                                          child: const MediaManagementPage(),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountManageMedia,
+                                highlightedSetting: settingToHighlight,
+                              ),
                             const SizedBox(height: 100.0),
                           ],
                         ),

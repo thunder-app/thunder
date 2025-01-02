@@ -30,6 +30,12 @@ class FeedPostCardList extends StatefulWidget {
   /// Whether or not to dim read posts. This value overrides [dimReadPosts] in [ThunderBloc]
   final bool? dimReadPosts;
 
+  /// Whether to disable swiping of posts
+  final bool disableSwiping;
+
+  /// Overrides the system setting for whether to indicate read posts
+  final bool? indicateRead;
+
   const FeedPostCardList({
     super.key,
     required this.postViewMedias,
@@ -37,6 +43,8 @@ class FeedPostCardList extends StatefulWidget {
     required this.markPostReadOnScroll,
     this.queuedForRemoval,
     this.dimReadPosts,
+    this.disableSwiping = false,
+    this.indicateRead,
   });
 
   @override
@@ -165,8 +173,9 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
                     },
                     onTap: () => setState(() => lastTappedPost = widget.postViewMedias[index].postView.post.id),
                     listingType: state.postListingType,
-                    indicateRead: dimReadPosts,
+                    indicateRead: widget.indicateRead ?? dimReadPosts,
                     isLastTapped: lastTappedPost == widget.postViewMedias[index].postView.post.id,
+                    disableSwiping: widget.disableSwiping,
                   ))
               : null,
         );
