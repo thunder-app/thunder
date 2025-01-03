@@ -368,6 +368,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<OAuthLoginAttemptPart2>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
 
       try {
@@ -401,23 +402,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           throw Exception("OAuth login failed: no code received from provider.");
         }
 
-        // TODO: This should use lemmy_api_client.
+        // TODO: dynamic provider_id.
         // Authenthicate to lemmy and get a jwt.
         // Durring this step lemmy connects to the Provider to get the user info.
-        final response = await http.post(Uri.parse('https://${state.oauthInstance}/api/v3/oauth/authenticate'),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: json.encode({
-              'code': code,
-              'oauth_provider_id': 1, // This id can be found in the site reponse.
-              'redirect_uri': redirectUri,
-            }),
-            encoding: Encoding.getByName('utf-8'));
+        LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(code: code, oauth_provider_id: 1, redirect_uri: redirectUri));
 
         // TODO: Need to add a step to set the account username.
 
-        final accessToken = jsonDecode(response.body)['jwt'] as String;
+        final accessToken = loginResponse.jwt as String;
 
         debugPrint("JWT $accessToken");
 
