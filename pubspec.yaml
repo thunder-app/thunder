@@ -111,8 +111,6 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-    - "assets/localhost.crt"
-    - "assets/localhost.key"
     - "assets/logo.png"
     - "assets/logo_monochrome.png"
     - "assets/logo_android.png"
