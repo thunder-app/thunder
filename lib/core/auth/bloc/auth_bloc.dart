@@ -6,7 +6,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';

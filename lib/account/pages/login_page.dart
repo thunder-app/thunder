@@ -20,10 +20,6 @@ import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
-import 'dart:convert' show jsonDecode;
-import 'package:http/http.dart' as http;
-
 class LoginPage extends StatefulWidget {
   final VoidCallback popRegister;
   final bool anonymous;
