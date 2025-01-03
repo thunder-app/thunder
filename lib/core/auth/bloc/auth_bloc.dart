@@ -197,22 +197,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<OAuthLoginAttemptPart1>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
+      String instance = event.instance;
+      ProviderView provider = event.provider;
 
       try {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
 
-        String instance = event.instance;
         if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
-
         lemmyClient.changeBaseUrl(instance);
-        LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-        ProviderView provider = event.provider;
-        debugPrint(provider.toString());
-        var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
-        var providerId = provider.id;
 
         // Build oauth provider url.
+        var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
         String redirectUri = "https://thunderapp.dev/oauth/callback"; // This must end in /oauth/callback.
         String oauthState = const Uuid().v4();
         final url = Uri.https(authorizationEndpoint.host, authorizationEndpoint.path, {
@@ -222,8 +217,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           'scope': provider.scopes,
           'state': oauthState,
         });
-
-        debugPrint("URL $url");
 
         // Present the login dialog to the user.
         if (!await launchUrl(url)) {
@@ -248,27 +241,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LemmyClient lemmyClient = LemmyClient.instance;
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
+      String redirectUri = "https://thunderapp.dev/oauth/callback";
+      String providerResponse = event.link;
 
       try {
-        debugPrint("PART2 ${event.link}");
-
-        LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-        String redirectUri = "https://thunderapp.dev/oauth/callback";
-        String providerResponse = event.link;
-
-        if (state.oauthState == null) {
-          throw Exception("OAuth login failed: oauthState is null.");
+        if (state.oauthState == null || state.oauthInstance == null || state.oauthProviderId == null) {
+          throw Exception("OAuth login failed: oauthState, oauthInstance, or oauthProviderId is null.");
         }
-
-        if (state.oauthInstance == null) {
-          throw Exception("OAuth login failed: oauthInstance is null.");
-        }
-
-        if (state.oauthProviderId == null) {
-          throw Exception("OAuth login failed: oauthProviderId is null.");
-        }
-
-        debugPrint("RESULT $providerResponse");
 
         // oauthProviderState must match oauthClientState to ensure the response came from the Provider.
         String oauthProviderState = Uri.parse(providerResponse).queryParameters['state'] ?? "failed";
@@ -278,22 +257,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // Extract the code from the response.
         String code = Uri.parse(providerResponse).queryParameters['code'] ?? "failed";
-        debugPrint("CODE $code");
-
         if (code == "failed") {
           throw Exception("OAuth login failed: no code received from provider.");
         }
 
-        // TODO: dynamic provider_id.
-        // Authenthicate to lemmy and get a jwt.
+        // Authenthicate to lemmy instance and get a jwt.
         // Durring this step lemmy connects to the Provider to get the user info.
         LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(code: code, oauth_provider_id: state.oauthProviderId ?? -1, redirect_uri: redirectUri));
 
         // TODO: Need to add a step to set the account username.
 
         final accessToken = loginResponse.jwt as String;
-
-        debugPrint("JWT $accessToken");
 
         GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: accessToken));
 
