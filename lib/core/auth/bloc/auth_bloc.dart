@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -14,8 +13,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:path/path.dart' as path;
-import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
 
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/account/models/account.dart';
@@ -196,12 +193,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    /// This event should be triggered when the user logs in with oauth.
-    on<OAuthLoginAttemptPart1>((event, emit) async {
+    /// This should only be used for development.
+    on<OAuthLoginAttemptDesktop>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
       HttpServer? server;
-      bool dev = false;
 
       try {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
@@ -217,7 +213,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
 
         // Build oauth provider url.
-        String redirectUri = dev ? "https://localhost:40000/oauth/callback" : "https://thunderapp.dev/oauth/callback"; // This must end in /oauth/callback.
+        String redirectUri = "https://localhost:40000/oauth/callback"; // This must end in /oauth/callback.
         String oauthState = const Uuid().v4();
         final url = Uri.https(authorizationEndpoint.host, authorizationEndpoint.path, {
           'response_type': 'code',
@@ -227,35 +223,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           'state': oauthState,
         });
 
-        debugPrint("URL $url");
-
         // Start a localhost https server to receive callback.  This is just for development.
-        // ignore: dead_code
-        if (dev) {
-          var chain = utf8.encode(await rootBundle.loadString('assets/localhost.crt'));
-          var key = utf8.encode(await rootBundle.loadString('assets/localhost.key'));
-          var serverContext = SecurityContext();
-          serverContext.useCertificateChainBytes(chain);
-          serverContext.usePrivateKeyBytes(key);
-          server = await HttpServer.bindSecure("localhost", 40000, serverContext);
-        }
+        var chain = utf8.encode(await rootBundle.loadString('assets/localhost.crt'));
+        var key = utf8.encode(await rootBundle.loadString('assets/localhost.key'));
+        var serverContext = SecurityContext();
+        serverContext.useCertificateChainBytes(chain);
+        serverContext.usePrivateKeyBytes(key);
+        server = await HttpServer.bindSecure("localhost", 40000, serverContext);
 
         // Present the dialog to the user.
-        // TODO: Probably remove FlutterWebAuth2 its just being used to open the provider page.
-        debugPrint("REDIRECT");
-
         final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "https");
-        debugPrint("REDIRECT DONE");
 
-        emit(state.copyWith(oauthState: oauthState, oauthInstance: instance));
-        /*
         // Wait for response from Provider.
-        // ignore: dead_code
-        var providerResponse = await server!.first;
+        var providerResponse = await server.first;
         await server.close();
         String providerResponseString = providerResponse.uri.toString();
-
-        debugPrint("RESULT $providerResponseString");
 
         // oauthProviderState must match oauthClientState to ensure the response came from the Provider.
         String oauthProviderState = Uri.parse(providerResponseString).queryParameters['state'] ?? "failed";
@@ -265,7 +247,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // Extract the code from the response.
         String code = Uri.parse(providerResponseString).queryParameters['code'] ?? "failed";
-        debugPrint("CODE $code");
 
         if (code == "failed") {
           throw Exception("OAuth login failed: no code received from provider.");
@@ -288,8 +269,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // TODO: Need to add a step to set the account username.
 
         final accessToken = jsonDecode(response.body)['jwt'] as String;
-
-        debugPrint("JWT $accessToken");
 
         GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: accessToken));
 
@@ -321,7 +300,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
 
         return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
-        */
       } on LemmyApiException catch (e) {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       } catch (e) {
@@ -336,11 +314,54 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    @override
-    void onChange(Change<AuthState> change) {
-      super.onChange(change);
-      debugPrint("CHANGE $change");
-    }
+    /// This event should be triggered when the user logs in with oauth.
+    on<OAuthLoginAttemptPart1>((event, emit) async {
+      LemmyClient lemmyClient = LemmyClient.instance;
+      String originalBaseUrl = lemmyClient.lemmyApiV3.host;
+
+      try {
+        emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
+
+        String instance = event.instance;
+        if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
+
+        lemmyClient.changeBaseUrl(instance);
+        LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+        ProviderView provider = event.provider;
+        debugPrint(provider.toString());
+        var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
+
+        // Build oauth provider url.
+        String redirectUri = "https://thunderapp.dev/oauth/callback"; // This must end in /oauth/callback.
+        String oauthState = const Uuid().v4();
+        final url = Uri.https(authorizationEndpoint.host, authorizationEndpoint.path, {
+          'response_type': 'code',
+          'client_id': provider.clientId,
+          'redirect_uri': redirectUri,
+          'scope': provider.scopes,
+          'state': oauthState,
+        });
+
+        debugPrint("URL $url");
+
+        // Present the dialog to the user.
+        // TODO: Probably remove FlutterWebAuth2 its just being used to open the provider page.
+        final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "https");
+
+        return emit(state.copyWith(oauthState: oauthState, oauthInstance: instance));
+      } on LemmyApiException catch (e) {
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
+      } catch (e) {
+        try {
+          // Restore the original baseUrl
+          lemmyClient.changeBaseUrl(originalBaseUrl);
+        } catch (e, s) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString()));
+        }
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
+      }
+    });
 
     on<OAuthLoginAttemptPart2>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
