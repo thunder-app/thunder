@@ -20,6 +20,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 part 'auth_event.dart';
@@ -231,8 +232,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         serverContext.usePrivateKeyBytes(key);
         server = await HttpServer.bindSecure("localhost", 40000, serverContext);
 
-        // Present the dialog to the user.
-        final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "https");
+        // Present the login dialog to the user.
+        if (!await launchUrl(url)) {
+          throw Exception('Could not launch $url');
+        }
 
         // Wait for response from Provider.
         var providerResponse = await server.first;
@@ -254,7 +257,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // TODO: This should use lemmy_api_client.
         // Authenthicate to lemmy and get a jwt.
-        // Durring this step lemmy connects to the Provider to get the user info.
+        // During this step lemmy connects to the Provider to get the user info.
         final response = await http.post(Uri.parse('https://$instance/api/v3/oauth/authenticate'),
             headers: {
               'Content-Type': 'application/json',
@@ -345,9 +348,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         debugPrint("URL $url");
 
-        // Present the dialog to the user.
-        // TODO: Probably remove FlutterWebAuth2 its just being used to open the provider page.
-        final result = FlutterWebAuth2.authenticate(url: url.toString(), callbackUrlScheme: "https");
+        // Present the login dialog to the user.
+        if (!await launchUrl(url)) {
+          throw Exception('Could not launch $url');
+        }
 
         return emit(state.copyWith(oauthState: oauthState, oauthInstance: instance));
       } on LemmyApiException catch (e) {
