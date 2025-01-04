@@ -173,7 +173,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               if (context.mounted) {
                 if (acceptedContentWarning) {
                   // Do another login attempt, this time without the content warning
-                  _handleLogin(showContentWarning: false);
+                  if (state.oauthLink == null) {
+                    _handleLogin(showContentWarning: false);
+                  } else {
+                    _handleOAuthLoginPart2(link: state.oauthLink!, showContentWarning: false);
+                  }
                 } else {
                   // Cancel the login
                   context.read<AuthBloc>().add(const CancelLoginAttempt());
@@ -449,7 +453,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                       onPressed: (!isLoading && _instanceTextEditingController.text.isNotEmpty)
                           ? () {
-                              _handleOAuthLogin(provider: provider);
+                              _handleOAuthLoginPart1(provider: provider);
                             }
                           : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
                               ? () => _addAnonymousInstance(context)
@@ -487,13 +491,24 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         );
   }
 
-  void _handleOAuthLogin({required ProviderView provider, bool showContentWarning = true}) {
+  void _handleOAuthLoginPart1({required ProviderView provider, bool showContentWarning = true}) {
     TextInput.finishAutofillContext();
     // Perform oauth login authentication.
     context.read<AuthBloc>().add(
           OAuthLoginAttemptPart1(
             instance: _instanceTextEditingController.text.trim(),
             provider: provider,
+            showContentWarning: showContentWarning,
+          ),
+        );
+  }
+
+  void _handleOAuthLoginPart2({required String link, bool showContentWarning = true}) {
+    TextInput.finishAutofillContext();
+    // Perform oauth login authentication.
+    context.read<AuthBloc>().add(
+          OAuthLoginAttemptPart2(
+            link: link,
             showContentWarning: showContentWarning,
           ),
         );

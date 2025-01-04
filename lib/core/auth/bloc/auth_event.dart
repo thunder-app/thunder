@@ -43,13 +43,19 @@ class OAuthLoginAttemptPart1 extends AuthEvent {
 /// This event is responsible for login authentication and handling related errors.
 class OAuthLoginAttemptPart2 extends AuthEvent {
   final String link;
+  final bool showContentWarning;
 
-  const OAuthLoginAttemptPart2({required this.link});
+  const OAuthLoginAttemptPart2({required this.link, this.showContentWarning = true});
 }
 
 /// Cancels a login attempt by emitting the `failure` state.
 class CancelLoginAttempt extends AuthEvent {
   const CancelLoginAttempt();
+}
+
+/// Cancels a login attempt by emitting the `failure` state.
+class ShowContentWarning extends AuthEvent {
+  const ShowContentWarning();
 }
 
 /// TODO: Consolidate logic to have adding accounts (for both authenticated and anonymous accounts) placed here
