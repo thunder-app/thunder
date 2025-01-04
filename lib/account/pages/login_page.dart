@@ -487,14 +487,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         );
   }
 
-  // TODO: Set showContentWarning default value to true.  Need to relogin after.
-  void _handleOAuthLogin({required ProviderView provider, bool showContentWarning = false}) {
+  void _handleOAuthLogin({required ProviderView provider, bool showContentWarning = true}) {
     TextInput.finishAutofillContext();
-    // Perform login authentication
+    // Perform oauth login authentication.
     context.read<AuthBloc>().add(
           OAuthLoginAttemptPart1(
             instance: _instanceTextEditingController.text.trim(),
             provider: provider,
+            showContentWarning: showContentWarning,
           ),
         );
   }

@@ -201,8 +201,7 @@ Future<GetInstanceInfoResponse> getInstanceInfo(String? url, {int? id, Duration?
   }
 
   try {
-    // TODO: need to remove tls and debug args, this is just for testing.
-    final site = await LemmyApiV3(url!, tls: true, debug: true).run(const GetSite()).timeout(timeout ?? const Duration(seconds: 5));
+    final site = await LemmyApiV3(url!).run(const GetSite()).timeout(timeout ?? const Duration(seconds: 5));
     return GetInstanceInfoResponse(
       success: true,
       icon: site.siteView.site.icon,
