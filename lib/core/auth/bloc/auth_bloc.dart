@@ -258,7 +258,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // Authenthicate to lemmy instance and get a jwt.
         // Durring this step lemmy connects to the Provider to get the user info.
-        if (event.showContentWarning) {}
         LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(code: code, oauth_provider_id: state.oauthProvider!.id, redirect_uri: redirectUri));
 
         // TODO: Need to add a step to set the account username on the first login.
@@ -268,11 +267,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
 
         GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: loginResponse.jwt));
-
-        // TODO: Login fails when this is uncommented. Have to get this working.
-        if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
-          return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning, oauthState: state.oauthState, oauthLink: providerResponse));
-        }
 
         // Create a new account in the database
         Account? account = Account(
@@ -284,7 +278,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           index: -1,
         );
 
-        account = await Account.insertAccount(account);
+        // Save account to AuthBlock state and show the content warning.
+        if (getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
+          return emit(state.copyWith(
+              status: AuthStatus.oauthContentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning, oauthState: state.oauthState, oauthLink: providerResponse, tempAccount: account));
+        }
+      } on LemmyApiException catch (e) {
+        return emit(
+            state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null, tempAccount: null));
+      } catch (e) {
+        try {
+          // Restore the original baseUrl
+          lemmyClient.changeBaseUrl(originalBaseUrl);
+        } catch (e, s) {
+          return emit(
+              state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString(), oauthState: null, oauthInstance: null, oauthProvider: null, tempAccount: null));
+        }
+        return emit(
+            state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null, tempAccount: null));
+      }
+    });
+
+    on<AddAccount>((event, emit) async {
+      try {
+        if (state.tempAccount == null) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
+        }
+
+        Account? account = await Account.insertAccount(state.tempAccount!);
+        emit(state.copyWith(tempAccount: null));
 
         if (account == null) {
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
@@ -294,32 +316,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
         prefs.setString('active_profile_id', account.id);
 
-        bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
-
         return emit(state.copyWith(
             status: AuthStatus.success,
             account: account,
             isLoggedIn: true,
-            downvotesEnabled: downvotesEnabled,
-            getSiteResponse: getSiteResponse,
+            //downvotesEnabled: downvotesEnabled,
+            //getSiteResponse: getSiteResponse,
             oauthState: null,
             oauthInstance: null,
             oauthProvider: null));
-      } on LemmyApiException catch (e) {
-        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null));
       } catch (e) {
-        try {
-          // Restore the original baseUrl
-          lemmyClient.changeBaseUrl(originalBaseUrl);
-        } catch (e, s) {
-          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString(), oauthState: null, oauthInstance: null, oauthProvider: null));
-        }
-        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null));
+        return emit(state.copyWith(status: AuthStatus.failure, tempAccount: null, account: null, isLoggedIn: false));
       }
     });
 
     on<CancelLoginAttempt>((event, emit) async {
-      return emit(state.copyWith(status: AuthStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled));
+      return emit(state.copyWith(status: AuthStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled, tempAccount: null));
     });
 
     /// When we log out of all accounts, clear the instance information

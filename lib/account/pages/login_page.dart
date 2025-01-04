@@ -173,11 +173,31 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               if (context.mounted) {
                 if (acceptedContentWarning) {
                   // Do another login attempt, this time without the content warning
-                  if (state.oauthLink == null) {
-                    _handleLogin(showContentWarning: false);
-                  } else {
-                    _handleOAuthLoginPart2(link: state.oauthLink!, showContentWarning: false);
-                  }
+                  _handleLogin(showContentWarning: false);
+                } else {
+                  // Cancel the login
+                  context.read<AuthBloc>().add(const CancelLoginAttempt());
+                }
+              }
+            } else if (state.status == AuthStatus.oauthContentWarning) {
+              bool acceptedContentWarning = false;
+
+              await showThunderDialog<void>(
+                context: context,
+                title: l10n.contentWarning,
+                contentText: state.contentWarning,
+                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                secondaryButtonText: l10n.decline,
+                onPrimaryButtonPressed: (dialogContext, _) async {
+                  Navigator.of(dialogContext).pop();
+                  acceptedContentWarning = true;
+                },
+                primaryButtonText: l10n.accept,
+              );
+
+              if (context.mounted) {
+                if (acceptedContentWarning) {
+                  context.read<AuthBloc>().add(const AddAccount());
                 } else {
                   // Cancel the login
                   context.read<AuthBloc>().add(const CancelLoginAttempt());
@@ -498,17 +518,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           OAuthLoginAttemptPart1(
             instance: _instanceTextEditingController.text.trim(),
             provider: provider,
-            showContentWarning: showContentWarning,
-          ),
-        );
-  }
-
-  void _handleOAuthLoginPart2({required String link, bool showContentWarning = true}) {
-    TextInput.finishAutofillContext();
-    // Perform oauth login authentication.
-    context.read<AuthBloc>().add(
-          OAuthLoginAttemptPart2(
-            link: link,
             showContentWarning: showContentWarning,
           ),
         );

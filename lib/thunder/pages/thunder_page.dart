@@ -547,6 +547,8 @@ class _ThunderState extends State<Thunder> {
                             ),
                           );
                         case AuthStatus.contentWarning:
+                        case AuthStatus.oauthContentWarning:
+                        case AuthStatus.oauthCreateUsername:
                         case AuthStatus.success:
                           Version? version = thunderBlocState.version;
                           bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;

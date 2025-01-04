@@ -1,12 +1,13 @@
 part of 'auth_bloc.dart';
 
-enum AuthStatus { initial, loading, success, failure, failureCheckingInstance, contentWarning }
+enum AuthStatus { initial, loading, success, failure, failureCheckingInstance, contentWarning, oauthContentWarning, oauthCreateUsername }
 
 class AuthState extends Equatable {
   const AuthState({
     this.status = AuthStatus.initial,
     this.isLoggedIn = false,
     this.errorMessage,
+    this.tempAccount,
     this.account,
     this.downvotesEnabled = true,
     this.getSiteResponse,
@@ -22,6 +23,7 @@ class AuthState extends Equatable {
   final bool isLoggedIn;
   final String? errorMessage;
   final Account? account;
+  final Account? tempAccount;
   final bool downvotesEnabled;
   final GetSiteResponse? getSiteResponse;
   final bool reload;
@@ -35,6 +37,7 @@ class AuthState extends Equatable {
     AuthStatus? status,
     bool? isLoggedIn,
     String? errorMessage,
+    Account? tempAccount,
     Account? account,
     bool? downvotesEnabled,
     GetSiteResponse? getSiteResponse,
@@ -46,20 +49,22 @@ class AuthState extends Equatable {
     ProviderView? oauthProvider,
   }) {
     return AuthState(
-        status: status ?? this.status,
-        isLoggedIn: isLoggedIn ?? false,
-        errorMessage: errorMessage,
-        account: account,
-        downvotesEnabled: downvotesEnabled ?? this.downvotesEnabled,
-        getSiteResponse: getSiteResponse ?? this.getSiteResponse,
-        reload: reload ?? this.reload,
-        contentWarning: contentWarning,
-        oauthInstance: oauthInstance ?? this.oauthInstance,
-        oauthState: oauthState ?? this.oauthInstance,
-        oauthLink: oauthLink ?? this.oauthLink,
-        oauthProvider: oauthProvider ?? this.oauthProvider);
+      status: status ?? this.status,
+      isLoggedIn: isLoggedIn ?? false,
+      errorMessage: errorMessage,
+      tempAccount: tempAccount ?? this.tempAccount,
+      account: account,
+      downvotesEnabled: downvotesEnabled ?? this.downvotesEnabled,
+      getSiteResponse: getSiteResponse ?? this.getSiteResponse,
+      reload: reload ?? this.reload,
+      contentWarning: contentWarning,
+      oauthInstance: oauthInstance ?? this.oauthInstance,
+      oauthState: oauthState ?? this.oauthInstance,
+      oauthLink: oauthLink ?? this.oauthLink,
+      oauthProvider: oauthProvider ?? this.oauthProvider,
+    );
   }
 
   @override
-  List<Object?> get props => [status, isLoggedIn, errorMessage, account, downvotesEnabled, getSiteResponse, reload, contentWarning, oauthInstance, oauthState, oauthLink, oauthProvider];
+  List<Object?> get props => [status, isLoggedIn, errorMessage, tempAccount, account, downvotesEnabled, getSiteResponse, reload, contentWarning, oauthInstance, oauthState, oauthLink, oauthProvider];
 }
