@@ -265,22 +265,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Durring this step lemmy connects to the Provider to get the user info.
         LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(code: code, oauth_provider_id: state.oauthProviderId ?? -1, redirect_uri: redirectUri));
 
-        // TODO: Need to add a step to set the account username.
+        // TODO: Need to add a step to set the account username on the first login.
 
-        final accessToken = loginResponse.jwt as String;
+        if (loginResponse.jwt == null) {
+          throw Exception("OAuth login failed: no jwt received from lemmy instance.");
+        }
 
-        GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: accessToken));
+        GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: loginResponse.jwt));
 
         // TODO: Login fails when this is uncommented. Have to get this working.
-        //if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
-        //  return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
-        //}
+        // if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
+        //   return emit(state.copyWith(status: AuthStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
+        // }
 
         // Create a new account in the database
         Account? account = Account(
           id: '',
           username: getSiteResponse.myUser?.localUserView.person.name,
-          jwt: accessToken,
+          jwt: loginResponse.jwt,
           instance: state.oauthInstance ?? "",
           userId: getSiteResponse.myUser?.localUserView.person.id,
           index: -1,
