@@ -16,6 +16,7 @@ class AuthState extends Equatable {
     this.oauthInstance,
     this.oauthState,
     this.oauthLink,
+    this.oauthJwt,
     this.oauthProvider,
   });
 
@@ -31,6 +32,7 @@ class AuthState extends Equatable {
   final String? oauthInstance;
   final String? oauthState;
   final String? oauthLink;
+  final String? oauthJwt;
   final ProviderView? oauthProvider;
 
   AuthState copyWith({
@@ -46,6 +48,7 @@ class AuthState extends Equatable {
     String? oauthInstance,
     String? oauthState,
     String? oauthLink,
+    String? oauthJwt,
     ProviderView? oauthProvider,
   }) {
     return AuthState(
@@ -61,10 +64,26 @@ class AuthState extends Equatable {
       oauthInstance: oauthInstance ?? this.oauthInstance,
       oauthState: oauthState ?? this.oauthInstance,
       oauthLink: oauthLink ?? this.oauthLink,
+      oauthJwt: oauthJwt ?? oauthJwt,
       oauthProvider: oauthProvider ?? this.oauthProvider,
     );
   }
 
   @override
-  List<Object?> get props => [status, isLoggedIn, errorMessage, tempAccount, account, downvotesEnabled, getSiteResponse, reload, contentWarning, oauthInstance, oauthState, oauthLink, oauthProvider];
+  List<Object?> get props => [
+        status,
+        isLoggedIn,
+        errorMessage,
+        tempAccount,
+        account,
+        downvotesEnabled,
+        getSiteResponse,
+        reload,
+        contentWarning,
+        oauthInstance,
+        oauthState,
+        oauthLink,
+        oauthJwt,
+        oauthProvider,
+      ];
 }

@@ -29,21 +29,25 @@ class LoginAttempt extends AuthEvent {
   const LoginAttempt({required this.username, required this.password, required this.instance, this.totp = "", this.showContentWarning = true});
 }
 
-/// The [OAuthLoginAttemptPart1] event should be triggered whenever the user attempts to log in with OAuth.
+/// The [OAuthLoginAttempt] event should be triggered whenever the user attempts to log in with OAuth.
 /// This event is responsible for login authentication and handling related errors.
-class OAuthLoginAttemptPart1 extends AuthEvent {
+class OAuthLoginAttempt extends AuthEvent {
   final String instance;
   final ProviderView provider;
   final bool showContentWarning;
 
-  const OAuthLoginAttemptPart1({required this.instance, required this.provider, this.showContentWarning = true});
+  const OAuthLoginAttempt({required this.instance, required this.provider, this.showContentWarning = true});
 }
 
-/// The [OAuthLoginAttemptPart2] event should be triggered whenever the user attempts to log in with OAuth.
+/// The [OAuthGetJwt] event should be triggered whenever the user attempts to log in with OAuth.
 /// This event is responsible for login authentication and handling related errors.
-class OAuthLoginAttemptPart2 extends AuthEvent {
+class OAuthGetJwt extends AuthEvent {
   final String link;
-  const OAuthLoginAttemptPart2({required this.link});
+  const OAuthGetJwt({required this.link});
+}
+
+class OAuthCreateAccount extends AuthEvent {
+  const OAuthCreateAccount();
 }
 
 class AddAccount extends AuthEvent {

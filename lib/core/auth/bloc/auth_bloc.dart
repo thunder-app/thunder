@@ -188,8 +188,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    /// This event should be triggered when the user logs in with oauth.
-    on<OAuthLoginAttemptPart1>((event, emit) async {
+    /// Log in with OAuth Provider to get a code.
+    on<OAuthLoginAttempt>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
       String instance = event.instance;
@@ -232,7 +232,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    on<OAuthLoginAttemptPart2>((event, emit) async {
+    on<OAuthGetJwt>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
@@ -260,29 +260,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Durring this step lemmy connects to the Provider to get the user info.
         LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(code: code, oauth_provider_id: state.oauthProvider!.id, redirect_uri: redirectUri));
 
-        // TODO: Need to add a step to set the account username on the first login.
-
         if (loginResponse.jwt == null) {
           throw Exception("OAuth login failed: no jwt received from lemmy instance.");
         }
 
-        GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: loginResponse.jwt));
-
-        // Create a new account in the database
-        Account? account = Account(
-          id: '',
-          username: getSiteResponse.myUser?.localUserView.person.name,
-          jwt: loginResponse.jwt,
-          instance: state.oauthInstance ?? "",
-          userId: getSiteResponse.myUser?.localUserView.person.id,
-          index: -1,
-        );
-
-        // Save account to AuthBlock state and show the content warning.
-        if (getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
-          return emit(state.copyWith(
-              status: AuthStatus.oauthContentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning, oauthState: state.oauthState, oauthLink: providerResponse, tempAccount: account));
-        }
+        return emit(state.copyWith(status: AuthStatus.oauthCreateUsername, oauthJwt: loginResponse.jwt));
       } on LemmyApiException catch (e) {
         return emit(
             state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null, tempAccount: null));
@@ -299,6 +281,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
+    /// Adds the tempAccount and sets it as the active account.
+    on<OAuthCreateAccount>((event, emit) async {
+      LemmyClient lemmyClient = LemmyClient.instance;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      try {
+        if (state.oauthJwt == null) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
+        }
+
+        // TODO: Need to add a step to set the account username on the first login.
+        GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: state.oauthJwt));
+
+        // Create a new account in the database
+        Account? account = Account(
+          id: '',
+          username: getSiteResponse.myUser?.localUserView.person.name,
+          jwt: state.oauthJwt,
+          instance: state.oauthInstance ?? "",
+          userId: getSiteResponse.myUser?.localUserView.person.id,
+          index: -1,
+        );
+
+        // Save account to AuthBlock state and show the content warning.
+        if (getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
+          return emit(state.copyWith(status: AuthStatus.oauthContentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning, oauthState: state.oauthState, tempAccount: account));
+        }
+      } catch (e) {
+        return emit(state.copyWith(status: AuthStatus.failure, tempAccount: null, account: null, isLoggedIn: false));
+      }
+    });
+
+    /// Adds the tempAccount and sets it as the active account.
     on<AddAccount>((event, emit) async {
       try {
         if (state.tempAccount == null) {

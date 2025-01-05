@@ -203,6 +203,30 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   context.read<AuthBloc>().add(const CancelLoginAttempt());
                 }
               }
+            } else if (state.status == AuthStatus.oauthCreateUsername) {
+              bool completedUsername = false;
+
+              await showThunderDialog<void>(
+                context: context,
+                title: "Pick your username",
+                contentText: "Pick your username",
+                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                secondaryButtonText: l10n.cancel,
+                onPrimaryButtonPressed: (dialogContext, _) async {
+                  Navigator.of(dialogContext).pop();
+                  completedUsername = true;
+                },
+                primaryButtonText: l10n.accept,
+              );
+
+              if (context.mounted) {
+                if (completedUsername) {
+                  context.read<AuthBloc>().add(const OAuthCreateAccount());
+                } else {
+                  // Cancel the login
+                  context.read<AuthBloc>().add(const CancelLoginAttempt());
+                }
+              }
             }
           },
         ),
@@ -515,7 +539,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     TextInput.finishAutofillContext();
     // Perform oauth login authentication.
     context.read<AuthBloc>().add(
-          OAuthLoginAttemptPart1(
+          OAuthLoginAttempt(
             instance: _instanceTextEditingController.text.trim(),
             provider: provider,
             showContentWarning: showContentWarning,
