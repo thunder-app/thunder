@@ -205,6 +205,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               }
             } else if (state.status == AuthStatus.oauthSignUp) {
               bool completedSignUp = false;
+              String? username;
 
               await showThunderDialog<void>(
                 context: context,
@@ -215,13 +216,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 onPrimaryButtonPressed: (dialogContext, _) async {
                   Navigator.of(dialogContext).pop();
                   completedSignUp = true;
+                  username = "abcabcabc";
                 },
                 primaryButtonText: l10n.accept,
               );
 
               if (context.mounted) {
                 if (completedSignUp) {
-                  context.read<AuthBloc>().add(const OAuthCreateAccount());
+                  context.read<AuthBloc>().add(OAuthLoginAttempt(username: username));
                 } else {
                   // Cancel the login
                   context.read<AuthBloc>().add(const CancelLoginAttempt());

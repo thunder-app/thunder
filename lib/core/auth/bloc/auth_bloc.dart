@@ -192,8 +192,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<OAuthLoginAttempt>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
-      String instance = event.instance;
-      ProviderView provider = event.provider;
+      String instance = event.instance ?? state.oauthInstance!;
+      ProviderView provider = event.provider ?? state.oauthProvider!;
 
       try {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
@@ -218,11 +218,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           throw Exception('Could not launch $url');
         }
 
-        return emit(state.copyWith(oauthState: oauthState, oauthInstance: instance, oauthProvider: provider));
+        return emit(state.copyWith(oauthState: oauthState, oauthInstance: instance, oauthProvider: provider, oauthUsername: event.username));
       } on LemmyApiException catch (e) {
-        // TODO: I think this is the right place to Sign Up and Create a username.
-        // I think the first login will fail which will let you know you need to create a username.
-        // I think there will be an exception somewhere else if your application is waiting for approval.
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null));
       } catch (e) {
         try {
@@ -235,12 +232,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    on<OAuthGetJwt>((event, emit) async {
+    // This is triggered by app_link callback.
+    on<OAuthLoginAttemptPart2>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
       String redirectUri = "https://thunderapp.dev/oauth/callback";
-      String providerResponse = event.link;
+      String providerResponse = event.link ?? state.oauthLink!;
+      String instance = state.oauthInstance!;
+      String? username = event.username ?? state.oauthUsername;
+      emit(state.copyWith(oauthLink: providerResponse));
+
+      if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
+      lemmyClient.changeBaseUrl(instance);
 
       try {
         if (state.oauthState == null || state.oauthInstance == null || state.oauthProvider == null) {
@@ -259,36 +263,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           throw Exception("OAuth login failed: no code received from provider.");
         }
 
+        // TODO: I think there will be an exception somewhere else if your application is waiting for approval.
+
         // Authenthicate to lemmy instance and get a jwt.
         // Durring this step lemmy connects to the Provider to get the user info.
-        LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(code: code, oauth_provider_id: state.oauthProvider!.id, redirect_uri: redirectUri));
+        // TODO: Some reason I can't call this 2 times in a row.
+        LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(
+          username: username,
+          code: code,
+          oauth_provider_id: state.oauthProvider!.id,
+          redirect_uri: redirectUri,
+        ));
 
         if (loginResponse.jwt == null) {
           throw Exception("OAuth login failed: no jwt received from lemmy instance.");
         }
 
-        return emit(state.copyWith(status: AuthStatus.oauthSignUp, oauthJwt: loginResponse.jwt));
-      } on LemmyApiException catch (e) {
-        return emit(
-            state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null, tempAccount: null));
-      } catch (e) {
-        try {
-          // Restore the original baseUrl
-          lemmyClient.changeBaseUrl(originalBaseUrl);
-        } catch (e, s) {
-          return emit(
-              state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString(), oauthState: null, oauthInstance: null, oauthProvider: null, tempAccount: null));
-        }
-        return emit(
-            state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null, tempAccount: null));
-      }
-    });
+        emit(state.copyWith(oauthJwt: loginResponse.jwt, oauthLink: null));
 
-    /// Create the tempAccount
-    on<OAuthCreateAccount>((event, emit) async {
-      LemmyClient lemmyClient = LemmyClient.instance;
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      try {
         if (state.oauthJwt == null) {
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
         }
@@ -309,8 +301,50 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
           return emit(state.copyWith(status: AuthStatus.oauthContentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning, oauthState: state.oauthState, tempAccount: account));
         }
+      } on LemmyApiException catch (e) {
+        if (e.message == 'registration_username_required') {
+          return emit(state.copyWith(status: AuthStatus.oauthSignUp, oauthState: state.oauthState));
+        } else {
+          return emit(state.copyWith(
+            status: AuthStatus.failure,
+            account: null,
+            isLoggedIn: false,
+            errorMessage: e.toString(),
+            oauthLink: null,
+            oauthState: null,
+            oauthInstance: null,
+            oauthProvider: null,
+            tempAccount: null,
+          ));
+        }
       } catch (e) {
-        return emit(state.copyWith(status: AuthStatus.failure, tempAccount: null, account: null, isLoggedIn: false));
+        try {
+          // Restore the original baseUrl
+          lemmyClient.changeBaseUrl(originalBaseUrl);
+        } catch (e, s) {
+          return emit(state.copyWith(
+            status: AuthStatus.failure,
+            account: null,
+            isLoggedIn: false,
+            errorMessage: s.toString(),
+            oauthLink: null,
+            oauthState: null,
+            oauthInstance: null,
+            oauthProvider: null,
+            tempAccount: null,
+          ));
+        }
+        return emit(state.copyWith(
+          status: AuthStatus.failure,
+          account: null,
+          isLoggedIn: false,
+          errorMessage: e.toString(),
+          oauthLink: null,
+          oauthState: null,
+          oauthInstance: null,
+          oauthProvider: null,
+          tempAccount: null,
+        ));
       }
     });
 

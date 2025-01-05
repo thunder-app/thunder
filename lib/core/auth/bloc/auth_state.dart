@@ -14,9 +14,10 @@ class AuthState extends Equatable {
     this.reload = true,
     this.contentWarning,
     this.oauthInstance,
-    this.oauthState,
-    this.oauthLink,
     this.oauthJwt,
+    this.oauthLink,
+    this.oauthState,
+    this.oauthUsername,
     this.oauthProvider,
   });
 
@@ -30,9 +31,10 @@ class AuthState extends Equatable {
   final bool reload;
   final String? contentWarning;
   final String? oauthInstance;
-  final String? oauthState;
-  final String? oauthLink;
   final String? oauthJwt;
+  final String? oauthLink;
+  final String? oauthState;
+  final String? oauthUsername;
   final ProviderView? oauthProvider;
 
   AuthState copyWith({
@@ -46,9 +48,10 @@ class AuthState extends Equatable {
     bool? reload,
     String? contentWarning,
     String? oauthInstance,
-    String? oauthState,
-    String? oauthLink,
     String? oauthJwt,
+    String? oauthLink,
+    String? oauthState,
+    String? oauthUsername,
     ProviderView? oauthProvider,
   }) {
     return AuthState(
@@ -62,9 +65,10 @@ class AuthState extends Equatable {
       reload: reload ?? this.reload,
       contentWarning: contentWarning,
       oauthInstance: oauthInstance ?? this.oauthInstance,
-      oauthState: oauthState ?? this.oauthInstance,
+      oauthJwt: oauthJwt ?? this.oauthJwt,
       oauthLink: oauthLink ?? this.oauthLink,
-      oauthJwt: oauthJwt ?? oauthJwt,
+      oauthState: oauthState ?? this.oauthState,
+      oauthUsername: oauthUsername ?? this.oauthUsername,
       oauthProvider: oauthProvider ?? this.oauthProvider,
     );
   }
@@ -81,9 +85,10 @@ class AuthState extends Equatable {
         reload,
         contentWarning,
         oauthInstance,
-        oauthState,
-        oauthLink,
         oauthJwt,
+        oauthLink,
+        oauthState,
+        oauthUsername,
         oauthProvider,
       ];
 }
