@@ -1,6 +1,6 @@
 part of 'auth_bloc.dart';
 
-enum AuthStatus { initial, loading, success, failure, failureCheckingInstance, contentWarning, oauthContentWarning, oauthCreateUsername }
+enum AuthStatus { initial, loading, success, failure, failureCheckingInstance, contentWarning, oauthContentWarning, oauthSignUp }
 
 class AuthState extends Equatable {
   const AuthState({

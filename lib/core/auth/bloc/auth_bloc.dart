@@ -220,6 +220,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         return emit(state.copyWith(oauthState: oauthState, oauthInstance: instance, oauthProvider: provider));
       } on LemmyApiException catch (e) {
+        // TODO: I think this is the right place to Sign Up and Create a username.
+        // I think the first login will fail which will let you know you need to create a username.
+        // I think there will be an exception somewhere else if your application is waiting for approval.
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null));
       } catch (e) {
         try {
@@ -264,7 +267,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           throw Exception("OAuth login failed: no jwt received from lemmy instance.");
         }
 
-        return emit(state.copyWith(status: AuthStatus.oauthCreateUsername, oauthJwt: loginResponse.jwt));
+        return emit(state.copyWith(status: AuthStatus.oauthSignUp, oauthJwt: loginResponse.jwt));
       } on LemmyApiException catch (e) {
         return emit(
             state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null, tempAccount: null));
@@ -281,7 +284,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    /// Adds the tempAccount and sets it as the active account.
+    /// Create the tempAccount
     on<OAuthCreateAccount>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -290,7 +293,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
         }
 
-        // TODO: Need to add a step to set the account username on the first login.
         GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: state.oauthJwt));
 
         // Create a new account in the database
