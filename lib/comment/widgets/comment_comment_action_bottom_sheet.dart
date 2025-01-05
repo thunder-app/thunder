@@ -19,6 +19,7 @@ import 'package:thunder/thunder/thunder_icons.dart';
 enum CommentBottomSheetAction {
   selectCommentText(icon: Icons.select_all_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
   viewCommentSource(icon: Icons.code_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  viewCommentMarkdown(icon: Icons.code_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
   viewModlog(icon: Icons.history_rounded, permissionType: PermissionType.all, requiresAuthentication: true),
   reportComment(icon: Icons.flag_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
   editComment(icon: Icons.edit_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
@@ -31,13 +32,14 @@ enum CommentBottomSheetAction {
   String get name => switch (this) {
         CommentBottomSheetAction.selectCommentText => l10n.selectText,
         CommentBottomSheetAction.viewCommentSource => l10n.viewCommentSource,
+        CommentBottomSheetAction.viewCommentMarkdown => l10n.viewOriginal,
         CommentBottomSheetAction.viewModlog => l10n.viewModlog,
         CommentBottomSheetAction.reportComment => l10n.reportComment,
         CommentBottomSheetAction.editComment => l10n.editComment,
-        CommentBottomSheetAction.deleteComment => "Delete Comment",
-        CommentBottomSheetAction.restoreComment => "Restore Comment",
-        CommentBottomSheetAction.removeComment => "Remove Comment",
-        CommentBottomSheetAction.restoreCommentAsModerator => "Restore Comment",
+        CommentBottomSheetAction.deleteComment => l10n.deleteComment,
+        CommentBottomSheetAction.restoreComment => l10n.restoreComment,
+        CommentBottomSheetAction.removeComment => l10n.removeComment,
+        CommentBottomSheetAction.restoreCommentAsModerator => l10n.restoreComment,
       };
 
   /// The icon to use for the action
@@ -57,13 +59,16 @@ enum CommentBottomSheetAction {
 /// Given a [commentView] and a [onAction] callback, this widget will display a list of actions that can be taken on the comment.
 /// The [onAction] callback will be triggered when an action is performed.
 class CommentCommentActionBottomSheet extends StatefulWidget {
-  const CommentCommentActionBottomSheet({super.key, required this.context, required this.commentView, required this.onAction});
+  const CommentCommentActionBottomSheet({super.key, required this.context, required this.commentView, this.isShowingSource = false, required this.onAction});
 
   /// The outer context
   final BuildContext context;
 
   /// The comment information
   final CommentView commentView;
+
+  /// Whether the source of the comment is being shown
+  final bool isShowingSource;
 
   /// Called when an action is selected
   final Function(CommentAction commentAction, CommentView? commentView, dynamic value) onAction;
@@ -82,6 +87,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
         showSelectableTextModal(context, text: commentView.comment.content);
         return;
       case CommentBottomSheetAction.viewCommentSource:
+      case CommentBottomSheetAction.viewCommentMarkdown:
         widget.onAction(CommentAction.viewSource, commentView, null);
         break;
       case CommentBottomSheetAction.viewModlog:
@@ -221,6 +227,12 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       }
     }
 
+    if (widget.isShowingSource) {
+      generalActions = generalActions.where((action) => action != CommentBottomSheetAction.viewCommentSource).toList();
+    } else {
+      generalActions = generalActions.where((action) => action != CommentBottomSheetAction.viewCommentMarkdown).toList();
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -233,16 +245,18 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
               ),
             )
             .toList() as List<Widget>,
-        const ThunderDivider(sliver: false, padding: false),
-        ...userActions
-            .map(
-              (postPostAction) => BottomSheetAction(
-                leading: Icon(postPostAction.icon),
-                title: postPostAction.name,
-                onTap: () => performAction(postPostAction),
-              ),
-            )
-            .toList() as List<Widget>,
+        if (userActions.isNotEmpty) ...[
+          const ThunderDivider(sliver: false, padding: false),
+          ...userActions
+              .map(
+                (postPostAction) => BottomSheetAction(
+                  leading: Icon(postPostAction.icon),
+                  title: postPostAction.name,
+                  onTap: () => performAction(postPostAction),
+                ),
+              )
+              .toList() as List<Widget>
+        ],
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
           ...moderatorActions

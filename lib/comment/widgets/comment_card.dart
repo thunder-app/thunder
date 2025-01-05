@@ -303,6 +303,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           showCommentActionBottomModalSheet(
                             context,
                             widget.commentView,
+                            isShowingSource: viewSource,
                             onAction: ({commentAction, required commentView, communityAction, userAction, value}) {
                               if (commentAction != null) {
                                 switch (commentAction) {
@@ -333,7 +334,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               } else if (communityAction != null) {
                                 // @todo - implement community actions
                               } else if (userAction != null) {
-                                // @todo - implement user actions
+                                setState(() {});
                               }
                             },
                           );

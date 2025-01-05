@@ -59,6 +59,7 @@ class CommentCardActions extends StatelessWidget {
                     showCommentActionBottomModalSheet(
                       context,
                       commentView,
+                      isShowingSource: viewSource,
                       onAction: ({commentAction, required commentView, communityAction, userAction, value}) {
                         if (commentAction != null) {
                           switch (commentAction) {
@@ -88,9 +89,7 @@ class CommentCardActions extends StatelessWidget {
                           }
                         } else if (communityAction != null) {
                           // TODO - implement community actions
-                        } else if (userAction != null) {
-                          // TODO - implement user actions
-                        }
+                        } else if (userAction != null) {}
                       },
                     );
                     HapticFeedback.mediumImpact();

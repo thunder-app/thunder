@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/account/models/user_label.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -18,8 +19,6 @@ import 'package:thunder/shared/divider.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
-
-import '../../account/models/user_label.dart';
 
 /// Defines the actions that can be taken on a user
 /// TODO: Implement admin-level actions
@@ -116,6 +115,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         break;
       case UserBottomSheetAction.addUserLabel:
         await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.user.name, widget.user.actorId));
+        widget.onAction(UserAction.setUserLabel, null);
         Navigator.of(context).pop();
         break;
       case UserBottomSheetAction.banUserFromCommunity:

@@ -21,6 +21,7 @@ import 'package:thunder/utils/instance.dart';
 void showCommentActionBottomModalSheet(
   BuildContext context,
   CommentView commentView, {
+  bool isShowingSource = false,
   GeneralCommentAction page = GeneralCommentAction.general,
   void Function({CommentAction? commentAction, UserAction? userAction, CommunityAction? communityAction, required CommentView commentView, dynamic value})? onAction,
 }) {
@@ -28,18 +29,21 @@ void showCommentActionBottomModalSheet(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (_) => CommentActionBottomSheet(context: context, initialPage: page, commentView: commentView, onAction: onAction),
+    builder: (_) => CommentActionBottomSheet(context: context, initialPage: page, commentView: commentView, onAction: onAction, isShowingSource: isShowingSource),
   );
 }
 
 class CommentActionBottomSheet extends StatefulWidget {
-  const CommentActionBottomSheet({super.key, required this.context, required this.commentView, this.initialPage = GeneralCommentAction.general, required this.onAction});
+  const CommentActionBottomSheet({super.key, required this.context, required this.commentView, this.initialPage = GeneralCommentAction.general, required this.onAction, this.isShowingSource = false});
 
   /// The parent context
   final BuildContext context;
 
   /// The comment that is being acted on
   final CommentView commentView;
+
+  /// Whether the source of the comment is being shown
+  final bool isShowingSource;
 
   /// The initial page of the bottom sheet
   final GeneralCommentAction initialPage;
@@ -108,6 +112,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
       GeneralCommentAction.comment => CommentCommentActionBottomSheet(
           context: widget.context,
           commentView: widget.commentView,
+          isShowingSource: widget.isShowingSource,
           onAction: (CommentAction commentAction, CommentView? updatedCommentView, dynamic value) {
             widget.onAction?.call(commentAction: commentAction, commentView: widget.commentView, value: value);
           },
