@@ -263,11 +263,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           throw Exception("OAuth login failed: no code received from provider.");
         }
 
-        // TODO: I think there will be an exception somewhere else if your application is waiting for approval.
+        // TODO: I think there will be an exception somewhere if your application is waiting for approval.
 
         // Authenthicate to lemmy instance and get a jwt.
         // Durring this step lemmy connects to the Provider to get the user info.
-        // TODO: Some reason I can't call this 2 times in a row.
         LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(
           username: username,
           code: code,

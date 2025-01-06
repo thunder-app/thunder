@@ -13,6 +13,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
@@ -207,19 +208,17 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               bool completedSignUp = false;
               String? username;
 
-              await showThunderDialog<void>(
-                context: context,
-                title: "Sign Up",
-                contentText: "Pick your username",
-                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                secondaryButtonText: l10n.cancel,
-                onPrimaryButtonPressed: (dialogContext, _) async {
-                  Navigator.of(dialogContext).pop();
-                  completedSignUp = true;
-                  username = "abcabcabc";
-                },
-                primaryButtonText: l10n.accept,
-              );
+              await showBlockingInputDialog<String>(
+                  context: context,
+                  title: "Sign Up",
+                  inputLabel: l10n.username,
+                  getSuggestions: (_) => [],
+                  suggestionBuilder: (payload) => Container(),
+                  onSubmitted: ({payload, value}) {
+                    completedSignUp = true;
+                    username = value;
+                    return Future.value(null);
+                  });
 
               if (context.mounted) {
                 if (completedSignUp) {
