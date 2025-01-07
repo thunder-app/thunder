@@ -1149,9 +1149,11 @@ packages:
   lemmy_api_client:
     dependency: "direct main"
     description:
-      path: "../lemmy_api_client"
-      relative: true
-    source: path
+      path: "."
+      ref: "2886218a71c75d14cb21d2079bfb3666603d3221"
+      resolved-ref: "2886218a71c75d14cb21d2079bfb3666603d3221"
+      url: "https://github.com/gwbischof/lemmy_api_client.git"
+    source: git
     version: "0.21.0"
   link_preview_generator:
     dependency: "direct main"

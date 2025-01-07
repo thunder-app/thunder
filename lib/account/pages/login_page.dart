@@ -174,6 +174,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               if (context.mounted) {
                 if (acceptedContentWarning) {
                   // Do another login attempt, this time without the content warning
+                  // TODO: This can be updated to use AddAccount instead of starting the login process over.
                   _handleLogin(showContentWarning: false);
                 } else {
                   // Cancel the login
