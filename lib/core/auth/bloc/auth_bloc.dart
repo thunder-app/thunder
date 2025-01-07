@@ -232,7 +232,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    // This is triggered by app_link callback.
+    /// Using the code from the previous step, login to lemmy instance an get the jwt.  This is triggered by app_link callback.
     on<OAuthLoginAttemptPart2>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -262,8 +262,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (code == "failed") {
           throw Exception("OAuth login failed: no code received from provider.");
         }
-
-        // TODO: I think there will be an exception somewhere if your application is waiting for approval.
 
         // Authenthicate to lemmy instance and get a jwt.
         // Durring this step lemmy connects to the Provider to get the user info.
@@ -298,7 +296,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // Save account to AuthBlock state and show the content warning.
         if (getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
-          return emit(state.copyWith(status: AuthStatus.oauthContentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning, oauthState: state.oauthState, tempAccount: account));
+          return emit(state.copyWith(
+            status: AuthStatus.oauthContentWarning,
+            contentWarning: getSiteResponse.siteView.site.contentWarning,
+            downvotesEnabled: getSiteResponse.siteView.localSite.enableDownvotes ?? false,
+            getSiteResponse: getSiteResponse,
+            oauthState: state.oauthState,
+            tempAccount: account,
+          ));
         }
       } on LemmyApiException catch (e) {
         if (e.message == 'registration_username_required') {
@@ -350,11 +355,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     /// Adds the tempAccount and sets it as the active account.
     on<AddAccount>((event, emit) async {
       try {
-        if (state.tempAccount == null) {
+        Account? account = state.tempAccount ?? event.account;
+        if (account == null) {
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
         }
 
-        Account? account = await Account.insertAccount(state.tempAccount!);
+        account = await Account.insertAccount(account);
         emit(state.copyWith(tempAccount: null));
 
         if (account == null) {
@@ -366,21 +372,45 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         prefs.setString('active_profile_id', account.id);
 
         return emit(state.copyWith(
-            status: AuthStatus.success,
-            account: account,
-            isLoggedIn: true,
-            //downvotesEnabled: downvotesEnabled,
-            //getSiteResponse: getSiteResponse,
-            oauthState: null,
-            oauthInstance: null,
-            oauthProvider: null));
+          status: AuthStatus.success,
+          account: account,
+          isLoggedIn: true,
+          tempAccount: null,
+          oauthState: null,
+          oauthInstance: null,
+          oauthProvider: null,
+          oauthUsername: null,
+          oauthJwt: null,
+          oauthLink: null,
+        ));
       } catch (e) {
-        return emit(state.copyWith(status: AuthStatus.failure, tempAccount: null, account: null, isLoggedIn: false));
+        return emit(state.copyWith(
+          status: AuthStatus.failure,
+          tempAccount: null,
+          account: null,
+          isLoggedIn: false,
+          oauthState: null,
+          oauthInstance: null,
+          oauthProvider: null,
+          oauthUsername: null,
+          oauthJwt: null,
+          oauthLink: null,
+        ));
       }
     });
 
     on<CancelLoginAttempt>((event, emit) async {
-      return emit(state.copyWith(status: AuthStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled, tempAccount: null));
+      return emit(state.copyWith(
+        status: AuthStatus.failure,
+        errorMessage: AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled,
+        tempAccount: null,
+        oauthState: null,
+        oauthProvider: null,
+        oauthLink: null,
+        oauthJwt: null,
+        oauthInstance: null,
+        oauthUsername: null,
+      ));
     });
 
     /// When we log out of all accounts, clear the instance information

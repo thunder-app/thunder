@@ -498,7 +498,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                       onPressed: (!isLoading && _instanceTextEditingController.text.isNotEmpty)
                           ? () {
-                              _handleOAuthLoginPart1(provider: provider);
+                              _handleOAuthLogin(provider: provider);
                             }
                           : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
                               ? () => _addAnonymousInstance(context)
@@ -536,14 +536,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         );
   }
 
-  void _handleOAuthLoginPart1({required ProviderView provider, bool showContentWarning = true}) {
+  void _handleOAuthLogin({required ProviderView provider}) {
     TextInput.finishAutofillContext();
     // Perform oauth login authentication.
     context.read<AuthBloc>().add(
           OAuthLoginAttempt(
             instance: _instanceTextEditingController.text.trim(),
             provider: provider,
-            showContentWarning: showContentWarning,
           ),
         );
   }

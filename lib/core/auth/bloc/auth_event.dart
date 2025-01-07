@@ -35,9 +35,8 @@ class OAuthLoginAttempt extends AuthEvent {
   final String? instance;
   final ProviderView? provider;
   final String? username;
-  final bool showContentWarning;
 
-  const OAuthLoginAttempt({this.instance, this.provider, this.username, this.showContentWarning = true});
+  const OAuthLoginAttempt({this.instance, this.provider, this.username});
 }
 
 /// The [OAuthLoginAttemptPart2] event should be triggered whenever the user attempts to log in with OAuth.
@@ -53,7 +52,8 @@ class OAuthCreateAccount extends AuthEvent {
 }
 
 class AddAccount extends AuthEvent {
-  const AddAccount();
+  final Account? account;
+  const AddAccount({this.account});
 }
 
 /// Cancels a login attempt by emitting the `failure` state.
