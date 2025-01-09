@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - '*.*.*'
-    branches:
-      - feat/build-workflow
   workflow_dispatch:
     inputs:
       dry_run:
