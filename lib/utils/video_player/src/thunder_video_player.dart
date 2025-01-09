@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/core/enums/video_playback_speed.dart';
-import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:video_player/video_player.dart';
 
+import 'package:thunder/core/enums/video_playback_speed.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/core/enums/internet_connection_type.dart';
 import 'package:thunder/core/enums/video_auto_play.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/cubits/network_checker_cubit/network_checker_cubit.dart';
@@ -100,7 +100,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
 
       if (_videoPlayerController.value.hasError) {
         showSnackbar(
-          l10n.failedToLoadVideo,
+          GlobalContext.l10n.failedToLoadVideo,
           trailingIcon: Icons.chevron_right_rounded,
           trailingAction: () {
             handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true);
@@ -157,7 +157,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                         onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
                         icon: Icon(
                           Icons.open_in_browser_rounded,
-                          semanticLabel: l10n.openInBrowser,
+                          semanticLabel: GlobalContext.l10n.openInBrowser,
                           color: Colors.white.withOpacity(0.90),
                         ),
                       ),

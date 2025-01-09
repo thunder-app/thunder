@@ -7,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/core/enums/internet_connection_type.dart';
 import 'package:thunder/core/enums/video_auto_play.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/links.dart';
 
@@ -121,7 +121,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                       onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
                       icon: Icon(
                         Icons.open_in_browser_rounded,
-                        semanticLabel: l10n.openInBrowser,
+                        semanticLabel: GlobalContext.l10n.openInBrowser,
                         color: Colors.white.withOpacity(0.90),
                       ),
                     ),

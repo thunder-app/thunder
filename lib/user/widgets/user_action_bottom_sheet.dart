@@ -9,7 +9,6 @@ import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/utils/user_label_utils.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
@@ -19,6 +18,7 @@ import 'package:thunder/shared/divider.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/utils/global_context.dart';
 
 /// Defines the actions that can be taken on a user
 /// TODO: Implement admin-level actions
@@ -39,14 +39,14 @@ enum UserBottomSheetAction {
   ;
 
   String get name => switch (this) {
-        UserBottomSheetAction.viewProfile => l10n.visitUserProfile,
-        UserBottomSheetAction.blockUser => l10n.blockUser,
-        UserBottomSheetAction.unblockUser => l10n.unblockUser,
-        UserBottomSheetAction.addUserLabel => l10n.addUserLabel,
-        UserBottomSheetAction.banUserFromCommunity => l10n.banFromCommunity,
-        UserBottomSheetAction.unbanUserFromCommunity => l10n.unbanFromCommunity,
-        UserBottomSheetAction.addUserAsCommunityModerator => l10n.addAsCommunityModerator,
-        UserBottomSheetAction.removeUserAsCommunityModerator => l10n.removeAsCommunityModerator,
+        UserBottomSheetAction.viewProfile => GlobalContext.l10n.visitUserProfile,
+        UserBottomSheetAction.blockUser => GlobalContext.l10n.blockUser,
+        UserBottomSheetAction.unblockUser => GlobalContext.l10n.unblockUser,
+        UserBottomSheetAction.addUserLabel => GlobalContext.l10n.addUserLabel,
+        UserBottomSheetAction.banUserFromCommunity => GlobalContext.l10n.banFromCommunity,
+        UserBottomSheetAction.unbanUserFromCommunity => GlobalContext.l10n.unbanFromCommunity,
+        UserBottomSheetAction.addUserAsCommunityModerator => GlobalContext.l10n.addAsCommunityModerator,
+        UserBottomSheetAction.removeUserAsCommunityModerator => GlobalContext.l10n.removeAsCommunityModerator,
         // UserPostAction.banUser => "Ban From Instance",
         // UserPostAction.unbanUser => "Unban User From Instance",
         // UserPostAction.purgeUser => "Purge User",
@@ -164,7 +164,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
 
     showThunderDialog(
       context: widget.context,
-      title: l10n.banFromCommunity,
+      title: GlobalContext.l10n.banFromCommunity,
       primaryButtonText: "Ban",
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
         widget.context.read<UserBloc>().add(
@@ -182,7 +182,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         setState(() => _userAction = UserAction.banFromCommunity);
         Navigator.of(dialogContext).pop();
       },
-      secondaryButtonText: l10n.cancel,
+      secondaryButtonText: GlobalContext.l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => StatefulBuilder(
         builder: (context, setState) {
@@ -200,7 +200,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
               TextFormField(
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
-                  labelText: l10n.message(0),
+                  labelText: GlobalContext.l10n.message(0),
                 ),
                 autofocus: true,
                 controller: messageController,

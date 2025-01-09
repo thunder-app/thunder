@@ -7,12 +7,12 @@ import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
+import 'package:thunder/utils/global_context.dart';
 
 /// Defines the actions that can be taken on a comment
 /// TODO: Implement admin-level actions
@@ -30,16 +30,16 @@ enum CommentBottomSheetAction {
   ;
 
   String get name => switch (this) {
-        CommentBottomSheetAction.selectCommentText => l10n.selectText,
-        CommentBottomSheetAction.viewCommentSource => l10n.viewCommentSource,
-        CommentBottomSheetAction.viewCommentMarkdown => l10n.viewOriginal,
-        CommentBottomSheetAction.viewModlog => l10n.viewModlog,
-        CommentBottomSheetAction.reportComment => l10n.reportComment,
-        CommentBottomSheetAction.editComment => l10n.editComment,
-        CommentBottomSheetAction.deleteComment => l10n.deleteComment,
-        CommentBottomSheetAction.restoreComment => l10n.restoreComment,
-        CommentBottomSheetAction.removeComment => l10n.removeComment,
-        CommentBottomSheetAction.restoreCommentAsModerator => l10n.restoreComment,
+        CommentBottomSheetAction.selectCommentText => GlobalContext.l10n.selectText,
+        CommentBottomSheetAction.viewCommentSource => GlobalContext.l10n.viewCommentSource,
+        CommentBottomSheetAction.viewCommentMarkdown => GlobalContext.l10n.viewOriginal,
+        CommentBottomSheetAction.viewModlog => GlobalContext.l10n.viewModlog,
+        CommentBottomSheetAction.reportComment => GlobalContext.l10n.reportComment,
+        CommentBottomSheetAction.editComment => GlobalContext.l10n.editComment,
+        CommentBottomSheetAction.deleteComment => GlobalContext.l10n.deleteComment,
+        CommentBottomSheetAction.restoreComment => GlobalContext.l10n.restoreComment,
+        CommentBottomSheetAction.removeComment => GlobalContext.l10n.removeComment,
+        CommentBottomSheetAction.restoreCommentAsModerator => GlobalContext.l10n.restoreComment,
       };
 
   /// The icon to use for the action
@@ -94,7 +94,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
         Navigator.of(context).pop();
         await navigateToModlogPage(
           context,
-          subtitle: Text(l10n.removedComment),
+          subtitle: Text(GlobalContext.l10n.removedComment),
           modlogActionType: ModlogActionType.modRemoveComment,
           commentId: widget.commentView.comment.id,
         );
@@ -129,18 +129,18 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
 
     showThunderDialog(
       context: widget.context,
-      title: l10n.reportComment,
-      primaryButtonText: l10n.report(1),
+      title: GlobalContext.l10n.reportComment,
+      primaryButtonText: GlobalContext.l10n.report(1),
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
         widget.onAction(CommentAction.report, widget.commentView, messageController.text);
         Navigator.of(dialogContext).pop();
       },
-      secondaryButtonText: l10n.cancel,
+      secondaryButtonText: GlobalContext.l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: l10n.message(0),
+          labelText: GlobalContext.l10n.message(0),
         ),
         autofocus: true,
         controller: messageController,
@@ -155,8 +155,8 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
 
   //   showThunderDialog(
   //     context: widget.context,
-  //     title: widget.postViewMedia.postView.post.removed ? l10n.restorePost : l10n.removalReason,
-  //     primaryButtonText: widget.postViewMedia.postView.post.removed ? l10n.restore : l10n.remove,
+  //     title: widget.postViewMedia.postView.post.removed ?GlobalContext.l10n.restorePost :GlobalContext.l10n.removalReason,
+  //     primaryButtonText: widget.postViewMedia.postView.post.removed ?GlobalContext.l10n.restore :GlobalContext.l10n.remove,
   //     onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
   //       widget.context.read<FeedBloc>().add(
   //             FeedItemActionedEvent(
@@ -170,12 +170,12 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
   //           );
   //       Navigator.of(dialogContext).pop();
   //     },
-  //     secondaryButtonText: l10n.cancel,
+  //     secondaryButtonText:GlobalContext.l10n.cancel,
   //     onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
   //     contentWidgetBuilder: (_) => TextFormField(
   //       decoration: InputDecoration(
   //         border: const OutlineInputBorder(),
-  //         labelText: l10n.message(0),
+  //         labelText:GlobalContext.l10n.message(0),
   //       ),
   //       autofocus: true,
   //       controller: messageController,

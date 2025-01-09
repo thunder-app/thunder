@@ -13,7 +13,6 @@ import 'package:thunder/comment/widgets/comment_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
 import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/shared/comment_navigator_fab.dart';

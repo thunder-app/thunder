@@ -10,10 +10,10 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/share/advanced_share_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/utils/global_context.dart';
 
 /// Defines the actions that can be taken on a post when sharing
 enum ShareBottomSheetAction {
@@ -28,14 +28,14 @@ enum ShareBottomSheetAction {
   ;
 
   String get name => switch (this) {
-        ShareBottomSheetAction.shareComment => l10n.shareComment,
-        ShareBottomSheetAction.shareCommentLocal => l10n.shareCommentLocal,
-        ShareBottomSheetAction.sharePost => l10n.sharePost,
-        ShareBottomSheetAction.sharePostLocal => l10n.sharePostLocal,
-        ShareBottomSheetAction.shareImage => l10n.shareImage,
-        ShareBottomSheetAction.shareMedia => l10n.shareMediaLink,
-        ShareBottomSheetAction.shareLink => l10n.shareLink,
-        ShareBottomSheetAction.shareAdvanced => l10n.advanced,
+        ShareBottomSheetAction.shareComment => GlobalContext.l10n.shareComment,
+        ShareBottomSheetAction.shareCommentLocal => GlobalContext.l10n.shareCommentLocal,
+        ShareBottomSheetAction.sharePost => GlobalContext.l10n.sharePost,
+        ShareBottomSheetAction.sharePostLocal => GlobalContext.l10n.sharePostLocal,
+        ShareBottomSheetAction.shareImage => GlobalContext.l10n.shareImage,
+        ShareBottomSheetAction.shareMedia => GlobalContext.l10n.shareMediaLink,
+        ShareBottomSheetAction.shareLink => GlobalContext.l10n.shareLink,
+        ShareBottomSheetAction.shareAdvanced => GlobalContext.l10n.advanced,
       };
 
   /// The icon to use for the action
@@ -82,13 +82,13 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       File? mediaFile = media?.file;
 
       if (media == null) {
-        showSnackbar(l10n.downloadingMedia);
+        showSnackbar(GlobalContext.l10n.downloadingMedia);
         mediaFile = await DefaultCacheManager().getSingleFile(url);
       }
 
       await Share.shareXFiles([XFile(mediaFile!.path)]);
     } catch (e) {
-      showSnackbar(l10n.errorDownloadingMedia(e));
+      showSnackbar(GlobalContext.l10n.errorDownloadingMedia(e));
     }
   }
 
@@ -144,7 +144,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       case ShareBottomSheetAction.shareLink:
         return postViewMedia!.media.first.originalUrl;
       case ShareBottomSheetAction.shareAdvanced:
-        return l10n.useAdvancedShareSheet;
+        return GlobalContext.l10n.useAdvancedShareSheet;
     }
   }
 

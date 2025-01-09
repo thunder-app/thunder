@@ -7,8 +7,8 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
 /// Defines the actions that can be taken on an instance
@@ -22,12 +22,12 @@ enum InstanceBottomSheetAction {
   ;
 
   String get name => switch (this) {
-        InstanceBottomSheetAction.visitCommunityInstance => l10n.visitCommunityInstance,
-        InstanceBottomSheetAction.blockCommunityInstance => l10n.blockCommunityInstance,
-        InstanceBottomSheetAction.unblockCommunityInstance => l10n.unblockCommunityInstance,
-        InstanceBottomSheetAction.visitUserInstance => l10n.visitUserInstance,
-        InstanceBottomSheetAction.blockUserInstance => l10n.blockUserInstance,
-        InstanceBottomSheetAction.unblockUserInstance => l10n.unblockUserInstance,
+        InstanceBottomSheetAction.visitCommunityInstance => GlobalContext.l10n.visitCommunityInstance,
+        InstanceBottomSheetAction.blockCommunityInstance => GlobalContext.l10n.blockCommunityInstance,
+        InstanceBottomSheetAction.unblockCommunityInstance => GlobalContext.l10n.unblockCommunityInstance,
+        InstanceBottomSheetAction.visitUserInstance => GlobalContext.l10n.visitUserInstance,
+        InstanceBottomSheetAction.blockUserInstance => GlobalContext.l10n.blockUserInstance,
+        InstanceBottomSheetAction.unblockUserInstance => GlobalContext.l10n.unblockUserInstance,
       };
 
   /// The icon to use for the action
