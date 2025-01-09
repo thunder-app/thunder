@@ -21,6 +21,7 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 const throttleDuration = Duration(milliseconds: 100);
+const String redirectUri = "https://thunderapp.dev/oauth/callback"; // This must end in /oauth/callback.
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) {
@@ -52,7 +53,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       prefs.setString('active_profile_id', event.accountId);
 
       // Check to see the instance settings (for checking if downvotes are enabled)
-      LemmyClient.instance.changeBaseUrl(account.instance.replaceAll('https://', ''));
+      LemmyClient.instance.changeBaseUrl(account.instance.replaceFirst('https://', ''));
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account.jwt));
@@ -103,7 +104,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (activeAccount.username != null && activeAccount.jwt != null) {
         // Set lemmy client to use the instance
-        LemmyClient.instance.changeBaseUrl(activeAccount.instance.replaceAll('https://', ''));
+        LemmyClient.instance.changeBaseUrl(activeAccount.instance.replaceFirst('https://', ''));
 
         // Check to see the instance settings (for checking if downvotes are enabled)
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -131,7 +132,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
 
         String instance = event.instance;
-        if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
+        if (instance.startsWith('https://')) instance = instance.replaceFirst('https://', '');
 
         lemmyClient.changeBaseUrl(instance);
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -198,12 +199,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
 
-        if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
+        if (instance.startsWith('https://')) instance = instance.replaceFirst('https://', '');
         lemmyClient.changeBaseUrl(instance);
 
         // Build oauth provider url.
         var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
-        String redirectUri = "https://thunderapp.dev/oauth/callback"; // This must end in /oauth/callback.
+
         String oauthState = const Uuid().v4();
         final url = Uri.https(authorizationEndpoint.host, authorizationEndpoint.path, {
           'response_type': 'code',
@@ -237,13 +238,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LemmyClient lemmyClient = LemmyClient.instance;
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
-      String redirectUri = "https://thunderapp.dev/oauth/callback";
       String providerResponse = event.link ?? state.oauthLink!;
       String instance = state.oauthInstance!;
       String? username = event.username ?? state.oauthUsername;
       emit(state.copyWith(oauthLink: providerResponse));
 
-      if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
+      if (instance.startsWith('https://')) instance = instance.replaceFirst('https://', '');
       lemmyClient.changeBaseUrl(instance);
 
       try {
@@ -427,7 +427,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: state.isLoggedIn, account: state.account));
 
       // When the instance changes, update the fullSiteView
-      LemmyClient.instance.changeBaseUrl(event.instance.replaceAll('https://', ''));
+      LemmyClient.instance.changeBaseUrl(event.instance.replaceFirst('https://', ''));
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       // Check to see if there is an active, non-anonymous account
