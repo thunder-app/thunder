@@ -14,8 +14,10 @@ dependencies:
     path: packages/push/push
   lemmy_api_client:
     git:
-      url: "https://github.com/thunder-app/lemmy_api_client.git"
-      ref: 874005c9013de53f526562f882fe8231eb0ce5ae
+      url: "https://github.com/gwbischof/lemmy_api_client.git"
+      ref: 2886218a71c75d14cb21d2079bfb3666603d3221
+      #url: "https://github.com/thunder-app/lemmy_api_client.git"
+      #ref: 16d14a1c13ac9522e85188ad9cf23d8912ec8fee
   link_preview_generator:
     git:
       url: "https://github.com/thunder-app/link_preview_generator.git"
@@ -63,7 +65,7 @@ dependencies:
   gal: "^2.2.0"
   html: "^0.15.4"
   html_unescape: "^2.0.0"
-  http: "^1.2.1"
+  http: ^1.2.2
   image_picker: "^1.0.0"
   intl: "^0.19.0"
   jovial_svg: "^1.1.19"
@@ -93,6 +95,7 @@ dependencies:
   youtube_player_flutter: "^9.1.0"
   youtube_player_iframe: "^5.2.0"
   freezed_annotation: ^2.4.4
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:

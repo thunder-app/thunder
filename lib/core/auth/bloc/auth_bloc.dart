@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -12,11 +14,14 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 const throttleDuration = Duration(milliseconds: 100);
+const String redirectUri = "https://thunderapp.dev/oauth/callback"; // This must end in /oauth/callback.
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) {
@@ -48,11 +53,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       prefs.setString('active_profile_id', event.accountId);
 
       // Check to see the instance settings (for checking if downvotes are enabled)
-      LemmyClient.instance.changeBaseUrl(account.instance.replaceAll('https://', ''));
+      LemmyClient.instance.changeBaseUrl(account.instance.replaceFirst('https://', ''));
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account.jwt));
-      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
+      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
 
       return emit(state.copyWith(
         status: AuthStatus.success,
@@ -99,7 +104,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (activeAccount.username != null && activeAccount.jwt != null) {
         // Set lemmy client to use the instance
-        LemmyClient.instance.changeBaseUrl(activeAccount.instance.replaceAll('https://', ''));
+        LemmyClient.instance.changeBaseUrl(activeAccount.instance.replaceFirst('https://', ''));
 
         // Check to see the instance settings (for checking if downvotes are enabled)
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -109,7 +114,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         try {
           getSiteResponse = await lemmy.run(GetSite(auth: activeAccount.jwt)).timeout(const Duration(seconds: 15));
 
-          downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
+          downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
         } catch (e) {
           return emit(state.copyWith(status: AuthStatus.failureCheckingInstance, errorMessage: getExceptionErrorMessage(e)));
         }
@@ -127,7 +132,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
 
         String instance = event.instance;
-        if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
+        if (instance.startsWith('https://')) instance = instance.replaceFirst('https://', '');
 
         lemmyClient.changeBaseUrl(instance);
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -168,7 +173,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
         prefs.setString('active_profile_id', account.id);
 
-        bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
+        bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
 
         return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
       } on LemmyApiException catch (e) {
@@ -184,8 +189,228 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
+    /// Log in with OAuth Provider to get a code.
+    on<OAuthLoginAttempt>((event, emit) async {
+      LemmyClient lemmyClient = LemmyClient.instance;
+      String originalBaseUrl = lemmyClient.lemmyApiV3.host;
+      String instance = event.instance ?? state.oauthInstance!;
+      ProviderView provider = event.provider ?? state.oauthProvider!;
+
+      try {
+        emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
+
+        if (instance.startsWith('https://')) instance = instance.replaceFirst('https://', '');
+        lemmyClient.changeBaseUrl(instance);
+
+        // Build oauth provider url.
+        var authorizationEndpoint = Uri.parse(provider.authorizationEndpoint);
+
+        String oauthState = const Uuid().v4();
+        final url = Uri.https(authorizationEndpoint.host, authorizationEndpoint.path, {
+          'response_type': 'code',
+          'client_id': provider.clientId,
+          'redirect_uri': redirectUri,
+          'scope': provider.scopes,
+          'state': oauthState,
+        });
+
+        // Present the login dialog to the user.
+        if (!await launchUrl(url)) {
+          throw Exception('Could not launch $url');
+        }
+
+        return emit(state.copyWith(oauthState: oauthState, oauthInstance: instance, oauthProvider: provider, oauthUsername: event.username));
+      } on LemmyApiException catch (e) {
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null));
+      } catch (e) {
+        try {
+          // Restore the original baseUrl
+          lemmyClient.changeBaseUrl(originalBaseUrl);
+        } catch (e, s) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString(), oauthState: null, oauthInstance: null, oauthProvider: null));
+        }
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString(), oauthState: null, oauthInstance: null, oauthProvider: null));
+      }
+    });
+
+    /// Using the code from the previous step, login to lemmy instance an get the jwt.  This is triggered by app_link callback.
+    on<OAuthLoginAttemptPart2>((event, emit) async {
+      LemmyClient lemmyClient = LemmyClient.instance;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      String originalBaseUrl = lemmyClient.lemmyApiV3.host;
+      String providerResponse = event.link ?? state.oauthLink!;
+      String instance = state.oauthInstance!;
+      String? username = event.username ?? state.oauthUsername;
+      emit(state.copyWith(oauthLink: providerResponse));
+
+      if (instance.startsWith('https://')) instance = instance.replaceFirst('https://', '');
+      lemmyClient.changeBaseUrl(instance);
+
+      try {
+        if (state.oauthState == null || state.oauthInstance == null || state.oauthProvider == null) {
+          throw Exception("OAuth login failed: oauthState, oauthInstance, or oauthProviderId is null.");
+        }
+
+        // oauthProviderState must match oauthClientState to ensure the response came from the Provider.
+        String oauthProviderState = Uri.parse(providerResponse).queryParameters['state'] ?? "failed";
+        if (oauthProviderState == "failed" || state.oauthState != oauthProviderState) {
+          throw Exception("OAuth state-check failed: oauthProviderState $oauthProviderState must match oauthClientState ${state.oauthState} to ensure the response came from the Provider.");
+        }
+
+        // Extract the code from the response.
+        String code = Uri.parse(providerResponse).queryParameters['code'] ?? "failed";
+        if (code == "failed") {
+          throw Exception("OAuth login failed: no code received from provider.");
+        }
+
+        // Authenthicate to lemmy instance and get a jwt.
+        // Durring this step lemmy connects to the Provider to get the user info.
+        LoginResponse loginResponse = await lemmy.run(AuthenticateWithOAuth(
+          username: username,
+          code: code,
+          oauth_provider_id: state.oauthProvider!.id,
+          redirect_uri: redirectUri,
+        ));
+
+        if (loginResponse.jwt == null) {
+          throw Exception("OAuth login failed: no jwt received from lemmy instance.");
+        }
+
+        emit(state.copyWith(oauthJwt: loginResponse.jwt, oauthLink: null));
+
+        if (state.oauthJwt == null) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
+        }
+
+        GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: state.oauthJwt));
+
+        // Create a new account in the database
+        Account? account = Account(
+          id: '',
+          username: getSiteResponse.myUser?.localUserView.person.name,
+          jwt: state.oauthJwt,
+          instance: state.oauthInstance ?? "",
+          userId: getSiteResponse.myUser?.localUserView.person.id,
+          index: -1,
+        );
+
+        // Save account to AuthBlock state and show the content warning.
+        if (getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
+          return emit(state.copyWith(
+            status: AuthStatus.oauthContentWarning,
+            contentWarning: getSiteResponse.siteView.site.contentWarning,
+            downvotesEnabled: getSiteResponse.siteView.localSite.enableDownvotes ?? false,
+            getSiteResponse: getSiteResponse,
+            oauthState: state.oauthState,
+            tempAccount: account,
+          ));
+        }
+      } on LemmyApiException catch (e) {
+        if (e.message == 'registration_username_required') {
+          return emit(state.copyWith(status: AuthStatus.oauthSignUp, oauthState: state.oauthState));
+        } else {
+          return emit(state.copyWith(
+            status: AuthStatus.failure,
+            account: null,
+            isLoggedIn: false,
+            errorMessage: e.toString(),
+            oauthLink: null,
+            oauthState: null,
+            oauthInstance: null,
+            oauthProvider: null,
+            tempAccount: null,
+          ));
+        }
+      } catch (e) {
+        try {
+          // Restore the original baseUrl
+          lemmyClient.changeBaseUrl(originalBaseUrl);
+        } catch (e, s) {
+          return emit(state.copyWith(
+            status: AuthStatus.failure,
+            account: null,
+            isLoggedIn: false,
+            errorMessage: s.toString(),
+            oauthLink: null,
+            oauthState: null,
+            oauthInstance: null,
+            oauthProvider: null,
+            tempAccount: null,
+          ));
+        }
+        return emit(state.copyWith(
+          status: AuthStatus.failure,
+          account: null,
+          isLoggedIn: false,
+          errorMessage: e.toString(),
+          oauthLink: null,
+          oauthState: null,
+          oauthInstance: null,
+          oauthProvider: null,
+          tempAccount: null,
+        ));
+      }
+    });
+
+    /// Adds the tempAccount and sets it as the active account.
+    on<AddAccount>((event, emit) async {
+      try {
+        Account? account = state.tempAccount ?? event.account;
+        if (account == null) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
+        }
+
+        account = await Account.insertAccount(account);
+        emit(state.copyWith(tempAccount: null));
+
+        if (account == null) {
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
+        }
+
+        // Set this account as the active account
+        SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+        prefs.setString('active_profile_id', account.id);
+
+        return emit(state.copyWith(
+          status: AuthStatus.success,
+          account: account,
+          isLoggedIn: true,
+          tempAccount: null,
+          oauthState: null,
+          oauthInstance: null,
+          oauthProvider: null,
+          oauthUsername: null,
+          oauthJwt: null,
+          oauthLink: null,
+        ));
+      } catch (e) {
+        return emit(state.copyWith(
+          status: AuthStatus.failure,
+          tempAccount: null,
+          account: null,
+          isLoggedIn: false,
+          oauthState: null,
+          oauthInstance: null,
+          oauthProvider: null,
+          oauthUsername: null,
+          oauthJwt: null,
+          oauthLink: null,
+        ));
+      }
+    });
+
     on<CancelLoginAttempt>((event, emit) async {
-      return emit(state.copyWith(status: AuthStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled));
+      return emit(state.copyWith(
+        status: AuthStatus.failure,
+        errorMessage: AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled,
+        tempAccount: null,
+        oauthState: null,
+        oauthProvider: null,
+        oauthLink: null,
+        oauthJwt: null,
+        oauthInstance: null,
+        oauthUsername: null,
+      ));
     });
 
     /// When we log out of all accounts, clear the instance information
@@ -202,7 +427,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: state.isLoggedIn, account: state.account));
 
       // When the instance changes, update the fullSiteView
-      LemmyClient.instance.changeBaseUrl(event.instance.replaceAll('https://', ''));
+      LemmyClient.instance.changeBaseUrl(event.instance.replaceFirst('https://', ''));
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       // Check to see if there is an active, non-anonymous account
@@ -211,7 +436,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       Account? account = (activeProfileId != null) ? await Account.fetchAccount(activeProfileId) : null;
 
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
-      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
+      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes ?? false;
 
       return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
     });

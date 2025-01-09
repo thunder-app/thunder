@@ -527,3 +527,78 @@ void showInputDialog<T>({
     }),
   );
 }
+
+/// Shows a dialog which takes input and offers suggestions
+Future<String?> showBlockingInputDialog<T>({
+  required BuildContext context,
+  required String title,
+  required String inputLabel,
+  required Future<String?> Function({T? payload, String? value}) onSubmitted,
+  required FutureOr<List<T>?> Function(String query) getSuggestions,
+  required Widget Function(T payload) suggestionBuilder,
+}) async {
+  final textController = TextEditingController();
+  // Capture our content widget's setState function so we can call it outside the widget
+  StateSetter? contentWidgetSetState;
+  String? contentWidgetError;
+
+  await showThunderDialog(
+    context: context,
+    title: title,
+    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+    secondaryButtonText: AppLocalizations.of(context)!.cancel,
+    primaryButtonInitialEnabled: false,
+    onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
+      setPrimaryButtonEnabled(false);
+      final String? submitError = await onSubmitted(value: textController.text);
+      contentWidgetSetState?.call(() => contentWidgetError = submitError);
+      Navigator.of(dialogContext).pop();
+    },
+    primaryButtonText: AppLocalizations.of(context)!.ok,
+    // Use a stateful widget for the content so we can update the error message
+    contentWidgetBuilder: (setPrimaryButtonEnabled) => StatefulBuilder(builder: (context, setState) {
+      contentWidgetSetState = setState;
+      return SizedBox(
+        width: min(MediaQuery.of(context).size.width, 700),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TypeAheadField<T>(
+              controller: textController,
+              builder: (context, controller, focusNode) => TextField(
+                controller: controller,
+                focusNode: focusNode,
+                onChanged: (value) {
+                  setPrimaryButtonEnabled(value.trim().isNotEmpty);
+                  setState(() => contentWidgetError = null);
+                },
+                autofocus: true,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: inputLabel,
+                  errorText: contentWidgetError,
+                ),
+                onSubmitted: (text) async {
+                  setPrimaryButtonEnabled(false);
+                  final String? submitError = await onSubmitted(value: text);
+                  setState(() => contentWidgetError = submitError);
+                },
+              ),
+              suggestionsCallback: getSuggestions,
+              itemBuilder: (context, payload) => suggestionBuilder(payload),
+              onSelected: (payload) async {
+                setPrimaryButtonEnabled(false);
+                final String? submitError = await onSubmitted(payload: payload);
+                setState(() => contentWidgetError = submitError);
+              },
+              hideOnEmpty: true,
+              hideOnLoading: true,
+              hideOnError: true,
+            ),
+          ],
+        ),
+      );
+    }),
+  );
+  return null;
+}
