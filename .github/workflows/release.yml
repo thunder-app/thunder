@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - '*.*.*'
+    branches:
+      - feat/build-workflow
   workflow_dispatch:
     inputs:
       dry_run:
@@ -71,6 +73,12 @@ jobs:
           done
           rm apksign.keystore
           echo "Finished signing Android APKs"
+        
+      - name: Rename Android APKs
+        run: |
+          for apk in ./build/app/outputs/flutter-apk/*-release*.apk; do
+          mv "$apk" "./build/app/outputs/flutter-apk/thunder-v${{ steps.generate-version-info.outputs.version }}.apk"
+          done
       
       - uses: actions/upload-artifact@v4
         with:
@@ -84,5 +92,5 @@ jobs:
           tag: "${{ steps.generate-version-info.outputs.tag }}"
           prerelease: ${{ steps.generate-version-info.outputs.prerelease }}
           draft: true
-          artifacts: ./build/app/outputs/flutter-apk/*-release*.apk
+          artifacts: ./build/app/outputs/flutter-apk/thunder-v*.apk
           generateReleaseNotes: true
