@@ -25,6 +25,14 @@
   },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
+  "accountSettingsExportedSuccessfully": "Lemmy account settings exported successfully to {savedFilePath}!",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "Lemmy account settings imported successfully!",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
   "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
   "@accountSwitchParentCommentNotFound": {
     "description": "Error message for when we couldn't resolve comment to reply to"
@@ -825,6 +833,14 @@
   },
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
+  "errorImportingAccountSettings": "There was an error importing the settings. The file might not be in the right format.",
+  "@errorImportingAccountSettings": {
+    "description": "Message shown to user when account there was an error importing the settings"
+  },
+  "errorLoadingAccountSettings": "There was an error loading the settings file or the operation was canceled.",
+  "@errorLoadingAccountSettings": {
+    "description": "Message shown to user when there was an error loading the settings file"
+  },
   "errorMarkingReplyRead": "There was an error marking the reply as read.",
   "@errorMarkingReplyRead": {
     "description": "Error message for marking a reply read"
@@ -832,6 +848,14 @@
   "errorMarkingReplyUnread": "There was an error marking the reply as unread.",
   "@errorMarkingReplyUnread": {
     "description": "Error message for marking a reply unread"
+  },
+  "errorParsingJson": "There was an error parsing the selected file. It may not be valid JSON.",
+  "@errorParsingJson": {
+    "description": "Message shown to user when there was an error parsing the selected file"
+  },
+  "errorSavingAccountSettings": "There was an error saving the settings file or the operation was canceled.",
+  "@errorSavingAccountSettings": {
+    "description": "Message shown to user when there was an error saving the settings file"
   },
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri": {
@@ -888,6 +912,10 @@
   "exportDatabaseSubtitle": "The database contains info about accounts, favorites, anonymous subscriptions, and user labels.",
   "@exportDatabaseSubtitle": {
     "description": "Subtitle of setting for exporting the db"
+  },
+  "exportLemmyAccountSettingsDescription": "Export Lemmy account settings",
+  "@exportLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings export"
   },
   "exportSettingsSubtitle": "The settings includes all of the preferences that you have configured in Thunder.",
   "@exportSettingsSubtitle": {
@@ -1083,13 +1111,29 @@
   "@importDatabase": {
     "description": "Name of setting for importing the db"
   },
-  "importExportDatabase": "Import/Export Database",
+  "importExportDatabase": "Import/Export Thunder Database",
   "@importExportDatabase": {
     "description": "Overall name of setting for importing or exporting the db (for searching)"
+  },
+  "importExportLemmyAccountSettings": "Import/Export Lemmy Account Settings",
+  "@importExportLemmyAccountSettings": {
+    "description": "This is specifically used in search results to distinguish from Thunder import/export"
+  },
+  "importExportLemmyAccountSettingsSubtitle": "Includes subscribed communities, blocklists, and account preferences",
+  "@importExportLemmyAccountSettingsSubtitle": {
+    "description": "Subtitle for Lemmy account settings import/export section"
   },
   "importExportSettings": "Import/Export Settings",
   "@importExportSettings": {
     "description": "Category for settings related to import and export."
+  },
+  "importExportThunderSettings": "Import/Export Thunder Settings",
+  "@importExportThunderSettings": {
+    "description": "This is specifically used in search results to distinguish from Lemmy import/export"
+  },
+  "importLemmyAccountSettingsDescription": "Import Lemmy account settings",
+  "@importLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings import"
   },
   "importSettings": "Import Settings",
   "@importSettings": {
@@ -1770,6 +1814,10 @@
   "pushNotificationServerDescription": "Configure the push notification server. The server must be properly configured to send push notifications to your device.\n\n **Only enter a server that you trust with your credentials.**",
   "@pushNotificationServerDescription": {
     "description": "Description of choosing push notification server setting"
+  },
+  "rateLimitErrorMessage": "You have hit the rate limit for this request. Please wait and try again later.",
+  "@rateLimitErrorMessage": {
+    "description": "Error message for the rate-limit Lemmy exception"
   },
   "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
@@ -2906,5 +2954,9 @@
   "yes": "Yes",
   "@yes": {
     "description": "A positive status"
+  },
+  "youMustSelectAJsonFile": "You must select a .json file.",
+  "@youMustSelectAJsonFile": {
+    "description": "Error message shown to user when they attempt to import a JSON file that doesn't have the right extension"
   }
 }
