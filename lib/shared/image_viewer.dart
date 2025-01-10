@@ -2,25 +2,22 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:expandable/expandable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/services.dart';
+
+import 'package:expandable/expandable.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gal/gal.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:thunder/core/enums/image_caching_mode.dart';
-import 'package:thunder/shared/dialogs.dart';
-
-import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:thunder/core/enums/image_caching_mode.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/media/image.dart';
 
@@ -101,44 +98,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
       fullscreen = false;
     });
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: SystemUiOverlay.values);
-  }
-
-  Future<bool> _requestPermission() async {
-    bool androidVersionBelow33 = false;
-
-    if (!kIsWeb && Platform.isAndroid) {
-      androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
-    }
-
-    // Check first if we have permissions
-    bool hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
-    bool hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
-
-    if (androidVersionBelow33 && !hasStoragePermission) {
-      await Permission.storage.request();
-      hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
-    } else if (!androidVersionBelow33 && !hasPhotosPermission) {
-      await Permission.photos.request();
-      hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
-    }
-
-    if (!kIsWeb && Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
-    return hasPhotosPermission;
-  }
-
-  /// Shows a dialog indicating that permissions have been denied, and must be granted in order to save image.
-  void showPermissionDeniedDialog(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-
-    showThunderDialog(
-      context: context,
-      title: l10n.permissionDenied,
-      contentText: l10n.permissionDeniedMessage,
-      onPrimaryButtonPressed: (_, __) {
-        openAppSettings();
-      },
-      primaryButtonText: l10n.openSettings,
-    );
   }
 
   Future<void> getImageSize() async {
@@ -535,12 +494,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   ? null
                                   : () async {
                                       File file = await DefaultCacheManager().getSingleFile(widget.url!);
-                                      bool hasPermission = await _requestPermission();
-
-                                      if (!hasPermission) {
-                                        if (context.mounted) showPermissionDeniedDialog(context);
-                                        return;
-                                      }
+                                      bool hasPermission = await Gal.hasAccess(toAlbum: true);
+                                      if (!hasPermission) await Gal.requestAccess(toAlbum: true);
 
                                       setState(() => isSavingMedia = true);
 
