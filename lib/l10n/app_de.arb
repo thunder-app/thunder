@@ -1171,7 +1171,7 @@
   "@imageCachingModeRelaxed": {
     "description": "Long description for relaxed image caching mode"
   },
-  "importExportDatabase": "Datenbank importieren/exportieren",
+  "importExportDatabase": "Thunder-Datenbank importieren/exportieren",
   "@importExportDatabase": {
     "description": "Overall name of setting for importing or exporting the db (for searching)"
   },
