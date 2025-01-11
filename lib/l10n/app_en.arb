@@ -2291,6 +2291,10 @@
   "@sidebarBottomNavDoubleTapDescription": {},
   "sidebarBottomNavSwipeDescription": "Swipe bottom nav to open sidebar",
   "@sidebarBottomNavSwipeDescription": {},
+  "signUp": "Sign Up",
+  "@signUp": {
+    "description": "Title for thunder sign up dialog."
+  },
   "small": "Small",
   "@small": {
     "description": "Description for small font scale"

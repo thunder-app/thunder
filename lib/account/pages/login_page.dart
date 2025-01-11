@@ -191,7 +191,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
               await showBlockingInputDialog<String>(
                   context: context,
-                  title: "Sign Up",
+                  title: l10n.signUp,
                   inputLabel: l10n.username,
                   getSuggestions: (_) => [],
                   suggestionBuilder: (payload) => Container(),
