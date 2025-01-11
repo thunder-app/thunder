@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
               Navigator.of(context).pop();
               showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
-            } else if (state.status == AuthStatus.contentWarning) {
+            } else if (state.status == AuthStatus.contentWarning || state.status == AuthStatus.oauthContentWarning) {
               bool acceptedContentWarning = false;
 
               await showThunderDialog<void>(
@@ -173,33 +173,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
               if (context.mounted) {
                 if (acceptedContentWarning) {
-                  // Do another login attempt, this time without the content warning
-                  // TODO: This can be updated to use AddAccount instead of starting the login process over.
-                  _handleLogin(showContentWarning: false);
-                } else {
-                  // Cancel the login
-                  context.read<AuthBloc>().add(const CancelLoginAttempt());
-                }
-              }
-            } else if (state.status == AuthStatus.oauthContentWarning) {
-              bool acceptedContentWarning = false;
-
-              await showThunderDialog<void>(
-                context: context,
-                title: l10n.contentWarning,
-                contentText: state.contentWarning,
-                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                secondaryButtonText: l10n.decline,
-                onPrimaryButtonPressed: (dialogContext, _) async {
-                  Navigator.of(dialogContext).pop();
-                  acceptedContentWarning = true;
-                },
-                primaryButtonText: l10n.accept,
-              );
-
-              if (context.mounted) {
-                if (acceptedContentWarning) {
-                  context.read<AuthBloc>().add(const AddAccount());
+                  if (state.status == AuthStatus.oauthContentWarning) {
+                    context.read<AuthBloc>().add(const AddAccount());
+                  } else {
+                    // Do another login attempt, this time without the content warning
+                    // TODO: This can be updated to use AddAccount instead of starting the login process over.
+                    _handleLogin(showContentWarning: false);
+                  }
                 } else {
                   // Cancel the login
                   context.read<AuthBloc>().add(const CancelLoginAttempt());
