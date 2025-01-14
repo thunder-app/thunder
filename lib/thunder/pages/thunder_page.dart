@@ -97,7 +97,6 @@ class _ThunderState extends State<Thunder> {
   @override
   void initState() {
     super.initState();
-    context.read<AuthBloc>().add(const LogOutOfAllAccounts());
 
     selectedPageIndex = widget.pageController.initialPage;
 
