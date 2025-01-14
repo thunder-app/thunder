@@ -370,10 +370,10 @@ packages:
     dependency: transitive
     description:
       name: dart_style
-      sha256: "27eb0ae77836989a3bc541ce55595e8ceee0992807f14511552a898ddd0d88ac"
+      sha256: "7856d364b589d1f08986e140938578ed36ed948581fbc3bc9aef1805039ac5ab"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "2.3.7"
   dbus:
     dependency: transitive
     description:
@@ -382,22 +382,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
-  device_info_plus:
-    dependency: "direct main"
-    description:
-      name: device_info_plus
-      sha256: "4fa68e53e26ab17b70ca39f072c285562cfc1589df5bb1e9295db90f6645f431"
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.2.0"
-  device_info_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: device_info_plus_platform_interface
-      sha256: "0b04e02b30791224b31969eb1b50d723498f402971bff3630bca2ba839bd1ed2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.2"
   drift:
     dependency: "direct main"
     description:
@@ -1635,10 +1619,10 @@ packages:
     dependency: transitive
     description:
       name: source_gen
-      sha256: "35c8150ece9e8c8d263337a265153c3329667640850b9304861faea59fc98f6b"
+      sha256: "14658ba5f669685cd3d63701d01b31ea748310f7ab854e471962670abcf57832"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "1.5.0"
   source_span:
     dependency: transitive
     description:
@@ -2071,14 +2055,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.10.0"
-  win32_registry:
-    dependency: transitive
-    description:
-      name: win32_registry
-      sha256: "21ec76dfc731550fd3e2ce7a33a9ea90b828fdf19a5c3bcf556fa992cfa99852"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.5"
   xayn_readability:
     dependency: "direct main"
     description:
