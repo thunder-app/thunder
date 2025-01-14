@@ -1593,6 +1593,10 @@
   "@openSettings": {
     "description": "Prompt for the user to open system settings"
   },
+  "orLogInWithSso": "Or log in with SSO",
+  "@orLogInWithSso": {
+    "description": "Heading displayed on login page for SSO login options"
+  },
   "orange": "Orange",
   "@orange": {
     "description": "The color orange"

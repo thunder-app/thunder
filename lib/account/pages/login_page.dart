@@ -467,8 +467,15 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     child: Text(widget.anonymous ? AppLocalizations.of(context)!.add : AppLocalizations.of(context)!.login,
                         style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                   ),
-                  const SizedBox(height: 12.0),
-                  for (final provider in oauthProviders)
+                  if (oauthProviders.isNotEmpty) ...[
+                    const SizedBox(height: 20.0),
+                    Text(
+                      l10n.orLogInWithSso,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ],
+                  for (final provider in oauthProviders) ...[
+                    const SizedBox(height: 12.0),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(60),
@@ -487,6 +494,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       child: Text(provider.displayName,
                           style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && _instanceTextEditingController.text.isNotEmpty ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                     ),
+                  ],
                   const SizedBox(height: 12.0),
                   TextButton(
                     style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
