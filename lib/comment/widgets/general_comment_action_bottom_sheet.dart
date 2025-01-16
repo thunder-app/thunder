@@ -92,14 +92,13 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
   String? generateSubtitle(GeneralCommentAction page) {
     CommentView commentView = widget.commentView;
 
-    String? communityInstance = fetchInstanceNameFromUrl(commentView.community.actorId);
     String? userInstance = fetchInstanceNameFromUrl(commentView.creator.actorId);
 
     switch (page) {
       case GeneralCommentAction.user:
         return generateUserFullName(context, commentView.creator.name, commentView.creator.displayName, fetchInstanceNameFromUrl(commentView.creator.actorId));
       case GeneralCommentAction.instance:
-        return (communityInstance == userInstance) ? '$communityInstance' : '$communityInstance • $userInstance';
+        return userInstance;
       default:
         return null;
     }
