@@ -11,7 +11,6 @@ import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
 
 class PostPageSuccess extends StatefulWidget {
@@ -89,12 +88,6 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
             onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-            onReportAction: (int commentId) {
-              showReportCommentActionBottomSheet(
-                context,
-                commentId: commentId,
-              );
-            },
             onReplyEditAction: (CommentView commentView, bool isEdit) async => navigateToCreateCommentPage(
               context,
               commentView: isEdit ? commentView : null,

@@ -669,6 +669,10 @@
   "@deleteAccountDescription": {
     "description": "Description for confirmation action to delete account"
   },
+  "deleteComment": "Delete Comment",
+  "@deleteComment": {
+    "description": "Action for deleting a comment"
+  },
   "deleteImageConfirmMessage": "Are you sure you want to delete this image?",
   "@deleteImageConfirmMessage": {
     "description": "Confirmation messages for deleting an image"
@@ -1861,6 +1865,10 @@
   "@removeAsCommunityModerator": {
     "description": "Moderator action to remove user as community moderator"
   },
+  "removeComment": "Remove Comment",
+  "@removeComment": {
+    "description": "Moderator action to remove a comment"
+  },
   "removeFromFavorites": "Remove from favorites",
   "@removeFromFavorites": {
     "description": "Action to remove a community in drawer from favorites"
@@ -1953,6 +1961,10 @@
   },
   "restore": "Restore",
   "@restore": {},
+  "restoreComment": "Restore Comment",
+  "@restoreComment": {
+    "description": "Moderator action to restore a comment"
+  },
   "restorePost": "Restore Post",
   "@restorePost": {
     "description": "Action to restore a post (moderator action)"

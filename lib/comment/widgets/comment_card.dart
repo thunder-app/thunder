@@ -4,13 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/comment/utils/navigate_comment.dart';
 
+import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/shared/comment_content.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -57,9 +58,6 @@ class CommentCard extends StatefulWidget {
   /// Callback function for when a comment being replied to or edited
   final Function(CommentView commentView, bool isEdit)? onReplyEditAction;
 
-  /// Callback function for when a comment is reported
-  final Function(int commentId)? onReportAction;
-
   const CommentCard({
     super.key,
     required this.commentView,
@@ -75,7 +73,6 @@ class CommentCard extends StatefulWidget {
     this.onCollapseCommentChange,
     this.onDeleteAction,
     this.onReplyEditAction,
-    this.onReportAction,
   });
 
   @override
@@ -306,20 +303,40 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           showCommentActionBottomModalSheet(
                             context,
                             widget.commentView,
-                            widget.onSaveAction ?? () {},
-                            widget.onDeleteAction ?? () {},
-                            widget.onVoteAction ?? () {},
-                            (CommentView commentView, bool isEdit) {
-                              return navigateToCreateCommentPage(
-                                context,
-                                commentView: isEdit ? commentView : null,
-                                parentCommentView: isEdit ? null : commentView,
-                                onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
-                              );
+                            isShowingSource: viewSource,
+                            onAction: ({commentAction, required commentView, communityAction, userAction, value}) {
+                              if (commentAction != null) {
+                                switch (commentAction) {
+                                  case CommentAction.vote:
+                                    widget.onVoteAction?.call(commentView.comment.id, value);
+                                    break;
+                                  case CommentAction.save:
+                                    widget.onSaveAction?.call(commentView.comment.id, value);
+                                    break;
+                                  case CommentAction.reply:
+                                    widget.onReplyEditAction?.call(commentView, false);
+                                    break;
+                                  case CommentAction.edit:
+                                    widget.onReplyEditAction?.call(commentView, true);
+                                    break;
+                                  case CommentAction.delete:
+                                    widget.onDeleteAction?.call(commentView.comment.id, value);
+                                    break;
+                                  case CommentAction.report:
+                                    context.read<PostBloc>().add(ReportCommentEvent(commentId: commentView.comment.id, message: value));
+                                    break;
+                                  case CommentAction.viewSource:
+                                    setState(() => viewSource = !viewSource);
+                                    break;
+                                  default:
+                                    break;
+                                }
+                              } else if (communityAction != null) {
+                                // @todo - implement community actions
+                              } else if (userAction != null) {
+                                setState(() {});
+                              }
                             },
-                            widget.onReportAction ?? () {},
-                            () => setState(() => viewSource = !viewSource),
-                            viewSource,
                           );
                         },
                         onTap: () {
@@ -331,7 +348,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
                           onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
                           onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
-                          onReportAction: (int commentId) => widget.onReportAction?.call(commentId),
                           onReplyEditAction: (CommentView commentView, bool isEdit) {
                             return navigateToCreateCommentPage(
                               context,

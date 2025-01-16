@@ -305,7 +305,6 @@ class _CommentReferenceState extends State<CommentReference> {
                         onVoteAction: (int commentId, int voteType) => widget.onVoteAction?.call(commentId, voteType),
                         onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
                         onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, widget.isOwnComment),
-                        onReportAction: (int commentId) => widget.onReportAction?.call(commentId),
                         isOwnComment: widget.isOwnComment,
                         isHidden: false,
                         excludeSemantics: true,

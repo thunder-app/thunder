@@ -316,7 +316,9 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                               itemBuilder: (context, index) {
                                 CommentView commentView = CommentView(
                                   comment: state.commentReports[index].comment,
-                                  creator: state.commentReports[index].creator,
+                                  creator: state.commentReports[index].commentCreator,
+                                  creatorIsModerator: state.commentReports[index].creatorIsModerator,
+                                  creatorIsAdmin: state.commentReports[index].creatorIsAdmin,
                                   post: state.commentReports[index].post,
                                   community: state.commentReports[index].community,
                                   counts: state.commentReports[index].counts,

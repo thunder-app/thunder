@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/enums/comment_action.dart';
 
+import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -13,8 +16,6 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import '../../shared/comment_content.dart';
-import '../utils/comment_action_helpers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentCard extends StatefulWidget {
   final Function(int, int) onVoteAction;
@@ -22,7 +23,6 @@ class CommentCard extends StatefulWidget {
   final Function(int, bool) onCollapseCommentChange;
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
-  final Function(int) onReportAction;
 
   final Set collapsedCommentSet;
   final int? selectCommentId;
@@ -39,7 +39,6 @@ class CommentCard extends StatefulWidget {
     required this.onSaveAction,
     required this.onCollapseCommentChange,
     required this.onReplyEditAction,
-    required this.onReportAction,
     this.collapsedCommentSet = const {},
     this.selectCommentId,
     this.selectedCommentPath,
@@ -353,13 +352,40 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 showCommentActionBottomModalSheet(
                                   context,
                                   widget.commentViewTree.commentView!,
-                                  widget.onSaveAction,
-                                  widget.onDeleteAction,
-                                  widget.onVoteAction,
-                                  widget.onReplyEditAction,
-                                  widget.onReportAction,
-                                  () => setState(() => viewSource = !viewSource),
-                                  viewSource,
+                                  isShowingSource: viewSource,
+                                  onAction: ({commentAction, required commentView, communityAction, userAction, value}) {
+                                    if (commentAction != null) {
+                                      switch (commentAction) {
+                                        case CommentAction.vote:
+                                          widget.onVoteAction(commentView.comment.id, value);
+                                          break;
+                                        case CommentAction.save:
+                                          widget.onSaveAction(commentView.comment.id, value);
+                                          break;
+                                        case CommentAction.reply:
+                                          widget.onReplyEditAction(commentView, false);
+                                          break;
+                                        case CommentAction.edit:
+                                          widget.onReplyEditAction(commentView, true);
+                                          break;
+                                        case CommentAction.delete:
+                                          widget.onDeleteAction(commentView.comment.id, value);
+                                          break;
+                                        case CommentAction.report:
+                                          context.read<PostBloc>().add(ReportCommentEvent(commentId: commentView.comment.id, message: value));
+                                          break;
+                                        case CommentAction.viewSource:
+                                          setState(() => viewSource = !viewSource);
+                                          break;
+                                        default:
+                                          break;
+                                      }
+                                    } else if (communityAction != null) {
+                                      // @todo - implement community actions
+                                    } else if (userAction != null) {
+                                      setState(() {});
+                                    }
+                                  },
                                 );
                               },
                               onTap: () {
@@ -372,7 +398,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
                                 onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
                                 onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
-                                onReportAction: (int commentId) => widget.onReportAction(commentId),
                                 onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,
@@ -471,7 +496,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].commentView!.comment.id),
                               level: widget.level + 1,
                               onVoteAction: widget.onVoteAction,
-                              onReportAction: widget.onReportAction,
                               onSaveAction: widget.onSaveAction,
                               onCollapseCommentChange: widget.onCollapseCommentChange,
                               onDeleteAction: widget.onDeleteAction,

@@ -11,12 +11,12 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
+import 'package:thunder/utils/global_context.dart';
 
 /// Defines the actions that can be taken on a user
 /// TODO: Implement admin-level actions
@@ -36,16 +36,16 @@ enum PostPostAction {
   ;
 
   String get name => switch (this) {
-        PostPostAction.reportPost => l10n.reportPost,
-        PostPostAction.editPost => l10n.editPost,
-        PostPostAction.deletePost => l10n.deletePost,
-        PostPostAction.restorePost => l10n.restorePost,
-        PostPostAction.lockPost => l10n.lockPost,
-        PostPostAction.unlockPost => l10n.unlockPost,
-        PostPostAction.removePost => l10n.removePost,
-        PostPostAction.restorePostAsModerator => l10n.restorePost,
-        PostPostAction.pinPostToCommunity => l10n.pinPostToCommunity,
-        PostPostAction.unpinPostFromCommunity => l10n.unpinPostFromCommunity,
+        PostPostAction.reportPost => GlobalContext.l10n.reportPost,
+        PostPostAction.editPost => GlobalContext.l10n.editPost,
+        PostPostAction.deletePost => GlobalContext.l10n.deletePost,
+        PostPostAction.restorePost => GlobalContext.l10n.restorePost,
+        PostPostAction.lockPost => GlobalContext.l10n.lockPost,
+        PostPostAction.unlockPost => GlobalContext.l10n.unlockPost,
+        PostPostAction.removePost => GlobalContext.l10n.removePost,
+        PostPostAction.restorePostAsModerator => GlobalContext.l10n.restorePost,
+        PostPostAction.pinPostToCommunity => GlobalContext.l10n.pinPostToCommunity,
+        PostPostAction.unpinPostFromCommunity => GlobalContext.l10n.unpinPostFromCommunity,
         // PostPostAction.pinPostToInstance => "Pin Post To Instance",
         // PostPostAction.unpinPostFromInstance => "Unpin Post From Instance",
       };
@@ -185,8 +185,8 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
     showThunderDialog(
       context: widget.context,
-      title: l10n.reportPost,
-      primaryButtonText: l10n.report(1),
+      title: GlobalContext.l10n.reportPost,
+      primaryButtonText: GlobalContext.l10n.report(1),
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
         widget.context.read<FeedBloc>().add(
               FeedItemActionedEvent(
@@ -197,12 +197,12 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
             );
         Navigator.of(dialogContext).pop();
       },
-      secondaryButtonText: l10n.cancel,
+      secondaryButtonText: GlobalContext.l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: l10n.message(0),
+          labelText: GlobalContext.l10n.message(0),
         ),
         autofocus: true,
         controller: messageController,
@@ -217,8 +217,8 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
     showThunderDialog(
       context: widget.context,
-      title: widget.postViewMedia.postView.post.removed ? l10n.restorePost : l10n.removalReason,
-      primaryButtonText: widget.postViewMedia.postView.post.removed ? l10n.restore : l10n.remove,
+      title: widget.postViewMedia.postView.post.removed ? GlobalContext.l10n.restorePost : GlobalContext.l10n.removalReason,
+      primaryButtonText: widget.postViewMedia.postView.post.removed ? GlobalContext.l10n.restore : GlobalContext.l10n.remove,
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
         widget.context.read<FeedBloc>().add(
               FeedItemActionedEvent(
@@ -232,12 +232,12 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
             );
         Navigator.of(dialogContext).pop();
       },
-      secondaryButtonText: l10n.cancel,
+      secondaryButtonText: GlobalContext.l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: l10n.message(0),
+          labelText: GlobalContext.l10n.message(0),
         ),
         autofocus: true,
         controller: messageController,

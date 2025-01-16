@@ -3,19 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
-// import 'package:thunder/shared/divider.dart';
-// import 'package:thunder/thunder/thunder_icons.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
-/// Defines the actions that can be taken on a community
-enum InstancePostAction {
+/// Defines the actions that can be taken on an instance
+enum InstanceBottomSheetAction {
   visitCommunityInstance(icon: Icons.language_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
   blockCommunityInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
   unblockCommunityInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
@@ -25,12 +22,12 @@ enum InstancePostAction {
   ;
 
   String get name => switch (this) {
-        InstancePostAction.visitCommunityInstance => l10n.visitCommunityInstance,
-        InstancePostAction.blockCommunityInstance => l10n.blockCommunityInstance,
-        InstancePostAction.unblockCommunityInstance => l10n.unblockCommunityInstance,
-        InstancePostAction.visitUserInstance => l10n.visitUserInstance,
-        InstancePostAction.blockUserInstance => l10n.blockUserInstance,
-        InstancePostAction.unblockUserInstance => l10n.unblockUserInstance,
+        InstanceBottomSheetAction.visitCommunityInstance => GlobalContext.l10n.visitCommunityInstance,
+        InstanceBottomSheetAction.blockCommunityInstance => GlobalContext.l10n.blockCommunityInstance,
+        InstanceBottomSheetAction.unblockCommunityInstance => GlobalContext.l10n.unblockCommunityInstance,
+        InstanceBottomSheetAction.visitUserInstance => GlobalContext.l10n.visitUserInstance,
+        InstanceBottomSheetAction.blockUserInstance => GlobalContext.l10n.blockUserInstance,
+        InstanceBottomSheetAction.unblockUserInstance => GlobalContext.l10n.unblockUserInstance,
       };
 
   /// The icon to use for the action
@@ -42,63 +39,79 @@ enum InstancePostAction {
   /// Whether or not the action requires user authentication
   final bool requiresAuthentication;
 
-  const InstancePostAction({required this.icon, required this.permissionType, required this.requiresAuthentication});
+  const InstanceBottomSheetAction({required this.icon, required this.permissionType, required this.requiresAuthentication});
 }
 
 /// A bottom sheet that allows the user to perform actions on a instance.
 ///
-/// Given a [postViewMedia] and a [onAction] callback, this widget will display a list of actions that can be taken on the instance.
-class InstancePostActionBottomSheet extends StatefulWidget {
-  const InstancePostActionBottomSheet({super.key, required this.postViewMedia, required this.onAction});
+/// Given an [onAction] callback, this widget will display a list of actions that can be taken on the instance.
+class InstanceActionBottomSheet extends StatefulWidget {
+  const InstanceActionBottomSheet({
+    super.key,
+    this.communityInstanceId,
+    this.communityInstanceUrl,
+    this.userInstanceId,
+    this.userInstanceUrl,
+    required this.onAction,
+  });
 
-  /// The post information
-  final PostViewMedia postViewMedia;
+  /// The instance id for the given community
+  final int? communityInstanceId;
+
+  /// The community actor id
+  final String? communityInstanceUrl;
+
+  /// The instance id for the given user
+  final int? userInstanceId;
+
+  /// The user actor id
+  final String? userInstanceUrl;
 
   /// Called when an action is selected
   final Function() onAction;
 
   @override
-  State<InstancePostActionBottomSheet> createState() => _InstancePostActionBottomSheetState();
+  State<InstanceActionBottomSheet> createState() => _InstanceActionBottomSheetState();
 }
 
-class _InstancePostActionBottomSheetState extends State<InstancePostActionBottomSheet> {
-  void performAction(InstancePostAction action) {
+class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
+  void performAction(InstanceBottomSheetAction action) {
     switch (action) {
-      case InstancePostAction.visitCommunityInstance:
-        navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId)!, instanceId: widget.postViewMedia.postView.community.instanceId);
+      case InstanceBottomSheetAction.visitCommunityInstance:
+        navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(widget.communityInstanceUrl)!, instanceId: widget.communityInstanceId);
         break;
-      case InstancePostAction.blockCommunityInstance:
+      case InstanceBottomSheetAction.blockCommunityInstance:
         context.read<InstanceBloc>().add(InstanceActionEvent(
               instanceAction: InstanceAction.block,
-              instanceId: widget.postViewMedia.postView.community.instanceId,
-              domain: fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId),
+              instanceId: widget.communityInstanceId!,
+              domain: fetchInstanceNameFromUrl(widget.communityInstanceUrl),
               value: true,
             ));
         break;
-      case InstancePostAction.unblockCommunityInstance:
+      case InstanceBottomSheetAction.unblockCommunityInstance:
         context.read<InstanceBloc>().add(InstanceActionEvent(
               instanceAction: InstanceAction.block,
-              instanceId: widget.postViewMedia.postView.community.instanceId,
-              domain: fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId),
+              instanceId: widget.communityInstanceId!,
+              domain: fetchInstanceNameFromUrl(widget.communityInstanceUrl),
               value: false,
             ));
         break;
-      case InstancePostAction.visitUserInstance:
-        navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(widget.postViewMedia.postView.creator.actorId)!, instanceId: widget.postViewMedia.postView.creator.instanceId);
+      case InstanceBottomSheetAction.visitUserInstance:
+        navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(widget.userInstanceUrl)!, instanceId: widget.userInstanceId);
         break;
-      case InstancePostAction.blockUserInstance:
+      case InstanceBottomSheetAction.blockUserInstance:
         context.read<InstanceBloc>().add(InstanceActionEvent(
               instanceAction: InstanceAction.block,
-              instanceId: widget.postViewMedia.postView.creator.instanceId,
-              domain: fetchInstanceNameFromUrl(widget.postViewMedia.postView.creator.actorId),
+              instanceId: widget.userInstanceId!,
+              domain: fetchInstanceNameFromUrl(widget.userInstanceUrl),
               value: true,
             ));
         break;
-      case InstancePostAction.unblockUserInstance:
+      case InstanceBottomSheetAction.unblockUserInstance:
         context.read<InstanceBloc>().add(InstanceActionEvent(
               instanceAction: InstanceAction.block,
-              instanceId: widget.postViewMedia.postView.creator.instanceId,
-              domain: fetchInstanceNameFromUrl(widget.postViewMedia.postView.creator.actorId),
+              instanceId: widget.userInstanceId!,
+              domain: fetchInstanceNameFromUrl(widget.userInstanceUrl),
               value: false,
             ));
         break;
@@ -109,7 +122,7 @@ class _InstancePostActionBottomSheetState extends State<InstancePostActionBottom
   Widget build(BuildContext context) {
     final authState = context.read<AuthBloc>().state;
 
-    List<InstancePostAction> userActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
+    List<InstanceBottomSheetAction> userActions = InstanceBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     // List<InstancePostAction> moderatorActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
     // List<InstancePostAction> adminActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
@@ -121,39 +134,60 @@ class _InstancePostActionBottomSheetState extends State<InstancePostActionBottom
     final isLoggedIn = authState.isLoggedIn;
     final blockedInstances = authState.getSiteResponse?.myUser?.instanceBlocks ?? [];
 
-    final communityInstance = fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId);
-    final userInstance = fetchInstanceNameFromUrl(widget.postViewMedia.postView.creator.actorId);
+    final communityInstance = fetchInstanceNameFromUrl(widget.communityInstanceUrl);
+    final userInstance = fetchInstanceNameFromUrl(widget.userInstanceUrl);
     final accountInstance = fetchInstanceNameFromUrl(account?.actorId);
 
-    final isCommunityInstanceBlocked = blockedInstances.where((ibv) => ibv.instance.id == widget.postViewMedia.postView.community.instanceId).isNotEmpty;
-    final isUserInstanceBlocked = blockedInstances.where((ibv) => ibv.instance.id == widget.postViewMedia.postView.creator.instanceId).isNotEmpty;
+    final isCommunityInstanceBlocked = blockedInstances.where((ibv) => ibv.instance.id == widget.communityInstanceId).isNotEmpty;
+    final isUserInstanceBlocked = blockedInstances.where((ibv) => ibv.instance.id == widget.userInstanceId).isNotEmpty;
+
+    // Filter out actions that don't have the proper information passed in
+    if (widget.communityInstanceId == null || widget.communityInstanceUrl == null) {
+      userActions = userActions
+          .where(
+            (action) =>
+                action != InstanceBottomSheetAction.visitCommunityInstance &&
+                action != InstanceBottomSheetAction.blockCommunityInstance &&
+                action != InstanceBottomSheetAction.unblockCommunityInstance,
+          )
+          .toList();
+    }
+
+    if (widget.userInstanceId == null || widget.userInstanceUrl == null) {
+      userActions = userActions
+          .where((action) => action != InstanceBottomSheetAction.visitUserInstance && action != InstanceBottomSheetAction.blockUserInstance && action != InstanceBottomSheetAction.unblockUserInstance)
+          .toList();
+    }
 
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
+      // Filter out actions that the user can't perform
       if (isCommunityInstanceBlocked) {
-        userActions = userActions.where((action) => action != InstancePostAction.blockCommunityInstance).toList();
+        userActions = userActions.where((action) => action != InstanceBottomSheetAction.blockCommunityInstance).toList();
       } else {
-        userActions = userActions.where((action) => action != InstancePostAction.unblockCommunityInstance).toList();
+        userActions = userActions.where((action) => action != InstanceBottomSheetAction.unblockCommunityInstance).toList();
       }
 
       if (isUserInstanceBlocked) {
-        userActions = userActions.where((action) => action != InstancePostAction.blockUserInstance).toList();
+        userActions = userActions.where((action) => action != InstanceBottomSheetAction.blockUserInstance).toList();
       } else {
-        userActions = userActions.where((action) => action != InstancePostAction.unblockUserInstance).toList();
+        userActions = userActions.where((action) => action != InstanceBottomSheetAction.unblockUserInstance).toList();
       }
     }
 
-    if (communityInstance == userInstance) {
-      userActions.removeWhere((action) => action == InstancePostAction.visitUserInstance || action == InstancePostAction.blockUserInstance);
+    // Remove duplicate actions
+    if (userInstance == communityInstance) {
+      userActions.removeWhere((action) => action == InstanceBottomSheetAction.visitUserInstance || action == InstanceBottomSheetAction.blockUserInstance);
     }
 
+    // Filter out any instances that match the account instance, and prevent the user from blocking their own instance
     if (communityInstance == accountInstance) {
-      userActions.removeWhere((action) => action == InstancePostAction.blockCommunityInstance);
+      userActions.removeWhere((action) => action == InstanceBottomSheetAction.blockCommunityInstance);
     }
 
     if (userInstance == accountInstance) {
-      userActions.removeWhere((action) => action == InstancePostAction.blockUserInstance);
+      userActions.removeWhere((action) => action == InstanceBottomSheetAction.blockUserInstance);
     }
 
     return BlocListener<InstanceBloc, InstanceState>(
@@ -171,12 +205,12 @@ class _InstancePostActionBottomSheetState extends State<InstancePostActionBottom
                 (instancePostAction) => BottomSheetAction(
                   leading: Icon(instancePostAction.icon),
                   subtitle: switch (instancePostAction) {
-                    InstancePostAction.visitCommunityInstance => communityInstance,
-                    InstancePostAction.blockCommunityInstance => communityInstance,
-                    InstancePostAction.unblockCommunityInstance => communityInstance,
-                    InstancePostAction.visitUserInstance => userInstance,
-                    InstancePostAction.blockUserInstance => userInstance,
-                    InstancePostAction.unblockUserInstance => userInstance,
+                    InstanceBottomSheetAction.visitCommunityInstance => communityInstance,
+                    InstanceBottomSheetAction.blockCommunityInstance => communityInstance,
+                    InstanceBottomSheetAction.unblockCommunityInstance => communityInstance,
+                    InstanceBottomSheetAction.visitUserInstance => userInstance,
+                    InstanceBottomSheetAction.blockUserInstance => userInstance,
+                    InstanceBottomSheetAction.unblockUserInstance => userInstance,
                   },
                   title: instancePostAction.name,
                   onTap: () => performAction(instancePostAction),

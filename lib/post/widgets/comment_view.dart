@@ -22,7 +22,6 @@ class CommentSubview extends StatefulWidget {
   final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
-  final Function(int) onReportAction;
   final Function(CommentView, bool) onReplyEditAction;
 
   final PostViewMedia? postViewMedia;
@@ -47,7 +46,6 @@ class CommentSubview extends StatefulWidget {
     required this.onSaveAction,
     required this.onDeleteAction,
     required this.onReplyEditAction,
-    required this.onReportAction,
     this.postViewMedia,
     this.selectedCommentId,
     this.selectedCommentPath,
@@ -249,7 +247,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       onVoteAction: (int commentId, int voteType) => widget.onVoteAction(commentId, voteType),
                       onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
                       onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
-                      onReportAction: (int commentId) => widget.onReportAction(commentId),
                       onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                     ),
                   if (index == widget.comments.length + 1) ...[
