@@ -223,6 +223,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       if (isCommentRemoved) {
         moderatorActions = moderatorActions.where((action) => action != CommentBottomSheetAction.removeComment).toList();
       } else {
+        generalActions = generalActions.where((action) => action != CommentBottomSheetAction.viewModlog).toList();
         moderatorActions = moderatorActions.where((action) => action != CommentBottomSheetAction.restoreCommentAsModerator).toList();
       }
     }
