@@ -15,7 +15,7 @@ dependencies:
   lemmy_api_client:
     git:
       url: "https://github.com/thunder-app/lemmy_api_client.git"
-      ref: 874005c9013de53f526562f882fe8231eb0ce5ae
+      ref: f352a17afad3d7a4fa98e1711a4886d1fa3929ae
   link_preview_generator:
     git:
       url: "https://github.com/thunder-app/link_preview_generator.git"
@@ -39,7 +39,6 @@ dependencies:
   connectivity_plus: "^6.0.2"
   dart_ping: "^9.0.0"
   dart_ping_ios: "^4.0.0"
-  device_info_plus: ^11.1.1
   drift: "^2.21.0"
   drift_flutter: "^0.2.1"
   dynamic_color: "^1.6.5"
@@ -92,6 +91,8 @@ dependencies:
   webview_flutter_wkwebview: "^3.5.0"
   youtube_player_flutter: "^9.1.0"
   youtube_player_iframe: "^5.2.0"
+  freezed_annotation: ^2.4.4
+  freezed: ^2.5.7
 
 dev_dependencies:
   flutter_test:

@@ -10,6 +10,12 @@ enum UserSettingsStatus {
   revert,
   failedRevert,
   notLoggedIn,
+  listingMedia,
+  failedListingMedia,
+  succeededListingMedia,
+  deletingMedia,
+  searchingMedia,
+  succeededSearchingMedia,
 }
 
 class UserSettingsState extends Equatable {
@@ -23,6 +29,9 @@ class UserSettingsState extends Equatable {
     this.instanceBeingBlocked = 0,
     this.getSiteResponse,
     this.errorMessage = '',
+    this.images,
+    this.imageSearchPosts,
+    this.imageSearchComments,
   });
 
   final UserSettingsStatus status;
@@ -38,6 +47,9 @@ class UserSettingsState extends Equatable {
   final GetSiteResponse? getSiteResponse;
 
   final String? errorMessage;
+  final List<LocalImageView>? images;
+  final List<PostViewMedia>? imageSearchPosts;
+  final List<CommentView>? imageSearchComments;
 
   UserSettingsState copyWith({
     required UserSettingsStatus status,
@@ -49,6 +61,9 @@ class UserSettingsState extends Equatable {
     int? instanceBeingBlocked,
     GetSiteResponse? getSiteResponse,
     String? errorMessage,
+    List<LocalImageView>? images,
+    List<PostViewMedia>? imageSearchPosts,
+    List<CommentView>? imageSearchComments,
   }) {
     return UserSettingsState(
       status: status,
@@ -60,6 +75,9 @@ class UserSettingsState extends Equatable {
       instanceBeingBlocked: instanceBeingBlocked ?? this.instanceBeingBlocked,
       getSiteResponse: getSiteResponse ?? this.getSiteResponse,
       errorMessage: errorMessage ?? this.errorMessage,
+      images: images ?? this.images,
+      imageSearchPosts: imageSearchPosts ?? this.imageSearchPosts,
+      imageSearchComments: imageSearchComments ?? this.imageSearchComments,
     );
   }
 
@@ -74,5 +92,6 @@ class UserSettingsState extends Equatable {
         instanceBeingBlocked,
         getSiteResponse,
         errorMessage,
+        images,
       ];
 }

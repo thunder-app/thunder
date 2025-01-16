@@ -1,0 +1,94 @@
+name: release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        description: Is this a dry run (do not generate draft release)?
+        default: true
+
+jobs:
+  build_android:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.x' # When updating this, also update the corresponding f-droid metadata file
+          channel: 'stable'
+          cache: true
+
+      - name: Read pubspec.yaml version
+        id: extract-version
+        uses: NiklasLehnfeld/flutter-version-number-action@main
+        with:
+          file-path: pubspec.yaml
+
+      - name: Generate version information
+        id: generate-version-info
+        run: |
+          VERSION=${{ steps.extract-version.outputs.version-number }}
+          VERSION=$(echo "$VERSION" | cut -d '+' -f 1)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          PRERELEASE=false
+          if [[ "$VERSION" == *-* ]]; then
+            PRERELEASE=true
+          fi
+          echo "prerelease=$PRERELEASE" >> $GITHUB_OUTPUT
+          TAG="$VERSION"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Info: version=$VERSION | tag=${TAG} | prerelease=$PRERELEASE"
+
+      - name: Build Android APK (unsigned)
+        run: |
+          sed -i 's/signingConfig signingConfigs.release//g' android/app/build.gradle
+          flutter build apk --release --flavor production --no-tree-shake-icons
+          rm ./build/app/outputs/flutter-apk/*.sha1
+          ls -l ./build/app/outputs/flutter-apk/
+
+      - name: Sign Android APKs
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          echo "${KEYSTORE_BASE64}" | base64 -d > apksign.keystore
+          for apk in ./build/app/outputs/flutter-apk/*-release*.apk; do
+            unsignedFn=${apk/-release/-unsigned}
+            mv "$apk" "$unsignedFn"
+            ${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner sign --ks apksign.keystore --ks-pass pass:"${KEYSTORE_PASSWORD}" --out "${apk}" "${unsignedFn}"
+            echo "${apk} | $(shasum -a 256 ${apk} | cut -d " " -f 1)"
+          done
+          rm apksign.keystore
+          echo "Finished signing Android APKs"
+        
+      - name: Rename Android APKs
+        run: |
+          for apk in ./build/app/outputs/flutter-apk/*-release*.apk; do
+          mv "$apk" "./build/app/outputs/flutter-apk/thunder-v${{ steps.generate-version-info.outputs.version }}.apk"
+          done
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          path: ./build/app/outputs/flutter-apk/
+
+      - name: Create draft release and upload artifacts
+        if: ${{ inputs.dry_run }} == 'false'
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: "${{ steps.generate-version-info.outputs.tag }}"
+          prerelease: ${{ steps.generate-version-info.outputs.prerelease }}
+          draft: true
+          artifacts: ./build/app/outputs/flutter-apk/thunder-v*.apk
+          generateReleaseNotes: true
