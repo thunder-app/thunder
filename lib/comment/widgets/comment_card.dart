@@ -246,7 +246,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   ? AnimatedContainer(
                       alignment: Alignment.centerLeft,
                       color: swipeAction == null
-                          ? state.leftPrimaryCommentGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                          ? state.leftPrimaryCommentGesture.getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
                           : (swipeAction ?? SwipeAction.none).getColor(context),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
@@ -257,7 +257,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
                       color: swipeAction == null
-                          ? (state.rightPrimaryCommentGesture).getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                          ? (state.rightPrimaryCommentGesture).getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
                           : (swipeAction ?? SwipeAction.none).getColor(context),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
@@ -276,7 +276,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 ? theme.colorScheme.surface
                                 : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
                                     ? getCommentLevelColor(context, (widget.level - 1) % 6)
-                                    : theme.hintColor.withOpacity(0.25),
+                                    : theme.hintColor.withValues(alpha: 0.25),
                           ),
                         )
                       : Border(
@@ -455,7 +455,7 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
                     widget.replies == 1 ? l10n.loadMoreSingular(widget.replies) : l10n.loadMorePlural(widget.replies),
                     fontScale: state.commentFontSizeScale,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                     ),
                   ),
                 ),

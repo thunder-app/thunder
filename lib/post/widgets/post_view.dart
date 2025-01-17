@@ -156,7 +156,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         if (postViewMedia.media.first.mediaType == MediaType.link && thunderState.postBodyViewType == PostBodyViewType.condensed)
                           Text(
                             Uri.tryParse(post.url ?? '')?.host.replaceFirst('www.', '') ?? '',
-                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.6)),
+                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
                           )
                       ],
                     ),
@@ -254,7 +254,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         'to',
                         fontScale: thunderState.metadataFontSizeScale,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                         ),
                       ),
                       CommunityChip(
@@ -496,7 +496,7 @@ class PostBodyPreview extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     stops: const [0.0, 1.0],
                     colors: [
-                      theme.scaffoldBackgroundColor.withOpacity(0.0),
+                      theme.scaffoldBackgroundColor.withValues(alpha: 0.0),
                       theme.scaffoldBackgroundColor,
                     ],
                   ),

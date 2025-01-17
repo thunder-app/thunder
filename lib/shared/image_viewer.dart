@@ -154,7 +154,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 400),
-            color: fullscreen ? Colors.black : Colors.black.withOpacity(slideTransparency),
+            color: fullscreen ? Colors.black : Colors.black.withValues(alpha: slideTransparency),
           ),
           Positioned.fill(
             child: GestureDetector(
@@ -255,7 +255,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                   child: widget.url != null
                       ? ExtendedImage.network(
                           widget.url!,
-                          color: Colors.white.withOpacity(imageTransparency),
+                          color: Colors.white.withValues(alpha: imageTransparency),
                           colorBlendMode: BlendMode.dstIn,
                           enableSlideOutPage: true,
                           mode: ExtendedImageMode.gesture,
@@ -309,7 +309,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             if (state.extendedImageLoadState == LoadState.loading) {
                               return Center(
                                 child: CircularProgressIndicator(
-                                  color: Colors.white.withOpacity(0.90),
+                                  color: Colors.white.withValues(alpha: 0.90),
                                 ),
                               );
                             }
@@ -318,7 +318,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         )
                       : ExtendedImage.memory(
                           widget.bytes!,
-                          color: Colors.white.withOpacity(imageTransparency),
+                          color: Colors.white.withValues(alpha: imageTransparency),
                           colorBlendMode: BlendMode.dstIn,
                           enableSlideOutPage: true,
                           mode: ExtendedImageMode.gesture,
@@ -370,7 +370,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             if (state.extendedImageLoadState == LoadState.loading) {
                               return Center(
                                 child: CircularProgressIndicator(
-                                  color: Colors.white.withOpacity(0.90),
+                                  color: Colors.white.withValues(alpha: 0.90),
                                 ),
                               );
                             }
@@ -414,7 +414,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             icon: Icon(
                               Icons.arrow_back,
                               semanticLabel: "Back",
-                              color: Colors.white.withOpacity(0.90),
+                              color: Colors.white.withValues(alpha: 0.90),
                             ),
                           ),
                         ),
@@ -476,13 +476,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       height: 20,
                                       width: 20,
                                       child: CircularProgressIndicator(
-                                        color: Colors.white.withOpacity(0.90),
+                                        color: Colors.white.withValues(alpha: 0.90),
                                       ),
                                     )
                                   : Icon(
                                       Icons.share_rounded,
                                       semanticLabel: "Share",
-                                      color: Colors.white.withOpacity(0.90),
+                                      color: Colors.white.withValues(alpha: 0.90),
                                     ),
                             ),
                           ),
@@ -528,19 +528,19 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       height: 20,
                                       width: 20,
                                       child: CircularProgressIndicator(
-                                        color: Colors.white.withOpacity(0.90),
+                                        color: Colors.white.withValues(alpha: 0.90),
                                       ),
                                     )
                                   : downloaded
                                       ? Icon(
                                           Icons.check_circle,
                                           semanticLabel: 'Downloaded',
-                                          color: Colors.white.withOpacity(0.90),
+                                          color: Colors.white.withValues(alpha: 0.90),
                                         )
                                       : Icon(
                                           Icons.download,
                                           semanticLabel: "Download",
-                                          color: Colors.white.withOpacity(0.90),
+                                          color: Colors.white.withValues(alpha: 0.90),
                                         ),
                             ),
                           ),
@@ -555,7 +555,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                               icon: Icon(
                                 Icons.chat_rounded,
                                 semanticLabel: "Comments",
-                                color: Colors.white.withOpacity(0.90),
+                                color: Colors.white.withValues(alpha: 0.90),
                               ),
                             ),
                           ),
@@ -628,7 +628,7 @@ class _ImageAltTextWrapperState extends State<ImageAltTextWrapper> {
                 child: Text(
                   l10n.showLess,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                   ),
                 ),
               ),
@@ -662,7 +662,7 @@ class _ImageAltTextWrapperState extends State<ImageAltTextWrapper> {
                   child: Text(
                     l10n.showMore,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                     ),
                   ),
                 ),
@@ -691,11 +691,11 @@ class ImageAltText extends StatelessWidget {
       key: key,
       altText,
       style: theme.textTheme.bodyMedium?.copyWith(
-        color: Colors.white.withOpacity(0.90),
+        color: Colors.white.withValues(alpha: 0.90),
         shadows: [
           Shadow(
             offset: const Offset(1, 1),
-            color: Colors.black.withOpacity(1),
+            color: Colors.black.withValues(alpha: 1),
             blurRadius: 5.0,
           )
         ],

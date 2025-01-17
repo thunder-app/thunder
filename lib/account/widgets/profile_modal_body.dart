@@ -296,7 +296,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                       child: Icon(
                                         accounts![index].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
                                         size: 10,
-                                        color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), accounts![index].alive == true ? Colors.green : Colors.red),
+                                        color: Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), accounts![index].alive == true ? Colors.green : Colors.red),
                                       ),
                                     ),
                                   ),
@@ -336,14 +336,14 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                               Text(
                                                 '•',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.55),
                                                 ),
                                               ),
                                               const SizedBox(width: 5),
                                               Text(
                                                 'v${accounts![index].version}',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.55),
                                                 ),
                                               ),
                                             ],
@@ -360,14 +360,14 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                               Text(
                                                 '•',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.55),
                                                 ),
                                               ),
                                               const SizedBox(width: 5),
                                               Text(
                                                 '${accounts![index].latency?.inMilliseconds}ms',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.55),
                                                 ),
                                               ),
                                             ],
@@ -434,7 +434,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     l10n.noAccountsAdded,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontStyle: FontStyle.italic,
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                     ),
                   ),
                 ),
@@ -551,7 +551,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                         child: Icon(
                                           anonymousInstances![index].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
                                           size: 10,
-                                          color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), anonymousInstances![index].alive == true ? Colors.green : Colors.red),
+                                          color: Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), anonymousInstances![index].alive == true ? Colors.green : Colors.red),
                                         ),
                                       ),
                                     ),
@@ -584,14 +584,14 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                                 Text(
                                                   '•',
                                                   style: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.55),
                                                   ),
                                                 ),
                                                 const SizedBox(width: 5),
                                                 Text(
                                                   'v${anonymousInstances![index].version}',
                                                   style: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.55),
                                                   ),
                                                 ),
                                               ],
@@ -608,14 +608,14 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                                 Text(
                                                   '•',
                                                   style: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.55),
                                                   ),
                                                 ),
                                                 const SizedBox(width: 5),
                                                 Text(
                                                   '${anonymousInstances![index].latency?.inMilliseconds}ms',
                                                   style: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                    color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.55),
                                                   ),
                                                 ),
                                               ],
@@ -675,7 +675,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                       l10n.noAnonymousInstances,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontStyle: FontStyle.italic,
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                       ),
                     ),
                   ),
@@ -738,7 +738,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   }
 
   Future<void> fetchInstanceInfo(List<AccountExtended> accountsExtended) async {
-    accountsExtended.forEach((account) async {
+    for (final account in accountsExtended) {
       final GetInstanceInfoResponse instanceinfoResponse = await getInstanceInfo(account.instance).timeout(
         const Duration(seconds: 5),
         onTimeout: () => const GetInstanceInfoResponse(success: false),
@@ -748,11 +748,11 @@ class _ProfileSelectState extends State<ProfileSelect> {
         account.version = instanceinfoResponse.version;
         account.alive = instanceinfoResponse.success;
       });
-    });
+    }
   }
 
   Future<void> pingInstances(List<AccountExtended> accountsExtended) async {
-    accountsExtended.forEach((account) async {
+    for (final account in accountsExtended) {
       if (account.instance != null) {
         PingData pingData = await Ping(
           account.instance!,
@@ -761,7 +761,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
         ).stream.first;
         setState(() => account.latency = pingData.response?.time);
       }
-    });
+    }
   }
 
   Future<void> getUnreadCounts(List<AccountExtended> accountsExtended) async {
@@ -788,7 +788,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   }
 
   Future<void> fetchAnonymousInstanceInfo(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
-    anonymousInstancesExtended.forEach((anonymousInstanceExtended) async {
+    for (final anonymousInstanceExtended in anonymousInstancesExtended) {
       final GetInstanceInfoResponse instanceInfoResponse = await getInstanceInfo(anonymousInstanceExtended.anonymousInstance.instance).timeout(
         const Duration(seconds: 5),
         onTimeout: () => const GetInstanceInfoResponse(success: false),
@@ -798,18 +798,18 @@ class _ProfileSelectState extends State<ProfileSelect> {
         anonymousInstanceExtended.version = instanceInfoResponse.version;
         anonymousInstanceExtended.alive = instanceInfoResponse.success;
       });
-    });
+    }
   }
 
   Future<void> pingAnonymousInstances(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
-    anonymousInstancesExtended.forEach((anonymousInstanceExtended) async {
+    for (final anonymousInstanceExtended in anonymousInstancesExtended) {
       PingData pingData = await Ping(
         anonymousInstanceExtended.anonymousInstance.instance,
         count: 1,
         timeout: 5,
       ).stream.first;
       setState(() => anonymousInstanceExtended.latency = pingData.response?.time);
-    });
+    }
   }
 
   /// Recalculates the indices of all accounts and anonymous instances in the database, given the current order in the UI.

@@ -111,7 +111,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                       icon: Icon(
                         Icons.arrow_back,
                         semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                        color: Colors.white.withOpacity(0.90),
+                        color: Colors.white.withValues(alpha: 0.90),
                       ),
                     ),
                   ),
@@ -122,7 +122,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
                       icon: Icon(
                         Icons.open_in_browser_rounded,
                         semanticLabel: GlobalContext.l10n.openInBrowser,
-                        color: Colors.white.withOpacity(0.90),
+                        color: Colors.white.withValues(alpha: 0.90),
                       ),
                     ),
                   ),

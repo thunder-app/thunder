@@ -111,7 +111,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
               child: Text(
                 l10n.userLabelsSettingsPageDescription,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                 ),
               ),
             ),
@@ -142,7 +142,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                       child: Text(
                         l10n.noUserLabels,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                         ),
                       ),
                     )

@@ -846,7 +846,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               child: ListOption(
                 description: l10n.enableInboxNotifications,
                 subtitleWidget: Text.rich(
-                  style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8)),
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8)),
                   softWrap: true,
                   TextSpan(
                     children: [
@@ -859,7 +859,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           text: '- ${l10n.notificationsNotAllowed}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontStyle: FontStyle.italic,
-                            color: Colors.red.withOpacity(0.8),
+                            color: Colors.red.withValues(alpha: 0.8),
                           ),
                         ),
                       ],
@@ -871,7 +871,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               text: '- ${l10n.foundUnifiedPushDistribtorApp}',
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontStyle: FontStyle.italic,
-                                color: Colors.red.withOpacity(0.8),
+                                color: Colors.red.withValues(alpha: 0.8),
                               ),
                             ),
                           ],
@@ -881,7 +881,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               text: '- ${l10n.doNotSupportMultipleUnifiedPushApps}',
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontStyle: FontStyle.italic,
-                                color: Colors.red.withOpacity(0.8),
+                                color: Colors.red.withValues(alpha: 0.8),
                               ),
                             ),
                           ],
@@ -891,7 +891,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               text: '- ${l10n.noCompatibleAppFound}',
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontStyle: FontStyle.italic,
-                                color: Colors.red.withOpacity(0.8),
+                                color: Colors.red.withValues(alpha: 0.8),
                               ),
                             ),
                           ],
@@ -902,7 +902,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             text: l10n.connectedToUnifiedPushDistributorApp(unifiedPushConnectedDistributorApp!),
                             style: theme.textTheme.bodySmall?.copyWith(
                               fontStyle: FontStyle.italic,
-                              color: Colors.green.withOpacity(0.8),
+                              color: Colors.green.withValues(alpha: 0.8),
                             ),
                           ),
                         ],
@@ -945,7 +945,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                   icon: Icons.notifications_active_rounded,
                                   label: l10n.useUnifiedPushNotifications,
                                   subtitleWidget: Text.rich(
-                                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+                                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
                                     softWrap: true,
                                     TextSpan(
                                       children: [

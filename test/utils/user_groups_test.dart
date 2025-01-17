@@ -59,7 +59,7 @@ void main() {
 
             Color? color = fetchUserGroupColor(context, [UserType.moderator]);
             Color? expectedColor = HSLColor.fromColor(
-              Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.35), UserType.moderator.color),
+              Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.35), UserType.moderator.color),
             ).withLightness(0.85).toColor();
 
             expect(color, expectedColor);
@@ -79,7 +79,7 @@ void main() {
             // The order of precedence is op -> self -> admin -> moderator -> bot
             Color? color = fetchUserGroupColor(context, [UserType.moderator, UserType.admin, UserType.self]);
             Color? expectedColor = HSLColor.fromColor(
-              Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.35), UserType.self.color),
+              Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.35), UserType.self.color),
             ).withLightness(0.85).toColor();
 
             expect(color, expectedColor);

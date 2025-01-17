@@ -271,7 +271,7 @@ class CommunityModeratorList extends StatelessWidget {
                           textStyle: const TextStyle(
                             fontSize: 13,
                           ),
-                          transformColor: (color) => color?.withOpacity(0.6),
+                          transformColor: (color) => color?.withValues(alpha: 0.6),
                           // Override because we're showing display name above
                           useDisplayName: false,
                         ),
@@ -465,12 +465,12 @@ class SidebarStat extends StatelessWidget {
           child: Icon(
             icon,
             size: 18,
-            color: theme.colorScheme.onSurface.withOpacity(0.65),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
           ),
         ),
         Text(
           value,
-          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withValues(alpha: 0.65)),
         ),
       ],
     );

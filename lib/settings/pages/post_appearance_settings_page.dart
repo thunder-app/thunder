@@ -486,7 +486,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     child: Text(
                       l10n.postPreview,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                       ),
                     ),
                   ),
@@ -743,7 +743,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                       child: CircleAvatar(
                                         radius: 16.0,
                                         backgroundColor: Color.alphaBlend(
-                                          theme.colorScheme.primaryContainer.withOpacity(0.6),
+                                          theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
                                           Color(customThemeType.primaryColor.value),
                                         ),
                                       ),
@@ -782,7 +782,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   Text(
                     l10n.compactViewDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
@@ -807,7 +807,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               child: Text(
                 l10n.postMetadataInstructions,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                 ),
               ),
             ),
@@ -867,7 +867,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   Text(
                     l10n.cardViewDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -893,7 +893,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               child: Text(
                 l10n.postMetadataInstructions,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                 ),
               ),
             ),
@@ -1013,7 +1013,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   Text(
                     l10n.postBodySettingsDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -1141,7 +1141,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.45),
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
             ),
           ),
           const SizedBox(height: 4.0),
@@ -1344,7 +1344,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
                   child: Center(
                     child: Text(
                       showEmptyTargetMessage ? l10n.noItems : '',
-                      style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
+                      style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8)),
                     ),
                   ),
                 )
@@ -1391,7 +1391,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           decoration: BoxDecoration(
             color: isDisabled ? theme.cardColor : theme.dividerColor,
-            border: isDisabled ? Border.all(color: theme.dividerColor.withOpacity(0.4)) : null,
+            border: isDisabled ? Border.all(color: theme.dividerColor.withValues(alpha: 0.4)) : null,
             borderRadius: BorderRadius.circular(8),
           ),
           child: switch (item) {

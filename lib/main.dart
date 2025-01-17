@@ -234,7 +234,7 @@ class _ThunderAppState extends State<ThunderApp> {
                 pageTransitionsTheme: pageTransitionsTheme,
                 inputDecorationTheme: InputDecorationTheme(
                   hintStyle: TextStyle(
-                    color: lightColorScheme?.onSurface.withOpacity(0.6),
+                    color: lightColorScheme?.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               );
@@ -242,7 +242,7 @@ class _ThunderAppState extends State<ThunderApp> {
                 pageTransitionsTheme: pageTransitionsTheme,
                 inputDecorationTheme: InputDecorationTheme(
                   hintStyle: TextStyle(
-                    color: darkColorScheme?.onSurface.withOpacity(0.6),
+                    color: darkColorScheme?.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               );

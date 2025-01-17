@@ -134,7 +134,7 @@ class ScorePostCardMetaData extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final state = context.read<ThunderBloc>().state;
 
-    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
     final color = switch (voteType) {
       1 => context.read<ThunderBloc>().state.upvoteColor.color,
@@ -205,7 +205,7 @@ class UpvotePostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
     final color = switch (isUpvoted) {
       true => context.read<ThunderBloc>().state.upvoteColor.color,
@@ -255,7 +255,7 @@ class DownvotePostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
     final color = switch (isDownvoted) {
       true => context.read<ThunderBloc>().state.downvoteColor.color,
@@ -301,7 +301,7 @@ class CommentCountPostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
     final color = switch (hasBeenRead) {
       true => (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? theme.primaryColor : readColor,
@@ -343,11 +343,11 @@ class DateTimePostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
     final color = switch (hasBeenRead) {
       true => readColor,
-      _ => state.showFullPostDate ? theme.textTheme.bodyMedium?.color?.withOpacity(0.75) : theme.textTheme.bodyMedium?.color,
+      _ => state.showFullPostDate ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.75) : theme.textTheme.bodyMedium?.color,
     };
 
     return Container(
@@ -381,7 +381,7 @@ class UrlPostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
     final color = switch (hasBeenRead) {
       true => readColor,
@@ -428,7 +428,7 @@ class LanguagePostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
-    final Color? readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.45);
+    final Color? readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
     final color = switch (hasBeenRead) {
       true => readColor,
@@ -568,7 +568,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             ' to ',
                             fontScale: state.metadataFontSizeScale,
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
                             ),
                           ),
                       ],

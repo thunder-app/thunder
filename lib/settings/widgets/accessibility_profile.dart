@@ -52,7 +52,7 @@ class SettingProfile extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(45),
                 backgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer),
-                disabledBackgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer).withOpacity(0.5),
+                disabledBackgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer).withValues(alpha: 0.5),
               ),
               onPressed: recentSuccess
                   ? null

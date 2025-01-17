@@ -54,7 +54,7 @@ class PostCardViewCompact extends StatelessWidget {
         isUserLoggedIn &&
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
-    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && postViewMedia.postView.read ? color?.withOpacity(0.45) : color?.withOpacity(0.75);
+    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && postViewMedia.postView.read ? color?.withValues(alpha: 0.45) : color?.withValues(alpha: 0.75);
 
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
@@ -62,9 +62,9 @@ class PostCardViewCompact extends StatelessWidget {
 
     return Container(
       color: isLastTapped
-          ? theme.colorScheme.primary.withOpacity(0.15)
+          ? theme.colorScheme.primary.withValues(alpha: 0.15)
           : indicateRead && postViewMedia.postView.read
-              ? theme.colorScheme.onSurface.withOpacity(darkTheme ? 0.05 : 0.075)
+              ? theme.colorScheme.onSurface.withValues(alpha: darkTheme ? 0.05 : 0.075)
               : null,
       padding: showMedia ? const EdgeInsets.only(bottom: 8.0, top: 6) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0),
       child: Row(
@@ -88,8 +88,9 @@ class PostCardViewCompact extends StatelessWidget {
                         WidgetSpan(
                           child: Icon(
                             Icons.visibility_off_rounded,
-                            color:
-                                indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.hideColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.hideColor.color,
+                            color: indicateRead && postViewMedia.postView.read
+                                ? context.read<ThunderBloc>().state.hideColor.color.withValues(alpha: 0.55)
+                                : context.read<ThunderBloc>().state.hideColor.color,
                             size: 16 * textScaleFactor,
                             semanticLabel: l10n.hidden,
                           ),
@@ -101,7 +102,7 @@ class PostCardViewCompact extends StatelessWidget {
                           child: Icon(
                             Icons.lock,
                             color: indicateRead && postViewMedia.postView.read
-                                ? context.read<ThunderBloc>().state.upvoteColor.color.withOpacity(0.55)
+                                ? context.read<ThunderBloc>().state.upvoteColor.color.withValues(alpha: 0.55)
                                 : context.read<ThunderBloc>().state.upvoteColor.color,
                             size: 15 * textScaleFactor,
                           ),
@@ -111,8 +112,9 @@ class PostCardViewCompact extends StatelessWidget {
                         WidgetSpan(
                           child: Icon(
                             Icons.star_rounded,
-                            color:
-                                indicateRead && postViewMedia.postView.read ? context.read<ThunderBloc>().state.saveColor.color.withOpacity(0.55) : context.read<ThunderBloc>().state.saveColor.color,
+                            color: indicateRead && postViewMedia.postView.read
+                                ? context.read<ThunderBloc>().state.saveColor.color.withValues(alpha: 0.55)
+                                : context.read<ThunderBloc>().state.saveColor.color,
                             size: 17 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),
@@ -122,7 +124,7 @@ class PostCardViewCompact extends StatelessWidget {
                           child: Icon(
                             Icons.push_pin_rounded,
                             size: 15 * textScaleFactor,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withValues(alpha: 0.55) : Colors.green,
                           ),
                         ),
                       if (postViewMedia.postView.post.deleted)
@@ -130,7 +132,7 @@ class PostCardViewCompact extends StatelessWidget {
                           child: Icon(
                             Icons.delete_rounded,
                             size: 16 * textScaleFactor,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withValues(alpha: 0.55) : Colors.red,
                           ),
                         ),
                       if (postViewMedia.postView.post.removed)
@@ -138,7 +140,7 @@ class PostCardViewCompact extends StatelessWidget {
                           child: Icon(
                             Icons.delete_forever_rounded,
                             size: 16 * textScaleFactor,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withValues(alpha: 0.55) : Colors.red,
                           ),
                         ),
                       if (postViewMedia.postView.post.deleted ||
@@ -154,8 +156,8 @@ class PostCardViewCompact extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
                           color: postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal
-                              ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
-                              : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
+                              ? (indicateRead && postViewMedia.postView.read ? Colors.green.withValues(alpha: 0.55) : Colors.green)
+                              : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.55) : null),
                         ),
                       ),
                     ],

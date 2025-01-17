@@ -241,7 +241,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                             mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                              Divider(thickness: 1.0, color: theme.dividerColor.withValues(alpha: 0.3)),
                                               Wrap(
                                                 children: [
                                                   Text(l10n.reporter, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
@@ -344,7 +344,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                             mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                              Divider(thickness: 1.0, color: theme.dividerColor.withValues(alpha: 0.3)),
                                               Wrap(
                                                 children: [
                                                   Text(l10n.reporter, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),

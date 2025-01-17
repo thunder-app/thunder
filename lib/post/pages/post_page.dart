@@ -249,7 +249,7 @@ class _PostPageState extends State<PostPage> {
                         child: state.hasReachedCommentEnd == true
                             ? Container(
                                 key: reachedEndKey,
-                                color: theme.dividerColor.withOpacity(0.1),
+                                color: theme.dividerColor.withValues(alpha: 0.1),
                                 padding: const EdgeInsets.symmetric(vertical: 32.0),
                                 child: ScalableText(
                                   flattenedComments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,

@@ -100,7 +100,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                             style: TextButton.styleFrom(
                               alignment: Alignment.centerLeft,
                               minimumSize: const Size.fromHeight(50),
-                              backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+                              backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
@@ -324,7 +324,7 @@ class FavoriteCommunities extends StatelessWidget {
                 style: TextButton.styleFrom(
                   alignment: Alignment.centerLeft,
                   minimumSize: const Size.fromHeight(50),
-                  backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+                  backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -386,7 +386,7 @@ class ModeratedCommunities extends StatelessWidget {
                   style: TextButton.styleFrom(
                     alignment: Alignment.centerLeft,
                     minimumSize: const Size.fromHeight(50),
-                    backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+                    backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -453,7 +453,7 @@ class DrawerItem extends StatelessWidget {
       child: SizedBox(
         height: 56.0,
         child: Material(
-          color: isSelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+          color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
           shape: const StadiumBorder(),
           child: InkWell(
             splashColor: disabled ? Colors.transparent : null,
