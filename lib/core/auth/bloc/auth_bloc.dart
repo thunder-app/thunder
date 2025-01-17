@@ -236,7 +236,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     /// Using the code from the previous step, login to lemmy instance an get the jwt.  This is triggered by app_link callback.
     on<OAuthLoginAttemptPart2>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       String originalBaseUrl = lemmyClient.lemmyApiV3.host;
       String providerResponse = event.link ?? state.oauthLink!;
       String instance = state.oauthInstance!;
@@ -245,6 +244,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (instance.startsWith('https://')) instance = instance.replaceFirst('https://', '');
       lemmyClient.changeBaseUrl(instance);
+
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       try {
         if (state.oauthState == null || state.oauthInstance == null || state.oauthProvider == null) {
