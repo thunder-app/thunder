@@ -136,7 +136,7 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                     child: Text(
                       AppLocalizations.of(context)!.accessibilityProfilesDescription,
                       style: TextStyle(
-                        color: theme.colorScheme.onSurface.withOpacity(0.75),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
                       ),
                     ),
                   ),

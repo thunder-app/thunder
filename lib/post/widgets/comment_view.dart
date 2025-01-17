@@ -256,7 +256,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                         children: [
                           Container(
                             key: _reachedBottomKey,
-                            color: theme.dividerColor.withOpacity(0.1),
+                            color: theme.dividerColor.withValues(alpha: 0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: ScalableText(
                               widget.comments.isEmpty ? AppLocalizations.of(context)!.noCommentsFound : AppLocalizations.of(context)!.endOfComments,

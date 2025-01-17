@@ -23,5 +23,5 @@ Color getCommentLevelColor(BuildContext context, int level) {
 
   final theme = Theme.of(context);
 
-  return Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), colors[level]);
+  return Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), colors[level]);
 }

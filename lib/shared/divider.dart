@@ -19,7 +19,7 @@ class ThunderDivider extends StatelessWidget {
           height: padding ? 32.0 : 16,
           endIndent: padding ? 32.0 : 0,
           thickness: 2.0,
-          color: Theme.of(context).dividerColor.withOpacity(0.6),
+          color: Theme.of(context).dividerColor.withValues(alpha: 0.6),
         ),
       );
 }

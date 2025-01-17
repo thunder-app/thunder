@@ -157,7 +157,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                       return Text(
                         l10n.unableToLoadImage,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                         ),
                       );
                     }
@@ -174,7 +174,7 @@ class _ImagePreviewState extends State<ImagePreview> {
               );
             },
             child: DecoratedBox(
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.5)),
+              decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5)),
             ),
           )
         ],

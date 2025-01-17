@@ -48,9 +48,9 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final TextStyle? crossPostTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4));
+    final TextStyle? crossPostTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4));
     final TextStyle? crossPostLinkTextStyle = crossPostTextStyle?.copyWith(
-      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.75),
     );
 
     return Column(
@@ -86,7 +86,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                   Icon(
                                     Icons.repeat_rounded,
                                     size: 14.0,
-                                    color: theme.colorScheme.onSurface.withOpacity(0.9),
+                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
                                   ),
                                   Text(
                                     ' to ',
@@ -133,7 +133,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                               : widget.isNewPost == true
                                   ? '${l10n.alreadyPostedTo} '
                                   : '${l10n.crossPostedTo} ',
-                          style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+                          style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
                         ),
                         if (!_areCrossPostsExpanded)
                           WidgetSpan(
@@ -147,7 +147,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                           ),
                         TextSpan(
                           text: _areCrossPostsExpanded || widget.crossPosts.length == 1 ? '' : ' ${l10n.andXMore(widget.crossPosts.length - 1)}',
-                          style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+                          style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
                         ),
                       ],
                     ),

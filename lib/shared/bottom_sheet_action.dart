@@ -38,7 +38,7 @@ class BottomSheetAction extends StatelessWidget {
         subtitle: subtitle != null
             ? Text(
                 subtitle ?? '',
-                style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
+                style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8)),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               )

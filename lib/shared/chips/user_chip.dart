@@ -85,7 +85,7 @@ class UserChip extends StatelessWidget {
                     fetchInstanceNameFromUrl(person.actorId),
                     includeInstance: includeInstance,
                     fontScale: state.metadataFontSizeScale,
-                    transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withOpacity(opacity),
+                    transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity),
                   ),
                   if (userGroups.isNotEmpty) const SizedBox(width: 2.0),
                   if (userGroups.contains(UserType.op))

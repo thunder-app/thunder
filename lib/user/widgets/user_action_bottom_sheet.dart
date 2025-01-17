@@ -320,7 +320,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
                       child: Icon(
                         Thunder.shield,
                         size: 20,
-                        color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.green),
+                        color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
                       ),
                     ),
                     title: userPostAction.name,
@@ -340,7 +340,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
           //             child: Icon(
           //               Thunder.shield_crown,
           //               size: 20,
-          //               color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
+          //               color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.red),
           //             ),
           //           ),
           //           title: userPostAction.name,

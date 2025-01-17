@@ -127,7 +127,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                         community?.title,
                         fetchInstanceNameFromUrl(community?.actorId),
                         fontScale: state.metadataFontSizeScale,
-                        transformColor: (color) => color?.withOpacity(0.75),
+                        transformColor: (color) => color?.withValues(alpha: 0.75),
                       ),
                     ),
                   ),
@@ -180,7 +180,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
     final l10n = AppLocalizations.of(context)!;
     final state = context.watch<ThunderBloc>().state;
 
-    Color? textStyleCommunityAndAuthor(Color? color) => color?.withOpacity(0.75);
+    Color? textStyleCommunityAndAuthor(Color? color) => color?.withValues(alpha: 0.75);
 
     return InkWell(
       onTap: () {
@@ -225,7 +225,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                     ),
                     textScaler: TextScaler.noScaling,
                   ),
-                  Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                  Divider(thickness: 1.0, color: theme.dividerColor.withValues(alpha: 0.3)),
                   AnimatedSize(
                     duration: const Duration(milliseconds: 100),
                     child: showSensitiveContent
@@ -269,7 +269,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                               fontScale: state.metadataFontSizeScale,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
-                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
                               ),
                             ),
                           ],
@@ -343,7 +343,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
                       user?.name,
                       user?.displayName,
                       fetchInstanceNameFromUrl(user?.actorId),
-                      transformColor: (color) => color?.withOpacity(0.75),
+                      transformColor: (color) => color?.withValues(alpha: 0.75),
                     ),
                   ],
                 ),
@@ -401,7 +401,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                       community?.title,
                       fetchInstanceNameFromUrl(community?.actorId),
                       fontScale: state.metadataFontSizeScale,
-                      transformColor: (color) => color?.withOpacity(0.75),
+                      transformColor: (color) => color?.withValues(alpha: 0.75),
                     ),
                   ],
                 ),

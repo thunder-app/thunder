@@ -57,7 +57,7 @@ class TypeBadge extends StatelessWidget {
         borderRadius: borderRadius,
         // This is the thin sliver between the badge and the preview.
         // It should be made to match the read background color in the compact file.
-        color: dim ? Color.alphaBlend(theme.colorScheme.onSurface.withOpacity(darkTheme ? 0.05 : 0.075), theme.colorScheme.surface) : theme.colorScheme.surface,
+        color: dim ? Color.alphaBlend(theme.colorScheme.onSurface.withValues(alpha: darkTheme ? 0.05 : 0.075), theme.colorScheme.surface) : theme.colorScheme.surface,
         child: Padding(
           padding: const EdgeInsets.only(left: 2.5, top: 2.5),
           child: switch (mediaType) {
@@ -83,10 +83,10 @@ class TypeBadge extends StatelessWidget {
   }
 
   Color getMaterialColor(ThemeData theme, Color blendColor) {
-    return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), blendColor).withOpacity(dim ? 0.55 : 1);
+    return Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), blendColor).withValues(alpha: dim ? 0.55 : 1);
   }
 
   Color getIconColor(ThemeData theme, Color blendColor) {
-    return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor).withOpacity(dim ? 0.55 : 1);
+    return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.9), blendColor).withValues(alpha: dim ? 0.55 : 1);
   }
 }

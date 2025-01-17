@@ -143,7 +143,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                   l10n.in_,
                                   fontScale: state.contentFontSizeScale,
                                   style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
                                   ),
                                 ),
                               ),
@@ -155,7 +155,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                   widget.comment.community.title,
                                   fetchInstanceNameFromUrl(widget.comment.community.actorId),
                                   fontScale: state.contentFontSizeScale,
-                                  transformColor: (color) => color?.withOpacity(0.75),
+                                  transformColor: (color) => color?.withValues(alpha: 0.75),
                                 ),
                               ),
                             ],
@@ -279,7 +279,7 @@ class _CommentReferenceState extends State<CommentReference> {
                           ? AnimatedContainer(
                               alignment: Alignment.centerLeft,
                               color: swipeAction == null
-                                  ? state.leftPrimaryCommentGesture.getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                                  ? state.leftPrimaryCommentGesture.getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
                                   : (swipeAction ?? SwipeAction.none).getColor(context),
                               duration: const Duration(milliseconds: 200),
                               child: SizedBox(
@@ -290,7 +290,7 @@ class _CommentReferenceState extends State<CommentReference> {
                           : AnimatedContainer(
                               alignment: Alignment.centerRight,
                               color: swipeAction == null
-                                  ? (state.rightPrimaryCommentGesture).getColor(context).withOpacity(dismissThreshold / firstActionThreshold)
+                                  ? (state.rightPrimaryCommentGesture).getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
                                   : (swipeAction ?? SwipeAction.none).getColor(context),
                               duration: const Duration(milliseconds: 200),
                               child: SizedBox(

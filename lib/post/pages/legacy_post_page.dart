@@ -519,7 +519,7 @@ class _PostPageState extends State<PostPage> {
                             context.read<ThunderBloc>().add(const OnFabToggle(false));
                           },
                           child: Container(
-                            color: theme.colorScheme.surface.withOpacity(0.95),
+                            color: theme.colorScheme.surface.withValues(alpha: 0.95),
                           ),
                         )
                       : null,

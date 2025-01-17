@@ -227,7 +227,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                       // Widget representing the list of modlog events on the feed
                       SliverList.builder(
                         itemBuilder: (context, index) {
-                          TextStyle? metaTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75));
+                          TextStyle? metaTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.75));
                           ModlogEventItem event = state.modlogEventItems[index];
 
                           return Column(
@@ -254,7 +254,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                         children: [
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: event.getModlogEventColor().withOpacity(0.2),
+                                              color: event.getModlogEventColor().withValues(alpha: 0.2),
                                               borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
                                             ),
                                             child: Padding(
@@ -302,7 +302,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                           mainAxisSize: MainAxisSize.min,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                            Divider(thickness: 1.0, color: theme.dividerColor.withValues(alpha: 0.3)),
                                             Padding(
                                               padding: const EdgeInsets.only(bottom: 6.0),
                                               child: ScalableText(
@@ -311,7 +311,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                                                 overflow: TextOverflow.ellipsis,
                                                 fontScale: thunderState.contentFontSizeScale,
                                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.90),
+                                                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90),
                                                 ),
                                               ),
                                             ),

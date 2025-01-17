@@ -66,7 +66,7 @@ class CommunityChip extends StatelessWidget {
               fetchInstanceNameFromUrl(communityUrl),
               includeInstance: state.postBodyShowCommunityInstance,
               fontScale: state.metadataFontSizeScale,
-              transformColor: (color) => color?.withOpacity(0.75),
+              transformColor: (color) => color?.withValues(alpha: 0.75),
             ),
           ],
         ),

@@ -228,7 +228,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
           //             child: Icon(
           //               Thunder.shield,
           //               size: 20,
-          //               color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.green),
+          //               color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
           //             ),
           //           ),
           //           title: instancePostAction.name,
@@ -248,7 +248,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
           //             child: Icon(
           //               Thunder.shield_crown,
           //               size: 20,
-          //               color: Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), Colors.red),
+          //               color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.red),
           //             ),
           //           ),
           //           title: instancePostAction.name,

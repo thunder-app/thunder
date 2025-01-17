@@ -35,7 +35,7 @@ class PickerItem<T> extends StatelessWidget {
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: Material(
         borderRadius: BorderRadius.circular(50),
-        color: isSelected == true ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+        color: isSelected == true ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(50),
           onTap: onSelected,
@@ -44,7 +44,7 @@ class PickerItem<T> extends StatelessWidget {
                 Text(
                   label,
                   style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
-                    color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(onSelected == null ? 0.5 : 1),
+                    color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withValues(alpha: onSelected == null ? 0.5 : 1),
                   ),
                   textScaler: TextScaler.noScaling,
                 ),
@@ -53,7 +53,7 @@ class PickerItem<T> extends StatelessWidget {
                     ? Text(
                         subtitle!,
                         style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
-                          color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(0.5),
+                          color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withValues(alpha: 0.5),
                         ),
                         softWrap: softWrap,
                         overflow: TextOverflow.fade,

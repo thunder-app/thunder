@@ -147,7 +147,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                         icon: Icon(
                           Icons.arrow_back,
                           semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                          color: Colors.white.withOpacity(0.90),
+                          color: Colors.white.withValues(alpha: 0.90),
                         ),
                       ),
                     ),
@@ -158,7 +158,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                         icon: Icon(
                           Icons.open_in_browser_rounded,
                           semanticLabel: GlobalContext.l10n.openInBrowser,
-                          color: Colors.white.withOpacity(0.90),
+                          color: Colors.white.withValues(alpha: 0.90),
                         ),
                       ),
                     ),
@@ -291,12 +291,12 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                     },
                     icon: Icon(
                       widget.controller.value.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                      color: Colors.white.withOpacity(0.90),
+                      color: Colors.white.withValues(alpha: 0.90),
                     ),
                   ),
                   Text(
                     '${formatTime(widget.controller.value.position)} / ${formatTime(widget.controller.value.duration)}',
-                    style: TextStyle(color: Colors.white.withOpacity(0.90)),
+                    style: TextStyle(color: Colors.white.withValues(alpha: 0.90)),
                   ),
                 ],
               ),
@@ -311,7 +311,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                     },
                     icon: Icon(
                       widget.controller.value.volume == 0 ? Icons.volume_mute_rounded : Icons.volume_up_rounded,
-                      color: Colors.white.withOpacity(0.90),
+                      color: Colors.white.withValues(alpha: 0.90),
                     ),
                   ),
                   PopupMenuButton(
@@ -329,7 +329,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                         .toList(),
                     icon: Icon(
                       Icons.speed_rounded,
-                      color: Colors.white.withOpacity(0.90),
+                      color: Colors.white.withValues(alpha: 0.90),
                     ),
                   ),
                   IconButton(
@@ -339,7 +339,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                     },
                     icon: Icon(
                       Icons.fullscreen_rounded,
-                      color: Colors.white.withOpacity(0.90),
+                      color: Colors.white.withValues(alpha: 0.90),
                     ),
                   ),
                 ],

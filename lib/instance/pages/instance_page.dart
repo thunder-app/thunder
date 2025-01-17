@@ -216,7 +216,7 @@ class _InstancePageState extends State<InstancePage> {
                               child: Row(
                                 children: [
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.all ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor: viewType == SearchType.all ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                     children: [
                                       Text(l10n.about),
                                     ],
@@ -224,7 +224,7 @@ class _InstancePageState extends State<InstancePage> {
                                   ),
                                   const SizedBox(width: 10),
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.communities ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor: viewType == SearchType.communities ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                     children: [
                                       Text(l10n.communities),
                                     ],
@@ -239,7 +239,7 @@ class _InstancePageState extends State<InstancePage> {
                                   if (false) ...[
                                     const SizedBox(width: 10),
                                     SearchActionChip(
-                                      backgroundColor: viewType == SearchType.users ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                      backgroundColor: viewType == SearchType.users ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                       children: [
                                         Text(l10n.users),
                                       ],
@@ -252,7 +252,7 @@ class _InstancePageState extends State<InstancePage> {
                                   ],
                                   const SizedBox(width: 10),
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.posts ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor: viewType == SearchType.posts ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                     children: [
                                       Text(l10n.posts),
                                     ],
@@ -264,7 +264,7 @@ class _InstancePageState extends State<InstancePage> {
                                   ),
                                   const SizedBox(width: 10),
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.comments ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor: viewType == SearchType.comments ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                     children: [
                                       Text(l10n.comments),
                                     ],
