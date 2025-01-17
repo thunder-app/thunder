@@ -45,7 +45,7 @@ class CreatePostPage extends StatefulWidget {
   final int? communityId;
   final CommunityView? communityView;
 
-  /// Whether or not to pre-populate the post with the [title], [text], [image], [url], and/or [customThumbnail]
+  /// Whether or not to pre-populate the post with the [title], [text], [image], [url], [customThumbnail], and/or [altText]
   final bool? prePopulated;
 
   /// Used to pre-populate the post title
@@ -63,6 +63,9 @@ class CreatePostPage extends StatefulWidget {
   /// Used to pre-populate the custom thumbnail for the post
   final String? customThumbnail;
 
+  /// Alternative text for the image
+  final String? altText;
+
   /// [postView] is passed in when editing an existing post
   final PostView? postView;
 
@@ -78,6 +81,7 @@ class CreatePostPage extends StatefulWidget {
     this.text,
     this.url,
     this.customThumbnail,
+    this.altText,
     this.prePopulated = false,
     this.postView,
     this.onPostSuccess,
@@ -124,6 +128,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
   /// The custom thumbnail for this post.
   String? customThumbnail;
 
+  /// Alternative text for the image
+  String? altText;
+
   /// The error message for the shared link if available
   String? urlError;
 
@@ -146,6 +153,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
   final TextEditingController _customThumbnailTextController = TextEditingController();
+  final TextEditingController _altTextTextController = TextEditingController();
 
   /// The focus node for the body. This is used to keep track of the position of the cursor when toggling preview
   final FocusNode _bodyFocusNode = FocusNode();
@@ -182,12 +190,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
       debounce(const Duration(milliseconds: 1000), _updatePreview, [customThumbnail]);
     });
 
+    _altTextTextController.addListener(() {
+      altText = _altTextTextController.text;
+      _validateSubmission();
+      debounce(const Duration(milliseconds: 1000), _updatePreview, [altText]);
+    });
+
     // Logic for pre-populating the post with the given fields
     if (widget.prePopulated == true) {
       _titleTextController.text = widget.title ?? '';
       _bodyTextController.text = widget.text ?? '';
       _urlTextController.text = widget.url ?? '';
       _customThumbnailTextController.text = widget.customThumbnail ?? '';
+      _altTextTextController.text = widget.altText ?? '';
       _getDataFromLink(updateTitleField: _titleTextController.text.isEmpty);
 
       if (widget.image != null) {
@@ -204,6 +219,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       _titleTextController.text = widget.postView!.post.name;
       _urlTextController.text = widget.postView!.post.url ?? '';
       _customThumbnailTextController.text = widget.postView!.post.thumbnailUrl ?? '';
+      _altTextTextController.text = widget.postView!.post.altText ?? '';
       _bodyTextController.text = widget.postView!.post.body ?? '';
       isNSFW = widget.postView!.post.nsfw;
       languageId = widget.postView!.post.languageId;
@@ -221,6 +237,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _titleTextController.dispose();
     _urlTextController.dispose();
     _customThumbnailTextController.dispose();
+    _altTextTextController.dispose();
     _bodyFocusNode.dispose();
 
     FocusManager.instance.primaryFocus?.unfocus();
@@ -260,6 +277,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       _titleTextController.text = draft.title ?? '';
       _urlTextController.text = draft.url ?? '';
       _customThumbnailTextController.text = draft.customThumbnail ?? '';
+      _altTextTextController.text = draft.altText ?? '';
       _bodyTextController.text = draft.body ?? '';
     }
 
@@ -282,6 +300,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           _titleTextController.text = widget.postView?.post.name ?? '';
           _urlTextController.text = widget.postView?.post.url ?? '';
           _customThumbnailTextController.text = widget.postView?.post.thumbnailUrl ?? '';
+          _altTextTextController.text = widget.postView?.post.altText ?? '';
           _bodyTextController.text = widget.postView?.post.body ?? '';
         },
       );
@@ -297,6 +316,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       title: _titleTextController.text,
       url: _urlTextController.text,
       customThumbnail: _customThumbnailTextController.text,
+      altText: _altTextTextController.text,
       body: _bodyTextController.text,
     );
   }
@@ -311,6 +331,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     return draft.title != widget.postView!.post.name ||
         draft.url != (widget.postView!.post.url ?? '') ||
         draft.customThumbnail != (widget.postView!.post.thumbnailUrl ?? '') ||
+        draft.altText != (widget.postView!.post.altText ?? '') ||
         draft.body != (widget.postView!.post.body ?? '');
   }
 
@@ -496,6 +517,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 decoration: InputDecoration(
                                   labelText: l10n.thumbnailUrl,
                                   errorText: customThumbnailError,
+                                  isDense: true,
+                                  border: const OutlineInputBorder(),
+                                  contentPadding: const EdgeInsets.all(13),
+                                ),
+                              ),
+                            ],
+                            if (LemmyClient.instance.supportsFeature(LemmyFeature.altText) && isImageUrl(_urlTextController.text)) ...[
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: _altTextTextController,
+                                decoration: InputDecoration(
+                                  labelText: l10n.altText,
                                   isDense: true,
                                   border: const OutlineInputBorder(),
                                   contentPadding: const EdgeInsets.all(13),
@@ -757,6 +790,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           nsfw: isNSFW,
           url: url,
           customThumbnail: customThumbnail,
+          altText: altText,
           postIdBeingEdited: widget.postView?.post.id,
           languageId: languageId,
         );

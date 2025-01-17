@@ -96,6 +96,7 @@ enum LemmyFeature {
   listMedia(0, 19, 4, preRelease: ["beta", "4"]),
   hidePosts(0, 19, 4),
   customThumbnail(0, 19, 4),
+  altText(0, 19, 4),
   commentModLog(0, 19, 4),
   importExportSettings(0, 19, 4),
   imageDimension(0, 19, 6),

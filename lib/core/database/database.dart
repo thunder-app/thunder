@@ -36,7 +36,7 @@ class AppDatabase extends _$AppDatabase {
         );
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -67,6 +67,10 @@ class AppDatabase extends _$AppDatabase {
                 await m.addColumn(schema.accounts, schema.accounts.listIndex);
                 await customStatement('UPDATE accounts SET list_index = id');
               },
+              from5To6: (m, schema) async {
+                // Create the alt_text column on the drafts table
+                await m.addColumn(schema.drafts, schema.drafts.altText);
+              },
             ),
           );
 
@@ -78,7 +82,32 @@ class AppDatabase extends _$AppDatabase {
           await impl.validateDatabaseSchema(this);
           await customStatement('PRAGMA foreign_keys = ON;');
         },
+        beforeOpen: (details) async {
+          if (details.versionBefore != null && details.versionBefore! > details.versionNow) {
+            await _onDowngrade(this, details.versionBefore!, details.versionNow);
+          }
+        },
       );
+}
+
+Future<void> _onDowngrade(AppDatabase database, int fromVersion, int toVersion) async {
+  await database.customStatement('PRAGMA foreign_keys = OFF');
+
+  int current = fromVersion;
+  while (current > toVersion) {
+    int target = current - 1;
+    await _onDownGradeOneStep(database, current, target);
+    current = target;
+  }
+
+  await database.customStatement('PRAGMA foreign_keys=ON;');
+}
+
+Future<void> _onDownGradeOneStep(AppDatabase database, int fromVersion, int toVersion) async {
+  if (fromVersion == 6 && toVersion == 5) {
+    // Drop the alt_text column on the drafts table
+    await database.customStatement('ALTER TABLE drafts DROP COLUMN alt_text');
+  }
 }
 
 Future<String?> exportDatabase() async {

@@ -30,7 +30,7 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   late final GeneratedColumn<int> userId = GeneratedColumn<int>('user_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _listIndexMeta = const VerificationMeta('listIndex');
   @override
-  late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(-1));
   @override
   List<GeneratedColumn> get $columns => [id, username, jwt, instance, anonymous, userId, listIndex];
   @override
@@ -62,8 +62,6 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
     }
     if (data.containsKey('list_index')) {
       context.handle(_listIndexMeta, listIndex.isAcceptableOrUnknown(data['list_index']!, _listIndexMeta));
-    } else if (isInserting) {
-      context.missing(_listIndexMeta);
     }
     return context;
   }
@@ -175,6 +173,18 @@ class Account extends DataClass implements Insertable<Account> {
         userId: userId.present ? userId.value : this.userId,
         listIndex: listIndex ?? this.listIndex,
       );
+  Account copyWithCompanion(AccountsCompanion data) {
+    return Account(
+      id: data.id.present ? data.id.value : this.id,
+      username: data.username.present ? data.username.value : this.username,
+      jwt: data.jwt.present ? data.jwt.value : this.jwt,
+      instance: data.instance.present ? data.instance.value : this.instance,
+      anonymous: data.anonymous.present ? data.anonymous.value : this.anonymous,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      listIndex: data.listIndex.present ? data.listIndex.value : this.listIndex,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('Account(')
@@ -228,8 +238,8 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     this.instance = const Value.absent(),
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
-    required int listIndex,
-  }) : listIndex = Value(listIndex);
+    this.listIndex = const Value.absent(),
+  });
   static Insertable<Account> custom({
     Expression<int>? id,
     Expression<String>? username,
@@ -409,6 +419,14 @@ class Favorite extends DataClass implements Insertable<Favorite> {
         accountId: accountId ?? this.accountId,
         communityId: communityId ?? this.communityId,
       );
+  Favorite copyWithCompanion(FavoritesCompanion data) {
+    return Favorite(
+      id: data.id.present ? data.id.value : this.id,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      communityId: data.communityId.present ? data.communityId.value : this.communityId,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('Favorite(')
@@ -621,6 +639,16 @@ class LocalSubscription extends DataClass implements Insertable<LocalSubscriptio
         actorId: actorId ?? this.actorId,
         icon: icon.present ? icon.value : this.icon,
       );
+  LocalSubscription copyWithCompanion(LocalSubscriptionsCompanion data) {
+    return LocalSubscription(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      title: data.title.present ? data.title.value : this.title,
+      actorId: data.actorId.present ? data.actorId.value : this.actorId,
+      icon: data.icon.present ? data.icon.value : this.icon,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('LocalSubscription(')
@@ -827,6 +855,14 @@ class UserLabel extends DataClass implements Insertable<UserLabel> {
         username: username ?? this.username,
         label: label ?? this.label,
       );
+  UserLabel copyWithCompanion(UserLabelsCompanion data) {
+    return UserLabel(
+      id: data.id.present ? data.id.value : this.id,
+      username: data.username.present ? data.username.value : this.username,
+      label: data.label.present ? data.label.value : this.label,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('UserLabel(')
@@ -932,11 +968,14 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
   static const VerificationMeta _customThumbnailMeta = const VerificationMeta('customThumbnail');
   @override
   late final GeneratedColumn<String> customThumbnail = GeneratedColumn<String>('custom_thumbnail', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _altTextMeta = const VerificationMeta('altText');
+  @override
+  late final GeneratedColumn<String> altText = GeneratedColumn<String>('alt_text', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _bodyMeta = const VerificationMeta('body');
   @override
   late final GeneratedColumn<String> body = GeneratedColumn<String>('body', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [id, draftType, existingId, replyId, title, url, customThumbnail, body];
+  List<GeneratedColumn> get $columns => [id, draftType, existingId, replyId, title, url, customThumbnail, altText, body];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -965,6 +1004,9 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
     if (data.containsKey('custom_thumbnail')) {
       context.handle(_customThumbnailMeta, customThumbnail.isAcceptableOrUnknown(data['custom_thumbnail']!, _customThumbnailMeta));
     }
+    if (data.containsKey('alt_text')) {
+      context.handle(_altTextMeta, altText.isAcceptableOrUnknown(data['alt_text']!, _altTextMeta));
+    }
     if (data.containsKey('body')) {
       context.handle(_bodyMeta, body.isAcceptableOrUnknown(data['body']!, _bodyMeta));
     }
@@ -984,6 +1026,7 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
       title: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}title']),
       url: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}url']),
       customThumbnail: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}custom_thumbnail']),
+      altText: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}alt_text']),
       body: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}body']),
     );
   }
@@ -1004,8 +1047,9 @@ class Draft extends DataClass implements Insertable<Draft> {
   final String? title;
   final String? url;
   final String? customThumbnail;
+  final String? altText;
   final String? body;
-  const Draft({required this.id, required this.draftType, this.existingId, this.replyId, this.title, this.url, this.customThumbnail, this.body});
+  const Draft({required this.id, required this.draftType, this.existingId, this.replyId, this.title, this.url, this.customThumbnail, this.altText, this.body});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1028,6 +1072,9 @@ class Draft extends DataClass implements Insertable<Draft> {
     if (!nullToAbsent || customThumbnail != null) {
       map['custom_thumbnail'] = Variable<String>(customThumbnail);
     }
+    if (!nullToAbsent || altText != null) {
+      map['alt_text'] = Variable<String>(altText);
+    }
     if (!nullToAbsent || body != null) {
       map['body'] = Variable<String>(body);
     }
@@ -1043,6 +1090,7 @@ class Draft extends DataClass implements Insertable<Draft> {
       title: title == null && nullToAbsent ? const Value.absent() : Value(title),
       url: url == null && nullToAbsent ? const Value.absent() : Value(url),
       customThumbnail: customThumbnail == null && nullToAbsent ? const Value.absent() : Value(customThumbnail),
+      altText: altText == null && nullToAbsent ? const Value.absent() : Value(altText),
       body: body == null && nullToAbsent ? const Value.absent() : Value(body),
     );
   }
@@ -1057,6 +1105,7 @@ class Draft extends DataClass implements Insertable<Draft> {
       title: serializer.fromJson<String?>(json['title']),
       url: serializer.fromJson<String?>(json['url']),
       customThumbnail: serializer.fromJson<String?>(json['customThumbnail']),
+      altText: serializer.fromJson<String?>(json['altText']),
       body: serializer.fromJson<String?>(json['body']),
     );
   }
@@ -1071,6 +1120,7 @@ class Draft extends DataClass implements Insertable<Draft> {
       'title': serializer.toJson<String?>(title),
       'url': serializer.toJson<String?>(url),
       'customThumbnail': serializer.toJson<String?>(customThumbnail),
+      'altText': serializer.toJson<String?>(altText),
       'body': serializer.toJson<String?>(body),
     };
   }
@@ -1083,6 +1133,7 @@ class Draft extends DataClass implements Insertable<Draft> {
           Value<String?> title = const Value.absent(),
           Value<String?> url = const Value.absent(),
           Value<String?> customThumbnail = const Value.absent(),
+          Value<String?> altText = const Value.absent(),
           Value<String?> body = const Value.absent()}) =>
       Draft(
         id: id ?? this.id,
@@ -1092,8 +1143,23 @@ class Draft extends DataClass implements Insertable<Draft> {
         title: title.present ? title.value : this.title,
         url: url.present ? url.value : this.url,
         customThumbnail: customThumbnail.present ? customThumbnail.value : this.customThumbnail,
+        altText: altText.present ? altText.value : this.altText,
         body: body.present ? body.value : this.body,
       );
+  Draft copyWithCompanion(DraftsCompanion data) {
+    return Draft(
+      id: data.id.present ? data.id.value : this.id,
+      draftType: data.draftType.present ? data.draftType.value : this.draftType,
+      existingId: data.existingId.present ? data.existingId.value : this.existingId,
+      replyId: data.replyId.present ? data.replyId.value : this.replyId,
+      title: data.title.present ? data.title.value : this.title,
+      url: data.url.present ? data.url.value : this.url,
+      customThumbnail: data.customThumbnail.present ? data.customThumbnail.value : this.customThumbnail,
+      altText: data.altText.present ? data.altText.value : this.altText,
+      body: data.body.present ? data.body.value : this.body,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('Draft(')
@@ -1104,13 +1170,14 @@ class Draft extends DataClass implements Insertable<Draft> {
           ..write('title: $title, ')
           ..write('url: $url, ')
           ..write('customThumbnail: $customThumbnail, ')
+          ..write('altText: $altText, ')
           ..write('body: $body')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, draftType, existingId, replyId, title, url, customThumbnail, body);
+  int get hashCode => Object.hash(id, draftType, existingId, replyId, title, url, customThumbnail, altText, body);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1122,6 +1189,7 @@ class Draft extends DataClass implements Insertable<Draft> {
           other.title == this.title &&
           other.url == this.url &&
           other.customThumbnail == this.customThumbnail &&
+          other.altText == this.altText &&
           other.body == this.body);
 }
 
@@ -1133,6 +1201,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
   final Value<String?> title;
   final Value<String?> url;
   final Value<String?> customThumbnail;
+  final Value<String?> altText;
   final Value<String?> body;
   const DraftsCompanion({
     this.id = const Value.absent(),
@@ -1142,6 +1211,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     this.title = const Value.absent(),
     this.url = const Value.absent(),
     this.customThumbnail = const Value.absent(),
+    this.altText = const Value.absent(),
     this.body = const Value.absent(),
   });
   DraftsCompanion.insert({
@@ -1152,6 +1222,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     this.title = const Value.absent(),
     this.url = const Value.absent(),
     this.customThumbnail = const Value.absent(),
+    this.altText = const Value.absent(),
     this.body = const Value.absent(),
   }) : draftType = Value(draftType);
   static Insertable<Draft> custom({
@@ -1162,6 +1233,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     Expression<String>? title,
     Expression<String>? url,
     Expression<String>? customThumbnail,
+    Expression<String>? altText,
     Expression<String>? body,
   }) {
     return RawValuesInsertable({
@@ -1172,12 +1244,21 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
       if (title != null) 'title': title,
       if (url != null) 'url': url,
       if (customThumbnail != null) 'custom_thumbnail': customThumbnail,
+      if (altText != null) 'alt_text': altText,
       if (body != null) 'body': body,
     });
   }
 
   DraftsCompanion copyWith(
-      {Value<int>? id, Value<DraftType>? draftType, Value<int?>? existingId, Value<int?>? replyId, Value<String?>? title, Value<String?>? url, Value<String?>? customThumbnail, Value<String?>? body}) {
+      {Value<int>? id,
+      Value<DraftType>? draftType,
+      Value<int?>? existingId,
+      Value<int?>? replyId,
+      Value<String?>? title,
+      Value<String?>? url,
+      Value<String?>? customThumbnail,
+      Value<String?>? altText,
+      Value<String?>? body}) {
     return DraftsCompanion(
       id: id ?? this.id,
       draftType: draftType ?? this.draftType,
@@ -1186,6 +1267,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
       title: title ?? this.title,
       url: url ?? this.url,
       customThumbnail: customThumbnail ?? this.customThumbnail,
+      altText: altText ?? this.altText,
       body: body ?? this.body,
     );
   }
@@ -1214,6 +1296,9 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     if (customThumbnail.present) {
       map['custom_thumbnail'] = Variable<String>(customThumbnail.value);
     }
+    if (altText.present) {
+      map['alt_text'] = Variable<String>(altText.value);
+    }
     if (body.present) {
       map['body'] = Variable<String>(body.value);
     }
@@ -1230,6 +1315,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
           ..write('title: $title, ')
           ..write('url: $url, ')
           ..write('customThumbnail: $customThumbnail, ')
+          ..write('altText: $altText, ')
           ..write('body: $body')
           ..write(')'))
         .toString();
@@ -1238,6 +1324,7 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
+  $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $AccountsTable accounts = $AccountsTable(this);
   late final $FavoritesTable favorites = $FavoritesTable(this);
   late final $LocalSubscriptionsTable localSubscriptions = $LocalSubscriptionsTable(this);
@@ -1247,4 +1334,689 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts];
+}
+
+typedef $$AccountsTableCreateCompanionBuilder = AccountsCompanion Function({
+  Value<int> id,
+  Value<String?> username,
+  Value<String?> jwt,
+  Value<String?> instance,
+  Value<bool> anonymous,
+  Value<int?> userId,
+  Value<int> listIndex,
+});
+typedef $$AccountsTableUpdateCompanionBuilder = AccountsCompanion Function({
+  Value<int> id,
+  Value<String?> username,
+  Value<String?> jwt,
+  Value<String?> instance,
+  Value<bool> anonymous,
+  Value<int?> userId,
+  Value<int> listIndex,
+});
+
+class $$AccountsTableFilterComposer extends Composer<_$AppDatabase, $AccountsTable> {
+  $$AccountsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get username => $composableBuilder(column: $table.username, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get jwt => $composableBuilder(column: $table.jwt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get instance => $composableBuilder(column: $table.instance, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get anonymous => $composableBuilder(column: $table.anonymous, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get userId => $composableBuilder(column: $table.userId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get listIndex => $composableBuilder(column: $table.listIndex, builder: (column) => ColumnFilters(column));
+}
+
+class $$AccountsTableOrderingComposer extends Composer<_$AppDatabase, $AccountsTable> {
+  $$AccountsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get username => $composableBuilder(column: $table.username, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get jwt => $composableBuilder(column: $table.jwt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get instance => $composableBuilder(column: $table.instance, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get anonymous => $composableBuilder(column: $table.anonymous, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get userId => $composableBuilder(column: $table.userId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get listIndex => $composableBuilder(column: $table.listIndex, builder: (column) => ColumnOrderings(column));
+}
+
+class $$AccountsTableAnnotationComposer extends Composer<_$AppDatabase, $AccountsTable> {
+  $$AccountsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get username => $composableBuilder(column: $table.username, builder: (column) => column);
+
+  GeneratedColumn<String> get jwt => $composableBuilder(column: $table.jwt, builder: (column) => column);
+
+  GeneratedColumn<String> get instance => $composableBuilder(column: $table.instance, builder: (column) => column);
+
+  GeneratedColumn<bool> get anonymous => $composableBuilder(column: $table.anonymous, builder: (column) => column);
+
+  GeneratedColumn<int> get userId => $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<int> get listIndex => $composableBuilder(column: $table.listIndex, builder: (column) => column);
+}
+
+class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $AccountsTable, Account, $$AccountsTableFilterComposer, $$AccountsTableOrderingComposer, $$AccountsTableAnnotationComposer,
+    $$AccountsTableCreateCompanionBuilder, $$AccountsTableUpdateCompanionBuilder, (Account, BaseReferences<_$AppDatabase, $AccountsTable, Account>), Account, PrefetchHooks Function()> {
+  $$AccountsTableTableManager(_$AppDatabase db, $AccountsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$AccountsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$AccountsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$AccountsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> username = const Value.absent(),
+            Value<String?> jwt = const Value.absent(),
+            Value<String?> instance = const Value.absent(),
+            Value<bool> anonymous = const Value.absent(),
+            Value<int?> userId = const Value.absent(),
+            Value<int> listIndex = const Value.absent(),
+          }) =>
+              AccountsCompanion(
+            id: id,
+            username: username,
+            jwt: jwt,
+            instance: instance,
+            anonymous: anonymous,
+            userId: userId,
+            listIndex: listIndex,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> username = const Value.absent(),
+            Value<String?> jwt = const Value.absent(),
+            Value<String?> instance = const Value.absent(),
+            Value<bool> anonymous = const Value.absent(),
+            Value<int?> userId = const Value.absent(),
+            Value<int> listIndex = const Value.absent(),
+          }) =>
+              AccountsCompanion.insert(
+            id: id,
+            username: username,
+            jwt: jwt,
+            instance: instance,
+            anonymous: anonymous,
+            userId: userId,
+            listIndex: listIndex,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AccountsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AccountsTable,
+    Account,
+    $$AccountsTableFilterComposer,
+    $$AccountsTableOrderingComposer,
+    $$AccountsTableAnnotationComposer,
+    $$AccountsTableCreateCompanionBuilder,
+    $$AccountsTableUpdateCompanionBuilder,
+    (Account, BaseReferences<_$AppDatabase, $AccountsTable, Account>),
+    Account,
+    PrefetchHooks Function()>;
+typedef $$FavoritesTableCreateCompanionBuilder = FavoritesCompanion Function({
+  Value<int> id,
+  required int accountId,
+  required int communityId,
+});
+typedef $$FavoritesTableUpdateCompanionBuilder = FavoritesCompanion Function({
+  Value<int> id,
+  Value<int> accountId,
+  Value<int> communityId,
+});
+
+class $$FavoritesTableFilterComposer extends Composer<_$AppDatabase, $FavoritesTable> {
+  $$FavoritesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get accountId => $composableBuilder(column: $table.accountId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get communityId => $composableBuilder(column: $table.communityId, builder: (column) => ColumnFilters(column));
+}
+
+class $$FavoritesTableOrderingComposer extends Composer<_$AppDatabase, $FavoritesTable> {
+  $$FavoritesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get accountId => $composableBuilder(column: $table.accountId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get communityId => $composableBuilder(column: $table.communityId, builder: (column) => ColumnOrderings(column));
+}
+
+class $$FavoritesTableAnnotationComposer extends Composer<_$AppDatabase, $FavoritesTable> {
+  $$FavoritesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get accountId => $composableBuilder(column: $table.accountId, builder: (column) => column);
+
+  GeneratedColumn<int> get communityId => $composableBuilder(column: $table.communityId, builder: (column) => column);
+}
+
+class $$FavoritesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $FavoritesTable,
+    Favorite,
+    $$FavoritesTableFilterComposer,
+    $$FavoritesTableOrderingComposer,
+    $$FavoritesTableAnnotationComposer,
+    $$FavoritesTableCreateCompanionBuilder,
+    $$FavoritesTableUpdateCompanionBuilder,
+    (Favorite, BaseReferences<_$AppDatabase, $FavoritesTable, Favorite>),
+    Favorite,
+    PrefetchHooks Function()> {
+  $$FavoritesTableTableManager(_$AppDatabase db, $FavoritesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$FavoritesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$FavoritesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$FavoritesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> accountId = const Value.absent(),
+            Value<int> communityId = const Value.absent(),
+          }) =>
+              FavoritesCompanion(
+            id: id,
+            accountId: accountId,
+            communityId: communityId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int accountId,
+            required int communityId,
+          }) =>
+              FavoritesCompanion.insert(
+            id: id,
+            accountId: accountId,
+            communityId: communityId,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$FavoritesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $FavoritesTable,
+    Favorite,
+    $$FavoritesTableFilterComposer,
+    $$FavoritesTableOrderingComposer,
+    $$FavoritesTableAnnotationComposer,
+    $$FavoritesTableCreateCompanionBuilder,
+    $$FavoritesTableUpdateCompanionBuilder,
+    (Favorite, BaseReferences<_$AppDatabase, $FavoritesTable, Favorite>),
+    Favorite,
+    PrefetchHooks Function()>;
+typedef $$LocalSubscriptionsTableCreateCompanionBuilder = LocalSubscriptionsCompanion Function({
+  Value<int> id,
+  required String name,
+  required String title,
+  required String actorId,
+  Value<String?> icon,
+});
+typedef $$LocalSubscriptionsTableUpdateCompanionBuilder = LocalSubscriptionsCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String> title,
+  Value<String> actorId,
+  Value<String?> icon,
+});
+
+class $$LocalSubscriptionsTableFilterComposer extends Composer<_$AppDatabase, $LocalSubscriptionsTable> {
+  $$LocalSubscriptionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get actorId => $composableBuilder(column: $table.actorId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get icon => $composableBuilder(column: $table.icon, builder: (column) => ColumnFilters(column));
+}
+
+class $$LocalSubscriptionsTableOrderingComposer extends Composer<_$AppDatabase, $LocalSubscriptionsTable> {
+  $$LocalSubscriptionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get actorId => $composableBuilder(column: $table.actorId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get icon => $composableBuilder(column: $table.icon, builder: (column) => ColumnOrderings(column));
+}
+
+class $$LocalSubscriptionsTableAnnotationComposer extends Composer<_$AppDatabase, $LocalSubscriptionsTable> {
+  $$LocalSubscriptionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get title => $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get actorId => $composableBuilder(column: $table.actorId, builder: (column) => column);
+
+  GeneratedColumn<String> get icon => $composableBuilder(column: $table.icon, builder: (column) => column);
+}
+
+class $$LocalSubscriptionsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $LocalSubscriptionsTable,
+    LocalSubscription,
+    $$LocalSubscriptionsTableFilterComposer,
+    $$LocalSubscriptionsTableOrderingComposer,
+    $$LocalSubscriptionsTableAnnotationComposer,
+    $$LocalSubscriptionsTableCreateCompanionBuilder,
+    $$LocalSubscriptionsTableUpdateCompanionBuilder,
+    (LocalSubscription, BaseReferences<_$AppDatabase, $LocalSubscriptionsTable, LocalSubscription>),
+    LocalSubscription,
+    PrefetchHooks Function()> {
+  $$LocalSubscriptionsTableTableManager(_$AppDatabase db, $LocalSubscriptionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$LocalSubscriptionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$LocalSubscriptionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$LocalSubscriptionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String> actorId = const Value.absent(),
+            Value<String?> icon = const Value.absent(),
+          }) =>
+              LocalSubscriptionsCompanion(
+            id: id,
+            name: name,
+            title: title,
+            actorId: actorId,
+            icon: icon,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required String title,
+            required String actorId,
+            Value<String?> icon = const Value.absent(),
+          }) =>
+              LocalSubscriptionsCompanion.insert(
+            id: id,
+            name: name,
+            title: title,
+            actorId: actorId,
+            icon: icon,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$LocalSubscriptionsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $LocalSubscriptionsTable,
+    LocalSubscription,
+    $$LocalSubscriptionsTableFilterComposer,
+    $$LocalSubscriptionsTableOrderingComposer,
+    $$LocalSubscriptionsTableAnnotationComposer,
+    $$LocalSubscriptionsTableCreateCompanionBuilder,
+    $$LocalSubscriptionsTableUpdateCompanionBuilder,
+    (LocalSubscription, BaseReferences<_$AppDatabase, $LocalSubscriptionsTable, LocalSubscription>),
+    LocalSubscription,
+    PrefetchHooks Function()>;
+typedef $$UserLabelsTableCreateCompanionBuilder = UserLabelsCompanion Function({
+  Value<int> id,
+  required String username,
+  required String label,
+});
+typedef $$UserLabelsTableUpdateCompanionBuilder = UserLabelsCompanion Function({
+  Value<int> id,
+  Value<String> username,
+  Value<String> label,
+});
+
+class $$UserLabelsTableFilterComposer extends Composer<_$AppDatabase, $UserLabelsTable> {
+  $$UserLabelsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get username => $composableBuilder(column: $table.username, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get label => $composableBuilder(column: $table.label, builder: (column) => ColumnFilters(column));
+}
+
+class $$UserLabelsTableOrderingComposer extends Composer<_$AppDatabase, $UserLabelsTable> {
+  $$UserLabelsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get username => $composableBuilder(column: $table.username, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get label => $composableBuilder(column: $table.label, builder: (column) => ColumnOrderings(column));
+}
+
+class $$UserLabelsTableAnnotationComposer extends Composer<_$AppDatabase, $UserLabelsTable> {
+  $$UserLabelsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get username => $composableBuilder(column: $table.username, builder: (column) => column);
+
+  GeneratedColumn<String> get label => $composableBuilder(column: $table.label, builder: (column) => column);
+}
+
+class $$UserLabelsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $UserLabelsTable,
+    UserLabel,
+    $$UserLabelsTableFilterComposer,
+    $$UserLabelsTableOrderingComposer,
+    $$UserLabelsTableAnnotationComposer,
+    $$UserLabelsTableCreateCompanionBuilder,
+    $$UserLabelsTableUpdateCompanionBuilder,
+    (UserLabel, BaseReferences<_$AppDatabase, $UserLabelsTable, UserLabel>),
+    UserLabel,
+    PrefetchHooks Function()> {
+  $$UserLabelsTableTableManager(_$AppDatabase db, $UserLabelsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$UserLabelsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$UserLabelsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$UserLabelsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> username = const Value.absent(),
+            Value<String> label = const Value.absent(),
+          }) =>
+              UserLabelsCompanion(
+            id: id,
+            username: username,
+            label: label,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String username,
+            required String label,
+          }) =>
+              UserLabelsCompanion.insert(
+            id: id,
+            username: username,
+            label: label,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$UserLabelsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $UserLabelsTable,
+    UserLabel,
+    $$UserLabelsTableFilterComposer,
+    $$UserLabelsTableOrderingComposer,
+    $$UserLabelsTableAnnotationComposer,
+    $$UserLabelsTableCreateCompanionBuilder,
+    $$UserLabelsTableUpdateCompanionBuilder,
+    (UserLabel, BaseReferences<_$AppDatabase, $UserLabelsTable, UserLabel>),
+    UserLabel,
+    PrefetchHooks Function()>;
+typedef $$DraftsTableCreateCompanionBuilder = DraftsCompanion Function({
+  Value<int> id,
+  required DraftType draftType,
+  Value<int?> existingId,
+  Value<int?> replyId,
+  Value<String?> title,
+  Value<String?> url,
+  Value<String?> customThumbnail,
+  Value<String?> altText,
+  Value<String?> body,
+});
+typedef $$DraftsTableUpdateCompanionBuilder = DraftsCompanion Function({
+  Value<int> id,
+  Value<DraftType> draftType,
+  Value<int?> existingId,
+  Value<int?> replyId,
+  Value<String?> title,
+  Value<String?> url,
+  Value<String?> customThumbnail,
+  Value<String?> altText,
+  Value<String?> body,
+});
+
+class $$DraftsTableFilterComposer extends Composer<_$AppDatabase, $DraftsTable> {
+  $$DraftsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<DraftType, DraftType, String> get draftType => $composableBuilder(column: $table.draftType, builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get existingId => $composableBuilder(column: $table.existingId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get replyId => $composableBuilder(column: $table.replyId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get url => $composableBuilder(column: $table.url, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get customThumbnail => $composableBuilder(column: $table.customThumbnail, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get altText => $composableBuilder(column: $table.altText, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get body => $composableBuilder(column: $table.body, builder: (column) => ColumnFilters(column));
+}
+
+class $$DraftsTableOrderingComposer extends Composer<_$AppDatabase, $DraftsTable> {
+  $$DraftsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get draftType => $composableBuilder(column: $table.draftType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get existingId => $composableBuilder(column: $table.existingId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get replyId => $composableBuilder(column: $table.replyId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get url => $composableBuilder(column: $table.url, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get customThumbnail => $composableBuilder(column: $table.customThumbnail, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get altText => $composableBuilder(column: $table.altText, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get body => $composableBuilder(column: $table.body, builder: (column) => ColumnOrderings(column));
+}
+
+class $$DraftsTableAnnotationComposer extends Composer<_$AppDatabase, $DraftsTable> {
+  $$DraftsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DraftType, String> get draftType => $composableBuilder(column: $table.draftType, builder: (column) => column);
+
+  GeneratedColumn<int> get existingId => $composableBuilder(column: $table.existingId, builder: (column) => column);
+
+  GeneratedColumn<int> get replyId => $composableBuilder(column: $table.replyId, builder: (column) => column);
+
+  GeneratedColumn<String> get title => $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get url => $composableBuilder(column: $table.url, builder: (column) => column);
+
+  GeneratedColumn<String> get customThumbnail => $composableBuilder(column: $table.customThumbnail, builder: (column) => column);
+
+  GeneratedColumn<String> get altText => $composableBuilder(column: $table.altText, builder: (column) => column);
+
+  GeneratedColumn<String> get body => $composableBuilder(column: $table.body, builder: (column) => column);
+}
+
+class $$DraftsTableTableManager extends RootTableManager<_$AppDatabase, $DraftsTable, Draft, $$DraftsTableFilterComposer, $$DraftsTableOrderingComposer, $$DraftsTableAnnotationComposer,
+    $$DraftsTableCreateCompanionBuilder, $$DraftsTableUpdateCompanionBuilder, (Draft, BaseReferences<_$AppDatabase, $DraftsTable, Draft>), Draft, PrefetchHooks Function()> {
+  $$DraftsTableTableManager(_$AppDatabase db, $DraftsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$DraftsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$DraftsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$DraftsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DraftType> draftType = const Value.absent(),
+            Value<int?> existingId = const Value.absent(),
+            Value<int?> replyId = const Value.absent(),
+            Value<String?> title = const Value.absent(),
+            Value<String?> url = const Value.absent(),
+            Value<String?> customThumbnail = const Value.absent(),
+            Value<String?> altText = const Value.absent(),
+            Value<String?> body = const Value.absent(),
+          }) =>
+              DraftsCompanion(
+            id: id,
+            draftType: draftType,
+            existingId: existingId,
+            replyId: replyId,
+            title: title,
+            url: url,
+            customThumbnail: customThumbnail,
+            altText: altText,
+            body: body,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required DraftType draftType,
+            Value<int?> existingId = const Value.absent(),
+            Value<int?> replyId = const Value.absent(),
+            Value<String?> title = const Value.absent(),
+            Value<String?> url = const Value.absent(),
+            Value<String?> customThumbnail = const Value.absent(),
+            Value<String?> altText = const Value.absent(),
+            Value<String?> body = const Value.absent(),
+          }) =>
+              DraftsCompanion.insert(
+            id: id,
+            draftType: draftType,
+            existingId: existingId,
+            replyId: replyId,
+            title: title,
+            url: url,
+            customThumbnail: customThumbnail,
+            altText: altText,
+            body: body,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$DraftsTableProcessedTableManager = ProcessedTableManager<_$AppDatabase, $DraftsTable, Draft, $$DraftsTableFilterComposer, $$DraftsTableOrderingComposer, $$DraftsTableAnnotationComposer,
+    $$DraftsTableCreateCompanionBuilder, $$DraftsTableUpdateCompanionBuilder, (Draft, BaseReferences<_$AppDatabase, $DraftsTable, Draft>), Draft, PrefetchHooks Function()>;
+
+class $AppDatabaseManager {
+  final _$AppDatabase _db;
+  $AppDatabaseManager(this._db);
+  $$AccountsTableTableManager get accounts => $$AccountsTableTableManager(_db, _db.accounts);
+  $$FavoritesTableTableManager get favorites => $$FavoritesTableTableManager(_db, _db.favorites);
+  $$LocalSubscriptionsTableTableManager get localSubscriptions => $$LocalSubscriptionsTableTableManager(_db, _db.localSubscriptions);
+  $$UserLabelsTableTableManager get userLabels => $$UserLabelsTableTableManager(_db, _db.userLabels);
+  $$DraftsTableTableManager get drafts => $$DraftsTableTableManager(_db, _db.drafts);
 }
