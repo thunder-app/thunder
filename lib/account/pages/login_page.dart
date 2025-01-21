@@ -22,9 +22,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback popRegister;
+  final VoidCallback popModal;
   final bool anonymous;
 
-  const LoginPage({super.key, required this.popRegister, this.anonymous = false});
+  const LoginPage({super.key, required this.popRegister, required this.popModal, this.anonymous = false});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -149,7 +150,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
               showSnackbar(AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
             } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
-              Navigator.of(context).pop();
+              widget.popModal();
               showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
             } else if (state.status == AuthStatus.contentWarning) {
               bool acceptedContentWarning = false;
