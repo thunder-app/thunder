@@ -52,6 +52,10 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
     ProfileModalBody.shellNavigatorKey.currentState!.pop();
   }
 
+  void popModal() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Navigator(
@@ -86,7 +90,7 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
         break;
 
       case '/login':
-        page = LoginPage(popRegister: popRegister, anonymous: (settings.arguments as Map<String, bool>)['anonymous']!);
+        page = LoginPage(popRegister: popRegister, popModal: popModal, anonymous: (settings.arguments as Map<String, bool>)['anonymous']!);
         break;
     }
     return SwipeablePageRoute<dynamic>(
