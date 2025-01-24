@@ -113,6 +113,7 @@ flutter:
     - "assets/logo_android.png"
     - "assets/logo_android_background.png"
     - "assets/logo_android_monochrome.png"
+    - "assets/ca/"
   fonts:
     - family: Thunder
       fonts:

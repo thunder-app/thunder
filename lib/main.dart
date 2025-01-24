@@ -76,6 +76,13 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  try {
+    ByteData data = await PlatformAssetBundle().load('assets/ca/isrgrootx1.pem');
+    SecurityContext.defaultContext.setTrustedCertificatesBytes(data.buffer.asUint8List());
+  } catch (e) {
+    // Continue if failed to load certificate
+  }
+
   // Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
