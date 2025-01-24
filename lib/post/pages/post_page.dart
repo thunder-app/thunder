@@ -201,7 +201,7 @@ class _PostPageState extends State<PostPage> {
                           viewSource: viewSource,
                         ),
                       ),
-                      if (state.status == PostStatus.loading || state.status == PostStatus.refreshing)
+                      if (state.status == PostStatus.loading)
                         const SliverFillRemaining(
                           hasScrollBody: false,
                           child: Center(child: CircularProgressIndicator()),
