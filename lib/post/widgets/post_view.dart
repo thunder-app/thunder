@@ -80,7 +80,10 @@ class PostSubview extends StatefulWidget {
   State<PostSubview> createState() => _PostSubviewState();
 }
 
-class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin {
+class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   final ExpandableController expandableController = ExpandableController(initialExpanded: true);
   late PostViewMedia postViewMedia;
   final FocusNode _selectableRegionFocusNode = FocusNode();
