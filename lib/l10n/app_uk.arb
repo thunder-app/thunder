@@ -179,7 +179,7 @@
   "@anonymousInstances": {
     "description": "Heading for the anonymous instances section of the login page"
   },
-  "bannedUserFromCommunity": "Заблокований користувач із спільноти",
+  "bannedUserFromCommunity": "Заблокований користувач зі спільноти",
   "@bannedUserFromCommunity": {
     "description": "Short decription for moderator action to ban a user from a community"
   },
@@ -304,5 +304,37 @@
     "description": "About settings category."
   },
   "feed": "Стрічка",
-  "@feed": {}
+  "@feed": {},
+  "topSixMonths": "Найбільш оцінені за 6 місяців",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "topThreeMonths": "Найбільш оцінені за 3 місяці",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "scaled": "Збалансовані",
+  "@scaled": {},
+  "controversial": "Суперечливі",
+  "@controversial": {},
+  "search": "Пошук",
+  "@search": {},
+  "modlog": "Журнал модерації",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "report": "{count, plural, one {Повідомлення про порушення} few {Повідомлення про порушення} many {Повідомлень про порушення} other {Повідомлення про порушення}} ",
+  "@report": {},
+  "topNineMonths": "Найбільш оцінені за 9 місяців",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "sortOptions": "Сортування публікацій",
+  "@sortOptions": {},
+  "moderatedCommunities": "Спільноти, якими ви керуєте",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "sortByTop": "Сортування за найбільшою оцінкою",
+  "@sortByTop": {}
 }
