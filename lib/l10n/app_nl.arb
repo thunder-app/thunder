@@ -796,5 +796,185 @@
   "expandSpoiler": "Spoiler uitvouwen",
   "@expandSpoiler": {
     "description": "Label for expanding spoiler"
+  },
+  "deleteImageConfirmTitle": "Verwĳderen?",
+  "@deleteImageConfirmTitle": {
+    "description": "Confirmation title message for deleting an image"
+  },
+  "hidePassword": "Wachtwoord verbergen",
+  "@hidePassword": {},
+  "hideThumbnails": "Miniaturen verbergen",
+  "@hideThumbnails": {
+    "description": "Option to hide thumbnails in feed"
+  },
+  "includeImage": "Afbeelding bĳvoegen",
+  "@includeImage": {},
+  "lockPost": "Bericht vergrendelen",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
+  "localNotifications": "Lokale meldingen",
+  "@localNotifications": {
+    "description": "Describes the notification type for Local Notifications"
+  },
+  "localPosts": "Lokale berichten",
+  "@localPosts": {},
+  "noItems": "Geen items",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "noReplies": "Geen reacties",
+  "@noReplies": {
+    "description": "Label for when there are no replies in the list"
+  },
+  "postActions": "Bericht­acties",
+  "@postActions": {
+    "description": "Describes a given set of actions that can be performed on a post"
+  },
+  "gettingStarted": "Aan de slag",
+  "@gettingStarted": {},
+  "hideColor": "Kleur verbergen",
+  "@hideColor": {
+    "description": "Name of the hide color setting"
+  },
+  "importExportSettings": "Instellingen importeren/exporteren",
+  "@importExportSettings": {
+    "description": "Category for settings related to import and export."
+  },
+  "includeCommunity": "Gemeen­schap bĳvoegen",
+  "@includeCommunity": {},
+  "includeText": "Tekst bĳvoegen",
+  "@includeText": {},
+  "includeTitle": "Titel bĳvoegen",
+  "@includeTitle": {},
+  "localOnly": "Enkel lokaal",
+  "@localOnly": {
+    "description": "Local community visibility"
+  },
+  "loginSucceeded": "Ingelogd.",
+  "@loginSucceeded": {},
+  "manageAccounts": "Accounts beheren",
+  "@manageAccounts": {},
+  "mostComments": "Meeste opmerkingen",
+  "@mostComments": {},
+  "navigateDown": "Volgende opmerking",
+  "@navigateDown": {},
+  "navigateUp": "Vorige opmerking",
+  "@navigateUp": {},
+  "newComments": "Nieuwe opmerkingen",
+  "@newComments": {},
+  "newPost": "Nieuw bericht",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "noSubscriptions": "Geen abonnementen",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "onWifi": "Op wifi",
+  "@onWifi": {},
+  "openSettings": "Instellingen openen",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "loading": "Aan het laden…",
+  "@loading": {
+    "description": "Placeholder text for loading"
+  },
+  "logOut": "Uitloggen",
+  "@logOut": {},
+  "hidCommunity": "Heeft gemeen­schap verborgen",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
+  "instanceActions": "Instantie­acties",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "instanceEntry": "Instantie ‘{username}’",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
+  },
+  "keywordFilters": "Trefwoord­filters",
+  "@keywordFilters": {
+    "description": "Subcategory in Settings -> Filters"
+  },
+  "linkActions": "Link­acties",
+  "@linkActions": {},
+  "openInstance": "Instantie openen",
+  "@openInstance": {},
+  "postTogglePreview": "Voor­vertoning omschakelen",
+  "@postTogglePreview": {},
+  "profileBio": "Profiel­biografie",
+  "@profileBio": {
+    "description": "Setting for profile bio"
+  },
+  "reduceAnimations": "Animaties verminderen",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "refreshContent": "Inhoud verversen",
+  "@refreshContent": {},
+  "noMentions": "Geen vermeldingen",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
+  },
+  "lockedPost": "Vergrendeld bericht",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
+  "hostInstance": "Host-instantie",
+  "@hostInstance": {
+    "description": "The instance hosting a community"
+  },
+  "importDatabase": "Database importeren",
+  "@importDatabase": {
+    "description": "Name of setting for importing the db"
+  },
+  "importSettings": "Instellingen importeren",
+  "@importSettings": {
+    "description": "Action to import application settings."
+  },
+  "linkHandlingCustomTabsShort": "In-app ingebed",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  },
+  "login": "Inloggen",
+  "@login": {},
+  "matrixUser": "Matrix­gebruiker",
+  "@matrixUser": {
+    "description": "Label for Matrix user id"
+  },
+  "moderatedCommunities": "Gemodereerde gemeen­schappen",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderatorActions": "Moderator­acties",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "noLanguage": "Geen taal",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
+  "noMessages": "Geen berichten",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
+  "postBody": "Bericht­inhoud",
+  "@postBody": {},
+  "pureBlack": "Puur zwart",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "pushNotification": "Push­meldingen",
+  "@pushNotification": {
+    "description": "Setting for push notifications"
+  },
+  "removeAccount": "Account verwĳderen",
+  "@removeAccount": {},
+  "originalPoster": "Originele plaatser",
+  "@originalPoster": {
+    "description": "Label for the original poster."
   }
 }
