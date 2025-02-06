@@ -2868,5 +2868,105 @@
     "description": "A positive status"
   },
   "sidebarBottomNavDoubleTapDescription": "Doppeltipp auf die untere Navigationsleiste zum Öffnen der Seitenleiste",
-  "@sidebarBottomNavDoubleTapDescription": {}
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "accountSettingsExportedSuccessfully": "Lemmy Accounteinstellungen erfolgreich nach {savedFilePath} exportiert!",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "Lemmy Accounteinstellungen erfolgreich importiert!",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
+  "deleteImageConfirmTitle": "Löschen?",
+  "@deleteImageConfirmTitle": {
+    "description": "Confirmation title message for deleting an image"
+  },
+  "importExportLemmyAccountSettings": "Lemmy-Kontoeinstellungen importieren/exportieren",
+  "@importExportLemmyAccountSettings": {
+    "description": "This is specifically used in search results to distinguish from Thunder import/export"
+  },
+  "loading": "Laden...",
+  "@loading": {
+    "description": "Placeholder text for loading"
+  },
+  "errorDeletingImage": "Dort war ein Fehler beim Löschen des Bildes: {error}",
+  "@errorDeletingImage": {
+    "description": "Error message for deleting an image"
+  },
+  "manageMedia": "Medien verwalten",
+  "@manageMedia": {
+    "description": "Setting name and page title for media management"
+  },
+  "uploadedDate": "Hochgeladen: {date}",
+  "@uploadedDate": {
+    "description": "Metadata for image uploads"
+  },
+  "errorImportingAccountSettings": "Beim Importieren der Einstellungen ist ein Fehler aufgetreten. Die Datei hat vieleicht nicht das richtige Format.",
+  "@errorImportingAccountSettings": {
+    "description": "Message shown to user when account there was an error importing the settings"
+  },
+  "noReferencesToImage": "Es wurden keine Beiträge oder Kommentare mit diesem Bild gefunden. Es kann jedoch an anderer Stelle im Internet verwendet werden.",
+  "@noReferencesToImage": {
+    "description": "Message indicating media was not found on Lemmy"
+  },
+  "noImages": "Es sieht so aus, als hätten Sie keine Bilder hochgeladen.",
+  "@noImages": {
+    "description": "Message for no uploaded images"
+  },
+  "rateLimitErrorMessage": "Sie haben das Ratenlimit für diese Anfrage erreicht. Bitte warten Sie und versuchen Sie es später erneut.",
+  "@rateLimitErrorMessage": {
+    "description": "Error message for the rate-limit Lemmy exception"
+  },
+  "importExportLemmyAccountSettingsSubtitle": "Beinhaltet abonnierte Communities, Sperrlisten und Kontoeinstellungen",
+  "@importExportLemmyAccountSettingsSubtitle": {
+    "description": "Subtitle for Lemmy account settings import/export section"
+  },
+  "youMustSelectAJsonFile": "Sie müssen eine JSON-Datei auswählen.",
+  "@youMustSelectAJsonFile": {
+    "description": "Error message shown to user when they attempt to import a JSON file that doesn't have the right extension"
+  },
+  "exportLemmyAccountSettingsDescription": "Lemmy-Kontoeinstellungen exportieren",
+  "@exportLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings export"
+  },
+  "removeComment": "Kommentar entfernen",
+  "@removeComment": {
+    "description": "Moderator action to remove a comment"
+  },
+  "altText": "Alternativtext",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
+  "deleteComment": "Kommentar löschen",
+  "@deleteComment": {
+    "description": "Action for deleting a comment"
+  },
+  "deleteImageConfirmMessage": "Sind Sie sicher, dass Sie dieses Bild löschen möchten?",
+  "@deleteImageConfirmMessage": {
+    "description": "Confirmation messages for deleting an image"
+  },
+  "errorLoadingAccountSettings": "Beim Laden der Einstellungsdatei ist ein Fehler aufgetreten oder der Vorgang wurde abgebrochen.",
+  "@errorLoadingAccountSettings": {
+    "description": "Message shown to user when there was an error loading the settings file"
+  },
+  "errorParsingJson": "Beim Parsen der ausgewählten Datei ist ein Fehler aufgetreten. Es handelt sich möglicherweise nicht um gültiges JSON.",
+  "@errorParsingJson": {
+    "description": "Message shown to user when there was an error parsing the selected file"
+  },
+  "errorSavingAccountSettings": "Beim Speichern der Einstellungsdatei ist ein Fehler aufgetreten oder der Vorgang wurde abgebrochen.",
+  "@errorSavingAccountSettings": {
+    "description": "Message shown to user when there was an error saving the settings file"
+  },
+  "importExportThunderSettings": "Thunder-Einstellungen importieren/exportieren",
+  "@importExportThunderSettings": {
+    "description": "This is specifically used in search results to distinguish from Lemmy import/export"
+  },
+  "importLemmyAccountSettingsDescription": "Lemmy-Kontoeinstellungen importieren",
+  "@importLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings import"
+  },
+  "restoreComment": "Kommentar wiederherstellen",
+  "@restoreComment": {
+    "description": "Moderator action to restore a comment"
+  }
 }
