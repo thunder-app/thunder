@@ -62,6 +62,7 @@ class UserChip extends StatelessWidget {
           person.name,
           person.displayName,
           fetchInstanceNameFromUrl(person.actorId),
+          useDisplayName: false,
         )}${fetchUserGroupDescriptor(userGroups, person)}',
         preferBelow: false,
         child: Material(
