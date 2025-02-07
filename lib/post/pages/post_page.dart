@@ -9,6 +9,7 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/models/comment_node.dart';
+import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/comment/widgets/comment_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -232,7 +233,18 @@ class _PostPageState extends State<PostPage> {
                               onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
                               onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
                               onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
-                              onReplyEditAction: (CommentView commentView, bool isEdit) async => context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView)),
+                              onReplyEditAction: (CommentView commentView, bool isEdit) {
+                                navigateToCreateCommentPage(
+                                  context,
+                                  commentView: isEdit ? commentView : null,
+                                  parentCommentView: isEdit ? null : commentView,
+                                  onCommentSuccess: (commentView, userChanged) {
+                                    if (!userChanged) {
+                                      context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
+                                    }
+                                  },
+                                );
+                              },
                               onCollapseCommentChange: (int commentId, bool collapsed) {
                                 if (collapsed) {
                                   collapsedComments.add(commentId);
