@@ -7,7 +7,7 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "I profili di accessibilità consentono di applicare più impostazioni contemporaneamente per soddisfare un requisito di accessibilità specifico.",
   "@accessibilityProfilesDescription": {},
-  "account": "Account",
+  "account": "{count, plural, zero {Account} one {Account} other {Account} } ",
   "@account": {},
   "accountSettings": "Impostazioni Account",
   "@accountSettings": {},
@@ -19,7 +19,7 @@
   "@add": {},
   "addAccount": "Aggiungi Account",
   "@addAccount": {},
-  "addAccountToSeeProfile": "Accedi a un account per vedere il tuo profilo.",
+  "addAccountToSeeProfile": "Accedi per vedere il tuo account.",
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Aggiungi Istanza Anonima",
   "@addAnonymousInstance": {},
@@ -69,7 +69,7 @@
   "@browsingAnonymously": {},
   "cancel": "Annulla",
   "@cancel": {},
-  "cannotReportOwnComment": "Non è possibile segnalare un proprio commento.",
+  "cannotReportOwnComment": "Non puoi segnalare il tuo commento.",
   "@cannotReportOwnComment": {},
   "cantBlockAdmin": "Non è permesso bloccare un amministratore di un'istanza.",
   "@cantBlockAdmin": {},
@@ -606,5 +606,993 @@
   "accept": "Accetta",
   "@accept": {
     "description": "The ability to accept an option"
+  },
+  "cardPostCardMetadataItems": "Card View Metadati",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "guestModeFeedSettingsLabel": "Le seguenti impostazioni si applicano al solo account ospite. Per regolare il tuo feed, vai su Impostazioni Account.",
+  "@guestModeFeedSettingsLabel": {
+    "description": "Description for guest mode feed settings"
+  },
+  "importExportLemmyAccountSettings": "Importa/Esporta Impostazioni Account Lemmy",
+  "@importExportLemmyAccountSettings": {
+    "description": "This is specifically used in search results to distinguish from Thunder import/export"
+  },
+  "addAsCommunityModerator": "Aggiungi come Community Moderator",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
+  "altText": "Alt Text",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
+  "clearCache": "Pulizia Cache ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "compactViewDescription": "Abilità compact view per impostare",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "compactViewSettings": "Impostazioni Compact View",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "changePasswordWarning": "Per cambiare password, si reindirizza al sito della tua istanza.\n\nContinuare?",
+  "@changePasswordWarning": {
+    "description": "Warning label for changing password"
+  },
+  "floatingActionButton": "Azione Pulsante Galleggiante",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
+  },
+  "errorSavingAccountSettings": "Errore nel salvare il file impostazioni o l'operazione è stata cancellata.",
+  "@errorSavingAccountSettings": {
+    "description": "Message shown to user when there was an error saving the settings file"
+  },
+  "hidCommunity": "Nascondi Comunità",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
+  "confirmResetPostPreferences": "Questo resetterà tutte le preferenze dei post. Confermare?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "doNotSupportMultipleUnifiedPushApps": "Trovate diverse app compatibili; si prega di installane solo una",
+  "@doNotSupportMultipleUnifiedPushApps": {
+    "description": "Tell the user we don't currently support multiple UnifiedPush apps"
+  },
+  "countComments": "{count} Commenti",
+  "@countComments": {
+    "description": "Number of comments"
+  },
+  "databaseNotExportedSuccessfully": "Il database non è stato esportato correttamente o l'operazione è stata cancellata.",
+  "@databaseNotExportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully exported"
+  },
+  "debugNotificationsDescription": "Per risolvere i problemi relativi alle notifiche, utilizzare le seguenti opzioni.",
+  "@debugNotificationsDescription": {
+    "description": "A description for the notification debugging section"
+  },
+  "deselectUndeterminedWarning": "Se deselezioni, non vedrai la maggior parte dei contenuti.",
+  "@deselectUndeterminedWarning": {},
+  "errorImportingAccountSettings": "Errore nell'importare le impostazioni. Il file potrebbe essere in un formato errato.",
+  "@errorImportingAccountSettings": {
+    "description": "Message shown to user when account there was an error importing the settings"
+  },
+  "hideThumbnails": "Nascondi Miniature",
+  "@hideThumbnails": {
+    "description": "Option to hide thumbnails in feed"
+  },
+  "anonymousInstances": "Istanze Anonime",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "created": "Creato {date}",
+  "@created": {
+    "description": "The date that something was created"
+  },
+  "debugDescription": "Le seguenti impostazioni di debug devono essere utilizzate solo per la risoluzione dei problemi.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
+  "downvoteColor": "Colore Disprezzati",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
+  },
+  "accountSettingsExportedSuccessfully": "Impostazioni dell'account Lemmy esportate correttamente in {savedFilePath}!",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "Impostazioni dell'account Lemmy esportate correttamente!",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
+  "accountSwitchParentCommentNotFound": "Commento selezionato non trovato su '{instance}'. Ritorno all'account precedente.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "accountSwitchPostNotFound": "Post selezionato non trovato su '{instance}'. Ritorno all'account precedente.",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "actionColorsRedirect": "Vuoi personalizzare i colori?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
+  "addKeywordFilter": "Aggiungi Keyword",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "ago": "{time} fa",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "banFromCommunity": "Banna dalla Comunità",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
+  },
+  "blockSettingLabel": "Blocchi Utente/Comunità/Istanza",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "blue": "Blu",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "boldInstanceName": "Grassetto Nome Istanza",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "clearedCache": "Cache pulite correttamente.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "color": "Colore",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "combineCommentScores": "Combina Punteggi Commento",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
+  "commentShowUserAvatar": "Mostra Avatar Utente",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
+  "communityFormat": "Formato Comunità",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "databaseExportedSuccessfully": "Database esportato con successo in '{savedFilePath}'",
+  "@databaseExportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully exported"
+  },
+  "editPost": "Modifica Post",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "enableFloatingButtonOnPosts": "Abilita Pulsante Galleggiante Sui Post",
+  "@enableFloatingButtonOnPosts": {
+    "description": "Setting for enable floating button on posts"
+  },
+  "errorLoadingAccountSettings": "Errore nel caricare il file impostazioni o l'operazione è stata cancellata.",
+  "@errorLoadingAccountSettings": {
+    "description": "Message shown to user when there was an error loading the settings file"
+  },
+  "expandCommentPreview": "Espandi Anteprima Commento",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "experimentalFeaturesDescription": "Queste funzioni sono in fase di sviluppo, usale a tuo rischio. Dovrai riavviare Thunder per applicarle.",
+  "@experimentalFeaturesDescription": {
+    "description": "Description for experimental features setting"
+  },
+  "exportDatabaseSubtitle": "Questo database contiene info sui tuoi account, preferiti, iscrizioni anonime, ed etichette utente.",
+  "@exportDatabaseSubtitle": {
+    "description": "Subtitle of setting for exporting the db"
+  },
+  "exportLemmyAccountSettingsDescription": "Esporta impostazioni account Lemmy",
+  "@exportLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings export"
+  },
+  "feedTypeAndSorts": "Feed di Default e Ordinamento",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "floatingActionButtonSinglePressDescription": "indica Azione di pressione singola.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
+  },
+  "forward": "Inoltrati",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "foundUnifiedPushDistribtorApp": "Trovata app compatibile; riavvia Thunder per connettere",
+  "@foundUnifiedPushDistribtorApp": {
+    "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
+  },
+  "fullscreenSwipeGestures": "Gesti Swipe a Schermo Intero",
+  "@fullscreenSwipeGestures": {
+    "description": "Setting for fullscreen swipe gestures"
+  },
+  "hidden": "Nascosto",
+  "@hidden": {
+    "description": "Describes a post that is hidden"
+  },
+  "hide": "Nascondi",
+  "@hide": {
+    "description": "The action to hide a post"
+  },
+  "hideColor": "Colore Nascosti",
+  "@hideColor": {
+    "description": "Name of the hide color setting"
+  },
+  "hideTopBarOnScroll": "Nascondi Barra Superiore se Scorri",
+  "@hideTopBarOnScroll": {
+    "description": "Settings toggle to hide the top bar on scroll"
+  },
+  "importLemmyAccountSettingsDescription": "Importa impostazioni account Lemmy",
+  "@importLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings import"
+  },
+  "actionColors": "Colori Azione",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "clearDatabase": "Pulizia Database",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "colorizeCommunityName": "Colora Nome Comunità",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "copySelected": "Copia selezione",
+  "@copySelected": {
+    "description": "Action for copying selected text"
+  },
+  "deleteImageConfirmMessage": "Cancellare questa immagine?",
+  "@deleteImageConfirmMessage": {
+    "description": "Confirmation messages for deleting an image"
+  },
+  "deleteImageConfirmTitle": "Cancella?",
+  "@deleteImageConfirmTitle": {
+    "description": "Confirmation title message for deleting an image"
+  },
+  "deleteUserLabelConfirmation": "Cancellare l’etichetta?",
+  "@deleteUserLabelConfirmation": {
+    "description": "Confirmation message for deleting a label"
+  },
+  "deletedByCreator": "rimosso dall'autore",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "dividerAppearance": "Aspetto Divisore",
+  "@dividerAppearance": {
+    "description": "Divider appearance category"
+  },
+  "enableFloatingButtonOnFeeds": "Abilita Pulsante Galleggiante Su Feed",
+  "@enableFloatingButtonOnFeeds": {
+    "description": "Setting for enable floating button on feeds"
+  },
+  "expand": "Espandi",
+  "@expand": {
+    "description": "Action to expand something"
+  },
+  "expandPostPreview": "Espandi Anteprima Post",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
+  "expanded": "Espanso",
+  "@expanded": {
+    "description": "Expanded post body view type"
+  },
+  "failedToLoadVideo": "Caricamento video fallito. Aprire nel browser?",
+  "@failedToLoadVideo": {
+    "description": "Error message that displays when we fail to load a video"
+  },
+  "imageCachingModeRelaxedShort": "Rilassato",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
+  "imageDimensionTimeout": "Timeout Dimensione Immagine",
+  "@imageDimensionTimeout": {
+    "description": "Setting for how long to wait for the image dimensions to be fetched"
+  },
+  "in_": "da",
+  "@in_": {
+    "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+  },
+  "languageNotAllowed": "Questa comunità non permette post nella lingua selezionata. Prova altra lingua.",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
+  },
+  "leftLongSwipe": "Swipe Sx Lungo",
+  "@leftLongSwipe": {
+    "description": "Setting for left long swipe"
+  },
+  "always": "Sempre",
+  "@always": {},
+  "advanced": "Avanzate",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "generalSettings": "Impostazioni Generali",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
+  "boldCommunityName": "Grassetto Nome Comunità",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "alternateSources": "Fonti Alternative",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
+  },
+  "applePushNotificationService": "Servizio Notifiche Push Apple",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
+  "backgroundCheckWarning": "Nota che il controllo notifiche consuma batteria aggiuntiva",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "bannedUser": "Utente Bannato",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "blockCommunityInstance": "Blocca Istanza da Comunità",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
+  "blockUserInstance": "Blocca Istanza di Utente",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "browserMode": "Gestione link",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "cardViewDescription": "Abilita regolazioni per card view",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "cardViewSettings": "Impostazioni Card View",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "changePassword": "Cambia Password",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "communityEntry": "Comunità '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "communityNameColor": "Colore Nome Comunità",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "compact": "Compatto",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "compactPostCardMetadataItems": "Compact View Metadati",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
+  },
+  "condensed": "Condensato",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "confirm": "Conferma",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "confirmLogOutTitle": "Log Out?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "confirmMarkAllAsReadBody": "Segnare tutti i messaggi come letti?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "confirmMarkAllAsReadTitle": "Segnare tutto come letto?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "confirmResetCommentPreferences": "Questo resetterà tutte le preferenze dei commenti. Confermare?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "confirmUnsubscription": "Ti vuoi disiscrivere?",
+  "@confirmUnsubscription": {
+    "description": "Ask the user to confirm that they want to unsubscribe"
+  },
+  "connectedToUnifiedPushDistributorApp": "Connesso a {app}",
+  "@connectedToUnifiedPushDistributorApp": {
+    "description": "Tell the user which UnifiedPush app we're connected to"
+  },
+  "contentWarning": "Avviso Contenuti",
+  "@contentWarning": {
+    "description": "Heading for content warning dialog"
+  },
+  "copyComment": "Copia Commento",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
+  "countPosts": "{count} Post",
+  "@countPosts": {
+    "description": "Number of posts"
+  },
+  "countUsersActiveDay": "{count} utenti/giorno",
+  "@countUsersActiveDay": {
+    "description": "Number of users active in the last day"
+  },
+  "countUsersActiveHalfYear": "{count} utenti/6 mesi",
+  "@countUsersActiveHalfYear": {
+    "description": "Number of users active in the last half year"
+  },
+  "countUsersActiveMonth": "{count} utenti/mesi",
+  "@countUsersActiveMonth": {
+    "description": "Number of users active in the last month"
+  },
+  "countUsersActiveWeek": "{count} utenti/sett",
+  "@countUsersActiveWeek": {
+    "description": "Number of users active in the last week"
+  },
+  "dateFormat": "Formato Data",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
+  "debug": "Debug",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "decline": "Declina",
+  "@decline": {
+    "description": "The ability to decline an option"
+  },
+  "defaultFeedType": "Ordinamento Feed di Default",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
+  "defaultFeedSortType": "Tipo Ordinamento Feed di Default",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  },
+  "discussionLanguagesTooltip": "Contenuto filtrato nella lingua selezionata.",
+  "@discussionLanguagesTooltip": {},
+  "displayName": "Mostra Nome",
+  "@displayName": {
+    "description": "Label for display name"
+  },
+  "enableExperimentalFeatures": "Abilita funzioni sperimentali",
+  "@enableExperimentalFeatures": {
+    "description": "Setting to enable experimental features"
+  },
+  "enableFeedFab": "Abilita Pulsante Galleggiante su Feed",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "enableInboxNotifications": "Abilita Notifiche Inbox",
+  "@enableInboxNotifications": {
+    "description": "Setting name for inbox notifications"
+  },
+  "enablePostFab": "Abilita Pulsante Galleggiante sui Post",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "exportSettingsSubtitle": "L'impostazione include tutte le preferenze che hai configurato su Thunder.",
+  "@exportSettingsSubtitle": {
+    "description": "Subtitle of setting for exporting settings"
+  },
+  "failedToUpdateNotificationSettings": "Impossibile aggiornare le impostazioni di notifica",
+  "@failedToUpdateNotificationSettings": {
+    "description": "Error message when failed to update notification settings."
+  },
+  "featuredPost": "Post in Evidenza",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
+  },
+  "floatingActionButtonInformation": "Thunder permette diverse Azioni per il Pulsante Galleggiante.\n- Swipe per rivelare diverse Azioni\n- Swipe sotto/sopra per nascondere o rivelare il Pulsante\n\nPer personalizzare le Azioni principali o secondarie, premi a lungo sulle seguenti Azioni.",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "imageCachingModeRelaxed": "Fai scadere image caching (usa meno memoria ma le immagini sono ricaricate più spesso)",
+  "@imageCachingModeRelaxed": {
+    "description": "Long description for relaxed image caching mode"
+  },
+  "importDatabase": "Importa Database",
+  "@importDatabase": {
+    "description": "Name of setting for importing the db"
+  },
+  "label": "Etichetta",
+  "@label": {
+    "description": "Text field label for a user label"
+  },
+  "cardView": "Card View",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "changeAccountSettingsFor": "Cambia impostazioni account per",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
+  "hideNsfwPostsFromFeed": "Nascondi Post NSFW dal Feed",
+  "@hideNsfwPostsFromFeed": {
+    "description": "Toggle to hide NSFW posts from the feed."
+  },
+  "couldntFindPost": "Impossibile caricare il post richiesto. Potrebbe essere stato cancellato o rimosso.",
+  "@couldntFindPost": {
+    "description": "Error message for when we can't load a post."
+  },
+  "areNotificationsAllowedBySystem": "Notifiche permesse dal sistema: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "changeNotificationSettings": "Cambia impostazioni notifica...",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
+  "collapse": "Collassa",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "collapseCommentPreview": "Collassa Anteprima Commento",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "colorizeUserName": "Colora Nome Utente",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
+  "colors": "Colori",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "combineCommentScoresLabel": "Combina Punteggi Commento",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "hideNsfwPreviews": "Sfoca Anteprime Post NSFW",
+  "@hideNsfwPreviews": {
+    "description": "Toggle to blur NSFW previews."
+  },
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "commentFontScale": "Dimensione Font Contenuto Commento",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
+  },
+  "commentPreview": "Mostra un'anteprima dei commenti con le impostazioni date",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "commentSwipeActions": "Azione Swipe su Commento",
+  "@commentSwipeActions": {
+    "description": "Setting for comment swipe actions"
+  },
+  "defaultCommentSortType": "Tipo Ordinamento Commenti di Default",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "deleteAccount": "Cancella Account",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "large": "Largo",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "addDiscussionLanguage": "Aggiungi Lingua",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "bold": "Grassetto",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "keywordFilterDescription": "Filtra post contenenti parole-chiave nel titolo, corpo o URL",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "keywordFilters": "Filtri Parole-Chiave",
+  "@keywordFilters": {
+    "description": "Subcategory in Settings -> Filters"
+  },
+  "instanceNameThickness": "Spessore Nome Istanza",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
+  "appLanguage": "Lingua App",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "all": "Tutto",
+  "@all": {},
+  "endOfComments": "Fine dei commenti",
+  "@endOfComments": {},
+  "errorMarkingReplyRead": "Errore nel segnare la risposta come letta.",
+  "@errorMarkingReplyRead": {
+    "description": "Error message for marking a reply read"
+  },
+  "green": "Verde",
+  "@green": {
+    "description": "The color green"
+  },
+  "information": "Informazioni",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
+  "clearCacheLabel": "Pulizia Cache",
+  "@clearCacheLabel": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "collapseInformation": "Collassa Informazione",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "collapseParentCommentBodyOnGesture": "Nascondi Commento Genitore se Collassato",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "collapsePostPreview": "Collassa Anteprima Post",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "combineNavAndFabDescription": "Il Pulsante di Azione Galleggiante verrà mostrato tra i pulsanti di navigazione.",
+  "@combineNavAndFabDescription": {},
+  "comfortable": "Confortevole",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "commentBehaviourSettings": "Commenti",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "deletedByModerator": "rimosso da moderatore",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
+  "disable": "Disabilita",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Label for email input"
+  },
+  "imageCachingMode": "Modalità Image Caching",
+  "@imageCachingMode": {
+    "description": "Title for setting related to image caching mode"
+  },
+  "addedInstanceMod": "Aggiunto Mod Istanza",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "addedModToCommunity": "Aggiunto Mod Comunità",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "addUserLabel": "Aggiungi Etichetta Utente",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
+  "createdToday": "Creato Oggi",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
+  "databaseImportedSuccessfully": "Database importato correttamente!",
+  "@databaseImportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully imported"
+  },
+  "defaultColor": "Default",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
+  },
+  "deleteAccountDescription": "Per cancellare permanentemente il tuo account, si verrà reindirizzati al sito della tua istanza. \n\nContinuare?",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
+  "deleteLocalDatabaseDescription": "Questa azione rimuoverà il database locale e disconnetterà i tuoi account.\n\nContinuare?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "deleteLocalPreferencesDescription": "Questo cancellerà le tue impostazioni e preferenze di Thunder.\n\nContinuare?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
+  "disabled": "Disabilitato",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
+  "discussionLanguages": "Lingua Discussione",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "endSearch": "Fine Ricerca",
+  "@endSearch": {},
+  "favorites": "Preferiti",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "imageCachingModeAggressiveShort": "Aggressivo",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "accountSettingOverrideWarning": "Le impostazioni del tuo account sovrascrivono le seguenti impostazioni",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "bannedUserFromCommunity": "Utente Bannato dalla Comunità",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "blockManagement": "Gestione Blocchi",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "databaseExportWarning": "Il database può contenere informazioni sensibili sul tuo account Lemmy. Se lo esporti, non condividerlo con nessuno. Vuoi procedere?",
+  "@databaseExportWarning": {
+    "description": "Message shown to the user when exporting the db"
+  },
+  "experimentalFeatures": "Funzioni Sperimentali",
+  "@experimentalFeatures": {
+    "description": "Name of setting for experimental features"
+  },
+  "exploreInstance": "Esplora Istanza",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
+  "leftShortSwipe": "Swipe Sx Corto",
+  "@leftShortSwipe": {
+    "description": "Setting for left short swipe"
+  },
+  "communityActions": "Azioni Comunità",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "creator": "Creator",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "crossPostedFrom": "crosspost da:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
+  },
+  "dangerZone": "Zona Pericolosa",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "failedToPerformAction": "Operazione fallita",
+  "@failedToPerformAction": {
+    "description": "Error message when we fail to perform an action"
+  },
+  "floatingActionButtonLongPressDescription": "indica Azione di pressione prolungata.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "fonts": "Font",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
+  "appearance": "Aspetto",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "instanceActions": "Azioni Istanza",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "instanceEntry": "Istanza '{username}'",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
+  },
+  "instances": "Istanze",
+  "@instances": {
+    "description": "Title for settings related to instances"
+  },
+  "languageFilters": "Cerchi i filtri della lingua?",
+  "@languageFilters": {},
+  "boldUserName": "Grassetto Nome Utente",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "clearPreferences": "Pulizia Preferenze",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "collapseSpoiler": "Collassa Spoiler",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "colorizeInstanceName": "Colora Nome Istanza",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "commentShowUserInstance": "Mostra Istanza Utente",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "communityNameThickness": "Spessore Nome Comunità",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
+  "communityStyle": "Stile Comunità",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "compactView": "Compact View",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "confirmLogOutBody": "Fare il log out?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "contentManagement": "Gestione Contenuti",
+  "@contentManagement": {
+    "description": "Setting for content management (languages/blocking)"
+  },
+  "countLocalSubscribers": "{count} Iscritti Locali",
+  "@countLocalSubscribers": {
+    "description": "Number of local subscribers"
+  },
+  "countUsers": "{count} utenti",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "currentNotificationsMode": "Modalità notifiche attuale: {mode}",
+  "@currentNotificationsMode": {
+    "description": "A status indicator for the current notifications mode"
+  },
+  "dark": "Scuro",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "databaseNotImportedSuccessfully": "Il database non è stato importato correttamente o l'operazione è stata cancellata.",
+  "@databaseNotImportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully imported"
+  },
+  "deleteComment": "Cancella Commento",
+  "@deleteComment": {
+    "description": "Action for deleting a comment"
+  },
+  "deleteLocalDatabase": "Cancella Database Locale",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "deleteLocalPreferences": "Cancella Preferenze Locali",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "deletePost": "Cancella Post",
+  "@deletePost": {
+    "description": "Action for deleting a post"
+  },
+  "detailedReason": "Motivo: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "disablePushNotifications": "Disabilita Notifiche Push",
+  "@disablePushNotifications": {
+    "description": "Description when disabling push notifications"
+  },
+  "doNotShowAgain": "Non Mostrare Nuovamente",
+  "@doNotShowAgain": {
+    "description": "Action for hiding something permanently"
+  },
+  "downvoted": "Disprezzato",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
+  "enableCommentNavigation": "Abilita Navigazione Commento",
+  "@enableCommentNavigation": {
+    "description": "Setting for enable comment navigation"
+  },
+  "errorDeletingImage": "Errore nel cancellare l'immagine: {error}",
+  "@errorDeletingImage": {
+    "description": "Error message for deleting an image"
+  },
+  "errorMarkingReplyUnread": "Errore nel segnare la risposta come non letta.",
+  "@errorMarkingReplyUnread": {
+    "description": "Error message for marking a reply unread"
+  },
+  "errorParsingJson": "Errore nell'analisi del file selezionato. Potrebbe non essere JSON valido.",
+  "@errorParsingJson": {
+    "description": "Message shown to user when there was an error parsing the selected file"
+  },
+  "excessiveApiCallsWarning": "Potrebbe volerci un po' a causa dei filtri.",
+  "@excessiveApiCallsWarning": {
+    "description": "A message shown to the user when the feed is taking a long time to load, possibly because many posts are being filtered out due to their keyword filters"
+  },
+  "expandInformation": "Espandi Informazione",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "expandSpoiler": "Espandi Spoiler",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "exportDatabase": "Esporta Database",
+  "@exportDatabase": {
+    "description": "Name of the setting for exporting the db"
+  },
+  "extraLarge": "Extra Largo",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "failedToCommunicateWithThunderNotificationServer": "Comunicazione fallita con il server notifica di Thunder a '{serverAddress}'",
+  "@failedToCommunicateWithThunderNotificationServer": {
+    "description": "Error message for when we fail to communicate with Thunder notification server"
+  },
+  "feedBehaviourSettings": "Feed",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "feedSettings": "Impostazioni Feed",
+  "@feedSettings": {
+    "description": "Feed settings category."
+  },
+  "filteringBy": "Filtrato per {entity}",
+  "@filteringBy": {
+    "description": "Filtering by a community or creator in search."
+  },
+  "filters": "Filtri",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "guestModeFeedSettings": "Impostazioni Feed Ospite",
+  "@guestModeFeedSettings": {
+    "description": "Feed settings for guest accounts"
+  },
+  "havingIssuesWithNotifications": "Problemi con le notifiche?",
+  "@havingIssuesWithNotifications": {
+    "description": "A shortcut to navigate to the notification debugging section"
+  },
+  "hostInstance": "Host Istanza",
+  "@hostInstance": {
+    "description": "The instance hosting a community"
+  },
+  "imageCachingModeAggressive": "Image caching aggressivo (utilizza più memoria)",
+  "@imageCachingModeAggressive": {
+    "description": "Long description for aggressive image caching mode"
+  },
+  "importExportDatabase": "Importa/Esporta Database Thunder",
+  "@importExportDatabase": {
+    "description": "Overall name of setting for importing or exporting the db (for searching)"
+  },
+  "importExportLemmyAccountSettingsSubtitle": "Include comunità iscritte, bloccate, e preferenze account",
+  "@importExportLemmyAccountSettingsSubtitle": {
+    "description": "Subtitle for Lemmy account settings import/export section"
+  },
+  "importExportThunderSettings": "Importa/Esporta Impostazioni Thunder",
+  "@importExportThunderSettings": {
+    "description": "This is specifically used in search results to distinguish from Lemmy import/export"
+  },
+  "instanceNameColor": "Colore Nome Istanza",
+  "@instanceNameColor": {
+    "description": "Setting for instance name color"
+  },
+  "language": "Lingua",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "light": "Chiaro",
+  "@light": {
+    "description": "Describes using the light theme"
   }
 }
