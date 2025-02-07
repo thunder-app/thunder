@@ -79,7 +79,7 @@
   "@changeSort": {},
   "clearSearch": "Elimina Ricerca",
   "@clearSearch": {},
-  "clearedDatabase": "Database locale svuotato. Riavvia Thunder per utilizzare i nuovi cambiamenti.",
+  "clearedDatabase": "Database locale svuotato. Riavvia Thunder per applicare i cambiamenti.",
   "@clearedDatabase": {},
   "clearedUserPreferences": "Rimosse tutte le preferenze dell'utente",
   "@clearedUserPreferences": {},
@@ -1594,5 +1594,1373 @@
   "light": "Chiaro",
   "@light": {
     "description": "Describes using the light theme"
+  },
+  "showUpdateChangelogsSubtitle": "Visualizza elenco modifiche dopo un aggiornamento",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Subtitle for setting for showing changelogs after updates"
+  },
+  "showUserAvatar": "Mostra Avatar Utente",
+  "@showUserAvatar": {
+    "description": "Toggle to show user avatar."
+  },
+  "textActions": "Azioni Testo",
+  "@textActions": {
+    "description": "Option for text actions"
+  },
+  "understandEnable": "Capisco, Abilitare",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
+  },
+  "postBodyShowCommunityInstance": "Mostra Istanza Comunità",
+  "@postBodyShowCommunityInstance": {
+    "description": "Whether to show the community instance for post bodies"
+  },
+  "reset": "Ripristina",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "searchTerm": "Cerca termine",
+  "@searchTerm": {},
+  "theming": "Tematizzazione",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "topThreeMonths": "Migliori degli Ultimi 3 Mesi",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "transferredModToCommunity": "Comunità Trasferita",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
+  "unableToFindCommunityName": "Impossibile trovare la comunità '{communityName}'",
+  "@unableToFindCommunityName": {
+    "description": "Error message for when we are unable to find a community, including the name"
+  },
+  "unableToLoadImageFrom": "Impossibile caricare l'immagine da {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "shareLemmyLink": "Condividi Link Lemmy",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
+  },
+  "user": "Utente",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "unbannedUserFromCommunity": "Sbanna Utente dalla Comunità",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
+  "linkHandlingExternal": "Apri nel browser esterno",
+  "@linkHandlingExternal": {
+    "description": "Description for external link handling"
+  },
+  "linkHandlingInApp": "Usa il browser integrato di Thunder",
+  "@linkHandlingInApp": {
+    "description": "Description for in-app link handling"
+  },
+  "lookingForAccountSpecificFeedSettings": "Cerchi impostazioni del feed specifiche per l'account?",
+  "@lookingForAccountSpecificFeedSettings": {
+    "description": "Helper setting which navigates to account page"
+  },
+  "modRemoveCommunity": "Rimuovi/Ripristina Comunità",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "noFavoritedCommunities": "Nessuna comunità preferita",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
+  "noImages": "Sembra che tu non abbia caricato nessuna immagine.",
+  "@noImages": {
+    "description": "Message for no uploaded images"
+  },
+  "nsfwWarning": "NSFW - Tocca per rivelare",
+  "@nsfwWarning": {
+    "description": "Warning for NSFW posts"
+  },
+  "permissionDeniedMessage": "Thunder richiede alcune autorizzazioni per salvare questa immagine, che sono state negate.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "post": "Post",
+  "@post": {
+    "description": "Describes a single post"
+  },
+  "postBehaviourSettings": "Post",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "postBodySettingsDescription": "Queste impostazioni influiscono sulla visualizzazione del corpo del post",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
+  "rateLimitErrorMessage": "Hai raggiunto il limite per effettuare questa richiesta. Attendere e riprovare più tardi.",
+  "@rateLimitErrorMessage": {
+    "description": "Error message for the rate-limit Lemmy exception"
+  },
+  "red": "Rosso",
+  "@red": {
+    "description": "The color red"
+  },
+  "reporter": "Segnalatore:",
+  "@reporter": {
+    "description": "Name of reporter that reported a post/comment"
+  },
+  "resetCommentPreferences": "Ripristina preferenze commento",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "restorePost": "Ripristina Post",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "selectAll": "Seleziona tutto",
+  "@selectAll": {
+    "description": "Action for selecting all text"
+  },
+  "setAction": "Imposta Azione",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "topSixMonths": "Migliori degli Ultimi 6 Mesi",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "translationsMayNotBeComplete": "Si prega di notare che le traduzioni potrebbero non essere complete",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "trySearchingFor": "Prova a cercare...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
+  "unableToFindCommunityOnInstance": "Impossibile trovare la comunità selezionata sull'istanza dell'utente selezionato.",
+  "@unableToFindCommunityOnInstance": {
+    "description": "An error message for when we can't find a community on an instance"
+  },
+  "unableToFindPost": "Impossibile trovare post",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
+  "unableToFindUserName": "Impossibile trovare l'utente '{username}'",
+  "@unableToFindUserName": {},
+  "unableToLoadImage": "Impossibile caricare l'immagine",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "unfeaturedPost": "Post Rilasciato",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "upvoteColor": "Colore Apprezzati",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
+  },
+  "upvoted": "Apprezzato",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
+  "useApplePushNotificationsDescription": "Usa servizio di notifica Push Apple",
+  "@useApplePushNotificationsDescription": {
+    "description": "Subtitle of the setting for using APNs"
+  },
+  "youMustSelectAJsonFile": "File .json necessario.",
+  "@youMustSelectAJsonFile": {
+    "description": "Error message shown to user when they attempt to import a JSON file that doesn't have the right extension"
+  },
+  "onWifi": "Su Wifi",
+  "@onWifi": {},
+  "orange": "Arancione",
+  "@orange": {
+    "description": "The color orange"
+  },
+  "shareCommentLocal": "Condividi Commento Link (Mia Istanza)",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "shareCommunityLinkLocal": "Condividi Link Comunità (Mia Istanza)",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "useLocalNotificationsDescription": "Controllo periodico delle notifiche in background",
+  "@useLocalNotificationsDescription": {
+    "description": "Subtitle of the setting for using local notifications"
+  },
+  "videoAutoFullscreen": "Schermo Intero Automatico",
+  "@videoAutoFullscreen": {
+    "decription": "Option to always start the video players in landscape"
+  },
+  "loading": "Caricamento...",
+  "@loading": {
+    "description": "Placeholder text for loading"
+  },
+  "local": "Locale",
+  "@local": {},
+  "me": "Io",
+  "@me": {
+    "description": "Label for the current user."
+  },
+  "markAsRead": "Segna come letto",
+  "@markAsRead": {
+    "description": "Label for the action to mark a message as read"
+  },
+  "noAccountsAdded": "Nessun account è stato aggiunto",
+  "@noAccountsAdded": {
+    "description": "Placeholder text when no accounts have been added"
+  },
+  "modlog": "Modlog",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "noReferencesToImage": "Nessun post o commento trovato contenente questa immagine. Tuttavia, potrebbe essere utilizzata altrove su internet.",
+  "@noReferencesToImage": {
+    "description": "Message indicating media was not found on Lemmy"
+  },
+  "noReplies": "Nessuna risposta",
+  "@noReplies": {
+    "description": "Label for when there are no replies in the list"
+  },
+  "noResultsFound": "Nessun risultato trovato.",
+  "@noResultsFound": {},
+  "notificationsNotAllowed": "Le notifiche per Thunder non sono consentite nelle impostazioni del sistema",
+  "@notificationsNotAllowed": {
+    "description": "Description for when notifications are now allowed for app"
+  },
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
+  },
+  "postBodyShowCommunityAvatar": "Mostra Avatar Comunità",
+  "@postBodyShowCommunityAvatar": {
+    "description": "Whether to show the community avatar for post bodies"
+  },
+  "postCreatedSuccessfully": "Post creato con successo!",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
+  },
+  "profileBio": "Bio Profilo",
+  "@profileBio": {
+    "description": "Setting for profile bio"
+  },
+  "purgedComment": "Commento Purgato",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "read": "Letto",
+  "@read": {
+    "description": "Indicates that a post has been read"
+  },
+  "purple": "Viola",
+  "@purple": {
+    "description": "The color purple"
+  },
+  "removalReason": "Motivo Rimozione",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
+  "removedModFromCommunity": "Moderatore Rimosso da Comunità",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "removeKeyword": "Rimuovi \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword filter"
+  },
+  "resetPostPreferences": "Ripristina preferenze post",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "searchInstancesFederatedWith": "Cerca per istanze federate con {instance}",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
+  "selectLanguage": "Seleziona lingua",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "sendTestUnifiedPushNotification": "Invia notifica UnifiedPush di test",
+  "@sendTestUnifiedPushNotification": {
+    "description": "The option to send a UnifiedPush notification for testing"
+  },
+  "stats": "Statistiche",
+  "@stats": {
+    "description": "Community statistics"
+  },
+  "system": "Sistema",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "systemDarkModeDescription": "Abilita il tema nero in modalità sistema scura",
+  "@systemDarkModeDescription": {
+    "description": "Toggle which enables the pure black theme when using system theme, and is using the dark mode version"
+  },
+  "themeSecondary": "Tema Secondario",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "uploadedDate": "Caricato: {date}",
+  "@uploadedDate": {
+    "description": "Metadata for image uploads"
+  },
+  "userNameColor": "Colore Nome Utente",
+  "@userNameColor": {
+    "description": "Setting for username color"
+  },
+  "video": "Video",
+  "@video": {
+    "description": "String for video "
+  },
+  "videoAutoLoop": "Loop Video",
+  "@videoAutoLoop": {
+    "description": "Option to always loop a video"
+  },
+  "videoAutoPlay": "Autoplay Video",
+  "@videoAutoPlay": {
+    "description": "Option to always autoplay videos"
+  },
+  "never": "Mai",
+  "@never": {},
+  "teal": "Turchese",
+  "@teal": {
+    "description": "The color teal"
+  },
+  "thunderNotificationServer": "Server Notifiche Thunder: {server}",
+  "@thunderNotificationServer": {
+    "description": "Text for the user to know what the currently selected notification server is"
+  },
+  "thumbnailUrl": "URL Miniatura",
+  "@thumbnailUrl": {
+    "description": "Post field for adding a custom thumbnail to the post"
+  },
+  "thunderHasBeenUpdated": "Thunder aggiornata alla {version}!",
+  "@thunderHasBeenUpdated": {
+    "description": "Heading for changelog when Thunder has been updated"
+  },
+  "unbannedUser": "Utente Sbannato",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "unblockCommunity": "Comunità Sbloccata",
+  "@unblockCommunity": {
+    "description": "Action to unblock a community"
+  },
+  "unblockCommunityInstance": "Istanza Comunità Sbloccata",
+  "@unblockCommunityInstance": {
+    "description": "Action to unblock the instance of a given community"
+  },
+  "unblockUser": "Sblocca Utente",
+  "@unblockUser": {
+    "description": "Action to unblock a user"
+  },
+  "unblockUserInstance": "Sblocca Istanza Utente",
+  "@unblockUserInstance": {
+    "description": "Action to unblock the instance of a given user"
+  },
+  "unhide": "Recupera",
+  "@unhide": {
+    "description": "The action to unhide a post"
+  },
+  "unifiedPushServer": "Server UnifiedPush: {server}",
+  "@unifiedPushServer": {
+    "description": "Debug text that tells the user what UnifiedPush server is being used"
+  },
+  "unifiedPushDistributorApp": "App Distributore UnifiedPush: {app} ({count} available)",
+  "@unifiedPushDistributorApp": {
+    "description": "A status indicator telling the current state of the UnifiedPush distributor app"
+  },
+  "unifiedPushNotifications": "Notifiche UnifiedPush",
+  "@unifiedPushNotifications": {
+    "description": "Describes the notification type for UnifiedPush Notifications"
+  },
+  "unpinFromCommunity": "Rilascia da Comunità",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "unpinPostFromCommunity": "Rilascia Post da Comunità",
+  "@unpinPostFromCommunity": {
+    "description": "Moderator action to unpin a post from a community"
+  },
+  "unreachable": "Irraggiungibile",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "unresolved": "Irrisolto",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
+  },
+  "unsubscribeFromCommunity": "Disiscriviti dalla Comunità",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
+  "viewPostSource": "Visualizza fonte post",
+  "@viewPostSource": {
+    "description": "Menu item for viewing a post's source"
+  },
+  "viewAll": "Vedi tutto",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
+  "localOnly": "Solo Locale",
+  "@localOnly": {
+    "description": "Local community visibility"
+  },
+  "lockPost": "Fissa Post",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
+  "loginAttemptCanceled": "Tentativo di login cancellato.",
+  "@loginAttemptCanceled": {
+    "description": "Message shown to user when they cancel a login attempt"
+  },
+  "metadataFontScale": "Scala Font Metadati",
+  "@metadataFontScale": {
+    "description": "Setting for metadata font scale"
+  },
+  "modAdd": "Aggiungi/Rimuovi Moderatori Istanza",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modAddCommunity": "Aggiungi/Rimuovi Moderatori Comunità",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "modBan": "Banna/Sbanna Utenti Istanza",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance users"
+  },
+  "modBanFromCommunity": "Banna/Sbanna Utenti Comunità",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "modFeaturePost": "Evidenzia/Tralascia Post",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modRemoveComment": "Rimuovi/Ripristina Commenti",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemovePost": "Rimuovi/Ripristina Post",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "moderatedCommunities": "Comunità Moderate",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderatorActions": "Azioni Moderatore",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "nestedCommentIndicatorStyle": "Stile Indicatore Commento Nidificato",
+  "@nestedCommentIndicatorStyle": {
+    "description": "Setting for nested comment indicator style"
+  },
+  "noCompatibleAppFound": "Nessuna app compatibile trovata",
+  "@noCompatibleAppFound": {
+    "description": "Tell the user we didn't find a compatible UnifiedPush app"
+  },
+  "noAnonymousInstances": "Non sono state aggiunte istanze anonime",
+  "@noAnonymousInstances": {
+    "description": "Placeholder text when no anonymous instances have been added"
+  },
+  "noDisplayNameSet": "Nome da mostrare non impostato",
+  "@noDisplayNameSet": {
+    "description": "Message for no display name set"
+  },
+  "noEmailSet": "Nessuna email impostata",
+  "@noEmailSet": {
+    "description": "Message for no email set"
+  },
+  "noMatrixUserSet": "Nessun utente matrix impostato",
+  "@noMatrixUserSet": {
+    "description": "Message for no matrix user set"
+  },
+  "noUserLabels": "Non hai ancora creato alcuna etichetta utente",
+  "@noUserLabels": {
+    "description": "Placeholder message for empty list of labels"
+  },
+  "noSubscriptions": "Nessuna Iscrizione",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "none": "Nessuna",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
+  "notificationsBehaviourSettings": "Notifiche",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "openSettings": "Apri Impostazioni",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "originalPoster": "Autore Originale",
+  "@originalPoster": {
+    "description": "Label for the original poster."
+  },
+  "pinPostToCommunity": "Fissa Post a Comunità",
+  "@pinPostToCommunity": {
+    "description": "Action for pinning a post to a community (moderator action)"
+  },
+  "postBodySettings": "Impostazioni Corpo del Post",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "postBodyViewType": "Tipo di Visualizzazione del Corpo del Post",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
+  },
+  "reason": "Motivo",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "removeFromFavorites": "Rimuovi dai preferiti",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "removeAsCommunityModerator": "Rimuovi da Moderatore Comunità",
+  "@removeAsCommunityModerator": {
+    "description": "Moderator action to remove user as community moderator"
+  },
+  "requiredField": "*necessario",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
+  },
+  "reportPost": "Segnala Post",
+  "@reportPost": {
+    "description": "Action to report a post (moderator action)"
+  },
+  "resetPreferences": "Ripristina Preferenze",
+  "@resetPreferences": {},
+  "selectText": "Seleziona Testo",
+  "@selectText": {
+    "description": "Post and comment action for selecting text"
+  },
+  "shareUserLink": "Condividi Link Utente",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "showReadPosts": "Mostra Post Letti",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "showScoreCounters": "Visualizza Punteggi Utenti",
+  "@showScoreCounters": {
+    "description": "Toggle to display user scores."
+  },
+  "successfullyBannedUser": "{username} Bannato",
+  "@successfullyBannedUser": {
+    "description": "Notification for successfully banning a user"
+  },
+  "noMentions": "Nessuna menzione",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
+  },
+  "noMessages": "Nessun messaggio",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
+  "normal": "Normale",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
+  "postMetadataInstructions": "Puoi personalizzare le info dei metadati trascinando e rilasciando quelle desiderate",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
+  "showCommunityDisplayNames": "Mostra Nomi Comunità",
+  "@showCommunityDisplayNames": {
+    "description": "Setting for showing community display names"
+  },
+  "shareThumbnailAsImage": "Condividere Miniatura Come Immagine",
+  "@shareThumbnailAsImage": {
+    "description": "Action for sharing the thumbnail of a post as an image"
+  },
+  "showThumbnailPreviewOnRight": "Mostra Miniature a Dx",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Toggle to show thumbnails on the right side."
+  },
+  "showTextPostIndicator": "Mostra Indicatore Testo",
+  "@showTextPostIndicator": {
+    "description": "Toggle to show text post indicator."
+  },
+  "showUpdateChangelogs": "Mostra Aggiornamenti Changelog",
+  "@showUpdateChangelogs": {
+    "description": "Setting for showing changelogs after updates"
+  },
+  "tappableAuthorCommunity": "Autori & Comunità Toccabili",
+  "@tappableAuthorCommunity": {
+    "description": "Toggle to make authors and communities tappable."
+  },
+  "suggestedTitle": "Titolo consigliato",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "thisAccount": "Questo Account",
+  "@thisAccount": {
+    "description": "Referring to the currently active account in account settings"
+  },
+  "postBodyShowUserInstance": "Mostra Istanza Utente",
+  "@postBodyShowUserInstance": {
+    "description": "Whether to show the user instance for post bodies"
+  },
+  "pureBlack": "Nero",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "newPost": "Nuovo Post",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "tabletMode": "Modalità Tablet (vista 2-colonne)",
+  "@tabletMode": {
+    "description": "Toggle to enable 2-column tablet mode."
+  },
+  "viewPostAsDifferentAccount": "Visualizza post con account diverso",
+  "@viewPostAsDifferentAccount": {
+    "description": "Action for viewing a post as a different account"
+  },
+  "viewSource": "Visualizza fonte",
+  "@viewSource": {
+    "description": "Action for viewing source (raw markdown)"
+  },
+  "no": "No",
+  "@no": {
+    "description": "A negative status"
+  },
+  "pushNotification": "Notifiche Push",
+  "@pushNotification": {
+    "description": "Setting for push notifications"
+  },
+  "sensitiveContentWarning": "Può contenere contenuti sensibili. Tocca per rivelare.",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
+  "linksBehaviourSettings": "Link",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "markPostAsReadOnMediaView": "Segna Come Letto Dopo Visione Media",
+  "@markPostAsReadOnMediaView": {
+    "description": "Toggle to mark posts as read after viewing media."
+  },
+  "openLinksInExternalBrowser": "Apri Link nel Browser Esterno",
+  "@openLinksInExternalBrowser": {
+    "description": "Toggle to open links in an external browser."
+  },
+  "settingOverrideLabel": "Queste impostazioni sovrascrivono quelle predefinite di Thunder.",
+  "@settingOverrideLabel": {
+    "description": "Message which indicates that the (instance) settings override the app settings"
+  },
+  "settingsExportedSuccessfully": "Impostazioni salvate correttamente in '{savedFilePath}'",
+  "@settingsExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported successfully"
+  },
+  "settingsNotImportedSuccessfully": "Impostazioni non importate correttamente o l'operazione è stata cancellata.",
+  "@settingsNotImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported unsuccessfully"
+  },
+  "shareOriginalLink": "Condividi Link Originale",
+  "@shareOriginalLink": {
+    "description": "Action for sharing the original link associated with a post"
+  },
+  "shareUser": "Condividi Utente",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "showCrossPosts": "Mostra Crosspost",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "showFullDateDescription": "Mostra data completa nei post",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
+  },
+  "showUserInstance": "Mostra Istanza Utente",
+  "@showUserInstance": {
+    "description": "Toggle to show user instance."
+  },
+  "theme": "Tema",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "themeTertiary": "Tema Terziario",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
+  },
+  "thickness": "Spessore",
+  "@thickness": {
+    "description": "Describes a thickness (e.g., divider)"
+  },
+  "unableToFindLanguage": "Impossibile trovare lingua",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
+  "unlockPost": "Sblocca Post",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "userStyle": "Stile Utente",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  },
+  "pinToCommunity": "Fissa a Comunità",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
+  "videoAutoMute": "Muta Video",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
+  },
+  "subscribeToCommunity": "Iscriviti alla Comunità",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
+  "usernameFormattingRedirect": "Cerchi la formattazione del nome utente?",
+  "@usernameFormattingRedirect": {
+    "description": "Setting title for sending the user to the new formatting options"
+  },
+  "visitCommunityInstance": "Visita Comunità Istanza",
+  "@visitCommunityInstance": {
+    "description": "Action to visit the instance of a community"
+  },
+  "yes": "Sì",
+  "@yes": {
+    "description": "A positive status"
+  },
+  "xYearsOld": "{count, plural, zero {{x} anno} one {{x} anno} other {{x} anni}}",
+  "@xYearsOld": {
+    "description": "An account descriptor representing how old an account is"
+  },
+  "localNotifications": "Notifiche Locali",
+  "@localNotifications": {
+    "description": "Describes the notification type for Local Notifications"
+  },
+  "settingsImportedSuccessfully": "Impostazioni importate con successo!",
+  "@settingsImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported successfully"
+  },
+  "lockedPost": "Post Fissato",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
+  "pushNotificationServerDescription": "Configura il server di notifica push. Il server deve essere configurato correttamente per inviare notifiche push al dispositivo.\n\n** Inserisci solo server di cui ti fidi con le tue credenziali.**",
+  "@pushNotificationServerDescription": {
+    "description": "Description of choosing push notification server setting"
+  },
+  "userLabelsSettingsPageDescription": "Puoi aggiungere, modificare o rimuovere le etichette associate agli utenti.",
+  "@userLabelsSettingsPageDescription": {
+    "description": "Description text for user labels settings page"
+  },
+  "versionNumber": "Versione {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
+  },
+  "permissionDenied": "Permesso di visualizzare notifiche non abilitato per Thunder. Si prega di attivare nelle impostazioni di sistema.",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "sendBackgroundTestUnifiedPushNotification": "Invia notifica UnifiedPush di test in background",
+  "@sendBackgroundTestUnifiedPushNotification": {
+    "description": "The option to send a background UnifiedPUsh notification for testing"
+  },
+  "notificationsWarningDialog": "Le notifiche sono una **caratteristica sperimentale** che potrebbe non funzionare correttamente su tutti i dispositivi.\n\n- I controlli avverranno ogni ~15 minuti e consumeranno batteria aggiuntiva.\n\n- Disabilita l'ottimizzazione della batteria per una maggiore stabilità delle notifiche.\n\nVedere la seguente pagina per ulteriori informazioni.",
+  "@notificationsWarningDialog": {
+    "description": "The content of the warning dialog for the notifications feature"
+  },
+  "settingsNotExportedSuccessfully": "Impostazioni non salvate correttamente o l'operazione è stata cancellata.",
+  "@settingsNotExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported unsuccessfully"
+  },
+  "shareCommunityLink": "Condividi Link Comunità",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "useMaterialYouTheme": "Usa Tema Material You",
+  "@useMaterialYouTheme": {
+    "description": "Toggle to use Material You theme."
+  },
+  "pushNotificationDescription": "Se abilitato, Thunder invierà token JWT al server al fine di inviare nuove notifiche.\n\n**NOTA:** Questo non avrà effetto fino al riavvio dell'app.",
+  "@pushNotificationDescription": {
+    "description": "Description of push notification setting"
+  },
+  "shareComment": "Condividi Link Commento",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "sharePostLocal": "Condividi Link Post (Mia Istanza)",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "unableToRetrieveChangelog": "Impossibile recuperare changelog per la versione {version}.",
+  "@unableToRetrieveChangelog": {
+    "description": "Error message for when we are unable to retrieve the changelog."
+  },
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
+  },
+  "showPostSaveAction": "Mostra Pulsante Salva",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "unblockInstance": "Sblocca Istanza",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "unhidCommunity": "Recupera Comunità",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
+  "showUserDisplayNames": "Mostra Nomi Utente",
+  "@showUserDisplayNames": {
+    "description": "Toggle to show user display names."
+  },
+  "testBackgroundUnifiedPushNotificationDescription": "Thunder chiederà al server di notifica di inviare una notifica ritardata e si chiuderà. (Ci vorranno pochi minuti.)",
+  "@testBackgroundUnifiedPushNotificationDescription": {
+    "description": "A message describing the UnifiedPush background test notification"
+  },
+  "suchAs": "come",
+  "@suchAs": {
+    "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
+  },
+  "unableToNavigateToInstance": "Impossibile navigare su {instanceHost}. Potrebbe essere un'istanza Lemmy non valida.",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "userActions": "Azioni Utente",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "xScore": "{x} punti",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "purgedPerson": "Persona Purgata",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "purgedPost": "Post Purgato",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
+  "showNavigationLabels": "Mostra Etichette Navigazione",
+  "@showNavigationLabels": {
+    "description": "Setting for showing navigation labels"
+  },
+  "showNavigationLabelsDescription": "Visualizza etichette sotto i pulsanti di navigazione in basso",
+  "@showNavigationLabelsDescription": {
+    "description": "Description for setting for showing navigation labels"
+  },
+  "showNsfwContent": "Mostra Contenuti NSFW",
+  "@showNsfwContent": {
+    "description": "Toggle to show NSFW content."
+  },
+  "topNineMonths": "Migliori degli Ultimi 9 Mesi",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "viewingAll": "Visualizza tutto",
+  "@viewingAll": {
+    "description": "Chip for viewing all possible search results"
+  },
+  "visibility": "Visibilità: {visibility}",
+  "@visibility": {
+    "description": "Visibility heading for community"
+  },
+  "markAllAsRead": "Segna tutto come letto",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "markPostAsReadOnScroll": "Segna Come Letto Su Scorrimento",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "markReadColor": "Colore Letti/Non Letti",
+  "@markReadColor": {
+    "description": "Name of mark read/unread color setting"
+  },
+  "matrixUser": "Utente Matrix",
+  "@matrixUser": {
+    "description": "Label for Matrix user id"
+  },
+  "medium": "Medio",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "reorder": "Riordina",
+  "@reorder": {
+    "description": "Tooltip text for the list editor button"
+  },
+  "replyColor": "Colore Risposta",
+  "@replyColor": {
+    "description": "Name of reply color setting"
+  },
+  "linkHandlingInAppShort": "In-app",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "mustBeLoggedIn": "Devi effettuare l'accesso",
+  "@mustBeLoggedIn": {},
+  "postContentFontScale": "Scala Font Contenuto del Post",
+  "@postContentFontScale": {
+    "description": "Setting for post content font scale"
+  },
+  "removedComment": "Commento Rimosso",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "successfullyUnblockedUser": "{username} Sbloccato",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "useUnifiedPushNotificationsDescription": "Richiede un'app compatibile",
+  "@useUnifiedPushNotificationsDescription": {
+    "description": "Subtitle of the setting for using UnifiedPush Notifications"
+  },
+  "userFormat": "Formato Utente",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "restoredCommunity": "Comunità Ripristinata",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "modLockPost": "Fissa/Rilascia Post",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "names": "Nomi",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
+  "navbarDoubleTapGestures": "Gesti Doppio Tap Barra Navigazione",
+  "@navbarDoubleTapGestures": {
+    "description": "Setting for navbar double tap gestures"
+  },
+  "nestedCommentIndicatorColor": "Colore Indicatore Commento Nidificato",
+  "@nestedCommentIndicatorColor": {
+    "description": "Setting for nested comment indicator color"
+  },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "removeKeywordFilter": "Rimuovi Parola-Chiave",
+  "@removeKeywordFilter": {
+    "description": "Title for dialog to remove keyword filter"
+  },
+  "removePost": "Rimuovi Post",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "removedCommunity": "Comunità Rimossa",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
+  "removedInstanceMod": "Moderatore Istanza Rimosso",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "shareImage": "Condividi Immagine",
+  "@shareImage": {
+    "description": "Action for sharing an image"
+  },
+  "unableToResolveReport": "Impossibile risolvere segnalazione",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
+  },
+  "useProfilePictureForDrawer": "Usa Immagine Profilo per il Drawer",
+  "@useProfilePictureForDrawer": {
+    "description": "Setting name for using the profile picture for the drawer"
+  },
+  "subscriptionRequestSent": "Richiesta di iscrizione inviata",
+  "@subscriptionRequestSent": {
+    "description": "Message for subscription request sent"
+  },
+  "successfullyBlockedUser": "{username} Bloccato",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "useMaterialYouThemeDescription": "Sovrascrive il tema personalizzato selezionato",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
+  },
+  "useProfilePictureForDrawerSubtitle": "Se l'accesso è effettuato, mostra l'immagine del profilo utente al posto dell'icona del drawer",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Setting subtitle for using the profile picture for the drawer"
+  },
+  "linkHandlingExternalShort": "Esterno",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "navbarSwipeGestures": "Gesti Swipe Barra Navigazione",
+  "@navbarSwipeGestures": {
+    "description": "Setting for navbar swipe gestures"
+  },
+  "offline": "offline",
+  "@offline": {
+    "description": "Describes a service that is unavailable"
+  },
+  "postTitleFontScale": "Scala Font Titolo Post",
+  "@postTitleFontScale": {
+    "description": "Setting for post title font scale"
+  },
+  "removedPost": "Post Rimosso",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
+  "restoredComment": "Commento Ripristinato",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
+  "rightShortSwipe": "Swipe Dx Corto",
+  "@rightShortSwipe": {
+    "description": "Setting for right short swipe"
+  },
+  "searchComments": "Cerca Commenti",
+  "@searchComments": {},
+  "sendTestLocalNotification": "Invia notifica locale di test",
+  "@sendTestLocalNotification": {
+    "description": "The option to send a notification for testing"
+  },
+  "sentRequestForTestNotification": "Richiesta test di notifica inviata.",
+  "@sentRequestForTestNotification": {},
+  "shareCommunity": "Condividi Comunità",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "showCommentActionButtons": "Mostra Pulsanti Azione Commento",
+  "@showCommentActionButtons": {
+    "description": "Toggle to show comment action buttons."
+  },
+  "showPostCommunityIcons": "Mostra Icone Comunità",
+  "@showPostCommunityIcons": {
+    "description": "Toggle to show community icons."
+  },
+  "showPostTitleFirst": "Mostra Prima il Titolo",
+  "@showPostTitleFirst": {
+    "description": "Toggle to show post title first."
+  },
+  "showPostVoteActions": "Mostra Pulsanti Voto",
+  "@showPostVoteActions": {
+    "description": "Toggle to show vote buttons."
+  },
+  "showSavedContent": "Mostra contenuti salvati",
+  "@showSavedContent": {
+    "description": "Toggle to show saved posts/comments."
+  },
+  "successfullyUnbannedUser": "{username} Sbannato",
+  "@successfullyUnbannedUser": {
+    "description": "Notification for successfully unbanning a user"
+  },
+  "testBackgroundNotificationDescription": "Thunder si chiuderà e poi tenterà di generare una notifica in background. (Ci vorranno almeno 15 minuti.)",
+  "@testBackgroundNotificationDescription": {
+    "description": "A message describing the background test notification"
+  },
+  "videoPlayerMode": "Modalità Player",
+  "@videoPlayerMode": {
+    "description": "Option to select video player mode (in-app or external)  "
+  },
+  "modTransferCommunity": "Trasferimento Comunità",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
+  "noLanguage": "Nessuna lingua",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
+  "moderator": "{count, plural, zero {Moderatore} one {Moderatore} other {Moderatori}}",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
+  "noKeywordFilters": "Nessun filtro parola-chiave aggiunto",
+  "@noKeywordFilters": {
+    "description": "Message for no keyword filters added"
+  },
+  "restoredPost": "Post Ripristinato",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
+  "rightLongSwipe": "Swipe Dx Lungo",
+  "@rightLongSwipe": {
+    "description": "Setting for right long swipe"
+  },
+  "sendBackgroundTestLocalNotification": "Invia notifica locale di test in background",
+  "@sendBackgroundTestLocalNotification": {
+    "description": "The option to send a background notification for testing"
+  },
+  "shareMediaLink": "Condividi Link Media",
+  "@shareMediaLink": {
+    "description": "Action for sharing the link to the media associated with a post"
+  },
+  "shareThumbnail": "Condividi Miniatura",
+  "@shareThumbnail": {
+    "description": "Action for sharing the thumbnail of a post"
+  },
+  "selectAccountToCommentAs": "Seleziona account con cui commentare",
+  "@selectAccountToCommentAs": {
+    "description": "Profile modal heading for commenting as other user"
+  },
+  "noDiscussionLanguages": "Nessun contenuto è nascosto in base alla lingua.",
+  "@noDiscussionLanguages": {
+    "description": "Message for no discussion languages added"
+  },
+  "noItems": "Nessun elemento",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "public": "Pubblico",
+  "@public": {
+    "description": "Public community visibility"
+  },
+  "purgedCommunity": "Comunità Purgata",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "userNameThickness": "Spessore Nome Utente",
+  "@userNameThickness": {
+    "description": "Setting for user name thickness"
+  },
+  "userSettingDescription": "Queste impostazioni si sincronizzano con il tuo account Lemmy e vengono applicate solo per ogni account.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
+  "linkHandlingCustomTabs": "Apri nel browser incorporato in-app",
+  "@linkHandlingCustomTabs": {
+    "description": "Description for custom tabs link handling"
+  },
+  "linkHandlingCustomTabsShort": "Incorporato in-app",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  },
+  "manageMedia": "Gestione Media",
+  "@manageMedia": {
+    "description": "Setting name and page title for media management"
+  },
+  "noProfileBioSet": "Nessuna bio profilo impostata",
+  "@noProfileBioSet": {
+    "description": "Message for no profile bio set"
+  },
+  "openLinksInReaderMode": "Apri Link in Modalità Lettura",
+  "@openLinksInReaderMode": {
+    "description": "Toggle to open links in reader mode when available."
+  },
+  "pending": "In Attesa",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "postActions": "Azioni Post",
+  "@postActions": {
+    "description": "Describes a given set of actions that can be performed on a post"
+  },
+  "postPreview": "Mostra anteprima del post con le impostazioni indicate",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
+  "postShowUserInstance": "Mostra Istanza Utente",
+  "@postShowUserInstance": {
+    "description": "Whether to show the user instance for post listings"
+  },
+  "postSwipeActions": "Azioni Swipe Post",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
+  "postViewType": "Tipo Vista Post",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
+  "pushNotificationServer": "Server Notifiche Push",
+  "@pushNotificationServer": {
+    "description": "Setting for choosing push notification server"
+  },
+  "readerMode": "Modalità lettura",
+  "@readerMode": {
+    "description": "Menu item for toggling reader mode"
+  },
+  "reduceAnimations": "Riduci Animazioni",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "removeComment": "Rimuovi Commento",
+  "@removeComment": {
+    "description": "Moderator action to remove a comment"
+  },
+  "resetPreferencesAndData": "Ripristina Preferenze e Dati",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
+  "restoreComment": "Ripristina Commento",
+  "@restoreComment": {
+    "description": "Moderator action to restore a comment"
+  },
+  "saveColor": "Salva Colore",
+  "@saveColor": {
+    "description": "Name of save color setting"
+  },
+  "scrapeMissingLinkPreviews": "Recupera Anteprime Link Mancanti",
+  "@scrapeMissingLinkPreviews": {
+    "description": "Toggle to scrape missing external link previews."
+  },
+  "selectAccountToPostAs": "Seleziona account con cui postare",
+  "@selectAccountToPostAs": {
+    "description": "Heading for account selector when posting"
+  },
+  "shareUserLinkLocal": "Condividi Link Utente (Mia Istanza)",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
+  "showBotAccounts": "Mostra Account Bot",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "showEdgeToEdgeImages": "Mostra Immagini da-Bordo-a-Bordo",
+  "@showEdgeToEdgeImages": {
+    "description": "Toggle to view edge to edge images."
+  },
+  "showExpandedTaglines": "Mostra linea tag espansa",
+  "@showExpandedTaglines": {
+    "description": "Toggle that shows the full expanded tagline in the feed page"
+  },
+  "showFullDate": "Mostra Data Completa",
+  "@showFullDate": {
+    "description": "Toggle to show full date on posts"
+  },
+  "showFullHeightImages": "Mostra Immagini ad Altezza Completa",
+  "@showFullHeightImages": {
+    "description": "Toggle to view full height images."
+  },
+  "showHiddenPosts": "Mostra Post Nascosti",
+  "@showHiddenPosts": {
+    "description": "The name of the setting for showing hidden posts"
+  },
+  "showInAppUpdateNotifications": "Ricevi Notifiche Release GitHub",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
+  "showOwnContent": "Mostra propri contenuti",
+  "@showOwnContent": {
+    "description": "Toggle to show your own posts/comments."
+  },
+  "showPostAuthor": "Mostra Autore Post",
+  "@showPostAuthor": {
+    "description": "Toggle to show post author."
+  },
+  "showPostAuthorSubtitle": "L'autore del post è sempre mostrato nei feed della comunità",
+  "@showPostAuthorSubtitle": {
+    "description": "Subtitle for the Show Post Author setting"
+  },
+  "showPostTextContentPreview": "Mostra Anteprima Testo",
+  "@showPostTextContentPreview": {
+    "description": "Toggle to show text previews."
+  },
+  "showScores": "Mostra Punteggi Post/Commenti",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "showUnreadOnly": "Mostra solo non letti",
+  "@showUnreadOnly": {
+    "description": "Show unread replies/mentions/messages only"
+  },
+  "small": "Piccolo",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "standard": "Standard",
+  "@standard": {
+    "description": "Describes a standard visual density"
+  },
+  "status": "Stato",
+  "@status": {
+    "description": "Status of the action"
+  },
+  "systemDarkMode": "Modalità di Sistema Scura",
+  "@systemDarkMode": {
+    "description": "Setting which toggles the dark theme type when the system theme is selected"
+  },
+  "themeAccentColor": "Colori Accento",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "themePrimary": "Tema Primario",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "unbanFromCommunity": "Sbanna dalla Comunità",
+  "@unbanFromCommunity": {
+    "description": "Moderator action to unban a user from a community"
+  },
+  "unlockedPost": "Post Sbloccato",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
+  },
+  "useAdvancedShareSheet": "Usa Foglio Condivisione Avanzato",
+  "@useAdvancedShareSheet": {
+    "description": "Toggle to use advanced share sheet."
+  },
+  "useApplePushNotifications": "Usa Notifiche APN",
+  "@useApplePushNotifications": {
+    "description": "Toggle to use APNs."
+  },
+  "useLocalNotifications": "Usa Notifiche Locali (Sperimentale)",
+  "@useLocalNotifications": {
+    "description": "Toggle to use local notifications."
+  },
+  "useUnifiedPushNotifications": "Usa Notifiche UnifiedPush",
+  "@useUnifiedPushNotifications": {
+    "description": "Toggle to use UnifiedPush Notifications"
+  },
+  "userEntry": "Utente '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
+  },
+  "userLabelHint": "Questo è il mio utente preferito",
+  "@userLabelHint": {
+    "description": "Hint text for adding a new user label"
+  },
+  "userLabels": "Etichette Utente",
+  "@userLabels": {
+    "description": "Heading for user labels settings"
+  },
+  "videoDefaultPlaybackSpeed": "Velocità Riproduzione Predefinita",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback Speed"
+  },
+  "videoLinkHandlingExternal": "Riprodurre video con app esterna",
+  "@videoLinkHandlingExternal": {
+    "description": "Description to Open video with an external application"
+  },
+  "videoPlayerInApp": "Utilizzare player Thunder integrato",
+  "@videoPlayerInApp": {
+    "description": "Description for using in-app video player"
+  },
+  "viewCommentSource": "Vedi Fonte Commento",
+  "@viewCommentSource": {
+    "description": "Menu item for viewing a comment's source"
+  },
+  "viewModlog": "Visualizza Modlog",
+  "@viewModlog": {
+    "description": "Action which allows the user to navigate to the modlog for a particular entity"
+  },
+  "viewOriginal": "Visualizza Originale",
+  "@viewOriginal": {
+    "description": "Action for viewing original text (as opposed to raw markdown)"
+  },
+  "visitUserInstance": "Visita Istanza Utente",
+  "@visitUserInstance": {
+    "description": "Action to visit the instance of a user"
+  },
+  "warning": "Avvertimento",
+  "@warning": {
+    "description": "Heading for warning dialogs"
   }
 }
