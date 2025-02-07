@@ -165,7 +165,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               newlyCreatedCommentId: event.newlyCreatedCommentId));
 
           emit(state.copyWith(
-              status: PostStatus.refreshing, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId, newlyCreatedCommentId: event.newlyCreatedCommentId));
+              status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId, newlyCreatedCommentId: event.newlyCreatedCommentId));
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
