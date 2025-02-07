@@ -564,5 +564,2413 @@
   "changeAccountSettingsFor": "更改这个人的账户设置：",
   "@changeAccountSettingsFor": {
     "description": "Heading for the profiler modal when changing account settings"
+  },
+  "gestures": "手势",
+  "@gestures": {},
+  "gettingStarted": "开始使用",
+  "@gettingStarted": {},
+  "navigation": "导航",
+  "@navigation": {},
+  "noReplies": "没有回复",
+  "@noReplies": {
+    "description": "Label for when there are no replies in the list"
+  },
+  "user": "用户",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "anonymousInstances": "匿名实例",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "countComments": "{count} 条评论",
+  "@countComments": {
+    "description": "Number of comments"
+  },
+  "countPosts": "{count} 帖子",
+  "@countPosts": {
+    "description": "Number of posts"
+  },
+  "floatingActionButton": "浮动操作按钮",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
+  },
+  "postBody": "帖子内容",
+  "@postBody": {},
+  "screenReaderProfile": "屏幕阅读器配置文件",
+  "@screenReaderProfile": {},
+  "unresolved": "未解决",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
+  },
+  "updateReleased": "已发布更新：{version}",
+  "@updateReleased": {},
+  "pending": "待处理",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "purgedComment": "已清除评论",
+  "@purgedComment": {
+    "description": "Short decription for moderator action to purge a comment"
+  },
+  "restoredCommunity": "已恢复社区",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "accountSettingsExportedSuccessfully": "Lemmy 账号设置已成功导出到 {savedFilePath}！",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "Lemmy 账号设置已成功导入！",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
+  "blockManagement": "屏蔽管理",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "blockUserInstance": "屏蔽用户实例",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
+  "changePasswordWarning": "要更改您的密码，您将被重定向到您的实例网站。您确定要继续吗？",
+  "@changePasswordWarning": {
+    "description": "Warning label for changing password"
+  },
+  "databaseNotImportedSuccessfully": "数据库未成功导入，或操作已取消。",
+  "@databaseNotImportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully imported"
+  },
+  "doNotShowAgain": "不再显示",
+  "@doNotShowAgain": {
+    "description": "Action for hiding something permanently"
+  },
+  "downloadingMedia": "正在下载媒体以分享…",
+  "@downloadingMedia": {},
+  "downvotesDisabled": "此实例已关闭点踩。",
+  "@downvotesDisabled": {},
+  "editComment": "编辑评论",
+  "@editComment": {},
+  "endSearch": "结束搜索",
+  "@endSearch": {},
+  "errorLoadingAccountSettings": "加载设置文件时出错或操作已被取消。",
+  "@errorLoadingAccountSettings": {
+    "description": "Message shown to user when there was an error loading the settings file"
+  },
+  "errorParsingJson": "解析所选文件时出错。它可能不是有效的 JSON。",
+  "@errorParsingJson": {
+    "description": "Message shown to user when there was an error parsing the selected file"
+  },
+  "expandPostPreview": "展开帖子预览",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
+  "fetchAccountError": "无法确定账号",
+  "@fetchAccountError": {},
+  "hideColor": "隐藏颜色",
+  "@hideColor": {
+    "description": "Name of the hide color setting"
+  },
+  "importExportLemmyAccountSettingsSubtitle": "包括订阅的社区、屏蔽列表和账号偏好设置",
+  "@importExportLemmyAccountSettingsSubtitle": {
+    "description": "Subtitle for Lemmy account settings import/export section"
+  },
+  "importExportThunderSettings": "导入/导出 Thunder 设置",
+  "@importExportThunderSettings": {
+    "description": "This is specifically used in search results to distinguish from Lemmy import/export"
+  },
+  "importSettings": "导入设置",
+  "@importSettings": {
+    "description": "Action to import application settings."
+  },
+  "new_": "新",
+  "@new_": {},
+  "no": "否",
+  "@no": {
+    "description": "A negative status"
+  },
+  "noLanguage": "没有语言",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
+  "notifications": "通知",
+  "@notifications": {
+    "description": "Message formatting for notifications count."
+  },
+  "postBehaviourSettings": "帖子",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "postBodySettingsDescription": "这些设置影响帖子内容的显示",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
+  "postSwipeActions": "帖子滑动操作",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
+  "postTogglePreview": "切换预览",
+  "@postTogglePreview": {},
+  "profileAppliedSuccessfully": "{profile} 应用成功！",
+  "@profileAppliedSuccessfully": {},
+  "readAll": "全部已读",
+  "@readAll": {},
+  "readerMode": "阅读模式",
+  "@readerMode": {
+    "description": "Menu item for toggling reader mode"
+  },
+  "removeAccount": "删除账号",
+  "@removeAccount": {},
+  "removePost": "删除帖子",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "removedCommunityFromSubscriptions": "已取消订阅社区",
+  "@removedCommunityFromSubscriptions": {},
+  "reorder": "重新排序",
+  "@reorder": {
+    "description": "Tooltip text for the list editor button"
+  },
+  "replyColor": "回复颜色",
+  "@replyColor": {
+    "description": "Name of reply color setting"
+  },
+  "replyNotSupported": "当前不支持从此视图回复",
+  "@replyNotSupported": {},
+  "report": "举报 ",
+  "@report": {},
+  "reportPost": "举报帖子",
+  "@reportPost": {
+    "description": "Action to report a post (moderator action)"
+  },
+  "resetPreferences": "重置偏好设置",
+  "@resetPreferences": {},
+  "resetPreferencesAndData": "重置偏好设置和数据",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
+  "restoredCommentFromDraft": "从草稿中恢复的评论",
+  "@restoredCommentFromDraft": {},
+  "searchInstance": "搜索 {instance}",
+  "@searchInstance": {},
+  "selectLanguage": "选择语言",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "share": "分享",
+  "@share": {},
+  "showScores": "显示帖子/评论评分",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "suchAs": "例如",
+  "@suchAs": {
+    "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
+  },
+  "systemDarkMode": "系统暗黑模式",
+  "@systemDarkMode": {
+    "description": "Setting which toggles the dark theme type when the system theme is selected"
+  },
+  "themeTertiary": "主题第三色",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
+  },
+  "thickness": "厚度",
+  "@thickness": {
+    "description": "Describes a thickness (e.g., divider)"
+  },
+  "thumbnailUrl": "缩略图 URL",
+  "@thumbnailUrl": {
+    "description": "Post field for adding a custom thumbnail to the post"
+  },
+  "topNineMonths": "过去 9 个月最佳",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "unifiedPushNotifications": "UnifiedPush 通知",
+  "@unifiedPushNotifications": {
+    "description": "Describes the notification type for UnifiedPush Notifications"
+  },
+  "userLabelsSettingsPageDescription": "您可以添加、修改或删除与用户相关的标签。",
+  "@userLabelsSettingsPageDescription": {
+    "description": "Description text for user labels settings page"
+  },
+  "username": "用户名",
+  "@username": {},
+  "youMustSelectAJsonFile": "您必须选择一个 .json 文件。",
+  "@youMustSelectAJsonFile": {
+    "description": "Error message shown to user when they attempt to import a JSON file that doesn't have the right extension"
+  },
+  "text": "文本",
+  "@text": {},
+  "orange": "橙色",
+  "@orange": {
+    "description": "The color orange"
+  },
+  "preview": "预览",
+  "@preview": {},
+  "deleteImageConfirmTitle": "删除？",
+  "@deleteImageConfirmTitle": {
+    "description": "Confirmation title message for deleting an image"
+  },
+  "deletePost": "删除帖子",
+  "@deletePost": {
+    "description": "Action for deleting a post"
+  },
+  "deleteUserLabelConfirmation": "您确定要删除标签吗？",
+  "@deleteUserLabelConfirmation": {
+    "description": "Confirmation message for deleting a label"
+  },
+  "dimReadPosts": "淡化已读帖子",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "disable": "禁用",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "displayUserScore": "显示用户评分（Karma）。",
+  "@displayUserScore": {
+    "description": "Option for displaying user scores or karma."
+  },
+  "editPost": "编辑帖子",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "enableCommentNavigation": "启用评论导航",
+  "@enableCommentNavigation": {
+    "description": "Setting for enable comment navigation"
+  },
+  "expanded": "已展开",
+  "@expanded": {
+    "description": "Expanded post body view type"
+  },
+  "exportDatabase": "导出数据库",
+  "@exportDatabase": {
+    "description": "Name of the setting for exporting the db"
+  },
+  "failedToCommunicateWithThunderNotificationServer": "无法与位于 '{serverAddress}' 的 Thunder 通知服务器通信",
+  "@failedToCommunicateWithThunderNotificationServer": {
+    "description": "Error message for when we fail to communicate with Thunder notification server"
+  },
+  "failedToLoadVideo": "加载视频失败。要在浏览器中打开链接吗？",
+  "@failedToLoadVideo": {
+    "description": "Error message that displays when we fail to load a video"
+  },
+  "favorites": "收藏",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "featuredPost": "精选帖子",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
+  },
+  "filteringBy": "按 {entity} 过滤",
+  "@filteringBy": {
+    "description": "Filtering by a community or creator in search."
+  },
+  "filters": "过滤器",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "floatingActionButtonSinglePressDescription": "表示 FAB 的单击操作。",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
+  },
+  "hideNsfwPostsFromFeed": "从信息流中隐藏 NSFW 帖子",
+  "@hideNsfwPostsFromFeed": {
+    "description": "Toggle to hide NSFW posts from the feed."
+  },
+  "hideNsfwPreviews": "模糊 NSFW 预览",
+  "@hideNsfwPreviews": {
+    "description": "Toggle to blur NSFW previews."
+  },
+  "imageCachingModeAggressive": "积极缓存图像（使用更多内存）",
+  "@imageCachingModeAggressive": {
+    "description": "Long description for aggressive image caching mode"
+  },
+  "imageCachingModeAggressiveShort": "激进",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "importDatabase": "导入数据库",
+  "@importDatabase": {
+    "description": "Name of setting for importing the db"
+  },
+  "importExportDatabase": "导入/导出 Thunder 数据库",
+  "@importExportDatabase": {
+    "description": "Overall name of setting for importing or exporting the db (for searching)"
+  },
+  "includeCommunity": "包括社区",
+  "@includeCommunity": {},
+  "includePostLink": "包括帖子链接",
+  "@includePostLink": {},
+  "includeTitle": "包括标题",
+  "@includeTitle": {},
+  "instanceEntry": "实例 '{username}'",
+  "@instanceEntry": {
+    "description": "Entry in list for a instance to perform further actions"
+  },
+  "instances": "实例",
+  "@instances": {
+    "description": "Title for settings related to instances"
+  },
+  "keywordFilterDescription": "过滤标题、正文或 URL 中包含的任何关键字的帖子",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "linkHandlingCustomTabsShort": "应用内嵌入",
+  "@linkHandlingCustomTabsShort": {
+    "description": "Short description for custom tabs link handling"
+  },
+  "linkHandlingInAppShort": "应用内",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "linksBehaviourSettings": "链接",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "loadMorePlural": "加载 {count} 条更多回复…",
+  "@loadMorePlural": {},
+  "loading": "加载中...",
+  "@loading": {
+    "description": "Placeholder text for loading"
+  },
+  "local": "本地",
+  "@local": {},
+  "manageMedia": "管理媒体",
+  "@manageMedia": {
+    "description": "Setting name and page title for media management"
+  },
+  "markAsRead": "标记为已读",
+  "@markAsRead": {
+    "description": "Label for the action to mark a message as read"
+  },
+  "markPostAsReadOnScroll": "滚动时标记为已读",
+  "@markPostAsReadOnScroll": {
+    "description": "Toggle to mark posts as read as you scroll past them in the feed."
+  },
+  "markReadColor": "标记已读/未读颜色",
+  "@markReadColor": {
+    "description": "Name of mark read/unread color setting"
+  },
+  "matrixUser": "Matrix 用户",
+  "@matrixUser": {
+    "description": "Label for Matrix user id"
+  },
+  "me": "我",
+  "@me": {
+    "description": "Label for the current user."
+  },
+  "mention": "提及",
+  "@mention": {},
+  "modFeaturePost": "推荐/取消推荐帖子",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modTransferCommunity": "转移社区",
+  "@modTransferCommunity": {
+    "description": "Description for modlog filter for actions that transfer moderators to another community"
+  },
+  "mustBeLoggedIn": "您需要登录",
+  "@mustBeLoggedIn": {},
+  "mustBeLoggedInComment": "您需要登录才能评论",
+  "@mustBeLoggedInComment": {},
+  "mustBeLoggedInPost": "您需要登录才能创建帖子",
+  "@mustBeLoggedInPost": {},
+  "navbarSwipeGestures": "导航栏滑动手势",
+  "@navbarSwipeGestures": {
+    "description": "Setting for navbar swipe gestures"
+  },
+  "nestedCommentIndicatorColor": "嵌套评论指示器颜色",
+  "@nestedCommentIndicatorColor": {
+    "description": "Setting for nested comment indicator color"
+  },
+  "newComments": "新评论",
+  "@newComments": {},
+  "noEmailSet": "未设置电子邮件",
+  "@noEmailSet": {
+    "description": "Message for no email set"
+  },
+  "noImages": "看起来您还没有上传任何图片。",
+  "@noImages": {
+    "description": "Message for no uploaded images"
+  },
+  "noFavoritedCommunities": "没有收藏的社区",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
+  "noInstanceBlocks": "没有被屏蔽的实例。",
+  "@noInstanceBlocks": {},
+  "noItems": "没有项目",
+  "@noItems": {
+    "description": "Generic text when there are no items"
+  },
+  "noMatrixUserSet": "未设置 Matrix 用户",
+  "@noMatrixUserSet": {
+    "description": "Message for no matrix user set"
+  },
+  "noReferencesToImage": "未找到包含此图像的帖子或评论。然而，它可能在互联网上的其他地方被使用。",
+  "@noReferencesToImage": {
+    "description": "Message indicating media was not found on Lemmy"
+  },
+  "noResultsFound": "未找到结果。",
+  "@noResultsFound": {},
+  "notValidLemmyInstance": "{instance} 似乎不是有效的 Lemmy 实例",
+  "@notValidLemmyInstance": {},
+  "notValidUrl": "不是有效的 URL",
+  "@notValidUrl": {},
+  "notificationsWarningDialog": "通知是一个 **实验性功能**，可能在所有设备上无法正常工作。- 检查将每 ~15 分钟进行一次，并会消耗额外的电池。- 禁用电池优化以提高成功通知的可能性。请参阅以下页面以获取更多信息。",
+  "@notificationsWarningDialog": {
+    "description": "The content of the warning dialog for the notifications feature"
+  },
+  "nsfwWarning": "NSFW - 点击以显示",
+  "@nsfwWarning": {
+    "description": "Warning for NSFW posts"
+  },
+  "onWifi": "在 Wifi 上",
+  "@onWifi": {},
+  "openAccountSwitcher": "打开账号切换器",
+  "@openAccountSwitcher": {},
+  "openInstance": "打开实例",
+  "@openInstance": {},
+  "selectAccountToPostAs": "选择作为其他用户发布的账号",
+  "@selectAccountToPostAs": {
+    "description": "Heading for account selector when posting"
+  },
+  "selectCommunity": "选择社区（必填）",
+  "@selectCommunity": {},
+  "selectAccountToCommentAs": "选择作为其他用户评论的账号",
+  "@selectAccountToCommentAs": {
+    "description": "Profile modal heading for commenting as other user"
+  },
+  "selectFeedType": "选择信息流类型",
+  "@selectFeedType": {},
+  "settingOverrideLabel": "这些设置会覆盖 Thunder 的默认设置。",
+  "@settingOverrideLabel": {
+    "description": "Message which indicates that the (instance) settings override the app settings"
+  },
+  "settingsImportedSuccessfully": "设置已成功导入！",
+  "@settingsImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported successfully"
+  },
+  "shareOriginalLink": "分享原始链接",
+  "@shareOriginalLink": {
+    "description": "Action for sharing the original link associated with a post"
+  },
+  "showHiddenPosts": "显示隐藏帖子",
+  "@showHiddenPosts": {
+    "description": "The name of the setting for showing hidden posts"
+  },
+  "showUnreadOnly": "仅显示未读",
+  "@showUnreadOnly": {
+    "description": "Show unread replies/mentions/messages only"
+  },
+  "showUserInstance": "显示用户实例",
+  "@showUserInstance": {
+    "description": "Toggle to show user instance."
+  },
+  "standard": "标准",
+  "@standard": {
+    "description": "Describes a standard visual density"
+  },
+  "successfullyUnbannedUser": "已解禁 {username}",
+  "@successfullyUnbannedUser": {
+    "description": "Notification for successfully unbanning a user"
+  },
+  "successfullyUnblockedCommunity": "已解封 {communityName}",
+  "@successfullyUnblockedCommunity": {},
+  "themeAccentColor": "强调颜色",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "thisAccount": "此账号",
+  "@thisAccount": {
+    "description": "Referring to the currently active account in account settings"
+  },
+  "thunderHasBeenUpdated": "Thunder 更新到 {version}！",
+  "@thunderHasBeenUpdated": {
+    "description": "Heading for changelog when Thunder has been updated"
+  },
+  "timeoutErrorMessage": "等待响应时超时。",
+  "@timeoutErrorMessage": {},
+  "unbanFromCommunity": "从社区解除禁令",
+  "@unbanFromCommunity": {
+    "description": "Moderator action to unban a user from a community"
+  },
+  "unblockCommunityInstance": "解除社区实例禁令",
+  "@unblockCommunityInstance": {
+    "description": "Action to unblock the instance of a given community"
+  },
+  "understandEnable": "我明白，启用",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
+  },
+  "useCompactView": "小帖子启用，大帖子禁用。",
+  "@useCompactView": {
+    "description": "Option to enable or disable compact view for small posts."
+  },
+  "useMaterialYouThemeDescription": "覆盖所选的自定义主题",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
+  },
+  "useSuggestedTitle": "使用建议标题：{title}",
+  "@useSuggestedTitle": {},
+  "useUnifiedPushNotificationsDescription": "需要兼容的应用程序",
+  "@useUnifiedPushNotificationsDescription": {
+    "description": "Subtitle of the setting for using UnifiedPush Notifications"
+  },
+  "users": "用户",
+  "@users": {},
+  "videoPlayerMode": "播放器模式",
+  "@videoPlayerMode": {
+    "description": "Option to select video player mode (in-app or external)  "
+  },
+  "viewOriginal": "查看原文",
+  "@viewOriginal": {
+    "description": "Action for viewing original text (as opposed to raw markdown)"
+  },
+  "viewPostAsDifferentAccount": "以不同账号查看帖子",
+  "@viewPostAsDifferentAccount": {
+    "description": "Action for viewing a post as a different account"
+  },
+  "viewPostSource": "查看帖子来源",
+  "@viewPostSource": {
+    "description": "Menu item for viewing a post's source"
+  },
+  "viewAllComments": "查看所有评论",
+  "@viewAllComments": {},
+  "viewModlog": "查看 Modlog",
+  "@viewModlog": {
+    "description": "Action which allows the user to navigate to the modlog for a particular entity"
+  },
+  "visitCommunity": "访问社区",
+  "@visitCommunity": {},
+  "visitCommunityInstance": "访问社区实例",
+  "@visitCommunityInstance": {
+    "description": "Action to visit the instance of a community"
+  },
+  "visitInstance": "访问实例",
+  "@visitInstance": {},
+  "visitUserInstance": "访问用户实例",
+  "@visitUserInstance": {
+    "description": "Action to visit the instance of a user"
+  },
+  "xScore": "{x} 分",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "xUpvotes": "{x} 个点赞",
+  "@xUpvotes": {},
+  "xYearsOld": "{x} 岁",
+  "@xYearsOld": {
+    "description": "An account descriptor representing how old an account is"
+  },
+  "yes": "是",
+  "@yes": {
+    "description": "A positive status"
+  },
+  "noCommentsFound": "未找到评论",
+  "@noCommentsFound": {},
+  "topSixHour": "过去 6 小时最佳",
+  "@topSixHour": {},
+  "trendingCommunities": "热门社区",
+  "@trendingCommunities": {},
+  "unableToLoadInstance": "无法加载 {instance}",
+  "@unableToLoadInstance": {},
+  "visitUserProfile": "访问用户资料",
+  "@visitUserProfile": {},
+  "fonts": "字体",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
+  "removeKeywordFilter": "移除关键词",
+  "@removeKeywordFilter": {
+    "description": "Title for dialog to remove keyword filter"
+  },
+  "alternateSources": "替代来源",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
+  },
+  "loginSucceeded": "已登录。",
+  "@loginSucceeded": {},
+  "search": "搜索",
+  "@search": {},
+  "searchUsersFederatedWith": "搜索与 {instance} 联邦的用户",
+  "@searchUsersFederatedWith": {},
+  "shareCommunity": "分享社区",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "showLess": "显示更少",
+  "@showLess": {},
+  "showNavigationLabelsDescription": "是否在底部导航按钮下方显示标签",
+  "@showNavigationLabelsDescription": {
+    "description": "Description for setting for showing navigation labels"
+  },
+  "videoAutoFullscreen": "自动全屏",
+  "@videoAutoFullscreen": {
+    "decription": "Option to always start the video players in landscape"
+  },
+  "viewAll": "查看全部",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
+  },
+  "addAsCommunityModerator": "添加为社区管理员",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
+  "ago": "{time} 之前",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "databaseNotExportedSuccessfully": "数据库未成功导出或操作已取消。",
+  "@databaseNotExportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully exported"
+  },
+  "decline": "拒绝",
+  "@decline": {
+    "description": "The ability to decline an option"
+  },
+  "exportDatabaseSubtitle": "数据库包含有关账号、收藏、匿名订阅和用户标签的信息。",
+  "@exportDatabaseSubtitle": {
+    "description": "Subtitle of setting for exporting the db"
+  },
+  "exportSettingsSubtitle": "设置包括您在 Thunder 中配置的所有偏好。",
+  "@exportSettingsSubtitle": {
+    "description": "Subtitle of setting for exporting settings"
+  },
+  "failedToLoadBlocks": "无法加载屏蔽：{errorMessage}",
+  "@failedToLoadBlocks": {},
+  "failedToUpdateNotificationSettings": "更新通知设置失败",
+  "@failedToUpdateNotificationSettings": {
+    "description": "Error message when failed to update notification settings."
+  },
+  "generalSettings": "常规设置",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
+  "guestModeFeedSettingsLabel": "以下设置仅适用于访客账号。要调整您账号的信息流设置，请前往账号设置。",
+  "@guestModeFeedSettingsLabel": {
+    "description": "Description for guest mode feed settings"
+  },
+  "linkHandlingExternal": "在系统浏览器中外部打开",
+  "@linkHandlingExternal": {
+    "description": "Description for external link handling"
+  },
+  "loginAttemptCanceled": "登录尝试已取消。",
+  "@loginAttemptCanceled": {
+    "description": "Message shown to user when they cancel a login attempt"
+  },
+  "message": "消息",
+  "@message": {},
+  "navigateDown": "下一条评论",
+  "@navigateDown": {},
+  "open": "打开",
+  "@open": {},
+  "overview": "概述",
+  "@overview": {},
+  "post": "帖子",
+  "@post": {
+    "description": "Describes a single post"
+  },
+  "userEntry": "用户 '{username}'",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
+  },
+  "noMentions": "没有提及",
+  "@noMentions": {
+    "description": "Label for when there are no person mentions in the list"
+  },
+  "noMessages": "没有消息",
+  "@noMessages": {
+    "description": "Label for when there are no messages in the inbox"
+  },
+  "noPostsFound": "未找到帖子。",
+  "@noPostsFound": {},
+  "notificationsNotAllowed": "系统设置中不允许通知 Thunder",
+  "@notificationsNotAllowed": {
+    "description": "Description for when notifications are now allowed for app"
+  },
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
+  },
+  "openLinksInExternalBrowser": "在外部浏览器中打开链接",
+  "@openLinksInExternalBrowser": {
+    "description": "Toggle to open links in an external browser."
+  },
+  "openSettings": "打开设置",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "postLocked": "帖子已锁定。禁止回复。",
+  "@postLocked": {},
+  "reducesAnimations": "减少 Thunder 中使用的动画",
+  "@reducesAnimations": {},
+  "refresh": "刷新",
+  "@refresh": {},
+  "refreshContent": "刷新内容",
+  "@refreshContent": {},
+  "removalReason": "删除原因",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
+  "retry": "重试",
+  "@retry": {},
+  "rightLongSwipe": "右长滑动",
+  "@rightLongSwipe": {
+    "description": "Setting for right long swipe"
+  },
+  "selectSearchType": "选择搜索类型",
+  "@selectSearchType": {},
+  "sendTestUnifiedPushNotification": "发送测试 UnifiedPush 通知",
+  "@sendTestUnifiedPushNotification": {
+    "description": "The option to send a UnifiedPush notification for testing"
+  },
+  "settingsNotExportedSuccessfully": "设置未成功保存，或操作已被取消。",
+  "@settingsNotExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported unsuccessfully"
+  },
+  "shareCommunityLinkLocal": "分享社区链接（我的实例）",
+  "@shareCommunityLinkLocal": {
+    "description": "Menu item for sharing a local community link"
+  },
+  "shareImage": "分享图片",
+  "@shareImage": {
+    "description": "Action for sharing an image"
+  },
+  "shareUser": "分享用户",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "showNsfwContent": "显示 NSFW 内容",
+  "@showNsfwContent": {
+    "description": "Toggle to show NSFW content."
+  },
+  "showPassword": "显示密码",
+  "@showPassword": {},
+  "showUpdateChangelogs": "显示更新日志",
+  "@showUpdateChangelogs": {
+    "description": "Setting for showing changelogs after updates"
+  },
+  "showUserAvatar": "显示用户头像",
+  "@showUserAvatar": {
+    "description": "Toggle to show user avatar."
+  },
+  "sidebarBottomNavSwipeDescription": "滑动底部导航以打开侧边栏",
+  "@sidebarBottomNavSwipeDescription": {},
+  "system": "系统",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "textActions": "文本操作",
+  "@textActions": {
+    "description": "Option for text actions"
+  },
+  "theming": "主题设置",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "unifiedPushServer": "UnifiedPush 服务器：{server}",
+  "@unifiedPushServer": {
+    "description": "Debug text that tells the user what UnifiedPush server is being used"
+  },
+  "useProfilePictureForDrawerSubtitle": "登录后，显示用户的个人资料图片以替代抽屉图标",
+  "@useProfilePictureForDrawerSubtitle": {
+    "description": "Setting subtitle for using the profile picture for the drawer"
+  },
+  "userLabelHint": "这是我最喜欢的用户",
+  "@userLabelHint": {
+    "description": "Hint text for adding a new user label"
+  },
+  "userNameThickness": "用户名粗细",
+  "@userNameThickness": {
+    "description": "Setting for user name thickness"
+  },
+  "enableInboxNotifications": "启用收件箱通知",
+  "@enableInboxNotifications": {
+    "description": "Setting name for inbox notifications"
+  },
+  "forward": "前进",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "onlyModsCanPostInCommunity": "只有管理员可以在此社区发帖",
+  "@onlyModsCanPostInCommunity": {},
+  "originalPoster": "原始发布者",
+  "@originalPoster": {
+    "description": "Label for the original poster."
+  },
+  "pureBlack": "纯黑色",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "pushNotificationServerDescription": "配置推送通知服务器。服务器必须正确配置以向您的设备发送推送通知。**仅输入您信任其凭据的服务器。**",
+  "@pushNotificationServerDescription": {
+    "description": "Description of choosing push notification server setting"
+  },
+  "reachedTheBottom": "没有更多项目可加载",
+  "@reachedTheBottom": {},
+  "restore": "恢复",
+  "@restore": {},
+  "scrapeMissingPreviews": "启用将会影响性能。",
+  "@scrapeMissingPreviews": {
+    "description": "Notice regarding potential performance impact when enabling link scrapping."
+  },
+  "shareCommentLocal": "分享评论链接（我的实例）",
+  "@shareCommentLocal": {
+    "description": "Menu item for sharing a local link to comment"
+  },
+  "shareLink": "分享外部链接",
+  "@shareLink": {},
+  "showPostTitleFirst": "优先显示标题",
+  "@showPostTitleFirst": {
+    "description": "Toggle to show post title first."
+  },
+  "showReadPosts": "显示已读帖子",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "unableToFindUser": "无法找到用户",
+  "@unableToFindUser": {},
+  "unbannedUserFromCommunity": "已解除用户在社区中的禁令",
+  "@unbannedUserFromCommunity": {
+    "description": "Short decription for moderator action to unban a user from a community"
+  },
+  "viewCommentSource": "查看评论来源",
+  "@viewCommentSource": {
+    "description": "Menu item for viewing a comment's source"
+  },
+  "dividerAppearance": "分隔符外观",
+  "@dividerAppearance": {
+    "description": "Divider appearance category"
+  },
+  "nothingToShare": "没有内容可分享",
+  "@nothingToShare": {},
+  "showOwnContent": "显示自己的内容",
+  "@showOwnContent": {
+    "description": "Toggle to show your own posts/comments."
+  },
+  "sortBy": "排序方式",
+  "@sortBy": {},
+  "submit": "提交",
+  "@submit": {},
+  "subscribed": "已订阅",
+  "@subscribed": {},
+  "tappableAuthorCommunity": "可点击的作者和社区",
+  "@tappableAuthorCommunity": {
+    "description": "Toggle to make authors and communities tappable."
+  },
+  "userProfiles": "用户资料",
+  "@userProfiles": {
+    "description": "Settings related to user profiles."
+  },
+  "videoAutoLoop": "循环视频",
+  "@videoAutoLoop": {
+    "description": "Option to always loop a video"
+  },
+  "discussionLanguagesTooltip": "内容已过滤为所选语言。",
+  "@discussionLanguagesTooltip": {},
+  "expandOptions": "展开选项",
+  "@expandOptions": {},
+  "expandPost": "展开帖子",
+  "@expandPost": {},
+  "information": "信息",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
+  "login": "登录",
+  "@login": {},
+  "newPost": "新帖子",
+  "@newPost": {
+    "description": "Setting for new post"
+  },
+  "old": "旧",
+  "@old": {},
+  "on": "开启",
+  "@on": {},
+  "reportComment": "举报评论",
+  "@reportComment": {},
+  "selectAll": "全选",
+  "@selectAll": {
+    "description": "Action for selecting all text"
+  },
+  "somethingWentWrong": "哎呀，出了点问题！",
+  "@somethingWentWrong": {},
+  "extraLarge": "特大号",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "settingTypeNotSupported": "类型为{settingType}的设置尚不支持。",
+  "@settingTypeNotSupported": {},
+  "shareMedia": "分享媒体",
+  "@shareMedia": {},
+  "showMore": "显示更多",
+  "@showMore": {},
+  "sidebarBottomNavDoubleTapDescription": "双击底部导航以打开侧边栏",
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "subscriptions": "订阅",
+  "@subscriptions": {},
+  "successfullyBlockedCommunity": "已屏蔽 {communityName}",
+  "@successfullyBlockedCommunity": {},
+  "topThreeMonths": "过去 3 个月最佳",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "topTwelveHour": "过去 12 小时最佳",
+  "@topTwelveHour": {},
+  "totp": "TOTP（可选）",
+  "@totp": {},
+  "unableToLoadImage": "无法加载图像",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "unhidCommunity": "已取消隐藏社区",
+  "@unhidCommunity": {
+    "description": "Short decription for moderator action to unhide a community"
+  },
+  "unlockedPost": "已解锁帖子",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
+  },
+  "upvoteColor": "点赞颜色",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
+  },
+  "altText": "替代文本",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
+  "banFromCommunity": "从社区中禁用",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
+  },
+  "changePassword": "更改密码",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "databaseExportWarning": "数据库可能包含与您的 Lemmy 账号相关的敏感信息。如果您导出它，您不应与任何人分享。您想继续吗？",
+  "@databaseExportWarning": {
+    "description": "Message shown to the user when exporting the db"
+  },
+  "databaseImportedSuccessfully": "数据库已成功导入！",
+  "@databaseImportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully imported"
+  },
+  "deleteImageConfirmMessage": "您确定要删除此图像吗？",
+  "@deleteImageConfirmMessage": {
+    "description": "Confirmation messages for deleting an image"
+  },
+  "disablePushNotifications": "禁用推送通知",
+  "@disablePushNotifications": {
+    "description": "Description when disabling push notifications"
+  },
+  "disabled": "已禁用",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
+  "discussionLanguages": "讨论语言",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "dismissRead": "忽略已读",
+  "@dismissRead": {},
+  "displayName": "显示名称",
+  "@displayName": {
+    "description": "Label for display name"
+  },
+  "doNotSupportMultipleUnifiedPushApps": "发现多个兼容应用；请仅安装一个",
+  "@doNotSupportMultipleUnifiedPushApps": {
+    "description": "Tell the user we don't currently support multiple UnifiedPush apps"
+  },
+  "downvote": "点踩",
+  "@downvote": {
+    "description": "Action for downvoting a post/comment"
+  },
+  "downvoteColor": "点踩颜色",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
+  },
+  "downvoted": "已点踩",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
+  "email": "电子邮件",
+  "@email": {
+    "description": "Label for email input"
+  },
+  "emptyInbox": "清空收件箱",
+  "@emptyInbox": {},
+  "emptyUri": "链接为空。请提供有效的动态链接以继续。",
+  "@emptyUri": {
+    "description": "Error message for empty link."
+  },
+  "enableFeedFab": "在信息流中启用动态按钮",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "enableFloatingButtonOnFeeds": "在信息流中启用动态按钮",
+  "@enableFloatingButtonOnFeeds": {
+    "description": "Setting for enable floating button on feeds"
+  },
+  "enableFloatingButtonOnPosts": "启用动态按钮在帖子中",
+  "@enableFloatingButtonOnPosts": {
+    "description": "Setting for enable floating button on posts"
+  },
+  "enablePostFab": "启用动态按钮在帖子中",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "endOfComments": "评论结束",
+  "@endOfComments": {},
+  "errorDeletingImage": "删除图像时发生错误：{error}",
+  "@errorDeletingImage": {
+    "description": "Error message for deleting an image"
+  },
+  "errorDownloadingMedia": "无法下载媒体文件以分享：{errorMessage}",
+  "@errorDownloadingMedia": {},
+  "errorImportingAccountSettings": "导入设置时出错。文件可能格式不正确。",
+  "@errorImportingAccountSettings": {
+    "description": "Message shown to user when account there was an error importing the settings"
+  },
+  "errorMarkingReplyRead": "标记回复为已读时出错。",
+  "@errorMarkingReplyRead": {
+    "description": "Error message for marking a reply read"
+  },
+  "exceptionProcessingUri": "处理链接时发生错误。它可能在您的实例上不可用。",
+  "@exceptionProcessingUri": {
+    "description": "An unspecified error during link processing."
+  },
+  "errorMarkingReplyUnread": "标记回复为未读时出错。",
+  "@errorMarkingReplyUnread": {
+    "description": "Error message for marking a reply unread"
+  },
+  "expand": "展开",
+  "@expand": {
+    "description": "Action to expand something"
+  },
+  "expandCommentPreview": "展开评论预览",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "experimentalFeatures": "实验性功能",
+  "@experimentalFeatures": {
+    "description": "Name of setting for experimental features"
+  },
+  "experimentalFeaturesDescription": "这些功能仍在开发中，可能不稳定。使用风险自负。您必须重启 Thunder 才能生效。",
+  "@experimentalFeaturesDescription": {
+    "description": "Description for experimental features setting"
+  },
+  "expandSpoiler": "展开剧透",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "exploreInstance": "探索实例",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
+  "exportLemmyAccountSettingsDescription": "导出 Lemmy 账号设置",
+  "@exportLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings export"
+  },
+  "failedToPerformAction": "执行操作失败",
+  "@failedToPerformAction": {
+    "description": "Error message when we fail to perform an action"
+  },
+  "feed": "信息流",
+  "@feed": {},
+  "failedToBlock": "屏蔽失败：{errorMessage}",
+  "@failedToBlock": {},
+  "feedBehaviourSettings": "信息流",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "feedTypeAndSorts": "默认信息流类型和排序",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "floatingActionButtonInformation": "Thunder 提供完全可自定义的 FAB 体验，支持一些手势。- 向上滑动以显示额外的 FAB 操作 - 向下/上滑动以隐藏或显示 FAB 要自定义 FAB 的主要和次要操作，请长按以下其中一个操作。",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "floatingActionButtonLongPressDescription": "表示 FAB 的长按操作。",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "foundUnifiedPushDistribtorApp": "找到兼容的应用程序；重启 Thunder 以连接",
+  "@foundUnifiedPushDistribtorApp": {
+    "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
+  },
+  "fullScreenNavigationSwipeDescription": "在禁用左右滑动手势时，随处滑动以返回",
+  "@fullScreenNavigationSwipeDescription": {},
+  "general": "常规",
+  "@general": {
+    "description": "General settings category."
+  },
+  "green": "绿色",
+  "@green": {
+    "description": "The color green"
+  },
+  "guestModeFeedSettings": "访客模式信息流设置",
+  "@guestModeFeedSettings": {
+    "description": "Feed settings for guest accounts"
+  },
+  "hidden": "已隐藏",
+  "@hidden": {
+    "description": "Describes a post that is hidden"
+  },
+  "hide": "隐藏",
+  "@hide": {
+    "description": "The action to hide a post"
+  },
+  "hidePassword": "隐藏密码",
+  "@hidePassword": {},
+  "hostInstance": "主机实例",
+  "@hostInstance": {
+    "description": "The instance hosting a community"
+  },
+  "hot": "热门",
+  "@hot": {},
+  "image": "图像",
+  "@image": {},
+  "imageCachingMode": "图像缓存模式",
+  "@imageCachingMode": {
+    "description": "Title for setting related to image caching mode"
+  },
+  "imageDimensionTimeout": "图像尺寸超时",
+  "@imageDimensionTimeout": {
+    "description": "Setting for how long to wait for the image dimensions to be fetched"
+  },
+  "importExportLemmyAccountSettings": "导入/导出 Lemmy 账号设置",
+  "@importExportLemmyAccountSettings": {
+    "description": "This is specifically used in search results to distinguish from Thunder import/export"
+  },
+  "importExportSettings": "导入/导出设置",
+  "@importExportSettings": {
+    "description": "Category for settings related to import and export."
+  },
+  "inbox": "收件箱",
+  "@inbox": {},
+  "instance": "实例 ",
+  "@instance": {
+    "description": "Heading for an instance"
+  },
+  "language": "语言",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "languageNotAllowed": "您发布的社区不允许使用您选择的语言发布帖子。请尝试其他语言。",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
+  },
+  "large": "大",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "leftShortSwipe": "左短滑动",
+  "@leftShortSwipe": {
+    "description": "Setting for left short swipe"
+  },
+  "light": "亮",
+  "@light": {
+    "description": "Describes using the light theme"
+  },
+  "linkActions": "链接操作",
+  "@linkActions": {},
+  "linkHandlingInApp": "使用 Thunder 的内置浏览器",
+  "@linkHandlingInApp": {
+    "description": "Description for in-app link handling"
+  },
+  "localNotifications": "本地通知",
+  "@localNotifications": {
+    "description": "Describes the notification type for Local Notifications"
+  },
+  "localOnly": "仅本地",
+  "@localOnly": {
+    "description": "Local community visibility"
+  },
+  "loginToPerformAction": "您需要登录才能执行此任务。",
+  "@loginToPerformAction": {},
+  "lookingForAccountSpecificFeedSettings": "寻找账号特定的信息流设置吗？",
+  "@lookingForAccountSpecificFeedSettings": {
+    "description": "Helper setting which navigates to account page"
+  },
+  "lockedPost": "已锁定帖子",
+  "@lockedPost": {
+    "description": "Short decription for moderator action to lock a post"
+  },
+  "loginFailed": "无法登录。请再试一次。（错误：{errorMessage}）",
+  "@loginFailed": {
+    "description": "Message shown to user when their login attempt failed"
+  },
+  "metadataFontScale": "元数据字体比例",
+  "@metadataFontScale": {
+    "description": "Setting for metadata font scale"
+  },
+  "modAdd": "添加/移除实例管理员",
+  "@modAdd": {
+    "description": "Description for modlog filter for actions that add instance moderators"
+  },
+  "modAddCommunity": "添加/移除社区管理员",
+  "@modAddCommunity": {
+    "description": "Description for modlog filter for actions that add moderators to communities"
+  },
+  "modRemovePost": "移除/恢复帖子",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "modRemoveCommunity": "移除/恢复社区",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "noCommunitiesFound": "未找到社区",
+  "@noCommunitiesFound": {},
+  "moderator": "管理员",
+  "@moderator": {
+    "description": "Role name for moderator"
+  },
+  "modlog": "管理日志",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "mostComments": "最多评论",
+  "@mostComments": {},
+  "navigateUp": "上一条评论",
+  "@navigateUp": {},
+  "nestedCommentIndicatorStyle": "嵌套评论指示器样式",
+  "@nestedCommentIndicatorStyle": {
+    "description": "Setting for nested comment indicator style"
+  },
+  "noCommunityBlocks": "没有被屏蔽的社区",
+  "@noCommunityBlocks": {},
+  "noKeywordFilters": "没有添加关键词过滤器",
+  "@noKeywordFilters": {
+    "description": "Message for no keyword filters added"
+  },
+  "noSubscriptions": "没有订阅",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "noUserBlocks": "没有被屏蔽的用户。",
+  "@noUserBlocks": {},
+  "normal": "正常",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
+  "noUserLabels": "您还没有创建任何用户标签",
+  "@noUserLabels": {
+    "description": "Placeholder message for empty list of labels"
+  },
+  "notificationsBehaviourSettings": "通知",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "openLinksInReaderMode": "在阅读模式中打开链接",
+  "@openLinksInReaderMode": {
+    "description": "Toggle to open links in reader mode when available."
+  },
+  "permissionDeniedMessage": "Thunder 需要一些权限才能保存此图像，但这些权限已被拒绝。",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "pinPostToCommunity": "将帖子固定到社区",
+  "@pinPostToCommunity": {
+    "description": "Action for pinning a post to a community (moderator action)"
+  },
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "postActions": "帖子操作",
+  "@postActions": {
+    "description": "Describes a given set of actions that can be performed on a post"
+  },
+  "postContentFontScale": "帖子内容字体缩放",
+  "@postContentFontScale": {
+    "description": "Setting for post content font scale"
+  },
+  "postCreatedSuccessfully": "帖子创建成功！",
+  "@postCreatedSuccessfully": {
+    "description": "Notifying the user that their post was created successfully"
+  },
+  "postPreview": "显示具有给定设置的帖子预览",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
+  "postShowUserInstance": "显示用户实例",
+  "@postShowUserInstance": {
+    "description": "Whether to show the user instance for post listings"
+  },
+  "postSwipeGesturesHint": "想使用按钮吗？在常规设置中更改帖子卡片上显示的按钮。",
+  "@postSwipeGesturesHint": {},
+  "postTitleFontScale": "帖子标题字体缩放",
+  "@postTitleFontScale": {
+    "description": "Setting for post title font scale"
+  },
+  "postViewType": "帖子视图类型",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
+  "purgedPost": "已清除帖子",
+  "@purgedPost": {
+    "description": "Short decription for moderator action to purge a post"
+  },
+  "pushNotificationDescription": "如果启用，Thunder 将向服务器发送您的 JWT 令牌，以轮询新通知。**注意：** 这将在下次启动应用程序时生效。",
+  "@pushNotificationDescription": {
+    "description": "Description of push notification setting"
+  },
+  "rateLimitErrorMessage": "您已达到此请求的速率限制。请稍等并稍后再试。",
+  "@rateLimitErrorMessage": {
+    "description": "Error message for the rate-limit Lemmy exception"
+  },
+  "removeFromFavorites": "从收藏夹中移除",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "removeKeyword": "移除“{keyword}”?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword filter"
+  },
+  "removedComment": "已删除评论",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removedCommunity": "已删除社区",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
+  "removedInstanceMod": "已移除实例管理员",
+  "@removedInstanceMod": {
+    "description": "Short decription for moderator action to remove a mod from an instance"
+  },
+  "replyToPost": "回复帖子",
+  "@replyToPost": {},
+  "replyingTo": "回复 {author}",
+  "@replyingTo": {},
+  "restorePost": "恢复帖子",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "restoredPost": "已恢复帖子",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
+  "restoredPostFromDraft": "从草稿中恢复的帖子",
+  "@restoredPostFromDraft": {},
+  "rightShortSwipe": "右短滑动",
+  "@rightShortSwipe": {
+    "description": "Setting for right short swipe"
+  },
+  "save": "保存",
+  "@save": {},
+  "searchByUrl": "按 URL 搜索",
+  "@searchByUrl": {},
+  "searchCommunitiesFederatedWith": "搜索与 {instance} 联邦的社区",
+  "@searchCommunitiesFederatedWith": {},
+  "searchPostSearchType": "选择帖子搜索类型",
+  "@searchPostSearchType": {},
+  "searchTerm": "搜索词",
+  "@searchTerm": {},
+  "selectText": "选择文本",
+  "@selectText": {
+    "description": "Post and comment action for selecting text"
+  },
+  "sendBackgroundTestUnifiedPushNotification": "发送后台测试 UnifiedPush 通知",
+  "@sendBackgroundTestUnifiedPushNotification": {
+    "description": "The option to send a background UnifiedPUsh notification for testing"
+  },
+  "sensitiveContentWarning": "可能包含敏感内容。点击以显示。",
+  "@sensitiveContentWarning": {
+    "description": "Warning for sensitive content (e.g., from modlog)"
+  },
+  "sentRequestForTestNotification": "已发送测试通知请求。",
+  "@sentRequestForTestNotification": {},
+  "serverErrorComments": "获取更多评论时遇到服务器错误：{message}",
+  "@serverErrorComments": {},
+  "settings": "设置",
+  "@settings": {},
+  "settingsExportedSuccessfully": "设置已成功保存到'{savedFilePath}'",
+  "@settingsExportedSuccessfully": {
+    "description": "Message shown to the user when the settings were exported successfully"
+  },
+  "settingsFeedCards": "这些设置适用于主信息流中的卡片，实际打开帖子时操作始终可用。",
+  "@settingsFeedCards": {
+    "description": "Settings for controlling the display of cards in the main feed."
+  },
+  "sharePost": "分享帖子链接",
+  "@sharePost": {},
+  "sharePostLocal": "分享帖子链接（我的实例）",
+  "@sharePostLocal": {
+    "description": "Item for sharing a link to a post on my instance"
+  },
+  "shareThumbnailAsImage": "分享缩略图作为图片",
+  "@shareThumbnailAsImage": {
+    "description": "Action for sharing the thumbnail of a post as an image"
+  },
+  "shareUserLink": "分享用户链接",
+  "@shareUserLink": {
+    "description": "Menu item for sharing a user"
+  },
+  "shareUserLinkLocal": "分享用户链接（我的实例）",
+  "@shareUserLinkLocal": {
+    "description": "Menu item for sharing a local user link"
+  },
+  "showAll": "显示全部",
+  "@showAll": {},
+  "showExpandedTaglines": "显示扩展标签行",
+  "@showExpandedTaglines": {
+    "description": "Toggle that shows the full expanded tagline in the feed page"
+  },
+  "showPostAuthor": "显示帖子作者",
+  "@showPostAuthor": {
+    "description": "Toggle to show post author."
+  },
+  "showPostTextContentPreview": "显示文本预览",
+  "@showPostTextContentPreview": {
+    "description": "Toggle to show text previews."
+  },
+  "showPostVoteActions": "显示投票按钮",
+  "@showPostVoteActions": {
+    "description": "Toggle to show vote buttons."
+  },
+  "showSavedContent": "显示已保存的内容",
+  "@showSavedContent": {
+    "description": "Toggle to show saved posts/comments."
+  },
+  "showThumbnailPreviewOnRight": "在右侧显示缩略图",
+  "@showThumbnailPreviewOnRight": {
+    "description": "Toggle to show thumbnails on the right side."
+  },
+  "successfullyBannedUser": "已禁止 {username}",
+  "@successfullyBannedUser": {
+    "description": "Notification for successfully banning a user"
+  },
+  "systemDarkModeDescription": "在系统暗黑模式下启用纯黑主题",
+  "@systemDarkModeDescription": {
+    "description": "Toggle which enables the pure black theme when using system theme, and is using the dark mode version"
+  },
+  "tabletMode": "平板模式（2 列视图）",
+  "@tabletMode": {
+    "description": "Toggle to enable 2-column tablet mode."
+  },
+  "testBackgroundUnifiedPushNotificationDescription": "Thunder 将请求通知服务器发送延迟通知，然后自行关闭。（这可能需要几分钟。）",
+  "@testBackgroundUnifiedPushNotificationDescription": {
+    "description": "A message describing the UnifiedPush background test notification"
+  },
+  "timeoutUpvoteComment": "错误：尝试对评论投票时超时",
+  "@timeoutUpvoteComment": {},
+  "topSixMonths": "过去 6 个月最佳",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "unableToFindCommunity": "无法找到社区",
+  "@unableToFindCommunity": {},
+  "unableToFindCommunityOnInstance": "无法在所选用户的实例中找到所选社区。",
+  "@unableToFindCommunityOnInstance": {
+    "description": "An error message for when we can't find a community on an instance"
+  },
+  "unableToFindPost": "无法找到帖子",
+  "@unableToFindPost": {
+    "description": "Error message when we are unable to find a post"
+  },
+  "unableToLoadPostsFrominstance": "无法从 {instance} 加载帖子",
+  "@unableToLoadPostsFrominstance": {},
+  "unableToNavigateToInstance": "无法导航到 {instanceHost}。这可能不是有效的 Lemmy 实例。",
+  "@unableToNavigateToInstance": {
+    "description": "Error message for when we can't navigate to a Lemmy instance"
+  },
+  "unbannedUser": "已解除用户禁令",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "unblockUser": "解除用户禁令",
+  "@unblockUser": {
+    "description": "Action to unblock a user"
+  },
+  "unblockUserInstance": "解除用户实例禁令",
+  "@unblockUserInstance": {
+    "description": "Action to unblock the instance of a given user"
+  },
+  "unhide": "取消隐藏",
+  "@unhide": {
+    "description": "The action to unhide a post"
+  },
+  "unlockPost": "解锁帖子",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "unpinPostFromCommunity": "从社区取消固定帖子",
+  "@unpinPostFromCommunity": {
+    "description": "Moderator action to unpin a post from a community"
+  },
+  "unreachable": "无法访问",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "unsubscribe": "取消订阅",
+  "@unsubscribe": {},
+  "unsubscribeFromCommunity": "取消订阅社区",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
+  "uploadedDate": "已上传：{date}",
+  "@uploadedDate": {
+    "description": "Metadata for image uploads"
+  },
+  "upvote": "点赞",
+  "@upvote": {
+    "description": "Action for upvoting a post/comment"
+  },
+  "useApplePushNotifications": "使用 APNs 通知",
+  "@useApplePushNotifications": {
+    "description": "Toggle to use APNs."
+  },
+  "useProfilePictureForDrawer": "使用个人资料图片作为抽屉图标",
+  "@useProfilePictureForDrawer": {
+    "description": "Setting name for using the profile picture for the drawer"
+  },
+  "userActions": "用户操作",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "userNameColor": "用户名颜色",
+  "@userNameColor": {
+    "description": "Setting for username color"
+  },
+  "userSettingDescription": "这些设置与您的 Lemmy 账号同步，仅在每个账号基础上应用。",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
+  "userStyle": "用户样式",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  },
+  "versionNumber": "版本 {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
+  },
+  "usernameFormattingRedirect": "寻找用户名格式化？",
+  "@usernameFormattingRedirect": {
+    "description": "Setting title for sending the user to the new formatting options"
+  },
+  "video": "视频",
+  "@video": {
+    "description": "String for video "
+  },
+  "videoAutoMute": "静音视频",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
+  },
+  "videoAutoPlay": "视频自动播放",
+  "@videoAutoPlay": {
+    "description": "Option to always autoplay videos"
+  },
+  "videoLinkHandlingExternal": "使用外部应用播放视频",
+  "@videoLinkHandlingExternal": {
+    "description": "Description to Open video with an external application"
+  },
+  "videoDefaultPlaybackSpeed": "默认播放速度",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback Speed"
+  },
+  "videoPlayerInApp": "使用 Thunder 内置播放器",
+  "@videoPlayerInApp": {
+    "description": "Description for using in-app video player"
+  },
+  "xDownvotes": "{x} 个点踩",
+  "@xDownvotes": {},
+  "requiredField": "*必填",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
+  },
+  "saved": "已保存",
+  "@saved": {},
+  "searchComments": "搜索评论",
+  "@searchComments": {},
+  "small": "小",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "top": "最佳",
+  "@top": {},
+  "topAll": "历史最佳",
+  "@topAll": {},
+  "topWeek": "本周最佳",
+  "@topWeek": {},
+  "topYear": "本年最佳",
+  "@topYear": {},
+  "transferredModToCommunity": "转移的社区",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
+  "trySearchingFor": "尝试搜索...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
+  "unableToLoadImageFrom": "无法从 {domain} 加载图像",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "unableToResolveReport": "无法解析报告",
+  "@unableToResolveReport": {
+    "description": "Error message when we are unable to resolve a report"
+  },
+  "userFormat": "用户格式",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "userLabels": "用户标签",
+  "@userLabels": {
+    "description": "Heading for user labels settings"
+  },
+  "moderatedCommunities": "管理的社区",
+  "@moderatedCommunities": {
+    "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "postNSFW": "标记为 NSFW",
+  "@postNSFW": {},
+  "setLongPress": "设置为长按操作",
+  "@setLongPress": {},
+  "url": "网址",
+  "@url": {},
+  "fullscreenSwipeGestures": "全屏滑动手势",
+  "@fullscreenSwipeGestures": {
+    "description": "Setting for fullscreen swipe gestures"
+  },
+  "includeText": "包括文本",
+  "@includeText": {},
+  "postBodyShowUserInstance": "显示用户实例",
+  "@postBodyShowUserInstance": {
+    "description": "Whether to show the user instance for post bodies"
+  },
+  "spoiler": "剧透",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "stats": "统计",
+  "@stats": {
+    "description": "Community statistics"
+  },
+  "subscribe": "订阅",
+  "@subscribe": {},
+  "subscribeToCommunity": "订阅社区",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
+  "successfullyBlocked": "已屏蔽。",
+  "@successfullyBlocked": {},
+  "successfullyBlockedUser": "已屏蔽 {username}",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "suggestedTitle": "建议标题",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "theme": "主题",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "themePrimary": "主题主色",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "unableToFindCommunityName": "无法找到社区 '{communityName}'",
+  "@unableToFindCommunityName": {
+    "description": "Error message for when we are unable to find a community, including the name"
+  },
+  "unableToFindInstance": "无法找到实例",
+  "@unableToFindInstance": {},
+  "unableToFindLanguage": "无法找到语言",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
+  "unblockCommunity": "解除社区禁令",
+  "@unblockCommunity": {
+    "description": "Action to unblock a community"
+  },
+  "unblockInstance": "解除实例禁令",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "unexpectedError": "意外错误",
+  "@unexpectedError": {},
+  "unifiedPushDistributorApp": "UnifiedPush 分发应用程序：{app} ({count} 可用)",
+  "@unifiedPushDistributorApp": {
+    "description": "A status indicator telling the current state of the UnifiedPush distributor app"
+  },
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
+  },
+  "uploadImage": "上传图片",
+  "@uploadImage": {},
+  "useUnifiedPushNotifications": "使用 UnifiedPush 通知",
+  "@useUnifiedPushNotifications": {
+    "description": "Toggle to use UnifiedPush Notifications"
+  },
+  "viewSource": "查看源代码",
+  "@viewSource": {
+    "description": "Action for viewing source (raw markdown)"
+  },
+  "viewingAll": "查看全部",
+  "@viewingAll": {
+    "description": "Chip for viewing all possible search results"
+  },
+  "visibility": "可见性：{visibility}",
+  "@visibility": {
+    "description": "Visibility heading for community"
+  },
+  "warning": "警告",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "postMetadataInstructions": "您可以通过拖放所需信息来自定义元数据",
+  "@postMetadataInstructions": {
+    "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+  },
+  "postSavedAsDraft": "帖子已保存为草稿",
+  "@postSavedAsDraft": {},
+  "remove": "删除",
+  "@remove": {},
+  "names": "名称",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
+  "offline": "离线",
+  "@offline": {
+    "description": "Describes a service that is unavailable"
+  },
+  "settingsNotImportedSuccessfully": "设置未成功导入或操作已被取消。",
+  "@settingsNotImportedSuccessfully": {
+    "description": "Message shown to the user when the settings were imported unsuccessfully"
+  },
+  "testBackgroundNotificationDescription": "Thunder 将自行关闭，然后尝试在后台生成通知。（这将至少需要 15 分钟。）",
+  "@testBackgroundNotificationDescription": {
+    "description": "A message describing the background test notification"
+  },
+  "userNotLoggedIn": "用户未登录",
+  "@userNotLoggedIn": {},
+  "modLockPost": "锁定/解锁帖子",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modRemoveComment": "移除/恢复评论",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "saveColor": "保存颜色",
+  "@saveColor": {
+    "description": "Name of save color setting"
+  },
+  "saveSettings": "保存设置",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "scrapeMissingLinkPreviews": "抓取缺失的链接预览",
+  "@scrapeMissingLinkPreviews": {
+    "description": "Toggle to scrape missing external link previews."
+  },
+  "showFullHeightImages": "显示完整高度的图片",
+  "@showFullHeightImages": {
+    "description": "Toggle to view full height images."
+  },
+  "showInAppUpdateNotifications": "获取新 GitHub 发布的通知",
+  "@showInAppUpdateNotifications": {
+    "description": "Toggle to get notified of new GitHub releases."
+  },
+  "instanceActions": "实例操作",
+  "@instanceActions": {
+    "description": "Heading for instance actions page"
+  },
+  "instanceHasAlreadyBenAdded": "{instance} 已经被添加。",
+  "@instanceHasAlreadyBenAdded": {},
+  "instanceNameThickness": "实例名称厚度",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
+  "internetOrInstanceIssues": "您可能未连接到互联网，或者您的实例当前可能不可用。",
+  "@internetOrInstanceIssues": {},
+  "lockPost": "锁定帖子",
+  "@lockPost": {
+    "description": "Action for locking a post (moderator action)"
+  },
+  "modBanFromCommunity": "禁止/解禁社区用户",
+  "@modBanFromCommunity": {
+    "description": "Description for modlog filter for actions that ban users from communities"
+  },
+  "clearCacheLabel": "清除缓存",
+  "@clearCacheLabel": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "countUsersActiveMonth": "{count} 用户/月",
+  "@countUsersActiveMonth": {
+    "description": "Number of users active in the last month"
+  },
+  "countUsersActiveWeek": "{count} 用户/周",
+  "@countUsersActiveWeek": {
+    "description": "Number of users active in the last week"
+  },
+  "countUsersActiveDay": "{count} 用户/天",
+  "@countUsersActiveDay": {
+    "description": "Number of users active in the last day"
+  },
+  "countUsersActiveHalfYear": "{count} 用户/半年",
+  "@countUsersActiveHalfYear": {
+    "description": "Number of users active in the last half year"
+  },
+  "created": "创建于 {date}",
+  "@created": {
+    "description": "The date that something was created"
+  },
+  "databaseExportedSuccessfully": "数据库已成功导出到 '{savedFilePath}'",
+  "@databaseExportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully exported"
+  },
+  "hideTopBarOnScroll": "滚动时隐藏顶部栏",
+  "@hideTopBarOnScroll": {
+    "description": "Settings toggle to hide the top bar on scroll"
+  },
+  "imageCachingModeRelaxed": "让图像缓存过期（使用更少内存，但导致图像更频繁地重新加载）",
+  "@imageCachingModeRelaxed": {
+    "description": "Long description for relaxed image caching mode"
+  },
+  "imageCachingModeRelaxedShort": "放松",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
+  "in_": "在",
+  "@in_": {
+    "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+  },
+  "malformedUri": "您提供的链接格式不受支持。请确保它是有效的链接。",
+  "@malformedUri": {
+    "description": "Error related to unsupported link format."
+  },
+  "markAllAsRead": "全部标记为已读",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "markPostAsReadOnMediaView": "查看媒体后标记为已读",
+  "@markPostAsReadOnMediaView": {
+    "description": "Toggle to mark posts as read after viewing media."
+  },
+  "noAccountsAdded": "没有添加任何账号",
+  "@noAccountsAdded": {
+    "description": "Placeholder text when no accounts have been added"
+  },
+  "noAnonymousInstances": "没有添加任何匿名实例",
+  "@noAnonymousInstances": {
+    "description": "Placeholder text when no anonymous instances have been added"
+  },
+  "noProfileBioSet": "未设置个人资料简介",
+  "@noProfileBioSet": {
+    "description": "Message for no profile bio set"
+  },
+  "pinToCommunity": "固定到社区",
+  "@pinToCommunity": {
+    "description": "Setting for pinning a post to a community (moderator action)"
+  },
+  "postBodySettings": "帖子内容设置",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "postBodyShowCommunityAvatar": "显示社区头像",
+  "@postBodyShowCommunityAvatar": {
+    "description": "Whether to show the community avatar for post bodies"
+  },
+  "postBodyViewType": "帖子内容视图类型",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
+  },
+  "postUploadImageError": "无法上传图像",
+  "@postUploadImageError": {},
+  "purple": "紫色",
+  "@purple": {
+    "description": "The color purple"
+  },
+  "pushNotification": "推送通知",
+  "@pushNotification": {
+    "description": "Setting for push notifications"
+  },
+  "pushNotificationServer": "推送通知服务器",
+  "@pushNotificationServer": {
+    "description": "Setting for choosing push notification server"
+  },
+  "reason": "原因",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "reduceAnimations": "减少动画",
+  "@reduceAnimations": {
+    "description": "Toggle to reduce animations."
+  },
+  "resetPostPreferences": "重置帖子偏好设置",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "timeoutSaveComment": "错误：尝试保存评论时超时",
+  "@timeoutSaveComment": {},
+  "timeoutSavingPost": "错误：尝试保存帖子时超时。",
+  "@timeoutSavingPost": {},
+  "empty": "空",
+  "@empty": {},
+  "off": "关闭",
+  "@off": {},
+  "openInBrowser": "在浏览器中打开",
+  "@openInBrowser": {},
+  "searchPostsFederatedWith": "搜索与 {instance} 联邦的帖子",
+  "@searchPostsFederatedWith": {},
+  "shareComment": "分享评论链接",
+  "@shareComment": {
+    "description": "Menu item for sharing a comment"
+  },
+  "shareMediaLink": "分享媒体链接",
+  "@shareMediaLink": {
+    "description": "Action for sharing the link to the media associated with a post"
+  },
+  "shareThumbnail": "分享缩略图",
+  "@shareThumbnail": {
+    "description": "Action for sharing the thumbnail of a post"
+  },
+  "showPostSaveAction": "显示保存按钮",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "timeoutComments": "错误：尝试获取评论时超时",
+  "@timeoutComments": {},
+  "topHour": "过去一小时最佳",
+  "@topHour": {},
+  "addUserLabel": "添加用户标签",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
+  "enableExperimentalFeatures": "启用实验性功能",
+  "@enableExperimentalFeatures": {
+    "description": "Setting to enable experimental features"
+  },
+  "includeExternalLink": "包括外部链接",
+  "@includeExternalLink": {},
+  "label": "标签",
+  "@label": {
+    "description": "Text field label for a user label"
+  },
+  "languageFilters": "寻找语言过滤器吗？",
+  "@languageFilters": {},
+  "logOut": "登出",
+  "@logOut": {},
+  "missingErrorMessage": "没有可用的错误消息",
+  "@missingErrorMessage": {},
+  "postURL": "网址",
+  "@postURL": {},
+  "red": "红色",
+  "@red": {
+    "description": "The color red"
+  },
+  "setShortPress": "设置为短按操作",
+  "@setShortPress": {},
+  "accountSettingOverrideWarning": "您的账号设置覆盖以下设置",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "havingIssuesWithNotifications": "遇到通知问题了吗？",
+  "@havingIssuesWithNotifications": {
+    "description": "A shortcut to navigate to the notification debugging section"
+  },
+  "hidCommunity": "隐藏社区",
+  "@hidCommunity": {
+    "description": "Short decription for moderator action to hide a community"
+  },
+  "manageAccounts": "管理账号",
+  "@manageAccounts": {},
+  "moderatorActions": "管理员操作",
+  "@moderatorActions": {
+    "description": "Actions for moderators to perform on posts"
+  },
+  "noCompatibleAppFound": "未找到兼容的应用",
+  "@noCompatibleAppFound": {
+    "description": "Tell the user we didn't find a compatible UnifiedPush app"
+  },
+  "themeSecondary": "主题次色",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "reporter": "举报人：",
+  "@reporter": {
+    "description": "Name of reporter that reported a post/comment"
+  },
+  "searchCommentsFederatedWith": "搜索与 {instance} 联邦的评论",
+  "@searchCommentsFederatedWith": {},
+  "searchInstancesFederatedWith": "搜索与 {instance} 联邦的实例",
+  "@searchInstancesFederatedWith": {
+    "description": "Placeholder text for searching for instances"
+  },
+  "unsubscribePending": "取消订阅（订阅待处理）",
+  "@unsubscribePending": {},
+  "showScoreCounters": "显示用户评分",
+  "@showScoreCounters": {
+    "description": "Toggle to display user scores."
+  },
+  "unsubscribed": "已取消订阅",
+  "@unsubscribed": {},
+  "upvoted": "已点赞",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
+  "removedPost": "已删除帖子",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
+  "loadMoreSingular": "加载 {count} 条更多回复…",
+  "@loadMoreSingular": {},
+  "toggelRead": "切换已读",
+  "@toggelRead": {},
+  "noDiscussionLanguages": "没有根据语言隐藏内容。",
+  "@noDiscussionLanguages": {
+    "description": "Message for no discussion languages added"
+  },
+  "noDisplayNameSet": "未设置显示名称",
+  "@noDisplayNameSet": {
+    "description": "Message for no display name set"
+  },
+  "noUsersFound": "未找到用户。",
+  "@noUsersFound": {},
+  "none": "无",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
+  "ok": "好的",
+  "@ok": {},
+  "openByDefault": "默认打开",
+  "@openByDefault": {
+    "description": "Indicating the default behavior of opening links."
+  },
+  "password": "密码",
+  "@password": {},
+  "permissionDenied": "Thunder 未获得显示通知的权限。请在系统设置中启用。",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "postBodyShowCommunityInstance": "显示社区实例",
+  "@postBodyShowCommunityInstance": {
+    "description": "Whether to show the community instance for post bodies"
+  },
+  "profileBio": "个人资料简介",
+  "@profileBio": {
+    "description": "Setting for profile bio"
+  },
+  "profiles": "个人资料",
+  "@profiles": {},
+  "removedModFromCommunity": "已从社区移除管理员",
+  "@removedModFromCommunity": {
+    "description": "Short decription for moderator action to remove a mod from a community"
+  },
+  "reply": "回复",
+  "@reply": {},
+  "restoredComment": "已恢复评论",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
+  "screenReaderProfileDescription": "通过减少整体元素和移除可能冲突的手势来优化 Thunder 以适应屏幕阅读器。",
+  "@screenReaderProfileDescription": {},
+  "searchByText": "按文本搜索",
+  "@searchByText": {},
+  "sendBackgroundTestLocalNotification": "发送后台测试本地通知",
+  "@sendBackgroundTestLocalNotification": {
+    "description": "The option to send a background notification for testing"
+  },
+  "sendTestLocalNotification": "发送测试本地通知",
+  "@sendTestLocalNotification": {
+    "description": "The option to send a notification for testing"
+  },
+  "setAction": "设置操作",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "shareCommunityLink": "分享社区链接",
+  "@shareCommunityLink": {
+    "description": "Menu item for sharing a community"
+  },
+  "shareLemmyLink": "分享 Lemmy 链接",
+  "@shareLemmyLink": {
+    "description": "Menu item for sharing a Lemmy link"
+  },
+  "showEdgeToEdgeImages": "显示边缘到边缘的图片",
+  "@showEdgeToEdgeImages": {
+    "description": "Toggle to view edge to edge images."
+  },
+  "showFullDateDescription": "在帖子上显示完整日期",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
+  },
+  "showNavigationLabels": "显示导航标签",
+  "@showNavigationLabels": {
+    "description": "Setting for showing navigation labels"
+  },
+  "showPostAuthorSubtitle": "帖子作者在社区信息流中始终显示",
+  "@showPostAuthorSubtitle": {
+    "description": "Subtitle for the Show Post Author setting"
+  },
+  "status": "状态",
+  "@status": {
+    "description": "Status of the action"
+  },
+  "successfullyUnblocked": "已解封。",
+  "@successfullyUnblocked": {},
+  "successfullyUnblockedUser": "已解封 {username}",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "tapToExit": "再次按返回键以退出",
+  "@tapToExit": {},
+  "teal": "青色",
+  "@teal": {
+    "description": "The color teal"
+  },
+  "thunderNotificationServer": "Thunder 通知服务器：{server}",
+  "@thunderNotificationServer": {
+    "description": "Text for the user to know what the currently selected notification server is"
+  },
+  "translationsMayNotBeComplete": "请注意，翻译可能不完整",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "unableToFindUserName": "无法找到用户 '{username}'",
+  "@unableToFindUserName": {},
+  "unableToLoadReplies": "无法加载更多回复。",
+  "@unableToLoadReplies": {},
+  "unfeaturedPost": "已取消特色帖子",
+  "@unfeaturedPost": {
+    "description": "Short decription for moderator action to unfeature a post"
+  },
+  "unpinFromCommunity": "从社区取消固定",
+  "@unpinFromCommunity": {
+    "description": "Setting for unpinning a post from a community (moderator action)"
+  },
+  "blockCommunityInstance": "屏蔽社区实例",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
+  "blockSettingLabel": "用户/社区/实例屏蔽",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "localPosts": "本地帖子",
+  "@localPosts": {},
+  "edit": "编辑",
+  "@edit": {},
+  "postTitle": "标题",
+  "@postTitle": {},
+  "errorSavingAccountSettings": "保存设置文件时出错或操作已被取消。",
+  "@errorSavingAccountSettings": {
+    "description": "Message shown to user when there was an error saving the settings file"
+  },
+  "excessiveApiCallsWarning": "由于关键字过滤器，您的信息流可能需要一些时间才能加载。",
+  "@excessiveApiCallsWarning": {
+    "description": "A message shown to the user when the feed is taking a long time to load, possibly because many posts are being filtered out due to their keyword filters"
+  },
+  "expandInformation": "展开信息",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "failedToUnblock": "无法取消屏蔽：{errorMessage}",
+  "@failedToUnblock": {},
+  "feedSettings": "信息流设置",
+  "@feedSettings": {
+    "description": "Feed settings category."
+  },
+  "medium": "中等",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "navbarDoubleTapGestures": "导航栏双击手势",
+  "@navbarDoubleTapGestures": {
+    "description": "Setting for navbar double tap gestures"
+  },
+  "never": "从不",
+  "@never": {},
+  "posts": "帖子",
+  "@posts": {},
+  "public": "公开",
+  "@public": {
+    "description": "Public community visibility"
+  },
+  "purgedCommunity": "已清除社区",
+  "@purgedCommunity": {
+    "description": "Short decription for moderator action to purge a community"
+  },
+  "purgedPerson": "已清除人员",
+  "@purgedPerson": {
+    "description": "Short decription for moderator action to purge a person"
+  },
+  "read": "已读",
+  "@read": {
+    "description": "Indicates that a post has been read"
+  },
+  "removeAsCommunityModerator": "移除社区管理员",
+  "@removeAsCommunityModerator": {
+    "description": "Moderator action to remove user as community moderator"
+  },
+  "removeComment": "删除评论",
+  "@removeComment": {
+    "description": "Moderator action to remove a comment"
+  },
+  "reset": "重置",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetCommentPreferences": "重置评论偏好设置",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "restoreComment": "恢复评论",
+  "@restoreComment": {
+    "description": "Moderator action to restore a comment"
+  },
+  "showUpdateChangelogsSubtitle": "在更新后显示更改列表",
+  "@showUpdateChangelogsSubtitle": {
+    "description": "Subtitle for setting for showing changelogs after updates"
+  },
+  "showUserDisplayNames": "显示用户显示名称",
+  "@showUserDisplayNames": {
+    "description": "Toggle to show user display names."
+  },
+  "uriNotSupported": "此类型的链接目前不受支持。",
+  "@uriNotSupported": {
+    "description": "Unsupported link type at the present time."
+  },
+  "useAdvancedShareSheet": "使用高级分享面板",
+  "@useAdvancedShareSheet": {
+    "description": "Toggle to use advanced share sheet."
+  },
+  "useApplePushNotificationsDescription": "使用苹果推送通知服务",
+  "@useApplePushNotificationsDescription": {
+    "description": "Subtitle of the setting for using APNs"
+  },
+  "useMaterialYouTheme": "使用 Material You 主题",
+  "@useMaterialYouTheme": {
+    "description": "Toggle to use Material You theme."
+  },
+  "topDay": "今日最佳",
+  "@topDay": {},
+  "hideThumbnails": "隐藏缩略图",
+  "@hideThumbnails": {
+    "description": "Option to hide thumbnails in feed"
+  },
+  "linkHandlingExternalShort": "外部",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "timeoutVotingPost": "错误：尝试对帖子投票时超时。",
+  "@timeoutVotingPost": {},
+  "modBan": "禁止/解禁实例用户",
+  "@modBan": {
+    "description": "Description for modlog filter for actions that ban instance users"
+  },
+  "accept": "接受",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "inReplyTo": "回复 {post} 在 {community} 中",
+  "@inReplyTo": {},
+  "scaled": "缩放",
+  "@scaled": {},
+  "leftLongSwipe": "左长滑动",
+  "@leftLongSwipe": {
+    "description": "Setting for left long swipe"
+  },
+  "showBotAccounts": "显示机器人账号",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "showCommentActionButtons": "显示评论操作按钮",
+  "@showCommentActionButtons": {
+    "description": "Toggle to show comment action buttons."
+  },
+  "showCommunityDisplayNames": "显示社区显示名称",
+  "@showCommunityDisplayNames": {
+    "description": "Setting for showing community display names"
+  },
+  "showCrossPosts": "显示交叉帖子",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "showFullDate": "显示完整日期",
+  "@showFullDate": {
+    "description": "Toggle to show full date on posts"
+  },
+  "topMonth": "本月最佳",
+  "@topMonth": {},
+  "useLocalNotifications": "使用本地通知（实验性）",
+  "@useLocalNotifications": {
+    "description": "Toggle to use local notifications."
+  },
+  "useLocalNotificationsDescription": "定期在后台检查通知",
+  "@useLocalNotificationsDescription": {
+    "description": "Subtitle of the setting for using local notifications"
+  },
+  "contentManagement": "内容管理",
+  "@contentManagement": {
+    "description": "Setting for content management (languages/blocking)"
+  },
+  "contentWarning": "内容警告",
+  "@contentWarning": {
+    "description": "Heading for content warning dialog"
+  },
+  "countLocalSubscribers": "{count} 本地订阅者",
+  "@countLocalSubscribers": {
+    "description": "Number of local subscribers"
+  },
+  "deleteComment": "删除评论",
+  "@deleteComment": {
+    "description": "Action for deleting a comment"
+  },
+  "importLemmyAccountSettingsDescription": "导入 Lemmy 账号设置",
+  "@importLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings import"
+  },
+  "includeImage": "包括图像",
+  "@includeImage": {},
+  "instanceNameColor": "实例名称颜色",
+  "@instanceNameColor": {
+    "description": "Setting for instance name color"
+  },
+  "keywordFilters": "关键字过滤器",
+  "@keywordFilters": {
+    "description": "Subcategory in Settings -> Filters"
+  },
+  "link": "链接 ",
+  "@link": {},
+  "linkHandlingCustomTabs": "在系统浏览器中打开，嵌入在应用内",
+  "@linkHandlingCustomTabs": {
+    "description": "Description for custom tabs link handling"
+  },
+  "loginToSeeInbox": "登录以查看您的收件箱",
+  "@loginToSeeInbox": {},
+  "removeInstance": "移除实例",
+  "@removeInstance": {},
+  "showPostCommunityIcons": "显示社区图标",
+  "@showPostCommunityIcons": {
+    "description": "Toggle to show community icons."
+  },
+  "showTextPostIndicator": "显示文本帖子指示器",
+  "@showTextPostIndicator": {
+    "description": "Toggle to show text post indicator."
+  },
+  "sidebar": "侧边栏",
+  "@sidebar": {},
+  "sortByTop": "按最佳排序",
+  "@sortByTop": {},
+  "sortOptions": "排序选项",
+  "@sortOptions": {},
+  "subscriptionRequestSent": "订阅请求已发送",
+  "@subscriptionRequestSent": {
+    "description": "Message for subscription request sent"
+  },
+  "unableToRetrieveChangelog": "无法检索版本 {version} 的变更日志。",
+  "@unableToRetrieveChangelog": {
+    "description": "Error message for when we are unable to retrieve the changelog."
   }
 }
