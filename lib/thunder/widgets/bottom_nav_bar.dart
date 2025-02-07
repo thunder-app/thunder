@@ -141,6 +141,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             context.read<ThunderBloc>().add(const OnFabToggle(false));
           }
 
+          if (widget.selectedPageIndex == 1 && index != 1) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+
           if (widget.selectedPageIndex == 0 && index == 0) {
             context.read<FeedBloc>().add(ScrollToTopEvent());
           }
