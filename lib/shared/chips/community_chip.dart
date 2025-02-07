@@ -52,6 +52,7 @@ class CommunityChip extends StatelessWidget {
           communityName,
           communityTitle,
           fetchInstanceNameFromUrl(communityUrl) ?? '-',
+          useDisplayName: false,
         ),
         preferBelow: false,
         child: Row(
