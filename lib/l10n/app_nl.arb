@@ -976,5 +976,385 @@
   "originalPoster": "Originele plaatser",
   "@originalPoster": {
     "description": "Label for the original poster."
+  },
+  "removeInstance": "Instantie verwĳderen",
+  "@removeInstance": {},
+  "resetPreferences": "Voorkeuren resetten",
+  "@resetPreferences": {},
+  "restorePost": "Bericht herstellen",
+  "@restorePost": {
+    "description": "Action to restore a post (moderator action)"
+  },
+  "selectLanguage": "Taal selecteren",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "setAction": "Actie instellen",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "shareCommunity": "Gemeenschap delen",
+  "@shareCommunity": {
+    "description": "Heading for sharing a community"
+  },
+  "sortBy": "Sorteren op",
+  "@sortBy": {},
+  "themeAccentColor": "Accent­kleuren",
+  "@themeAccentColor": {
+    "description": "Setting for theme accent color"
+  },
+  "unblockInstance": "Blokkering van instantie opheffen",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "userLabels": "Gebruikers­labels",
+  "@userLabels": {
+    "description": "Heading for user labels settings"
+  },
+  "videoPlayerMode": "Speler­modus",
+  "@videoPlayerMode": {
+    "description": "Option to select video player mode (in-app or external)  "
+  },
+  "viewModlog": "Moderator­logboek bekĳken",
+  "@viewModlog": {
+    "description": "Action which allows the user to navigate to the modlog for a particular entity"
+  },
+  "viewingAll": "Alles aan het bekĳken",
+  "@viewingAll": {
+    "description": "Chip for viewing all possible search results"
+  },
+  "viewSource": "Bron bekĳken",
+  "@viewSource": {
+    "description": "Action for viewing source (raw markdown)"
+  },
+  "xScore": "Score: {x}",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "xUpvotes": "{x} upvotes",
+  "@xUpvotes": {},
+  "manageMedia": "Media beheren",
+  "@manageMedia": {
+    "description": "Setting name and page title for media management"
+  },
+  "removePost": "Bericht verwĳderen",
+  "@removePost": {
+    "description": "Action to remove a post (moderator action)"
+  },
+  "removedComment": "Verwĳderde opmerking",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removedCommunity": "Gemeen­schap verwĳderd",
+  "@removedCommunity": {
+    "description": "Short decription for moderator action to remove a community"
+  },
+  "removedPost": "Bericht verwĳderd",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
+  "reportComment": "Opmerking rapporteren",
+  "@reportComment": {},
+  "reportPost": "Bericht rapporteren",
+  "@reportPost": {
+    "description": "Action to report a post (moderator action)"
+  },
+  "restoredComment": "Opmerking hersteld",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
+  "searchTerm": "Zoek­term",
+  "@searchTerm": {},
+  "shareImage": "Afbeelding delen",
+  "@shareImage": {
+    "description": "Action for sharing an image"
+  },
+  "showMore": "Meer tonen",
+  "@showMore": {},
+  "showPassword": "Wacht­woord tonen",
+  "@showPassword": {},
+  "successfullyBannedUser": "{username} verbannen",
+  "@successfullyBannedUser": {
+    "description": "Notification for successfully banning a user"
+  },
+  "successfullyBlockedCommunity": "{communityName} geblokkeerd",
+  "@successfullyBlockedCommunity": {},
+  "successfullyBlockedUser": "{username} geblokkeerd",
+  "@successfullyBlockedUser": {
+    "description": "Notification for successfully blocking a user"
+  },
+  "suchAs": "zoals",
+  "@suchAs": {
+    "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
+  },
+  "successfullyUnblockedUser": "Blokkering van {username} opgeheven",
+  "@successfullyUnblockedUser": {
+    "description": "Notification for successfully unblocking a user"
+  },
+  "topWeek": "Beste afgelopen week",
+  "@topWeek": {},
+  "topYear": "Beste afgelopen jaar",
+  "@topYear": {},
+  "trendingCommunities": "Trending gemeen­schappen",
+  "@trendingCommunities": {},
+  "unblockCommunity": "Blokkering van gemeen­schap opheffen",
+  "@unblockCommunity": {
+    "description": "Action to unblock a community"
+  },
+  "unifiedPushNotifications": "UnifiedPush-meldingen",
+  "@unifiedPushNotifications": {
+    "description": "Describes the notification type for UnifiedPush Notifications"
+  },
+  "uploadedDate": "Geüploaded op: {date}",
+  "@uploadedDate": {
+    "description": "Metadata for image uploads"
+  },
+  "viewOriginal": "Origineel bekĳken",
+  "@viewOriginal": {
+    "description": "Action for viewing original text (as opposed to raw markdown)"
+  },
+  "visitCommunity": "Gemeenschap bezoeken",
+  "@visitCommunity": {},
+  "uploadImage": "Afbeelding uploaden",
+  "@uploadImage": {},
+  "upvoteColor": "Upvote-kleur",
+  "@upvoteColor": {
+    "description": "Name of upvote color setting"
+  },
+  "userFormat": "Gebruikers­formaat",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "userActions": "Gebruikers­acties",
+  "@userActions": {
+    "description": "Heading for user actions page"
+  },
+  "userEntry": "Gebruiker ‘{username}’",
+  "@userEntry": {
+    "description": "Entry in list for a user to perform further actions"
+  },
+  "userProfiles": "Gebruikers­profielen",
+  "@userProfiles": {
+    "description": "Settings related to user profiles."
+  },
+  "userStyle": "Gebruikers­stĳl",
+  "@userStyle": {
+    "description": "Heading for user style setting"
+  },
+  "versionNumber": "Versie {version}",
+  "@versionNumber": {
+    "description": "String for describing the current version"
+  },
+  "videoAutoLoop": "Video's herhalen",
+  "@videoAutoLoop": {
+    "description": "Option to always loop a video"
+  },
+  "videoAutoFullscreen": "Automatisch volledig scherm",
+  "@videoAutoFullscreen": {
+    "decription": "Option to always start the video players in landscape"
+  },
+  "videoAutoMute": "Video's dempen",
+  "@videoAutoMute": {
+    "description": "Option to always mute videos"
+  },
+  "videoAutoPlay": "Video's automatisch afspelen",
+  "@videoAutoPlay": {
+    "description": "Option to always autoplay videos"
+  },
+  "addAnonymousInstance": "Anonieme instantie toevoegen",
+  "@addAnonymousInstance": {},
+  "addedInstanceMod": "Instantie­moderator toegevoegd",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "andXMore": "en nog {count}",
+  "@andXMore": {},
+  "alreadyPostedTo": "Al geplaatst in",
+  "@alreadyPostedTo": {},
+  "banFromCommunity": "Verbannen van gemeen­schap",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
+  },
+  "blockCommunityInstance": "Gemeenschaps­instantie blokkeren",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
+  "blockUserInstance": "Gebruikers­instantie blokkeren",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
+  "boldCommunityName": "Vet­gedrukte gemeenschaps­naam",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "boldInstanceName": "Vet­gedrukte instantie­naam",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "Vet­gedrukte gebruikers­naam",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "removalReason": "Reden voor verwĳdering",
+  "@removalReason": {
+    "description": "Title for the dialog for removing a post"
+  },
+  "restoredPost": "Bericht hersteld",
+  "@restoredPost": {
+    "description": "Short decription for moderator action to restore a post"
+  },
+  "restoredCommunity": "Gemeenschap hersteld",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "saveColor": "Opslaan-kleur",
+  "@saveColor": {
+    "description": "Name of save color setting"
+  },
+  "saveSettings": "Instellingen opslaan",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "searchComments": "Opmerkingen zoeken",
+  "@searchComments": {},
+  "searchInstance": "{instance} doorzoeken",
+  "@searchInstance": {},
+  "selectAll": "Alles selecteren",
+  "@selectAll": {
+    "description": "Action for selecting all text"
+  },
+  "shareThumbnail": "Miniatuur delen",
+  "@shareThumbnail": {
+    "description": "Action for sharing the thumbnail of a post"
+  },
+  "shareUser": "Gebruiker delen",
+  "@shareUser": {
+    "description": "Heading for sharing a user"
+  },
+  "showAll": "Alles tonen",
+  "@showAll": {},
+  "showLess": "Minder tonen",
+  "@showLess": {},
+  "successfullyUnblockedCommunity": "Blokkering van {communityName} opgeheven",
+  "@successfullyUnblockedCommunity": {},
+  "suggestedTitle": "Voor­gestelde titel",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "textActions": "Tekst­acties",
+  "@textActions": {
+    "description": "Option for text actions"
+  },
+  "themePrimary": "Thema (primair)",
+  "@themePrimary": {
+    "description": "Name of primary theme color"
+  },
+  "themeSecondary": "Thema (secundair)",
+  "@themeSecondary": {
+    "description": "Name of secondary theme color"
+  },
+  "themeTertiary": "Thema (tertiair)",
+  "@themeTertiary": {
+    "description": "Name of primary theme color"
+  },
+  "thisAccount": "Dit account",
+  "@thisAccount": {
+    "description": "Referring to the currently active account in account settings"
+  },
+  "thumbnailUrl": "Miniatuur-URL",
+  "@thumbnailUrl": {
+    "description": "Post field for adding a custom thumbnail to the post"
+  },
+  "toggelRead": "Gelezen omschakelen",
+  "@toggelRead": {},
+  "topDay": "Beste vandaag",
+  "@topDay": {},
+  "topMonth": "Beste afgelopen maand",
+  "@topMonth": {},
+  "unbannedUser": "Verbanning van gebruiker opgeheven",
+  "@unbannedUser": {
+    "description": "Short decription for moderator action to unban a user"
+  },
+  "unexpectedError": "Onverwachte fout",
+  "@unexpectedError": {},
+  "unlockPost": "Bericht ontgrendelen",
+  "@unlockPost": {
+    "description": "Action for unlocking a post (moderator action)"
+  },
+  "totp": "TOTP (optioneel)",
+  "@totp": {},
+  "cardPostCardMetadataItems": "Meta­gegevens in kaart­weergave",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "transferredModToCommunity": "Gemeen­schap over­gedragen",
+  "@transferredModToCommunity": {
+    "description": "Short decription for moderator action to transfer a community"
+  },
+  "sortOptions": "Sorteer­instellingen",
+  "@sortOptions": {},
+  "successfullyUnbannedUser": "Verbanning van {username} opgeheven",
+  "@successfullyUnbannedUser": {
+    "description": "Notification for successfully unbanning a user"
+  },
+  "visibility": "Zichtbaarheid: {visibility}",
+  "@visibility": {
+    "description": "Visibility heading for community"
+  },
+  "restoreComment": "Opmerking herstellen",
+  "@restoreComment": {
+    "description": "Moderator action to restore a comment"
+  },
+  "altText": "Alternatieve tekst",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
+  "deleteComment": "Opmerking verwĳderen",
+  "@deleteComment": {
+    "description": "Action for deleting a comment"
+  },
+  "xDownvotes": "{x} downvotes",
+  "@xDownvotes": {},
+  "readAll": "Alles lezen",
+  "@readAll": {},
+  "readerMode": "Lezer­modus",
+  "@readerMode": {
+    "description": "Menu item for toggling reader mode"
+  },
+  "removeKeyword": "‘{keyword}’ verwĳderen?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword filter"
+  },
+  "removeKeywordFilter": "Tref­woord verwĳderen",
+  "@removeKeywordFilter": {
+    "description": "Title for dialog to remove keyword filter"
+  },
+  "replyColor": "Reactie­kleur",
+  "@replyColor": {
+    "description": "Name of reply color setting"
+  },
+  "removeComment": "Opmerking verwĳderen",
+  "@removeComment": {
+    "description": "Moderator action to remove a comment"
+  },
+  "selectText": "Tekst selecteren",
+  "@selectText": {
+    "description": "Post and comment action for selecting text"
+  },
+  "shareMedia": "Media delen",
+  "@shareMedia": {},
+  "unblockUser": "Blokkering van gebruiker opheffen",
+  "@unblockUser": {
+    "description": "Action to unblock a user"
+  },
+  "unlockedPost": "Bericht ontgrendeld",
+  "@unlockedPost": {
+    "description": "Short decription for moderator action to unlock a post"
+  },
+  "visitInstance": "Instantie bezoeken",
+  "@visitInstance": {},
+  "viewAll": "Alles bekĳken",
+  "@viewAll": {
+    "description": "A title for viewing all of something (e.g., instances)"
   }
 }
