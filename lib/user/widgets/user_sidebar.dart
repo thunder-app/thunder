@@ -304,7 +304,7 @@ class BlockUserButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(blocked ? Icons.undo_rounded : Icons.block_rounded),
+                Icon(blocked ? Icons.undo_rounded : Icons.block_rounded, color: Colors.redAccent),
                 const SizedBox(width: 4.0),
                 Text(blocked ? 'Unblock User' : 'Block User'),
               ],
