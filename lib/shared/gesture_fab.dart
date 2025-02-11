@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 
 import '../thunder/bloc/thunder_bloc.dart';
 
@@ -116,6 +117,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
             child: Material(
               shape: widget.centered ? null : const CircleBorder(),
               clipBehavior: widget.centered ? Clip.none : Clip.antiAlias,
+              color: Colors.transparent,
               elevation: widget.centered ? 0 : 4,
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
@@ -195,7 +197,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                     width: 45,
                     height: 45,
                     child: Material(
-                      shape: const CircleBorder(),
+                      shape: widget.centered ? null : const CircleBorder(),
                       clipBehavior: Clip.antiAlias,
                       color: Colors.transparent,
                       child: InkWell(
@@ -249,6 +251,8 @@ class ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+
     return centered
         ? SizedBox(
             width: 160,
@@ -268,6 +272,7 @@ class ActionButton extends StatelessWidget {
                       child: SizedBox(
                         height: 40,
                         child: Material(
+                          color: darkTheme ? theme.colorScheme.primaryContainer : null,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(first == true ? 20 : 0),
                             topRight: Radius.circular(first == true ? 20 : 0),
