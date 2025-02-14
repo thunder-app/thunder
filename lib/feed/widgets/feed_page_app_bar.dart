@@ -13,6 +13,7 @@ import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -395,7 +396,7 @@ SubscribedType? _getSubscriptionStatus(BuildContext context) {
   final AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
 
   if (authBloc.state.isLoggedIn) {
-    return feedBloc.state.fullCommunityView?.communityView.subscribed;
+    return convertToSubscribedType(feedBloc.state.fullCommunityView?.communityView.subscribed);
   }
 
   return anonymousSubscriptionsBloc.state.ids.contains(feedBloc.state.fullCommunityView?.communityView.community.id) ? SubscribedType.subscribed : SubscribedType.notSubscribed;

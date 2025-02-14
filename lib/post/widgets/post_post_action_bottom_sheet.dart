@@ -119,7 +119,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
                   // Create a stub for the community view.
                   communityView: CommunityView(
                     community: convertToCommunity(postViewMedia.postView.community)!,
-                    subscribed: postViewMedia.postView.subscribed,
+                    subscribed: convertToSubscribedType(postViewMedia.postView.subscribed)!,
                     blocked: false,
                     counts: CommunityAggregates(
                       communityId: postViewMedia.postView.community.id,

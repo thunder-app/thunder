@@ -10,6 +10,7 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -218,7 +219,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             name: event.communityName,
           ));
 
-          subscribedType = getCommunityResponse?.communityView.subscribed;
+          subscribedType = convertToSubscribedType(getCommunityResponse?.communityView.subscribed);
         }
 
         // Fetch community's posts
@@ -356,7 +357,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityId: state.communityId,
         listingType: state.listingType,
         communityName: state.communityName,
-        subscribedType: communityResponse.communityView.subscribed,
+        subscribedType: convertToSubscribedType(communityResponse.communityView.subscribed),
       ));
 
       await Future.delayed(const Duration(seconds: 1));
@@ -373,7 +374,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityId: state.communityId,
         listingType: state.listingType,
         communityName: state.communityName,
-        subscribedType: fullCommunityView.communityView.subscribed,
+        subscribedType: convertToSubscribedType(fullCommunityView.communityView.subscribed),
       ));
     } catch (e) {
       return emit(

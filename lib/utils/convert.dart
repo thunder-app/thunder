@@ -1,3 +1,4 @@
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/models/models.dart';
 
 CommunityView? convertToCommunityView(dynamic communityView) {
@@ -34,4 +35,10 @@ Community? convertToCommunity(dynamic community) {
     instanceId: community.instanceId,
     visibility: community.visibility,
   );
+}
+
+SubscribedType? convertToSubscribedType(dynamic subscribedType) {
+  if (subscribedType == null) return null;
+
+  return SubscribedType.values.firstWhere((e) => e.name == subscribedType.name);
 }

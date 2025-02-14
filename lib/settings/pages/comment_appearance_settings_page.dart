@@ -132,7 +132,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Generates an example comment to show in the comment preview
   void getExampleComment() {
-    CommentView commentView = createExampleComment(
+    CommentView? commentView = createExampleComment(
       id: 1,
       commentCreatorId: 1,
       path: '0.1',
@@ -144,7 +144,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentContent: 'Thunder is an **open source**, cross platform app for exploring Lemmy communities!',
     );
 
-    CommentView replyCommentViewFirst = createExampleComment(
+    CommentView? replyCommentViewFirst = createExampleComment(
       id: 3,
       commentCreatorId: 3,
       path: '0.1.3',
@@ -157,7 +157,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       isPersonAdmin: true,
     );
 
-    CommentView replyCommentViewSecond = createExampleComment(
+    CommentView? replyCommentViewSecond = createExampleComment(
       id: 2,
       commentCreatorId: 2,
       path: '0.1.2',
@@ -167,7 +167,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       isBotAccount: true,
     );
 
-    List<CommentViewTree> commentViewTrees = buildCommentViewTree([commentView, replyCommentViewFirst, replyCommentViewSecond]);
+    List<CommentViewTree> commentViewTrees = buildCommentViewTree([]);
 
     if (context.mounted) {
       setState(() {
